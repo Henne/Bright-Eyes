@@ -34,7 +34,7 @@ namespace M302de {
 void chest_protected_normal(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0x818));
+	print_msg_with_first_hero(get_ttx(518));
 
 	/* the first hero gets wounded with 1W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), random_schick(6));
@@ -43,13 +43,13 @@ void chest_protected_normal(void)
 void chest_closed(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0x81c));
+	print_msg_with_first_hero(get_ttx(519));
 }
 
 void chest_protected_heavy(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0x820));
+	print_msg_with_first_hero(get_ttx(520));
 
 	/* the first hero gets wounded with 2W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 0));
@@ -58,7 +58,7 @@ void chest_protected_heavy(void)
 void chest_poisoned1(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0x820));
+	print_msg_with_first_hero(get_ttx(520));
 
 	/* the first hero gets wounded with 2W6 */
 	sub_hero_le(Real2Host((RealPt)(ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group()))), dice_roll(2, 6, 0));
@@ -70,7 +70,7 @@ void chest_poisoned1(void)
 void chest_poisoned2(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0x820));
+	print_msg_with_first_hero(get_ttx(520));
 
 	/* the first hero gets wounded with 2W6 */
 	sub_hero_le(Real2Host((RealPt)(ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group()))), dice_roll(2, 6, 0));
@@ -82,7 +82,7 @@ void chest_poisoned2(void)
 void chest_poisoned3(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0x820));
+	print_msg_with_first_hero(get_ttx(520));
 
 	/* the first hero gets wounded with 1W6 */
 	sub_hero_le(Real2Host((RealPt)(ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group()))), dice_roll(1, 6, 0));
@@ -94,7 +94,7 @@ void chest_poisoned3(void)
 void chest_protected_brutal(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0x820));
+	print_msg_with_first_hero(get_ttx(520));
 
 	/* the first hero gets wounded with 4W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
@@ -103,7 +103,7 @@ void chest_protected_brutal(void)
 void chest_stoned(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0xc20));
+	print_msg_with_first_hero(get_ttx(776));
 
 	/* save pointer of the first hero */
 	ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group());
@@ -115,7 +115,7 @@ void chest_stoned(void)
 void chest_ignifax_normal(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0xc24));
+	print_msg_with_first_hero(get_ttx(777));
 
 	/* the first hero gets wounded with 2W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 0));
@@ -124,7 +124,7 @@ void chest_ignifax_normal(void)
 void chest_ignifax_brutal(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0xc24));
+	print_msg_with_first_hero(get_ttx(777));
 
 	/* the first hero gets wounded with 4W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
@@ -133,7 +133,7 @@ void chest_ignifax_brutal(void)
 void chest_ignifax_heavy(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0xc24));
+	print_msg_with_first_hero(get_ttx(777));
 
 	/* the first hero gets wounded with 3W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(3, 6, 0));
@@ -142,7 +142,7 @@ void chest_ignifax_heavy(void)
 void chest_crossbow_bolts(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0xc50));
+	print_msg_with_first_hero(get_ttx(788));
 
 	/* the first hero gets wounded with 2W6+6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 6));
@@ -167,14 +167,14 @@ void chest_cursed(void)
 		}
 
 		/* print a message */
-		print_msg_with_first_hero(get_ttx(0x8cc));
+		print_msg_with_first_hero(get_ttx(563));
 	}
 }
 
 void chest_fulminictus(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ttx(0x8d0));
+	print_msg_with_first_hero(get_ttx(564));
 
 	/* the first hero gets wounded with 4W6+5 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 5));
@@ -212,12 +212,12 @@ void loot_simple_chest(Bit8u *chest)
 
 		if (item_nr == 0) {
 			/* this chest is empty */
-			GUI_output(get_ttx(0x828));
+			GUI_output(get_ttx(522));
 			break;
 		} else {
 
 			/* show radio menu with item names */
-			item_nr = GUI_radio(get_ttx(0x824), (signed char)item_nr,
+			item_nr = GUI_radio(get_ttx(521), (signed char)item_nr,
 						names[0], names[1], names[2], names[3],
 						names[4], names[5], names[6], names[7],
 						names[8], names[9], names[10], names[11],
@@ -455,7 +455,7 @@ void seg092_06b4(signed short a1)
 			/* There is money in the chest */
 			make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), host_readw(Real2Host(chest_ptr) + 17));
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0xc64),
+				(char*)get_ttx(793),
 				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -486,7 +486,7 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 			if (l_di == -99) {
 				/* unlucky, your lockpicks break... */
 
-				print_msg_with_first_hero(get_ttx(0x854));
+				print_msg_with_first_hero(get_ttx(533));
 				or_ptr_bs(hero + (HERO_ITEM_HEAD+4) + 14 * l_si, 1);
 
 				/* ... and you trigger the trap */
@@ -544,10 +544,10 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 			}
 
 		} else {
-			print_msg_with_first_hero(get_ttx(0x84c));
+			print_msg_with_first_hero(get_ttx(531));
 		}
 	} else {
-		print_msg_with_first_hero(get_ttx(0x848));
+		print_msg_with_first_hero(get_ttx(530));
 	}
 }
 
@@ -629,7 +629,7 @@ void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 				len = strlen(temp_str);
 
 				do {
-					i = (item_cnt = chest[item_no + 1]) > 1 ? GUI_input(get_ttx(0x944), len) : item_cnt;
+					i = (item_cnt = chest[item_no + 1]) > 1 ? GUI_input(get_ttx(593), len) : item_cnt;
 
 				} while (i < 0);
 

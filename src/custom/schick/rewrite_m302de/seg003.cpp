@@ -194,7 +194,7 @@ void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 	signed short answer;
 
 	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-		(char*)(!host_readbs(flag) ? get_ttx(0x82c) : get_ttx(0x83c)),
+		(char*)(!host_readbs(flag) ? get_ttx(523) : get_ttx(527)),
 		text);
 
 	if (!host_readbs(flag))
@@ -202,9 +202,9 @@ void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 		ds_writew(TEXTBOX_WIDTH, 7);
 
 		answer = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 3,
-					get_ttx(0x830),
-					get_ttx(0x834),
-					get_ttx(0x838)) - 1;
+					get_ttx(524),
+					get_ttx(525),
+					get_ttx(526)) - 1;
 
 		ds_writew(TEXTBOX_WIDTH, 3);
 

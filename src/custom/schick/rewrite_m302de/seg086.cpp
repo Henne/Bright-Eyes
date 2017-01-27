@@ -50,7 +50,7 @@ signed short DNG11_handler(void)
 
 	if (target_pos == 0x60c && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG11_SOUP_SUPPLY) != 0)
 	{
-		if (GUI_radio(get_tx(0x04), 2, get_tx(0x08), get_tx(0x0c)) == 1)
+		if (GUI_radio(get_tx(1), 2, get_tx(2), get_tx(3)) == 1)
 		{
 			add_group_le(1);
 
@@ -73,13 +73,13 @@ signed short DNG11_handler(void)
 
 	} else if (target_pos == 0x609 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		answer = GUI_radio(get_tx(0x10), 6,
-					get_tx(0x14),
-					get_tx(0x18),
-					get_tx(0x1c),
-					get_tx(0x20),
-					get_tx(0x24),
-					get_tx(0x28));
+		answer = GUI_radio(get_tx(4), 6,
+					get_tx(5),
+					get_tx(6),
+					get_tx(7),
+					get_tx(8),
+					get_tx(9),
+					get_tx(10));
 
 		ds_writeb(DNG11_LEVER_FLAG, 0);
 
@@ -87,28 +87,28 @@ signed short DNG11_handler(void)
 		{
 			ds_writeb(DNG11_LEVER_FLAG, (signed char)answer);
 
-			GUI_output(get_tx(0x2c));
+			GUI_output(get_tx(11));
 		}
 
 	} else if (target_pos == 0x909)
 	{
 		if (target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG11_EFFERD_HINT))
 		{
-			GUI_output(get_tx(0x30));
+			GUI_output(get_tx(12));
 
 		} else if (ds_readb(DNG11_EFFERD_SACRIFICE) != 0 && !ds_readb(DNG11_EFFERD_HINT))
 		{
 			ds_writeb(DNG11_EFFERD_HINT, 1);
 			ds_writeb(DNG11_UNKNOWN2_FLAG, ds_writeb(DNG11_EFFERD_SACRIFICE, 0));
 
-			GUI_output(get_tx(0x34));
+			GUI_output(get_tx(13));
 		}
 
 	} else if (target_pos == 0xc0a && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG11_FIRETRAP1_FLAG) != 0)
 	{
 		if (ds_readb(DNG11_EFFERD_HINT) != 0 || ds_readb(DNG11_UNKNOWN1_FLAG) != 0)
 		{
-			GUI_output(get_tx(0x3c));
+			GUI_output(get_tx(15));
 
 			dec_ds_bs_post(DNG11_FIRETRAP1_FLAG);
 
@@ -128,7 +128,7 @@ signed short DNG11_handler(void)
 	{
 		if (ds_readb(DNG11_UNKNOWN2_FLAG) != 0)
 		{
-			GUI_output(get_tx(0x3c));
+			GUI_output(get_tx(15));
 
 			dec_ds_bs_post(DNG11_FIRETRAP2_FLAG);
 
@@ -146,26 +146,26 @@ signed short DNG11_handler(void)
 
 	} else if (target_pos == 0xb03 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 1)
 	{
-		GUI_output(get_tx(0x44));
+		GUI_output(get_tx(17));
 
 	} else if (((target_pos == 0xc03 && ds_readbs(DIRECTION) == 1) ||
 			(target_pos == 0xb02 && ds_readbs(DIRECTION) == 0)) &&
 			target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-			GUI_output(get_tx(0x40));
+			GUI_output(get_tx(16));
 
 	} else if ((target_pos == 0x600 || target_pos == 0x700 || target_pos == 0x800 || target_pos == 0x900) &&
 			target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (GUI_radio(get_tx(0x48), 2, get_tx(0x4c), get_tx(0x50)) == 1)
+		if (GUI_radio(get_tx(18), 2, get_tx(19), get_tx(20)) == 1)
 		{
-			GUI_output(get_tx(0x54));
-			GUI_output(get_tx(0x58));
+			GUI_output(get_tx(21));
+			GUI_output(get_tx(22));
 
 			load_ani(18);
 			init_ani(0);
 
-			GUI_output(get_tx(0x5c));
+			GUI_output(get_tx(23));
 
 			hero = get_hero(0);
 			for (answer = 0; answer <= 6; answer++, hero += SIZEOF_HERO)
@@ -194,11 +194,11 @@ signed short DNG11_handler(void)
 			ds_writeb(DNG11_SECRETDOOR1_FLAG, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0x68),
+				(char*)get_tx(26),
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((ds_readb(DNG11_LEVER_FLAG) == 2 || ds_readb(DNG11_LEVER_FLAG) == 3) && (test_result = test_skill(hero, TA_SCHLOESSER, 5)) > 0 ? get_tx(0x6c) : get_tx(0x70)),
+				(char*)((ds_readb(DNG11_LEVER_FLAG) == 2 || ds_readb(DNG11_LEVER_FLAG) == 3) && (test_result = test_skill(hero, TA_SCHLOESSER, 5)) > 0 ? get_tx(27) : get_tx(28)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -227,11 +227,11 @@ signed short DNG11_handler(void)
 			ds_writeb(DNG11_SECRETDOOR2_FLAG, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0x68),
+				(char*)get_tx(26),
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((ds_readb(DNG11_LEVER_FLAG) == 1 || ds_readb(DNG11_LEVER_FLAG) == 3) && (test_result = test_skill(hero, TA_SCHLOESSER, 3)) > 0 ? get_tx(0x6c) : get_tx(0x70)),
+				(char*)((ds_readb(DNG11_LEVER_FLAG) == 1 || ds_readb(DNG11_LEVER_FLAG) == 3) && (test_result = test_skill(hero, TA_SCHLOESSER, 3)) > 0 ? get_tx(27) : get_tx(28)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -260,11 +260,11 @@ signed short DNG11_handler(void)
 			ds_writeb(DNG11_SECRETDOOR3_FLAG, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0x68),
+				(char*)get_tx(26),
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((ds_readb(DNG11_LEVER_FLAG) == 5 || ds_readb(DNG11_LEVER_FLAG) == 3) && (test_result = test_skill(hero, TA_SCHLOESSER, 5)) > 0 ? get_tx(0x6c) : get_tx(0x70)),
+				(char*)((ds_readb(DNG11_LEVER_FLAG) == 5 || ds_readb(DNG11_LEVER_FLAG) == 3) && (test_result = test_skill(hero, TA_SCHLOESSER, 5)) > 0 ? get_tx(27) : get_tx(28)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -294,8 +294,8 @@ signed short DNG11_handler(void)
 		ds_writeb(DIRECTION, (ds_readbs(ARRIVAL_DIRECTION) + 2) & 0x03);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx(0x74),
-			(char*)get_ttx(4 * (ds_readw(TRV_DESTINATION) + 0xeb)));
+			(char*)get_tx(29),
+			(char*)get_ttx(ds_readw(TRV_DESTINATION) + 0xeb));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -315,14 +315,14 @@ void DNG11_chest1(void)
 	if (!ds_readb(DNG11_PROVIANT1_FLAG))
 	{
 		/* a chest with 50 food rations */
-		GUI_output(get_tx(0x60));
+		GUI_output(get_tx(24));
 
 		ds_writeb(DNG11_PROVIANT1_FLAG, 1);
 
 	} else {
 
 		/* an empty chest */
-		GUI_output(get_ttx(0x828));
+		GUI_output(get_ttx(522));
 	}
 }
 
@@ -331,14 +331,14 @@ void DNG11_chest2(void)
 	if (!ds_readb(DNG11_PROVIANT2_FLAG))
 	{
 		/* a chest with 21 food rations */
-		GUI_output(get_tx(0x64));
+		GUI_output(get_tx(25));
 
 		ds_writeb(DNG11_PROVIANT2_FLAG, 1);
 
 	} else {
 
 		/* an empty chest */
-		GUI_output(get_ttx(0x828));
+		GUI_output(get_ttx(522));
 	}
 }
 
@@ -470,7 +470,7 @@ void DNG11_chest14(RealPt chest)
 void DNG11_fight_intro(signed short fight_id)
 {
 	if (fight_id == 127) {
-		GUI_output(get_tx(0x38));
+		GUI_output(get_tx(14));
 	}
 }
 

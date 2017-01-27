@@ -169,7 +169,7 @@ void GRP_split(void)
 
 	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1)) {
 
-		GUI_output(get_ttx(0x808));
+		GUI_output(get_ttx(514));
 	} else {
 
 		not_empty = 0;
@@ -181,7 +181,7 @@ void GRP_split(void)
 
 		do {
 			ds_writeb(HERO_SEL_EXCLUDE, 6);
-			answer = select_hero_from_group(get_ttx(0x80c));
+			answer = select_hero_from_group(get_ttx(515));
 
 			if (answer == -1) {
 				break;
@@ -210,7 +210,7 @@ void GRP_merge(void)
 
 	if (answer == -1) {
 
-		GUI_output(get_ttx(0x810));
+		GUI_output(get_ttx(516));
 	} else {
 
 		do {
@@ -292,9 +292,9 @@ void GRP_switch_to_next(signed short mode)
 				if (mode == 0) {
 
 					if (!state) {
-						GUI_output(get_ttx(0x90));
+						GUI_output(get_ttx(36));
 					} else {
-						if ((state == 2) && GUI_bool(get_ttx(0xc14))) {
+						if ((state == 2) && GUI_bool(get_ttx(773))) {
 							timewarp_until(0x7e90);
 							done = 1;
 						}
@@ -401,11 +401,11 @@ void GRP_swap_heros(void)
 		return;
 	}
 
-	hero1_nr = select_hero_from_group(get_ttx(0x4b8));
+	hero1_nr = select_hero_from_group(get_ttx(302));
 
 	if ((hero1_nr != -1) && (hero1_nr < 6)) {
 
-		hero2_nr = select_hero_from_group(get_ttx(0x4bc));
+		hero2_nr = select_hero_from_group(get_ttx(303));
 
 		if ((hero2_nr != -1) && (hero1_nr != hero2_nr) && (hero2_nr < 6)) {
 
@@ -633,7 +633,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 			/* chance of motion sickness is 9% */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0xc70),
+				(char*)get_ttx(796),
 				hero + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -685,14 +685,14 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 						add_hero_le(hero, le_regen);
 
-						strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(0x620));
+						strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(392));
 
 						if (le_regen > 1) {
-							strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(0x624));
+							strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(393));
 						}
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x4fc),
+							(char*)get_ttx(319),
 							hero + HERO_NAME2,
 							le_regen,
 							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -719,14 +719,14 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 							add_hero_ae(hero, ae_regen);
 
-							strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(0x620));
+							strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(392));
 
 							if (ae_regen > 1) {
-								strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(0x624));
+								strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(393));
 							}
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ttx(0x500),
+								(char*)get_ttx(320),
 								hero + HERO_NAME2,
 								ae_regen,
 								(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -746,7 +746,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 				}
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(0x8b8),
+					(char*)get_ttx(558),
 					hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));

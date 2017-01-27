@@ -36,7 +36,7 @@ unsigned short is_hero_healable(Bit8u *hero)
 
 	if (hero_dead(hero) || hero_stoned(hero)) {
 		/* this hero can not be helped */
-		GUI_output(get_ttx(0xc28));
+		GUI_output(get_ttx(778));
 		return 0;
 	} else {
 		return 1;
@@ -82,7 +82,7 @@ void do_healer(void)
 			load_ani(23);
 			init_ani(0);
 
-			GUI_print_loc_line(get_tx(ds_readw(CITYINDEX) * 4));
+			GUI_print_loc_line(get_tx(ds_readw(CITYINDEX)));
 
 			set_audio_track(ARCHIVE_FILE_HEALER_XMI);
 
@@ -94,14 +94,14 @@ void do_healer(void)
 
 				/* from 9.00 pm to 6.00 am the healer gets unkind */
 				if (ds_readds(DAY_TIMER) > 0x1baf8 || ds_readds(DAY_TIMER) < 0x7e90) {
-					GUI_output(get_ttx(0x790));
+					GUI_output(get_ttx(484));
 					motivation = 2;
 				}
 			}
 		}
 
 		if (v6 != 0) {
-			GUI_print_loc_line(get_tx(ds_readw(CITYINDEX) * 4));
+			GUI_print_loc_line(get_tx(ds_readw(CITYINDEX)));
 			v6 = 0;
 		}
 
@@ -111,11 +111,11 @@ void do_healer(void)
 
 			ds_writew(TEXTBOX_WIDTH, 4);
 
-			answer = GUI_radio(get_ttx(0x72c), 4,
-						get_ttx(0x71c),
-						get_ttx(0x720),
-						get_ttx(0x724),
-						get_ttx(0x728)) - 1;
+			answer = GUI_radio(get_ttx(459), 4,
+						get_ttx(455),
+						get_ttx(456),
+						get_ttx(457),
+						get_ttx(458)) - 1;
 			ds_writew(TEXTBOX_WIDTH, 3);
 
 			if (answer != -2) {
@@ -133,7 +133,7 @@ void do_healer(void)
 			/* Heal Wounds */
 
 			money = get_party_money();
-			answer = select_hero_from_group(get_ttx(0x730));
+			answer = select_hero_from_group(get_ttx(460));
 			if (answer != - 1) {
 
 				hero = get_hero(answer);
@@ -146,7 +146,7 @@ void do_healer(void)
 
 						/* Hero seems OK */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x734),
+							(char*)get_ttx(461),
 							(char*)(hero + HERO_NAME2));
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
@@ -161,7 +161,7 @@ void do_healer(void)
 
 						/* ask */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x740),
+							(char*)get_ttx(464),
 							(char*)(hero + HERO_NAME2),
 							price);
 
@@ -169,7 +169,7 @@ void do_healer(void)
 							price *= 10;
 
 							if (money < price) {
-								GUI_output(get_ttx(0x644));
+								GUI_output(get_ttx(401));
 							} else {
 								/* remove money */
 								money -= price;
@@ -187,7 +187,7 @@ void do_healer(void)
 
 								/* prepare output */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
-									(char*)get_ttx(0x74c),
+									(char*)get_ttx(467),
 									(char*)(hero + HERO_NAME2));
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
@@ -200,7 +200,7 @@ void do_healer(void)
 		} else if (ds_readw(ACTION) == 0x82) {
 			/* Cure Disease */
 			money = get_party_money();
-			answer = select_hero_from_group(get_ttx(0x730));
+			answer = select_hero_from_group(get_ttx(460));
 			if (answer != -1) {
 				hero = get_hero(answer);
 
@@ -210,7 +210,7 @@ void do_healer(void)
 					if (!disease) {
 						/* Hero is not diseased */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x738),
+							(char*)get_ttx(462),
 							(char*)(hero + HERO_NAME2));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
@@ -225,16 +225,16 @@ void do_healer(void)
 
 						/* prepare output */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x744),
+							(char*)get_ttx(465),
 							(char*)(hero + HERO_NAME2),
-							(char*)get_ttx((disease + 0x193) * 4),
+							(char*)get_ttx(disease + 0x193),
 							price);
 
 						if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
 							price *= 10;
 
 							if (money < price) {
-								GUI_output(get_ttx(0x644));
+								GUI_output(get_ttx(401));
 							} else {
 								/* let pass some time */
 								timewarp(5400);
@@ -246,13 +246,13 @@ void do_healer(void)
 
 									/* prepare output */
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
-										(char*)get_ttx(0x74c),
+										(char*)get_ttx(467),
 										(char*)(hero + HERO_NAME2));
 
 									GUI_output(Real2Host(ds_readd(DTP2)));
 								} else {
 									price /= 2;
-									GUI_output(get_ttx(0x750));
+									GUI_output(get_ttx(468));
 								}
 
 								/* remove money */
@@ -266,7 +266,7 @@ void do_healer(void)
 		} else if (ds_readw(ACTION) == 0x83) {
 			/* Heal Poison */
 			money = get_party_money();
-			answer = select_hero_from_group(get_ttx(0x730));
+			answer = select_hero_from_group(get_ttx(460));
 			if (answer != -1) {
 				hero = get_hero(answer);
 
@@ -276,7 +276,7 @@ void do_healer(void)
 					if (poison == 0) {
 						/* Hero is not poisoned */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x73c),
+							(char*)get_ttx(463),
 							(char*)(hero + HERO_NAME2));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
@@ -289,7 +289,7 @@ void do_healer(void)
 
 						/* prepare output */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x748),
+							(char*)get_ttx(466),
 							price,
 							(char*)(hero + HERO_NAME2));
 
@@ -297,7 +297,7 @@ void do_healer(void)
 							price *= 10;
 
 							if (money < price) {
-								GUI_output(get_ttx(0x644));
+								GUI_output(get_ttx(401));
 							} else {
 								timewarp(5400);
 
@@ -308,13 +308,13 @@ void do_healer(void)
 
 									/* prepare output */
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
-										(char*)get_ttx(0x74c),
+										(char*)get_ttx(467),
 										(char*)(hero + HERO_NAME2));
 
 									GUI_output(Real2Host(ds_readd(DTP2)));
 								} else {
 									price /= 2;
-									GUI_output(get_ttx(0x750));
+									GUI_output(get_ttx(468));
 								}
 
 								money -= price;

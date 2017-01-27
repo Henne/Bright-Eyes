@@ -90,7 +90,7 @@ void hunt_karen(void)
 	pause_traveling(21);
 
 	do {
-		answer = GUI_radio(get_tx2(0x00), 2, get_tx2(0x04), get_tx2(0x08));
+		answer = GUI_radio(get_tx2(0), 2, get_tx2(1), get_tx2(2));
 	} while (answer == -1);
 
 	if (answer == 1) {
@@ -117,7 +117,7 @@ void hunt_karen(void)
 			if (count_heroes_in_group() <= passed) {
 				/* all heros passed STEALTH */
 
-				GUI_output(get_tx2(0x14));
+				GUI_output(get_tx2(5));
 
 				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */
 				hero = get_hero(0);
@@ -135,27 +135,27 @@ void hunt_karen(void)
 				if ((count_heroes_in_group() / 2) <= passed) {
 					/* over the half of the group passed MISSLE WEAPON+0 */
 
-					GUI_output(get_tx2(0x20));
+					GUI_output(get_tx2(8));
 					/* get 80 FOOD PACKAGES */
 					get_item(45, 1, 80);
 
 				} else if (passed) {
 					/* at least one of the group passed MISSLE WEAPON+0 */
 
-					GUI_output(get_tx2(0x1c));
+					GUI_output(get_tx2(7));
 					/* get 40 FOOD PACKAGES */
 					get_item(45, 1, 40);
 				} else {
 					/* everybody failed MISSLE WEAPON+0 */
-					GUI_output(get_tx2(0x18));
+					GUI_output(get_tx2(6));
 				}
 			} else {
 				/* at least one hero failed STEALTH+2 */
-				GUI_output(get_tx2(0x10));
+				GUI_output(get_tx2(4));
 			}
 		} else {
 			/* no hunting weapon in the group */
-			GUI_output(get_tx2(0x24));
+			GUI_output(get_tx2(9));
 		}
 	}
 
@@ -172,7 +172,7 @@ void hunt_wildboar(void)
 	pause_traveling(25);
 
 	do {
-		answer = GUI_radio(get_tx2(0x28), 2, get_tx2(0x2c), get_tx2(0x30));
+		answer = GUI_radio(get_tx2(10), 2, get_tx2(11), get_tx2(12));
 	} while (answer == -1);
 
 	if (answer == 1) {
@@ -199,7 +199,7 @@ void hunt_wildboar(void)
 			if (count_heroes_in_group() <= passed) {
 				/* all heros passed STEALTH */
 
-				GUI_output(get_tx2(0x3c));
+				GUI_output(get_tx2(15));
 
 				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */
 				hero = get_hero(0);
@@ -217,21 +217,21 @@ void hunt_wildboar(void)
 				if ((count_heroes_in_group() / 2) <= passed) {
 					/* over the half of the group passed MISSLE WEAPON+0 */
 
-					GUI_output(get_tx2(0x44));
+					GUI_output(get_tx2(17));
 					/* get 30 FOOD PACKAGES */
 					get_item(45, 1, 30);
 
 				} else {
 					/* everybody failed MISSLE WEAPON+0 */
-					GUI_output(get_tx2(0x40));
+					GUI_output(get_tx2(16));
 				}
 			} else {
 				/* at least one hero failed STEALTH+0 */
-				GUI_output(get_tx2(0x38));
+				GUI_output(get_tx2(14));
 			}
 		} else {
 			/* no hunting weapon in the group */
-			GUI_output(get_tx2(0x48));
+			GUI_output(get_tx2(18));
 		}
 	}
 
@@ -247,19 +247,19 @@ void hunt_cavebear(void)
 	pause_traveling(32);
 
 	do {
-		answer = GUI_radio(get_tx2(0x4c), 2, get_tx2(0x50), get_tx2(0x54));
+		answer = GUI_radio(get_tx2(19), 2, get_tx2(20), get_tx2(21));
 	} while (answer == -1);
 
 	if (answer == 1) {
 
 		/* print message */
-		GUI_output(get_tx2(0x60));
+		GUI_output(get_tx2(24));
 
 		/* time to flee = 1.5 hour */
 		timewarp(0x1fa4);
 
 	} else {
-		GUI_output(get_tx2(0x58));
+		GUI_output(get_tx2(22));
 
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
@@ -293,7 +293,7 @@ void hunt_cavebear(void)
 			}
 		}
 
-		GUI_output(get_tx2(0x5c));
+		GUI_output(get_tx2(23));
 	}
 
 	resume_traveling();
@@ -310,7 +310,7 @@ void hunt_viper(void)
 	/* load snake picture */
 	pause_traveling(30);
 
-	GUI_output(get_tx2(0x64));
+	GUI_output(get_tx2(25));
 
 	hero_i = get_hero(0);
 
@@ -338,7 +338,7 @@ void hunt_viper(void)
 
 		/* print a message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx2(0x68),
+			(char*)get_tx2(26),
 			hero_i + HERO_NAME2);
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -356,7 +356,7 @@ void hunt_viper(void)
 			sub_hero_le(hero_i, dice_roll(3, 6, 0) * 2);
 		}
 	} else {
-		GUI_output(get_tx2(0x6c));
+		GUI_output(get_tx2(27));
 	}
 
 	resume_traveling();
@@ -374,8 +374,8 @@ void octopus_attack(void)
 	pause_traveling(31);
 	memset(overboard, 0, 7);
 
-	GUI_output(get_tx2(0x70));
-	GUI_output(get_tx2(0x74));
+	GUI_output(get_tx2(28));
+	GUI_output(get_tx2(29));
 
 	do {
 		hero = get_hero(0);
@@ -396,7 +396,7 @@ void octopus_attack(void)
 					add_hero_ap(hero, 5);
 					sub_hero_le(hero, random_schick(6));
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx2(0x78),
+						(char*)get_tx2(30),
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -406,7 +406,7 @@ void octopus_attack(void)
 					add_hero_ap(hero, 20);
 					sub_hero_le(hero, random_schick(6));
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx2(0x7c),
+						(char*)get_tx2(31),
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -429,7 +429,7 @@ void octopus_attack(void)
 
 	sub_group_le(3);
 	add_hero_ap_all(5);
-	GUI_output(get_tx2(0x80));
+	GUI_output(get_tx2(32));
 
 	ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
 	status_menu(get_hero_index(Real2Host(get_first_hero_available_in_group())));
@@ -444,19 +444,19 @@ void hunt_bison(void)
 	pause_traveling(29);
 
 	do {
-		answer = GUI_radio(get_tx2(0x84), 2, get_tx2(0x88), get_tx2(0x8c));
+		answer = GUI_radio(get_tx2(33), 2, get_tx2(34), get_tx2(35));
 
 	} while (answer == -1);
 
 	if (answer == 1) {
 		timewarp(MINUTES(30));
-		GUI_output(get_tx2(0x98));
+		GUI_output(get_tx2(38));
 	} else {
-		GUI_output(get_tx2(0x90));
+		GUI_output(get_tx2(36));
 
 		hero = get_hero(get_random_hero());
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx2(0x94),
+			(char*)get_tx2(37),
 			(char*)hero + HERO_NAME2);
 		GUI_output(Real2Host(ds_readd(DTP2)));
 		sub_hero_le(hero, random_schick(6));
@@ -474,19 +474,19 @@ void hunt_rhino(void)
 	pause_traveling(33);
 
 	do {
-		answer = GUI_radio(get_tx2(0x9c), 2, get_tx2(0xa0), get_tx2(0xa4));
+		answer = GUI_radio(get_tx2(39), 2, get_tx2(40), get_tx2(41));
 
 	} while (answer == -1);
 
 	if (answer == 1) {
 		timewarp(MINUTES(30));
-		GUI_output(get_tx2(0xb0));
+		GUI_output(get_tx2(44));
 	} else {
-		GUI_output(get_tx2(0xa8));
+		GUI_output(get_tx2(42));
 
 		hero = get_hero(get_random_hero());
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx2(0xac),
+			(char*)get_tx2(43),
 			(char*)hero + HERO_NAME2);
 		GUI_output(Real2Host(ds_readd(DTP2)));
 		sub_hero_le(hero, dice_roll(2, 6, 0));
@@ -500,9 +500,9 @@ void pirates_attack(void)
 {
 	pause_traveling(9);
 
-	GUI_output(get_tx2(0xb4));
-	GUI_output(get_tx2(0xb8));
-	GUI_output(get_tx2(0xbc));
+	GUI_output(get_tx2(45));
+	GUI_output(get_tx2(46));
+	GUI_output(get_tx2(47));
 
 	ds_writew(MAX_ENEMIES, random_interval(3, 8));
 	ds_writew(FIG_DISCARD, 1);
@@ -730,7 +730,7 @@ void TLK_way_to_ruin(signed short state)
 		hero_disease_test(Real2Host(ds_readd(RUIN_HERO)), 2,
 			25 - (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(Real2Host(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK)))));
 
-		loose_random_item(Real2Host(ds_readd(RUIN_HERO)), 10, get_ttx(0x7e8));
+		loose_random_item(Real2Host(ds_readd(RUIN_HERO)), 10, get_ttx(506));
 
 	} else if (state == 13 || state == 25 || state == 34 || state == 59 || state == 62) {
 		timewarp(MINUTES(30));
@@ -745,10 +745,10 @@ void TLK_way_to_ruin(signed short state)
 		ds_writed(RUIN_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
 		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(ds_readd(RUIN_HERO)), TA_AEXTE, 2) > 0 ? 20 : 21);
 	} else if (state == 20) {
-		loose_random_item(get_hero(get_random_hero()), 5, get_ttx(0x7e8));
+		loose_random_item(get_hero(get_random_hero()), 5, get_ttx(506));
 	} else if (state == 21) {
 		timewarp(MINUTES(10));
-		loose_random_item(hero2, 10, get_ttx(0x7e8));
+		loose_random_item(hero2, 10, get_ttx(506));
 		sub_hero_le(hero2, random_schick(4) + 2);
 	} else if (state == 22 || state == 30 || state == 52 || state == 53) {
 		timewarp(HOURS(3));

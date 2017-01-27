@@ -55,20 +55,20 @@ signed short DNG09_handler(void)
 
 	if (ds_readb(DNG09_PIT_FLAG) != 0 && !(ds_readds(DAY_TIMER) / 90 * 20))
 	{
-		GUI_output(get_tx(0x80));
+		GUI_output(get_tx(32));
 	}
 
 	if (target_pos == 0xb0e && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 1)
 	{
-		GUI_output(get_tx(0x04));
+		GUI_output(get_tx(1));
 
 	} else if (target_pos == 0xa08 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		GUI_output(get_tx(0x08));
+		GUI_output(get_tx(2));
 
 	} else if ((target_pos == 0xe0e || target_pos == 0xe08) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		GUI_output(get_tx(0x0c));
+		GUI_output(get_tx(3));
 
 	} else if ((target_pos == 0x30e || target_pos == 0x50e ||
 			target_pos == 0x10e ||	target_pos == 0x101 ||
@@ -88,7 +88,7 @@ signed short DNG09_handler(void)
 	} else if (target_pos == 0x40b && target_pos != ds_readws(DNG_HANDLED_POS) &&
 			ds_readb(DNG09_BOLTTRAP1_FLAG) != 0 && !ds_readb(DNG09_LEVER1_FLAG))
 	{
-		GUI_output(get_tx(0x2c));
+		GUI_output(get_tx(11));
 
 		dec_ds_bs_post(DNG09_BOLTTRAP1_FLAG);
 
@@ -103,7 +103,7 @@ signed short DNG09_handler(void)
 				sub_hero_le(hero, dice_roll(2, 6, 4));
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0x30),
+					(char*)get_tx(12),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -112,9 +112,9 @@ signed short DNG09_handler(void)
 
 	} else if (target_pos == 0x108 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (GUI_bool(get_tx(0x38)))
+		if (GUI_bool(get_tx(14)))
 		{
-			GUI_output(get_tx(0x3c));
+			GUI_output(get_tx(15));
 
 			add_ds_ws(X_TARGET, 2);
 			ds_writebs(DIRECTION, 1);
@@ -126,7 +126,7 @@ signed short DNG09_handler(void)
 	{
 		dec_ds_bs_post(DNG09_BOLTTRAP2_FLAG);
 
-		GUI_output(get_tx(0x2c));
+		GUI_output(get_tx(11));
 
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
@@ -139,7 +139,7 @@ signed short DNG09_handler(void)
 				sub_hero_le(hero, dice_roll(2, 6, 4));
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0x30),
+					(char*)get_tx(12),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -151,7 +151,7 @@ signed short DNG09_handler(void)
 	{
 		dec_ds_bs_post(DNG09_BOLTTRAP3_FLAG);
 
-		GUI_output(get_tx(0x2c));
+		GUI_output(get_tx(11));
 
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
@@ -164,7 +164,7 @@ signed short DNG09_handler(void)
 				sub_hero_le(hero, dice_roll(2, 6, 4));
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0x30),
+					(char*)get_tx(12),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -173,9 +173,9 @@ signed short DNG09_handler(void)
 
 	} else if (target_pos == 0x403 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (GUI_bool(get_tx(0x40)))
+		if (GUI_bool(get_tx(16)))
 		{
-			GUI_output(get_tx(0x44));
+			GUI_output(get_tx(17));
 			xor_ds_bs(DNG09_LEVER1_FLAG, 1);
 		}
 
@@ -194,9 +194,9 @@ signed short DNG09_handler(void)
 
 		if (l3 != 0)
 		{
-			GUI_output(get_tx(0x48));
+			GUI_output(get_tx(18));
 		} else {
-			GUI_output(get_tx(0x4c));
+			GUI_output(get_tx(19));
 
 			dec_ds_ws_post(X_TARGET);
 			add_ds_ws(Y_TARGET, 2);
@@ -206,7 +206,7 @@ signed short DNG09_handler(void)
 	} else if (target_pos == 0x1d06 && target_pos != ds_readws(DNG_HANDLED_POS) &&
 			ds_readb(DNG09_CULTIST_FLAG) != 0 && !ds_readb(DNG09_LEVER2_FLAG))
 	{
-		GUI_output(get_tx(0x2c));
+		GUI_output(get_tx(11));
 
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
@@ -219,7 +219,7 @@ signed short DNG09_handler(void)
 				sub_hero_le(hero, dice_roll(2, 6, 4));
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0x30),
+					(char*)get_tx(12),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -228,16 +228,16 @@ signed short DNG09_handler(void)
 
 	} else if (target_pos == 0x1e09 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (GUI_bool(get_tx(0x40)))
+		if (GUI_bool(get_tx(16)))
 		{
-			GUI_output(get_tx(0x70));
+			GUI_output(get_tx(28));
 			xor_ds_bs(DNG09_LEVER2_FLAG, 1);
 		}
 
 	} else if (target_pos == 0x190b && target_pos != ds_readws(DNG_HANDLED_POS) &&
 			ds_readb(DNG09_BOLTTRAP4_FLAG) != 0 && ds_readb(DNG09_SECRETDOOR2) == 2)
 	{
-		GUI_output(get_tx(0x2c));
+		GUI_output(get_tx(11));
 
 		/* TODO: MISSING? dec_ds_bs_post(DNG09_BOLTTRAP4_FLAG); */
 
@@ -252,7 +252,7 @@ signed short DNG09_handler(void)
 				sub_hero_le(hero, dice_roll(2, 6, 4));
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0x30),
+					(char*)get_tx(12),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -271,7 +271,7 @@ signed short DNG09_handler(void)
 
 	} else if (target_pos == 0x1208 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (GUI_bool(get_tx(0x98)))
+		if (GUI_bool(get_tx(38)))
 		{
 			dec_ds_ws_post(X_TARGET);
 			inc_ds_ws_post(Y_TARGET);
@@ -283,24 +283,24 @@ signed short DNG09_handler(void)
 			!ds_readb(DNG09_LEVER_FAST))
 	{
 		do {
-			i = GUI_radio(get_tx(0x9c), 3,
-					get_tx(0xa0),
-					get_tx(0xa4),
-					get_tx(0xa8));
+			i = GUI_radio(get_tx(39), 3,
+					get_tx(40),
+					get_tx(41),
+					get_tx(42));
 		} while (i == -1);
 
 		if (i == 2)
 		{
-			GUI_output(get_tx(0xac));
+			GUI_output(get_tx(43));
 
 		} else if (i == 3)
 		{
-			if ((i = select_hero_ok(get_tx(0xb0))) != -1)
+			if ((i = select_hero_ok(get_tx(44))) != -1)
 			{
 				hero = get_hero(i);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0xb4),
+					(char*)get_tx(45),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -359,7 +359,7 @@ signed short DNG09_handler(void)
 		init_ani(0);
 		delay_or_keypress(100);
 
-		if (GUI_bool(get_tx(0xb8)))
+		if (GUI_bool(get_tx(46)))
 		{
 			ds_writeb(DNG09_ALTAR_FLAG, 1);
 
@@ -375,9 +375,9 @@ signed short DNG09_handler(void)
 
 
 			do {
-				i = GUI_radio(get_tx(0xbc), 2,
-						get_tx(0xc0),
-						get_tx(0xc4));
+				i = GUI_radio(get_tx(47), 2,
+						get_tx(48),
+						get_tx(49));
 			} while (i == -1);
 
 			if (i == 1)
@@ -385,7 +385,7 @@ signed short DNG09_handler(void)
 				get_item(248, 1, 1);
 
 			} else {
-				GUI_output(get_tx(0xc8));
+				GUI_output(get_tx(50));
 			}
 		}
 
@@ -401,11 +401,11 @@ signed short DNG09_handler(void)
 			ds_writeb(DNG09_SECRETDOOR1, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0xcc),
+				(char*)get_tx(51),
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)(((l3 = test_skill(hero, TA_SCHLOESSER, 4)) > 0) ? get_tx(0xd0) : get_tx(0xd8)),
+				(char*)(((l3 = test_skill(hero, TA_SCHLOESSER, 4)) > 0) ? get_tx(52) : get_tx(54)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
@@ -438,11 +438,11 @@ signed short DNG09_handler(void)
 			ds_writeb(DNG09_SECRETDOOR2, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0xcc),
+				(char*)get_tx(51),
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)(((l3 = test_skill(hero, TA_SCHLOESSER, 6)) > 0) ? get_tx(0xd0) : get_tx(0xd4)),
+				(char*)(((l3 = test_skill(hero, TA_SCHLOESSER, 6)) > 0) ? get_tx(52) : get_tx(53)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)),
@@ -472,8 +472,8 @@ signed short DNG09_handler(void)
 		ds_writeb(DIRECTION, (ds_readws(ARRIVAL_DIRECTION) + 2) & 3);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx(0xdc),
-			(char*)get_ttx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
+			(char*)get_tx(55),
+			(char*)get_ttx(ds_readws(TRV_DESTINATION) + 0xeb));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -497,7 +497,7 @@ void DNG09_fight_intro(signed short fight_id)
 {
 	if (fight_id == 94)
 	{
-		GUI_output(get_tx(0x34));
+		GUI_output(get_tx(13));
 	}
 }
 
@@ -548,13 +548,13 @@ void DNG09_chest4_x1(RealPt chest)
 
 	if (!ds_readb(DNG09_CRYSTAL_FLAG))
 	{
-		if (GUI_bool(get_tx(0x50)))
+		if (GUI_bool(get_tx(20)))
 		{
 			do {
-				answer = GUI_radio(get_tx(0x54), 3,
-							get_tx(0x58),
-							get_tx(0x5c),
-							get_tx(0x60));
+				answer = GUI_radio(get_tx(21), 3,
+							get_tx(22),
+							get_tx(23),
+							get_tx(24));
 			} while (answer == -1);
 
 			hero = Real2Host(get_first_hero_available_in_group());
@@ -562,28 +562,28 @@ void DNG09_chest4_x1(RealPt chest)
 			if (answer == 1)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0x64),
+					(char*)get_tx(25),
 					(char*)hero + HERO_NAME2);
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
 				sub_hero_le(hero, dice_roll(2, 20, 0));
 			} else if (answer == 2)
 			{
-				hero = get_hero(0) + select_hero_ok_forced(get_ttx(0x4f4)) * SIZEOF_HERO;
+				hero = get_hero(0) + select_hero_ok_forced(get_ttx(317)) * SIZEOF_HERO;
 				if (test_spell(hero, 2, 0) > 0)
 				{
 					sub_ae_splash(hero, 20);
 
 					sub_ptr_ws(hero + HERO_AE_ORIG, 3);
 
-					GUI_output(get_tx(0x6c));
+					GUI_output(get_tx(27));
 
 					add_hero_ap_all(50);
 
 					ds_writeb(DNG09_CRYSTAL_FLAG, 1);
 				} else {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x68),
+						(char*)get_tx(26),
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -592,21 +592,21 @@ void DNG09_chest4_x1(RealPt chest)
 
 			} else if (answer == 3)
 			{
-				hero = get_hero(0) + select_hero_ok_forced(get_ttx(0x4f4)) * SIZEOF_HERO;
+				hero = get_hero(0) + select_hero_ok_forced(get_ttx(317)) * SIZEOF_HERO;
 				if (test_spell(hero, 53, 0) > 0)
 				{
 					sub_ae_splash(hero, 35);
 
 					sub_ptr_ws(hero + HERO_AE_ORIG, 3);
 
-					GUI_output(get_tx(0x6c));
+					GUI_output(get_tx(27));
 
 					add_hero_ap_all(50);
 
 					ds_writeb(DNG09_CRYSTAL_FLAG, 1);
 				} else {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x68),
+						(char*)get_tx(26),
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -615,7 +615,7 @@ void DNG09_chest4_x1(RealPt chest)
 			}
 		}
 	} else {
-		GUI_output(get_ttx(0x828));
+		GUI_output(get_ttx(522));
 	}
 }
 

@@ -60,12 +60,12 @@ signed short DNG15_handler(void)
 		((target_pos == 0xc0a || target_pos == 0x80a) && dir == 0)) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* INFO: a large hall */
-		GUI_output(get_tx(0x04));
+		GUI_output(get_tx(1));
 
 	} else if (((target_pos == 0x304 && dir == 0) || (target_pos == 0x403 && dir == 3)) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* INFO: entering the tower */
-		GUI_output(get_tx(0x08));
+		GUI_output(get_tx(2));
 
 	} else if ((target_pos == 0x101 || target_pos == 0x201 || target_pos == 0x301 || target_pos == 0x401 ||
 			target_pos == 0x102 || target_pos == 0x202 || target_pos == 0x302 || target_pos == 0x402 ||
@@ -85,7 +85,7 @@ signed short DNG15_handler(void)
 				tmp = random_schick(3);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)(tmp == 3 ? get_tx(0x0c) : (tmp == 2 ? get_tx(0x10) : get_tx(0x14))),
+					(char*)(tmp == 3 ? get_tx(3) : (tmp == 2 ? get_tx(4) : get_tx(5))),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -99,25 +99,25 @@ signed short DNG15_handler(void)
 			target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* debris, with wounds and no hidden ladder */
-		DNG15_wounds_and_ladders(get_tx(0x24), 1, 0);
+		DNG15_wounds_and_ladders(get_tx(9), 1, 0);
 
 	} else if ((target_pos == 0xb00 || target_pos == 0xc00 || target_pos == 0xd00 ||
 			target_pos == 0xf00 || target_pos == 0xf01 || target_pos == 0xe00) &&
 			target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* debris, no wounds and no hidden ladder */
-		DNG15_wounds_and_ladders(get_tx(0x38), 0, 0);
+		DNG15_wounds_and_ladders(get_tx(14), 0, 0);
 
 	} else if (target_pos == 0xe02 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* debris, with wounds and hidden ladder */
-		DNG15_wounds_and_ladders(get_tx(0x3c), 1, 1);
+		DNG15_wounds_and_ladders(get_tx(15), 1, 1);
 
 	} else if ((target_pos == 0xb01 || target_pos == 0xc01 || target_pos == 0xd01 ||
 			target_pos == 0xe01) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* debris, with wounds and no hidden ladder */
-		DNG15_wounds_and_ladders(get_tx(0x40), 1, 0);
+		DNG15_wounds_and_ladders(get_tx(16), 1, 0);
 
 	} else if (target_pos == 0x901 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
@@ -130,7 +130,7 @@ signed short DNG15_handler(void)
 	} else if (target_pos == 0x1e02 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* LADDER: upwards */
-		if (GUI_bool(get_tx(0x44)))
+		if (GUI_bool(get_tx(17)))
 		{
 			DNG_dec_level();
 			ds_writeb(DIRECTION, 3);
@@ -144,10 +144,10 @@ signed short DNG15_handler(void)
 		tmp = dir;
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx(0x5c),
-			(char*)(tmp == 0 ? get_tx(0x58) :
-				(tmp == 2 ? get_tx(0x54) :
-				(tmp == 3 ? get_tx(0x50) : get_tx(0x4c)))));
+			(char*)get_tx(23),
+			(char*)(tmp == 0 ? get_tx(22) :
+				(tmp == 2 ? get_tx(21) :
+				(tmp == 3 ? get_tx(20) : get_tx(19)))));
 
 		for (i = tmp = 0; i < 6; i++)
 		{
@@ -160,7 +160,7 @@ signed short DNG15_handler(void)
 		}
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
-			(char*)(tmp == 0 ? get_tx(0x60) : get_tx(0x64)));
+			(char*)(tmp == 0 ? get_tx(24) : get_tx(25)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -173,10 +173,10 @@ signed short DNG15_handler(void)
 		tmp = dir;
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx(0x5c),
-			(char*)(tmp == 0 ? get_tx(0x54) :
-				(tmp == 2 ? get_tx(0x58) :
-				(tmp == 3 ? get_tx(0x4c) : get_tx(0x50)))));
+			(char*)get_tx(23),
+			(char*)(tmp == 0 ? get_tx(21) :
+				(tmp == 2 ? get_tx(22) :
+				(tmp == 3 ? get_tx(19) : get_tx(20)))));
 
 		for (i = tmp = 0; i < 6; i++)
 		{
@@ -189,7 +189,7 @@ signed short DNG15_handler(void)
 		}
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
-			(char*)(tmp == 0 ? get_tx(0x60) : get_tx(0x64)));
+			(char*)(tmp == 0 ? get_tx(24) : get_tx(25)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -211,12 +211,12 @@ signed short DNG15_handler(void)
 		if (tmp == 0)
 		{
 			/* go through the mirror */
-			GUI_output(get_tx(0x68));
+			GUI_output(get_tx(26));
 			ds_writew(Y_TARGET, 5);
 			DNG_update_pos();
 		} else {
 			/* stay here */
-			GUI_output(get_tx(0x6c));
+			GUI_output(get_tx(27));
 			ds_writew(Y_TARGET, ds_readw(Y_TARGET_BAK));
 		}
 
@@ -237,23 +237,23 @@ signed short DNG15_handler(void)
 		if (tmp == 0)
 		{
 			/* go through the mirror */
-			GUI_output(get_tx(0x68));
+			GUI_output(get_tx(26));
 			ds_writew(Y_TARGET, 1);
 			DNG_update_pos();
 		} else {
 			/* stay here */
-			GUI_output(get_tx(0x6c));
+			GUI_output(get_tx(27));
 			ds_writew(Y_TARGET, ds_readw(Y_TARGET_BAK));
 		}
 
 	} else if (target_pos == 0x110e && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		loot_multi_chest(p_datseg + DNG15_CHEST_EQUIPS, get_tx(0x98));
+		loot_multi_chest(p_datseg + DNG15_CHEST_EQUIPS, get_tx(38));
 
 	} else if (target_pos == 0x110b && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* INFO: wooden beams */
-		GUI_output(get_tx(0x9c));
+		GUI_output(get_tx(39));
 
 	} else if (target_pos == 0x130a && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
@@ -262,9 +262,9 @@ signed short DNG15_handler(void)
 	} else if (target_pos == 0x240a && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG15_TOOK_HOE))
 	{
 		/* ITEM: a HOE */
-		if (GUI_bool(get_tx(0xc8)))
+		if (GUI_bool(get_tx(50)))
 		{
-			GUI_output(get_tx(0xcc));
+			GUI_output(get_tx(51));
 
 			if (get_item(93, 1, 1) != -1)
 			{
@@ -275,7 +275,7 @@ signed short DNG15_handler(void)
 	} else if ((target_pos == 0x2109 || target_pos == 0x230d) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* INFO: end of the corridor */
-		GUI_output(get_tx(0xd0));
+		GUI_output(get_tx(52));
 
 	} else if (target_pos == 0x230c && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
@@ -457,7 +457,7 @@ signed short DNG15_handler(void)
 		/* EXIT: may be blocked if cursed money has been taken */
 		if (ds_readb(DNG15_TOOK_CURSED_MONEY) != 0)
 		{
-			GUI_output(get_tx(0x18));
+			GUI_output(get_tx(6));
 
 			ds_writew(X_TARGET, ds_readws(X_TARGET_BAK));
 			ds_writew(Y_TARGET, ds_readws(Y_TARGET_BAK));
@@ -471,8 +471,8 @@ signed short DNG15_handler(void)
 			ds_writeb(DIRECTION, (ds_readbs(ARRIVAL_DIRECTION) + 2) & 0x03);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0xdc),
-				(char*)get_ttx(4 * (ds_readw(TRV_DESTINATION) + 0xeb)));
+				(char*)get_tx(55),
+				(char*)get_ttx(ds_readw(TRV_DESTINATION) + 0xeb));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -512,8 +512,8 @@ void DNG15_small_wounds(void)
 			randval = random_schick(3);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)(randval == 3 ? get_tx(0x0c) :
-						(randval == 2 ? get_tx(0x1c) : get_tx(0x20))),
+				(char*)(randval == 3 ? get_tx(3) :
+						(randval == 2 ? get_tx(7) : get_tx(8))),
 				(char*)hero + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -532,15 +532,15 @@ void DNG15_small_wounds(void)
  */
 void DNG15_debris(signed short ladder)
 {
-	if (GUI_bool(get_tx(0x28)))
+	if (GUI_bool(get_tx(10)))
 	{
 		if (ladder == 0)
 		{
-			GUI_output(get_tx(0x2c));
+			GUI_output(get_tx(11));
 		} else {
-			GUI_output(get_tx(0x30));
+			GUI_output(get_tx(12));
 
-			if (GUI_bool(get_tx(0x34)))
+			if (GUI_bool(get_tx(13)))
 			{
 				ds_writeb(DIRECTION, 3);
 				dec_ds_ws(X_TARGET);
@@ -552,23 +552,23 @@ void DNG15_debris(signed short ladder)
 
 void DNG15_empty_chest(RealPt chest)
 {
-	GUI_output(get_ttx(0x828));
+	GUI_output(get_ttx(522));
 }
 
 void DNG15_rotten_clothes_chest(RealPt chest)
 {
-	GUI_output(get_tx(0x88));
+	GUI_output(get_tx(34));
 }
 
 void DNG15_smelling_chest(RealPt chest)
 {
 	Bit8u *hero;
-	if (GUI_bool(get_tx(0x8c)))
+	if (GUI_bool(get_tx(35)))
 	{
 		hero = get_hero(get_random_hero());
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx(0x90),
+			(char*)get_tx(36),
 			(char*)hero + HERO_NAME2);
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -582,7 +582,7 @@ void DNG15_figures_chest(RealPt chest)
 
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
-	GUI_output(get_tx(0x94));
+	GUI_output(get_tx(37));
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
@@ -594,7 +594,7 @@ void DNG15_cursed_money_chest(RealPt chest)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
-	if (GUI_bool(get_tx(0xd8)))
+	if (GUI_bool(get_tx(54)))
 	{
 		/* You are cursed ... */
 		ds_writeb(DNG15_TOOK_CURSED_MONEY, 1);
@@ -623,7 +623,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 		case 1:
 		{
 			/* rotting beams */
-			GUI_output(get_tx(0xa0));
+			GUI_output(get_tx(40));
 
 			/* count failed GE-3 test */
 			for (i = cnt = 0; i <= 6; i++, hero += SIZEOF_HERO)
@@ -642,16 +642,16 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 				/* if more that one hero failed, the ceiling craks */
 				inc_ptr_bs(ptr);
 
-				GUI_output(get_tx(0xa4));
+				GUI_output(get_tx(41));
 			}
 			break;
 		}
 		case 2:
 		{
 			/* the beams crash imediately */
-			GUI_output(get_tx(0xa8));
+			GUI_output(get_tx(42));
 			inc_ptr_bs(ptr);
-			GUI_output(get_tx(0xac));
+			GUI_output(get_tx(43));
 
 			/* each hero gets 1W6 damage on a failed GE test */
 			for (i = cnt = 0; i <= 6; i++, hero += SIZEOF_HERO)
@@ -662,7 +662,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 					test_attrib(hero, ATTRIB_GE, 0) <= 0)
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0xb0),
+						(char*)get_tx(44),
 						(char*)hero + HERO_NAME2,
 						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
@@ -682,11 +682,11 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 			if (random_schick(100) >= 65)
 			{
 				/* the way is already cleared */
-				GUI_output(get_tx(0xc0));
+				GUI_output(get_tx(48));
 			} else {
 				dec_ptr_bs(ptr);
 
-				if (GUI_bool(get_tx(0xc4)))
+				if (GUI_bool(get_tx(49)))
 				{
 					DNG15_clear_way(ptr);
 				}
@@ -719,7 +719,7 @@ void DNG15_clear_way(Bit8u* ptr)
 	/* With aprobability of 60% the ceiling crashes down. */
 	if (random_schick(100) <= 60)
 	{
-		GUI_output(get_tx(0xb8));
+		GUI_output(get_tx(46));
 
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
@@ -729,7 +729,7 @@ void DNG15_clear_way(Bit8u* ptr)
 				test_attrib(hero, ATTRIB_GE, 0) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0xb0),
+					(char*)get_tx(44),
 					(char*)hero + HERO_NAME2,
 					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
@@ -743,7 +743,7 @@ void DNG15_clear_way(Bit8u* ptr)
 		ds_writew(Y_TARGET, ds_readws(Y_TARGET_BAK));
 	} else {
 		inc_ptr_bs(ptr);
-		GUI_output(get_tx(0xbc));
+		GUI_output(get_tx(47));
 	}
 }
 
@@ -751,7 +751,7 @@ void DNG15_cursed_money(Bit8u* ptr)
 {
 	Bit32s p_money;
 
-	if (GUI_bool(get_tx(0xd4)))
+	if (GUI_bool(get_tx(53)))
 	{
 		host_writebs(ptr, ds_writeb(DNG15_TOOK_CURSED_MONEY, 1));
 

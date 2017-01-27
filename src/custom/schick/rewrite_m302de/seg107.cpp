@@ -71,11 +71,11 @@ void use_item(signed short item_pos, signed short hero_pos)
 				{
 					/* german grammar, singular and plural are the same */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0xc60),
+						(char*)get_ttx(792),
 						(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws(USED_ITEM_ID)))));
 				} else {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0x8ec),
+						(char*)get_ttx(571),
 						(char*)Real2Host(GUI_names_grammar(0, ds_readws(USED_ITEM_ID), 0)));
 				}
 
@@ -89,7 +89,7 @@ void use_item(signed short item_pos, signed short hero_pos)
 
 			} else if ((host_readws(get_itemuser() + 14 * ds_readws(USED_ITEM_POS) + (HERO_ITEM_HEAD + 2))) <= 0) {
 				/* magic item is used up */
-				GUI_output(get_ttx(0x9f8));
+				GUI_output(get_ttx(638));
 			} else {
 				/* special item */
 #if !defined(__BORLANDC__)
@@ -118,7 +118,7 @@ void item_arcano(void)
 
 	/* ask who should be affected */
 	host_writeb(get_spelluser() + HERO_ENEMY_ID,
-		select_hero_from_group(get_ttx(0x9f4)) + 1);
+		select_hero_from_group(get_ttx(637)) + 1);
 
 	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) > 0) {
 		/* use it */
@@ -139,24 +139,24 @@ void item_read_recipe(void)
 	Bit8u *str;
 
 	switch (ds_readws(USED_ITEM_ID)) {
-	case 0xa7: str = get_ttx(0x9fc); break;
-	case 0xa9: str = get_ttx(0xa00); break;
-	case 0xca: str = get_ttx(0xa24); break;
-	case 0xcb: str = get_ttx(0xa28); break;
-	case 0xcc: str = get_ttx(0xa2c); break;
-	case 0xcd: str = get_ttx(0xa30); break;
-	case 0xce: str = get_ttx(0xa34); break;
-	case 0xba: str = get_ttx(0xaa4); break;
-	case 0xf0: str = get_ttx(0xaa8); break;
-	case 0xf2: str = get_ttx(0xab0); break;
-	case 0xf3: str = get_ttx(0xab4); break;
-	case 0xf4: str = get_ttx(0xab8); break;
-	case 0xf1: str = get_ttx(0xaac); break;
+	case 0xa7: str = get_ttx(639); break;
+	case 0xa9: str = get_ttx(640); break;
+	case 0xca: str = get_ttx(649); break;
+	case 0xcb: str = get_ttx(650); break;
+	case 0xcc: str = get_ttx(651); break;
+	case 0xcd: str = get_ttx(652); break;
+	case 0xce: str = get_ttx(653); break;
+	case 0xba: str = get_ttx(681); break;
+	case 0xf0: str = get_ttx(682); break;
+	case 0xf2: str = get_ttx(684); break;
+	case 0xf3: str = get_ttx(685); break;
+	case 0xf4: str = get_ttx(686); break;
+	case 0xf1: str = get_ttx(683); break;
 	}
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)get_ttx(0x9f0),
+		(char*)get_ttx(636),
 		(char*)str);
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
@@ -169,15 +169,15 @@ void item_read_document(void)
 	signed short textbox_width_bak;
 
 	switch (ds_readws(USED_ITEM_ID)) {
-	case 0xaa: str = get_ttx(0xa04); break;
-	case 0xbb: str = get_ttx(0xa14); break;
-	case 0xbd: str = get_ttx(0xa18); break;
-	case 0xbe: str = get_ttx(0xa1c); break;
-	case 0xc0: str = get_ttx(0xa20); break;
-	case 0xde: str = get_ttx(0xa38); break;
-	case 0xe0: str = get_ttx(0xa3c); break;
-	case 0xeb: str = get_ttx(0xa44); break;
-	case 0xf7: str = get_ttx(0xbdc); break;
+	case 0xaa: str = get_ttx(641); break;
+	case 0xbb: str = get_ttx(645); break;
+	case 0xbd: str = get_ttx(646); break;
+	case 0xbe: str = get_ttx(647); break;
+	case 0xc0: str = get_ttx(648); break;
+	case 0xde: str = get_ttx(654); break;
+	case 0xe0: str = get_ttx(655); break;
+	case 0xeb: str = get_ttx(657); break;
+	case 0xf7: str = get_ttx(759); break;
 	}
 
 	textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
@@ -203,7 +203,7 @@ void item_armatrutz(void)
 
 	/* ask who should be affected */
 	host_writeb(get_spelluser() + HERO_ENEMY_ID,
-		select_hero_from_group(get_ttx(0x9f4)) + 1);
+		select_hero_from_group(get_ttx(637)) + 1);
 
 	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) > 0) {
 		/* use it */
@@ -264,7 +264,7 @@ void item_debtbook(void)
 		ds_writeb_z(INFORMER_FLAGS + INFORMER_HJORE, 1);
 	}
 
-	GUI_output(get_ttx(0xa08));
+	GUI_output(get_ttx(642));
 }
 
 /* Borlandified and identical */
@@ -280,9 +280,9 @@ void item_orcdocument(void)
 			ds_writeb(ORCDOCUMENT_READ_FLAG, 1);
 		}
 
-		GUI_output(get_ttx(0xa10));
+		GUI_output(get_ttx(644));
 	} else {
-		GUI_output(get_ttx(0xa0c));
+		GUI_output(get_ttx(643));
 	}
 }
 
@@ -395,11 +395,11 @@ void item_weapon_poison(void)
 		give_hero_new_item(get_itemuser(), bottle, 1, 1);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ttx(0xb8c),
+			(char*)get_ttx(739),
 			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readws(get_itemuser() + HERO_ITEM_RIGHT), 0)));
 	} else {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ttx(0xc94),
+			(char*)get_ttx(805),
 			(char*)get_itemuser() + HERO_NAME2);
 	}
 
@@ -410,7 +410,7 @@ void item_myastmatic(void)
 {
 	/* MYASTMATIC, ID 238 */
 	if (ds_readws(IN_FIGHT) == 0) {
-		GUI_output(get_ttx(0xabc));
+		GUI_output(get_ttx(687));
 		return;
 	}
 }
@@ -419,7 +419,7 @@ void item_hylailic(void)
 {
 	/* HYLAILIC FIRE, ID 239 */
 	if (ds_readws(IN_FIGHT) == 0) {
-		GUI_output(get_ttx(0xabc));
+		GUI_output(get_ttx(687));
 		return;
 	}
 }
@@ -429,7 +429,7 @@ void item_magic_book(void)
 	/* BOOK, ID 246 */
 
 	/* print message */
-	GUI_output(get_ttx(0xbb4));
+	GUI_output(get_ttx(749));
 
 	/* Heptagon +2 */
 	add_ptr_bs(get_itemuser() + (HERO_SP_DEMON + 3), 2);
@@ -480,12 +480,12 @@ void item_brenne(void)
 
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0x1dc),
+				(char*)get_tx(119),
 				(char*)get_itemuser() + HERO_NAME2);
 		} else {
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0x1e0),
+				(char*)get_tx(120),
 				(char*)get_itemuser() + HERO_NAME2);
 		}
 	} else {
@@ -494,7 +494,7 @@ void item_brenne(void)
 			/* No tinderbox */
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0x1e8),
+				(char*)get_tx(122),
 				(char*)get_itemuser() + HERO_NAME2);
 		} else {
 
@@ -545,7 +545,7 @@ void item_bag(void)
 #endif
 
 	/* print message */
-	GUI_output(get_ttx(0xc1c));
+	GUI_output(get_ttx(775));
 
 	/* drop the BAG */
 	drop_item(get_itemuser(), get_item_pos(get_itemuser(), 221), 1);

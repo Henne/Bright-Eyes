@@ -48,7 +48,7 @@ signed short DNG13_handler(void)
 		hero = get_hero(get_random_hero());
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx(0x48),
+			(char*)get_tx(18),
 			(char*)hero + HERO_NAME2);
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -58,7 +58,7 @@ signed short DNG13_handler(void)
 
 	if (pos == 0x90d && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG13_LANTERN_FLAG))
 	{
-		if (GUI_bool(get_tx(0x04)))
+		if (GUI_bool(get_tx(1)))
 		{
 			ds_writeb(DNG13_LANTERN_FLAG, 1);
 
@@ -68,41 +68,41 @@ signed short DNG13_handler(void)
 	} else if ((pos == 0x10c || pos == 0xe06 || pos == 0xe0d || pos == 0x301) &&
 			pos != ds_readws(DNG_HANDLED_POS))
 	{
-		GUI_output(get_tx(0x08));
+		GUI_output(get_tx(2));
 
 	} else if (pos == 0x20d && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		GUI_dialog_na(60, get_tx(0x0c));
+		GUI_dialog_na(60, get_tx(3));
 
 	} else if (pos == 0x30c && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		DNG13_unblock_passage(get_tx(0x10), p_datseg + DNG13_PASSAGE1_FLAG);
+		DNG13_unblock_passage(get_tx(4), p_datseg + DNG13_PASSAGE1_FLAG);
 
 	} else if (pos == 0x409 &&
 			 (pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readbs(DIRECTION) == WEST)
 	{
-		GUI_output(get_tx(0x18));
+		GUI_output(get_tx(6));
 		ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 
 	} else if (pos == 0xa02 &&
 			 (pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readbs(DIRECTION) == EAST)
 	{
-		GUI_output(get_tx(0x18));
+		GUI_output(get_tx(6));
 		ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 
 	} else if (pos == 0x509 && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		DNG13_unblock_passage(get_tx(0x1c), p_datseg + DNG13_PASSAGE2_FLAG);
+		DNG13_unblock_passage(get_tx(7), p_datseg + DNG13_PASSAGE2_FLAG);
 
 	} else if (pos == 0x209 && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		loot_multi_chest(p_datseg + DNG13_CHEST_EQUIPS, get_tx(0x20));
+		loot_multi_chest(p_datseg + DNG13_CHEST_EQUIPS, get_tx(8));
 
 	} else if (pos == 0xa06 && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		DNG13_unblock_passage(get_tx(0x1c), p_datseg + DNG13_PASSAGE3_FLAG);
+		DNG13_unblock_passage(get_tx(7), p_datseg + DNG13_PASSAGE3_FLAG);
 
 	} else if (pos == 0xb05 && pos != ds_readws(DNG_HANDLED_POS))
 	{
@@ -110,15 +110,15 @@ signed short DNG13_handler(void)
 
 	} else if (pos == 0xa0a && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		GUI_output(get_tx(0x30));
+		GUI_output(get_tx(12));
 
 	} else if (pos == 0xe09 && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		DNG13_unblock_passage(get_tx(0x1c), p_datseg + DNG13_PASSAGE4_FLAG);
+		DNG13_unblock_passage(get_tx(7), p_datseg + DNG13_PASSAGE4_FLAG);
 
 	} else if (pos == 0x703 && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		DNG13_unblock_passage(get_tx(0x1c), p_datseg + DNG13_PASSAGE5_FLAG);
+		DNG13_unblock_passage(get_tx(7), p_datseg + DNG13_PASSAGE5_FLAG);
 
 	} else if (pos == 0x401 && pos != ds_readws(DNG_HANDLED_POS))
 	{
@@ -126,13 +126,13 @@ signed short DNG13_handler(void)
 
 	} else if (pos == 0x505 && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		GUI_output(get_tx(0x3c));
+		GUI_output(get_tx(15));
 
-		GUI_output(get_tx(0x40));
+		GUI_output(get_tx(16));
 
 	} else if (pos == 0x407 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG13_MONEY_FLAG))
 	{
-		GUI_output(get_tx(0x44));
+		GUI_output(get_tx(17));
 
 		ds_writeb(DNG13_MONEY_FLAG, 1);
 
@@ -201,7 +201,7 @@ void DNG13_unblock_passage(Bit8u* text, Bit8u* flag)
 			/* if all items are available, it takes 2 hours instead of 6 */
 			timewarp(!has_items ? HOURS(6) : HOURS(2));
 
-			GUI_output(get_tx(0x14));
+			GUI_output(get_tx(5));
 
 			/* mark this passage as free */
 			host_writeb(flag, 1);
@@ -216,7 +216,7 @@ void DNG13_unblock_passage(Bit8u* text, Bit8u* flag)
 
 void DNG13_corpse0(RealPt ptr)
 {
-	loot_corpse(ptr, get_tx(0x24), p_datseg + DNG13_CORPSE0_FLAG);
+	loot_corpse(ptr, get_tx(9), p_datseg + DNG13_CORPSE0_FLAG);
 }
 
 void DNG13_chest0(RealPt chest)
@@ -226,14 +226,14 @@ void DNG13_chest0(RealPt chest)
 	bak = (RealPt)host_readd(Real2Host(chest) + 0xb);
 	host_writed(Real2Host(chest) + 0xb, (Bit32u)RealMake(datseg, DNG13_CHEST0_CONTENT));
 
-	loot_chest(Real2Host(chest), get_tx(0x28), get_tx(0x2c));
+	loot_chest(Real2Host(chest), get_tx(10), get_tx(11));
 
 	host_writed(Real2Host(chest) + 0xb, (Bit32u)bak);
 }
 
 void DNG13_corpse1(RealPt ptr)
 {
-	loot_corpse(ptr, get_tx(0x38), p_datseg + DNG13_CORPSE1_FLAG);
+	loot_corpse(ptr, get_tx(14), p_datseg + DNG13_CORPSE1_FLAG);
 }
 
 void DNG13_chest1(RealPt chest)
@@ -243,7 +243,7 @@ void DNG13_chest1(RealPt chest)
 	bak = (RealPt)host_readd(Real2Host(chest) + 0xb);
 	host_writed(Real2Host(chest) + 0xb, (Bit32u)RealMake(datseg, DNG13_CHEST1_CONTENT));
 
-	loot_chest(Real2Host(chest), get_tx(0x28), get_tx(0x2c));
+	loot_chest(Real2Host(chest), get_tx(10), get_tx(11));
 
 	host_writed(Real2Host(chest) + 0xb, (Bit32u)bak);
 }
@@ -257,7 +257,7 @@ void DNG13_fight_intro(signed short fight_id)
 {
 	if (fight_id == FIGHTS_DPRE10_1)
 	{
-		GUI_output(get_tx(0x34));
+		GUI_output(get_tx(13));
 	}
 }
 
@@ -285,11 +285,11 @@ void DNG13_collapsing_ceiling(void)
 	if (fails > 1)
 	{
 		/* at least two heros failed in the skill test */
-		GUI_output(get_tx(0x4c));
+		GUI_output(get_tx(19));
 
 		sub_group_le(dice_roll(1, 6, 4));
 
-		GUI_output(get_tx(0x50));
+		GUI_output(get_tx(20));
 
 		/* check if the group has ALL of these items:
 			SHOVEL, HOE, CROWBAR, FRANCESCA
@@ -335,11 +335,11 @@ void DNG13_collapsing_ceiling_easy(void)
 	if (fails > 1)
 	{
 		/* at least two heros failed in the skill test */
-		GUI_output(get_tx(0x4c));
+		GUI_output(get_tx(19));
 
 		sub_group_le(dice_roll(1, 6, 5));
 
-		GUI_output(get_tx(0x50));
+		GUI_output(get_tx(20));
 
 		/* check if the group has ALL of these items:
 			SHOVEL, HOE, CROWBAR, FRANCESCA

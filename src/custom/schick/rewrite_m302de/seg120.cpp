@@ -75,17 +75,17 @@ void rabies(RealPt hero, signed short hero_pos)
 		if (count_heroes_available_in_group() > 1) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0xb94),
+				(char*)get_ttx(741),
 				(char*)Real2Host(hero) + HERO_NAME2,
 				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 2)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 2)));
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 500,
-				(char*)get_ttx(0xb98),
+				(char*)get_ttx(742),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 600,
-				(char*)get_ttx(0xb9c),
+				(char*)get_ttx(743),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
@@ -97,7 +97,7 @@ void rabies(RealPt hero, signed short hero_pos)
 						3,
 						Real2Host(ds_readd(DTP2)) + 500,
 						Real2Host(ds_readd(DTP2)) + 600,
-						get_ttx(0xba0));
+						get_ttx(744));
 
 			ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 
@@ -107,14 +107,14 @@ void rabies(RealPt hero, signed short hero_pos)
 				sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + HERO_LE) / 2);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(0xba4),
+					(char*)get_ttx(745),
 					(char*)Real2Host(hero) + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
 				ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
-				answer = select_hero_ok(get_ttx(0x62c));
+				answer = select_hero_ok(get_ttx(395));
 
 				if (answer != -1) {
 
@@ -134,14 +134,14 @@ void rabies(RealPt hero, signed short hero_pos)
 					{
 						done = 1;
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0xba8),
+							(char*)get_ttx(746),
 							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 						ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
-						answer = select_hero_ok(get_ttx(0x62c));
+						answer = select_hero_ok(get_ttx(395));
 
 						if (answer != -1) {
 							skill_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
@@ -154,7 +154,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 				ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
-				answer = select_hero_ok(get_ttx(0x354));
+				answer = select_hero_ok(get_ttx(213));
 
 				if (answer != -1) {
 
@@ -174,14 +174,14 @@ void rabies(RealPt hero, signed short hero_pos)
 								sub_ae_splash(hero2, 15);
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
-									(char*)get_ttx(0xba8),
+									(char*)get_ttx(746),
 									(char*)Real2Host(hero) + HERO_NAME2);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 
 								ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
-								answer = select_hero_ok(get_ttx(0x62c));
+								answer = select_hero_ok(get_ttx(395));
 
 								if ((answer != -1) && (answer != hero_pos)) {
 									skill_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
@@ -189,7 +189,7 @@ void rabies(RealPt hero, signed short hero_pos)
 							}
 						} else {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ttx(0x97c),
+								(char*)get_ttx(607),
 								(char*)hero2 + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
@@ -202,7 +202,7 @@ void rabies(RealPt hero, signed short hero_pos)
 			/* Hero has rabies / Tollwut */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0xbac),
+				(char*)get_ttx(747),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -227,7 +227,7 @@ void rabies(RealPt hero, signed short hero_pos)
 			/* hero has berserker fury / Berserkerwut */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0xc5c),
+				(char*)get_ttx(791),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));

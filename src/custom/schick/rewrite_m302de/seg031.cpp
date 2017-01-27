@@ -101,7 +101,7 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 		if (txt_id_raw != -1) {
 
 			txt_id = (4 * host_readw(state_ptr) + txt_id_rand) & 0x7fff;
-			fmt = (char*)get_tx(4 * (txt_id + txt_offset));
+			fmt = (char*)get_tx(txt_id + txt_offset);
 
 			if (ds_readws(TLK_ID) == 15) {
 
@@ -168,9 +168,9 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 			}
 
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), dialog_title, (Bit8u*)dst, optioncount,
-					get_tx(4 * options[0].txt),
-					get_tx(4 * options[1].txt),
-					get_tx(4 * options[2].txt));
+					get_tx(options[0].txt),
+					get_tx(options[1].txt),
+					get_tx(options[2].txt));
 
 		} else {
 			options[0].goto_state = host_readb(state_ptr + 5);
@@ -224,7 +224,7 @@ RealPt get_informer_forename(void)
 		if (host_readbs(p_info + 2) == ds_readbs(CURRENT_TOWN)) {
 
 			i = 0;
-			informer_name = get_ttx(4 * host_readws(p_info));
+			informer_name = get_ttx(host_readws(p_info));
 
 			do {
 				tmp = host_readbs(informer_name);
@@ -232,7 +232,7 @@ RealPt get_informer_forename(void)
 				i++;
 			} while (tmp != ' ');
 
-			strncpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(4 * host_readws(p_info)), i);
+			strncpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(host_readws(p_info)), i);
 #ifdef M302de_ORIGINAL_BUGFIX
 			break;
 #endif
@@ -352,7 +352,7 @@ RealPt get_random_tavern_message(void)
 
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)Real2Host(ptr),
-			(char*)get_ttx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
+			(char*)get_ttx(ds_readbs(CURRENT_TOWN) + 235));
 
 		return (RealPt)ds_readd(TEXT_OUTPUT_BUF);
 	} else {

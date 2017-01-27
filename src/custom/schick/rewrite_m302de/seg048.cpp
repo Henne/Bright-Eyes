@@ -142,11 +142,11 @@ void status_menu(signed short hero_pos)
 						!is_in_word_array(
 						    host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO)),
 						    (signed short*)Real2Host(ds_readd((WEARABLE_ITEMS_INDEX - 4) + 4 * host_readbs(hero2 + HERO_TYPE)))
-                        ) ? p_datseg + EMPTY_STRING8 : get_tx2(0x108));
+                        ) ? p_datseg + EMPTY_STRING8 : get_tx2(66));
 
 					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))))) {
 						strcat((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(4 * (48 + host_readbs(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))) + 3))));
+							(char*)get_ttx(48 + host_readbs(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))) + 3)));
 					}
 
 					GUI_print_string(Real2Host(ds_readd(DTP2)), 16, 192);
@@ -327,11 +327,11 @@ void status_menu(signed short hero_pos)
 						!is_in_word_array(
 						    host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO)),
 						    (signed short*)Real2Host(ds_readd((WEARABLE_ITEMS_INDEX - 4) + 4 * host_readbs(hero2 + HERO_TYPE)))
-                        ) ? p_datseg + EMPTY_STRING9 : get_tx2(0x108));
+                        ) ? p_datseg + EMPTY_STRING9 : get_tx2(66));
 
 					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))))) {
 						strcat((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(4 * (48 + host_readbs(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))) + 3))));
+							(char*)get_ttx(48 + host_readbs(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))) + 3)));
 					}
 
 					GUI_print_string(Real2Host(ds_readd(DTP2)), 16, 192);
@@ -453,7 +453,7 @@ void status_menu(signed short hero_pos)
 			hero_is_diseased(hero2))
 		{
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx2(4 * (25 + hero_is_diseased(hero2))),
+				(char*)get_tx2(25 + hero_is_diseased(hero2)),
 				(char*)(hero2 + HERO_NAME2),
 				Real2Host(GUI_get_ptr(host_readbs(hero2 + HERO_SEX), 1)));
 
@@ -498,11 +498,11 @@ void status_menu(signed short hero_pos)
 				}
 
 				l_di = GUI_radio((Bit8u*)NULL, (signed char)l1,
-						get_tx2(0x114),
-						get_tx2(0x40),
-						get_tx2(0x44),
-						get_ttx(0x350),
-						get_ttx(0x354),
+						get_tx2(69),
+						get_tx2(16),
+						get_tx2(17),
+						get_ttx(212),
+						get_ttx(213),
 						Real2Host(ds_readd((RADIO_NAME_LIST + 0x00))),
 						Real2Host(ds_readd((RADIO_NAME_LIST + 0x04))),
 						Real2Host(ds_readd((RADIO_NAME_LIST + 0x08))),
@@ -514,9 +514,9 @@ void status_menu(signed short hero_pos)
 					case 1: {
 						/* change name */
 						if (host_readbs(hero2 + HERO_NPC_ID) != 0) {
-							GUI_output(get_tx2(0x11c));
+							GUI_output(get_tx2(71));
 						} else {
-							GUI_input(get_tx2(0x118), 15);
+							GUI_input(get_tx2(70), 15);
 							strcpy((char*)hero2 + HERO_NAME2, (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)));
 							ds_writew(REQUEST_REFRESH, 1);
 						}
@@ -525,7 +525,7 @@ void status_menu(signed short hero_pos)
 					case 2: {
 						/* use item */
 						if (hero1 != hero2) {
-							GUI_output(get_tx2(0x110));
+							GUI_output(get_tx2(68));
 						} else {
 							use_item(ds_readbs(STATUSPAGE_SELITEM3_NO), hero_pos);
 							reset_item_selector();
@@ -536,7 +536,7 @@ void status_menu(signed short hero_pos)
 					case 3: {
 						/* drop item */
 						if (hero1 != hero2) {
-							GUI_output(get_tx2(0x110));
+							GUI_output(get_tx2(68));
 						} else {
 							drop_item(hero2, ds_readbs(STATUSPAGE_SELITEM3_NO), -1);
 							reset_item_selector();
@@ -571,7 +571,7 @@ void status_menu(signed short hero_pos)
 							reset_item_selector();
 						} else if (l1 == 7) {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_tx2(4 * (25 + flag3)),
+								(char*)get_tx2(25 + flag3),
 								(char*)(hero2 + HERO_NAME2),
 								Real2Host(GUI_get_ptr(host_readbs(hero2 + HERO_SEX), 1)));
 
@@ -597,7 +597,7 @@ void status_menu(signed short hero_pos)
 					case 8: {
 						/* show spells */
 						if (host_readbs(hero2 + HERO_TYPE) < 7) {
-							GUI_output(get_ttx(0x35c));
+							GUI_output(get_ttx(215));
 						} else {
 							reset_item_selector();
 							ds_writew(STATUS_PAGE_MODE, 4);
@@ -608,7 +608,7 @@ void status_menu(signed short hero_pos)
 					case 9: {
 						if (flag3 != 0) {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_tx2(4 * (25 + flag3)),
+								(char*)get_tx2(25 + flag3),
 								(char*)(hero2 + HERO_NAME2),
 								Real2Host(GUI_get_ptr(host_readbs(hero2 + HERO_SEX), 1)));
 
@@ -630,21 +630,21 @@ void status_menu(signed short hero_pos)
 				/* from ATPA-page */
 
 				l_di = GUI_radio((Bit8u*)0, 8,
-						get_tx2(0x40),
-						get_tx2(0x44),
-						get_ttx(0x350),
-						get_ttx(0x354),
-						get_tx2(0x60),
-						get_tx2(0x50),
-						get_tx2(0x54),
-						get_tx2(0x3c));
+						get_tx2(16),
+						get_tx2(17),
+						get_ttx(212),
+						get_ttx(213),
+						get_tx2(24),
+						get_tx2(20),
+						get_tx2(21),
+						get_tx2(15));
 
 				if (l_di != -1) {
 					switch(l_di) {
 					case 1: {
 						/* use item */
 						if (hero1 != hero2) {
-							GUI_output(get_tx2(0x110));
+							GUI_output(get_tx2(68));
 						} else {
 							use_item(ds_readbs(STATUSPAGE_SELITEM3_NO), hero_pos);
 							reset_item_selector();
@@ -654,7 +654,7 @@ void status_menu(signed short hero_pos)
 					case 2: {
 						/* drop item */
 						if (hero1 != hero2) {
-							GUI_output(get_tx2(0x110));
+							GUI_output(get_tx2(68));
 						} else {
 							drop_item(hero2, ds_readbs(STATUSPAGE_SELITEM3_NO), -1);
 							reset_item_selector();
@@ -696,7 +696,7 @@ void status_menu(signed short hero_pos)
 					}
 					case 7: {
 						if (host_readbs(hero2 + HERO_TYPE) < 7) {
-							GUI_output(get_ttx(0x35c));
+							GUI_output(get_ttx(215));
 						} else {
 							reset_item_selector();
 							ds_writew(STATUS_PAGE_MODE, 4);
@@ -716,12 +716,12 @@ void status_menu(signed short hero_pos)
 			case 3: {
 				/* from skills-page */
 				l_di = GUI_radio((Bit8u*)0, 6,
-						get_ttx(0x350),
-						get_tx2(0x60),
-						get_tx2(0x4c),
-						get_tx2(0x54),
-						get_ttx(0x354),
-						get_tx2(0x3c));
+						get_ttx(212),
+						get_tx2(24),
+						get_tx2(19),
+						get_tx2(21),
+						get_ttx(213),
+						get_tx2(15));
 
 				if (l_di != -1) {
 					switch (l_di) {
@@ -748,7 +748,7 @@ void status_menu(signed short hero_pos)
 					}
 					case 4: {
 						if (host_readbs(hero2 + HERO_TYPE) < 7) {
-							GUI_output(get_ttx(0x35c));
+							GUI_output(get_ttx(215));
 						} else {
 							ds_writew(STATUS_PAGE_MODE, 4);
 							ds_writew(REQUEST_REFRESH, 1);
@@ -775,12 +775,12 @@ void status_menu(signed short hero_pos)
 			case 5:{
 				/* from spells-page */
 				l_di = GUI_radio((Bit8u*)0, 6,
-						get_ttx(0x354),
-						get_tx2(0x60),
-						get_tx2(0x4c),
-						get_tx2(0x50),
-						get_ttx(0x358),
-						get_tx2(0x3c));
+						get_ttx(213),
+						get_tx2(24),
+						get_tx2(19),
+						get_tx2(20),
+						get_ttx(214),
+						get_tx2(15));
 
 				if (l_di != -1) {
 					switch (l_di) {
@@ -854,7 +854,7 @@ void status_select_hero(void)
 	if (ds_readws(STATUSMENU_ALLOWED) == 0 || !ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 		/* Yes, it was written that way! */
 	} else {
-		signed short hero_pos = select_hero_from_group(get_ttx(0x4b4));
+		signed short hero_pos = select_hero_from_group(get_ttx(301));
 
 		if (hero_pos != -1) {
 			status_menu(hero_pos);

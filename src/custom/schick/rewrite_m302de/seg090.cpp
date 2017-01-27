@@ -63,7 +63,7 @@ signed short DNG12_handler(void)
 #endif
 		if (test_skill(hero, 0x33, 6) > 0) {
 
-			GUI_output(get_tx(0x54));
+			GUI_output(get_tx(21));
 
 			and_ptr_bs(ptr + 0x87, 0xf);
 			/* turn off water trap */
@@ -72,7 +72,7 @@ signed short DNG12_handler(void)
 
 		} else {
 			/* door not detected */
-			if (GUI_bool(get_tx(0x40))) GUI_output(get_tx(0x44));
+			if (GUI_bool(get_tx(16))) GUI_output(get_tx(17));
 		}
 	} else {
 
@@ -93,8 +93,8 @@ signed short DNG12_handler(void)
 				ds_writews(DNG12_WATERTRAP_BAK, (signed short)(ds_readds(DNG12_WATERTRAP_TIMER) / MINUTES(5)));
 
 				/* warning according to water level */
-				GUI_output(ds_readds(DNG12_WATERTRAP_TIMER) == MINUTES(0) ? get_tx(0x50) :
-						(ds_readds(DNG12_WATERTRAP_TIMER) <= MINUTES(10) ? get_tx(0x4c) : get_tx(0x48)));
+				GUI_output(ds_readds(DNG12_WATERTRAP_TIMER) == MINUTES(0) ? get_tx(20) :
+						(ds_readds(DNG12_WATERTRAP_TIMER) <= MINUTES(10) ? get_tx(19) : get_tx(18)));
 
 				if (ds_readds(DNG12_WATERTRAP_TIMER) == MINUTES(0)) {
 					/* time is up, drown party */
@@ -115,7 +115,7 @@ signed short DNG12_handler(void)
 
 						/* prepare a message with the name of the NPC */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_tx(0x58),
+								(char*)get_tx(22),
 								(char*)get_hero(6) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
@@ -168,13 +168,13 @@ signed short DNG12_handler(void)
 	} else if (target_pos == 0x0804 && target_pos != ds_readws(DNG_HANDLED_POS)) {
 
 		/* upper Ingerimm idol */
-		GUI_output(get_tx(0x0c));
+		GUI_output(get_tx(3));
 
-		if (GUI_bool(get_tx(0x10))) {
+		if (GUI_bool(get_tx(4))) {
 
 			do {
-				i = GUI_radio(get_tx(0x14), 3,
-						get_tx(0x18), get_tx(0x1c), get_tx(0x20));
+				i = GUI_radio(get_tx(5), 3,
+						get_tx(6), get_tx(7), get_tx(8));
 			} while (i == -1);
 
 			if (i == 1) {
@@ -182,14 +182,14 @@ signed short DNG12_handler(void)
 #if !defined(__BORLANDC__)
 				D1_INFO("nichts passiert\n");
 #endif
-				GUI_output(get_tx(0x24));
+				GUI_output(get_tx(9));
 			} else if (i == 2) {
 				/* press arm */
 #if !defined(__BORLANDC__)
 				D1_INFO("Einsturz des Tunnels verhindern (buggy)\n");
 #endif
 
-				GUI_output(get_tx(0x24));
+				GUI_output(get_tx(9));
 
 				if (ds_readbs(DNG12_TUNNEL1) > 0) ds_writeb(DNG12_TUNNEL1, -1);
 				if (ds_readbs(DNG12_TUNNEL2) > 0) ds_writeb(DNG12_TUNNEL2, -1);
@@ -198,7 +198,7 @@ signed short DNG12_handler(void)
 			} else if (i == 3) {
 				/* sacrifice gold */
 
-				GUI_output(get_tx(0x28));
+				GUI_output(get_tx(10));
 
 				money = get_party_money();
 
@@ -213,17 +213,17 @@ signed short DNG12_handler(void)
 		}
 	} else if (target_pos == 0x0503 && target_pos != ds_readws(DNG_HANDLED_POS)) {
 		/* trap door */
-		GUI_output(get_tx(0x2c));
+		GUI_output(get_tx(11));
 		DNG_fallpit(6);
 	} else if (target_pos == 0x0406 && target_pos != ds_readws(DNG_HANDLED_POS)) {
 		/* trap door */
-		GUI_output(get_tx(0x2c));
+		GUI_output(get_tx(11));
 		ds_writews(X_TARGET, 1);
 		ds_writews(Y_TARGET, 3);
 		DNG_inc_level();
 	} else if (target_pos == 0x060d && target_pos != ds_readws(DNG_HANDLED_POS)) {
 		/* bolt trap */
-		print_msg_with_first_hero(get_tx(0x34));
+		print_msg_with_first_hero(get_tx(13));
 		sub_hero_le(hero, random_schick(6));
 	} else if (target_pos == 0x120e && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG12_INGERIMM_HINT))
 	{
@@ -231,7 +231,7 @@ signed short DNG12_handler(void)
 #if !defined(__BORLANDC__)
 		D1_INFO("Untere Ingerimstatue\n");
 #endif
-		GUI_output(get_tx(0x38));
+		GUI_output(get_tx(14));
 
 	} else if (target_pos == 0x120e) {
 #if !defined(__BORLANDC__)
@@ -242,7 +242,7 @@ signed short DNG12_handler(void)
 			/* hint to secret door */
 			ds_writeb(DNG12_INGERIMM_HINT, 1);
 			ds_writeb(DNG12_INGERIMM_SACRIFICE, 0);
-			GUI_output(get_tx(0x3c));
+			GUI_output(get_tx(15));
 		}
 	} else if (target_pos == 0x130a && target_pos != ds_readws(DNG_HANDLED_POS)) {
 #if !defined(__BORLANDC__)
@@ -263,14 +263,14 @@ signed short DNG12_handler(void)
 	} else if (target_pos == 0x1108 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 3) {
 		/* water source */
 
-		if (GUI_bool(get_tx(0x40))) {
-			GUI_output(get_tx(0x44));
+		if (GUI_bool(get_tx(16))) {
+			GUI_output(get_tx(17));
 		}
 	} else if (target_pos == 0x1302 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 2) {
 #if !defined(__BORLANDC__)
 		D1_INFO("Rueckwaerts gehen\n");
 #endif
-		GUI_output(get_tx(0x5c));
+		GUI_output(get_tx(23));
 		ds_writew(X_TARGET, 1);
 		ds_writew(Y_TARGET, 3);
 		ds_writeb(DIRECTION, 3);
@@ -279,7 +279,7 @@ signed short DNG12_handler(void)
 #if !defined(__BORLANDC__)
 		D1_INFO("Rueckwaerts gehen\n");
 #endif
-		GUI_output(get_tx(0x5c));
+		GUI_output(get_tx(23));
 		ds_writew(X_TARGET, 5);
 		ds_writew(Y_TARGET, 3);
 		ds_writeb(DIRECTION, 1);
@@ -288,7 +288,7 @@ signed short DNG12_handler(void)
 #if !defined(__BORLANDC__)
 		D1_INFO("Rueckwaerts gehen\n");
 #endif
-		GUI_output(get_tx(0x5c));
+		GUI_output(get_tx(23));
 		ds_writew(X_TARGET, 3);
 		ds_writew(Y_TARGET, 1);
 		ds_writeb(DIRECTION, 0);
@@ -298,7 +298,7 @@ signed short DNG12_handler(void)
 		D1_INFO("Illusionswand und Grube\n");
 #endif
 
-		if (GUI_bool(get_tx(0x60)))
+		if (GUI_bool(get_tx(24)))
 		{
 			if (ds_readb(DNG12_OBSTACLE_ACTIVE) != 0)
 			{
@@ -308,7 +308,7 @@ signed short DNG12_handler(void)
 				{
 					/* the hero must at least fall three times into pit */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x64),
+						(char*)get_tx(25),
 						(char*)hero + HERO_NAME2,
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
@@ -322,7 +322,7 @@ signed short DNG12_handler(void)
 							reworked, when BLADE.DAT should also be supported.
 					*/
 #ifdef M302de_ORIGINAL_BUGFIX
-					if (strlen((char*)get_tx(0x64)) == 219)
+					if (strlen((char*)get_tx(25)) == 219)
 					{
 						/* generate a new format string */
 						const unsigned char add_line[110] = {	0x40, 0x3c,'I','C','H',' ',
@@ -345,7 +345,7 @@ signed short DNG12_handler(void)
 								'\0'
 								};
 
-					strcpy((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)), (char*)get_tx(0x64));
+					strcpy((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)), (char*)get_tx(25));
 					strcat((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)), (const char*)add_line);
 
 					sprintf((char*)Real2Host(ds_readfp(DTP2)),
@@ -359,7 +359,7 @@ signed short DNG12_handler(void)
 					}
 #else
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x7c),
+						(char*)get_tx(31),
 						(char*)hero + HERO_NAME2,
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)),
@@ -409,7 +409,7 @@ signed short DNG12_handler(void)
 					}
 #else
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x80),
+						(char*)get_tx(32),
 						(char*)hero + HERO_NAME2);
 #endif
 				}
@@ -421,7 +421,7 @@ signed short DNG12_handler(void)
 				ds_writew(Y_TARGET, ds_readw(Y_TARGET_BAK));
 			} else {
 				/* pass */
-				GUI_output(get_tx(0x68));
+				GUI_output(get_tx(26));
 			}
 		} else {
 			ds_writew(X_TARGET, ds_readw(X_TARGET_BAK));
@@ -432,17 +432,17 @@ signed short DNG12_handler(void)
 
 		if (test_skill(hero, 0x33, 2) > 0) {
 
-			if (GUI_bool(get_tx(0x70))) {
+			if (GUI_bool(get_tx(28))) {
 				if (test_skill(hero, 0x30, 0) <= 0) {
 					/* defusing trap failed */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x74),
+						(char*)get_tx(29),
 						(char*)hero + HERO_NAME2);
 					sub_hero_le(hero , dice_roll(3, 6, 0));
 				} else {
 					/* trap defused */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x78),
+						(char*)get_tx(30),
 						(char*)hero + HERO_NAME2,
 						(char*)hero + HERO_NAME2);
 
@@ -454,7 +454,7 @@ signed short DNG12_handler(void)
 			}
 		} else {
 			/* sprung trap */
-			GUI_output(get_tx(0x6c));
+			GUI_output(get_tx(27));
 			sub_group_le(dice_roll(3, 6, 0));
 		}
 	} else if (target_pos == 0x0d0f && target_pos != ds_readws(DNG_HANDLED_POS)) {
@@ -474,11 +474,11 @@ signed short DNG12_handler(void)
 void DNG_clear_corridor(Bit8u *ptr)
 {
 	/* ask if the corridor should be cleared */
-	if (GUI_bool(get_tx(0x4))) {
+	if (GUI_bool(get_tx(1))) {
 
 		/* clear the corridor */
 
-		GUI_output(get_tx(0x8));
+		GUI_output(get_tx(2));
 
 		timewarp(DAYS(1));
 
@@ -510,7 +510,7 @@ void DNG_oberorken_chest(RealPt chest)
 void DNG12_fight_intro(signed short fight_id)
 {
 	if (fight_id == 141) {
-		GUI_output(get_tx(0x30));
+		GUI_output(get_tx(12));
 	}
 }
 

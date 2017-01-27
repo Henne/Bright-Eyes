@@ -76,7 +76,7 @@ signed short DNG01_handler(void)
 	} else if (target_pos == 0x1d05 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_SABRE_TAKEN))
 	{
 		sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-			(char*)get_ttx(0x840),
+			(char*)get_ttx(528),
 			(char*)Real2Host(GUI_names_grammar(0, 3, 0)),
 			(char*)Real2Host(GUI_2f2(2, 3, 0)));
 
@@ -89,7 +89,7 @@ signed short DNG01_handler(void)
 	} else if (target_pos == 0x3209 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_CROSSBOW_TAKEN))
 	{
 		sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-			(char*)get_ttx(0x840),
+			(char*)get_ttx(528),
 			(char*)Real2Host(GUI_names_grammar(0, 12, 0)),
 			(char*)Real2Host(GUI_2f2(2, 12, 0)));
 
@@ -102,7 +102,7 @@ signed short DNG01_handler(void)
 	} else if (target_pos == 0x4209 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_AMULET_TAKEN))
 	{
 		/* ITEM: a magic AMULET */
-		if (GUI_bool(get_tx(0x1c)) && get_item(174, 1, 1))
+		if (GUI_bool(get_tx(7)) && get_item(174, 1, 1))
 		{
 			ds_writeb(DNG01_AMULET_TAKEN, 1);
 			sub_ds_ds(GODS_ESTIMATION + 4 * 5, 100L);
@@ -127,7 +127,7 @@ signed short DNG01_handler(void)
 					sub_hero_le(hero, 2);
 
 					sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-						(char*)get_tx(0x30),
+						(char*)get_tx(12),
 						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readfp(TEXT_OUTPUT_BUF)));
@@ -142,12 +142,12 @@ signed short DNG01_handler(void)
 
 		load_in_head(21);
 
-		if (GUI_dialogbox(ds_readfp(DTP2), get_ttx(0xbd0), get_tx(0x20), 2,
-				get_ttx(0x08), get_ttx(0x0c)) == 1)
+		if (GUI_dialogbox(ds_readfp(DTP2), get_ttx(756), get_tx(8), 2,
+				get_ttx(2), get_ttx(3)) == 1)
 		{
 			ds_writew(TEXTBOX_WIDTH, 3);
 
-			GUI_dialogbox(ds_readfp(DTP2), get_ttx(0xbd0), get_tx(0x24), 0);
+			GUI_dialogbox(ds_readfp(DTP2), get_ttx(756), get_tx(9), 0);
 
 			if (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE)
 			{
@@ -161,7 +161,7 @@ signed short DNG01_handler(void)
 		} else {
 			ds_writew(TEXTBOX_WIDTH, 3);
 
-			GUI_dialogbox(ds_readfp(DTP2), get_ttx(0xbd0), get_tx(0x28), 0);
+			GUI_dialogbox(ds_readfp(DTP2), get_ttx(756), get_tx(10), 0);
 		}
 
 		ds_writeb(DNG01_ARDORA_FREED, 1);
@@ -170,7 +170,7 @@ signed short DNG01_handler(void)
 
 	} else if (target_pos == 0x5e07 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (GUI_bool(get_tx(0x2c)))
+		if (GUI_bool(get_tx(11)))
 		{
 			/* check if a ROPE LADDER or a ROPE is available */
 			/* Original-Bug: Why not check for a mage with staffspell level >= 3? */
@@ -186,13 +186,13 @@ signed short DNG01_handler(void)
 					inc_ds_ws_post(Y_TARGET);
 				}
 			} else {
-				GUI_output(get_ttx(0x844));
+				GUI_output(get_ttx(529));
 			}
 		}
 
 	} else if (target_pos == 0x280b && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (GUI_bool(get_tx(0x60)))
+		if (GUI_bool(get_tx(24)))
 		{
 			leave_dungeon();
 			ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
@@ -201,16 +201,16 @@ signed short DNG01_handler(void)
 			ds_writeb(LOCATION, 0);
 			ds_writeb(DIRECTION, (ds_readws(ARRIVAL_DIRECTION) + 2) & 3);
 
-			GUI_output(get_tx(0x3c));
+			GUI_output(get_tx(15));
 
 			if (ds_readws(DEATHTRAP) == 1 && ds_readws(DEATHTRAP_STEPS) != 0)
 			{
 				load_ani(18);
 				init_ani(1);
 				set_var_to_zero();
-				GUI_output(get_tx(0x40));
+				GUI_output(get_tx(16));
 			} else {
-				GUI_output(get_tx(0x44));
+				GUI_output(get_tx(17));
 			}
 
 			ds_writeb(SPECIAL_SCREEN, 1);
@@ -266,7 +266,7 @@ void DNG01_chest5_x1(RealPt chest)
 
 void DNG01_chest7_x1(RealPt chest)
 {
-	loot_corpse(chest, get_tx(0x10), p_datseg + DNG01_CORPSE_LOOTED);
+	loot_corpse(chest, get_tx(4), p_datseg + DNG01_CORPSE_LOOTED);
 }
 
 void DNG01_chest7_x2(RealPt chest)
@@ -275,7 +275,7 @@ void DNG01_chest7_x2(RealPt chest)
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
 	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG01_CHEST7_CONTENT));
-	loot_chest(Real2Host(chest), get_tx(0x14), get_tx(0x18));
+	loot_chest(Real2Host(chest), get_tx(5), get_tx(6));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
@@ -288,11 +288,11 @@ void DNG01_chest6_x3(RealPt chest)
  */
 #ifdef M302de_ORIGINAL_BUGFIX
 	sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-		(char*)get_tx(0x38),
+		(char*)get_tx(14),
 		(char*)Real2Host(get_first_hero_available_in_group()));
 #else
 	sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-		(char*)get_tx(0x38), 10);
+		(char*)get_tx(14), 10);
 #endif
 	print_msg_with_first_hero(Real2Host(ds_readfp(TEXT_OUTPUT_BUF)));
 
@@ -301,14 +301,14 @@ void DNG01_chest6_x3(RealPt chest)
 
 void DNG01_chest6_x2(RealPt chest)
 {
-	GUI_output(get_tx(0x0c));
+	GUI_output(get_tx(3));
 }
 
 void DNG01_chest6_x1(RealPt chest)
 {
 	if (!ds_readbs(DNG01_KEY_TAKEN))
 	{
-		GUI_input(get_tx(0x08), 10);
+		GUI_input(get_tx(2), 10);
 
 		/* compare if the user wrote MARBO */
 		if (!strcmp((char*)Real2Host(ds_readfp(TEXT_INPUT_BUF)),
@@ -335,13 +335,13 @@ void DNG01_chest6_x1(RealPt chest)
 		}
 
 	} else {
-		GUI_output(get_ttx(0x828));
+		GUI_output(get_ttx(522));
 	}
 }
 
 void DNG01_chest0_x1(RealPt chest)
 {
-	if (!ds_readb(DEADSHIP_FINAL) && GUI_bool(get_tx(0x04)))
+	if (!ds_readb(DEADSHIP_FINAL) && GUI_bool(get_tx(1)))
 	{
 		ds_writeb(DEADSHIP_FINAL, 1);
 

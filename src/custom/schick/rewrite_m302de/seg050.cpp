@@ -92,13 +92,13 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 
 		/* no increase is possible */
 
-		GUI_output(get_tx2(0xac));
+		GUI_output(get_tx2(43));
 
 	} else if (host_readbs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell) == 3) {
 
 		/* used up legal increase */
 
-		GUI_output(get_tx2(0xb0));
+		GUI_output(get_tx2(44));
 	} else {
 		/* try to increase */
 
@@ -114,7 +114,7 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 
 			/* success */
 
-			GUI_output(get_tx2(0x94));
+			GUI_output(get_tx2(37));
 
 			/* increment spell value */
 			inc_ptr_bs(hero + spell + HERO_SPELLS);
@@ -125,7 +125,7 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 			inc_ptr_bs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell + 1);
 		} else {
 			/* fail */
-			GUI_output(get_ttx(0x548));
+			GUI_output(get_ttx(338));
 
 			/* increment the try counter */
 			inc_ptr_bs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell);
@@ -151,13 +151,13 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 
 		/* no increase is possible */
 
-		GUI_output(get_tx2(0xac));
+		GUI_output(get_tx2(43));
 
 	} else if (host_readbs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill) == 3) {
 
 		/* used up legal increase */
 
-		GUI_output(get_tx2(0xb0));
+		GUI_output(get_tx2(44));
 	} else {
 		/* try to increase */
 
@@ -173,7 +173,7 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 
 			/* success */
 
-			GUI_output(get_tx2(0x94));
+			GUI_output(get_tx2(37));
 
 			/* increment spell value */
 			inc_ptr_bs(hero + skill + HERO_TA_FIGHT);
@@ -187,17 +187,17 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 				/* increment a melee weapon skill */
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(0x6a8), get_ttx(4 * (48 + skill)));
+					(char*)get_ttx(426), get_ttx(48 + skill));
 
 				randval = -1;
 
 				/* AT - value */
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-					(char*)get_ttx(0x6ac), host_readbs(hero + skill + 0x68));
+					(char*)get_ttx(427), host_readbs(hero + skill + 0x68));
 
 				/* PA - value */
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50,
-					(char*)get_ttx(0x6b0), host_readbs(hero + skill + 0x6f));
+					(char*)get_ttx(428), host_readbs(hero + skill + 0x6f));
 
 				do {
 					randval = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
@@ -214,7 +214,7 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 
 		} else {
 			/* fail */
-			GUI_output(get_ttx(0x548));
+			GUI_output(get_ttx(338));
 
 			/* increment the try counter */
 			inc_ptr_bs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill);
@@ -391,7 +391,7 @@ void level_up(signed short hero_pos)
 
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)get_ttx(0x66c),
+		(char*)get_ttx(411),
 		(char*)hero + HERO_NAME2);
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
@@ -439,18 +439,18 @@ void level_up(signed short hero_pos)
 
 			ds_writew(BASEPOS_X, -30);
 
-			l_si = GUI_radio(get_tx2(0x8c), 7,
-						get_ttx(0x670),
-						get_ttx(0x674),
-						get_ttx(0x678),
-						get_ttx(0x67c),
-						get_ttx(0x680),
-						get_ttx(0x684),
-						get_ttx(0x688)) - 1;
+			l_si = GUI_radio(get_tx2(35), 7,
+						get_ttx(412),
+						get_ttx(413),
+						get_ttx(414),
+						get_ttx(415),
+						get_ttx(416),
+						get_ttx(417),
+						get_ttx(418)) - 1;
 
 			if (host_readbs(hero + HERO_ATTRIB_ORIG + 3 * l_si) >= 20) {
 				l_si = -2;
-				GUI_output(get_tx2(0xac));
+				GUI_output(get_tx2(43));
 			}
 
 		} while (l_si == -2);
@@ -479,18 +479,18 @@ void level_up(signed short hero_pos)
 
 		do {
 
-			l_si = GUI_radio(get_tx2(0x90), 7,
-						get_ttx(0x68c),
-						get_ttx(0x690),
-						get_ttx(0x694),
-						get_ttx(0x698),
-						get_ttx(0x69c),
-						get_ttx(0x6a0),
-						get_ttx(0x6a4)) - 1;
+			l_si = GUI_radio(get_tx2(36), 7,
+						get_ttx(419),
+						get_ttx(420),
+						get_ttx(421),
+						get_ttx(422),
+						get_ttx(423),
+						get_ttx(424),
+						get_ttx(425)) - 1;
 
 			if (host_readbs(hero + HERO_ATTRIB_ORIG + 3 * (l_si + 7)) <= 2) {
 				l_si = -2;
-				GUI_output(get_tx2(0xc0));
+				GUI_output(get_tx2(48));
 			}
 
 		} while (l_si == -2);
@@ -509,7 +509,7 @@ void level_up(signed short hero_pos)
 			dec_ptr_bs(hero + HERO_ATTRIB_ORIG + 3 * (l_si + 7));
 			dec_ptr_bs(hero + HERO_ATTRIB + 3 * (l_si + 7));
 
-			GUI_output(get_tx2(0x94));
+			GUI_output(get_tx2(37));
 
 			status_show(hero_pos);
 
@@ -518,7 +518,7 @@ void level_up(signed short hero_pos)
 			update_status_bars();
 		} else {
 
-			GUI_output(get_ttx(0x548));
+			GUI_output(get_ttx(338));
 		}
 	}
 
@@ -546,7 +546,7 @@ void level_up(signed short hero_pos)
 
 		/* show the user the new MR value */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx2(0xa4),
+			(char*)get_tx2(41),
 			host_readbs(hero + HERO_MR));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -577,7 +577,7 @@ void level_up(signed short hero_pos)
 
 		/* show how many LE the hero may get */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx2(0x9c),
+			(char*)get_tx2(39),
 			i);
 
 		do {
@@ -599,7 +599,7 @@ void level_up(signed short hero_pos)
 		/* change skill increasements into AE */
 		if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE && ds_readws(GAME_MODE) == 2) {
 
-			if (GUI_bool(get_tx2(0xa0))) {
+			if (GUI_bool(get_tx2(40))) {
 				/* trade 10 skill increasements into 1W6+2 AE */
 				add_ptr_bs(hero + HERO_SP_RISE, -10);
 				i = random_interval(3, 8);
@@ -613,7 +613,7 @@ void level_up(signed short hero_pos)
 
 		/* show how many LE the hero gets */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx2(0x98),
+			(char*)get_tx2(38),
 			i);
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -847,10 +847,10 @@ void level_up(signed short hero_pos)
 
 		if ((host_readbs(hero + HERO_TYPE) >= 7) &&
 			(l_di = ds_readbs((LEVELUP_SPTA_CONV - 7) + host_readbs(hero + HERO_TYPE))) &&
-			GUI_bool(get_tx2(0xb4)))
+			GUI_bool(get_tx2(45)))
 		{
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx2(0xb8), l_di);
+				(char*)get_tx2(46), l_di);
 
 			i = GUI_input(Real2Host(ds_readd(DTP2)), 1);
 
@@ -867,7 +867,7 @@ void level_up(signed short hero_pos)
 			} else {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx2(0xbc), l_di);
+					(char*)get_tx2(47), l_di);
 
 				i = GUI_input(Real2Host(ds_readd(DTP2)), 1);
 
@@ -893,7 +893,7 @@ void level_up(signed short hero_pos)
 
 			} else if (l_si == -2) {
 
-				if (GUI_bool(get_tx2(0xa8))) {
+				if (GUI_bool(get_tx2(42))) {
 					break;
 				}
 			}
@@ -909,7 +909,7 @@ void level_up(signed short hero_pos)
 
 			} else if (l_si == -2) {
 
-				if (GUI_bool(get_tx2(0xa8))) {
+				if (GUI_bool(get_tx2(42))) {
 					break;
 				}
 			}

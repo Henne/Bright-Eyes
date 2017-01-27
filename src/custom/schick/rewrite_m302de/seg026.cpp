@@ -213,7 +213,7 @@ signed short load_game_state(void)
 			p_datseg + (SAVEGAME_NAMES + 18),
 			p_datseg + (SAVEGAME_NAMES + 27),
 			p_datseg + (SAVEGAME_NAMES + 36),
-			get_ttx(0xb84)) -1;
+			get_ttx(737)) -1;
 
 	/* sanity check if answer is in range */
 	if (answer != -2 && answer != 5) {
@@ -225,7 +225,7 @@ signed short load_game_state(void)
 		/* open the game state file */
 		if ((handle_gs = bc_open(ds_readfp(TEXT_OUTPUT_BUF), 0x8001)) == -1)
 		{
-			GUI_output(get_ttx(0x9ec));
+			GUI_output(get_ttx(635));
 			retval = -1;
 			return retval;
 		}
@@ -454,7 +454,7 @@ signed short save_game_state(void)
 	if (ds_readws(GAME_STATE) == GAME_STATE_VICTORY) {
 
 		/* game done */
-		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(0xca8));
+		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(810));
 
 	} else {
 
@@ -463,19 +463,19 @@ signed short save_game_state(void)
 			/* save outside the temple */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0xcb4),
+				(char*)get_ttx(813),
 				1,
-				get_ttx(0x620),
+				get_ttx(392),
 				p_datseg + EMPTY_STRING1);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_ttx(4),
+				(char*)get_ttx(1),
 				(char*)Real2Host(ds_readd(DTP2)));
 		} else {
 
 			/* save inside a temple */
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_ttx(4),
+				(char*)get_ttx(1),
 				(char*)p_datseg + EMPTY_STRING2);
 		}
 	}
@@ -487,7 +487,7 @@ signed short save_game_state(void)
 			p_datseg + (SAVEGAME_NAMES + 9 * 2),
 			p_datseg + (SAVEGAME_NAMES + 9 * 3),
 			p_datseg + (SAVEGAME_NAMES + 9 * 4),
-			get_ttx(0xb84)) - 1;
+			get_ttx(737)) - 1;
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 
@@ -500,7 +500,7 @@ signed short save_game_state(void)
 			/* ask for filename */
 			ds_writew(GUI_ENTERING_SAVEGAME, 1);
 			strcpy((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
-			GUI_input(get_ttx(0x9e8), 8);
+			GUI_input(get_ttx(634), 8);
 			ds_writew(GUI_ENTERING_SAVEGAME, 0);
 
 			if (host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUF))) == 0) {
@@ -517,7 +517,7 @@ signed short save_game_state(void)
 
 				if (slot != tw_bak && !strcmp((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50)) {
 
-					GUI_output(get_ttx(0xc98));
+					GUI_output(get_ttx(806));
 					flag = 1;
 				}
 			}
@@ -569,7 +569,7 @@ signed short save_game_state(void)
 		strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)p_datseg + SAVEGAME_SUFFIX3);
 
 		while ((l_di = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0)) == -1) {
-			GUI_output(get_ttx(0x570));
+			GUI_output(get_ttx(348));
 			return 0;
 		}
 
@@ -614,7 +614,7 @@ signed short save_game_state(void)
 
 		/* check if enough bytes were written */
 		if (status_len + 16 + 4L != filepos) {
-			GUI_output(get_ttx(0x570));
+			GUI_output(get_ttx(348));
 			bc_close(l_di);
 			return 0;
 		}
@@ -624,7 +624,7 @@ signed short save_game_state(void)
 		filepos += len;
 
 		if (len != 4 * 286) {
-			GUI_output(get_ttx(0x570));
+			GUI_output(get_ttx(348));
 			bc_close(l_di);
 			return 0;
 		}
@@ -650,7 +650,7 @@ signed short save_game_state(void)
 				filepos += len;
 
 				if ((Bit16u)host_readd(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * tw_bak) != len) {
-					GUI_output(get_ttx(0x570));
+					GUI_output(get_ttx(348));
 					bc_close(l_di);
 					return 0;
 				}
@@ -704,7 +704,7 @@ signed short save_game_state(void)
 			len = bc__write(l_di, (RealPt)ds_readd(RENDERBUF_PTR), SIZEOF_HERO);
 
 			if (len != SIZEOF_HERO) {
-				GUI_output(get_ttx(0x570));
+				GUI_output(get_ttx(348));
 				bc_close(l_di);
 				return 0;
 			}
@@ -780,7 +780,7 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 		}
 
 	} else {
-		GUI_output(get_ttx(0x10));
+		GUI_output(get_ttx(4));
 		return 0;
 	}
 

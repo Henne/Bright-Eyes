@@ -45,7 +45,7 @@ void poison_effect(void)
 					if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) != 0) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x8f0),
+							(char*)get_ttx(572),
 							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
@@ -58,7 +58,7 @@ void poison_effect(void)
 					if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_GE)) != 0) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0xb4),
+							(char*)get_ttx(45),
 							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
@@ -88,7 +88,7 @@ void poison_effect(void)
 				if ((host_readbs(poison_ptr + 2) != 0) && (!host_readbs(poison_ptr + 1) % 12 )) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x8f4),
+							(char*)get_ttx(573),
 							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
@@ -100,7 +100,7 @@ void poison_effect(void)
 				if ((host_readbs(poison_ptr + 3) != 0) && (!host_readbs(poison_ptr + 1) % 12 )) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x908),
+							(char*)get_ttx(578),
 							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
@@ -133,7 +133,7 @@ void poison_effect(void)
 					host_writebs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK), host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) - 2);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0x94),
+						(char*)get_ttx(37),
 						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -166,7 +166,7 @@ void poison_effect(void)
 				host_writebs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK), host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + 2);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(0x98),
+					(char*)get_ttx(38),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -193,7 +193,7 @@ void poison_effect(void)
 					or_ptr_bs(hero + HERO_STATUS2, 1);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0x9c),
+						(char*)get_ttx(39),
 						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -224,7 +224,7 @@ void poison_effect(void)
 					and_ptr_bs(hero + HERO_STATUS2, 0xfe);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0xa0),
+						(char*)get_ttx(40),
 						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -242,7 +242,7 @@ void poison_effect(void)
 					or_ptr_bs(hero + HERO_STATUS1, 0x02);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0xa4),
+						(char*)get_ttx(41),
 						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -263,7 +263,7 @@ void poison_effect(void)
 				and_ptr_bs(hero + HERO_STATUS1, 0xfd);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(0xa8),
+					(char*)get_ttx(42),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -361,7 +361,7 @@ void poison_effect(void)
 					sub_ptr_ws(hero + HERO_AE, j);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0xac),
+						(char*)get_ttx(43),
 						(char*)hero + HERO_NAME2, j);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -380,7 +380,7 @@ void poison_effect(void)
 						inc_ptr_ws(hero + HERO_AE);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0xb0),
+							(char*)get_ttx(44),
 							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));

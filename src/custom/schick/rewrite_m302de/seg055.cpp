@@ -87,7 +87,7 @@ void do_merchant(void)
 	if ((ds_readds(DAY_TIMER) < HOURS(8) || ds_readds(DAY_TIMER) > HOURS(19)) && ds_readbs(LOCATION) != LOCATION_MARKET)
 	{
 
-		GUI_output(get_ttx(0x788));
+		GUI_output(get_ttx(482));
 		turnaround();
 		return;
 	}
@@ -99,7 +99,7 @@ void do_merchant(void)
 			return;
 		}
 	} else if (ds_readb(MERCHANT_OFFENDED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
-		GUI_output(get_ttx(0x7ec));
+		GUI_output(get_ttx(507));
 		turnaround();
 		return;
 	}
@@ -193,14 +193,14 @@ void do_merchant(void)
 
 			set_audio_track(ARCHIVE_FILE_TERMS_XMI);
 
-			GUI_print_loc_line(ds_readbs(LOCATION) == LOCATION_MARKET ? get_ttx(0xa9c) : (ds_readws(TYPEINDEX) == 93 ?  get_ttx(0xb8) : get_tx(4 * ds_readws(CITYINDEX))));
+			GUI_print_loc_line(ds_readbs(LOCATION) == LOCATION_MARKET ? get_ttx(679) : (ds_readws(TYPEINDEX) == 93 ?  get_ttx(46) : get_tx(ds_readws(CITYINDEX))));
 
 			ds_writew(REQUEST_REFRESH, refresh = 0);
 
 		}
 
 		if (refresh != 0) {
-			GUI_print_loc_line(get_tx(4 * ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(ds_readws(CITYINDEX)));
 			refresh = 0;
 		}
 
@@ -216,19 +216,19 @@ void do_merchant(void)
 
 			if (ds_readws(BANK_DEPOSIT) <= -1000 && ds_readws(DEBT_DAYS) == 0) {
 
-				GUI_output(get_ttx(0xbe4));
+				GUI_output(get_ttx(761));
 				ds_writews(DEBT_DAYS, 7);
 			}
 
 			if (ds_readws(DEBT_DAYS) == -1) {
 
-				if (GUI_bool(get_ttx(0xbe8))) {
+				if (GUI_bool(get_ttx(762))) {
 
 					party_money = get_party_money();
 
 					if (party_money < 5000) {
 
-						GUI_output(get_ttx(0xbec));
+						GUI_output(get_ttx(763));
 						ds_writews(MOUSE2_EVENT, ds_writews(ACTION, 0));
 						done = 1;
 
@@ -243,7 +243,7 @@ void do_merchant(void)
 					}
 				} else {
 
-					GUI_output(get_ttx(0xbec));
+					GUI_output(get_ttx(763));
 					ds_writews(MOUSE2_EVENT, ds_writews(ACTION, 0));
 					done = 1;
 				}
@@ -252,9 +252,9 @@ void do_merchant(void)
 
 		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
-			answer = GUI_radio(get_ttx(0x6b8), 4,
-						get_ttx(0x6bc), get_ttx(0x6c0),
-						get_ttx(0x55c), get_ttx(0x6c8)) - 1;
+			answer = GUI_radio(get_ttx(430), 4,
+						get_ttx(431), get_ttx(432),
+						get_ttx(343), get_ttx(434)) - 1;
 
 			if (answer != -2) {
 				ds_writews(ACTION, answer + 129);
