@@ -642,7 +642,7 @@ void spell_brenne(void)
 			torch_pos = get_item_pos(get_spelluser(), ITEM_TORCH_OFF);
 		}
 
-		lantern_pos = get_item_pos(get_spelluser(), ITEM_LANTERN_ON);
+		lantern_pos = get_item_pos(get_spelluser(), ITEM_LANTERN_OFF);
 	}
 
 	if (torch_pos != -1) {
