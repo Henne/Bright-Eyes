@@ -61,7 +61,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 	signed short damage_hi;
 	signed short weapon_id;
 	signed short radio_i;
-	signed short slot_nr;
+	signed short slot_no;
 	Bit8u *ptr;
 	signed short textbox_width_bak;
 	signed short slots[16];
@@ -93,7 +93,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 
-			if (((ds_readws(CURRENT_FIG_NR) != 192) || (ds_readbs(FINALFIGHT_TUMULT) != 0)) &&
+			if (((ds_readws(CURRENT_FIG_NO) != 192) || (ds_readbs(FINALFIGHT_TUMULT) != 0)) &&
 				(host_readbs(hero + HERO_BP_LEFT) >= 3))
 			{
 				KI_hero(hero, hero_pos, x, y);
@@ -174,8 +174,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						and_ptr_bs(hero + HERO_STATUS1, 0x7f);
 
 					} else if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU)) > 4) {
-						slot_nr = get_free_mod_slot();
-						set_mod_slot(slot_nr, HOURS(7), hero + (HERO_ATTRIB + 3 * ATTRIB_MU), -2, (signed char)hero_pos);
+						slot_no = get_free_mod_slot();
+						set_mod_slot(slot_no, HOURS(7), hero + (HERO_ATTRIB + 3 * ATTRIB_MU), -2, (signed char)hero_pos);
 					}
 				}
 
@@ -497,13 +497,13 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 						radio_i = 0;
 
-						for (slot_nr = 7; slot_nr < 23; slot_nr++) {
+						for (slot_no = 7; slot_no < 23; slot_no++) {
 
-							weapon_id = host_readws(hero + HERO_ITEM_HEAD + 14 * slot_nr);
+							weapon_id = host_readws(hero + HERO_ITEM_HEAD + 14 * slot_no);
 
 							if (weapon_id != 0) {
 
-								slots[radio_i] = slot_nr;
+								slots[radio_i] = slot_no;
 
 								ds_writed(RADIO_NAME_LIST + 4 * radio_i,
 									(Bit32u)((RealPt)(ds_readd(DTP2)) + 30 * radio_i));
@@ -578,13 +578,13 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 						radio_i = 0;
 
-						for (slot_nr = 7; slot_nr < 23; slot_nr++) {
+						for (slot_no = 7; slot_no < 23; slot_no++) {
 
-							weapon_id = host_readws(hero + HERO_ITEM_HEAD + 14 * slot_nr);
+							weapon_id = host_readws(hero + HERO_ITEM_HEAD + 14 * slot_no);
 
 							if (item_weapon(get_itemsdat(weapon_id))) {
 
-								slots[radio_i] = slot_nr;
+								slots[radio_i] = slot_no;
 
 								ds_writed(RADIO_NAME_LIST + 4 * radio_i,
 									(Bit32u)((RealPt)(ds_readd(DTP2)) + 40 * radio_i));
@@ -592,7 +592,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * radio_i)),
 									(char*)p_datseg + SPACE_SEPARATED_STRINGS, /* "%s %s" */
 									(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(weapon_id))),
-									ks_broken(hero + HERO_ITEM_HEAD + 14 * slot_nr) ? get_ttx(478) : p_datseg + EMPTY_STRING3);
+									ks_broken(hero + HERO_ITEM_HEAD + 14 * slot_no) ? get_ttx(478) : p_datseg + EMPTY_STRING3);
 
 								radio_i++;
 							}
@@ -736,7 +736,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						(Bit8u*)&damage_lo, (Bit8u*)&damage_hi);
 
 					/* "THE SWORD GRIMRING" gets a damage bonus + 5 in the final fight */
-					if ((host_readws(hero + HERO_ITEM_RIGHT) == 181) && (ds_readws(CURRENT_FIG_NR) == 192)) {
+					if ((host_readws(hero + HERO_ITEM_RIGHT) == 181) && (ds_readws(CURRENT_FIG_NO) == 192)) {
 						damage_lo += 5;
 						damage_hi += 5;
 					}
@@ -799,7 +799,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 			} else if (selected == FIG_ACTION_COMPUTER_FIGHT) {
 				/* COMPUTER FIGHT / COMPUTERKAMPF */
 
-				if (ds_readws(CURRENT_FIG_NR) != 192) {
+				if (ds_readws(CURRENT_FIG_NO) != 192) {
 
 					refresh_screen_size();
 
@@ -817,13 +817,13 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					radio_i = 0;
 
-					for (slot_nr = 7; slot_nr < 23; slot_nr++) {
+					for (slot_no = 7; slot_no < 23; slot_no++) {
 
-						weapon_id = host_readws(hero + HERO_ITEM_HEAD + 14 * slot_nr);
+						weapon_id = host_readws(hero + HERO_ITEM_HEAD + 14 * slot_no);
 
 						if (weapon_id != 0) {
 
-							slots[radio_i] = slot_nr;
+							slots[radio_i] = slot_no;
 
 							ds_writed(RADIO_NAME_LIST + 4 * radio_i,
 								(Bit32u)((RealPt)(ds_readd(DTP2)) + 30 * radio_i));
@@ -948,13 +948,13 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 		}
 	}
 
-	if ((ds_readws(CURRENT_FIG_NR) == 192) &&
+	if ((ds_readws(CURRENT_FIG_NO) == 192) &&
 		(get_hero_index(Real2Host(ds_readd(MAIN_ACTING_HERO))) != hero_pos) &&
 		((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_ATTACK) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) ||
 		(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM)))
 	{
-		for (slot_nr = 0; slot_nr < 20; slot_nr++) {
-			and_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * slot_nr, (signed char)0xdf);
+		for (slot_no = 0; slot_no < 20; slot_no++) {
+			and_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * slot_no, (signed char)0xdf);
 		}
 
 		ds_writeb(FINALFIGHT_TUMULT, 1);

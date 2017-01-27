@@ -78,7 +78,7 @@ void do_merchant(void)
 					(h_type == 2 ? h_type2 :
 					(h_type == 3 ? h_type3 : h_type0)));
 
-	D1_INFO("Haendler-Nr: %2d / Haendlertyp: %s\n", typi, h_str);
+	D1_INFO("Haendler-no: %2d / Haendlertyp: %s\n", typi, h_str);
 	D1_INFO("\tPreise: %3d%% [70, 180]\n", 100 + price);
 	D1_INFO("\tAuswahl: %2d [0, 18] (je kleiner der Wert, desto groesser die Auswahl)\n", sortiment);
 

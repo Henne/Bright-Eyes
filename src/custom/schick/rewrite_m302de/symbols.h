@@ -37,7 +37,7 @@
 #define RANGED_WEAPONS_TABLE            (0x0668)    /* struct(8)[9]; struct{char[8];} */
 #define WEAPONS_TABLE                   (0x06b0)    /* struct(7)[65]; struct{char[7];} */
 #define ARMORS_TABLE                    (0x0877)    /* struct(2)[25]; struct{char rs, be;} */
-#define SPECIALITEMS_TABLE              (0x08a9)    /* struct(3)[14]; struct{char unkn1, unkn2, handler_nr;} */
+#define SPECIALITEMS_TABLE              (0x08a9)    /* struct(3)[14]; struct{char unkn1, unkn2, handler_no;} */
 #define POISON_POTIONS                  (0x08d3)    /* signed short[10]; { SHURINKNOLLENGIFT (0x37), ARAXGIFT (0x38), ANGSTGIFT (0x39), SCHLAFGIFT (0x3a), GOLDLEIM (0x3b), LOTUSGIFT (0x8d), KUKRIS (0x8e), BANNSTAUB (0x8f), KROETENSCHEMELGIFT (0x90), 0xff } */
 #define HERBS_TOXIC                     (0x08e7)    /* signed short[5]; { SHURINKNOLLE (0x7a), ALRAUNE (0x7e), LOTUSBLUTE (0x84), EITRIGER KROTENSCHEMEL (0x3e), 0xff } */
 #define HERBS_UNEATABLE                 (0x08f1)    /* signed short[7]; { ILMENBLATT (0x80), FINAGEBÄUMCHEN (0x81), JORUGAWURZEL (0x82), KAIRANHALM (0x9d), OLGINWURZEL (0x9c), DONFSTENGEL (0x7c), 0xff } */
@@ -1228,7 +1228,7 @@
 // ?8
 #define CD_AUDIO_TOD                    (0xbc4a)    /* unsigned long */
 #define CD_AUDIO_POS                    (0xbc4e)    /* unsigned long */
-#define CD_DRIVE_NR                     (0xbc52)    /* unsigned short */
+#define CD_DRIVE_NO                     (0xbc52)    /* unsigned short */
 // ?6
 #define SAMPLE_AD_LENGTH                (0xbc5a)    /* unsigned short */
 #define SAMPLE_AD_IDX_ENTRY             (0xbc5c)    /* struct(6); struct{signed char; signed char; unsigned long;} */
@@ -1429,7 +1429,7 @@
 #define MEM_SLOTS_MON                   (0xe115)    /* long */
 #define MEM_SLOTS_WFIG                  (0xe119)    /* long */
 #define MEM_SLOTS_MFIG                  (0xe11d)    /* long */
-#define MEM_SLOTS_ANIS                  (0xe121)    /* unsigned long; to (struct { unsigned short nr, ems_handle; long ani_len; })[36] */
+#define MEM_SLOTS_ANIS                  (0xe121)    /* unsigned long; to (struct { unsigned short no, ems_handle; long ani_len; })[36] */
 #define MONSTER_DAT_BUF                 (0xe125)    /* RealPt */
 #define MONNAMES_INDEX                  (0xe129)    /* RealPt */
 #define MARKET_ITEMSALDO_TABLE          (0xe12d)    /* signed char[254] */
@@ -1466,7 +1466,7 @@
 #define DIALOG_DONE                     (0xe310)    /* signed short; {0,1} */
 #define DIALOG_STATE                    (0xe312)    /* signed short */
 #define TLK_ID                          (0xe314)    /* signed short */
-#define CURRENT_FIG_NR                  (0xe316)    /* unsigned short */
+#define CURRENT_FIG_NO                  (0xe316)    /* unsigned short */
 #define AUTOFIGHT                       (0xe318)    /* signed short */
 #define FIG_DROPPED_WEAPONS             (0xe31a)    /* signed short[30] */
 #define CHESSBOARD_CPY                  (0xe356)    /* RealPt */

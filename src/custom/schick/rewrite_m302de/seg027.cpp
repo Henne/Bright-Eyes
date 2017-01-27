@@ -283,9 +283,9 @@ RealPt load_fight_figs(signed short fig)
 /**
  * \brief   loads an animation
  *
- * \param   nr          number of the animation
+ * \param   no          number of the animation
  */
-void load_ani(const signed short nr)
+void load_ani(const signed short no)
 {
 	signed short i_area;
 	signed short area_pics;
@@ -324,22 +324,22 @@ void load_ani(const signed short nr)
 
 
 	/* sanity check */
-	if (nr == -1)
+	if (no == -1)
 		return;
 
 	/* no need to reload  the same ani*/
-	if (nr == (signed short)ds_readw(CURRENT_ANI))
+	if (no == (signed short)ds_readw(CURRENT_ANI))
 		return;
 
 	ds_writew(ANI_ENABLED, 0);
-	/* set the new ani nr*/
-	ds_writew(CURRENT_ANI, nr);
+	/* set the new ani no*/
+	ds_writew(CURRENT_ANI, no);
 	/* clear the old ani */
 	clear_ani();
 
 	/* count to the ordered ani in an array*/
 	for (i = 0; i < 37; i++) {
-		if (nr == host_readw(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8))
+		if (no == host_readw(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8))
 			break;
 	}
 
@@ -350,8 +350,8 @@ void load_ani(const signed short nr)
 			host_readd(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8 + 4));
 	} else {
 		/* load it from file */
-		ani_off = ds_readd(BUFFER_ANIS_TAB - 4 + nr * 4);
-		ani_len = ds_readd(BUFFER_ANIS_TAB + nr * 4) - ani_off;
+		ani_off = ds_readd(BUFFER_ANIS_TAB - 4 + no * 4);
+		ani_len = ds_readd(BUFFER_ANIS_TAB + no * 4) - ani_off;
 
 		/* load ANIS */
 		fd = load_archive_file(ARCHIVE_FILE_ANIS);
@@ -372,7 +372,7 @@ void load_ani(const signed short nr)
 			}
 
 			/* fill the entry */
-			host_writew(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8, nr);
+			host_writew(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8, no);
 			host_writew(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8 + 2,
 				ems_handle);
 			host_writed(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8 + 4,

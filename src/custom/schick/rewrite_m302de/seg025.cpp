@@ -232,23 +232,23 @@ void do_house(void)
 
 void do_informer(void)
 {
-	signed short nr = ds_readws(TYPEINDEX) - 1;
+	signed short no = ds_readws(TYPEINDEX) - 1;
 
-	if (!nr) do_talk(6, 0);
-	else if (nr == 1) do_talk(6, 1);
-	else if (nr == 2) do_talk(7, 0);
-	else if (nr == 3) do_talk(7, 1);
-	else if (nr == 4) do_talk(7, 2);
-	else if (nr == 5) do_talk(8, 0);
-	else if (nr == 6) do_talk(8, 1);
-	else if (nr == 7) do_talk(10, 1);
-	else if (nr == 8) do_talk(9, 0);
-	else if (nr == 9) do_talk(10, 0);
-	else if (nr == 10) do_talk(12, 0);
-	else if (nr == 11) do_talk(11, 0);
-	else if (nr == 12) do_talk(11, 2);
-	else if (nr == 13) do_talk(8, 2);
-	else if (nr == 14) do_talk(9, 1);
+	if (!no) do_talk(6, 0);
+	else if (no == 1) do_talk(6, 1);
+	else if (no == 2) do_talk(7, 0);
+	else if (no == 3) do_talk(7, 1);
+	else if (no == 4) do_talk(7, 2);
+	else if (no == 5) do_talk(8, 0);
+	else if (no == 6) do_talk(8, 1);
+	else if (no == 7) do_talk(10, 1);
+	else if (no == 8) do_talk(9, 0);
+	else if (no == 9) do_talk(10, 0);
+	else if (no == 10) do_talk(12, 0);
+	else if (no == 11) do_talk(11, 0);
+	else if (no == 12) do_talk(11, 2);
+	else if (no == 13) do_talk(8, 2);
+	else if (no == 14) do_talk(9, 1);
 
 	turnaround();
 }
@@ -316,7 +316,7 @@ void show_treasure_map(void)
 				/* decompress picture */
 				nvf.dst = Real2Host(F_PADD((RealPt)ds_readd(BUFFER9_PTR), 30000));
 				nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
-				nvf.nr = l_si;
+				nvf.no = l_si;
 				nvf.type = 0;
 				nvf.width = (Bit8u*)&width;
 				nvf.height = (Bit8u*)&height;

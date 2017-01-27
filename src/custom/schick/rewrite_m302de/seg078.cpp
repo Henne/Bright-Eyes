@@ -428,7 +428,7 @@ signed short DNG02_handler(void)
 			ds_readbs(DIRECTION) == 2 &&
 			ds_readb(DNG02_SECRET_DOOR1) != 2)
 	{
-		/* Original-Bug: this should be the leader, not hero nr 0 */
+		/* Original-Bug: this should be the leader, not hero no 0 */
 		hero = get_hero(0);
 
 		if (ds_readb(DNG02_SECRET_DOOR1) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 6) > 0)
@@ -463,7 +463,7 @@ signed short DNG02_handler(void)
 			ds_readbs(DIRECTION) == 2 &&
 			ds_readb(DNG02_SECRET_DOOR2) != 2)
 	{
-		/* Original-Bug: this should be the leader, not hero nr 0 */
+		/* Original-Bug: this should be the leader, not hero no 0 */
 		hero = get_hero(0);
 
 		if (ds_readb(DNG02_SECRET_DOOR2) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 2) > 0)

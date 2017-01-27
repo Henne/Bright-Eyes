@@ -41,20 +41,20 @@ void rabies(RealPt hero, signed short hero_pos)
 	signed short textbox_width_bak;
 	Bit8u *hero2;
 	signed short group_bak;
-	signed short group_nr;
+	signed short group_no;
 	signed char sex_bak;
 
 	done = 0;
 
 	group_bak = ds_readbs(CURRENT_GROUP);
 	sex_bak = host_readbs(Real2Host(hero) + HERO_SEX);
-	group_nr = host_readbs(Real2Host(hero) + HERO_GROUP_NO);
+	group_no = host_readbs(Real2Host(hero) + HERO_GROUP_NO);
 
 	/* TODO : Sex = 50, what means 50 ? */
 	host_writeb(Real2Host(hero) + HERO_SEX, 50);
 
 	/* switch to the group of the hero */
-	while (ds_readbs(CURRENT_GROUP) != group_nr) {
+	while (ds_readbs(CURRENT_GROUP) != group_no) {
 		GRP_switch_to_next(1);
 	}
 

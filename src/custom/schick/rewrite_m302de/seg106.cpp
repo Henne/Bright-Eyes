@@ -808,7 +808,7 @@ void equip_belt_ani(void)
 
 		nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 		nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
-		nvf.nr = i;
+		nvf.no = i;
 		nvf.type = 3;
 		nvf.width = (Bit8u*)&width;
 		nvf.height = (Bit8u*)&height;

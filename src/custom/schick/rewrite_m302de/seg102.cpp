@@ -140,11 +140,11 @@ signed short MON_get_target_RS(void)
 	}
 }
 
-signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
+signed short MON_get_spell_cost(signed short mspell_no, signed short flag)
 {
 	signed char cost;
 
-	cost = ds_readbs(MON_SPELL_DESCRIPTIONS + 8 * mspell_nr);
+	cost = ds_readbs(MON_SPELL_DESCRIPTIONS + 8 * mspell_no);
 
 	if (flag != 0) {
 
@@ -159,9 +159,9 @@ signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
  * \brief   skill test for monsters
  *
  * \param   monster     pointer to monster
- * \param   t1          nr of 1st attribute
- * \param   t2          nr of 2nd attribute
- * \param   t3          nr of 3rd attribute
+ * \param   t1          no of 1st attribute
+ * \param   t2          no of 2nd attribute
+ * \param   t3          no of 3rd attribute
  * \param   bonus       modificator
  */
 signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, signed short t3, signed char bonus)
@@ -178,11 +178,11 @@ signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, 
 	return attr_sum - randval + 1;
 }
 
-signed short MON_test_skill(Bit8u *monster, signed short mspell_nr, signed char bonus)
+signed short MON_test_skill(Bit8u *monster, signed short mspell_no, signed char bonus)
 {
 	Bit8u *desc;
 
-	desc = p_datseg + MON_SPELL_DESCRIPTIONS + 8 * mspell_nr;
+	desc = p_datseg + MON_SPELL_DESCRIPTIONS + 8 * mspell_no;
 
 	/* depends on MR */
 	if (host_readbs(desc + 6) != 0) {
@@ -194,7 +194,7 @@ signed short MON_test_skill(Bit8u *monster, signed short mspell_nr, signed char 
 	}
 
 	/* check if the monster spell has a valid ID */
-	if ((mspell_nr >= 1) && (mspell_nr <= 14)) {
+	if ((mspell_no >= 1) && (mspell_no <= 14)) {
 		return MON_test_attrib3(monster, host_readbs(desc + 3),
 			host_readbs(desc + 4), host_readbs(desc + 5),
 			bonus);

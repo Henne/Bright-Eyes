@@ -9,7 +9,7 @@ struct mouse_action {
 struct nvf_desc {
 	Bit8u *src;
 	char *dst;
-	signed short nr;
+	signed short no;
 	signed char type;
 	signed short *width;
 	signed short *height;

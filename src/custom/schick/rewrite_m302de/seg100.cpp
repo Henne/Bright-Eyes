@@ -237,7 +237,7 @@ void spell_hexenknoten(void)
 	RealPt rp;
 	signed short x;
 	signed short y;
-	signed short nr;
+	signed short no;
 	signed short height;
 	signed short width;
 	struct nvf_desc nvf;
@@ -269,7 +269,7 @@ void spell_hexenknoten(void)
 		return;
 	}
 
-	nr = 24;
+	no = 24;
 
 	if (NOT_NULL(Real2Host(ds_readfp(HEXENKNOTEN_GFX_BUF)))) {
 		rp = ds_readfp(HEXENKNOTEN_GFX_BUF);
@@ -278,7 +278,7 @@ void spell_hexenknoten(void)
 		rp = ds_readfp(FIGHTOBJ_BUF_SEEK_PTR);
 		nvf.dst = Real2Host(rp);
 		nvf.src = Real2Host(ds_readfp(SPELLOBJ_NVF_BUF));
-		nvf.nr = nr;
+		nvf.no = no;
 		nvf.type = 0;
 		nvf.width = (Bit8u*)&width;
 		nvf.height = (Bit8u*)&height;

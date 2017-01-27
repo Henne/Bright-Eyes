@@ -920,10 +920,10 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 	Bit32u retval;
 	signed char nvf_type;
 #if !defined(__BORLANDC__)
-	Bit8u *nvf_nr;
+	Bit8u *nvf_no;
 	Bit8u *src;
 #else
-	Bit8u huge *nvf_nr;
+	Bit8u huge *nvf_no;
 	Bit8u huge *src;
 #endif
 	Bit8u *dst;
@@ -938,11 +938,11 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 	pics = host_readws(Real2Host(H_PADD(nvf->src, 1L)));
 #endif
 
-	if (nvf->nr < 0)
-		nvf->nr = 0;
+	if (nvf->no < 0)
+		nvf->no = 0;
 
-	if (nvf->nr > pics - 1)
-		nvf->nr = pics - 1;
+	if (nvf->no > pics - 1)
+		nvf->no = pics - 1;
 
 	switch (nvf_type) {
 
@@ -950,12 +950,12 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 		width = host_readws(H_PADD(nvf->src, 3));
 		height = host_readws(H_PADD(nvf->src, 5));
 		p_size = width * height;
-		src =  H_PADD(nvf->src, nvf->nr * p_size + 7);
+		src =  H_PADD(nvf->src, nvf->no * p_size + 7);
 		break;
 
 	case 0x01:
 		offs = pics * 4 + 3L;
-		for (i = 0; i < nvf->nr; i++) {
+		for (i = 0; i < nvf->no; i++) {
 #if !defined(__BORLANDC__)
 			width = host_readw(nvf->src + i * 4 + 3);
 			height = host_readw(nvf->src + i * 4 + 5);
@@ -963,8 +963,8 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 			offs += width * height;
 		}
 
-		width = host_readw(H_PADD(nvf->src, nvf->nr * 4 + 3));
-		height = host_readw(H_PADD(nvf->src, nvf->nr * 4 + 5));
+		width = host_readw(H_PADD(nvf->src, nvf->no * 4 + 3));
+		height = host_readw(H_PADD(nvf->src, nvf->no * 4 + 5));
 		p_size = width * height;
 		src = H_PADD(nvf->src, offs);
 		break;
@@ -973,21 +973,21 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 		width = host_readw(H_PADD(nvf->src, 3L));
 		height = host_readw(H_PADD(nvf->src, 5));
 		offs = pics * 4 + 7L;
-		for (i = 0; i < nvf->nr; i++) {
+		for (i = 0; i < nvf->no; i++) {
 			offs += host_readd(H_PADD(nvf->src, (i * 4) + 7));
 		}
 
-		p_size = host_readd(H_PADD(nvf->src, nvf->nr * 4 + 7));
+		p_size = host_readd(H_PADD(nvf->src, nvf->no * 4 + 7));
 		src = H_PADD(nvf->src, offs);
 		break;
 
 	case 0x03: case 0x05:
 		offs = pics * 8 + 3L;
-		for (i = 0; i < nvf->nr; i++)
+		for (i = 0; i < nvf->no; i++)
 			offs += host_readd(H_PADD(nvf->src, (i * 8) + 7));
 
-		width = host_readw(H_PADD(nvf->src, nvf->nr * 8 + 3));
-		height = host_readw(H_PADD(nvf->src, nvf->nr * 8 + 5));
+		width = host_readw(H_PADD(nvf->src, nvf->no * 8 + 3));
+		height = host_readw(H_PADD(nvf->src, nvf->no * 8 + 5));
 		p_size = host_readd(H_PADD(nvf->src, i * 8 + 7));
 		src = H_PADD(nvf->src, offs);
 		break;
@@ -1001,9 +1001,9 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 
 			/* get size from unpacked picture */
 			retval = host_readd(src);
-			nvf_nr = src;
-			nvf_nr += (retval + (-4L));
-			retval = host_readd(nvf_nr);
+			nvf_no = src;
+			nvf_no += (retval + (-4L));
+			retval = host_readd(nvf_no);
 			retval = swap_u32(retval) >> 8;
 
 		} else {
@@ -1334,7 +1334,7 @@ void call_mouse_isr(void)
 	mouse_isr();
 }
 
-void mouse_irq_init(signed short irq_nr, void interrupt *(isr))
+void mouse_irq_init(signed short irq_no, void interrupt *(isr))
 {
 	signed short l1;
 	signed short l3;
@@ -1343,7 +1343,7 @@ void mouse_irq_init(signed short irq_nr, void interrupt *(isr))
 	signed short l6;
 
 	l1 = 12;
-	l4 = irq_nr;
+	l4 = irq_no;
 
 	/* TODO : keep the numbers here until we can build the binary */
 /*	l5 = FP_OFF(call_mouse_isr);
@@ -2657,7 +2657,7 @@ signed short get_free_mod_slot(void)
 	return i;
 }
 
-void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
+void set_mod_slot(signed short slot_no, Bit32s timer_value, Bit8u *ptr,
 	signed char mod, signed char who)
 {
 	signed short j;
@@ -2704,16 +2704,16 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 			host_writeb(get_hero(who) + HERO_TIMER_ID, target);
 		}
 
-		ds_writeb(MODIFICATION_TIMERS + slot_nr * 8 + 6, target);
+		ds_writeb(MODIFICATION_TIMERS + slot_no * 8 + 6, target);
 	}
 
-	ds_writeb(MODIFICATION_TIMERS + slot_nr * 8 + 7, mod);
+	ds_writeb(MODIFICATION_TIMERS + slot_no * 8 + 7, mod);
 #if !defined (__BORLANDC__)
-	ds_writew(MODIFICATION_TIMERS + slot_nr * 8 + 4, ptr - mod_ptr);
+	ds_writew(MODIFICATION_TIMERS + slot_no * 8 + 4, ptr - mod_ptr);
 #else
-	ds_writew(MODIFICATION_TIMERS + slot_nr * 8 + 4, (Bit8u huge*)ptr - mod_ptr);
+	ds_writew(MODIFICATION_TIMERS + slot_no * 8 + 4, (Bit8u huge*)ptr - mod_ptr);
 #endif
-	ds_writed(MODIFICATION_TIMERS + slot_nr * 8, timer_value);
+	ds_writed(MODIFICATION_TIMERS + slot_no * 8, timer_value);
 	add_ptr_bs(ptr, mod);
 }
 
@@ -3690,11 +3690,11 @@ void delay_or_keypress(signed short duration)
 }
 
 /* unused */
-void unused_delay(signed short nr)
+void unused_delay(signed short no)
 {
 	signed short i = 0;
 
-	while (i < nr) {
+	while (i < no) {
 		wait_for_vsync();
 		i++;
 	}
@@ -3894,8 +3894,8 @@ void draw_compass(void)
 		n.dst = Real2Host(ds_readd(ICON));
 		/* set dst */
 		n.src = Real2Host(ds_readd(BUFFER6_PTR));
-		/* set nr */
-		n.nr = ds_readbs(DIRECTION);
+		/* set no */
+		n.no = ds_readbs(DIRECTION);
 		/* set type*/
 		n.type = 0;
 
@@ -4352,7 +4352,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			}
 
 			/* FINAL FIGHT */
-			if (ds_readw(CURRENT_FIG_NR) == 192) {
+			if (ds_readw(CURRENT_FIG_NO) == 192) {
 				if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 					ds_writew(GAME_STATE, GAME_STATE_DEAD);
 					ds_writew(IN_FIGHT, 0);
@@ -4409,7 +4409,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 					FIG_add_msg(7, 0);
 
 					/* FINAL FIGHT */
-					if (ds_readw(CURRENT_FIG_NR) == 192) {
+					if (ds_readw(CURRENT_FIG_NO) == 192) {
 						if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 							ds_writew(GAME_STATE, GAME_STATE_DEAD);
 							ds_writew(IN_FIGHT, 0);

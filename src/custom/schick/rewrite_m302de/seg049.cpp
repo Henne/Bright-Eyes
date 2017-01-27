@@ -388,8 +388,8 @@ struct dummy {
 
 void GRP_swap_heros(void)
 {
-	signed short hero1_nr;
-	signed short hero2_nr;
+	signed short hero1_no;
+	signed short hero2_no;
 	signed char l2;
 	signed char l3;
 	signed char l4;
@@ -401,53 +401,53 @@ void GRP_swap_heros(void)
 		return;
 	}
 
-	hero1_nr = select_hero_from_group(get_ttx(302));
+	hero1_no = select_hero_from_group(get_ttx(302));
 
-	if ((hero1_nr != -1) && (hero1_nr < 6)) {
+	if ((hero1_no != -1) && (hero1_no < 6)) {
 
-		hero2_nr = select_hero_from_group(get_ttx(303));
+		hero2_no = select_hero_from_group(get_ttx(303));
 
-		if ((hero2_nr != -1) && (hero1_nr != hero2_nr) && (hero2_nr < 6)) {
+		if ((hero2_no != -1) && (hero1_no != hero2_no) && (hero2_no < 6)) {
 
 			for (i = 0; i < 3; i++) {
 
-				if (ds_readbs(WILDCAMP_GUARDS + i) == hero1_nr) {
-					ds_writebs(WILDCAMP_GUARDS + i, (signed char)hero2_nr);
+				if (ds_readbs(WILDCAMP_GUARDS + i) == hero1_no) {
+					ds_writebs(WILDCAMP_GUARDS + i, (signed char)hero2_no);
 				}
 			}
 
 			/* save hero1 in tmp */
-			*((struct dummy*)&tmp) = *((struct dummy*)get_hero(hero1_nr));
+			*((struct dummy*)&tmp) = *((struct dummy*)get_hero(hero1_no));
 
-			l2 = ds_readbs(WILDCAMP_GUARDSTATUS + hero1_nr);
-			l3 = ds_readbs(WILDCAMP_MAGICSTATUS + hero1_nr);
-			l4 = ds_readbs(WILDCAMP_REPLSTATUS + hero1_nr);
-			l5 = ds_readbs(WILDCAMP_HERBSTATUS + hero1_nr);
+			l2 = ds_readbs(WILDCAMP_GUARDSTATUS + hero1_no);
+			l3 = ds_readbs(WILDCAMP_MAGICSTATUS + hero1_no);
+			l4 = ds_readbs(WILDCAMP_REPLSTATUS + hero1_no);
+			l5 = ds_readbs(WILDCAMP_HERBSTATUS + hero1_no);
 
-			*((struct dummy*)get_hero(hero1_nr)) = *((struct dummy*)get_hero(hero2_nr));
+			*((struct dummy*)get_hero(hero1_no)) = *((struct dummy*)get_hero(hero2_no));
 
-			ds_writebs(WILDCAMP_GUARDSTATUS + hero1_nr, ds_readbs(WILDCAMP_GUARDSTATUS + hero2_nr));
-			ds_writebs(WILDCAMP_MAGICSTATUS + hero1_nr, ds_readbs(WILDCAMP_MAGICSTATUS + hero2_nr));
-			ds_writebs(WILDCAMP_REPLSTATUS + hero1_nr, ds_readbs(WILDCAMP_REPLSTATUS + hero2_nr));
-			ds_writebs(WILDCAMP_HERBSTATUS + hero1_nr, ds_readbs(WILDCAMP_HERBSTATUS + hero2_nr));
+			ds_writebs(WILDCAMP_GUARDSTATUS + hero1_no, ds_readbs(WILDCAMP_GUARDSTATUS + hero2_no));
+			ds_writebs(WILDCAMP_MAGICSTATUS + hero1_no, ds_readbs(WILDCAMP_MAGICSTATUS + hero2_no));
+			ds_writebs(WILDCAMP_REPLSTATUS + hero1_no, ds_readbs(WILDCAMP_REPLSTATUS + hero2_no));
+			ds_writebs(WILDCAMP_HERBSTATUS + hero1_no, ds_readbs(WILDCAMP_HERBSTATUS + hero2_no));
 
-			*((struct dummy*)get_hero(hero2_nr)) = *((struct dummy*)&tmp);
+			*((struct dummy*)get_hero(hero2_no)) = *((struct dummy*)&tmp);
 
-			ds_writebs(WILDCAMP_GUARDSTATUS + hero2_nr, l2);
-			ds_writebs(WILDCAMP_MAGICSTATUS + hero2_nr, l3);
-			ds_writebs(WILDCAMP_REPLSTATUS + hero2_nr, l4);
-			ds_writebs(WILDCAMP_HERBSTATUS + hero2_nr, l5);
+			ds_writebs(WILDCAMP_GUARDSTATUS + hero2_no, l2);
+			ds_writebs(WILDCAMP_MAGICSTATUS + hero2_no, l3);
+			ds_writebs(WILDCAMP_REPLSTATUS + hero2_no, l4);
+			ds_writebs(WILDCAMP_HERBSTATUS + hero2_no, l5);
 
-			if (host_readbs(get_hero(hero1_nr) + HERO_TYPE)) {
-				host_writebs(get_hero(hero1_nr) + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
+			if (host_readbs(get_hero(hero1_no) + HERO_TYPE)) {
+				host_writebs(get_hero(hero1_no) + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
 			}
 
-			if (host_readbs(get_hero(hero2_nr) + HERO_TYPE)) {
-				host_writebs(get_hero(hero2_nr) + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
+			if (host_readbs(get_hero(hero2_no) + HERO_TYPE)) {
+				host_writebs(get_hero(hero2_no) + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
 			}
 
-			host_writeb(get_hero(hero1_nr) + HERO_GROUP_POS, hero1_nr + 1);
-			host_writeb(get_hero(hero2_nr) + HERO_GROUP_POS, hero2_nr + 1);
+			host_writeb(get_hero(hero1_no) + HERO_GROUP_POS, hero1_no + 1);
+			host_writeb(get_hero(hero2_no) + HERO_GROUP_POS, hero2_no + 1);
 		}
 	}
 

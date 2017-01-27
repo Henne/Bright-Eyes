@@ -90,7 +90,7 @@ void status_show_skill(Bit8u *hero, unsigned short skill, unsigned short ftig,
 /* Borlandified and identical */
 void status_show_skills(Bit8u *hero) {
 
-	signed short skill_category, skill_nr;
+	signed short skill_category, skill_no;
 
 	set_textcolor(0xff, 2);
 
@@ -119,14 +119,14 @@ void status_show_skills(Bit8u *hero) {
 	set_textcolor(0, 2);
 
 	for (skill_category = 0; skill_category < 7; skill_category++) {
-		skill_nr = ds_readbs(SKILLS_INDEX + skill_category * 2);
-		while (ds_readbs(SKILLS_INDEX + skill_category * 2) + ds_readbs((SKILLS_INDEX + 1) + skill_category * 2) > skill_nr) {
-			status_show_skill(hero, skill_nr,
+		skill_no = ds_readbs(SKILLS_INDEX + skill_category * 2);
+		while (ds_readbs(SKILLS_INDEX + skill_category * 2) + ds_readbs((SKILLS_INDEX + 1) + skill_category * 2) > skill_no) {
+			status_show_skill(hero, skill_no,
 				ds_readbs(SKILLS_INDEX + skill_category * 2),
 				ds_readw(STATUSPAGE_SKILLS_XY + skill_category * 6),
 				ds_readw((STATUSPAGE_SKILLS_XY + 2) + skill_category * 6),
 				ds_readw((STATUSPAGE_SKILLS_XY + 4) + skill_category * 6));
-			skill_nr++;
+			skill_no++;
 		}
 	}
 }
@@ -242,8 +242,8 @@ void status_show(Bit16u index)
 				continue;
 
 			nvf.dst = Real2Host(ds_readd(ICON));
-			/* set nr */
-			nvf.nr = host_readw(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD)));
+			/* set no */
+			nvf.no = host_readw(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD)));
 
 			process_nvf(&nvf);
 

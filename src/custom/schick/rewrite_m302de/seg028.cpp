@@ -366,7 +366,7 @@ void call_load_area(signed short type)
 	load_area_description(type);
 }
 
-void unused_store(signed short nr)
+void unused_store(signed short no)
 {
 	signed short width;
 	signed short height;
@@ -376,7 +376,7 @@ void unused_store(signed short nr)
 
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR)) + 30000;
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
-	nvf.nr = nr;
+	nvf.no = no;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
@@ -398,7 +398,7 @@ void unused_store(signed short nr)
 			Real2Host((RealPt)ds_readd(RENDERBUF_PTR) + 0x7530),
 			size);
 
-	ptr = nr * 5 + Real2Host(ds_readd(0xbd8c));
+	ptr = no * 5 + Real2Host(ds_readd(0xbd8c));
 
 	host_writeb(ptr, (signed char)ds_readws(0x5ec0));
 	host_writeb(ptr + 1, ds_readws(0x5ec2) >> 8);
@@ -409,19 +409,19 @@ void unused_store(signed short nr)
 	ds_writew(0x5ec2, ((((ds_readw(0x5ec2) + size) & 0x3fff) + 0x100) & 0xff00));
 }
 
-RealPt unused_load(signed short nr)
+RealPt unused_load(signed short no)
 {
 	signed short l_si;
 
 	EMS_map_memory(ds_readws(0xbd92), 0, 3);
 
-	l_si = host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * nr);
+	l_si = host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * no);
 
 	EMS_map_memory(ds_readws(0xbd92), l_si, 0);
 	EMS_map_memory(ds_readws(0xbd92), l_si + 1, 1);
 	EMS_map_memory(ds_readws(0xbd92), l_si + 2, 2);
 
-	return (RealPt)ds_readd(EMS_FRAME_PTR) + 256 * host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * nr + 1);
+	return (RealPt)ds_readd(EMS_FRAME_PTR) + 256 * host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * no + 1);
 }
 
 void load_map(void)
@@ -447,7 +447,7 @@ void load_map(void)
 	nvf.width = (Bit8u*)&fd;
 	nvf.height = (Bit8u*)&fd;
 	nvf.dst = Real2Host(F_PADD((RealPt)ds_readd(BUFFER9_PTR), 18000));
-	nvf.nr = 16;
+	nvf.no = 16;
 
 	process_nvf(&nvf);
 
@@ -556,7 +556,7 @@ void load_splashes(void)
 	/* nvf.dst = splash_le = ds_readd() */
 	nvf.dst = Real2Host(ds_writed(SPLASH_LE, ds_readd(SPLASH_BUFFER)));
 	nvf.src = Real2Host(ds_readd(RENDERBUF_PTR));
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = 1;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
@@ -565,7 +565,7 @@ void load_splashes(void)
 	/* nvf.dst = splash_ae = ds_readd() */
 	nvf.dst = Real2Host(ds_writed(SPLASH_AE, (Bit32u)((RealPt)ds_readd(SPLASH_BUFFER) + fd)));
 	nvf.src = Real2Host(ds_readd(RENDERBUF_PTR));
-	nvf.nr = 1;
+	nvf.no = 1;
 	nvf.type = 1;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;

@@ -44,7 +44,7 @@ void DNG_floor_ceil(void)
 	/* Load ceiling */
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = (!ds_readbs(0xe48c)) ? 3 : 5;
 	nvf.width = (unsigned char*)&width;
 	nvf.height = (unsigned char*)&height;
@@ -54,7 +54,7 @@ void DNG_floor_ceil(void)
 	/* Load ceiling */
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR)) + 0x4030;
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
-	nvf.nr = (!(ds_readbs(DIRECTION)&1)) ? 1 : 2;
+	nvf.no = (!(ds_readbs(DIRECTION)&1)) ? 1 : 2;
 	nvf.type = (!ds_readbs(0xe48c)) ? 3 : 5;
 	nvf.width = (unsigned char*)&width;
 	nvf.height = (unsigned char*)&height;
@@ -375,7 +375,7 @@ void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
 
 	nvf.dst = dst_ptr = Real2Host(ds_readd(RENDERBUF_PTR)) + 0x7530;
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
-	nvf.nr = a3;
+	nvf.no = a3;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
 	nvf.type = 3;

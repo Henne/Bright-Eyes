@@ -162,7 +162,7 @@ void FIG_preload_gfx(void)
 
 	nvf.dst = Real2Host(ds_readfp(FIG_CB_MARKER_BUF));
 	nvf.src = Real2Host(ds_readfp(OBJECTS_NVF_BUF));
-	nvf.nr = 10;
+	nvf.no = 10;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&i;
 	nvf.height = (Bit8u*)&i;
@@ -173,7 +173,7 @@ void FIG_preload_gfx(void)
 
 	nvf.dst = Real2Host(ds_readfp(FIG_CB_SELECTOR_BUF));
 	nvf.src = Real2Host(ds_readfp(OBJECTS_NVF_BUF));
-	nvf.nr = 11;
+	nvf.no = 11;
 	nvf.type = 0;
 	process_nvf(&nvf);
 
@@ -182,7 +182,7 @@ void FIG_preload_gfx(void)
 
 	nvf.dst = Real2Host(ds_readfp(FIG_STAR_GFX));
 	nvf.src = Real2Host(ds_readfp(OBJECTS_NVF_BUF));
-	nvf.nr = 17;
+	nvf.no = 17;
 	nvf.type = 0;
 	process_nvf(&nvf);
 
@@ -226,7 +226,7 @@ void FIG_draw_scenario(void)
 
 						nvf.dst = Real2Host(ptr);
 						nvf.src = Real2Host(ds_readd(FIGHTOBJ_BUF));
-						nvf.nr = obj_id;
+						nvf.no = obj_id;
 						nvf.type = 0;
 						nvf.width = (Bit8u*)&width;
 						nvf.height = (Bit8u*)&height;

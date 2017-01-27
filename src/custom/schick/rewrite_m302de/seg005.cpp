@@ -333,7 +333,7 @@ void draw_fight_screen(Bit16u val)
 
 			nvf.src = Real2Host(load_fight_figs(host_readw(list_i)));
 		        nvf.dst = Real2Host(host_readd(list_i + 0x17));
-			nvf.nr = host_readbs(list_i + 2);
+			nvf.no = host_readbs(list_i + 2);
 		        nvf.type = 0;
 			nvf.width = (Bit8u*)&width;
 			nvf.height = (Bit8u*)&height;
@@ -506,7 +506,7 @@ void draw_fight_screen(Bit16u val)
 					} else if ((host_readbs(sheet + (ds_readw(0xe2a8 +  host_readbs(list_i + 0x0e) * 2) * 3) + 1) == -3) ||
 							(host_readbs(sheet + (ds_readw(0xe2a8 +  host_readbs(list_i + 0x0e) * 2) * 3) + 1) == -6)) {
 
-						/* get nvf nr */
+						/* get nvf no */
 						tmp_3 = host_readbs(list_i + 2);
 
 						if (host_readbs(sheet + 1 + (ds_readw(0xe2a8 +  host_readbs(list_i + 0x0e) * 2) * 3)) == -3) {
@@ -583,7 +583,7 @@ void draw_fight_screen(Bit16u val)
 						}
 
 					        nvf.dst = Real2Host(host_readd(list_i + 0x17));
-						nvf.nr = host_readbs(list_i + 2);
+						nvf.no = host_readbs(list_i + 2);
 					        nvf.type = 0;
 						nvf.width = (Bit8u*)&width;
 						nvf.height = (Bit8u*)&height;
@@ -768,7 +768,7 @@ void draw_fight_screen(Bit16u val)
 							}
 
 						        nvf.dst = Real2Host(ds_readd((0xe274 + 4) + host_readbs(list_i + 0x0e) * 4));
-							nvf.nr = host_readbs(sheet + 1 + ds_readw(0xe2a8 + host_readbs(list_i + 0x0e) * 2) * 3);
+							nvf.no = host_readbs(sheet + 1 + ds_readw(0xe2a8 + host_readbs(list_i + 0x0e) * 2) * 3);
 						        nvf.type = 0;
 							nvf.width = (Bit8u*)&width;
 							nvf.height = (Bit8u*)&height;
@@ -791,7 +791,7 @@ void draw_fight_screen(Bit16u val)
 									if (host_readbs(ptr_4 + 1 + 3 * (ds_readws(0xe2a8 + host_readbs(list_i + 0xe) * 2))) != -5) {
 										nvf.dst = Real2Host(ds_readd((0xe274 + 4) + host_readbs(list_i + 0x0f) * 4));
 										nvf.src = Real2Host(ds_readd(WEAPONS_NVF_BUF));
-										nvf.nr = host_readb(ptr_4 + 1 + ds_readw(0xe2a8 + host_readbs(list_i + 0x0e) * 2) * 3);
+										nvf.no = host_readb(ptr_4 + 1 + ds_readw(0xe2a8 + host_readbs(list_i + 0x0e) * 2) * 3);
 										nvf.type = 0;
 										nvf.width = (Bit8u*)&width;
 										nvf.height = (Bit8u*)&height;

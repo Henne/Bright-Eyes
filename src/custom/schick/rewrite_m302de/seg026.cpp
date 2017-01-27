@@ -888,15 +888,15 @@ void load_in_head(signed short head)
 /**
  * \brief   load a temple icon
  *
- * \param   nr          the number of the icon
+ * \param   no          the number of the icon
  */
-void load_tempicon(signed short nr)
+void load_tempicon(signed short no)
 {
 	struct nvf_desc nvf;
 	signed short handle;
 
-	if (nr == 14) {
-		nr = 7;
+	if (no == 14) {
+		no = 7;
 	}
 
 	/* load TEMPICON */
@@ -906,7 +906,7 @@ void load_tempicon(signed short nr)
 
 	nvf.dst = Real2Host(ds_readd(BUFFER8_PTR)) + 7000;
 	nvf.src = Real2Host(ds_readd(BUFFER8_PTR));
-	nvf.nr = nr;
+	nvf.no = no;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&handle;
 	nvf.height = (Bit8u*)&handle;

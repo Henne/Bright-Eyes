@@ -46,7 +46,7 @@ void prepare_map_marker(void)
 	for (i = 0; i < 10; i++) {
 		nvf.dst = Real2Host(ds_readd(BUFFER6_PTR)) + 100 * i + 1000;
 		nvf.src = Real2Host(ds_readd(BUFFER6_PTR));
-		nvf.nr = i;
+		nvf.no = i;
 		nvf.type = 0;
 		nvf.width = (Bit8u*)&dummy;
 		nvf.height = (Bit8u*)&dummy;

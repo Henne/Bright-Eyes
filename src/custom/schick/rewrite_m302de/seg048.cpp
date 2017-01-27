@@ -436,7 +436,7 @@ void status_menu(signed short hero_pos)
 						nvf.type = 0;
 						nvf.width = (Bit8u*)&width;
 						nvf.height = (Bit8u*)&height;
-						nvf.nr = host_readws(get_itemsdat(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))));
+						nvf.no = host_readws(get_itemsdat(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))));
 						process_nvf(&nvf);
 
 						make_ggst_cursor(Real2Host(ds_readd(ICON)));

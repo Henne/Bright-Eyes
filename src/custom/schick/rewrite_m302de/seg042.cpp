@@ -662,7 +662,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 				/* cast a spell */
 
-				if (ds_readws(CURRENT_FIG_NR) == 192) {
+				if (ds_readws(CURRENT_FIG_NO) == 192) {
 					/* no spells allowed in the final fight */
 
 					sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + HERO_LE) + 1);
@@ -790,7 +790,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 								nvf.dst = Real2Host(ds_readd((FIG_LIST_ELEM + 0x17)));
 								nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
-								nvf.nr = 26;
+								nvf.no = 26;
 								nvf.type = 0;
 								nvf.width =(Bit8u*) &width;
 								nvf.height = (Bit8u*)&height;
