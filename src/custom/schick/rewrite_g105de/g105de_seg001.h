@@ -3,7 +3,7 @@ namespace G105de {
 #endif
 
 	//static
-	unsigned short CD_set_drive_nr();
+	unsigned short CD_set_drive_no();
 
 	//static
 	void CD_driver_request(RealPt req);

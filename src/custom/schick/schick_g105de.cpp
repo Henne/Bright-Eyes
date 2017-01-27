@@ -26,11 +26,11 @@ static int seg000(Bitu offs) {
 			return 1;
 		}
 		case 0x0438: {
-			Bit16u intnr = CPU_Pop16();
-			CPU_Push16(intnr);
+			Bit16u intno = CPU_Pop16();
+			CPU_Push16(intno);
 
-			RealPt addr  = bc__dos_getvect(intnr);
-			D1_LOG("_dos_getvect(intnr=0x%x) = %x\n", intnr, addr);
+			RealPt addr  = bc__dos_getvect(intno);
+			D1_LOG("_dos_getvect(intno=0x%x) = %x\n", intno, addr);
 
 			reg_ax = RealOff(addr);
 			reg_dx = RealSeg(addr);
@@ -38,15 +38,15 @@ static int seg000(Bitu offs) {
 			return 1;
 		}
 		case 0x0447: {
-			Bit16u intnr = CPU_Pop16();
+			Bit16u intno = CPU_Pop16();
 			RealPt addr = CPU_Pop32();
 			CPU_Push32(addr);
-			CPU_Push16(intnr);
+			CPU_Push16(intno);
 
-			D1_LOG("_dos_setvect(intnr=0x%x, *isr=0x%x:0x%x)\n",
-				intnr, RealSeg(addr), RealOff(addr));
+			D1_LOG("_dos_setvect(intno=0x%x, *isr=0x%x:0x%x)\n",
+				intno, RealSeg(addr), RealOff(addr));
 
-			bc__dos_setvect(intnr, addr);
+			bc__dos_setvect(intno, addr);
 
 			return 1;
 		}
@@ -662,7 +662,7 @@ int schick_nearcall_gen105(unsigned offs) {
 			switch(offs) {
 				case 0x0038: {
 					CPU_Pop16();
-					reg_ax = CD_set_drive_nr();
+					reg_ax = CD_set_drive_no();
 					return 1;
 				}
 				case 0x005d: {

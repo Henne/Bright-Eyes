@@ -298,7 +298,7 @@ signed short FIG_count_smth(signed char *p)
  * \brief   TODO
  *
  * \param   in_ptr      pointer to hero or monster, depends on value of a4
- * \param   a1          nr of hero or monster
+ * \param   a1          no of hero or monster
  * \param   x_in        x-coordinate
  * \param   y_in        y-coordinate
  * \param   a4          fight_action

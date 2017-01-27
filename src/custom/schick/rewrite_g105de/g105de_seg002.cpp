@@ -64,7 +64,7 @@ static const unsigned short KEY_CTRL_F4 = 0x61;
 	struct nvf_desc - nvf descriptor
 	@src:   pointer to a buffer containing the nvf file
 	@dst:   pointer where to extract the picture
-	@nr:    number of the picture to extract
+	@no:    number of the picture to extract
 	@type:  kind of compression / direction (0 = PP20 / 2-5 RLE / copy)
 	@p_height:      pointer where the height of the picture must be stored
 	@p_width:       pointer where the width of the picture must be stored
@@ -668,7 +668,7 @@ static const signed char initial_conv_incs[6] = {
 };
 
 struct struct_house_mod {
-	signed char nr;
+	signed char no;
 	signed short spells[7], mod[7];
 };
 
@@ -2387,7 +2387,7 @@ void save_chr()
 	/* TODO: why not just copy? */
 	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
 	nvf.src = buffer_heads_dat;
-	nvf.nr = head_current;
+	nvf.no = head_current;
 	nvf.type = 0;
 	nvf.width = &tmp;
 	nvf.height = &tmp;
@@ -2603,11 +2603,11 @@ signed int process_nvf(struct nvf_desc *nvf) {
 
 	pics = host_readw(nvf->src + 1);
 
-	if (nvf->nr < 0)
-		nvf->nr = 0;
+	if (nvf->no < 0)
+		nvf->no = 0;
 
-	if (nvf->nr > pics - 1)
-		nvf->nr = pics - 1;
+	if (nvf->no > pics - 1)
+		nvf->no = pics - 1;
 
 	switch (nvf_type) {
 
@@ -2615,19 +2615,19 @@ signed int process_nvf(struct nvf_desc *nvf) {
 		width = host_readw(nvf->src + 3);
 		height = host_readw(nvf->src + 5);
 		p_size = height * width;
-		src =  nvf->src + nvf->nr * p_size + 7;
+		src =  nvf->src + nvf->no * p_size + 7;
 		break;
 
 	case 0x01:
 		offs = pics * 4 + 3;
-		for (i = 0; i < nvf->nr; i++) {
+		for (i = 0; i < nvf->no; i++) {
 			width = host_readw(nvf->src + i * 4 + 3);
 			height = host_readw(nvf->src + i * 4 + 5);
 			offs += width * height;
 		}
 
-		width = host_readw(nvf->src + nvf->nr * 4 + 3);
-		height = host_readw(nvf->src + nvf->nr * 4 + 5);
+		width = host_readw(nvf->src + nvf->no * 4 + 3);
+		height = host_readw(nvf->src + nvf->no * 4 + 5);
 		p_size = width * height;
 		src = nvf->src + offs;
 		break;
@@ -2636,20 +2636,20 @@ signed int process_nvf(struct nvf_desc *nvf) {
 		width = host_readw(nvf->src + 3);
 		height = host_readw(nvf->src + 5);
 		offs = pics * 4 + 7;
-		for (i = 0; i < nvf->nr; i++)
+		for (i = 0; i < nvf->no; i++)
 			offs += host_readd(nvf->src + (i * 4) + 7);
 
-		p_size = host_readd(nvf->src + nvf->nr * 4 + 7);
+		p_size = host_readd(nvf->src + nvf->no * 4 + 7);
 		src = nvf->src + offs;
 		break;
 
 	case 0x03:
 		offs = pics * 8 + 3;
-		for (i = 0; i < nvf->nr; i++)
+		for (i = 0; i < nvf->no; i++)
 			offs += host_readd(nvf->src  + (i * 8) + 7);
 
-		width = host_readw(nvf->src + nvf->nr * 8 + 3);
-		height = host_readw(nvf->src + nvf->nr * 8 + 5);
+		width = host_readw(nvf->src + nvf->no * 8 + 3);
+		height = host_readw(nvf->src + nvf->no * 8 + 5);
 		p_size = host_readd(nvf->src + i * 8 + 7);
 		src = nvf->src + offs;
 		break;
@@ -3702,7 +3702,7 @@ void change_head()
 
 	nvf.dst = (char*)Real2Host(ds_readd(0x47a3));
 	nvf.src = buffer_heads_dat;
-	nvf.nr = head_current;
+	nvf.no = head_current;
 	nvf.type = 0;
 	nvf.width = &tmp;
 	nvf.height = &tmp;
@@ -4092,7 +4092,7 @@ void fill_values()
 			} while (hero.school == -2);
 
 			/* add magic school modifications */
-			for (i = 0; house_mod[hero.school].nr > i; i++) {
+			for (i = 0; house_mod[hero.school].no > i; i++) {
 				Bit16s spell, mod;
 
 				spell = house_mod[hero.school].spells[i];
@@ -4267,7 +4267,7 @@ void fill_values()
 		/* prepare mage automatic spell list */
 		if (hero.typus == 9) {
 			/* 1. house spells */
-			for (i = 0; house_mod[hero.school].nr > i; si++, i++) {
+			for (i = 0; house_mod[hero.school].no > i; si++, i++) {
 				autospells[hero.typus - 7][si] =
 					house_mod[hero.school].spells[i];
 			}
@@ -4289,12 +4289,12 @@ void fill_values()
 			autospells[hero.typus - 7][si++] = 0x4f;
 
 			/* 4. all house spells */
-			for (i = 0; house_mod[hero.school].nr > i; si++, i++) {
+			for (i = 0; house_mod[hero.school].no > i; si++, i++) {
 				autospells[hero.typus - 7][si] =
 					house_mod[hero.school].spells[i];
 			}
 			/* 5. all house spells */
-			for (i = 0; house_mod[hero.school].nr > i; si++, i++) {
+			for (i = 0; house_mod[hero.school].no > i; si++, i++) {
 				autospells[hero.typus - 7][si] =
 					house_mod[hero.school].spells[i];
 			}
@@ -4381,7 +4381,7 @@ void refresh_screen()
 
 			nvf.dst = (char*)Real2Host(ds_readd(0x47a3));
 			nvf.src = buffer_heads_dat;
-			nvf.nr = head_current;
+			nvf.no = head_current;
 			nvf.type = 0;
 			nvf.width = &tmp;
 			nvf.height = &tmp;
@@ -6652,14 +6652,14 @@ void intro()
 
 	for (i = 7; i >= 0; i--) {
 		nvf.dst = (char*)Real2Host(ds_readd(0x47d3)) + i * 960 + 9600;
-		nvf.nr = i + 1;
+		nvf.no = i + 1;
 		process_nvf(&nvf);
 
 	}
 	/* set dst */
 	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
-	/* set nr */
-	nvf.nr = 0;
+	/* set no */
+	nvf.no = 0;
 	process_nvf(&nvf);
 
 	wait_for_vsync();
@@ -6743,7 +6743,7 @@ void intro()
 
 	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
 	nvf.src = buffer_heads_dat;
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = 0;
 	nvf.width = &tmp;
 	nvf.height = &tmp;
@@ -6777,7 +6777,7 @@ void intro()
 
 	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
 	nvf.src = buffer_heads_dat;
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = 0;
 	nvf.width = &tmp;
 	nvf.height = &tmp;
@@ -6810,7 +6810,7 @@ void intro()
 
 	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
 	nvf.src = buffer_heads_dat;
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = 0;
 	nvf.width = &tmp;
 	nvf.height = &tmp;

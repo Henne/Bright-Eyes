@@ -305,9 +305,9 @@ signed short has_hero_stacked(Bit8u *hero, unsigned short item)
  * \param   hero        the hero who should get the item
  * \param   item        id of the item
  * \param   mode        0 = quiet / 1 = warn / 2 = ignore
- * \param   nr          number of item the hero should get
+ * \param   no          number of item the hero should get
  */
-signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mode, signed short nr)
+signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mode, signed short no)
 {
 	signed short l1;
 	signed short retval;
@@ -315,7 +315,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 	Bit8u *item_p;
 	signed short si, di;
 
-	si = nr;
+	si = no;
 
 	retval = 0;
 
@@ -478,12 +478,12 @@ unsigned short item_pleasing_ingerimm(unsigned short item)
  *
  * \param   hero        pointer to the hero
  * \param   pos         position of the item to be dropped
- * \param   nr          number of stacked items to be dropped / -1 to ask
+ * \param   no          number of stacked items to be dropped / -1 to ask
  * \return              true if the item has been dropped or false if not
  *
  *	TODO: This function can be tuned a bit
  */
-unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
+unsigned short drop_item(Bit8u *hero, signed short pos, signed short no)
 {
 
 	Bit8u *p_item;
@@ -510,7 +510,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 			/* this item is droppable */
 
 			if (item_stackable(p_item)) {
-				if (nr == -1) {
+				if (no == -1) {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ttx(219),
 						(char*)Real2Host(GUI_names_grammar(6, item, 0)));
@@ -519,16 +519,16 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 						answer = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 					} while (answer < 0);
 
-					nr = answer;
+					no = answer;
 				}
 
-				if (host_readws(hero + HERO_ITEM_HEAD + 2 + pos * 14) > nr) {
+				if (host_readws(hero + HERO_ITEM_HEAD + 2 + pos * 14) > no) {
 					/* remove some stacked items */
 
 					/* adjust stack counter */
-					sub_ptr_ws(hero + HERO_ITEM_HEAD + 2 + pos * 14, nr);
+					sub_ptr_ws(hero + HERO_ITEM_HEAD + 2 + pos * 14, no);
 					/* adjust weight */
-					sub_ptr_ws(hero + HERO_LOAD, host_readws(p_item + 5) * nr);
+					sub_ptr_ws(hero + HERO_LOAD, host_readws(p_item + 5) * no);
 				} else {
 					/* remove all stacked items */
 
@@ -544,7 +544,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 
 				retval = 1;
 			} else {
-				if (!(nr != -1 || GUI_bool(get_ttx(220)))) {
+				if (!(no != -1 || GUI_bool(get_ttx(220)))) {
 				} else {
 
 					/* check if item is equipped */
@@ -601,10 +601,10 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
  *
  * \param   id          ID of the item
  * \param   unused      unused parameter
- * \param   nr          number of items
+ * \param   no          number of items
  * \return              the number of given items.
  */
-signed short get_item(signed short id, signed short unused, signed short nr)
+signed short get_item(signed short id, signed short unused, signed short no)
 {
 	signed short i;
 	signed short retval = 0;
@@ -616,9 +616,9 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 	signed short autofight_bak;
 
 	/* Special stacked items */
-	if (id == 0xfb) { id = 0x0a; nr = 200;} else
-	if (id == 0xfc) { id = 0x0d; nr = 50;} else
-	if (id == 0xfd) { id = 0x28; nr = 20;}
+	if (id == 0xfb) { id = 0x0a; no = 200;} else
+	if (id == 0xfc) { id = 0x0d; no = 50;} else
+	if (id == 0xfd) { id = 0x28; no = 20;}
 
 	do {
 		hero_i = get_hero(0);
@@ -627,20 +627,20 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 				host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP))
 			{
 
-				while ((nr > 0) && (v6 = give_hero_new_item(hero_i, id, 0, nr)) > 0) {
-					nr -= v6;
+				while ((no > 0) && (v6 = give_hero_new_item(hero_i, id, 0, no)) > 0) {
+					no -= v6;
 					retval += v6;
 				}
 			}
 		}
 
-		if (nr > 0) {
+		if (no > 0) {
 			autofight_bak = ds_readws(AUTOFIGHT);
 			ds_writew(AUTOFIGHT, 0);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ttx(549),
-				(char*)Real2Host(GUI_names_grammar(((nr > 1) ? 4 : 0) + 2, id, 0)));
+				(char*)Real2Host(GUI_names_grammar(((no > 1) ? 4 : 0) + 2, id, 0)));
 
 			if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
 

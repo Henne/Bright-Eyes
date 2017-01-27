@@ -543,7 +543,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 
 		nvf.src = Real2Host(load_fight_figs(ds_readbs(GFXTAB_FIGURES_MAIN + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5)));
 		nvf.dst = Real2Host(p1);
-		nvf.nr = 1;
+		nvf.no = 1;
 		nvf.type = 0;
 		nvf.width = (Bit8u*)&height_width;
 		nvf.height = (Bit8u*)&height_width;

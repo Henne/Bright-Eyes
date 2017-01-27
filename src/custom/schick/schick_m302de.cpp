@@ -244,8 +244,8 @@ static int n_seg001(unsigned offs)
 	switch (offs) {
 	/* Callers: 1 */
 	case 0x35: {
-		reg_ax = CD_set_drive_nr();
-		D1_LOG("CD_set_drive_nr(); = %d:\n", reg_ax);
+		reg_ax = CD_set_drive_no();
+		D1_LOG("CD_set_drive_no(); = %d:\n", reg_ax);
 		return 1;
 	}
 	/* Callers: 6 */
@@ -270,10 +270,10 @@ static int n_seg001(unsigned offs)
 	}
 	/* Callers: 2 */
 	case 0xc1: {
-		unsigned short track_nr = CPU_Pop16();
-		CPU_Push16(track_nr);
-		D1_LOG("seg001_00c1(track_nr = %d)\n", track_nr);
-		seg001_00c1(track_nr);
+		unsigned short track_no = CPU_Pop16();
+		CPU_Push16(track_no);
+		D1_LOG("seg001_00c1(track_no = %d)\n", track_no);
+		seg001_00c1(track_no);
 		return 1;
 	}
 	case 0x2c4: {
@@ -1850,20 +1850,20 @@ static int n_seg039(unsigned offs)
 		return 1;
 	}
 	case 0x97: {
-		unsigned short sheet_nr = CPU_Pop16();
+		unsigned short sheet_no = CPU_Pop16();
 		unsigned short enemy_id_16 = CPU_Pop16();
 		unsigned short round_16 = CPU_Pop16();
 		CPU_Push16(round_16);
 		CPU_Push16(enemy_id_16);
-		CPU_Push16(sheet_nr);
+		CPU_Push16(sheet_no);
 
 		signed char enemy = (signed char)(enemy_id_16 & 0xff);
 		signed char round = (signed char)(round_16 & 0xff);
 
 		D1_LOG("near fill_enemy_sheet(%d, %d, %d);\n",
-			sheet_nr, enemy, round);
+			sheet_no, enemy, round);
 
-		fill_enemy_sheet(sheet_nr, enemy, round);
+		fill_enemy_sheet(sheet_no, enemy, round);
 
 		return 1;
 	}
@@ -2491,13 +2491,13 @@ static int n_seg065(unsigned offs)
 		return 1;
 	}
 	case 0x036f: {
-		Bit16s nvf_nr = CPU_Pop16();
+		Bit16s nvf_no = CPU_Pop16();
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
-		CPU_Push16(nvf_nr);
+		CPU_Push16(nvf_no);
 
-		D1_LOG("hyg_ani_1(%d, %x)\n", nvf_nr, ptr);
-		RealPt retval = hyg_ani_1(nvf_nr, Real2Host(ptr));
+		D1_LOG("hyg_ani_1(%d, %x)\n", nvf_no, ptr);
+		RealPt retval = hyg_ani_1(nvf_no, Real2Host(ptr));
 		reg_ax = RealOff(retval);
 		reg_dx = RealSeg(retval);
 		return 1;
@@ -2815,11 +2815,11 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x2ba: {
-		Bit16s group_nr = CPU_Pop16();
-		CPU_Push16(group_nr);
+		Bit16s group_no = CPU_Pop16();
+		CPU_Push16(group_no);
 
-		reg_ax = is_group_in_prison(group_nr);
-		D1_LOG("is_group_in_prison(%d) = %d\n", group_nr, reg_ax);
+		reg_ax = is_group_in_prison(group_no);
+		D1_LOG("is_group_in_prison(%d) = %d\n", group_no, reg_ax);
 		return 1;
 	}
 	case 0x305: {
@@ -3066,12 +3066,12 @@ static int n_seg092(unsigned short offs)
 	switch (offs) {
 	case 0x4d6: {
 		RealPt chest = CPU_Pop32();
-		Bit16s item_nr = CPU_Pop16();
-		CPU_Push16(item_nr);
+		Bit16s item_no = CPU_Pop16();
+		CPU_Push16(item_no);
 		CPU_Push32(chest);
 
-		D1_LOG("delete_chest_item(%d)\n", item_nr);
-		delete_chest_item(Real2Host(chest), item_nr);
+		D1_LOG("delete_chest_item(%d)\n", item_no);
+		delete_chest_item(Real2Host(chest), item_no);
 
 		return 1;
 	}
@@ -3106,13 +3106,13 @@ static int n_seg094(unsigned short offs)
 		return 1;
 	}
 	case 0x0125: {
-		Bit16s route_nr = CPU_Pop16();
+		Bit16s route_no = CPU_Pop16();
 		Bit16s dir = CPU_Pop16();
 		CPU_Push16(dir);
-		CPU_Push16(route_nr);
+		CPU_Push16(route_no);
 
-		D1_LOG("TM_func1(%d, %d)\n", route_nr, dir);
-		TM_func1(route_nr, dir);
+		D1_LOG("TM_func1(%d, %d)\n", route_no, dir);
+		TM_func1(route_no, dir);
 		return 1;
 	}
 	case 0x0c29: {
@@ -3402,13 +3402,13 @@ static int n_seg098(unsigned short offs)
 	}
 	case 0x071d : {
 		RealPt hero = CPU_Pop32();
-		Bit16s spellclass_nr = CPU_Pop16();
-		CPU_Push16(spellclass_nr);
+		Bit16s spellclass_no = CPU_Pop16();
+		CPU_Push16(spellclass_no);
 		CPU_Push32(hero);
 
-		reg_ax = can_use_spellclass(Real2Host(hero), spellclass_nr);
+		reg_ax = can_use_spellclass(Real2Host(hero), spellclass_no);
 		D1_LOG("can_use_spellclass(%s, %d) = %d\n",
-			schick_getCharname(hero), spellclass_nr, reg_ax);
+			schick_getCharname(hero), spellclass_no, reg_ax);
 
 		return 1;
 	}
@@ -3505,14 +3505,14 @@ static int n_seg102(unsigned short offs)
 	}
 	case 0x22a: {
 		RealPt mon = CPU_Pop32();
-		Bit16s mspell_nr = CPU_Pop16();
+		Bit16s mspell_no = CPU_Pop16();
 		Bit16s bonus = CPU_Pop16();
 		CPU_Push16(bonus);
-		CPU_Push16(mspell_nr);
+		CPU_Push16(mspell_no);
 		CPU_Push32(mon);
 
-		reg_ax = MON_test_skill(Real2Host(mon), mspell_nr, (Bit8s)bonus);
-		D1_LOG("MON_test_skill(%d, %d) = %d\n", mspell_nr, bonus, reg_ax);
+		reg_ax = MON_test_skill(Real2Host(mon), mspell_no, (Bit8s)bonus);
+		D1_LOG("MON_test_skill(%d, %d) = %d\n", mspell_no, bonus, reg_ax);
 
 		return 1;
 	}
@@ -3667,16 +3667,16 @@ static int n_seg105(unsigned offs) {
 		RealPt hero = CPU_Pop32();
 		Bit16s item = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
-		Bit16s nr = CPU_Pop16();
-		CPU_Push16(nr);
+		Bit16s no = CPU_Pop16();
+		CPU_Push16(no);
 		CPU_Push16(v2);
 		CPU_Push16(item);
 		CPU_Push32(hero);
 
-		reg_ax = give_hero_new_item(Real2Host(hero), item, v2, nr);
+		reg_ax = give_hero_new_item(Real2Host(hero), item, v2, no);
 		D1_LOG("near give_hero_new_item(%s, %s, %d, %d); = %d\n",
 			(char*)Real2Host(hero) + 0x10,
-			get_itemname(item), v2, nr, (signed short)reg_ax);
+			get_itemname(item), v2, no, (signed short)reg_ax);
 		return 1;
 	}
 	case 0x675: {
@@ -3692,14 +3692,14 @@ static int n_seg105(unsigned offs) {
 	case 0x6d9: {
 		RealPt hero = CPU_Pop32();
 		signed short pos = CPU_Pop16();
-		signed short nr = CPU_Pop16();
-		CPU_Push16(nr);
+		signed short no = CPU_Pop16();
+		CPU_Push16(no);
 		CPU_Push16(pos);
 		CPU_Push32(hero);
 
-		reg_ax = drop_item(Real2Host(hero), pos, nr);
+		reg_ax = drop_item(Real2Host(hero), pos, no);
 		D1_LOG("drop_item(%s, %d, %d); = %d\n",
-			schick_getCharname(hero), pos, nr, reg_ax);
+			schick_getCharname(hero), pos, no, reg_ax);
 
 		return 1;
 	}
@@ -3786,12 +3786,12 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x012b: {
-		Bit16s fight_nr = CPU_Pop16();
+		Bit16s fight_no = CPU_Pop16();
 		Bit16s t_event = CPU_Pop16();
 		CPU_Push16(t_event);
-		CPU_Push16(fight_nr);
-		reg_ax = TRV_fight_event(fight_nr, t_event);
-		D1_LOG("TRV_fight_event(%d, %d,) = %d\n", fight_nr, t_event, reg_ax);
+		CPU_Push16(fight_no);
+		reg_ax = TRV_fight_event(fight_no, t_event);
+		D1_LOG("TRV_fight_event(%d, %d,) = %d\n", fight_no, t_event, reg_ax);
 		return 1;
 	}
 	case 0x014c: {
@@ -4047,11 +4047,11 @@ static int n_seg117(unsigned short offs)
 {
 	switch (offs) {
 	case 0x0000: {
-		Bit16s ani_nr = CPU_Pop16();
-		CPU_Push16(ani_nr);
+		Bit16s ani_no = CPU_Pop16();
+		CPU_Push16(ani_no);
 
-		D1_LOG("pause_traveling(%d);\n", ani_nr);
-		pause_traveling(ani_nr);
+		D1_LOG("pause_traveling(%d);\n", ani_no);
+		pause_traveling(ani_no);
 
 		return 1;
 	}
@@ -4998,7 +4998,7 @@ static int seg002(unsigned short offs) {
 
 			nvf.dst = Real2Host(host_readd(nvf_p + 0));
 			nvf.src = Real2Host(host_readd(nvf_p + 4));
-			nvf.nr = host_readw(nvf_p + 8);
+			nvf.no = host_readw(nvf_p + 8);
 			nvf.type = host_readb(nvf_p + 10);
 			nvf.width = Real2Host(host_readd(nvf_p + 11));
 			nvf.height = Real2Host(host_readd(nvf_p + 15));
@@ -5153,7 +5153,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x2e69: {
-		unsigned short slot_nr = CPU_Pop16();
+		unsigned short slot_no = CPU_Pop16();
 		unsigned int timer = CPU_Pop32();
 		RealPt ptr = CPU_Pop32();
 		signed short mod16 = CPU_Pop16();
@@ -5162,14 +5162,14 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(mod16);
 		CPU_Push32(ptr);
 		CPU_Push32(timer);
-		CPU_Push16(slot_nr);
+		CPU_Push16(slot_no);
 
 		signed char mod = (signed char)(mod16 & 0xff);
 		signed char who = (signed char)(who16 & 0xff);
 
 		D1_LOG("set_mod_slot(%d, %d, 0x%x, %+d, %d)\n",
-			slot_nr, timer, ptr, mod, who);
-		set_mod_slot(slot_nr, timer, Real2Host(ptr), mod, who);
+			slot_no, timer, ptr, mod, who);
+		set_mod_slot(slot_no, timer, Real2Host(ptr), mod, who);
 
 		return 1;
 	}
@@ -5709,19 +5709,19 @@ static int seg003(unsigned short offs) {
 			return 1;
 		}
 		case  0x01e1: {
-			Bit16s nr = CPU_Pop16();
+			Bit16s no = CPU_Pop16();
 			Bit16s x = CPU_Pop16();
 			Bit16s y = CPU_Pop16();
 			Bit16s frame = CPU_Pop16();
 
 			D1_LOG("door_frame(%d, %d, %d, %d);\n",
-				nr, x, y, frame);
-			door_frame(nr, x, y, frame);
+				no, x, y, frame);
+			door_frame(no, x, y, frame);
 
 			CPU_Push16(frame);
 			CPU_Push16(y);
 			CPU_Push16(x);
-			CPU_Push16(nr);
+			CPU_Push16(no);
 			return 1;
 		}
 		case  0x031e: {
@@ -7120,10 +7120,10 @@ static int seg026(unsigned short offs) {
 		return 1;
 	}
 	case 0x66: {
-		Bit16u nr = CPU_Pop16();
-		CPU_Push16(nr);
-		D1_LOG("load_tempicon(%d);\n", nr);
-		load_tempicon(nr);
+		Bit16u no = CPU_Pop16();
+		CPU_Push16(no);
+		D1_LOG("load_tempicon(%d);\n", no);
+		load_tempicon(no);
 		return 1;
 	}
 	default:
@@ -7168,26 +7168,26 @@ static int seg027(unsigned short offs) {
 			return 1;
 		}
 		case 0x34: {
-			Bit16s nr = CPU_Pop16();
+			Bit16s no = CPU_Pop16();
 
-			D1_LOG("load_scenario(0x%02x);\n", nr);
-			load_scenario(nr);
+			D1_LOG("load_scenario(0x%02x);\n", no);
+			load_scenario(no);
 
-			CPU_Push16(nr);
+			CPU_Push16(no);
 			return 1;
 		}
 		case 0x39: {
-			Bit16s nr = CPU_Pop16();
-			CPU_Push16(nr);
-			reg_ax = count_fight_enemies(nr);
-			D1_LOG("count_fight_enemies(0x%x) = %d\n", nr, reg_ax);
+			Bit16s no = CPU_Pop16();
+			CPU_Push16(no);
+			reg_ax = count_fight_enemies(no);
+			D1_LOG("count_fight_enemies(0x%x) = %d\n", no, reg_ax);
 			return 1;
 		}
 		case 0x3e: {
-			Bit16s nr = CPU_Pop16();
-			D1_LOG("read_fight_lst(0x%x)\n", nr);
-			CPU_Push16(nr);
-			read_fight_lst(nr);
+			Bit16s no = CPU_Pop16();
+			D1_LOG("read_fight_lst(0x%x)\n", no);
+			CPU_Push16(no);
+			read_fight_lst(no);
 			return 1;
 		}
 		case 0x43: {
@@ -7774,20 +7774,20 @@ static int seg039(unsigned short offs) {
 			return 1;
 		}
 		case 0x2a: {
-			unsigned short sheet_nr = CPU_Pop16();
+			unsigned short sheet_no = CPU_Pop16();
 			unsigned short enemy_id_16 = CPU_Pop16();
 			unsigned short round_16 = CPU_Pop16();
 			CPU_Push16(round_16);
 			CPU_Push16(enemy_id_16);
-			CPU_Push16(sheet_nr);
+			CPU_Push16(sheet_no);
 
 			signed char enemy = (signed char)(enemy_id_16 & 0xff);
 			signed char round = (signed char)(round_16 & 0xff);
 
 			D1_LOG("fill_enemy_sheet(%d, %d, %d);\n",
-				sheet_nr, enemy, round);
+				sheet_no, enemy, round);
 
-			fill_enemy_sheet(sheet_nr, enemy, round);
+			fill_enemy_sheet(sheet_no, enemy, round);
 
 			return 1;
 		}
@@ -11491,44 +11491,44 @@ static int seg105(unsigned short offs) {
 			RealPt hero = CPU_Pop32();
 			Bit16s item = CPU_Pop16();
 			Bit16s v2 = CPU_Pop16();
-			Bit16s nr = CPU_Pop16();
-			CPU_Push16(nr);
+			Bit16s no = CPU_Pop16();
+			CPU_Push16(no);
 			CPU_Push16(v2);
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = give_hero_new_item(Real2Host(hero), item, v2, nr);
+			reg_ax = give_hero_new_item(Real2Host(hero), item, v2, no);
 			D1_LOG("far new(%s, %s, %d, %d); = %d \n",
 				(char*)Real2Host(hero) + 0x10,
 				get_itemname(item),
-				v2, nr, (signed short)reg_ax);
+				v2, no, (signed short)reg_ax);
 			return 1;
 		}
 		case 0x34: {
 			RealPt hero = CPU_Pop32();
 			signed short pos = CPU_Pop16();
-			signed short nr = CPU_Pop16();
-			CPU_Push16(nr);
+			signed short no = CPU_Pop16();
+			CPU_Push16(no);
 			CPU_Push16(pos);
 			CPU_Push32(hero);
 
-			reg_ax = drop_item(Real2Host(hero), pos, nr);
+			reg_ax = drop_item(Real2Host(hero), pos, no);
 			D1_LOG("drop_item(%s, %d, %d); = %d\n",
-				schick_getCharname(hero), pos, nr, reg_ax);
+				schick_getCharname(hero), pos, no, reg_ax);
 
 			return 1;
 		}
 		case 0x39: {
 			signed short id = CPU_Pop16();
 			signed short unused = CPU_Pop16();
-			signed short nr = CPU_Pop16();
-			CPU_Push16(nr);
+			signed short no = CPU_Pop16();
+			CPU_Push16(no);
 			CPU_Push16(unused);
 			CPU_Push16(id);
 
-			reg_ax = get_item(id, unused, nr);
+			reg_ax = get_item(id, unused, no);
 			D1_LOG("get_item(%d, %d, %d) = %d;\n",
-				id, unused, nr, reg_ax);
+				id, unused, no, reg_ax);
 
 			return 1;
 		}

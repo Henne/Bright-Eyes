@@ -766,7 +766,7 @@ void FIG_load_ship_sprites(void)
 
 				nvf.dst = ptr;
 				nvf.src = Real2Host(ds_readd(FIGHTOBJ_BUF));
-				nvf.nr = l_si;
+				nvf.no = l_si;
 				nvf.type = 0;
 				nvf.width = (Bit8u*)&width;
 				nvf.height = (Bit8u*)&height;
@@ -862,7 +862,7 @@ signed short do_fight(signed short fight_id)
 	}
 
 	ds_writew(TIMERS_DISABLED, 1);
-	ds_writew(CURRENT_FIG_NR, fight_id);
+	ds_writew(CURRENT_FIG_NO, fight_id);
 
 	textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);

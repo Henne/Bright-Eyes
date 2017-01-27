@@ -707,19 +707,19 @@ void load_objects_nvf(void)
 	nvf.width = (Bit8u*)&fd;
 	nvf.height = (Bit8u*)&fd;
 	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF));
-	nvf.nr = 12;
+	nvf.no = 12;
 	process_nvf(&nvf);
 
 	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0x683;
-	nvf.nr = 13;
+	nvf.no = 13;
 	process_nvf(&nvf);
 
 	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0xcaf;
-	nvf.nr = 14;
+	nvf.no = 14;
 	process_nvf(&nvf);
 
 	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0xcef;
-	nvf.nr = 15;
+	nvf.no = 15;
 	process_nvf(&nvf);
 
 	array_add(Real2Host(ds_readd(OBJECTS_NVF_BUF)), 0xd3f, 0xe0, 2);

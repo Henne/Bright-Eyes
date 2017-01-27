@@ -3,7 +3,7 @@ namespace M302de {
 #endif
 
 //static
-unsigned short CD_set_drive_nr(void);
+unsigned short CD_set_drive_no(void);
 //static
 void CD_driver_request(RealPt req);
 //static

@@ -197,7 +197,7 @@ void PHX_phextempel(void)
 {
 	signed short answer;		/* the selected answer from the dialogs */
 	signed short old_tb_width;	/* saving the width of the textboxes */
-	signed short old_loc;		/* saving the nr of the old location */
+	signed short old_loc;		/* saving the no of the old location */
 
 	old_tb_width = ds_readws(TEXTBOX_WIDTH);
 

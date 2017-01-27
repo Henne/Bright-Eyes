@@ -1060,7 +1060,7 @@ extern char ds[DS_SIZE];
 #define mem_writew(p, d) (*(Bit16u*)(p) = (d))
 #define mem_writed(p, d) (*(Bit32u*)(p) = (d))
 
-#define get_hero(nr) ((Bit8u*)ds_readfp(HEROS) + SIZEOF_HERO * (nr))
+#define get_hero(no) ((Bit8u*)ds_readfp(HEROS) + SIZEOF_HERO * (no))
 
 #ifdef M302de_ORIGINAL_BUGFIX
 #define ds_writeb_z(addr, val) (if (ds_readb(addr) == 0) ds_writeb(addr, val))
@@ -1175,12 +1175,12 @@ struct bittest {
 
 #define get_itemuser() ((Bit8u*)ds_readfp(ITEMUSER))
 
-#define get_ttx(nr) (char*)(host_readd(ds_readfp(TEXT_LTX_INDEX) + 4 * (nr)))
-#define get_tx(nr) (char*)(host_readd(ds_readfp(TX_INDEX) + 4 * (nr)))
-#define get_tx2(nr) (char*)(host_readd(ds_readfp(TX2_INDEX) + 4 * (nr)))
-#define get_monname(nr) ((char*)(host_readd(ds_readfp(MONNAMES_INDEX) + 4 * (nr))))
-#define get_itemsdat(nr) ((char*)(ds_readfp(ITEMSDAT) + 12 * (nr)))
-#define get_itemname(nr) ((char*)(host_readd(ds_readfp(ITEMSNAME) + 4 * (nr))))
+#define get_ttx(no) (char*)(host_readd(ds_readfp(TEXT_LTX_INDEX) + 4 * (no)))
+#define get_tx(no) (char*)(host_readd(ds_readfp(TX_INDEX) + 4 * (no)))
+#define get_tx2(no) (char*)(host_readd(ds_readfp(TX2_INDEX) + 4 * (no)))
+#define get_monname(no) ((char*)(host_readd(ds_readfp(MONNAMES_INDEX) + 4 * (no))))
+#define get_itemsdat(no) ((char*)(ds_readfp(ITEMSDAT) + 12 * (no)))
+#define get_itemname(no) ((char*)(host_readd(ds_readfp(ITEMSNAME) + 4 * (no))))
 
 #define get_cb_val(x, y) (host_readbs(ds_readfp(CHESSBOARD) + ((y) * 25) + (x)))
 #define set_cb_val(x, y, val) (host_writeb((ds_readfp(CHESSBOARD)) + (y) * 25 + (x), (val)))

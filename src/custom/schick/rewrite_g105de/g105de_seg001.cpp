@@ -42,7 +42,7 @@ static unsigned short CD_get_first_drive() {
 	return reg_cx;
 }
 
-unsigned short CD_set_drive_nr() {
+unsigned short CD_set_drive_no() {
 
 	if(CD_has_drives() == 0)
 		return 0;
@@ -71,7 +71,7 @@ unsigned int CD_get_tod() {
 	return (reg_dx << 16) | reg_ax;
 }
 
-void seg001_00bb(unsigned short track_nr)
+void seg001_00bb(unsigned short track_no)
 {
 	unsigned int track_start, track_end;
 	unsigned int track_len, tmp;
@@ -81,27 +81,27 @@ void seg001_00bb(unsigned short track_nr)
 
 	real_writew(reloc_gen + CDSEG, 0x8f, 0);
 
-	tmp = real_readd(reloc_gen + CDSEG, 0x10a + track_nr * 8) & 0x00ffffff;
+	tmp = real_readd(reloc_gen + CDSEG, 0x10a + track_no * 8) & 0x00ffffff;
 	real_writed(reloc_gen + CDSEG, 0x9a, tmp);
 
 	/* calculate track_start */
-	tmp = real_readb(reloc_gen + CDSEG, 0x10c + track_nr * 8) * 60;
-	tmp += real_readb(reloc_gen + CDSEG, 0x10b + track_nr * 8);
+	tmp = real_readb(reloc_gen + CDSEG, 0x10c + track_no * 8) * 60;
+	tmp += real_readb(reloc_gen + CDSEG, 0x10b + track_no * 8);
 	tmp *= 75;
-	tmp += real_readb(reloc_gen + CDSEG, 0x10a + track_nr * 8);
+	tmp += real_readb(reloc_gen + CDSEG, 0x10a + track_no * 8);
 	track_start = tmp;
 
 	/* calculate track_end */
-	if (real_readb(reloc_gen + CDSEG, 0x422) == track_nr) {
+	if (real_readb(reloc_gen + CDSEG, 0x422) == track_no) {
 		tmp = real_readb(reloc_gen + CDSEG, 0x425) * 60;
 		tmp += real_readb(reloc_gen + CDSEG, 0x424);
 		tmp *= 75;
 		tmp += real_readb(reloc_gen + CDSEG, 0x423);
 	} else {
-		tmp = real_readb(reloc_gen + CDSEG, 0x114 + track_nr * 8) * 60;
-		tmp += real_readb(reloc_gen + CDSEG, 0x113 + track_nr * 8);
+		tmp = real_readb(reloc_gen + CDSEG, 0x114 + track_no * 8) * 60;
+		tmp += real_readb(reloc_gen + CDSEG, 0x113 + track_no * 8);
 		tmp *= 75;
-		tmp += real_readb(reloc_gen + CDSEG, 0x112 + track_nr * 8);
+		tmp += real_readb(reloc_gen + CDSEG, 0x112 + track_no * 8);
 	}
 	track_end = tmp;
 
@@ -197,7 +197,7 @@ void seg001_0465()
 
 bool seg001_0600()
 {
-	if (CD_set_drive_nr() == 0)
+	if (CD_set_drive_no() == 0)
 		return false;
 
 	ds_writew(0x95, 1);

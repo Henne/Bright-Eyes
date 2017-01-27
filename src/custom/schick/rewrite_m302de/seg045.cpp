@@ -66,7 +66,7 @@ void seg045_0000(signed short fighter_id, signed short type, signed short a3)
 
 	nvf.dst = Real2Host(ds_readd(FIG_SHOT_BOLT_BUF));
 	nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
-	nvf.nr = ds_readbs((FIG_LIST_ELEM+2));
+	nvf.no = ds_readbs((FIG_LIST_ELEM+2));
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&obj_x;
 	nvf.height = (Bit8u*)&obj_x;
@@ -175,7 +175,7 @@ void seg045_0273(signed short x, signed short y, signed short spell_ani_id)
 	nvf.dst = Real2Host(ds_readd(FIG_SPELLGFX_BUF));
 	nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
 
-	nvf.nr = a.a[spell_ani_id - 1];
+	nvf.no = a.a[spell_ani_id - 1];
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;

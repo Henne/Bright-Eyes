@@ -16,14 +16,14 @@ void bc_exit(Bit16u exitval)
 	exit(exitval);
 }
 
-RealPt bc__dos_getvect(Bit16s intnr)
+RealPt bc__dos_getvect(Bit16s intno)
 {
-	return host_readd(MemBase + intnr * 4);
+	return host_readd(MemBase + intno * 4);
 }
 
-void bc__dos_setvect(Bit16s intnr, RealPt ptr)
+void bc__dos_setvect(Bit16s intno, RealPt ptr)
 {
-	host_writed(MemBase + intnr * 4, ptr);
+	host_writed(MemBase + intno * 4, ptr);
 }
 
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {

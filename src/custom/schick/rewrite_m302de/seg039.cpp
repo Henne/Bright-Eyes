@@ -81,11 +81,11 @@ signed short FIG_get_range_weapon_type(Bit8u *hero)
 /**
  * \brief   fills an enemies sheet from a template
  *
- * \param   sheet_nr    the number of the sheet
+ * \param   sheet_no    the number of the sheet
  * \param   enemy_id    the ID of the enemy (MONSTER.DAT)
  * \param   round       the fight round the enemy appears
  */
-void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned char round)
+void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned char round)
 {
 
 	Bit8u *monster;
@@ -94,7 +94,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 
 	/* calculate the pointers */
 	monster = Real2Host(ds_readd(MONSTER_DAT_BUF)) + enemy_id * SIZEOF_MONSTER;
-	sheet = p_datseg + ENEMY_SHEETS + sheet_nr * SIZEOF_ENEMY_SHEET;
+	sheet = p_datseg + ENEMY_SHEETS + sheet_no * SIZEOF_ENEMY_SHEET;
 
 	/* erease the sheet */
 	memset(sheet, 0, SIZEOF_ENEMY_SHEET);
@@ -131,11 +131,11 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 		if the current fight is 188, set MR to 5 (Travel-Event 84),
 		if the current fight is 192, and the enemy
 		is no "Orkchampion" then set a flag */
-	if (ds_readw(CURRENT_FIG_NR) == 188) {
+	if (ds_readw(CURRENT_FIG_NO) == 188) {
 
 		host_writeb(sheet + ENEMY_SHEET_MR, 5);
 
-	} else if ((ds_readw(CURRENT_FIG_NR) == 192) && (host_readb(sheet + ENEMY_SHEET_MON_ID) != 0x48)) {
+	} else if ((ds_readw(CURRENT_FIG_NO) == 192) && (host_readb(sheet + ENEMY_SHEET_MON_ID) != 0x48)) {
 	        // 0x20 = 0010 0000
 			or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20);
 
@@ -167,7 +167,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	host_writeb(sheet + ENEMY_SHEET_ROUND_APPEAR, round);
 
 	host_writeb(sheet + ENEMY_SHEET_VIEWDIR,
-		host_readb(Real2Host(ds_readd(CURRENT_FIGHT)) + sheet_nr * SIZEOF_FIGHT_MONSTER + FIGHT_MONSTERS_VIEWDIR));
+		host_readb(Real2Host(ds_readd(CURRENT_FIGHT)) + sheet_no * SIZEOF_FIGHT_MONSTER + FIGHT_MONSTERS_VIEWDIR));
 
 	host_writeb(sheet + ENEMY_SHEET_SHOTS, host_readb(monster + MONSTER_SHOTS));
 	host_writew(sheet + ENEMY_SHEET_SHOT_DAM, host_readw(monster + MONSTER_SHOT_DAM));
@@ -178,7 +178,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	/* Another hack:
 		If the current fight == 94 and the enemy is "Kultist",
 		set a flag */
-	if ((ds_readw(CURRENT_FIG_NR) == 94) && (host_readb(sheet + ENEMY_SHEET_MON_ID) == 0x38)) {
+	if ((ds_readw(CURRENT_FIG_NO) == 94) && (host_readb(sheet + ENEMY_SHEET_MON_ID) == 0x38)) {
 
 		or_ptr_bs(sheet + ENEMY_SHEET_STATUS2, 0x4);
 
@@ -201,7 +201,7 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 	signed short i;
 
 	/* check if an object is already on that field
-		check if the object nr is valid */
+		check if the object no is valid */
 	if ((get_cb_val(x, y) > 0) || (object < 0)) {
 		return 0;
 	}
@@ -317,7 +317,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 
 		nvf.src = Real2Host(load_fight_figs(ds_readw(FIG_LIST_ELEM)));
 		nvf.dst = Real2Host(ds_readd((FIG_LIST_ELEM+23)));
-		nvf.nr = ds_readbs((FIG_LIST_ELEM+2));
+		nvf.no = ds_readbs((FIG_LIST_ELEM+2));
 		nvf.type = 0;
 		nvf.width = (Bit8u*)&l1;
 		nvf.height = (Bit8u*)&l1;
@@ -410,7 +410,7 @@ void FIG_init_heroes(void)
 	signed short cb_x;
 	signed short cb_y;
 	signed short l_si;
-	signed short l_di; /* player char nr */
+	signed short l_di; /* player char no */
 
 	for (l_si = 0; l_si <= 6; l_si++) {
 
@@ -434,7 +434,7 @@ void FIG_init_heroes(void)
 		host_writeb(hero + HERO_ENEMY_ID, 0);
 
 		/* FINAL FIGHT */
-		if (ds_readw(CURRENT_FIG_NR) == 192) {
+		if (ds_readw(CURRENT_FIG_NO) == 192) {
 			if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 				cb_x = host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_PLAYERS_X);
 				cb_y = host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_PLAYERS_Y);

@@ -124,7 +124,7 @@ void final_intro(void)
 
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = 3;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
@@ -134,7 +134,7 @@ void final_intro(void)
 
 	nvf.dst = Real2Host(ptr2);
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
-	nvf.nr = 1;
+	nvf.no = 1;
 	nvf.type = 3;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
@@ -179,14 +179,14 @@ void final_intro(void)
 #if defined(__BORLANDC__)
 static
 #endif
-RealPt hyg_ani_1(signed short nvf_nr, Bit8u *ptr)
+RealPt hyg_ani_1(signed short nvf_no, Bit8u *ptr)
 {
 	HugePt retval;
 	struct nvf_desc nvf;
 
 	nvf.dst = Real2Host(host_readd(ptr));
 	nvf.src = Real2Host(ds_readd(RENDERBUF_PTR));
-	nvf.nr = nvf_nr;
+	nvf.no = nvf_no;
 	nvf.type = 3;
 	nvf.width = ptr + 4;
 	nvf.height = ptr + 6;
@@ -444,7 +444,7 @@ void show_outro(void)
 
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
@@ -478,7 +478,7 @@ void show_outro(void)
 
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
@@ -512,7 +512,7 @@ void show_outro(void)
 
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;

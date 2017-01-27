@@ -363,8 +363,8 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 
 		if (i >= 0xf8 && i < 0x418) {
 			//modification slots 100x8 byte
-			unsigned short s_nr=((unsigned short)i-0xf8)/8;
-			unsigned short s_of=status_offset+s_nr*8+0xf8;
+			unsigned short s_no=((unsigned short)i-0xf8)/8;
+			unsigned short s_of=status_offset+s_no*8+0xf8;
 
 			unsigned int cnt = ds_readd(s_of);
 			unsigned short off = ds_readw(s_of + 4);
@@ -372,36 +372,36 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			signed char mod = ds_readb(s_of + 7);
 
 			/* align i to the mod slot */
-			i = 0xf8 + s_nr*8;
+			i = 0xf8 + s_no*8;
 
 			/* deactivate mod slot */
-			if (cnt == 0 && host_readd(status_copy+s_nr*8+0xf8))
+			if (cnt == 0 && host_readd(status_copy+s_no*8+0xf8))
 			{
-				D1_INFO("Mod Timer %d beendet\n", s_nr);
-				memcpy(status_copy+s_nr*8+0xf8,
-					status_ingame+s_nr*8+0xf8, 8);
+				D1_INFO("Mod Timer %d beendet\n", s_no);
+				memcpy(status_copy+s_no*8+0xf8,
+					status_ingame+s_no*8+0xf8, 8);
 				i += 8;
 				continue;
 			}
 
 			/* only subtract the timer */
-			if (off == host_readw(status_copy+s_nr*8+0xf8+4) ||
-				tar == host_readb(status_copy+s_nr*8+0xf8+6) ||
-				mod == host_readb(status_copy+s_nr*8+0xf8+7))
+			if (off == host_readw(status_copy+s_no*8+0xf8+4) ||
+				tar == host_readb(status_copy+s_no*8+0xf8+6) ||
+				mod == host_readb(status_copy+s_no*8+0xf8+7))
 			{
-				host_writed(status_copy+s_nr*8+0xf8, cnt);
+				host_writed(status_copy+s_no*8+0xf8, cnt);
 				i += 8;
 				continue;
 			}
 
 			/* activate a new slot */
-			if (off != 0 && !host_readw(status_copy+s_nr*8+0xf8+4)) {
+			if (off != 0 && !host_readw(status_copy+s_no*8+0xf8+4)) {
 				D1_INFO("Mod Timer in Slot %d aktiviert\n",
-						s_nr);
+						s_no);
 				D1_INFO("Offset: 0x%x\tBonus %d auf %d\n",
 						off, mod, tar);
-				memcpy(status_copy+s_nr*8+0xf8,
-					status_ingame+s_nr*8+0xf8, 8);
+				memcpy(status_copy+s_no*8+0xf8,
+					status_ingame+s_no*8+0xf8, 8);
 				i += 8;
 				continue;
 			}
@@ -482,21 +482,21 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		}
 		/* Dialogpartner */
 		if (i >= 0x8e4 && i < 0xa1a) {
-			unsigned long s_nr = (i - 0x8e4)/38;
-			memcpy(status_copy+0x8e4+s_nr*38,
-					status_ingame+0x8e4+s_nr*38, 38);
-			D1_LOG("Dialogpartner Slot %ld geaendert\n", s_nr);
-			i = 0x8e4 + s_nr * 38;
+			unsigned long s_no = (i - 0x8e4)/38;
+			memcpy(status_copy+0x8e4+s_no*38,
+					status_ingame+0x8e4+s_no*38, 38);
+			D1_LOG("Dialogpartner Slot %ld geaendert\n", s_no);
+			i = 0x8e4 + s_no * 38;
 			continue;
 
 		}
 		/* Dialoglayout */
 		if (i >= 0xa60 && i < 0xf60) {
-			unsigned long s_nr = (i - 0xa60)/8;
-			memcpy(status_copy+0xa60+s_nr*8,
-					status_ingame+0xa60+s_nr*8, 8);
-			D1_LOG("Dialoglayout Slot %ld geaendert\n", s_nr);
-			i = 0xa60 + s_nr * 8;
+			unsigned long s_no = (i - 0xa60)/8;
+			memcpy(status_copy+0xa60+s_no*8,
+					status_ingame+0xa60+s_no*8, 8);
+			D1_LOG("Dialoglayout Slot %ld geaendert\n", s_no);
+			i = 0xa60 + s_no * 8;
 			continue;
 		}
 		/*

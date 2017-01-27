@@ -35,12 +35,12 @@ namespace M302de {
 #if defined(__BORLANDC__)
 static
 #endif
-void pause_traveling(signed short ani_nr)
+void pause_traveling(signed short ani_no)
 {
 
 	ds_writeb(EVENT_ANI_BUSY, 1);
 
-	load_ani(ani_nr);
+	load_ani(ani_no);
 
 	draw_main_screen();
 
@@ -58,7 +58,7 @@ void pause_traveling(signed short ani_nr)
 	/* c = b = a = 0 */
 	ds_writeb(SHOW_TRAVEL_MAP, (unsigned char)ds_writew(BASEPOS_X, ds_writew(WALLCLOCK_UPDATE, 0)));
 
-	ds_writew(BASEPOS_Y, ani_nr == 21 ? 60: 70);
+	ds_writew(BASEPOS_Y, ani_no == 21 ? 60: 70);
 	ds_writew(TEXTBOX_WIDTH, 9);
 }
 

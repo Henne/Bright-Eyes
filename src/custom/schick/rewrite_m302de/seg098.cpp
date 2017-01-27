@@ -146,7 +146,7 @@ struct dummy1 {
  */
 void magic_heal_ani(Bit8u *hero)
 {
-	signed short target_nr;
+	signed short target_no;
 	struct dummy1 a = *(struct dummy1*)(p_datseg + ANI_HEAL_PICSTARS);
 	RealPt target;
 	signed short fd;
@@ -167,8 +167,8 @@ void magic_heal_ani(Bit8u *hero)
 	read_archive_file(fd, Real2Host(ds_readd(BUFFER8_PTR)) + 0x800, 0x400);
 	bc_close(fd);
 
-	target_nr = host_readbs(hero + HERO_ENEMY_ID) - 1;
-	target = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * target_nr;
+	target_no = host_readbs(hero + HERO_ENEMY_ID) - 1;
+	target = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * target_no;
 
 	ds_writew(PIC_COPY_V1, 0);
 	ds_writew(PIC_COPY_V2, 0);
@@ -191,9 +191,9 @@ void magic_heal_ani(Bit8u *hero)
 		do_pic_copy(2);
 
 		/* copy buffer content to screen */
-		ds_writew(PIC_COPY_X1, ds_readw(HERO_PIC_POSX + 2 * target_nr));
+		ds_writew(PIC_COPY_X1, ds_readw(HERO_PIC_POSX + 2 * target_no));
 		ds_writew(PIC_COPY_Y1, 157);
-		ds_writew(PIC_COPY_X2, ds_readw(HERO_PIC_POSX + 2 * target_nr) + 31);
+		ds_writew(PIC_COPY_X2, ds_readw(HERO_PIC_POSX + 2 * target_no) + 31);
 		ds_writew(PIC_COPY_Y2, 188);
 		ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 		ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
@@ -503,17 +503,17 @@ signed short use_magic(RealPt hero)
  * \brief   check if a spellclass can be used
  *
  * \param   hero        pointer to the hero
- * \param   spellclass_nr the number of the spellclass
+ * \param   spellclass_no the number of the spellclass
  * \return              0 = can't be used, 1 = can be used
  */
-signed short can_use_spellclass(Bit8u *hero, signed short spellclass_nr)
+signed short can_use_spellclass(Bit8u *hero, signed short spellclass_no)
 {
 	signed short i;
 	signed short first_spell;
 
 
-	first_spell = ds_readbs(SPELLS_INDEX + 2 * spellclass_nr);
-	for (i = 0; ds_readbs((SPELLS_INDEX + 1) + 2 * spellclass_nr) > i; i++) {
+	first_spell = ds_readbs(SPELLS_INDEX + 2 * spellclass_no);
+	for (i = 0; ds_readbs((SPELLS_INDEX + 1) + 2 * spellclass_no) > i; i++) {
 
 		if ((host_readbs(hero + HERO_SPELLS + first_spell + i) >= -5) &&
 			(((ds_readw(IN_FIGHT) != 0) && (ds_readbs((SPELL_DESCRIPTIONS + 5) + 10 * (first_spell + i)) == 1)) ||
@@ -723,7 +723,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 /**
  * \brief   makes a spell test
  */
-signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
+signed short test_spell(Bit8u *hero, signed short spell_no, signed char bonus)
 {
 	signed short retval;
 	Bit8u *spell_desc;
@@ -733,13 +733,13 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 		return 0;
 	}
 	/* check if spell skill >= -5 */
-	if (host_readbs(hero + spell_nr + HERO_SPELLS) < -5)
+	if (host_readbs(hero + spell_no + HERO_SPELLS) < -5)
 		return 0;
 	/* check if hero has enough AE */
-	if (get_spell_cost(spell_nr, 0) > host_readws(hero + HERO_AE))
+	if (get_spell_cost(spell_no, 0) > host_readws(hero + HERO_AE))
 		return -99;
 
-	spell_desc = p_datseg + spell_nr * 10 + SPELL_DESCRIPTIONS;
+	spell_desc = p_datseg + spell_no * 10 + SPELL_DESCRIPTIONS;
 
 	if (host_readb(spell_desc + 0x9) != 0) {
 
@@ -755,13 +755,13 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 		}
 	}
 
-	if ((spell_nr >= 1) && (spell_nr <= 85)) {
+	if ((spell_no >= 1) && (spell_no <= 85)) {
 
 #if !defined(__BORLANDC__)
-		D1_INFO("Zauberprobe : %s %+d ", names_spell[spell_nr], bonus);
+		D1_INFO("Zauberprobe : %s %+d ", names_spell[spell_no], bonus);
 #endif
 
-		bonus -= host_readbs(hero + spell_nr + HERO_SPELLS);
+		bonus -= host_readbs(hero + spell_no + HERO_SPELLS);
 
 		retval = test_attrib3(hero, host_readbs(spell_desc+1),
 			host_readbs(spell_desc+2), host_readbs(spell_desc+3), bonus);

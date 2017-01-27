@@ -26,19 +26,19 @@ namespace M302de {
  * \brief   copies something from ANI.DAT
  *
  * \param   dst         destination
- * \param   nr          which record to copy
+ * \param   no          which record to copy
  * \param   mode        3 for WEAPANI.DAT, anything else is ANI.DAT
  * \return              the number of copied bytes.
  */
 #if defined(__BORLANDC__)
 static
 #endif
-signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
+signed short copy_ani_stuff(Bit8u *dst, signed short no, signed short mode)
 {
 	Bit8u *buffer, *src;
 	signed char retval;
 	signed short i;
-	signed short max_nr;
+	signed short max_no;
 
 	/* ANI.DAT */
 	buffer = Real2Host(ds_readd(BUFFER_ANIDAT));
@@ -47,22 +47,22 @@ signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 	if (mode == 3)
 		buffer = Real2Host(ds_readd(BUFFER_WEAPANIDAT));
 
-	max_nr = host_readw(buffer);
+	max_no = host_readw(buffer);
 
-	/* Sanity check of nr */
-	if (nr < 0)
+	/* Sanity check of no */
+	if (no < 0)
 		return 0;
 
-	if (nr > max_nr)
+	if (no > max_no)
 		return 0;
 
 	/* set src to the requested data entry */
 	src = buffer;
-	src += max_nr + 2;
+	src += max_no + 2;
 
 	retval = host_readb(buffer + 2);
 
-	for (i = 1; i <= nr; i++) {
+	for (i = 1; i <= no; i++) {
 		src += retval;
 		retval = host_readb(buffer + i + 2);
 	}
@@ -84,7 +84,7 @@ signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 	return retval;
 }
 
-void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
+void seg037_00ae(Bit8u *enemy, signed short enemy_no)
 {
 	signed char b1;
 	signed char b2;
@@ -183,7 +183,7 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 	memset(p_datseg + (0xd8ce + 0xf3), -1, 0xf3);
 	memset(p_datseg + (0xd8ce + 3*0xf3), -1, 0xf3);
 
-	FIG_init_list_elem(enemy_nr + 10);
+	FIG_init_list_elem(enemy_no + 10);
 }
 
 
@@ -430,7 +430,7 @@ struct dummy {
 	struct coords d[4];
 };
 
-signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attack_foe, signed short x, signed short y)
+signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attack_foe, signed short x, signed short y)
 {
 	signed short available_spells;
 	signed short l2;
@@ -491,7 +491,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 		if ( (mode = get_foe_attack_mode(l2, attack_foe)) > 0) {
 
 			if (mode == 3) {
-				host_writeb(enemy + ENEMY_SHEET_ENEMY_ID, enemy_nr + 10);
+				host_writeb(enemy + ENEMY_SHEET_ENEMY_ID, enemy_no + 10);
 				host_writeb(enemy + ENEMY_SHEET_CUR_SPELL, (signed char)l2);
 				retval = 1;
 				done = 1;
@@ -524,13 +524,13 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 							if (!enemy_cursed(enemy)) {
 
 								if (mode == 1)
-									l6 = seg038(enemy, enemy_nr, x, y, 2);
+									l6 = seg038(enemy, enemy_no, x, y, 2);
 								else
-									l6 = seg038(enemy, enemy_nr, x, y, 0);
+									l6 = seg038(enemy, enemy_no, x, y, 0);
 
 								if (l6 != -1) {
-									seg037_00ae(enemy, enemy_nr);
-									FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
+									seg037_00ae(enemy, enemy_no);
+									FIG_search_obj_on_cb(enemy_no + 10, &x, &y);
 
 #if !defined(__BORLANDC__)
 									/* BE-fix */
@@ -573,13 +573,13 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 							if (!enemy_cursed(enemy)) {
 
 								if (mode == 1)
-									l6 = seg038(enemy, enemy_nr, x, y, 7);
+									l6 = seg038(enemy, enemy_no, x, y, 7);
 								else
-									l6 = seg038(enemy, enemy_nr, x, y, 6);
+									l6 = seg038(enemy, enemy_no, x, y, 6);
 
 								if (l6 != -1) {
-									seg037_00ae(enemy, enemy_nr);
-									FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
+									seg037_00ae(enemy, enemy_no);
+									FIG_search_obj_on_cb(enemy_no + 10, &x, &y);
 
 #if !defined(__BORLANDC__)
 									/* BE-fix */
@@ -613,7 +613,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 }
 
 
-signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attack_foe, signed short x, signed short y)
+signed short seg037_0b3e(Bit8u* enemy, signed short enemy_no, signed short attack_foe, signed short x, signed short y)
 {
 
 	signed short cnt;
@@ -655,13 +655,13 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attac
 
 					if (!enemy_cursed(enemy)) {
 						if (attack_foe == 0)
-							l4 = seg038(enemy, enemy_nr, x, y, 6);
+							l4 = seg038(enemy, enemy_no, x, y, 6);
 						else
-							l4 = seg038(enemy, enemy_nr, x, y, 7);
+							l4 = seg038(enemy, enemy_no, x, y, 7);
 
 						if (l4 != -1) {
-							seg037_00ae(enemy, enemy_nr);
-							FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
+							seg037_00ae(enemy, enemy_no);
+							FIG_search_obj_on_cb(enemy_no + 10, &x, &y);
 
 #if !defined(__BORLANDC__)
 							/* BE-fix */
@@ -685,7 +685,7 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attac
 }
 
 
-void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed short y)
+void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed short y)
 {
 	signed short l1;
 	signed short attack_foe;
@@ -714,7 +714,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 #endif
 
 	/* check if we are in a special fight */
-	if (ds_readws(CURRENT_FIG_NR) == 180) {
+	if (ds_readws(CURRENT_FIG_NO) == 180) {
 		/* F064: fight against GORAH */
 
 		if (host_readbs(enemy) == 0x46) {
@@ -725,19 +725,19 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 			}
 		}
 
-	} else if ((ds_readws(CURRENT_FIG_NR) == 189) &&
+	} else if ((ds_readws(CURRENT_FIG_NO) == 189) &&
 			(random_interval(8, 12) <= ds_readws(FIGHT_ROUND))) {
 		/* F099: fight against four HARPIES */
 
 			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
 
-	} else if ((ds_readws(CURRENT_FIG_NR) == 191) &&
+	} else if ((ds_readws(CURRENT_FIG_NO) == 191) &&
 			(FIG_count_active_enemies() <= 3)) {
 		/* F122: fight against 13 WOLVES */
 
 			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
 
-	} else if (ds_readws(CURRENT_FIG_NR) == 192) {
+	} else if (ds_readws(CURRENT_FIG_NO) == 192) {
 		/* F144: final fight */
 
 		if (enemy_cursed(enemy)) {
@@ -752,7 +752,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 			ds_writebs(FIG_CB_MAKRER_ID, -1);
 		}
 
-		FIG_init_list_elem(enemy_nr + 10);
+		FIG_init_list_elem(enemy_no + 10);
 
 		draw_fight_screen_pal(0);
 
@@ -762,7 +762,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 		/* should I flee */
 		if (host_readbs(enemy + ENEMY_SHEET_LE_FLEE) >= host_readws(enemy + ENEMY_SHEET_LE)) {
 #if !defined(__BORLANDC__)
-			D1_INFO("Feind %d flieht\n", enemy_nr);
+			D1_INFO("Feind %d flieht\n", enemy_no);
 #endif
 			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
 		}
@@ -771,7 +771,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 		if (random_schick(100) < 5) {
 #if !defined(__BORLANDC__)
 			if (enemy_illusion(enemy)) {
-				D1_INFO("Feind %d verliert seinen Illusionszauber\n", enemy_nr);
+				D1_INFO("Feind %d verliert seinen Illusionszauber\n", enemy_no);
 			}
 #endif
 			and_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 0xdf);
@@ -787,10 +787,10 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 
 			/* enemy can cast spells and has AE >= 5 left */
 			if ((host_readbs(enemy + ENEMY_SHEET_MAG_ID) != -1) && (host_readws(enemy + ENEMY_SHEET_AE) >= 5) &&
-				(seg037_0791(enemy, enemy_nr, attack_foe, x, y)))
+				(seg037_0791(enemy, enemy_no, attack_foe, x, y)))
 			{
 #if !defined(__BORLANDC__)
-				D1_INFO("Feind %d zaubert\n", enemy_nr);
+				D1_INFO("Feind %d zaubert\n", enemy_no);
 #endif
 				host_writeb(enemy + ENEMY_SHEET_ACTION_ID, 4);
 
@@ -805,10 +805,10 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 
 			/* enemy has range weapons */
 			if ( ((host_readbs(enemy + ENEMY_SHEET_SHOTS) > 0) || (host_readbs(enemy + ENEMY_SHEET_THROWS) > 0)) &&
-				seg037_0b3e(enemy, enemy_nr, attack_foe, x, y))
+				seg037_0b3e(enemy, enemy_no, attack_foe, x, y))
 			{
 #if !defined(__BORLANDC__)
-				D1_INFO("Feind %d greift mit Fernkampfwaffe an\n", enemy_nr);
+				D1_INFO("Feind %d greift mit Fernkampfwaffe an\n", enemy_no);
 #endif
 				host_writeb(enemy + ENEMY_SHEET_ACTION_ID, 15);
 
@@ -835,7 +835,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 
 						l_di = get_cb_val(x - diff.d[dir].x, y - diff.d[dir].y);
 
-						if (l_di && (enemy_nr + 30 != l_di)) {
+						if (l_di && (enemy_no + 30 != l_di)) {
 
 							if ((l_di < 0) || (l_di >= 50) || (l_di >= 30) ||
 								((l_di > 0) && (l_di < 10) && !hero_dead(get_hero(l_di - 1))) ||
@@ -867,20 +867,20 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 			if (!enemy_cursed(enemy)) {
 
 				if (enemy_bit10(enemy)) {
-					l1 = seg038(enemy, enemy_nr, x, y, 4);
+					l1 = seg038(enemy, enemy_no, x, y, 4);
 					host_writeb(enemy + ENEMY_SHEET_BP, 0);
 				} else {
 					if (enemy_bb(enemy))
-						l1 = seg038(enemy, enemy_nr, x, y, 2);
+						l1 = seg038(enemy, enemy_no, x, y, 2);
 					else
-						l1 = seg038(enemy, enemy_nr, x, y, 0);
+						l1 = seg038(enemy, enemy_no, x, y, 0);
 				}
 
 				if (l1 != -1) {
 					l6 = x;
 					l7 = y;
-					seg037_00ae(enemy, enemy_nr);
-					FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
+					seg037_00ae(enemy, enemy_no);
+					FIG_search_obj_on_cb(enemy_no + 10, &x, &y);
 
 #if !defined(__BORLANDC__)
 					/* BE-fix */

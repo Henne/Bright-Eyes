@@ -350,7 +350,7 @@ void refresh_floor_and_sky(void)
 
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 	nvf.src = Real2Host(ds_readd(TEX_SKY));
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = 3;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
@@ -365,7 +365,7 @@ void refresh_floor_and_sky(void)
 
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR)) + 208 * height;
 	nvf.src = Real2Host(ds_readd(TEX_FLOOR));
-	nvf.nr = 0;
+	nvf.no = 0;
 	nvf.type = 3;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
@@ -620,7 +620,7 @@ void seg066_0bad(void)
 void city_water_and_grass(void)
 {
 	signed short i;
-	signed short nvf_nr;
+	signed short nvf_no;
 	signed short x;
 	signed short y;
 	signed char c1;
@@ -651,13 +651,13 @@ void city_water_and_grass(void)
 
 					ptr = c1 * 18 + p_datseg + (0x750a - 18);
 
-					if ((nvf_nr = host_readws(ptr + 4)) != -1) {
+					if ((nvf_no = host_readws(ptr + 4)) != -1) {
 
 						if (bi == 7) {
-							nvf_nr += 15;
+							nvf_no += 15;
 						}
 
-						load_city_texture(x + host_readws(ptr), y + host_readws(ptr + 2), nvf_nr, 184);
+						load_city_texture(x + host_readws(ptr), y + host_readws(ptr + 2), nvf_no, 184);
 					}
 				}
 			}
@@ -670,7 +670,7 @@ void city_water_and_grass(void)
  */
 void city_building_textures(void)
 {
-	signed short nvf_nr;
+	signed short nvf_no;
 	signed short i;
 	signed short x;
 	signed short y;
@@ -716,15 +716,15 @@ void city_building_textures(void)
 						bi == 9 ? 232 : (
 						bi == 10 ? 233 : 185))))));
 
-					if ((nvf_nr = host_readws(ptr + 4)) != -1) {
+					if ((nvf_no = host_readws(ptr + 4)) != -1) {
 
 						if (ds_readws(0xe412) == 2 && bi >= 1 && bi <= 5) {
 
 							if (bi == 1) {
-								nvf_nr -= 5;
+								nvf_no -= 5;
 								l4 = 185;
 							} else {
-								nvf_nr -= 10;
+								nvf_no -= 10;
 							}
 						}
 
@@ -732,35 +732,35 @@ void city_building_textures(void)
 							load_special_textures(bi);
 						}
 
-						load_city_texture(x + host_readws(ptr), y + host_readws(ptr + 2), nvf_nr, l4);
+						load_city_texture(x + host_readws(ptr), y + host_readws(ptr + 2), nvf_no, l4);
 
 						if (bi == 9 || bi == 10) {
 							call_load_buffer();
 						}
 					}
 
-					if ((nvf_nr = host_readws(ptr + 10)) != -1) {
+					if ((nvf_no = host_readws(ptr + 10)) != -1) {
 
 						if (bi == 1) {
 							l4 = 188;
 						}
 
 						if (ds_readws(0xe412) == 1 &&
-							!(nvf_nr & 0x8000) &&
+							!(nvf_no & 0x8000) &&
 							bi >= 1 && bi <= 5)
 						{
-							nvf_nr -= 10;
+							nvf_no -= 10;
 
-						} else if (ds_readws(0xe412) == 3 && (nvf_nr & 0x8000))
+						} else if (ds_readws(0xe412) == 3 && (nvf_no & 0x8000))
 						{
-							nvf_nr = ((unsigned short)(nvf_nr & 0x7fff) - 10) | 0x8000;
+							nvf_no = ((unsigned short)(nvf_no & 0x7fff) - 10) | 0x8000;
 						}
 
-						load_city_texture(x + host_readws(ptr + 6), y + host_readws(ptr + 8), nvf_nr, l4);
+						load_city_texture(x + host_readws(ptr + 6), y + host_readws(ptr + 8), nvf_no, l4);
 					}
 
-					if ((nvf_nr = host_readws(ptr + 0x10)) != -1) {
-						load_city_texture(x + host_readws(ptr + 12), y + host_readws(ptr + 14), nvf_nr, l4);
+					if ((nvf_no = host_readws(ptr + 0x10)) != -1) {
+						load_city_texture(x + host_readws(ptr + 12), y + host_readws(ptr + 14), nvf_no, l4);
 					}
 				}
 			}
@@ -768,7 +768,7 @@ void city_building_textures(void)
 	}
 }
 
-void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
+void load_city_texture(signed short v1, signed short v2, signed short nvf_no,
 		signed short v4)
 {
 	signed short width;
@@ -780,8 +780,8 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 	Bit8u *dst;
 	struct nvf_desc nvf;
 
-	direction = (nvf_nr & 0x8000 ? 1: 0);
-	nvf_nr &= 0x3fff;
+	direction = (nvf_no & 0x8000 ? 1: 0);
+	nvf_no &= 0x3fff;
 
 	v4 -= 184;
 
@@ -792,7 +792,7 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 		nvf.src = Real2Host(ds_readd(BUFFER7_PTR));
 	}
 
-	nvf.nr = nvf_nr;
+	nvf.no = nvf_no;
 	nvf.type = (direction == 0 ? 3: 5);
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;

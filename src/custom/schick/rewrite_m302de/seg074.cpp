@@ -176,10 +176,10 @@ unsigned short get_mapval_large(signed short x, signed short y)
 /**
  * \brief   checks if the group is in prison
  *
- * \param   group_nr    number of the group
+ * \param   group_no    number of the group
  * \return              the value of the "in_prison" flag
  */
-signed short is_group_in_prison(signed short group_nr)
+signed short is_group_in_prison(signed short group_no)
 {
 	Bit8u *hero = get_hero(0);
 	signed short i;
@@ -187,7 +187,7 @@ signed short is_group_in_prison(signed short group_nr)
 	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
 		if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
-			(host_readbs(hero + HERO_GROUP_NO) == group_nr))
+			(host_readbs(hero + HERO_GROUP_NO) == group_no))
 		{
 			return host_readbs(hero + HERO_JAIL);
 		}

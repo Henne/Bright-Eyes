@@ -31,20 +31,20 @@ namespace M302de {
  * \brief   copies an ani sequence
  *
  * \param   dst         destination pointer for data
- * \param   ani_nr      * \param mode	DAT-File to use 3 = WEAPANI.DAT, else ANI.DAT
+ * \param   ani_no      * \param mode	DAT-File to use 3 = WEAPANI.DAT, else ANI.DAT
  * \return              the length of the sequence in bytes.
  */
 #if defined(__BORLANDC__)
 static
 #endif
-signed short KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short mode)
+signed short KI_copy_ani_sequence(Bit8u *dst, signed short ani_no, signed short mode)
 {
 	Bit8u *p_datbuffer;
 	Bit8u *p_datitem;
 	signed char len;
 
 	signed short i;
-	signed short ani_max_nr;
+	signed short ani_max_no;
 
 
 	/* set the right buffer */
@@ -55,23 +55,23 @@ signed short KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short 
 		p_datbuffer = Real2Host(ds_readd(BUFFER_WEAPANIDAT));
 
 	/* read how many ani sequences are in the file */
-	ani_max_nr = host_readw(p_datbuffer);
+	ani_max_no = host_readw(p_datbuffer);
 
-	/* check if the desired ani_nr is in the range */
-	if (ani_nr < 0)
+	/* check if the desired ani_no is in the range */
+	if (ani_no < 0)
 		return 0;
 
-	if (ani_nr > ani_max_nr)
+	if (ani_no > ani_max_no)
 		return 0;
 
 	/* set p_datitem to the first (0) ani sequence */
 	p_datitem = p_datbuffer;
-	p_datitem += ani_max_nr + 2;
+	p_datitem += ani_max_no + 2;
 	/* set len to the lenght first (0) ani sequence */
 	len = host_readb(p_datbuffer + 2);
 
 	/* forward to the desired ani sequence */
-	for (i = 1; i <= ani_nr; i++) {
+	for (i = 1; i <= ani_no; i++) {
 		p_datitem += len;
 		len = host_readb(p_datbuffer + i + 2);
 	}
@@ -948,7 +948,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 			if ((host_readbs(hero + HERO_TYPE) >= 7) &&		/* magic user */
 				(host_readws(hero + HERO_AE) > 10) &&	/* AE > 10 */
 				(l5 != 0) &&
-				(ds_readws(CURRENT_FIG_NR) != 192) &&	/* not in the final fight */
+				(ds_readws(CURRENT_FIG_NO) != 192) &&	/* not in the final fight */
 				(ds_readbs(AUTOFIGHT_MAGIC) != 0))		/* ??? a bool variable, maybe autofight magic */
 			{
 				if (seg036_8cf(hero, hero_pos, hero_cursed(hero), x, y)) {

@@ -273,7 +273,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 							ds_writew(PIC_COPY_Y2, array5.a[l_si] + 15);
 							ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 
-							nvf.nr = host_readws(get_itemsdat(j));
+							nvf.no = host_readws(get_itemsdat(j));
 
 							process_nvf(&nvf);
 

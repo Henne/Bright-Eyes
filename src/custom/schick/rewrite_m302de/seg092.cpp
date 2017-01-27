@@ -188,7 +188,7 @@ void chest_fulminictus(void)
  */
 void loot_simple_chest(Bit8u *chest)
 {
-	signed short item_nr;
+	signed short item_no;
 	signed short item_id;
 	signed short tw_bak;
 	char names[20][30];
@@ -200,44 +200,44 @@ void loot_simple_chest(Bit8u *chest)
 
 	do {
 
-		item_nr = 0;
+		item_no = 0;
 
 		/* write the names of the items in the chest into names[] */
-		while((item_id = host_readb(Real2Host(host_readd(chest + 0x0b)) + item_nr)) != (signed short)0x00ff) {
+		while((item_id = host_readb(Real2Host(host_readd(chest + 0x0b)) + item_no)) != (signed short)0x00ff) {
 
 
-			strcpy(names[item_nr++],
+			strcpy(names[item_no++],
 				(char*)Real2Host(GUI_name_plural(0, (Bit8u*)get_itemname(item_id))));
 		}
 
-		if (item_nr == 0) {
+		if (item_no == 0) {
 			/* this chest is empty */
 			GUI_output(get_ttx(522));
 			break;
 		} else {
 
 			/* show radio menu with item names */
-			item_nr = GUI_radio(get_ttx(521), (signed char)item_nr,
+			item_no = GUI_radio(get_ttx(521), (signed char)item_no,
 						names[0], names[1], names[2], names[3],
 						names[4], names[5], names[6], names[7],
 						names[8], names[9], names[10], names[11],
 						names[12], names[13], names[14], names[15],
 						names[16], names[17], names[18], names[19]) - 1;
 
-			if (item_nr != -2) {
+			if (item_no != -2) {
 				/* if not pressed ESC */
-				if (get_item(host_readb(Real2Host(host_readd(chest + 0xb)) + item_nr), 1, 1))
+				if (get_item(host_readb(Real2Host(host_readd(chest + 0xb)) + item_no), 1, 1))
 				{
 					/* got the item in inventory => remove from chest */
-					delete_chest_item(chest, item_nr);
+					delete_chest_item(chest, item_no);
 				} else {
 					/* group has not taken the item */
-					item_nr = -2;
+					item_no = -2;
 				}
 			}
 		}
 
-	} while (item_nr != -2);
+	} while (item_no != -2);
 
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
 }
@@ -246,20 +246,20 @@ void loot_simple_chest(Bit8u *chest)
  * \brief   deletes an item from a chest
  *
  * \param   chest       pointer to the chest
- * \param   item_nr     the number of the item to be deleted
+ * \param   item_no     the number of the item to be deleted
  */
-void delete_chest_item(Bit8u *chest, signed short item_nr)
+void delete_chest_item(Bit8u *chest, signed short item_no)
 {
 	signed char tmp;
 
 	do {
 #if defined(__BORLANDC__)
-		Real2Host(host_readd(chest + 0xb))[item_nr] = tmp = Real2Host(host_readd(chest + 0xb))[item_nr + 1];
+		Real2Host(host_readd(chest + 0xb))[item_no] = tmp = Real2Host(host_readd(chest + 0xb))[item_no + 1];
 #else
-		host_writeb(Real2Host(host_readd(chest + 0xb)) + item_nr,
-			tmp = host_readbs(Real2Host(host_readd(chest + 0xb)) + item_nr + 1));
+		host_writeb(Real2Host(host_readd(chest + 0xb)) + item_no,
+			tmp = host_readbs(Real2Host(host_readd(chest + 0xb)) + item_no + 1));
 #endif
-		item_nr++;
+		item_no++;
 
 	} while (tmp != -1);
 
@@ -274,7 +274,7 @@ void delete_chest_item(Bit8u *chest, signed short item_nr)
  */
 void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
 {
-	signed short item_nr;
+	signed short item_no;
 	signed short item_id;
 	signed short tw_bak;
 	char names[20][20];
@@ -286,44 +286,44 @@ void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
 
 	do {
 
-		item_nr = 0;
+		item_no = 0;
 
 		/* write the names of the items in the chest into names[] */
-		while((item_id = host_readb(Real2Host(host_readd(chest + 0x0b)) + item_nr)) != (signed short)0x00ff) {
+		while((item_id = host_readb(Real2Host(host_readd(chest + 0x0b)) + item_no)) != (signed short)0x00ff) {
 
 
-			strcpy(names[item_nr++],
+			strcpy(names[item_no++],
 				(char*)Real2Host(GUI_name_plural(0, (Bit8u*)get_itemname(item_id))));
 		}
 
-		if (item_nr == 0) {
+		if (item_no == 0) {
 			/* this chest is empty */
 			GUI_output(text_empty);
 			break;
 		} else {
 
 			/* show radio menu with item names */
-			item_nr = GUI_radio(text_non_empty, (signed char)item_nr,
+			item_no = GUI_radio(text_non_empty, (signed char)item_no,
 						names[0], names[1], names[2], names[3],
 						names[4], names[5], names[6], names[7],
 						names[8], names[9], names[10], names[11],
 						names[12], names[13], names[14], names[15],
 						names[16], names[17], names[18], names[19]) - 1;
 
-			if (item_nr != -2) {
+			if (item_no != -2) {
 				/* if not pressed ESC */
-				if (get_item(host_readb(Real2Host(host_readd(chest + 0xb)) + item_nr), 1, 1))
+				if (get_item(host_readb(Real2Host(host_readd(chest + 0xb)) + item_no), 1, 1))
 				{
 					/* got the item in inventory => remove from chest */
-					delete_chest_item(chest, item_nr);
+					delete_chest_item(chest, item_no);
 				} else {
 					/* group has not taken the item */
-					item_nr = -2;
+					item_no = -2;
 				}
 			}
 		}
 
-	} while (item_nr != -2);
+	} while (item_no != -2);
 
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
 }
