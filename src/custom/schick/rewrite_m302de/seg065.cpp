@@ -54,9 +54,9 @@ void do_market(void)
 			ds_writew(REQUEST_REFRESH, 0);
 		}
 
-		answer = GUI_radio(get_ttx(0xaa0), 4,
-					get_ttx(0xa90), get_ttx(0xa94),
-					get_ttx(0xa98), get_ttx(0x994));
+		answer = GUI_radio(get_ttx(680), 4,
+					get_ttx(676), get_ttx(677),
+					get_ttx(678), get_ttx(613));
 
 		if (answer == 4 || answer == -1) {
 			done = 1;
@@ -396,9 +396,9 @@ void show_times_up(void)
 	ds_writew(BASEPOS_X, 0);
 	ds_writew(BASEPOS_Y, 55);
 
-	GUI_output(get_tx2(0xdc));
-	GUI_output(get_tx2(0xe0));
-	GUI_output(get_tx2(0xe4));
+	GUI_output(get_tx2(55));
+	GUI_output(get_tx2(56));
+	GUI_output(get_tx2(57));
 
 	ds_writew(BASEPOS_X, bak1);
 	ds_writew(BASEPOS_Y, bak2);
@@ -464,7 +464,7 @@ void show_outro(void)
 
 	delay_or_keypress(200);
 
-	GUI_output(get_tx2(0xe8));
+	GUI_output(get_tx2(58));
 
 	/* load OUTRO2.NVF */
 	handle = load_archive_file(ARCHIVE_FILE_OUTRO2_NVF);
@@ -498,7 +498,7 @@ void show_outro(void)
 
 	delay_or_keypress(200);
 
-	GUI_output(get_tx2(0xec));
+	GUI_output(get_tx2(59));
 
 	/* load OUTRO3.NVF */
 	handle = load_archive_file(ARCHIVE_FILE_OUTRO3_NVF);
@@ -532,12 +532,12 @@ void show_outro(void)
 
 	delay_or_keypress(200);
 
-	GUI_output(get_tx2(0xf0));
-	GUI_output(get_tx2(0xf4));
-	GUI_output(get_tx2(0xf8));
-	GUI_output(get_tx2(0xfc));
-	GUI_output(get_tx2(0x100));
-	GUI_output(get_tx2(0x104));
+	GUI_output(get_tx2(60));
+	GUI_output(get_tx2(61));
+	GUI_output(get_tx2(62));
+	GUI_output(get_tx2(63));
+	GUI_output(get_tx2(64));
+	GUI_output(get_tx2(65));
 
 	/* reset the timers */
 	sub_ingame_timers(DAYS(30));

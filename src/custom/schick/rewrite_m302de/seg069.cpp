@@ -45,14 +45,14 @@ void THO_hetmann(void)
 
 		load_in_head(61);
 
-		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-				get_tx(0x148), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+				get_tx(82), 0);
 
-		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-				get_tx(0x14c), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+				get_tx(83), 0);
 
-		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-				ds_readws(MIN_MAP_PARTS) <= map_parts ? get_tx(0x150) : get_tx(0x154), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+				ds_readws(MIN_MAP_PARTS) <= map_parts ? get_tx(84) : get_tx(85), 0);
 
 		answer = ds_readws(MIN_MAP_PARTS) <= map_parts ? 10 : 50;
 
@@ -60,68 +60,68 @@ void THO_hetmann(void)
 			add_ds_ds(GODS_ESTIMATION + 4 * i, answer);
 		}
 
-		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-				get_tx(0x158), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+				get_tx(86), 0);
 
 		ds_writeb(GOT_LETTER_HET, 1);
 		get_item(235, 1, 1);
 
 	} else if (ds_readw(HEARD_ANNOUNCE) == 0 || ds_readw(GOT_MAIN_QUEST) != 0) {
-		GUI_output(get_tx2(0x00));
+		GUI_output(get_tx2(0));
 
 	} else {
 		ds_writew(SUBVENTION, 0);
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (RealPt)0,
-					get_tx2(0x04), 3,
-					get_tx2(0x08),
-					get_tx2(0x0c),
-					get_tx2(0x10));
+					get_tx2(1), 3,
+					get_tx2(2),
+					get_tx2(3),
+					get_tx2(4));
 		} while (answer == -1);
 
 		if (answer == 1) {
 
 			GUI_dialogbox((RealPt)ds_readd(DTP2), (RealPt)0,
-					get_tx2(0x14), 0);
+					get_tx2(5), 0);
 
 		} else if (answer == 2) {
 
 			GUI_dialogbox((RealPt)ds_readd(DTP2), (RealPt)0,
-					get_tx2(0x18), 0);
+					get_tx2(6), 0);
 
 			add_ds_ws(SUBVENTION, 2);
 
 		} else {
 
 			GUI_dialogbox((RealPt)ds_readd(DTP2), (RealPt)0,
-					get_tx2(0x1c), 0);
+					get_tx2(7), 0);
 
 			inc_ds_ws(SUBVENTION);
 		}
 
 		load_in_head(61);
 
-		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-				get_tx2(0x20), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+				get_tx2(8), 0);
 
 		ds_writew(HEARD_ANNOUNCE, 3);
 
-		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-				get_tx2(0x24), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+				get_tx2(9), 0);
 
 		do {
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-					get_tx2(0x28), 3,
-					get_tx2(0x2c),
-					get_tx2(0x30),
-					get_tx2(0x34));
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+					get_tx2(10), 3,
+					get_tx2(11),
+					get_tx2(12),
+					get_tx2(13));
 		} while (answer == -1);
 
 		if (answer == 1) {
 
-			GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-					get_tx2(0x38), 0);
+			GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+					get_tx2(14), 0);
 
 			ds_writeb(INFORMER_FLAGS + INFORMER_ISLEIF, 1);
 			inc_ds_ws(SUBVENTION);
@@ -130,8 +130,8 @@ void THO_hetmann(void)
 
 		} else if (answer == 2) {
 
-			GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-					get_tx2(0x3c), 0);
+			GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+					get_tx2(15), 0);
 
 			ds_writeb(INFORMER_FLAGS + INFORMER_ISLEIF, 1);
 			ds_writew(GOT_MAIN_QUEST, 1);
@@ -144,15 +144,15 @@ void THO_hetmann(void)
 			add_ds_ws(SUBVENTION, 2);
 
 			do {
-				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-						get_tx2(0x40), 2,
-						get_tx2(0x44),
-						get_tx2(0x48));
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+						get_tx2(16), 2,
+						get_tx2(17),
+						get_tx2(18));
 			} while (answer == -1);
 
 			if (answer == 1) {
-				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(0x154),
-						get_tx2(0x4c), 0);
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(85),
+						get_tx2(19), 0);
 
 				ds_writew(GOT_MAIN_QUEST, 1);
 				ds_writew(QUESTED_MONTHS, 0);
@@ -165,29 +165,29 @@ void THO_windriders(void)
 {
 	signed short answer;
 
-	answer = GUI_radio(get_tx2(0x50), 3,
-				get_tx2(0x54),
-				get_tx2(0x58),
-				get_tx2(0x5c));
+	answer = GUI_radio(get_tx2(20), 3,
+				get_tx2(21),
+				get_tx2(22),
+				get_tx2(23));
 	if (answer != -1) {
 
 		if (answer == 1) {
 
-			GUI_output(get_tx2(0x60));
+			GUI_output(get_tx2(24));
 
 		} else if (answer == 2 || answer == 3) {
 
 			if (ds_readw(OTTA_WINDRIDERS) == 0) {
 
-				GUI_output(answer == 2 ? get_tx2(0x64): get_tx2(0x68));
+				GUI_output(answer == 2 ? get_tx2(25): get_tx2(26));
 
 			} else if (ds_readw(OTTA_WINDRIDERS) == 1) {
 
-				GUI_output(get_tx2(0x6c));
+				GUI_output(get_tx2(27));
 
 			} else {
 
-				GUI_output(get_tx2(0x70));
+				GUI_output(get_tx2(28));
 
 				ds_writew(FIG_DISCARD, 1);
 				do_fight(FIGHTS_THOR8);
@@ -207,10 +207,10 @@ void THO_tav_inn_combi(void)
 	load_ani(4);
 	init_ani(0);
 
-	answer = GUI_radio(get_ttx(0xa84), 3,
-				get_ttx(0xa88),
-				get_ttx(0xa8c),
-				get_ttx(0x56c));
+	answer = GUI_radio(get_ttx(673), 3,
+				get_ttx(674),
+				get_ttx(675),
+				get_ttx(347));
 
 	/* save the combo typeindex */
 	type_bak = ds_readw(TYPEINDEX);
@@ -284,29 +284,29 @@ void THO_stormchildren(void)
 {
 	signed short answer;
 
-	answer = GUI_radio(get_tx2(0x74), 3,
-				get_tx2(0x78),
-				get_tx2(0x7c),
-				get_tx2(0x80));
+	answer = GUI_radio(get_tx2(29), 3,
+				get_tx2(30),
+				get_tx2(31),
+				get_tx2(32));
 	if (answer != -1) {
 
 		if (answer == 1) {
 
-			GUI_output(get_tx2(0x84));
+			GUI_output(get_tx2(33));
 
 		} else if (answer == 2 || answer == 3) {
 
 			if (ds_readw(OTTA_STORMCHILDREN) == 0) {
 
-				GUI_output(answer == 2 ? get_tx2(0x88): get_tx2(0x8c));
+				GUI_output(answer == 2 ? get_tx2(34): get_tx2(35));
 
 			} else if (ds_readw(OTTA_STORMCHILDREN) == 1) {
 
-				GUI_output(get_tx2(0x90));
+				GUI_output(get_tx2(36));
 
 			} else {
 
-				GUI_output(get_tx2(0x94));
+				GUI_output(get_tx2(37));
 
 				ds_writew(FIG_DISCARD, 1);
 				do_fight(FIGHTS_THOR8);
@@ -321,29 +321,29 @@ void THO_garaldsson(void)
 {
 	signed short answer;
 
-	answer = GUI_radio(get_tx2(0x98), 3,
-				get_tx2(0x9c),
-				get_tx2(0xa0),
-				get_tx2(0xa4));
+	answer = GUI_radio(get_tx2(38), 3,
+				get_tx2(39),
+				get_tx2(40),
+				get_tx2(41));
 	if (answer != -1) {
 
 		if (answer == 1) {
 
-			GUI_output(get_tx2(0xa8));
+			GUI_output(get_tx2(42));
 
 		} else if (answer == 2 || answer == 3) {
 
 			if (ds_readw(OTTA_GARALDSSON) == 0) {
 
-				GUI_output(answer == 2 ? get_tx2(0xac): get_tx2(0xb0));
+				GUI_output(answer == 2 ? get_tx2(43): get_tx2(44));
 
 			} else if (ds_readw(OTTA_GARALDSSON) == 1) {
 
-				GUI_output(get_tx2(0xb4));
+				GUI_output(get_tx2(45));
 
 			} else {
 
-				GUI_output(get_tx2(0xb8));
+				GUI_output(get_tx2(46));
 
 				ds_writew(FIG_DISCARD, 1);
 				do_fight(FIGHTS_THOR8);

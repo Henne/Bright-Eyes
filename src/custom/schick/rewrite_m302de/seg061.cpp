@@ -81,9 +81,9 @@ void do_temple(void)
 
 			/* location string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0x3ac),
-				(char*)get_ttx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
-				(char*)(ds_readws(TYPEINDEX) != 58 ? get_ttx(4 * (ds_readbs(CURRENT_TOWN) + 235)): get_ttx(0x9b8)));
+				(char*)get_ttx(235),
+				(char*)get_ttx(ds_readws(TEMPLE_GOD) + 21),	/* name of the god */
+				(char*)(ds_readws(TYPEINDEX) != 58 ? get_ttx(ds_readbs(CURRENT_TOWN) + 235): get_ttx(622)));
 
 			GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 
@@ -95,16 +95,16 @@ void do_temple(void)
 		/* input window */
 		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
-			l_di = GUI_radio(get_ttx(0x384), 9,
-						get_ttx(0x388),
-						get_ttx(0x38c),
-						get_ttx(0x494),
-						get_ttx(0x390),
-						get_ttx(0x394),
-						get_ttx(0x398),
-						get_ttx(0x9b0),
-						get_ttx(0x4a0),
-						get_ttx(0x39c)) - 1;
+			l_di = GUI_radio(get_ttx(225), 9,
+						get_ttx(226),
+						get_ttx(227),
+						get_ttx(293),
+						get_ttx(228),
+						get_ttx(229),
+						get_ttx(230),
+						get_ttx(620),
+						get_ttx(296),
+						get_ttx(231)) - 1;
 
 			if (l_di != -2) {
 				ds_writew(ACTION, l_di + 129);
@@ -114,7 +114,7 @@ void do_temple(void)
 		if (ds_readws(ACTION) == 137) {
 			/* leave temple */
 			if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
-				GUI_output(get_ttx(0x3a0));
+				GUI_output(get_ttx(232));
 			} else {
 				done = 1;
 			}
@@ -139,9 +139,9 @@ void do_temple(void)
 
 				/* location string */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(0x3ac),
-					(char*)get_ttx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
-					(char*)get_ttx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
+					(char*)get_ttx(235),
+					(char*)get_ttx(ds_readws(TEMPLE_GOD) + 21),	/* name of the god */
+					(char*)get_ttx(ds_readbs(CURRENT_TOWN) + 235));
 				GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 
 				draw_status_line();
@@ -150,13 +150,13 @@ void do_temple(void)
 					done = 1;
 				}
 			} else {
-				GUI_output(get_ttx(0xcc4));
+				GUI_output(get_ttx(817));
 			}
 		} else if (ds_readws(ACTION) == 133) {
 			/* save game */
 			if (ds_readws(TYPEINDEX) != 58) {
 				if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
-					GUI_output(get_ttx(0x3a0));
+					GUI_output(get_ttx(232));
 				} else {
 					save_game_state();
 				}
@@ -167,7 +167,7 @@ void do_temple(void)
 
 		if (ds_readws(ACTION) == 134) {
 			/* quit game */
-			if (GUI_bool(get_ttx(0x4ac))) {
+			if (GUI_bool(get_ttx(299))) {
 				done = 1;
 				ds_writews(GAME_STATE, GAME_STATE_QUIT);
 			}
@@ -176,7 +176,7 @@ void do_temple(void)
 		if (ds_readws(ACTION) == 135) {
 			/* ask for a miracle */
 			if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
-				GUI_output(get_ttx(0x3a0));
+				GUI_output(get_ttx(232));
 			} else {
 				ask_miracle();
 			}
@@ -185,19 +185,19 @@ void do_temple(void)
 		if (ds_readws(ACTION) == 136) {
 			/* make a donation */
 			if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
-				GUI_output(get_ttx(0x3a0));
+				GUI_output(get_ttx(232));
 			} else {
 
 				money = get_party_money();
 
 				if (!money) {
-					GUI_output(get_ttx(0x644));
+					GUI_output(get_ttx(401));
 				} else {
 
 					make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), money);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0x4a4),
+						(char*)get_ttx(297),
 						(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 					input = GUI_input(Real2Host(ds_readd(DTP2)), 3);
@@ -216,7 +216,7 @@ void do_temple(void)
 						}
 
 						set_party_money(money);
-						GUI_output(get_ttx(0x4a8));
+						GUI_output(get_ttx(298));
 					}
 				}
 			}
@@ -243,13 +243,13 @@ void char_add(signed short temple_id)
 	if (ds_readbs(TOTAL_HERO_COUNTER) == 7 ||
 		(ds_readbs(TOTAL_HERO_COUNTER) == 6 && !host_readbs(get_hero(6) + HERO_TYPE)))
 	{
-		GUI_output(get_ttx(0x480));
+		GUI_output(get_ttx(288));
 	} else {
 
 		do {
 
 			if (!l_di) {
-				GUI_output(get_ttx(0x488));
+				GUI_output(get_ttx(290));
 				l_si = -1;
 			} else {
 
@@ -281,9 +281,9 @@ void char_add(signed short temple_id)
 
 					/* location string */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0x3ac),
-						(char*)get_ttx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
-						(char*)get_ttx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
+						(char*)get_ttx(235),
+						(char*)get_ttx(ds_readws(TEMPLE_GOD) + 21),	/* name of the god */
+						(char*)get_ttx(ds_readbs(CURRENT_TOWN) + 235));
 					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 				}
 
@@ -299,12 +299,12 @@ void char_letgo(signed short temple_id)
 	Bit8u *hero;
 
 	if (!ds_readbs(TOTAL_HERO_COUNTER) || !ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
-		GUI_output(get_ttx(0x3a0));
+		GUI_output(get_ttx(232));
 	} else {
 
 		do {
 
-			hero_pos = select_hero_from_group(get_ttx(0x9a8));
+			hero_pos = select_hero_from_group(get_ttx(618));
 
 			if (hero_pos != -1) {
 
@@ -330,9 +330,9 @@ void char_letgo(signed short temple_id)
 
 					/* location string */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0x3ac),
-						(char*)get_ttx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
-						(char*)get_ttx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
+						(char*)get_ttx(235),
+						(char*)get_ttx(ds_readws(TEMPLE_GOD) + 21),	/* name of the god */
+						(char*)get_ttx(ds_readbs(CURRENT_TOWN) + 235));
 					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 				}
 			}
@@ -367,7 +367,7 @@ signed short char_erase(void)
 					(char*)Real2Host(ptr) + 32 * l_si);
 
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-					(char*)get_ttx(0x49c),
+					(char*)get_ttx(295),
 					(char*)Real2Host(ds_readd(DTP2)));
 
 				if (GUI_bool(Real2Host(ds_readd(TEXT_OUTPUT_BUF)))) {
@@ -378,7 +378,7 @@ signed short char_erase(void)
 					unlink_ret = bc_unlink((RealPt)ds_readd(TEXT_OUTPUT_BUF));
 
 					if (unlink_ret != 0) {
-						GUI_output(get_ttx(0x498));
+						GUI_output(get_ttx(294));
 						return 0;
 					}
 
@@ -443,10 +443,10 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 		add_hero_le(get_hero(hero_pos), le_in);
 
 		/* prepare a message */
-		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(0x620));
+		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(392));
 
 		if (le_in > 1) {
-			strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(0x624));
+			strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(393));
 		}
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),

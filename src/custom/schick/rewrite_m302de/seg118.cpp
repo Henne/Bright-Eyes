@@ -51,9 +51,9 @@ void tevent_037(void)
 		init_ani(0);
 
 		do {
-			answer = GUI_radio(get_tx2(0x68), 2,
-						get_tx2(0x6c),
-						get_tx2(0x70));
+			answer = GUI_radio(get_tx2(26), 2,
+						get_tx2(27),
+						get_tx2(28));
 		} while (answer == -1);
 
 		if (answer == 1) {
@@ -62,9 +62,9 @@ void tevent_037(void)
 			timewarp(MINUTES(15));
 
 			do {
-				answer = GUI_radio(get_tx2(0x74), 2,
-							get_tx2(0x78),
-							get_tx2(0x70));
+				answer = GUI_radio(get_tx2(29), 2,
+							get_tx2(30),
+							get_tx2(28));
 			} while (answer == -1);
 
 			if (answer == 1)
@@ -74,9 +74,9 @@ void tevent_037(void)
 
 				/* loop until you decicide to go on */
 				do {
-					answer = GUI_radio(get_tx2(0x7c), 2,
-								get_tx2(0x78),
-								get_tx2(0x70));
+					answer = GUI_radio(get_tx2(31), 2,
+								get_tx2(30),
+								get_tx2(28));
 
 				} while (answer == -1 || answer == 1);
 			}
@@ -86,9 +86,9 @@ void tevent_037(void)
 			/* go on */
 
 			do {
-				answer = GUI_radio(get_tx2(0x80), 2,
-							get_tx2(0x84),
-							get_tx2(0x88));
+				answer = GUI_radio(get_tx2(32), 2,
+							get_tx2(33),
+							get_tx2(34));
 
 			} while (answer == -1);
 		}
@@ -98,12 +98,12 @@ void tevent_037(void)
 			if (answer == 1)
 			{
 				/* turn around */
-				hours = GUI_input(get_tx2(0x8c), 2);
+				hours = GUI_input(get_tx2(35), 2);
 
 				if (hours >= 4)
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx2(0x90),
+						(char*)get_tx2(36),
 						hours);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -114,9 +114,9 @@ void tevent_037(void)
 
 					/* entered time was to short */
 					do {
-						answer = GUI_radio(get_tx2(0x94), 2,
-									get_tx2(0x84),
-									get_tx2(0x88));
+						answer = GUI_radio(get_tx2(37), 2,
+									get_tx2(33),
+									get_tx2(34));
 
 					} while (answer == -1);
 
@@ -124,17 +124,17 @@ void tevent_037(void)
 					{
 						timewarp(HOURS(4));
 
-						GUI_output(get_tx2(0x98));
+						GUI_output(get_tx2(38));
 
 						done = 1;
 					}
 				}
 			} else {
 				do {
-					answer = GUI_radio(get_tx2(0x9c), 3,
-								get_tx2(0xa0),
-								get_tx2(0xa4),
-								get_tx2(0xa8));
+					answer = GUI_radio(get_tx2(39), 3,
+								get_tx2(40),
+								get_tx2(41),
+								get_tx2(42));
 
 				} while (answer == -1);
 
@@ -147,7 +147,7 @@ void tevent_037(void)
 					hero = get_hero(answer = get_random_hero());
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx2(0xb4),
+						(char*)get_tx2(45),
 						(char*)hero + HERO_NAME2,
 						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
 
@@ -157,25 +157,25 @@ void tevent_037(void)
 
 					add_hero_ap_all(20);
 
-					GUI_output(get_tx2(0xb8));
+					GUI_output(get_tx2(46));
 
-					GUI_input(get_tx2(0xbc), 10);
+					GUI_input(get_tx2(47), 10);
 
 					/* check if the answer is "RAD" 1st */
 					if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + STR_RAD1))
 					{
-						GUI_input(get_tx2(0xc0), 10);
+						GUI_input(get_tx2(48), 10);
 
 						/* check if the answer is "RAD" 2nd */
 						if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + STR_RAD2))
 						{
-							GUI_input(get_tx2(0xc4), 10);
+							GUI_input(get_tx2(49), 10);
 
 							/* check if the answer is "RAD" 3rd */
 							if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + STR_RAD3))
 							{
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
-									(char*)get_tx2(0xc8),
+									(char*)get_tx2(50),
 									(char*)hero + HERO_NAME2,
 									(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 									(char*)hero + HERO_NAME2,
@@ -189,7 +189,7 @@ void tevent_037(void)
 								done = 1;
 							} else {
 
-								GUI_output(get_tx2(0xcc));
+								GUI_output(get_tx2(51));
 
 								add_hero_ap_all(10);
 
@@ -197,7 +197,7 @@ void tevent_037(void)
 							}
 						} else {
 
-							GUI_output(get_tx2(0xcc));
+							GUI_output(get_tx2(51));
 
 							add_hero_ap_all(10);
 
@@ -205,7 +205,7 @@ void tevent_037(void)
 						}
 					} else {
 
-						GUI_output(get_tx2(0xcc));
+						GUI_output(get_tx2(51));
 
 						add_hero_ap_all(10);
 
@@ -216,9 +216,9 @@ void tevent_037(void)
 					/* talk of hetmann or hyggelik */
 
 					do {
-						answer = GUI_radio(get_tx2(0xac), 2,
-									get_tx2(0x84),
-									get_tx2(0x88));
+						answer = GUI_radio(get_tx2(43), 2,
+									get_tx2(33),
+									get_tx2(34));
 
 					} while (answer == -1);
 
@@ -230,7 +230,7 @@ void tevent_037(void)
 						timewarp(HOURS(1));
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_tx2(0xb0),
+							(char*)get_tx2(44),
 							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
@@ -270,9 +270,9 @@ void tevent_078(void)
 	{
 
 		do {
-			answer = GUI_radio(get_tx2(0x138), 2,
-						get_tx2(0x13c),
-						get_tx2(0x140));
+			answer = GUI_radio(get_tx2(78), 2,
+						get_tx2(79),
+						get_tx2(80));
 		} while (answer == -1);
 
 		load_in_head(57);
@@ -290,7 +290,7 @@ void tevent_078(void)
 
 			timewarp(HOURS(hours));
 
-			GUI_dialog_na(0, get_tx2(0x144));
+			GUI_dialog_na(0, get_tx2(81));
 
 			/* each hero in the group looses hours / 2 LE */
 			sub_group_le(hours >> 1);
@@ -307,7 +307,7 @@ void tevent_078(void)
 			/* if a campfight occurs, the picture needs to be reloaded */
 			load_in_head(57);
 #endif
-			GUI_dialog_na(0, get_tx2(0x150));
+			GUI_dialog_na(0, get_tx2(84));
 
 		} else {
 			/* try to find another path */
@@ -322,14 +322,14 @@ void tevent_078(void)
 
 					sub_group_le(2);
 
-					GUI_dialog_na(0, !answer ? get_tx2(0x148) : get_tx2(0x154));
+					GUI_dialog_na(0, !answer ? get_tx2(82) : get_tx2(85));
 
 					found_path = 1;
 				} else {
 					/* fail */
 					timewarp(HOURS(8));
 
-					GUI_dialog_na(0, get_tx2(0x14c));
+					GUI_dialog_na(0, get_tx2(83));
 
 					sub_group_le(4);
 
@@ -352,7 +352,7 @@ void tevent_078(void)
 
 			if (found_path == 0)
 			{
-				GUI_dialog_na(0, get_tx2(0x158));
+				GUI_dialog_na(0, get_tx2(86));
 
 				timewarp(HOURS(8));
 
@@ -390,15 +390,15 @@ void tevent_051(void)
 		if (!TRV_follow_trail_question())
 		{
 
-			GUI_output(get_tx2(0x104));
-			GUI_output(get_tx2(0x108));
+			GUI_output(get_tx2(65));
+			GUI_output(get_tx2(66));
 
 			load_in_head(53);
 
 			do {
-				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx2(0x10c), 2,
-							get_tx2(0x110),
-							get_tx2(0x114));
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx2(67), 2,
+							get_tx2(68),
+							get_tx2(69));
 			} while (answer == -1);
 
 			if (answer == 1)
@@ -412,9 +412,9 @@ void tevent_051(void)
 		load_in_head(53);
 
 		do {
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx2(0x118), 2,
-						get_tx2(0x11c),
-						get_tx2(0x120));
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx2(70), 2,
+						get_tx2(71),
+						get_tx2(72));
 		} while (answer == -1);
 
 		if (answer == 1)
@@ -437,16 +437,16 @@ void tevent_052(void)
 	do {
 
 		do {
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx2(0x124), 2,
-						get_tx2(0x128),
-						get_tx2(0x12c));
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx2(73), 2,
+						get_tx2(74),
+						get_tx2(75));
 		} while (answer == -1);
 
 		if (answer == 1)
 		{
 			timewarp(HOURS(1));
 
-			GUI_dialog_na(0, get_tx2(0x130));
+			GUI_dialog_na(0, get_tx2(76));
 
 			done = 1;
 		} else {
@@ -466,9 +466,9 @@ void tevent_052(void)
 			{
 				timewarp(HOURS(3));
 
-				GUI_dialog_na(0, get_tx2(0x134));
+				GUI_dialog_na(0, get_tx2(77));
 			} else {
-				GUI_dialog_na(0, get_tx2(0x138));
+				GUI_dialog_na(0, get_tx2(78));
 			}
 		}
 
@@ -487,7 +487,7 @@ void tevent_120(void)
 
 void tevent_121(void)
 {
-	TRV_cross_a_ford(get_tx(0xd4), 30, 0);
+	TRV_cross_a_ford(get_tx(53), 30, 0);
 }
 
 void tevent_124(void)
@@ -501,19 +501,19 @@ void tevent_124(void)
 
 	have_climb_tools = 0;
 
-	GUI_output(get_tx2(0xc4));
+	GUI_output(get_tx2(49));
 
 	if (DNG_check_climb_tools() != -1)
 	{
 		have_climb_tools = 1;
 
-		GUI_output(get_tx2(0xc8));
+		GUI_output(get_tx2(50));
 	}
 
 	do {
-		answer = GUI_radio(get_tx2(0xcc), 2,
-					get_tx2(0xd0),
-					get_tx2(0xd4));
+		answer = GUI_radio(get_tx2(51), 2,
+					get_tx2(52),
+					get_tx2(53));
 	} while (answer == -1);
 
 	if (answer == 2)
@@ -542,7 +542,7 @@ void tevent_124(void)
 				{
 					/* fatal */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx2(0xe0),
+						(char*)get_tx2(56),
 						(char*)hero + HERO_NAME2,
 						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
@@ -553,7 +553,7 @@ void tevent_124(void)
 				} else {
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx2(0xdc),
+						(char*)get_tx2(55),
 						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -565,7 +565,7 @@ void tevent_124(void)
 
 		if (!counter)
 		{
-			GUI_output(get_tx2(0xd8));
+			GUI_output(get_tx2(54));
 		}
 	}
 
@@ -578,15 +578,15 @@ void tevent_125(void)
 	load_in_head(17);
 
 	do {
-		answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx2(0xe4), 3,
-					get_tx2(0xe8),
-					get_tx2(0xec),
-					get_tx2(0xf0));
+		answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx2(57), 3,
+					get_tx2(58),
+					get_tx2(59),
+					get_tx2(60));
 	} while (answer == -1);
 
 	if (answer == 1 || answer == 2)
 	{
-		GUI_dialog_na(0, answer == 1 ? get_tx2(0xf4) : get_tx2(0xf8));
+		GUI_dialog_na(0, answer == 1 ? get_tx2(61) : get_tx2(62));
 
 		timewarp(MINUTES(30));
 	}
@@ -602,9 +602,9 @@ void tevent_145(void)
 	if (!(cast_u16(ds_readb(ROUTE59_FLAG)) & 1))
 	{
 		do {
-			answer = GUI_radio(get_tx2(0xa8), 2,
-						get_tx2(0xac),
-						get_tx2(0xb0));
+			answer = GUI_radio(get_tx2(42), 2,
+						get_tx2(43),
+						get_tx2(44));
 		} while (answer == -1);
 
 		if (answer == 1)
@@ -619,9 +619,9 @@ void tevent_145(void)
 
 	} else {
 		do {
-			answer = GUI_radio(get_tx2(0x9c), 2,
-						get_tx2(0xa0),
-						get_tx2(0xa4));
+			answer = GUI_radio(get_tx2(39), 2,
+						get_tx2(40),
+						get_tx2(41));
 		} while (answer == -1);
 
 		if (answer == 1)
@@ -636,8 +636,8 @@ void tevent_145(void)
 	}
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)get_tx2(0xb4),
-		(char*)get_ttx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
+		(char*)get_tx2(45),
+		(char*)get_ttx(ds_readws(TRV_DESTINATION) + 0xeb));
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
 }

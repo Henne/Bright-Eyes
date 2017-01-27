@@ -132,7 +132,7 @@ void FIG_loot_monsters(void)
 					l6 = l3 - 14;
 				}
 
-				strcpy(a[l5], (char*)get_ttx(0xbbc));
+				strcpy(a[l5], (char*)get_ttx(751));
 			} else {
 				l_si = 0;
 				l5 = 0;
@@ -142,7 +142,7 @@ void FIG_loot_monsters(void)
 			textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 6);
 
-			l4 = GUI_radio(get_tx(0x38), l6,
+			l4 = GUI_radio(get_tx(14), l6,
 						a[0 + l_si], a[1 + l_si], a[2 + l_si], a[3 + l_si],
 						a[4 + l_si], a[5 + l_si], a[6 + l_si], a[7 + l_si],
 						a[8 + l_si], a[9 + l_si], a[10 + l_si], a[11 + l_si],
@@ -191,7 +191,7 @@ void FIG_loot_monsters(void)
 		make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), money);
 
 		sprintf((char*)(Real2Host(ds_readd(DTP2))),
-			(char*)get_tx(0x3c),
+			(char*)get_tx(15),
 			Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -254,7 +254,7 @@ void FIG_split_ap(void)
 	}
 
 	/* prepare output */
-	sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx(0x84), ap);
+	sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx(33), ap);
 	GUI_output(Real2Host(ds_readd(DTP2)));
 
 	/* give AP to the group */
@@ -296,7 +296,7 @@ signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 #endif
 	/* check that the range attack is in the same line */
 	if ((hero_x != target_x) && (hero_y != target_y)) {
-		GUI_output(get_tx(0xb4));
+		GUI_output(get_tx(45));
 		retval = 0;
 	}
 
@@ -321,7 +321,7 @@ signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 			for (i = hero_x; i < target_x; i++) {
 
 				if (!seg034_000(hero_x, hero_y, i, hero_y, 1, 0, 99)) {
-					GUI_output(get_tx(0xb4));
+					GUI_output(get_tx(45));
 					retval = 0;
 					break;
 				}
@@ -330,7 +330,7 @@ signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 			for (i = hero_y; i < target_y; i++) {
 
 				if (!seg034_000(hero_x, hero_y, hero_x, i, 0, 1, 99)) {
-					GUI_output(get_tx(0xb4));
+					GUI_output(get_tx(45));
 					retval = 0;
 					break;
 				}
@@ -339,7 +339,7 @@ signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 	} else {
 
 		if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) {
-			GUI_output(get_ttx(0x7f0));
+			GUI_output(get_ttx(508));
 			retval = 0;
 		}
 	}

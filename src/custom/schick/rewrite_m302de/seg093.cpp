@@ -105,20 +105,20 @@ signed short do_travel_mode(void)
 					i = 0;
 					while ((l_di = host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + i)) != 255)
 					{
-						destinations_tab[i] = get_ttx(4 * (0xeb + ds_writebs(TRV_MENU_TOWNS + i,
+						destinations_tab[i] = get_ttx(235 + ds_writebs(TRV_MENU_TOWNS + i,
 						    (answer = ds_readb((ROUTES_TAB - 9) + 9 * l_di)) != ds_readbs(CURRENT_TOWN) ?
-						    (signed char) answer : ds_readbs((ROUTES_TAB - 9 + 1) + 9 * l_di))));
+						    (signed char) answer : ds_readbs((ROUTES_TAB - 9 + 1) + 9 * l_di)));
 
 						i++;
 					}
 
 					ds_writeb(TRV_MENU_TOWNS + i, ds_readbs(CURRENT_TOWN));
-					destinations_tab[i] = get_ttx(0x994);
+					destinations_tab[i] = get_ttx(613);
 					i++;
 
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-						(char*)get_ttx(0x884),
-						(char*)get_ttx(4 * (0xeb + ds_readbs(CURRENT_TOWN))));
+						(char*)get_ttx(545),
+						(char*)get_ttx(235 + ds_readbs(CURRENT_TOWN)));
 
 					tw_bak = ds_readws(TEXTBOX_WIDTH);
 					ds_writew(TEXTBOX_WIDTH, 4);
@@ -150,7 +150,7 @@ signed short do_travel_mode(void)
 					if (!get_current_season() &&
 						(route_id == 31 || route_id == 41 || route_id == 47 || route_id == 48 || route_id == 49))
 					{
-						GUI_input(get_tx(0x114), 0);
+						GUI_input(get_tx(69), 0);
 						break;
 					}
 
@@ -224,7 +224,7 @@ signed short do_travel_mode(void)
 
 						set_and_spin_lock();
 
-						GUI_input(get_tx(4 * l4), 0);
+						GUI_input(get_tx(l4), 0);
 
 						ds_writew(BASEPOS_X, l6);
 						ds_writew(BASEPOS_Y, l7);

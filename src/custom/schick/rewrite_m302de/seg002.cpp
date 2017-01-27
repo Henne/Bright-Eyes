@@ -1660,7 +1660,7 @@ void handle_gui_input(void)
 			l_di = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 5);
 			ds_writew(GUI_TEXT_CENTERED, 1);
-			GUI_output(get_ttx(0x628));
+			GUI_output(get_ttx(394));
 			ds_writew(GUI_TEXT_CENTERED, 0);
 			ds_writew(TEXTBOX_WIDTH, l_di);
 
@@ -3053,12 +3053,12 @@ void herokeeping(void)
 				(!ds_readb(SHOW_TRAVEL_MAP) || ds_readb(FOOD_MESSAGE_SHOWN + i) != ds_readb(FOOD_MESSAGE + i))) {
 
 					sprintf(buffer,
-						(ds_readb(FOOD_MESSAGE + i) == 1) ? (char*)get_ttx(0x380):
-							((ds_readb(FOOD_MESSAGE + i) == 2) ? (char*)get_ttx(0x37c) :
-							((ds_readb(FOOD_MESSAGE + i) == 3) ? (char*)get_ttx(0xc74) :
-							((ds_readb(FOOD_MESSAGE + i) == 4) ? (char*)get_ttx(0xc78) :
-							((ds_readb(FOOD_MESSAGE + i) == 5) ? (char*)get_ttx(0xc7c) :
-							(char*)get_ttx(0xc80))))),
+						(ds_readb(FOOD_MESSAGE + i) == 1) ? (char*)get_ttx(224):
+							((ds_readb(FOOD_MESSAGE + i) == 2) ? (char*)get_ttx(223) :
+							((ds_readb(FOOD_MESSAGE + i) == 3) ? (char*)get_ttx(797) :
+							((ds_readb(FOOD_MESSAGE + i) == 4) ? (char*)get_ttx(798) :
+							((ds_readb(FOOD_MESSAGE + i) == 5) ? (char*)get_ttx(799) :
+							(char*)get_ttx(800))))),
 
 						(char*)hero + HERO_NAME2, (char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 1)));
 
@@ -3083,7 +3083,7 @@ void herokeeping(void)
 				!hero_dead(hero)) {
 
 					/* prepare output */
-					sprintf(buffer, (char*)get_ttx(0xc54),
+					sprintf(buffer, (char*)get_ttx(789),
 						(char*)hero + HERO_NAME2);
 
 					/* print output */
@@ -5242,7 +5242,7 @@ int schick_main(int argc, char** argv)
 		ds_writew(GAME_MODE, -1);
 
 		while (ds_readws(GAME_MODE) == -1) {
-			ds_writew(GAME_MODE, GUI_radio(get_ttx(0x14), 2, get_ttx(0x18), get_ttx(0x1c)));
+			ds_writew(GAME_MODE, GUI_radio(get_ttx(5), 2, get_ttx(6), get_ttx(7)));
 		}
 
 		if (copy_protection()) {
@@ -5253,7 +5253,7 @@ int schick_main(int argc, char** argv)
 
 			if (l3 < 0) {
 
-				sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0xc9c), -l3);
+				sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(807), -l3);
 				GUI_output(Real2Host(ds_readd(DTP2)));
 				cleanup_game();
 
@@ -5261,7 +5261,7 @@ int schick_main(int argc, char** argv)
 
 				/* ask for generation or game */
 				do {
-					l_di = GUI_radio(get_ttx(0xcd0), 2, get_ttx(0xcd4), get_ttx(0xcd8)) - 1;
+					l_di = GUI_radio(get_ttx(820), 2, get_ttx(821), get_ttx(822)) - 1;
 
 				} while (l_di == -1);
 
@@ -5331,7 +5331,7 @@ signed short copy_protection(void)
 
 			/* prepare the string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0x9c),
+				(char*)get_tx(39),
 				ds_readbs((QUESTIONS_HANDBOOK + 3) + 19 * l_di),
 				ds_readbs((QUESTIONS_HANDBOOK + 2) + 19 * l_di),
 				ds_readbs((QUESTIONS_HANDBOOK + 1) + 19 * l_di),
@@ -5362,9 +5362,9 @@ signed short copy_protection(void)
 
 			/* prepare the string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0xa0),
-				get_tx(4 * (0x29 + ds_readbs((QUESTIONS_MAP + 0) + 3 * l_di))),
-				get_ttx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 1) + 3 * l_di))));
+				(char*)get_tx(40),
+				get_tx(41 + ds_readbs((QUESTIONS_MAP + 0) + 3 * l_di)),
+				get_ttx(235 + ds_readbs((QUESTIONS_MAP + 1) + 3 * l_di)));
 
 			/* print version number */
 			GUI_print_string(p_datseg + GAME_VERSION, 290, 190);
@@ -5380,7 +5380,7 @@ signed short copy_protection(void)
 					toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUF)) + i)));
 			}
 
-			if (!strcmp((char*)get_ttx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)))) {
+			if (!strcmp((char*)get_ttx(235 + ds_readbs((QUESTIONS_MAP + 2) + 3 * l_di)), (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)))) {
 				return 1;
 			}
 		}

@@ -55,10 +55,10 @@ signed short DNG10_handler(void)
 	if ((target_pos == 0x101 || target_pos == 0x302) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* TRAP: a hole in a wall; leader gets 2 LE damage */
-		if (GUI_bool(get_tx(0x04)))
+		if (GUI_bool(get_tx(1)))
 		{
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0x08),
+				(char*)get_tx(2),
 				(char*)hero + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -78,14 +78,14 @@ signed short DNG10_handler(void)
 		{
 			or_ds_bs(DNG10_LEVER_FOUND, 1);
 
-			if (GUI_bool((!(ds_readb(DNG10_LEVER_FOUND) & 2) ? get_tx(0x18) : get_tx(0xa4))))
+			if (GUI_bool((!(ds_readb(DNG10_LEVER_FOUND) & 2) ? get_tx(6) : get_tx(41))))
 			{
-				if (GUI_bool(get_tx(0x1c)))
+				if (GUI_bool(get_tx(7)))
 				{
 					or_ds_bs(DNG10_LEVER_FOUND, 2);
 					xor_ds_bs(DNG10_LEVER_STATE, 1);
 
-					GUI_output(get_tx(0x20));
+					GUI_output(get_tx(8));
 				}
 			}
 		}
@@ -99,14 +99,14 @@ signed short DNG10_handler(void)
 		answer = dice_roll(3, 6, 4);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx(0x24),
+			(char*)get_tx(9),
 			(char*)hero + HERO_NAME2);
 
 		/* check if the hero will survive */
 		if (host_readws(hero + HERO_LE) > answer)
 		{
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_tx(0x28),
+				(char*)get_tx(10),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)),
@@ -127,18 +127,18 @@ signed short DNG10_handler(void)
 			/* Original-Bug: ??? */
 			ds_writeb(DNG10_HOLE_STATE, 1);
 
-			if (ds_readb(DNG10_HOLE_STATE) == 2 || GUI_bool(get_tx(0x18)))
+			if (ds_readb(DNG10_HOLE_STATE) == 2 || GUI_bool(get_tx(6)))
 			{
 				ds_writeb(DNG10_HOLE_STATE, 2);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0x2c),
+					(char*)get_tx(11),
 					(char*)hero + HERO_NAME2);
 
 				if (GUI_bool(Real2Host(ds_readd(DTP2))))
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x30),
+						(char*)get_tx(12),
 						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -173,13 +173,13 @@ signed short DNG10_handler(void)
 			/* Original-Bug: ???*/
 			/* Damage only happens here when the leader of the group tries to disable this trap.
 			   If the trap is not found or left alone nobody gets damaged. Weird! */
-			if (GUI_bool(get_tx(0x34)) && test_skill(hero, TA_SCHLOESSER, 7) <= 0)
+			if (GUI_bool(get_tx(13)) && test_skill(hero, TA_SCHLOESSER, 7) <= 0)
 			{
 				if (ds_readb(DNG10_FLOORPLATE_LOADS) != 0)
 				{
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x38),
+						(char*)get_tx(14),
 						(char*)hero + HERO_NAME2);
 
 					dec_ds_bs_post(DNG10_FLOORPLATE_LOADS);
@@ -187,7 +187,7 @@ signed short DNG10_handler(void)
 					sub_hero_le(hero, dice_roll(3, 6, 0));
 				} else {
 					strcpy((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x3c));
+						(char*)get_tx(15));
 				}
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -197,20 +197,20 @@ signed short DNG10_handler(void)
 	} else if (target_pos == 0x10c && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* INFO: you see three holes in the wall */
-		GUI_output(get_tx(0x40));
+		GUI_output(get_tx(16));
 
 	} else if (target_pos == 0x30e && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* INFO: collection bowl */
-		if (GUI_bool(get_tx(0x44)))
+		if (GUI_bool(get_tx(17)))
 		{
-			answer = GUI_input(get_tx(0x48), 6) * 10;
+			answer = GUI_input(get_tx(18), 6) * 10;
 
 			if (get_party_money() < answer)
 			{
-				GUI_output(get_ttx(0x644));
+				GUI_output(get_ttx(401));
 			} else {
-				GUI_output( (answer >= 1000) ? get_tx(0x50) : get_tx(0x4c));
+				GUI_output( (answer >= 1000) ? get_tx(20) : get_tx(19));
 
 				set_party_money( get_party_money() - answer);
 			}
@@ -219,12 +219,12 @@ signed short DNG10_handler(void)
 	} else if (target_pos == 0x60c && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 2)
 	{
 		/* INFO: an empty room */
-		GUI_output(get_tx(0x54));
+		GUI_output(get_tx(21));
 
 	} else if (target_pos == 0xa0d && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG10_HESHTOT))
 	{
 		/* FIGHT: scared heshtot */
-		if (GUI_bool(get_tx(0x58)))
+		if (GUI_bool(get_tx(22)))
 		{
 			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0xa0d))));
 			ds_writew(DNG_HANDLED_POS, 0);
@@ -234,7 +234,7 @@ signed short DNG10_handler(void)
 				ds_writeb(DNG10_HESHTOT, 1);
 			}
 		} else {
-			GUI_output(get_tx(0x5c));
+			GUI_output(get_tx(23));
 			sub_group_le(random_schick(6));
 
 			ds_writew(X_TARGET, 1);
@@ -250,7 +250,7 @@ signed short DNG10_handler(void)
 		/* TRAP: column of fire, probability 10%, damage 1W6 for each hero in the party */
 		if (random_schick(100) <= 10)
 		{
-			GUI_output(get_tx(0x60));
+			GUI_output(get_tx(24));
 
 			hero = get_hero(0);
 			for (answer = 0; answer <= 6; answer++, hero += SIZEOF_HERO)
@@ -266,12 +266,12 @@ signed short DNG10_handler(void)
 	} else if (target_pos == 0x1e02 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* LEVER: enables/disables fight 111, leader get 2 LE damage */
-		if (GUI_bool(get_tx(0x64)))
+		if (GUI_bool(get_tx(25)))
 		{
 			xor_ds_bs(DNG10_MUMMY_LEVER, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_tx(0x68),
+				(char*)get_tx(26),
 				(char*)hero + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -290,7 +290,7 @@ signed short DNG10_handler(void)
 	} else if (target_pos == 0x110c && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 2)
 	{
 		/* INFO: glowing walls */
-		GUI_output(get_tx(0x6c));
+		GUI_output(get_tx(27));
 
 	} else if (target_pos == 0x190c && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG10_DRAGON_QUEST) != 0)
 	{
@@ -308,9 +308,9 @@ signed short DNG10_handler(void)
 			load_in_head(58);
 
 			do {
-				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70),
-						get_tx(0x74), 2,
-						get_tx(0x78), get_tx(0x7c));
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28),
+						get_tx(29), 2,
+						get_tx(30), get_tx(31));
 			} while (answer == -1);
 
 			if (answer == 1)
@@ -318,13 +318,13 @@ signed short DNG10_handler(void)
 				/* try to fight the dragon */
 				ds_writeb(DNG10_DRAGON_QUEST, 1);
 
-				if (GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70),
-						get_tx(0x80), 2,
-						get_ttx(0x08), get_ttx(0x0c)) == 1)
+				if (GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28),
+						get_tx(32), 2,
+						get_ttx(2), get_ttx(3)) == 1)
 				{
-					GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70), get_tx(0x84), 0);
+					GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(33), 0);
 				} else {
-					GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70), get_tx(0x88), 0);
+					GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(34), 0);
 
 					sub_group_le(5000);
 				}
@@ -347,7 +347,7 @@ signed short DNG10_handler(void)
 				{
 					ds_writeb(DNG10_HOARD_PLUNDERED, 1);
 
-					GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70), get_tx(0x8c), 0);
+					GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(35), 0);
 
 					/* 2x HEALING POTION, MAGIC POTION, THROWING DAGGER and ...*/
 					get_item(145, 1, 2);
@@ -362,12 +362,12 @@ signed short DNG10_handler(void)
 				} else {
 					ds_writeb(DNG10_DRAGON_QUEST, 1);
 
-					if (GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70), get_tx(0x80), 2,
-								get_ttx(0x08), get_ttx(0x0c)) == 1)
+					if (GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(32), 2,
+								get_ttx(2), get_ttx(3)) == 1)
 					{
-						GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70), get_tx(0x84), 0);
+						GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(33), 0);
 					} else {
-						GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70), get_tx(0x88), 0);
+						GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(34), 0);
 						sub_group_le(5000);
 					}
 				}
@@ -385,8 +385,8 @@ signed short DNG10_handler(void)
 				result = get_item_pos(hero, 201);
 				drop_item(hero, result, 1);
 
-				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70), get_tx(0x90), 0);
-				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70), get_tx(0x94), 0);
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(36), 0);
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(37), 0);
 
 				/* 2x HEALING POTION, MAGIC POTION, THROWING DAGGER, CRYSTAL BALL and ...*/
 				get_item(145, 1, 2);
@@ -404,14 +404,14 @@ signed short DNG10_handler(void)
 
 				ds_writeb(DNG10_DRAGON_QUEST, 2);
 			} else {
-				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x70), get_tx(0x98), 0);
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(38), 0);
 			}
 		}
 
 	} else if (target_pos == 0x2005 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* INFO: some fools you are */
-		GUI_output(get_tx(0x9c));
+		GUI_output(get_tx(39));
 
 	} else if (target_pos == 0x03 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
@@ -424,8 +424,8 @@ signed short DNG10_handler(void)
 		ds_writeb(DIRECTION, (ds_readbs(ARRIVAL_DIRECTION) + 2) & 0x03);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_tx(0xa0),
-			(char*)get_ttx(4 * (ds_readw(TRV_DESTINATION) + 0xeb)));
+			(char*)get_tx(40),
+			(char*)get_ttx(ds_readw(TRV_DESTINATION) + 0xeb));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -442,14 +442,14 @@ signed short DNG10_handler(void)
 
 void DNG10_chest0_x1(RealPt ptr)
 {
-	loot_corpse(ptr, get_tx(0x0c), p_datseg + DNG10_CORPSE_LOOTED);
+	loot_corpse(ptr, get_tx(3), p_datseg + DNG10_CORPSE_LOOTED);
 }
 
 void DNG10_chest0_x2(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
 	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG10_CHEST0_CONTENT));
-	loot_chest(Real2Host(chest), get_tx(0x10), get_tx(0x14));
+	loot_chest(Real2Host(chest), get_tx(4), get_tx(5));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 

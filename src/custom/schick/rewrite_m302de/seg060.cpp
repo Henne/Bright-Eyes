@@ -83,7 +83,7 @@ void talk_tavern(void)
 		if (host_readws(state_ptr) != -1) {
 
 			txt_id = host_readws(state_ptr) & 0x7fff;
-			format = (char*)get_tx(4 * txt_id);
+			format = (char*)get_tx(txt_id);
 			hero = Real2Host(get_first_hero_available_in_group());
 
 			if (txt_id == 52 || txt_id == 72 || txt_id == 78 || txt_id == 83 || txt_id == 89) {
@@ -125,7 +125,7 @@ void talk_tavern(void)
 
 				sprintf(text_buffer, format,
 					random_interval(3, 6),
-					random_schick(2) == 1 ? get_tx(0x244) : get_tx(0x248));
+					random_schick(2) == 1 ? get_tx(145) : get_tx(146));
 
 			} else if (txt_id == 114) {
 
@@ -133,19 +133,19 @@ void talk_tavern(void)
 
 				/* print quality [-1, 2..20]  2 = best, 20 = worse */
 				sprintf(text_buffer, format,
-					food_quality >= 1 && food_quality <= 3 ? get_tx(0x220) : (
-					food_quality >= 4 && food_quality <= 6 ? get_tx(0x224) : (
-					food_quality >= 7 && food_quality <= 9 ? get_tx(0x228) : (
-					food_quality >= 10 && food_quality <= 12 ? get_tx(0x22c) : (
-					food_quality >= 13 && food_quality <= 15 ? get_tx(0x230) : (
-					food_quality >= 15 && food_quality <= 18 ? get_tx(0x234) : get_tx(0x238)))))));
+					food_quality >= 1 && food_quality <= 3 ? get_tx(136) : (
+					food_quality >= 4 && food_quality <= 6 ? get_tx(137) : (
+					food_quality >= 7 && food_quality <= 9 ? get_tx(138) : (
+					food_quality >= 10 && food_quality <= 12 ? get_tx(139) : (
+					food_quality >= 13 && food_quality <= 15 ? get_tx(140) : (
+					food_quality >= 15 && food_quality <= 18 ? get_tx(141) : get_tx(142)))))));
 
 			} else if (txt_id == 115) {
 
 				ds_writeb(TLK_TAV_INFORMERSEX, random_schick(2));
 
 				sprintf(text_buffer, format,
-					ds_readb(TLK_TAV_INFORMERSEX) == 1 ? get_tx(0x23c) : get_tx(0x240));
+					ds_readb(TLK_TAV_INFORMERSEX) == 1 ? get_tx(143) : get_tx(144));
 
 			} else if (txt_id == 119) {
 
@@ -174,7 +174,7 @@ void talk_tavern(void)
 			}
 
 			txt_id = host_readb(state_ptr + 2);
-			format = (char*)get_tx(4 * txt_id);
+			format = (char*)get_tx(txt_id);
 
 
 			if (txt_id == 1 || txt_id == 19) {
@@ -184,7 +184,7 @@ void talk_tavern(void)
 			}
 
 			txt_id = host_readb(state_ptr + 3);
-			format = (char*)get_tx(4 * txt_id);
+			format = (char*)get_tx(txt_id);
 
 			if (txt_id == 13) {
 
@@ -206,7 +206,7 @@ void talk_tavern(void)
 			}
 
 			txt_id = host_readb(state_ptr + 4);
-			strcpy(answer3_buffer, (char*)get_tx(4 * txt_id));
+			strcpy(answer3_buffer, (char*)get_tx(txt_id));
 
 			do {
 				answer = GUI_radio((Bit8u*)text_buffer, (signed char)options, answer1_buffer, answer2_buffer, answer3_buffer);

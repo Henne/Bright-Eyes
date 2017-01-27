@@ -325,7 +325,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 
 		if (mode != 0) {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0xc2c),
+				(char*)get_ttx(779),
 				(char*)(hero + HERO_NAME2));
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
@@ -502,7 +502,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 			/* this item is not droppable */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0x718),
+				(char*)get_ttx(454),
 				(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item, 0)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -512,7 +512,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 			if (item_stackable(p_item)) {
 				if (nr == -1) {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ttx(0x36c),
+						(char*)get_ttx(219),
 						(char*)Real2Host(GUI_names_grammar(6, item, 0)));
 
 					do {
@@ -544,7 +544,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 
 				retval = 1;
 			} else {
-				if (!(nr != -1 || GUI_bool(get_ttx(0x370)))) {
+				if (!(nr != -1 || GUI_bool(get_ttx(220)))) {
 				} else {
 
 					/* check if item is equipped */
@@ -639,12 +639,12 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 			ds_writew(AUTOFIGHT, 0);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0x894),
+				(char*)get_ttx(549),
 				(char*)Real2Host(GUI_names_grammar(((nr > 1) ? 4 : 0) + 2, id, 0)));
 
 			if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
 
-				dropper = select_hero_ok(get_ttx(0x898));
+				dropper = select_hero_ok(get_ttx(550));
 
 				if (dropper != -1) {
 					hero_i = get_hero(dropper);
@@ -779,7 +779,7 @@ signed short select_item_to_drop(Bit8u *hero)
 
 	if (v6 == 0) {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ttx(0xbb8),
+			(char*)get_ttx(750),
 			(char*)(hero + HERO_NAME2));
 		GUI_output(Real2Host(ds_readd(DTP2)));
 		return -1;
@@ -810,7 +810,7 @@ signed short select_item_to_drop(Bit8u *hero)
 		bak3 = ds_readw(BASEPOS_Y);
 		ds_writew(TEXTBOX_WIDTH, 6);
 		ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
-		v4 = GUI_radio((Bit8u*)get_ttx(0xbc0), (signed char)i,
+		v4 = GUI_radio((Bit8u*)get_ttx(752), (signed char)i,
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x00 + di * 4)),
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x04 + di * 4)),
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x08 + di * 4)),

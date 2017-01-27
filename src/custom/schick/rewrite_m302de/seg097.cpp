@@ -430,7 +430,7 @@ signed short GUI_bool(Bit8u *text)
 
 	ds_writew(GUI_BOOL_FLAG, 1);
 
-	ret_radio = GUI_radio(text, 2, get_ttx(0x08), get_ttx(0x0c));
+	ret_radio = GUI_radio(text, 2, get_ttx(2), get_ttx(3));
 	ds_writew(GUI_BOOL_FLAG, 0);
 
 	return (ret_radio == 1) ? 1 : 0;

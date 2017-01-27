@@ -97,12 +97,12 @@ void do_inn(void)
 			if (host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) != 0) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(0xb74),
+					(char*)get_ttx(733),
 					(char*)Real2Host(hero) + HERO_NAME2,
 					host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER),
-					(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ttx(0xb7c) : get_ttx(0xb80)));
+					(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ttx(735) : get_ttx(736)));
 
-				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(0xb78), get_ttx(0x864));
+				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(734), get_ttx(537));
 
 				if (answer == 1) {
 					do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 1);
@@ -123,15 +123,15 @@ void do_inn(void)
 		if (host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) != 0) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0xb74),
+				(char*)get_ttx(733),
 				(char*)Real2Host(hero) + HERO_NAME2,
 				host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER),
-				(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ttx(0xb7c) : get_ttx(0xb80)));
+				(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ttx(735) : get_ttx(736)));
 
 			tw_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writews(TEXTBOX_WIDTH, 4);
 
-			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(0xb78), get_ttx(0x8c8));
+			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(734), get_ttx(562));
 
 			ds_writews(TEXTBOX_WIDTH, tw_bak);
 
@@ -168,14 +168,14 @@ void do_inn(void)
 
 			init_ani(0);
 
-			GUI_print_loc_line(get_tx(4 * ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(ds_readws(CITYINDEX)));
 
 			ds_writews(REQUEST_REFRESH, refresh = 0);
 		}
 
 		if (refresh != 0) {
 
-			GUI_print_loc_line(get_tx(4 * ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(ds_readws(CITYINDEX)));
 
 			refresh = 0;
 		}
@@ -186,11 +186,11 @@ void do_inn(void)
 
 		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
-			answer = GUI_radio(get_ttx(0x564), ds_readws(COMBO_MODE) == 0 ? 7 : 8,
-						get_ttx(0x55c), get_ttx(0x758),
-						get_ttx(0x560), get_ttx(0x350),
-						get_ttx(0x4d8), get_ttx(0x4f0),
-						get_ttx(0x56c), get_ttx(0xcdc)) - 1;
+			answer = GUI_radio(get_ttx(345), ds_readws(COMBO_MODE) == 0 ? 7 : 8,
+						get_ttx(343), get_ttx(470),
+						get_ttx(344), get_ttx(212),
+						get_ttx(310), get_ttx(316),
+						get_ttx(347), get_ttx(823)) - 1;
 
 			if (answer != -2) {
 				ds_writews(ACTION, answer + 129);
@@ -206,7 +206,7 @@ void do_inn(void)
 			price += (price * host_readws(inn_ptr + 2)) / 100L;
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0x764),
+				(char*)get_ttx(473),
 				(signed short)price);
 
 			if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
@@ -219,11 +219,11 @@ void do_inn(void)
 				}
 
 				if (party_money < price) {
-					GUI_output(get_ttx(0x644));
+					GUI_output(get_ttx(401));
 				} else {
 
-					GUI_output(host_readws(inn_ptr) < 5 ? get_ttx(0x76c) :
-							(host_readws(inn_ptr) < 15 ? get_ttx(0x770) : get_ttx(0x774)));
+					GUI_output(host_readws(inn_ptr) < 5 ? get_ttx(475) :
+							(host_readws(inn_ptr) < 15 ? get_ttx(476) : get_ttx(477)));
 
 					for (i = 0, hero2 = get_hero(0); i <= 6; i++, hero2 += SIZEOF_HERO) {
 
@@ -273,24 +273,24 @@ void do_inn(void)
 			ds_writews(TEXTBOX_WIDTH, 5);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0x634),
+				(char*)get_ttx(397),
 				(signed short)l8);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 50,
-				(char*)get_ttx(0x638),
+				(char*)get_ttx(398),
 				(signed short)l9);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 100,
-				(char*)get_ttx(0x63c),
+				(char*)get_ttx(399),
 				(signed short)l10);
 
-			ds_writebs(SLEEP_QUALITY, (signed char)GUI_radio(get_ttx(0x630), 3,
+			ds_writebs(SLEEP_QUALITY, (signed char)GUI_radio(get_ttx(396), 3,
 							Real2Host(ds_readd(DTP2)),
 							Real2Host(ds_readd(DTP2)) + 50,
 							Real2Host(ds_readd(DTP2)) + 100));
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
-				ds_writebs(BOOKED_INN_DAYS, (signed char)GUI_input(get_ttx(0xce8), 2));
+				ds_writebs(BOOKED_INN_DAYS, (signed char)GUI_input(get_ttx(826), 2));
 			}
 
 			if (ds_readbs(BOOKED_INN_DAYS) <= 0) {
@@ -317,29 +317,29 @@ void do_inn(void)
 				}
 
 				if (party_money < price) {
-					GUI_output(get_ttx(0x644));
+					GUI_output(get_ttx(401));
 					ds_writebs(SLEEP_QUALITY, -1);
 				} else {
 					party_money -= price;
 					set_party_money(party_money);
-					GUI_output(get_ttx(0x648));
+					GUI_output(get_ttx(402));
 				}
 			}
 
 		} else if (ds_readws(ACTION) == 132) {
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
-				GUI_use_skill2(0, get_ttx(0x62c));
+				GUI_use_skill2(0, get_ttx(395));
 				refresh = 1;
 			} else {
-				GUI_output(get_ttx(0x568));
+				GUI_output(get_ttx(346));
 			}
 
 		} else if (ds_readws(ACTION) == 133) {
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
 
-				answer = select_hero_ok(get_ttx(0x4f4));
+				answer = select_hero_ok(get_ttx(317));
 
 				if (answer != -1) {
 
@@ -348,23 +348,23 @@ void do_inn(void)
 					if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
 
 						if (magic_act[answer] != 0) {
-							GUI_output(get_ttx(0x538));
+							GUI_output(get_ttx(334));
 						} else {
 							magic_act[answer] = (signed char)use_magic(hero);
 						}
 					} else {
-						GUI_output(get_ttx(0x528));
+						GUI_output(get_ttx(330));
 					}
 				}
 			} else {
-				GUI_output(get_ttx(0x568));
+				GUI_output(get_ttx(346));
 			}
 
 		} else if (ds_readws(ACTION) == 134) {
 
 			if (ds_readbs(SLEEP_QUALITY) != -1 && ds_readbs(BOOKED_INN_DAYS) > 0) {
 
-				if (GUI_bool(get_ttx(0x4f8))) {
+				if (GUI_bool(get_ttx(318))) {
 					booked_days = ds_readbs(BOOKED_INN_DAYS);
 
 					if (host_readws(inn_ptr) < 8) {
@@ -404,13 +404,13 @@ void do_inn(void)
 					}
 				}
 			} else {
-				GUI_output(get_ttx(0x568));
+				GUI_output(get_ttx(346));
 			}
 		} else if (ds_readws(ACTION) == 135) {
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
 
-				if (GUI_bool(get_ttx(0x640))) {
+				if (GUI_bool(get_ttx(400))) {
 					done = 1;
 					ds_writews(COMBO_MODE, 0);
 				}
@@ -425,13 +425,13 @@ void do_inn(void)
 
 			if (host_readws(tavern_ptr) >= 6 && host_readws(tavern_ptr) <= 13 &&
 				ds_readds(DAY_TIMER) < HOURS(11) && ds_readds(DAY_TIMER) > HOURS(3)) {
-				GUI_output(get_ttx(0xc84));
+				GUI_output(get_ttx(801));
 			} else if ((host_readws(tavern_ptr) < 6 || host_readws(tavern_ptr) > 13) &&
 				ds_readds(DAY_TIMER) < HOURS(16) && ds_readds(DAY_TIMER) > HOURS(3)) {
-				GUI_output(get_ttx(0x784));
+				GUI_output(get_ttx(481));
 			} else if (ds_readbs(SLEEP_QUALITY) != -1) {
 
-				if (GUI_bool(get_ttx(0x640))) {
+				if (GUI_bool(get_ttx(400))) {
 					done = 1;
 					ds_writews(COMBO_MODE, 2);
 				}

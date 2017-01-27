@@ -62,8 +62,8 @@ void passages_init(void)
 
 #if !defined(__BORLANDC__)
 	D1_LOG("%16s - %16s: %d %d %d %d %d %d\n",
-		(char*)get_ttx((host_readb(p + 0) + 0xeb) * 4),
-		(char*)get_ttx((host_readb(p + 1) + 0xeb) * 4),
+		(char*)get_ttx(host_readb(p + 0) + 0xeb),
+		(char*)get_ttx(host_readb(p + 1) + 0xeb),
 		host_readb(p + 2),
 		host_readb(p + 3),
 		host_readb(p + 4),
@@ -143,9 +143,9 @@ void do_harbour(void)
 
 		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
-			answer = GUI_radio(get_tx(0x24), 4,
-						get_tx(0x28), get_tx(0x2c),
-						get_tx(0x30), get_tx(0x34)) - 1;
+			answer = GUI_radio(get_tx(9), 4,
+						get_tx(10), get_tx(11),
+						get_tx(12), get_tx(13)) - 1;
 
 			if (answer != -2) {
 				ds_writew(ACTION, answer + 129);
@@ -157,36 +157,36 @@ void do_harbour(void)
 			answer = prepare_passages();
 
 			if (answer == 0) {
-				GUI_output(get_tx(0x3c));
+				GUI_output(get_tx(15));
 			} else {
 
 				/* select a destination */
-				answer = GUI_radio(get_tx(0x38), (signed char)answer,
-						get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 0 + 10)) + 235)),
-						get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 1 + 10)) + 235)),
-						get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 2 + 10)) + 235)),
-						get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 3 + 10)) + 235)),
-						get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 4 + 10)) + 235)),
-						get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 5 + 10)) + 235)),
-						get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 6 + 10)) + 235)),
-						get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 7 + 10)) + 235)),
-						get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 8 + 10)) + 235)),
-						get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 9 + 10)) + 235))) - 1;
+				answer = GUI_radio(get_tx(14), (signed char)answer,
+						get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 0 + 10)) + 235),
+						get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 1 + 10)) + 235),
+						get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 2 + 10)) + 235),
+						get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 3 + 10)) + 235),
+						get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 4 + 10)) + 235),
+						get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 5 + 10)) + 235),
+						get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 6 + 10)) + 235),
+						get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 7 + 10)) + 235),
+						get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 8 + 10)) + 235),
+						get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 9 + 10)) + 235)) - 1;
 
 				if (answer != -2) {
 
 					psg_ptr = p_datseg + 12 * answer + SEA_TRAVEL_MENU_PASSAGES;
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(0x40),
+						(char*)get_tx(16),
 
-						(char*)get_tx(4 * ds_readws(SEA_TRAVEL_TX_SHIP + 2 * host_readbs(psg_ptr + 9))),
+						(char*)get_tx(ds_readws(SEA_TRAVEL_TX_SHIP + 2 * host_readbs(psg_ptr + 9))),
 						(char*)Real2Host(host_readds(psg_ptr + 0)),
 
-						(char*)(!host_readbs(psg_ptr + 8) ? get_tx(0x14) : get_tx(0x18)),
+						(char*)(!host_readbs(psg_ptr + 8) ? get_tx(5) : get_tx(6)),
 
-						(char*)get_tx(4 * ds_readws(SEA_TRAVEL_TX_CLASS + 2 * ds_readbs(SEA_TRAVEL_QUALITY_TABLE + 4 * host_readbs(psg_ptr + 9)))),
-						(char*)get_ttx(4 * (host_readb(psg_ptr + 10) + 235)),
+						(char*)get_tx(ds_readws(SEA_TRAVEL_TX_CLASS + 2 * ds_readbs(SEA_TRAVEL_QUALITY_TABLE + 4 * host_readbs(psg_ptr + 9)))),
+						(char*)get_ttx(host_readb(psg_ptr + 10) + 235),
 						get_passage_travel_hours(host_readb(Real2Host(host_readd(psg_ptr + 4)) + 2), ds_readbs(SEA_TRAVEL_QUALITY_TABLE + 3 + 4 * host_readbs(psg_ptr + 9))),
 
 						Real2Host(print_passage_price(ds_readbs(SEA_TRAVEL_QUALITY_TABLE + 2 + 4 * host_readbs(psg_ptr + 9)), Real2Host(host_readds(psg_ptr + 4)))));
@@ -204,7 +204,7 @@ void do_harbour(void)
 
 						if (ds_readws(SEA_TRAVEL_PASSAGE_PRICE) > money) {
 
-							GUI_output(get_ttx(0x644));
+							GUI_output(get_ttx(401));
 
 						} else {
 
@@ -217,7 +217,7 @@ void do_harbour(void)
 							ds_writeb(SEA_TRAVEL_PASSAGE_UNKN1, ds_readb(SEA_TRAVEL_PASSAGE_UNKN2));
 							ds_writeb(SEA_TRAVEL_PASSAGE_ID, host_readb(psg_ptr + 11));
 
-							GUI_output(host_readb(psg_ptr + 8) != 0 ? get_tx(0x48) : get_tx(0x44));
+							GUI_output(host_readb(psg_ptr + 8) != 0 ? get_tx(18) : get_tx(17));
 						}
 					}
 				}
@@ -227,25 +227,25 @@ void do_harbour(void)
 
 			if (ds_readds(DAY_TIMER) <= HOURS(6) || ds_readds(DAY_TIMER) >= HOURS(21)) {
 
-				GUI_output(get_ttx(0x8e0));
+				GUI_output(get_ttx(568));
 
 			} else {
 
 				load_in_head(11);
 
 				do {
-					answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0x10),
-									get_tx(0x00), 3,
-									get_tx(0x4),
-									get_tx(0x8),
-									get_tx(0x0c));
+					answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(4),
+									get_tx(0), 3,
+									get_tx(1),
+									get_tx(2),
+									get_tx(3));
 				} while (answer == -1);
 
 				p_money = get_party_money();
 
 				if (p_money < 10L) {
 
-					GUI_output(get_tx(0x20));
+					GUI_output(get_tx(8));
 
 				} else if (answer == 1 || answer == 2) {
 
@@ -258,32 +258,32 @@ void do_harbour(void)
 					if (answer != 0) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)(l_si == 1 ? get_tx(0x70) : get_tx(0x58)),
+							(char*)(l_si == 1 ? get_tx(28) : get_tx(22)),
 							(char*)(answer == 1 ? p_datseg + SEA_TRAVEL_STR_T : p_datseg + SEA_TRAVEL_STR_EN),
-							(char*)(answer == 1 ? get_tx(0x5c) : get_tx(0x60)));
+							(char*)(answer == 1 ? get_tx(23) : get_tx(24)));
 
 						l_si = 0;
 
 						do {
 
 							strcat((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ttx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 10) + 12 * l_si++) + 235)));
+								(char*)get_ttx(ds_readb((SEA_TRAVEL_MENU_PASSAGES + 10) + 12 * l_si++) + 235));
 							if (--answer) {
 
 								strcat((char*)Real2Host(ds_readd(DTP2)),
-									(char*)(answer >= 2 ? p_datseg + SEA_TRAVEL_STR_COMMA : get_tx(0x1c)));
+									(char*)(answer >= 2 ? p_datseg + SEA_TRAVEL_STR_COMMA : get_tx(7)));
 							}
 
 						} while (answer != 0);
 
 						strcat((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_tx(0x64));
+							(char*)get_tx(25));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 					} else {
 
-						GUI_output(get_tx(0x68));
+						GUI_output(get_tx(26));
 					}
 				}
 			}
@@ -292,17 +292,17 @@ void do_harbour(void)
 
 			if (ds_readb(SEA_TRAVEL_PSGBOOKED_FLAG) != 0xaa) {
 
-				GUI_output(get_tx(0x4c));
+				GUI_output(get_tx(19));
 
 			} else if (ds_readb(SEA_TRAVEL_PSGBOOKED_TIMER) != 0) {
 
-				GUI_output(ds_readbs(SEA_TRAVEL_PSGBOOKED_TIMER) == -1 ? get_tx(0x6c) : get_tx(0x50));
+				GUI_output(ds_readbs(SEA_TRAVEL_PSGBOOKED_TIMER) == -1 ? get_tx(27) : get_tx(20));
 
 			} else {
 
 				set_var_to_zero();
 
-				GUI_output(get_tx(0x54));
+				GUI_output(get_tx(21));
 
 				ds_writeb(TRAVEL_HEROKEEPING, 1);
 

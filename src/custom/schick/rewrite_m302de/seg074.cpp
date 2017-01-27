@@ -90,13 +90,13 @@ void show_automap(void)
 			if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
 
 				if (ds_readb(DNG_MAP_SIZE) == 16) {
-					l_di = GUI_radio(get_ttx(0x990), 1, get_ttx(0x994)) - 1;
+					l_di = GUI_radio(get_ttx(612), 1, get_ttx(613)) - 1;
 				} else {
 					ds_writew(MENU_DEFAULT_SELECT, 2);
-					l_di = GUI_radio(get_ttx(0x990), 3,
-								 get_ttx(0x998),
-								 get_ttx(0x99c),
-								 get_ttx(0x994)) - 1;
+					l_di = GUI_radio(get_ttx(612), 3,
+								 get_ttx(614),
+								 get_ttx(615),
+								 get_ttx(613)) - 1;
 				}
 
 				if (l_di != -2) {
@@ -136,7 +136,7 @@ void show_automap(void)
 		clear_ani_pal();
 
 	} else {
-		GUI_output(get_ttx(0xc10));
+		GUI_output(get_ttx(772));
 	}
 }
 
@@ -527,12 +527,12 @@ signed short select_teleport_dest(void)
 		if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
 
 			if (ds_readb(DNG_MAP_SIZE) == 16) {
-				answer = GUI_radio(get_ttx(0x9a0), 1, get_ttx(0x9a4)) - 1;
+				answer = GUI_radio(get_ttx(616), 1, get_ttx(617)) - 1;
 			} else {
-				answer = GUI_radio(get_ttx(0x9a0), 3,
-							 get_ttx(0x998),
-							 get_ttx(0x99c),
-							 get_ttx(0x9a4)) - 1;
+				answer = GUI_radio(get_ttx(616), 3,
+							 get_ttx(614),
+							 get_ttx(615),
+							 get_ttx(617)) - 1;
 			}
 
 			if (answer != -2) {
@@ -617,7 +617,7 @@ signed short select_teleport_dest(void)
 			((ds_readbs(CURRENT_TOWN) != 0) && (((l_di >= 2) && (l_di <= 5)) ||
 			(l_di == 6))))
 	{
-		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x98c));
+		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(611));
 		ae_costs = -2;
 	} else {
 		host_writeb(Real2Host(ds_readd(DTP2)), 0);

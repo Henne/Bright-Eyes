@@ -123,7 +123,7 @@ signed short enter_location_daspota(void)
 
 			if (host_readb(ptr + 2) != 12) {
 
-				GUI_print_loc_line(get_tx(4 * host_readw(ptr + 4)));
+				GUI_print_loc_line(get_tx(host_readw(ptr + 4)));
 
 				if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(ptr + 4))) {
 
@@ -139,12 +139,12 @@ signed short enter_location_daspota(void)
 				set_var_to_zero();
 
 				load_ani(10);
-				GUI_print_loc_line(get_tx(4 * host_readw(ptr + 4)));
+				GUI_print_loc_line(get_tx(host_readw(ptr + 4)));
 				init_ani(0);
 
 				if (ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(ptr + 4))) {
 
-					loot_multi_chest(Real2Host((RealPt)ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(ptr + 4))), get_tx(0x54));
+					loot_multi_chest(Real2Host((RealPt)ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(ptr + 4))), get_tx(21));
 
 				} else {
 
@@ -220,17 +220,17 @@ void do_special_buildings(void)
 		} else if (type == 34) {
 			THO_botschaft();
 		} else if (type == 35) {
-			GUI_output(get_tx2(0x118));
+			GUI_output(get_tx2(70));
 		} else if (type == 36) {
-			GUI_output(get_tx2(0x11c));
+			GUI_output(get_tx2(71));
 		} else if (type == 37) {
 			THO_bank();
 		} else if (type == 38) {
-			GUI_output(get_tx2(0x148));
+			GUI_output(get_tx2(82));
 		} else if (type == 39) {
-			GUI_output(get_tx2(0x14c));
+			GUI_output(get_tx2(83));
 		} else if (type == 40) {
-			GUI_output(get_tx2(0x150));
+			GUI_output(get_tx2(84));
 		} else if (type == 41) {
 			THO_arsenal();
 		} else if (type == 42) {
@@ -874,7 +874,7 @@ signed short city_step(void)
 	if (ds_readws(REQUEST_REFRESH) != 0) {
 
 		draw_main_screen();
-		GUI_print_loc_line(get_tx(0x00));
+		GUI_print_loc_line(get_tx(0));
 
 		ds_writew(REQUEST_REFRESH, ds_writews(REDRAW_MENUICONS, 0));
 		ds_writews(CITY_REFRESH_X_TARGET, -1);
@@ -913,10 +913,10 @@ signed short city_step(void)
 			}
 		}
 
-		i = GUI_radio(get_ttx(0x8e8), (signed char)options,
-				get_ttx(0x85c), get_ttx(0x860), get_ttx(0x864),
-				get_ttx(0x868), get_ttx(0x86c), get_ttx(0x354),
-				get_ttx(0x4c8), get_ttx(0x8e4)) - 1;
+		i = GUI_radio(get_ttx(570), (signed char)options,
+				get_ttx(535), get_ttx(536), get_ttx(537),
+				get_ttx(538), get_ttx(539), get_ttx(213),
+				get_ttx(306), get_ttx(569)) - 1;
 
 		if (i != -2) {
 			ds_writew(ACTION, i + 129);

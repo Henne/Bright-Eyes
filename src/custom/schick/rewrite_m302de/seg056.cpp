@@ -295,7 +295,7 @@ void buy_screen(void)
 					(char*)p_datseg + BUY_SCREEN_STR_COMMA_SPACE);
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(4 * (48 + host_readbs(get_itemsdat(item_id) + 3))));
+					(char*)get_ttx(48 + host_readbs(get_itemsdat(item_id) + 3)));
 			}
 
 			GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
@@ -341,10 +341,10 @@ void buy_screen(void)
 		if ((ds_readws(MOUSE2_EVENT) != 0 && ds_readws(ACTION) != 144) || ds_readws(ACTION) == 73) {
 
 			l3 = GUI_radio(NULL, 4,
-					get_ttx(0x6c4),
-					get_ttx(0x6cc),
-					get_ttx(0x6d0),
-					get_ttx(0x6d4)) - 1;
+					get_ttx(433),
+					get_ttx(435),
+					get_ttx(436),
+					get_ttx(437)) - 1;
 
 			if (l3 != -2) {
 				ds_writew(ACTION, l3 + 129);
@@ -393,14 +393,14 @@ void buy_screen(void)
 						if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2) > 1) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ttx(0xcc8),
+								(char*)get_ttx(818),
 								(char*)Real2Host(GUI_names_grammar(4, item_id, 0)));
 
 							l4 = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 						}
 					} else {
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x6e4),
+							(char*)get_ttx(441),
 							(char*)Real2Host(GUI_names_grammar(4, item_id, 0)));
 
 						l4 = GUI_input(Real2Host(ds_readd(DTP2)), 2);
@@ -417,9 +417,9 @@ void buy_screen(void)
 						(Bit32s)host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 *(l7 + item) + 4) * l4;
 
 					if (l3 == 1 && price + l9 > p_money) {
-						GUI_output(get_ttx(0x644));
+						GUI_output(get_ttx(401));
 					} else if (l3 == 1 && free_slots < l17) {
-						GUI_output(get_ttx(0x6d8));
+						GUI_output(get_ttx(438));
 					} else {
 
 						if (l3 == 1) {
@@ -457,7 +457,7 @@ void buy_screen(void)
 					if (item_stackable(get_itemsdat(host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item))))) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x6e4),
+							(char*)get_ttx(441),
 							(char*)Real2Host(GUI_names_grammar(4, host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item)), 0)));
 
 						l4 = GUI_input(Real2Host(ds_readd(DTP2)), 2);
@@ -469,9 +469,9 @@ void buy_screen(void)
 							(Bit32s)host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item) + 4) * l4;
 
 						if (price + l9 > p_money) {
-							GUI_output(get_ttx(0x644));
+							GUI_output(get_ttx(401));
 						} else if (free_slots < l17) {
-							GUI_output(get_ttx(0x6d8));
+							GUI_output(get_ttx(438));
 						} else {
 							price += l9;
 
@@ -512,7 +512,7 @@ void buy_screen(void)
 
 				make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), price);
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(0x6dc),
+					(char*)get_ttx(439),
 					(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 
@@ -522,7 +522,7 @@ void buy_screen(void)
 				} while (percent > 50);
 
 				if (percent == 0) {
-					GUI_output(get_ttx(0x6e0));
+					GUI_output(get_ttx(440));
 					offended = 2;
 				} else if (percent >= percent_old) {
 					j = 2;
@@ -531,7 +531,7 @@ void buy_screen(void)
 				} else {
 					ds_writew(SKILLED_HERO_POS, get_skilled_hero_pos(TA_FEILSCHEN));
 
-					l3 = select_hero_ok(get_ttx(0x6e8));
+					l3 = select_hero_ok(get_ttx(442));
 
 					if (l3 == -1) {
 						break;
@@ -545,7 +545,7 @@ void buy_screen(void)
 				if (offended > 0) {
 
 					if (offended != 2) {
-						GUI_output(get_ttx(0x6f0));
+						GUI_output(get_ttx(444));
 					}
 
 					l12 = l13 = 0;
@@ -584,25 +584,25 @@ void buy_screen(void)
 						make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0xccc),
+							(char*)get_ttx(819),
 							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
 
 					if (l13 != 0) {
-						GUI_output(get_ttx(0x8d8));
+						GUI_output(get_ttx(566));
 					}
 
 					done = 1;
 				} else {
 
 					if (j == 2) {
-						GUI_output(get_ttx(0x6f4));
+						GUI_output(get_ttx(445));
 						ds_writeb(MERCHANT_OFFENDED_FLAGS + ds_readw(TYPEINDEX), 1);
 						done = 1;
 					} else {
-						GUI_output(get_ttx(0x6ec));
+						GUI_output(get_ttx(443));
 						percent_old = percent;
 					}
 

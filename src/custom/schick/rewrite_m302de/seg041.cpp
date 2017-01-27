@@ -86,7 +86,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 			if (arg != 2) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0x20),
+					(char*)get_tx(8),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -107,7 +107,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 			if (arg != 2) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0x24),
+					(char*)get_tx(9),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -126,7 +126,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 			if (arg != 2) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(0x28),
+					(char*)get_tx(10),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -494,7 +494,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 			/* 5% chance to loose this item */
 			if (random_schick(100) < 5) {
 				drop_item(hero, pos, 1);
-				GUI_output(get_tx(0x2c));
+				GUI_output(get_tx(11));
 			}
 		}
 

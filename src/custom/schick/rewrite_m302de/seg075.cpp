@@ -603,7 +603,7 @@ void DNG_timestep(signed short a1)
 			load_ani(18);
 			init_ani(1);
 
-			GUI_output(get_tx(0x5c));
+			GUI_output(get_tx(23));
 		}
 
 		ds_writeb(DUNGEON_INDEX, 0);
@@ -798,7 +798,7 @@ void DNG_stub6(void)
 			if (l_si) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(0xc00),
+					(char*)get_ttx(768),
 					get_hero(l_si - 1) + HERO_NAME2);
 			}
 
@@ -809,7 +809,7 @@ void DNG_stub6(void)
 				hero2 = Real2Host(get_second_hero_available_in_group());
 
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-					(char*)get_ttx(0xc04),
+					(char*)get_ttx(769),
 					hero1 + HERO_NAME2,
 					hero2 + HERO_NAME2);
 
@@ -819,7 +819,7 @@ void DNG_stub6(void)
 				if (test_attrib(hero1, ATTRIB_GE, 2) <= 0) {
 
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-						(char*)get_ttx(0xc08),
+						(char*)get_ttx(770),
 						hero1 + HERO_NAME2,
 						hero2 + HERO_NAME2,
 						l_si = random_schick(3) + 1);
@@ -855,7 +855,7 @@ void DNG_stub6(void)
 				} while (l_di);
 
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-					(char*)get_ttx(0xc0c),
+					(char*)get_ttx(771),
 					hero_auto + HERO_NAME2,
 					Real2Host(GUI_get_ptr(host_readbs(hero_auto + HERO_SEX), 0)),
 					Real2Host(GUI_get_ptr(host_readbs(hero_auto + HERO_SEX), 2)));

@@ -79,7 +79,7 @@ void show_entrance(void)
 	load_ani(34);
 	init_ani(1);
 
-	if (GUI_bool(get_ttx(0xbe0))) {
+	if (GUI_bool(get_ttx(760))) {
 
 		init_ani_busy_loop(2);
 		DNG_enter_dungeon(ds_readws(TYPEINDEX));
@@ -107,7 +107,7 @@ void show_citizen(void)
 			init_ani(ds_writew(REQUEST_REFRESH, 0));
 
 			strcpy((char*)Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_tx(ds_readw(CITYINDEX) * 4));
+				(char*)get_tx(ds_readw(CITYINDEX)));
 
 			if (ds_readbs(YEAR) == 15 && ds_readbs(MONTH) == 1 && random_schick(100) <= 20) {
 
@@ -142,9 +142,9 @@ void do_house(void)
 	Bit8u *hero;
 
 	/* prepare the question */
-	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx(4 * ds_readws(CITYINDEX)));
+	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx(ds_readws(CITYINDEX)));
 
-	strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x9bc));
+	strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(623));
 
 	ds_writew(MENU_DEFAULT_SELECT, 1);
 
@@ -157,7 +157,7 @@ void do_house(void)
 		init_ani(0);
 
 		/* print a randomized text */
-		GUI_output(get_ttx(4 * (random_schick(8) + 623)));
+		GUI_output(get_ttx(random_schick(8) + 623));
 
 		hero = get_hero(0);
 
@@ -176,7 +176,7 @@ void do_house(void)
 
 					/* sneak test failed in a town with guards */
 
-					GUI_output(get_ttx(0x9e0));
+					GUI_output(get_ttx(632));
 
 					l_di = 0;
 
@@ -211,7 +211,7 @@ void do_house(void)
 
 						timewarp_until(HOURS(6));
 
-						GUI_output(get_ttx(0x9e4));
+						GUI_output(get_ttx(633));
 					}
 				}
 				break;
@@ -283,7 +283,7 @@ void show_treasure_map(void)
 
 	if (count == 0) {
 		/* no treasure map parts found */
-		GUI_output(get_ttx(0x984));
+		GUI_output(get_ttx(609));
 	} else {
 		ds_writeb(SPECIAL_SCREEN, 1);
 		pp20_index_bak = ds_readbs(PP20_INDEX);
@@ -351,7 +351,7 @@ void show_treasure_map(void)
 			tw_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 3);
 
-			GUI_output(get_ttx(0xca0));
+			GUI_output(get_ttx(808));
 
 			ds_writew(TEXTBOX_WIDTH, tw_bak);
 			ds_writeb(TMAP_DOUBLE1, 0);
@@ -362,7 +362,7 @@ void show_treasure_map(void)
 			tw_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 3);
 
-			GUI_output(get_ttx(0xca4));
+			GUI_output(get_ttx(809));
 
 			ds_writew(TEXTBOX_WIDTH, tw_bak);
 			ds_writeb(TMAP_DOUBLE2, 0);
@@ -376,7 +376,7 @@ void show_treasure_map(void)
 
 			/* */
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_ttx(0xb5c),
+				(char*)get_ttx(727),
 				(char*)get_hero(get_random_hero()) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -473,7 +473,7 @@ signed short game_options(void)
 		/* if the party is in a town */
 		load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 
-		GUI_print_header(get_tx(4 * (ds_readbs(CURRENT_TOWN) - 1)));
+		GUI_print_header(get_tx(ds_readbs(CURRENT_TOWN) - 1));
 
 		load_tx(ds_readbs(CURRENT_TOWN) + (ARCHIVE_FILE_CITY_DAT-1));
 
@@ -528,16 +528,16 @@ signed short game_options(void)
 		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			/* use the radio menu */
-			answer = GUI_radio(get_ttx(0x938), 9,
-						get_ttx(0x390),
-						get_ttx(0x394),
-						get_ttx(0x494),
-						get_ttx(0x980),
-						get_ttx(0xcf8),
-						get_ttx(0xcf0),
-						get_ttx(0xcfc),
-						get_ttx(0x930),
-						get_ttx(0x934)) - 1;
+			answer = GUI_radio(get_ttx(590), 9,
+						get_ttx(228),
+						get_ttx(229),
+						get_ttx(293),
+						get_ttx(608),
+						get_ttx(830),
+						get_ttx(828),
+						get_ttx(831),
+						get_ttx(588),
+						get_ttx(589)) - 1;
 
 			if (answer != -2) {
 				ds_writew(ACTION, answer + 129);
@@ -579,7 +579,7 @@ signed short game_options(void)
 		} else if (ds_readws(ACTION) == 134) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0xcec),
+				(char*)get_ttx(827),
 				ds_readws(DELAY_FACTOR));
 
 			new_delay = GUI_input(Real2Host(ds_readd(DTP2)), 2);
@@ -594,7 +594,7 @@ signed short game_options(void)
 
 		} else if (ds_readws(ACTION) == 136) {
 
-			if (GUI_bool(get_ttx(0x4ac))) {
+			if (GUI_bool(get_ttx(299))) {
 
 				done = -1;
 				ds_writew(GAME_STATE, GAME_STATE_QUIT);
@@ -665,7 +665,7 @@ signed short show_storytext(void)
 
 	person = random_schick(17) - 1;
 
-	ptr = get_tx(4 * person);
+	ptr = get_tx(person);
 
 	switch (person) {
 
@@ -816,7 +816,7 @@ void tumult(void)
 	ds_writew(TEXTBOX_WIDTH, 7);
 
 	/* print message */
-	GUI_output(get_ttx(0xbf0));
+	GUI_output(get_ttx(764));
 
 	/* each hero in the group looses 1W6 LE */
 	sub_group_le(random_schick(6));
@@ -824,12 +824,12 @@ void tumult(void)
 
 	/* the guards or a mob */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)get_ttx(0xbf4),
+		(char*)get_ttx(765),
 		((ds_readb(CURRENT_TOWN) == 39 ||	/* PREM */
 			ds_readb(CURRENT_TOWN) == 18 ||	/* PHEXCAER */
 			ds_readb(CURRENT_TOWN) == 1 ||	/* THORWAL */
 			ds_readb(CURRENT_TOWN) == 17)	/* OBERORKEN */
-				? (char*)get_ttx(0xbf8) : (char*)get_ttx(0xbfc)));
+				? (char*)get_ttx(766) : (char*)get_ttx(767)));
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
 

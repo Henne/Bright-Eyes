@@ -693,7 +693,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)p_datseg + STRING_CASTS_SPELL,		/* "%s ZAUBERT %s" */
 						(char*)Real2Host(hero) + HERO_NAME2,
-						(char*)get_ttx(4 * (host_readbs(Real2Host(hero) + HERO_SPELL_ID) + 0x6a)));
+						(char*)get_ttx(host_readbs(Real2Host(hero) + HERO_SPELL_ID) + 0x6a));
 
 					GUI_print_string(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 1, 194);
 

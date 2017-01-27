@@ -160,12 +160,12 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 		if (ds_readds(SMITH_REPAIRITEMS + 2 + 6 * a1) > ds_readds(DAY_TIMER)) {
 			/* not ready yet */
-			GUI_output(get_ttx(0x794));
+			GUI_output(get_ttx(485));
 
 		} else if (get_item(ds_readws(SMITH_REPAIRITEMS + 6 * a1), 1, 1)) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(0x798),
+				(char*)get_ttx(486),
 				(char*)Real2Host(GUI_names_grammar((signed short)0x8002, ds_readws(SMITH_REPAIRITEMS + 6 * a1), 0)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -210,7 +210,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 				if (l10 != 0) {
 
-					hero_pos = select_hero_ok(get_ttx(0x7bc));
+					hero_pos = select_hero_ok(get_ttx(495));
 
 					hero2 = get_hero(hero_pos);
 
@@ -346,11 +346,11 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 			if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == 73) {
 
 				answer = GUI_radio(NULL, 5,
-						get_ttx(0x6c4),
-						get_ttx(0x6cc),
-						get_ttx(0x6d0),
-						get_ttx(0x6f8),
-						get_ttx(0x6d4)) - 1;
+						get_ttx(433),
+						get_ttx(435),
+						get_ttx(436),
+						get_ttx(446),
+						get_ttx(437)) - 1;
 
 				if (answer != -2) {
 					ds_writew(ACTION, answer + 129);
@@ -372,7 +372,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 				p_money = get_party_money();
 
 				if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item) + 2) == 0) {
-					GUI_output(get_ttx(0x79c));
+					GUI_output(get_ttx(487));
 				} else {
 
 
@@ -387,7 +387,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 						make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(0x7a0),
+							(char*)get_ttx(488),
 							(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item_id, 0)),
 							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
@@ -400,7 +400,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 						price -= (percent * price) / 100L;
 
 						if (percent == 0 && p_money > price) {
-							GUI_output(get_ttx(0x7a4));
+							GUI_output(get_ttx(489));
 							l12 = 2;
 						} else if (percent >= percent_old) {
 							j = 2;
@@ -408,7 +408,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 							break;
 						} else {
 
-							answer = select_hero_ok_forced(get_ttx(0x6e8));
+							answer = select_hero_ok_forced(get_ttx(442));
 
 							hero1 = get_hero(answer);
 
@@ -418,20 +418,20 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 						if (l12 > 0) {
 
 							if (p_money < price) {
-								GUI_output(get_ttx(0x644));
+								GUI_output(get_ttx(401));
 							} else {
 								if (l12 != 2) {
-									GUI_output(get_ttx(0x7b0));
+									GUI_output(get_ttx(492));
 								}
 
 								ds_writew(SMITH_REPAIRITEMS + 6 * a1, item_id);
 
 								if (ds_readds(DAY_TIMER) > HOURS(14)) {
 									ds_writed(SMITH_REPAIRITEMS + 2 + 6 * a1, HOURS(23));
-									GUI_output(get_ttx(0x7a8));
+									GUI_output(get_ttx(490));
 								} else {
 									ds_writed(SMITH_REPAIRITEMS + 2 + 6 * a1, ds_readd(DAY_TIMER) + HOURS(6));
-									GUI_output(get_ttx(0x7ac));
+									GUI_output(get_ttx(491));
 								}
 
 								drop_item(hero2, host_readbs(Real2Host(ds_readd(SELLITEMS)) + 6 + 7 * (l7 + item)), 1);
@@ -444,10 +444,10 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 						}
 						 if (j == 2) {
-							GUI_output(get_ttx(0x7b4));
+							GUI_output(get_ttx(493));
 							done = 1;
 						} else {
-							GUI_output(get_ttx(0x7b8));
+							GUI_output(get_ttx(494));
 							percent_old = percent;
 						}
 
@@ -493,7 +493,7 @@ void do_smith(void)
 
 	if (ds_readds(DAY_TIMER) < HOURS(6) || ds_readds(DAY_TIMER) > HOURS(20)) {
 
-		GUI_output(get_ttx(0x78c));
+		GUI_output(get_ttx(483));
 		turnaround();
 		return;
 	}
@@ -521,7 +521,7 @@ void do_smith(void)
 			set_var_to_zero();
 			load_ani(5);
 			init_ani(0);
-			GUI_print_loc_line(get_tx(4 * ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(ds_readws(CITYINDEX)));
 			set_audio_track(ARCHIVE_FILE_SMITH_XMI);
 			ds_writew(REQUEST_REFRESH, 0);
 		}
@@ -532,10 +532,10 @@ void do_smith(void)
 
 			ds_writew(TEXTBOX_WIDTH, 4);
 
-			answer = GUI_radio(get_ttx(0x7c0), 3,
-						get_ttx(0x55c),
-						get_ttx(0x7c4),
-						get_ttx(0x7c8)) - 1;
+			answer = GUI_radio(get_ttx(496), 3,
+						get_ttx(343),
+						get_ttx(497),
+						get_ttx(498)) - 1;
 
 			/* TODO: why should it be 3??? Better make a backup */
 			ds_writew(TEXTBOX_WIDTH, 3);
