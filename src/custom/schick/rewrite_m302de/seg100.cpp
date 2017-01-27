@@ -40,28 +40,28 @@ void spell_eigenschaften(void)
 	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
-	damage_range_template(host_readws(get_spelltarget_e() + 0x1e),
+	damage_range_template(host_readws(get_spelltarget_e() + ENEMY_SHEET_DAM1),
 		(Bit8u*)&min, (Bit8u*)&max);
 
 	min = min * 8 / 10;
 	max = max * 8 / 10;
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)get_tx(25),
-		Real2Host(GUI_name_singular(get_monname(host_readbs(get_spelltarget_e())))),
-		host_readbs(get_spelltarget_e() + 0x29),	/* Level */
-		host_readbs(get_spelltarget_e() + 0x1c),	/* AT */
-		host_readbs(get_spelltarget_e() + 0x1d),	/* PA */
-		host_readbs(get_spelltarget_e() + 0x2),		/* RS */
-		host_readbs(get_spelltarget_e() + 0x1b),	/* Attacks */
-		(host_readbs(get_spelltarget_e() + 0x1b) > 1) ?
-			get_tx(26) : get_tx(27),
-		min,							/* TPmin */
-		max,							/* TPmax */
-		host_readws(get_spelltarget_e() + 0x13),	/* LE */
-		host_readws(get_spelltarget_e() + 0x11),	/* LEmax */
-		host_readws(get_spelltarget_e() + 0x17),	/* AE */
-		host_readws(get_spelltarget_e() + 0x15));	/* AEmax */
+          (char*)get_tx(25),
+          Real2Host(GUI_name_singular(get_monname(host_readbs(get_spelltarget_e())))),
+          host_readbs(get_spelltarget_e() + ENEMY_SHEET_LEVEL),	/* Level */
+          host_readbs(get_spelltarget_e() + ENEMY_SHEET_AT),	  /* AT */
+          host_readbs(get_spelltarget_e() + ENEMY_SHEET_PA),	  /* PA */
+          host_readbs(get_spelltarget_e() + ENEMY_SHEET_RS),		/* RS */
+          host_readbs(get_spelltarget_e() + ENEMY_SHEET_ATTACKS),	/* Attacks */
+          (host_readbs(get_spelltarget_e() + ENEMY_SHEET_ATTACKS) > 1) ?
+          get_tx(26) : get_tx(27),
+          min,							/* TPmin */
+          max,							/* TPmax */
+          host_readws(get_spelltarget_e() + ENEMY_SHEET_LE),	      /* LE */
+          host_readws(get_spelltarget_e() + ENEMY_SHEET_LE_ORIG),	  /* LEmax */
+          host_readws(get_spelltarget_e() + ENEMY_SHEET_AE),	      /* AE */
+          host_readws(get_spelltarget_e() + ENEMY_SHEET_AE_ORIG));	/* AEmax */
 }
 
 void spell_exposami(void)
