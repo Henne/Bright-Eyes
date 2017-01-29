@@ -34,16 +34,16 @@ RealPt FIG_get_ptr(signed char fighter_id)
 {
 	RealPt fighter_ptr = (RealPt)ds_readd(FIG_LIST_HEAD);
 
-	while (host_readbs(Real2Host(fighter_ptr) + 0x10) != fighter_id) {
+	while (host_readbs(Real2Host(fighter_ptr) + FIGHTER_ID) != fighter_id) {
 
 		/* check if its the last element */
-		if (host_readd(Real2Host(fighter_ptr) + 0x1b) == 0) {
+		if (host_readd(Real2Host(fighter_ptr) + FIGHTER_NEXT) == 0) {
 			/* return list head */
 			return (RealPt)ds_readd(FIG_LIST_HEAD);
 		}
 
 		/* set fighter_ptr to the next element */
-		fighter_ptr = (RealPt)host_readd(Real2Host(fighter_ptr) + 0x1b);
+		fighter_ptr = (RealPt)host_readd(Real2Host(fighter_ptr) + FIGHTER_NEXT);
 	}
 
 	return fighter_ptr;
@@ -88,7 +88,7 @@ void FIG_draw_figures(void)
 
 	do {
 
-		if (host_readb(list_i + 0x12) == 1) {
+		if (host_readb(list_i + FIGHTER_VISIBLE) == 1) {
 			l_si =	(l1 - host_readbs(list_i + 8) / 2) +
 				(host_readbs(list_i + 3) + host_readbs(list_i + 4)) * 10;
 
@@ -103,10 +103,10 @@ void FIG_draw_figures(void)
 			ds_writew(PIC_COPY_X2, l_si + host_readbs(list_i + 8) - 1);
 			ds_writew(PIC_COPY_Y2, l_di + host_readbs(list_i + 7) - 1);
 			/* set gfx_src */
-			ds_writed(PIC_COPY_SRC, host_readd(list_i + 0x17));
+			ds_writed(PIC_COPY_SRC, host_readd(list_i + FIGHTER_GFXBUF));
 
 			ds_writew(PIC_COPY_DS_RECT,
-				l_di + host_readbs(list_i + 0xa));
+				l_di + host_readbs(list_i + FIGHTER_Y1));
 			if (ds_readws(PIC_COPY_DS_RECT) < 0)
 				ds_writew(PIC_COPY_DS_RECT, 0);
 
@@ -116,19 +116,19 @@ void FIG_draw_figures(void)
 				ds_writew((PIC_COPY_DS_RECT + 2), 0);
 
 			ds_writew((PIC_COPY_DS_RECT + 4),
-				l_di + host_readbs(list_i + 0xc));
+				l_di + host_readbs(list_i + FIGHTER_Y2));
 			if (ds_readws((PIC_COPY_DS_RECT + 4)) > 199)
 				ds_writew((PIC_COPY_DS_RECT + 4), 199);
 
 			ds_writew((PIC_COPY_DS_RECT + 6),
-				l_si + host_readbs(list_i + 0xb));
+				l_si + host_readbs(list_i + FIGHTER_X2));
 			if (ds_readws((PIC_COPY_DS_RECT + 6)) > 319)
 				ds_writew((PIC_COPY_DS_RECT + 6), 319);
 
 			do_pic_copy(2);
 		}
 
-	} while (NOT_NULL(list_i = (Bit8u*)Real2Host((RealPt)host_readd(list_i + 0x1b))));
+	} while (NOT_NULL(list_i = (Bit8u*)Real2Host((RealPt)host_readd(list_i + FIGHTER_NEXT))));
 
 	/* restore a structure */
 	//struct_copy(p_datseg + PIC_COPY_DS_RECT, screen_mode, 8);
@@ -206,80 +206,89 @@ void FIG_set_0e(signed char fighter_id, signed char val)
 {
 	Bit8u *ptr = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readbs(ptr + 0x10) != fighter_id) {
+	while (host_readbs(ptr + FIGHTER_ID) != fighter_id) {
 
 		/* check for end of list */
-		if (host_readd(ptr + 0x1b) == 0) {
+		if (host_readd(ptr + FIGHTER_NEXT) == 0) {
 			return;
 		}
 
 		/* set ptr to ptr->next */
-		ptr = Real2Host(host_readd(ptr + 0x1b));
+		ptr = Real2Host(host_readd(ptr + FIGHTER_NEXT));
 	}
 
-	host_writeb(ptr + 0x0e, val);
+	host_writeb(ptr + FIGHTER_SHEET, val);
 
 	/* set presence flag */
-	host_writeb(ptr + 0x12, 1);
+	host_writeb(ptr + FIGHTER_VISIBLE, 1);
 }
 
-/* Used by range attack and spells with more than 1 field distance */
-void FIG_reset_12_13(signed char fighter_id)
+/**
+ * \brief   hides an element from the chessboard without removing it
+ *
+ * \param   fighter_id  identificates the element to hide
+ */
+void FIG_make_invisible(signed char fighter_id)
 {
 	Bit8u *ptr1, *ptr2;
 
 	ptr1 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readb(ptr1 + 0x10) != fighter_id) {
+	while (host_readb(ptr1 + FIGHTER_ID) != fighter_id) {
 
-		if (host_readd(ptr1 + 0x1b) == 0) {
+		if (host_readd(ptr1 + FIGHTER_NEXT) == 0) {
 			return;
 		}
 
-		ptr1 = Real2Host(host_readd(ptr1 + 0x1b));
+		ptr1 = Real2Host(host_readd(ptr1 + FIGHTER_NEXT));
 	}
 
-	host_writeb(ptr1 + 0x12, 0);
+	host_writeb(ptr1 + FIGHTER_VISIBLE, 0);
 
-	if (host_readbs(ptr1 + 0x13) != -1) {
+	if (host_readbs(ptr1 + FIGHTER_TWOFIELDED) != -1) {
 
 		ptr2 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-		while (ds_readb(FIG_TWOFIELDED_TABLE + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
-			ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
+		while (ds_readb(FIG_TWOFIELDED_TABLE + host_readbs(ptr1 + FIGHTER_TWOFIELDED)) != host_readb(ptr2 + FIGHTER_ID)) {
+			ptr2 = Real2Host(host_readd(ptr2 + FIGHTER_NEXT));
 		}
-		host_writeb(ptr2 + 0x12, 0);
+		host_writeb(ptr2 + FIGHTER_VISIBLE, 0);
 	}
 }
 
-void FIG_set_12_13(signed short fighter_id)
+/**
+ * \brief   unhides an element from the chessboard
+ *
+ * \param   fighter_id  identificates the element to unhide
+ */
+void FIG_make_visible(signed short fighter_id)
 {
 	Bit8u *ptr1, *ptr2;
 
 	ptr1 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readb(ptr1 + 0x10) != (signed char)fighter_id) {
+	while (host_readb(ptr1 + FIGHTER_ID) != (signed char)fighter_id) {
 
-		if (host_readd(ptr1 + 0x1b) == 0){
+		if (host_readd(ptr1 + FIGHTER_NEXT) == 0){
 			return;
 		}
 
-		ptr1 = Real2Host(host_readd(ptr1 + 0x1b));
+		ptr1 = Real2Host(host_readd(ptr1 + FIGHTER_NEXT));
 	}
 
-	host_writeb(ptr1 + 0x12, 1);
+	host_writeb(ptr1 + FIGHTER_VISIBLE, 1);
 
-	if (host_readbs(ptr1 + 0x13) != -1) {
+	if (host_readbs(ptr1 + FIGHTER_TWOFIELDED) != -1) {
 
 		ptr2 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-		while (ds_readb(FIG_TWOFIELDED_TABLE + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
+		while (ds_readb(FIG_TWOFIELDED_TABLE + host_readbs(ptr1 + FIGHTER_TWOFIELDED)) != host_readb(ptr2 + FIGHTER_ID)) {
 
-			ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
+			ptr2 = Real2Host(host_readd(ptr2 + FIGHTER_NEXT));
 
 		}
 
-		host_writeb(ptr2 + 0x12, 1);
+		host_writeb(ptr2 + FIGHTER_VISIBLE, 1);
 	}
 }
 
@@ -287,16 +296,16 @@ void FIG_set_0f(signed char fighter_id, signed char val)
 {
 	Bit8u *ptr = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readb(ptr + 0x10) != fighter_id) {
+	while (host_readb(ptr + FIGHTER_ID) != fighter_id) {
 
-		if (host_readd(ptr + 0x1b) == 0) {
+		if (host_readd(ptr + FIGHTER_NEXT) == 0) {
 			return;
 		}
 
-		ptr = Real2Host(host_readd(ptr + 0x1b));
+		ptr = Real2Host(host_readd(ptr + FIGHTER_NEXT));
 	}
 
-	host_writeb(ptr + 0x0f, val);
+	host_writeb(ptr + FIGHTER_UNKN, val);
 }
 
 struct dummy {
@@ -317,48 +326,48 @@ void FIG_remove_from_list(signed char fighter_id, signed char keep_in_memory)
 	if (!NOT_NULL(p))
 		return;
 
-	while (host_readb(p + 0x10) != fighter_id) {
+	while (host_readb(p + FIGHTER_ID) != fighter_id) {
 
 		/* if (ptr->next == NULL); */
-		if (host_readd(p + 0x1b) == 0) {
+		if (host_readd(p + FIGHTER_NEXT) == 0) {
 			return;
 		}
 
 		/* ptr = ptr->next; */
-		p = Real2Host(host_readd(p + 0x1b));
+		p = Real2Host(host_readd(p + FIGHTER_NEXT));
 	}
 
 	if (!keep_in_memory) {
 		ds_writeb(FIG_LIST_ARRAY + fighter_id, 0);
 	} else {
-//		struct_copy(p_datseg + FIG_LIST_ELEM, p, 35);
+//		struct_copy(p_datseg + FIG_LIST_ELEM, p, SIZEOF_FIGHTER);
 		*((struct dummy*)(p_datseg + FIG_LIST_ELEM)) = *((struct dummy*)(p));
 	}
 
 	/* check if p == HEAD */
 	if (p == Real2Host(ds_readd(FIG_LIST_HEAD))) {
 		/* Set HEAD: head = p->next;*/
-		ds_writed(FIG_LIST_HEAD, host_readd(p + 0x1b));
+		ds_writed(FIG_LIST_HEAD, host_readd(p + FIGHTER_NEXT));
 		if (ds_readd(FIG_LIST_HEAD) != 0)
 			/* head->prev = NULL */
-			host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x1f, 0);
+			host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + FIGHTER_PREV, 0);
 	} else {
 		/* check if p == tail */
-		if (host_readd(p + 0x1b) == 0) {
+		if (host_readd(p + FIGHTER_NEXT) == 0) {
 			/* p->prev->next == NULL */
-			host_writed(Real2Host(host_readd(p + 0x1f)) + 0x1b , 0);
+			host_writed(Real2Host(host_readd(p + FIGHTER_PREV)) + FIGHTER_NEXT , 0);
 		} else {
 			/* remove ptr from list
 			p->prev->next = p->next;
 			p->next->prev = p->prev; */
-			host_writed(Real2Host(host_readd(p + 0x1f)) + 0x1b, host_readd(p + 0x1b));
-			host_writed(Real2Host(host_readd(p + 0x1b)) + 0x1f, host_readd(p + 0x1f));
+			host_writed(Real2Host(host_readd(p + FIGHTER_PREV)) + FIGHTER_NEXT, host_readd(p + FIGHTER_NEXT));
+			host_writed(Real2Host(host_readd(p + FIGHTER_NEXT)) + FIGHTER_PREV, host_readd(p + FIGHTER_PREV));
 		}
 	}
 
-	memset(p, 0, 35);
+	memset(p, 0, SIZEOF_FIGHTER);
 
-	host_writeb(p + 0x10, -1);
+	host_writeb(p + FIGHTER_ID, -1);
 }
 
 /**
@@ -374,43 +383,43 @@ signed char FIG_add_to_list(signed char fighter_id)
 	signed short x, y;
 
 	p1 = (RealPt)ds_readd(FIG_LIST_BUFFER);
-	x = ds_readbs((FIG_LIST_ELEM+3));
-	y = ds_readbs((FIG_LIST_ELEM+4));
+	x = ds_readbs((FIG_LIST_ELEM+FIGHTER_CBX));
+	y = ds_readbs((FIG_LIST_ELEM+FIGHTER_CBY));
 
 	/* FIG_list_start == NULL */
 	if (ds_readd(FIG_LIST_HEAD) == 0) {
 
 		ds_writed(FIG_LIST_HEAD, ds_readd(FIG_LIST_BUFFER));
 
-//		struct_copy(Real2Host(ds_readd(FIG_LIST_HEAD)), p_datseg + FIG_LIST_ELEM, 35);
+//		struct_copy(Real2Host(ds_readd(FIG_LIST_HEAD)), p_datseg + FIG_LIST_ELEM, SIZEOF_FIGHTER);
 		*((struct dummy*)(Real2Host(ds_readd(FIG_LIST_HEAD)))) = *((struct dummy*)(p_datseg + FIG_LIST_ELEM));
 
 		if (fighter_id == -1) {
-			host_writeb(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10,
+			host_writeb(Real2Host(ds_readd(FIG_LIST_HEAD)) + FIGHTER_ID,
 				FIG_set_array());
 		}
 
-		host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x1f, 0);
-		host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x1b, 0);
+		host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + FIGHTER_PREV, 0);
+		host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + FIGHTER_NEXT, 0);
 
 #if !defined(__BORLANDC__)
 		D1_LOG("\tlist created x = %d, y = %d\n", x, y);
 #endif
 
-		return host_readbs(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10);
+		return host_readbs(Real2Host(ds_readd(FIG_LIST_HEAD)) + FIGHTER_ID);
 	}
 
-	while (host_readbs(Real2Host(p1) + 0x10) != -1) {
-		p1 += 35;
+	while (host_readbs(Real2Host(p1) + FIGHTER_ID) != -1) {
+		p1 += SIZEOF_FIGHTER;
 	}
 
-//	struct_copy(Real2Host(p1), p_datseg + FIG_LIST_ELEM, 35);
+//	struct_copy(Real2Host(p1), p_datseg + FIG_LIST_ELEM, SIZEOF_FIGHTER);
 	*((struct dummy*)(Real2Host(p1))) =	*((struct dummy*)(p_datseg + FIG_LIST_ELEM));
 
 	if (fighter_id == -1) {
-		host_writeb(Real2Host(p1) + 0x10, FIG_set_array());
+		host_writeb(Real2Host(p1) + FIGHTER_ID, FIG_set_array());
 	} else {
-		host_writeb(Real2Host(p1) + 0x10, fighter_id);
+		host_writeb(Real2Host(p1) + FIGHTER_ID, fighter_id);
 	}
 
 	p2 = (RealPt)ds_readd(FIG_LIST_HEAD);
@@ -419,56 +428,56 @@ signed char FIG_add_to_list(signed char fighter_id)
 	 * (x1,y1) is rendered before (x2,y2) if (x1 < x2) || (x1 == x2 && y1 > y2)
 	 * On the same chessboard field, lower z is rendered before larger z.
 	 */
-	if (ds_readbs((FIG_LIST_ELEM + 0x11)) != -1) {
-		while ((host_readbs(Real2Host(p2) + 3) <= x) &&
-		(host_readbs(Real2Host(p2) + 3) != x ||
-		host_readbs(Real2Host(p2) + 4) >= y) &&
-		(host_readbs(Real2Host(p2) + 3) != x ||
-		host_readbs(Real2Host(p2) + 4) != y ||
-		host_readbs(Real2Host(p2) + 0x11) <= ds_readbs((FIG_LIST_ELEM + 0x11))))
+	if (ds_readbs((FIG_LIST_ELEM + FIGHTER_Z)) != -1) {
+		while ((host_readbs(Real2Host(p2) + FIGHTER_CBX) <= x) &&
+		(host_readbs(Real2Host(p2) + FIGHTER_CBX) != x ||
+		host_readbs(Real2Host(p2) + FIGHTER_CBY) >= y) &&
+		(host_readbs(Real2Host(p2) + FIGHTER_CBX) != x ||
+		host_readbs(Real2Host(p2) + FIGHTER_CBY) != y ||
+		host_readbs(Real2Host(p2) + FIGHTER_Z) <= ds_readbs((FIG_LIST_ELEM + FIGHTER_Z))))
 		{
 
 			/* p2->next != NULL */
-			if (host_readd(Real2Host(p2) + 0x1b) == 0) {
+			if (host_readd(Real2Host(p2) + FIGHTER_NEXT) == 0) {
 
 				/* append to end of the list */
 
 				/* p2->next = p1 */
-				host_writed(Real2Host(p2) + 0x1b, (Bit32u)p1);
+				host_writed(Real2Host(p2) + FIGHTER_NEXT, (Bit32u)p1);
 				/* p1->prev = p2 */
-				host_writed(Real2Host(p1) + 0x1f, (Bit32u)p2);
+				host_writed(Real2Host(p1) + FIGHTER_PREV, (Bit32u)p2);
 				/* p1->next = NULL */
-				host_writed(Real2Host(p1) + 0x1b, 0);
+				host_writed(Real2Host(p1) + FIGHTER_NEXT, 0);
 #if !defined(__BORLANDC__)
 				D1_LOG("\tlist appended x = %d, y = %d\n", x, y);
 #endif
-				return host_readbs(Real2Host(p1) + 0x10);
+				return host_readbs(Real2Host(p1) + FIGHTER_ID);
 			}
 
 			/* p2 = p2->next */
-			p2 = (RealPt)host_readd(Real2Host(p2) + 0x1b);
+			p2 = (RealPt)host_readd(Real2Host(p2) + FIGHTER_NEXT);
 		}
 	}
 
 	/* p1->prev = p2->prev; */
-	host_writed(Real2Host(p1) + 0x1f, host_readd(Real2Host(p2) + 0x1f));
+	host_writed(Real2Host(p1) + FIGHTER_PREV, host_readd(Real2Host(p2) + FIGHTER_PREV));
 
 	/* if (p2->prev) */
-	if (host_readd(Real2Host(p2) + 0x1f) != 0)
+	if (host_readd(Real2Host(p2) + FIGHTER_PREV) != 0)
 		/* p2->prev->next = p1 */
-		host_writed(Real2Host(host_readd(Real2Host(p2) + 0x1f)) + 0x1b, (Bit32u)p1);
+		host_writed(Real2Host(host_readd(Real2Host(p2) + FIGHTER_PREV)) + FIGHTER_NEXT, (Bit32u)p1);
 	else
 		/* FIG_list_start = p1 */
 		ds_writed(FIG_LIST_HEAD, (Bit32u)p1);
 
 	/* p2->prev = p1 */
-	host_writed(Real2Host(p2) + 0x1f, (Bit32u)p1);
+	host_writed(Real2Host(p2) + FIGHTER_PREV, (Bit32u)p1);
 	/* p1->next = p2 */
-	host_writed(Real2Host(p1) + 0x1b, (Bit32u)p2);
+	host_writed(Real2Host(p1) + FIGHTER_NEXT, (Bit32u)p2);
 #if !defined(__BORLANDC__)
 	D1_LOG("\tlist insert x = %d, y = %d\n", x, y);
 #endif
-	return host_readbs(Real2Host(p1) + 0x10);
+	return host_readbs(Real2Host(p1) + FIGHTER_ID);
 }
 
 /**

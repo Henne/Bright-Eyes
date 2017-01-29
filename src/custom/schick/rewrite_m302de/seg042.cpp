@@ -635,7 +635,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 						draw_fight_screen(l13 == 0 && ds_readws(DEFENDER_DEAD) == 0 ? 0 : 1);
 
-						FIG_reset_12_13(ds_readbs(FIG_SHOT_BOLT_ID));
+						FIG_make_invisible(ds_readbs(FIG_SHOT_BOLT_ID));
 					}
 
 					ds_writew(FIG_CONTINUE_PRINT, 1);
@@ -774,7 +774,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 							draw_fight_screen(1);
 
-							FIG_reset_12_13(ds_readbs(FIG_SHOT_BOLT_ID));
+							FIG_make_invisible(ds_readbs(FIG_SHOT_BOLT_ID));
 						}
 
 						if (l6 > 0) {
@@ -788,7 +788,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 								FIG_remove_from_list(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID), 1);
 
 
-								nvf.dst = Real2Host(ds_readd((FIG_LIST_ELEM + 0x17)));
+								nvf.dst = Real2Host(ds_readd((FIG_LIST_ELEM + FIGHTER_GFXBUF)));
 								nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
 								nvf.no = 26;
 								nvf.type = 0;
@@ -802,15 +802,15 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 								height = host_readws((Bit8u*)&height);
 #endif
 
-								ds_writeb((FIG_LIST_ELEM + 5), 0);
-								ds_writeb((FIG_LIST_ELEM + 6), 0);
-								ds_writeb((FIG_LIST_ELEM + 7), (signed char)height);
-								ds_writeb((FIG_LIST_ELEM + 8), (signed char)width);
-								ds_writeb((FIG_LIST_ELEM + 9), 0);
-								ds_writeb((FIG_LIST_ELEM + 10), 0);
-								ds_writeb((FIG_LIST_ELEM + 11), (signed char)(width - 1));
-								ds_writeb((FIG_LIST_ELEM + 12), (signed char)(height - 1));
-								ds_writeb((FIG_LIST_ELEM + 13), 0);
+								ds_writeb((FIG_LIST_ELEM + FIGHTER_OFFSETX), 0);
+								ds_writeb((FIG_LIST_ELEM + FIGHTER_OFFSETY), 0);
+								ds_writeb((FIG_LIST_ELEM + FIGHTER_HEIGHT), (signed char)height);
+								ds_writeb((FIG_LIST_ELEM + FIGHTER_WIDTH), (signed char)width);
+								ds_writeb((FIG_LIST_ELEM + FIGHTER_X1), 0);
+								ds_writeb((FIG_LIST_ELEM + FIGHTER_Y1), 0);
+								ds_writeb((FIG_LIST_ELEM + FIGHTER_X2), (signed char)(width - 1));
+								ds_writeb((FIG_LIST_ELEM + FIGHTER_Y2), (signed char)(height - 1));
+								ds_writeb((FIG_LIST_ELEM + FIGHTER_RELOAD), 0);
 
 								FIG_add_to_list(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID));
 
@@ -842,25 +842,25 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						draw_fight_screen(1);
 
 						if (l6 > 0) {
-							FIG_reset_12_13(ds_readbs(FIG_SHOT_BOLT_ID));
+							FIG_make_invisible(ds_readbs(FIG_SHOT_BOLT_ID));
 						}
 
 						if (ds_readws(SPELL_ILLUSIONEN) != 0) {
 
 							if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) >= 10) {
 
-								FIG_reset_12_13(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID));
+								FIG_make_invisible(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID));
 
 								if (is_in_byte_array(host_readbs(target_monster + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
 									p3 = Real2Host(FIG_get_ptr(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID)));
 
-									FIG_reset_12_13(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p3 + 0x13)));
+									FIG_make_invisible(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p3 + 0x13)));
 								}
 							} else {
 								if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) > 0) {
 
-									FIG_reset_12_13(host_readbs(target_hero + HERO_FIGHTER_ID));
+									FIG_make_invisible(host_readbs(target_hero + HERO_FIGHTER_ID));
 								}
 							}
 						}

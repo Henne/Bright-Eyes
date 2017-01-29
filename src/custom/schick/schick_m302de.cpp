@@ -6102,16 +6102,16 @@ static int seg006(unsigned short offs) {
 			unsigned short id = CPU_Pop16();
 			CPU_Push16(id);
 
-			FIG_reset_12_13((char)id);
-			D1_LOG("FIG_reset_12_13(%d)\n", (char)id);
+			FIG_make_invisible((char)id);
+			D1_LOG("FIG_make_invisible(%d)\n", (char)id);
 			return 1;
 		}
 		case 0x443: {
 			unsigned short id = CPU_Pop16();
 			CPU_Push16(id);
 
-			FIG_set_12_13((char)id);
-			D1_LOG("FIG_set_12_13(%d)\n", (char)id);
+			FIG_make_visible((char)id);
+			D1_LOG("FIG_make_visible(%d)\n", (char)id);
 			return 1;
 		}
 		case 0x4cb: {
