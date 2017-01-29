@@ -67,9 +67,9 @@ void do_merchant(void)
 #if !defined(__BORLANDC__)
 	/* Print merchant values */
 	const Bit8u typi = ds_readb(TYPEINDEX);
-	const Bit8s price = ds_readbs(0x6870 + 9 * typi);
-	const Bit8s h_type = ds_readbs(0x6870 + 1 + 9 * typi);
-	const Bit8s sortiment = ds_readbs(0x6870 + 2 + 9 * typi);
+	const Bit8s price = ds_readbs(SHOP_DESCR_TABLE + 9 * typi);
+	const Bit8s h_type = ds_readbs(SHOP_DESCR_TABLE + 1 + 9 * typi);
+	const Bit8s sortiment = ds_readbs(SHOP_DESCR_TABLE + 2 + 9 * typi);
 	const char h_type0[] = "UNGUELTIG";
 	const char h_type1[] = "Waffen";
 	const char h_type2[] = "Kraeuter";

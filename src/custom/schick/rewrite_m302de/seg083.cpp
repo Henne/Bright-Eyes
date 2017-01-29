@@ -216,7 +216,7 @@ signed short DNG08_handler(void)
 
 			add_hero_ap_all(10);
 
-			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((0xd325 + 6), 0x227)));
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0x227)));
 			ds_writew((FIG_FLEE_POSITION + 2), 0x613);
 
 			do_fight(FIGHTS_F108_3B);
@@ -232,7 +232,7 @@ signed short DNG08_handler(void)
 
 			add_hero_ap_all(10);
 
-			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((0xd325 + 6), 0x227)));
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0x227)));
 			ds_writew((FIG_FLEE_POSITION + 2), 0x613);
 
 			do_fight(FIGHTS_F108_3B);

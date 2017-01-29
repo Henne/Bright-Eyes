@@ -92,7 +92,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x602 && pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG14_ALARM_FLAG) != 0) {
 
-		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x524))));
+		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0x524))));
 
 		do_fight(FIGHTS_DTHO06);
 
@@ -114,7 +114,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0xb0e && pos != ds_readws(DNG_HANDLED_POS) && random_schick(100) <= 10) {
 
-		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x83e))));
+		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0x83e))));
 
 		do_fight(FIGHTS_DTHO10);
 
@@ -138,7 +138,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0xb0a && pos != ds_readws(DNG_HANDLED_POS) && random_schick(100) <= 10) {
 
-		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x93b))));
+		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0x93b))));
 
 		do_fight(FIGHTS_DTHO13);
 
@@ -211,7 +211,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x1108 && pos != ds_readws(DNG_HANDLED_POS) && random_schick(100) <= 30) {
 
-		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x1106))));
+		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0x1106))));
 
 		do_fight(FIGHTS_DTHO18);
 

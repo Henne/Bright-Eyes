@@ -82,10 +82,10 @@
 #define TEXT_FILE_INDEX                 (0x26bd)    /* unsigned short */
 #define TX_FILE_INDEX                   (0x26bf)    /* signed short; index of file stored with load_tx */
 #define FIG_DISCARD                     (0x26c1)    /* unsigned short; {0,1}, whether to discard the fight data after the fight */
-//define PALETTE_ALLBLACK               (0x26c3)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
-//define PALETTE_UNKNOWN1               (0x2723)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
-//define PALETTE_FIGUNKN1               (0x2783)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
-//define PALETTE_UNKNOWN2               (0x27e3)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
+#define PALETTE_ALLBLACK2               (0x26c3)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
+#define PALETTE_UNKNOWN1                (0x2723)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
+#define PALETTE_FIGHT1                  (0x2783)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
+#define PALETTE_SPECIAL                 (0x27e3)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
 // ?2
 #define PP20_INDEX                      (0x2845)    /* signed char; archive file index of current pp20 */
 #define REQUEST_REFRESH                 (0x2846)    /* signed short; {0,1} */
@@ -1061,7 +1061,7 @@
 #define TOWNS_GOSSIP_OFF                (0x7cd1)    /* unsigned char[52] */
 // ?1
 #define GOSSIP_STR_TRIPLE_WILDCARD      (0x7d06)    /* char[8]; "%s %s%s" */
-//define FIG_PALETTE?                   (0x7d0e)    /* struct(3)[20]; struct{unsigned char r,g,b;} */
+#define PALETTE_FIGHT2                  (0x7d0e)    /* struct(3)[20]; struct{unsigned char r,g,b;} */
 #define AUTOMAP_BITMASK                 (0x7d4a)    /* unsigned char[8]; { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 } */
 #define AUTOMAP_TILE_ARROWUP            (0x7d52)    /* unsigned char[49]; {0,1} */
 #define AUTOMAP_TILE_ARROWRIGHT         (0x7d83)    /* unsigned char[49]; {0,1} */
@@ -1200,10 +1200,10 @@
 #define STR_RAD3                        (0xb226)    /* char[4]; "RAD" */
 #define COLOR_WHITE                     (0xb22a)    /* unsigned char[3]; { 0x3f, 0x3f, 0x3f } */
 #define COLOR_BLACK                     (0xb22d)    /* unsigned char[3]; { 0x00, 0x00, 0x00 } */
-//define PALETTE?                       (0xb230)    /* struct(3)[8]; struct{unsigned char r,g,b;} */
-//define PALETTE?                       (0xb248)    /* struct(3)[3]; struct{unsigned char r,g,b;} */
-//define PALETTE?                       (0xb251)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
-//define PALETTE?                       (0xb2b1)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
+#define PALETTE_UNKNOWN2                (0xb230)    /* struct(3)[8]; struct{unsigned char r,g,b;} */
+#define PALETTE_UNKNOWN3                (0xb248)    /* struct(3)[3]; struct{unsigned char r,g,b;} */
+#define PALETTE_UNKNOWN4                (0xb251)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
+#define PALETTE_GENERAL                 (0xb2b1)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
 #define STR_BACKSLASH_TEMP              (0xb311)    /* char[6]; "\\TEMP" */
 #define STR_NOT_ENOUGH_MEM              (0xb317)    /* char[124]; "Not enough memory!\x0a\"Realms of Arkania - Blade of Destiny\" needs %ld Byte more memory!\x0aPlease uninstall resident programs!" */
 #define STR_DRIVE_X                     (0xb393)    /* char[4]; "X:\" */
@@ -1331,7 +1331,7 @@
 #define ANI_AREA_TABLE                  (0xc3ef)    /* struct(263)[10] */
 #define ANI_MAIN_PTR                    (0xce35)    /* RealPt */
 #define ANI_COMPR_FLAG                  (0xce39)    /* unsigned char; {0,1 = compressed} */
-#define ANI_COMPR_TYPE                  (0xce3a)    /* unsigned char */
+#define ANI_PALETTE_SIZE                (0xce3a)    /* unsigned char */
 #define ANI_PALETTE                     (0xce3b)    /* RealPt */
 #define ANI_POSY                        (0xce3f)    /* signed short */
 #define ANI_POSX                        (0xce41)    /* signed short */
@@ -1437,9 +1437,9 @@
 #define ITEMSNAME                       (0xe22f)    /* long */
 // ?1
 #define GFX_SPINLOCK                    (0xe234)    /* signed long */
-//define ANI?                           (0xe238)    /* signed short[10] */
-//define ANI?                           (0xe24c)    /* signed short[10] */
-//define ANI?                           (0xe260)    /* signed short[10] */
+#define ANI_CHANGE_DIR                  (0xe238)    /* signed short[10] */
+#define ANI_AREA_STATUS                 (0xe24c)    /* signed short[10] */
+#define ANI_AREA_TIMEOUT                (0xe260)    /* signed short[10] */
 //define FIG_DRAW?                      (0xe274)    /* RealPt[9] */
 //define FIG_MOVE?                      (0xe298)    /* signed short[8] */
 //define FIG_MOVE?                      (0xe2a8)    /* unsigned short[8] */
@@ -1580,6 +1580,6 @@
 #define BUFFERSIZE                      (0xe5dc)    /* unsigned long; size of the global buffer */
 #define GLOBAL_BUFFER_PTR               (0xe5e0)    /* RealPt; points to the start of the global buffer */
 #define LARGE_BUF                       (0xe5e4)    /* signed char; {0,1} */
-/* Unknown Bytes: 831, Undetermined symbols: 47/1478 */
+/* Unknown Bytes: 831, Undetermined symbols: 35/1478 */
 
 #endif

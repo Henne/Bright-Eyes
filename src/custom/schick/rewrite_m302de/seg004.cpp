@@ -52,9 +52,9 @@ void init_ani(Bit16u v1)
 
 	if ((v1 & 0x7f) != 2) {
 		for (i = 0; i < 10; i++) {
-			ds_writew(0xe260 + i * 2, 0);
-			ds_writew(0xe24c + i * 2, 0xffff);
-			ds_writew(0xe238 + i * 2, 1);
+			ds_writew(ANI_AREA_TIMEOUT + i * 2, 0);
+			ds_writew(ANI_AREA_STATUS + i * 2, 0xffff);
+			ds_writew(ANI_CHANGE_DIR + i * 2, 1);
 		}
 
 		if (v1 & 0x80)
@@ -132,21 +132,21 @@ void clear_ani(void)
 	ds_writew(ANI_PALETTE, 0);
 
 	for (i = 0; i < 10; i++) {
-		ds_writew((ANI_AREA_TABLE + 5) + i * 0x107, 0);
-		ds_writeb((ANI_AREA_TABLE + 7) + i * 0x107, 0);
-		ds_writew((ANI_AREA_TABLE + 9) + i * 0x107, 0);
-		ds_writeb((ANI_AREA_TABLE + 8) + i * 0x107, 0);
-		ds_writeb((ANI_AREA_TABLE + 11) + i * 0x107, 0);
-		ds_writeb((ANI_AREA_TABLE + 12) + i * 0x107, 0);
-		ds_writew((ANI_AREA_TABLE + 93) + i * 0x107, 0);
-		ds_writeb((ANI_AREA_TABLE + 4) + i * 0x107, 0);
+		ds_writew((ANI_AREA_TABLE + ANI_AREA_X) + i * SIZEOF_ANI_AREA, 0);
+		ds_writeb((ANI_AREA_TABLE + ANI_AREA_Y) + i * SIZEOF_ANI_AREA, 0);
+		ds_writew((ANI_AREA_TABLE + ANI_AREA_WIDTH) + i * SIZEOF_ANI_AREA, 0);
+		ds_writeb((ANI_AREA_TABLE + ANI_AREA_HEIGHT) + i * SIZEOF_ANI_AREA, 0);
+		ds_writeb((ANI_AREA_TABLE + ANI_AREA_CYCLIC) + i * SIZEOF_ANI_AREA, 0);
+		ds_writeb((ANI_AREA_TABLE + ANI_AREA_PICS) + i * SIZEOF_ANI_AREA, 0);
+		ds_writew((ANI_AREA_TABLE + ANI_AREA_CHANGES) + i * SIZEOF_ANI_AREA, 0);
+		ds_writeb((ANI_AREA_TABLE + (ANI_AREA_NAME+4)) + i * SIZEOF_ANI_AREA, 0);
 
 		for (j = 0; j < 20; j++)
-			ds_writed((ANI_AREA_TABLE + 13) + i * 0x107 + (j << 2), 0);
+			ds_writed((ANI_AREA_TABLE + ANI_AREA_PICS_TAB) + i * SIZEOF_ANI_AREA + (j << 2), 0);
 
 		for (j = 0; j < 42; j++) {
-			ds_writew((ANI_AREA_TABLE + 95) + i * 0x107 + (j << 2), 0);
-			ds_writew((ANI_AREA_TABLE + 97) + i * 0x107 + (j << 2), 0);
+			ds_writew((ANI_AREA_TABLE + ANI_AREA_CHANGES_TB) + i * SIZEOF_ANI_AREA + (j << 2), 0);
+			ds_writew((ANI_AREA_TABLE + (ANI_AREA_CHANGES_TB+2)) + i * SIZEOF_ANI_AREA + (j << 2), 0);
 		}
 	 }
 }
@@ -224,22 +224,22 @@ void interrupt timer_isr(void)
 
 		for (i = 0; i < l_di; i++) {
 
-			ptr = p_datseg + ANI_AREA_TABLE + 0x107 * i;
+			ptr = p_datseg + ANI_AREA_TABLE + SIZEOF_ANI_AREA * i;
 
-			if (host_readws(ptr + 0x5d)) {
-				sub_ds_ws(0xe260 + 2 * i, 5);
+			if (host_readws(ptr + ANI_AREA_CHANGES)) {
+				sub_ds_ws(ANI_AREA_TIMEOUT + 2 * i, 5);
 
-				if (ds_readws(0xe260 + 2 * i) <= 0) {
+				if (ds_readws(ANI_AREA_TIMEOUT + 2 * i) <= 0) {
 
-					add_ds_ws(0xe24c + 2 * i, ds_readws(0xe238 + 2 * i));
+					add_ds_ws(ANI_AREA_STATUS + 2 * i, ds_readws(ANI_CHANGE_DIR + 2 * i));
 
-					if (ds_readws(0xe24c + 2 * i) == host_readws(ptr + 0x5d)) {
+					if (ds_readws(ANI_AREA_STATUS + 2 * i) == host_readws(ptr + ANI_AREA_CHANGES)) {
 
-						if (host_readbs(ptr + 0xb) != 0) {
-							ds_writew(0xe238 + 2 * i, -1);
-							dec_ds_ws(0xe24c + 2 * i);
+						if (host_readbs(ptr + ANI_AREA_CYCLIC) != 0) {
+							ds_writew(ANI_CHANGE_DIR + 2 * i, -1);
+							dec_ds_ws(ANI_AREA_STATUS + 2 * i);
 						} else {
-							ds_writew(0xe24c + 2 * i, 0);
+							ds_writew(ANI_AREA_STATUS + 2 * i, 0);
 						}
 
 						if (ds_readws(ANI_BUSY) != 0) {
@@ -249,13 +249,13 @@ void interrupt timer_isr(void)
 						}
 					}
 
-					if ((ds_readws(0xe24c + 2 * i) == 0) &&
-						(host_readb(ptr + 0xb) != 0))
+					if ((ds_readws(ANI_AREA_STATUS + 2 * i) == 0) &&
+						(host_readb(ptr + ANI_AREA_CYCLIC) != 0))
 					{
-						ds_writew(0xe238 + 2 * i, 1);
+						ds_writew(ANI_CHANGE_DIR + 2 * i, 1);
 					}
 
-					ds_writew(0xe260 + 2 * i, 2 * (host_readws(ptr + 0x61 + 4 * ds_readws(0xe24c + 2 * i))));
+					ds_writew(ANI_AREA_TIMEOUT + 2 * i, 2 * (host_readws(ptr + (ANI_AREA_CHANGES_TB+2) + 4 * ds_readws(ANI_AREA_STATUS + 2 * i))));
 
 					flag = 0;
 
@@ -270,15 +270,15 @@ void interrupt timer_isr(void)
 
 					/* set screen coordinates */
 					ds_writew(PIC_COPY_X1,
-						ds_readws(ANI_POSX) + host_readw(ptr + 5));
+						ds_readws(ANI_POSX) + host_readw(ptr + ANI_AREA_X));
 					ds_writew(PIC_COPY_Y1,
-						ds_readws(ANI_POSY) + host_readb(ptr + 7));
+						ds_readws(ANI_POSY) + host_readb(ptr + ANI_AREA_Y));
 					ds_writew(PIC_COPY_X2,
-						ds_readws(ANI_POSX) + host_readw(ptr + 5) + host_readw(ptr + 9) - 1);
+						ds_readws(ANI_POSX) + host_readw(ptr + ANI_AREA_X) + host_readw(ptr + ANI_AREA_WIDTH) - 1);
 					ds_writew(PIC_COPY_Y2,
-						ds_readws(ANI_POSY) + host_readb(ptr + 7) + host_readb(ptr + 8) - 1);
+						ds_readws(ANI_POSY) + host_readb(ptr + ANI_AREA_Y) + host_readb(ptr + ANI_AREA_HEIGHT) - 1);
 					ds_writed(PIC_COPY_SRC,
-						host_readd(ptr + 0xd + 4 *(host_readws(ptr + 0x5f + 4 * ds_readw(0xe24c + 2 * i)) -1)));
+						host_readd(ptr + ANI_AREA_PICS_TAB + 4 *(host_readws(ptr + ANI_AREA_CHANGES_TB + 4 * ds_readw(ANI_AREA_STATUS + 2 * i)) -1)));
 
 					do_pic_copy(1);
 

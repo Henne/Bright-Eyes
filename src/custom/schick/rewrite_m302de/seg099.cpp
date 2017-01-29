@@ -689,7 +689,7 @@ void spell_foramen(void)
 
 	add_hero_ap(get_spelluser(), 1);
 
-	ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((0xbd38 + 8), -1)));
+	ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), -1)));
 	ds_writew(REDRAW_MENUICONS, 1);
 }
 

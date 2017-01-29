@@ -267,7 +267,7 @@ signed short do_travel_mode(void)
 			(void*)(Real2Host(ds_readd(TRAVEL_MAP_PTR)) + 64000 + 2), 0x60);
 
 		memcpy((void*)(Real2Host(ds_readd(DTP2)) + 0x120),
-			(void*)(p_datseg + 0x27e3), 0x60);
+			(void*)(p_datseg + PALETTE_SPECIAL), 0x60);
 
 		for (i = 0; i < 64; i++)
 		{

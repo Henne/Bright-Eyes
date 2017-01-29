@@ -36,6 +36,21 @@ enum {
 	WEST = 3
 };
 
+enum {
+    ANI_AREA_NAME       = 0x00, /* String of length 5 (zero-terminated) */
+    ANI_AREA_X          = 0x05,
+    ANI_AREA_Y          = 0x07,
+    ANI_AREA_HEIGHT     = 0x08,
+    ANI_AREA_WIDTH      = 0x09,
+    ANI_AREA_CYCLIC     = 0x0b,
+    ANI_AREA_PICS       = 0x0c,
+    ANI_AREA_PICS_TAB   = 0x0d, /* RealPt[20] */
+    ANI_AREA_CHANGES    = 0x5d,
+    ANI_AREA_CHANGES_TB = 0x5f, /* struct{ short pic, duration; }[42] */
+};
+
+#define SIZEOF_ANI_AREA (0x107)
+
 /**
  *	struct hero_status - status of the hero
  *	@dead:		1 = dead		/ 0 = not dead

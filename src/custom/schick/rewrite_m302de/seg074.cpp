@@ -79,7 +79,7 @@ void show_automap(void)
 				seg074_305(l_si);
 				clear_ani_pal();
 				draw_automap_to_screen();
-				set_ani_pal(p_datseg + 0x7d0e);
+				set_ani_pal(p_datseg + PALETTE_FIGHT2);
 				ds_writew(REQUEST_REFRESH, 0);
 			}
 
@@ -511,7 +511,7 @@ signed short select_teleport_dest(void)
 
 	draw_automap_to_screen();
 
-	set_ani_pal(p_datseg + 0x7d0e);
+	set_ani_pal(p_datseg + PALETTE_FIGHT2);
 
 	if (ds_readb(DNG_MAP_SIZE) == 16) {
 		draw_loc_icons(1, 11);
