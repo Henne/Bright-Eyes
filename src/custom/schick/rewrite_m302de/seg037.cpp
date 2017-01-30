@@ -95,16 +95,16 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_no)
 
 	signed short i;
 
-	ds_writeb((0xd8ce + 0xf3), 0);
-	ds_writeb((0xd8ce + 242 + 0xf3), host_readbs(enemy + ENEMY_SHEET_GFX_ID));
-	p1 = p_datseg + (0xd8ce + 1 + 0xf3);
+	ds_writeb((FIG_ANISHEETS + 0xf3), 0);
+	ds_writeb((FIG_ANISHEETS + 242 + 0xf3), host_readbs(enemy + ENEMY_SHEET_GFX_ID));
+	p1 = p_datseg + (FIG_ANISHEETS + 1 + 0xf3);
 
 	i = 0;
 	p3 = Real2Host(ds_readd(GFX_ANI_INDEX + host_readbs(enemy + ENEMY_SHEET_GFX_ID) * 4));
 
-	while (ds_readbs(0xd823 + i) != -1) {
+	while (ds_readbs(FIG_MOVE_PATHDIR + i) != -1) {
 
-		if (host_readbs(enemy + ENEMY_SHEET_VIEWDIR) != ds_readbs(0xd823 + i)) {
+		if (host_readbs(enemy + ENEMY_SHEET_VIEWDIR) != ds_readbs(FIG_MOVE_PATHDIR + i)) {
 
 			b2 = b1 = -1;
 			b3 = host_readbs(enemy + ENEMY_SHEET_VIEWDIR);
@@ -116,7 +116,7 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_no)
 				b3 = 0;
 			}
 
-			if (ds_readbs(0xd823 + i) != b3) {
+			if (ds_readbs(FIG_MOVE_PATHDIR + i) != b3) {
 
 				b1 = b3;
 				b3++;
@@ -125,14 +125,14 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_no)
 					b3 = 0;
 				}
 
-				if (ds_readbs(0xd823 + i) != b3) {
+				if (ds_readbs(FIG_MOVE_PATHDIR + i) != b3) {
 					b2 = host_readbs(enemy + ENEMY_SHEET_VIEWDIR) + 4;
 					b1 = -1;
 				}
 
 			}
 
-			host_writeb(enemy + ENEMY_SHEET_VIEWDIR, ds_readbs(0xd823 + i));
+			host_writeb(enemy + ENEMY_SHEET_VIEWDIR, ds_readbs(FIG_MOVE_PATHDIR + i));
 
 			p1 += copy_ani_stuff(p1, host_readws(p3 + b2 * 2), 1);
 
@@ -142,15 +142,15 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_no)
 			}
 		}
 
-		if (ds_readbs(0xd823 + i) == ds_readbs((0xd823+1) + i)) {
+		if (ds_readbs(FIG_MOVE_PATHDIR + i) == ds_readbs((FIG_MOVE_PATHDIR+1) + i)) {
 
-			p1 += copy_ani_stuff(p1, host_readws(p3 + (ds_readbs(0xd823 + i) + 0x0c) * 2), 1);
+			p1 += copy_ani_stuff(p1, host_readws(p3 + (ds_readbs(FIG_MOVE_PATHDIR + i) + 0x0c) * 2), 1);
 			i += 2;
 			/* BP - 2 */
 			host_writeb(enemy + ENEMY_SHEET_BP, host_readbs(enemy + ENEMY_SHEET_BP) - 2);
 
 		} else {
-			p1 += copy_ani_stuff(p1, host_readws(p3 + (ds_readbs(0xd823 + i) + 0x08) * 2), 1);
+			p1 += copy_ani_stuff(p1, host_readws(p3 + (ds_readbs(FIG_MOVE_PATHDIR + i) + 0x08) * 2), 1);
 			i++;
 			/* BP - 1 */
 			dec_ptr_bs(enemy + ENEMY_SHEET_BP);
@@ -166,22 +166,22 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_no)
 
 	ds_writeb(FIG_CB_MAKRER_ID, -1);
 
-	FIG_set_0e(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID), 1);
+	FIG_set_sheet(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID), 1);
 
 	if (is_in_byte_array(host_readbs(enemy + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
-		memcpy(p_datseg + (0xd8ce + 3*0xf3), p_datseg + (0xd8ce + 0xf3), 0xf3);
+		memcpy(p_datseg + (FIG_ANISHEETS + 3*0xf3), p_datseg + (FIG_ANISHEETS + 0xf3), 0xf3);
 
 		p2 = Real2Host(FIG_get_ptr(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID)));
 
-		FIG_set_0e(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p2 + 0x13)), 3);
+		FIG_set_sheet(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p2 + 0x13)), 3);
 	}
 
 	/* draw_fight_screen */
 	draw_fight_screen(0);
 
-	memset(p_datseg + (0xd8ce + 0xf3), -1, 0xf3);
-	memset(p_datseg + (0xd8ce + 3*0xf3), -1, 0xf3);
+	memset(p_datseg + (FIG_ANISHEETS + 0xf3), -1, 0xf3);
+	memset(p_datseg + (FIG_ANISHEETS + 3*0xf3), -1, 0xf3);
 
 	FIG_init_list_elem(enemy_no + 10);
 }

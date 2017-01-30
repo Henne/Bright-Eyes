@@ -442,6 +442,7 @@ void load_map(void)
 	read_archive_file(fd, Real2Host(ds_readd(RENDERBUF_PTR)), 2000);
 	bc_close(fd);
 
+    /* load the grey border for the wallclock overlay */
 	nvf.src = Real2Host(ds_readd(RENDERBUF_PTR));
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&fd;

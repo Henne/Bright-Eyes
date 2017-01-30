@@ -311,7 +311,7 @@ void spell_hexenknoten(void)
 	ds_writebs((FIG_LIST_ELEM+FIGHTER_X2), (signed char)(width) - 1);
 	ds_writebs((FIG_LIST_ELEM+FIGHTER_Y2), (signed char)(height) - 1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_UNKN), -1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
 	ds_writed((FIG_LIST_ELEM+FIGHTER_GFXBUF), (Bit32u)rp);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), 50);

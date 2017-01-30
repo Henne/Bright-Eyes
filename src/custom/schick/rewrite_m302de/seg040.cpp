@@ -264,7 +264,7 @@ void FIG_draw_scenario(void)
 						host_readbs(Real2Host(ds_readd(FIGOBJ_GFXHEIGHT_TABLE)) + obj_id * 2) - 1);
 					ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
 					ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
-					ds_writeb((FIG_LIST_ELEM+FIGHTER_UNKN), -1);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 					ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
 					ds_writed((FIG_LIST_ELEM+FIGHTER_GFXBUF), (Bit32u)ptr);
 					ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), obj_id >= 58 && obj_id <= 61 ? -1 : 50);

@@ -99,17 +99,17 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 	signed char dir3;
 	Bit8u *ptr2;
 
-	ds_writeb(0xd8ce, 0);
-	ds_writeb((0xd8ce + 242), host_readbs(hero + HERO_SPRITE_NO));
+	ds_writeb(FIG_ANISHEETS, 0);
+	ds_writeb((FIG_ANISHEETS + 242), host_readbs(hero + HERO_SPRITE_NO));
 
-	ptr1 = p_datseg + (0xd8ce + 1);
+	ptr1 = p_datseg + (FIG_ANISHEETS + 1);
 	ptr2 = Real2Host(ds_readd(GFX_ANI_INDEX + 4 * host_readbs(hero + HERO_SPRITE_NO)));
 
 	i = 0;
 
-	while (ds_readbs(0xd823 + i) != -1) {
+	while (ds_readbs(FIG_MOVE_PATHDIR + i) != -1) {
 
-		if (host_readbs(hero + HERO_VIEWDIR) != ds_readbs(0xd823 + i)) {
+		if (host_readbs(hero + HERO_VIEWDIR) != ds_readbs(FIG_MOVE_PATHDIR + i)) {
 
 			dir2 = dir1 = -1;
 			dir3 = host_readbs(hero + HERO_VIEWDIR);
@@ -120,7 +120,7 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 				dir3 = 0;
 			}
 
-			if (ds_readbs(0xd823 + i) != dir3) {
+			if (ds_readbs(FIG_MOVE_PATHDIR + i) != dir3) {
 
 				dir1 = dir3;
 				dir3++;
@@ -129,7 +129,7 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 					dir3 = 0;
 				}
 
-				if (ds_readbs(0xd823 + i) != dir3) {
+				if (ds_readbs(FIG_MOVE_PATHDIR + i) != dir3) {
 
 					dir2 = host_readbs(hero + HERO_VIEWDIR) + 4;
 					dir1 = -1;
@@ -137,7 +137,7 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 			}
 
 			/* set heros looking direction */
-			host_writeb(hero + HERO_VIEWDIR, ds_readbs(0xd823 + i));
+			host_writeb(hero + HERO_VIEWDIR, ds_readbs(FIG_MOVE_PATHDIR + i));
 
 			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + dir2 * 2), 2);
 
@@ -146,13 +146,13 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 			}
 		}
 
-		if (ds_readbs(0xd823 + i) == ds_readbs((0xd823+1) + i)) {
-			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + (ds_readbs(0xd823 + i) + 12) * 2), 2);
+		if (ds_readbs(FIG_MOVE_PATHDIR + i) == ds_readbs((FIG_MOVE_PATHDIR+1) + i)) {
+			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + (ds_readbs(FIG_MOVE_PATHDIR + i) + 12) * 2), 2);
 			i += 2;
 			/* BP - 2 */
 			host_writeb(hero + HERO_BP_LEFT, host_readbs(hero + HERO_BP_LEFT) - 2);
 		} else {
-			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + (ds_readbs(0xd823 + i) + 8) * 2), 2);
+			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + (ds_readbs(FIG_MOVE_PATHDIR + i) + 8) * 2), 2);
 			i++;
 			/* BP - 1 */
 			dec_ptr_bs(hero + HERO_BP_LEFT);
@@ -163,9 +163,9 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 	FIG_call_draw_pic();
 	FIG_remove_from_list(ds_readbs(FIG_CB_MAKRER_ID), 0);
 	ds_writeb(FIG_CB_MAKRER_ID, -1);
-	FIG_set_0e(host_readbs(hero + HERO_FIGHTER_ID), 0);
+	FIG_set_sheet(host_readbs(hero + HERO_FIGHTER_ID), 0);
 	draw_fight_screen(0);
-	memset(p_datseg + 0xd8ce, -1, 0xf3);
+	memset(p_datseg + FIG_ANISHEETS, -1, 0xf3);
 	FIG_init_list_elem(hero_pos + 1);
 }
 

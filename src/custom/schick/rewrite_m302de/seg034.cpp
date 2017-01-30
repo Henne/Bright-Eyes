@@ -195,7 +195,7 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 10);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_UNKN), -1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
 	ds_writed((FIG_LIST_ELEM+FIGHTER_GFXBUF), ds_readd(FIG_CB_SELECTOR_BUF));
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), 1);
@@ -520,15 +520,15 @@ void FIG_latecomers(void)
 	}
 }
 
-signed short seg034_aec(void)
+signed short FIG_move_pathlen(void)
 {
 	signed short i = 0;
 
-	while (ds_readbs(0xd823 + i) != -1) {
+	while (ds_readbs(FIG_MOVE_PATHDIR + i) != -1) {
 		i++;
 	}
 
-	if (ds_readbs((0xd823 + 1) + i) == -2) {
+	if (ds_readbs((FIG_MOVE_PATHDIR + 1) + i) == -2) {
 		return 99;
 	}
 
@@ -545,13 +545,13 @@ signed short seg034_aec(void)
  */
 void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 {
-	signed short l_si;
-	signed short l_di;
-	signed short x;
-	signed short y;
+	signed short problem;
+	signed short path_end;
+	signed short sel_x;
+	signed short sel_y;
 	signed short l4;
-	signed short x_bak;
-	signed short y_bak;
+	signed short curr_x;
+	signed short curr_y;
 	signed short fg_bak;
 	signed short bg_bak;
 	signed short x_screen;
@@ -560,7 +560,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	signed short base_x = 9;
 	signed short base_y = 116;
 	signed char l12;
-	signed char l13;
+	signed char bp_cost;
 	signed char l14;
 	signed short l15;
 	signed short mouse_cb_x;
@@ -578,10 +578,10 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 	ds_writew(MOUSE1_EVENT1, ds_writew(MOUSE2_EVENT, 0));
 
-	x = host_readws(px);
-	y = host_readws(py);
-	x_bak = x;
-	y_bak = y;
+	sel_x = host_readws(px);
+	sel_y = host_readws(py);
+	curr_x = sel_x;
+	curr_y = sel_y;
 
 	if (ds_readbs(FIG_CB_SELECTOR_ID) != -1) {
 		FIG_remove_from_list(ds_readbs(FIG_CB_SELECTOR_ID), 0);
@@ -590,8 +590,8 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 	ds_writew(FIG_LIST_ELEM, 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_NVF_NO), 0);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_CBX), (signed char)x);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_CBY), (signed char)y);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_CBX), (signed char)sel_x);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_CBY), (signed char)sel_y);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETX), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETY), 4);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_X1), 0);
@@ -602,7 +602,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WIDTH), 22);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_UNKN), -1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
 	ds_writed((FIG_LIST_ELEM+FIGHTER_GFXBUF), ds_readd(FIG_CB_SELECTOR_BUF));
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), 1);
@@ -616,8 +616,8 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	do {
 		handle_input();
 
-		x_bak = x;
-		y_bak = y;
+		curr_x = sel_x;
+		curr_y = sel_y;
 		from_kbd = 0;
 
 		if ((ds_readws(ACTION) == 72) ||
@@ -631,7 +631,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			mouse_cb_x = ((ds_readws(MOUSE_POSX) - base_x) / 10 + (ds_readws(MOUSE_POSY) - base_y) / 5) / 2;
 			mouse_cb_y = -((ds_readws(MOUSE_POSY) - base_y) / 5 - mouse_cb_x);
 
-			if ((mouse_cb_x != x) || (mouse_cb_y != y)) {
+			if ((mouse_cb_x != sel_x) || (mouse_cb_y != sel_y)) {
 
 				if ((mouse_cb_x >= -1) && (mouse_cb_x <= 24) && (mouse_cb_y >= -1) && (mouse_cb_y <= 24)) {
 					ds_writew(ACTION, 999);
@@ -644,32 +644,32 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			ds_writew(ACTION, 28);
 		}
 
-		if ((ds_readws(ACTION) == 77) && (x < 23)) {
-			x++;
-		} else if ((ds_readws(ACTION) == 75) && (x >= 0)) {
-			x--;
-		} else if ((ds_readws(ACTION) == 72) && (y <= 23)) {
-			y++;
-		} else if ((ds_readws(ACTION) == 80) && (y >= 0)) {
-			y--;
+		if ((ds_readws(ACTION) == 77) && (sel_x < 23)) {
+			sel_x++;
+		} else if ((ds_readws(ACTION) == 75) && (sel_x >= 0)) {
+			sel_x--;
+		} else if ((ds_readws(ACTION) == 72) && (sel_y <= 23)) {
+			sel_y++;
+		} else if ((ds_readws(ACTION) == 80) && (sel_y >= 0)) {
+			sel_y--;
 		} else if (ds_readws(ACTION) == 999) {
-			x = mouse_cb_x;
-			y = mouse_cb_y;
+			sel_x = mouse_cb_x;
+			sel_y = mouse_cb_y;
 		}
 
-		if ((x < 0) && (y < 0)) {
-			x = 0;
+		if ((sel_x < 0) && (sel_y < 0)) {
+			sel_x = 0;
 		}
-		if ((x < 0) && (y > 23)) {
-			x = 0;
+		if ((sel_x < 0) && (sel_y > 23)) {
+			sel_x = 0;
 		}
 
-		if ((x != x_bak) || (y != y_bak)) {
+		if ((sel_x != curr_x) || (sel_y != curr_y)) {
 
 			update_mouse_cursor();
 
-			x_screen = base_x + 10 * (x + y);
-			y_screen = base_y + 5 * (x - y);
+			x_screen = base_x + 10 * (sel_x + sel_y);
+			y_screen = base_y + 5 * (sel_x - sel_y);
 
 			if (from_kbd != 0) {
 				ds_writew(MOUSE_POSX_BAK, ds_writew(MOUSE_POSX, x_screen));
@@ -685,8 +685,8 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 			FIG_remove_from_list(ds_readbs(FIG_CB_SELECTOR_ID), 0);
 
-			ds_writeb((FIG_LIST_ELEM+FIGHTER_CBX), (signed char)x);
-			ds_writeb((FIG_LIST_ELEM+FIGHTER_CBY), (signed char)y);
+			ds_writeb((FIG_LIST_ELEM+FIGHTER_CBX), (signed char)sel_x);
+			ds_writeb((FIG_LIST_ELEM+FIGHTER_CBY), (signed char)sel_y);
 			ds_writed((FIG_LIST_ELEM+FIGHTER_GFXBUF), ds_readd(FIG_CB_SELECTOR_BUF));
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_TWOFIELDED), -1);
 			ds_writeb(FIG_CB_SELECTOR_ID, FIG_add_to_list(-1));
@@ -694,100 +694,100 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			FIG_draw_figures();
 			FIG_set_gfx();
 
-			l_si = 0;
-			l13 = 0;
+			problem = 0;
+			bp_cost = 0;
 
-			if ((host_readws(px) != x) || (host_readws(py) != y)) {
+			if ((host_readws(px) != sel_x) || (host_readws(py) != sel_y)) {
 
 				l15 = 0;
 
-				/* TODO: why not (x > 23) ? */
-				if ((x < 0) || (y < 0) || (y > 23)) {
+				/* TODO: why not (sel_x > 23) ? */
+				if ((sel_x < 0) || (sel_y < 0) || (sel_y > 23)) {
 
-					if (x < 0) {
-						x = 0;
+					if (sel_x < 0) {
+						sel_x = 0;
 						l15 = 1;
-					} else if (y < 0) {
-						y = 0;
+					} else if (sel_y < 0) {
+						sel_y = 0;
 						l15 = 2;
 					} else {
-						y = 23;
+						sel_y = 23;
 						l15 = 3;
 					}
 
-					if ((get_cb_val(x, y) != 0) &&
-						((host_readws(px) != x) || (host_readws(py) != y)))
+					if ((get_cb_val(sel_x, sel_y) != 0) &&
+						((host_readws(px) != sel_x) || (host_readws(py) != sel_y)))
 					{
 
-						l_si = 3;
+						problem = 3;
 
 						if (l15 == 1) {
-							x = -1;
+							sel_x = -1;
 						} else if (l15 == 2) {
-							y = -1;
+							sel_y = -1;
 						} else {
-							y = 24;
+							sel_y = 24;
 						}
 
 					} else {
-						l14 = get_cb_val(x, y);
+						l14 = get_cb_val(sel_x, sel_y);
 					}
 				} else {
-					l12 = get_cb_val(x, y);
+					l12 = get_cb_val(sel_x, sel_y);
 				}
 
-				if (l_si != 3) {
+				if (problem != 3) {
 
-					if ((l15 != 0) && (host_readws(px) == x) && (host_readws(py) == y))
+					if ((l15 != 0) && (host_readws(px) == sel_x) && (host_readws(py) == sel_y))
 					{
-						ds_writeb(0xd823, -1);
-						l13 = 0;
+						ds_writeb(FIG_MOVE_PATHDIR, -1);
+						bp_cost = 0;
 					} else {
-						FIG_set_cb_field(y, x, 124);
+						FIG_set_cb_field(sel_y, sel_x, 124);
 						l4 = seg038(hero, hero_pos, host_readws(px), host_readws(py), 10);
-						l13 = (signed char)seg034_aec();
+						bp_cost = (signed char)FIG_move_pathlen();
 					}
 
 					if (l15 != 0) {
-						FIG_set_cb_field(y, x, l14);
+						FIG_set_cb_field(sel_y, sel_x, l14);
 
-						l_di = 0;
-						while (ds_readbs(0xd823 + l_di) != -1) {
-							l_di++;
+						path_end = 0;
+						while (ds_readbs(FIG_MOVE_PATHDIR + path_end) != -1) {
+							path_end++;
 						}
 
 						if (l15 == 1) {
-							x = -1;
-							if (host_readbs(hero + HERO_BP_LEFT) > l13) {
-								ds_writeb((0xd823 + 0) + l_di, 2);
-								ds_writeb((0xd823 + 1) + l_di, -1);
+							sel_x = -1;
+							if (host_readbs(hero + HERO_BP_LEFT) > bp_cost) {
+								ds_writeb((FIG_MOVE_PATHDIR + 0) + path_end, 2);
+								ds_writeb((FIG_MOVE_PATHDIR + 1) + path_end, -1);
 							}
 						} else if (l15 == 2) {
-							y = -1;
-							if (l13 < (host_readbs(hero + HERO_BP_LEFT) - 1)) {
-								ds_writeb((0xd823 + 0) + l_di, 1);
-								ds_writeb((0xd823 + 1) + l_di, -1);
+							sel_y = -1;
+							if (bp_cost < (host_readbs(hero + HERO_BP_LEFT) - 1)) {
+								ds_writeb((FIG_MOVE_PATHDIR + 0) + path_end, 1);
+								ds_writeb((FIG_MOVE_PATHDIR + 1) + path_end, -1);
 							}
 						} else {
-							y = 24;
-							if (l13 < (host_readbs(hero + HERO_BP_LEFT) - 1)) {
-								ds_writeb((0xd823 + 0) + l_di, 3);
-								ds_writeb((0xd823 + 1) + l_di, -1);
+							sel_y = 24;
+							if (bp_cost < (host_readbs(hero + HERO_BP_LEFT) - 1)) {
+								ds_writeb((FIG_MOVE_PATHDIR + 0) + path_end, 3);
+								ds_writeb((FIG_MOVE_PATHDIR + 1) + path_end, -1);
 							}
 						}
 
-						l13++;
+						bp_cost++;
 					} else {
-						FIG_set_cb_field(y, x, l12);
+						FIG_set_cb_field(sel_y, sel_x, l12);
 					}
 
 					if (l12 >= 50) {
-						l_si = 3;
+						problem = 3;
 					} else if (l12 >= 10) {
 						/* l12 is a monster */
 						if (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * (l12 - 10 - (l12 >= 30 ? 20 : 0))))
 						{
-							l_si = 3;
+							problem = 3;
 						}
 					} else if (l12 >0) {
 
@@ -795,16 +795,16 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 							!hero_unc(get_hero(l12 - 1)) &&
 							(l12 != hero_pos + 1))
 						{
-							l_si = 3;
+							problem = 3;
 						}
 					} else if (l4 == -1) {
-						l_si = 4;
-					} else if (host_readbs(hero + HERO_BP_LEFT) < l13) {
-						l_si = 2;
-					} else if ((x > 23) || (x < 0) || (y > 23) || (y < 0) || (get_cb_val(x, y) < 0)) {
-						if ((host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) > 3) || (x >= 0))
+						problem = 4;
+					} else if (host_readbs(hero + HERO_BP_LEFT) < bp_cost) {
+						problem = 2;
+					} else if ((sel_x > 23) || (sel_x < 0) || (sel_y > 23) || (sel_y < 0) || (get_cb_val(sel_x, sel_y) < 0)) {
+						if ((host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) > 3) || (sel_x >= 0))
 						{
-							l_si = 1;
+							problem = 1;
 						}
 					}
 				}
@@ -813,16 +813,17 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			get_textcolor(&fg_bak, &bg_bak);
 			set_textcolor(255, 0);
 
-			if (!l_si) {
+			if (!problem) {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(12), l13);
+					(char*)get_tx(12), bp_cost); /* Target: %d BP */
 			}
 
 
-			GUI_print_string(l_si == 1 ? get_tx(13) :
-						(l_si == 3 ? get_tx(30) :
-						(l_si == 2 ? get_tx(32) :
-						(l_si == 4 ? get_tx(48) : Real2Host(ds_readd(DTP2))))),
+			GUI_print_string(problem == 1 ? get_tx(13) : /* Target: escape */
+						(problem == 3 ? get_tx(30) : /* Target: blocked */
+						(problem == 2 ? get_tx(32) : /* Target: too far */
+						(problem == 4 ? get_tx(48) : /* Target: no way */
+                         Real2Host(ds_readd(DTP2))))), /* Target: %d BP */
 					 5, 190);
 
 			set_textcolor(fg_bak, bg_bak);
@@ -831,7 +832,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 		if ((ds_readws(MOUSE2_EVENT) != 0) || (ds_readws(ACTION) == 1)) {
 			ds_writew(MOUSE2_EVENT, 0);
 			ds_writew(ACTION, 28);
-			l_si = 5;
+			problem = 5;
 		}
 
 	} while (ds_readws(ACTION) != 28);
@@ -841,22 +842,22 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	GUI_print_string(p_datseg + STRING_14SPACES, 5, 190);
 	set_textcolor(fg_bak, bg_bak);
 
-	if ((host_readws(px) != x) || (host_readws(py) != y)) {
+	if ((host_readws(px) != sel_x) || (host_readws(py) != sel_y)) {
 
-		if (!l_si || (l_si == 1) || (l_si == 2)) {
+		if (!problem || (problem == 1) || (problem == 2)) {
 
-			if (l_si == 1) {
+			if (problem == 1) {
 
 				if (GUI_bool(get_tx(35))) {
 					host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
-					l_si = 0;
+					problem = 0;
 				} else {
 					FIG_remove_from_list(ds_readbs(FIG_CB_SELECTOR_ID), 0);
 					ds_writeb(FIG_CB_SELECTOR_ID, -1);
 				}
 			}
 
-			if (!l_si || (l_si == 2)) {
+			if (!problem || (problem == 2)) {
 
 				FIG_remove_from_list(ds_readbs(FIG_CB_SELECTOR_ID), 0);
 				ds_writeb(FIG_CB_SELECTOR_ID, -1);
@@ -870,9 +871,9 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 				}
 			}
 
-		} else if (l_si == 3) {
+		} else if (problem == 3) {
 			GUI_output(get_tx(49));
-		} else if (l_si == 4) {
+		} else if (problem == 4) {
 			GUI_output(get_tx(50));
 		}
 	}

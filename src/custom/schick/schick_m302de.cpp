@@ -1533,7 +1533,7 @@ static int n_seg034(unsigned offs)
 		return 1;
 	}
 	case 0xaec: {
-		reg_ax = seg034_aec();
+		reg_ax = FIG_move_pathlen();
 		return 1;
 	}
 	default:
@@ -5879,8 +5879,8 @@ static int seg004(unsigned short offs) {
 		return 1;
 	}
 	case 0xd3c: {
-		D1_LOG("load_objects_nvf()\n");
-		load_objects_nvf();
+		D1_LOG("load_wallclock_nvf()\n");
+		load_wallclock_nvf();
 		return 1;
 	}
 	case 0xf54: {
@@ -6080,7 +6080,7 @@ static int seg006(unsigned short offs) {
 			short v = CPU_Pop16();
 			CPU_Push16(v);
 
-			RealPt retval = seg006_033c(v);
+			RealPt retval = FIG_get_enemy_sheet(v);
 			D1_LOG("seg006_33c(0x%x); = %x\n", v , retval);
 
 			reg_ax = RealOff(retval);
@@ -6094,8 +6094,8 @@ static int seg006(unsigned short offs) {
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 
-			FIG_set_0e((char)v1, (char)v2);
-			D1_LOG("FIG_set_0e(%d, %d)\n", (char)v1, (char)v2);
+			FIG_set_sheet((char)v1, (char)v2);
+			D1_LOG("FIG_set_sheet(%d, %d)\n", (char)v1, (char)v2);
 			return 1;
 		}
 		case 0x3bb: {
@@ -6120,8 +6120,8 @@ static int seg006(unsigned short offs) {
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 
-			FIG_set_0f((char)v1, (char)v2);
-			D1_LOG("FIG_set_0f(%d, %d)\n", (char)v1, (char)v2);
+			FIG_set_weapon_sheet((char)v1, (char)v2);
+			D1_LOG("FIG_set_weapon_sheet(%d, %d)\n", (char)v1, (char)v2);
 			return 1;
 		}
 		case 0x512: {

@@ -434,7 +434,7 @@ void init_game_state(void)
 
 	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
-	load_objects_nvf();
+	load_wallclock_nvf();
 	passages_init();
 
 	ds_writew(CURRENT_ANI, -1);
@@ -770,7 +770,7 @@ void call_gen(void)
 
 		refresh_colors();
 
-		load_objects_nvf();
+		load_wallclock_nvf();
 
 		if (have_mem_for_sound()) {
 

@@ -617,7 +617,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						l17 == 0 ? host_readbs(Real2Host(hero) + HERO_ENEMY_ID) : host_readbs(Real2Host(hero) + HERO_ENEMY_ID) + 20,
 						host_readbs(Real2Host(hero) + HERO_VIEWDIR));
 
-					FIG_set_0e(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID), 0);
+					FIG_set_sheet(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID), 0);
 
 					draw_fight_screen_pal(0);
 
@@ -631,7 +631,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					if (l13 != 0) {
 
-						FIG_set_0e(ds_readbs(FIG_SHOT_BOLT_ID), 7);
+						FIG_set_sheet(ds_readbs(FIG_SHOT_BOLT_ID), 7);
 
 						draw_fight_screen(l13 == 0 && ds_readws(DEFENDER_DEAD) == 0 ? 0 : 1);
 
@@ -762,7 +762,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					if (l15 != -1) {
 
-						FIG_set_0e(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID), 0);
+						FIG_set_sheet(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID), 0);
 						draw_fight_screen_pal(1);
 					}
 
@@ -770,7 +770,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 						if (l13 != 0) {
 
-							FIG_set_0e(ds_readbs(FIG_SHOT_BOLT_ID), 7);
+							FIG_set_sheet(ds_readbs(FIG_SHOT_BOLT_ID), 7);
 
 							draw_fight_screen(1);
 
@@ -780,7 +780,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						if (l6 > 0) {
 
 							if (l6 != 4) {
-								FIG_set_0e(ds_readbs(FIG_SPELLGFX_ID), 6);
+								FIG_set_sheet(ds_readbs(FIG_SPELLGFX_ID), 6);
 							} else {
 
 								FIG_call_draw_pic();
@@ -819,20 +819,20 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 							if (attack_hero == 0) {
 
-								FIG_set_0e(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID), 1);
+								FIG_set_sheet(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID), 1);
 
 								if (is_in_byte_array(host_readbs(target_monster + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
 									p3 = Real2Host(FIG_get_ptr(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID)));
 
-									FIG_set_0e(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p3 + 0x13)), 3);
+									FIG_set_sheet(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p3 + 0x13)), 3);
 								}
 
 							} else {
 
 								if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) > 0) {
 
-									FIG_set_0e(host_readbs(target_hero + HERO_FIGHTER_ID), 1);
+									FIG_set_sheet(host_readbs(target_hero + HERO_FIGHTER_ID), 1);
 								}
 							}
 						}

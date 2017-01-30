@@ -85,7 +85,7 @@ void FIG_init_list_elem(signed short obj)
 
 	ds_writeb((FIG_LIST_ELEM + FIGHTER_MONSTER), 0);
 	ds_writeb((FIG_LIST_ELEM + FIGHTER_RELOAD), 0);
-	ds_writeb((FIG_LIST_ELEM + FIGHTER_UNKN), -1);
+	ds_writeb((FIG_LIST_ELEM + FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM + FIGHTER_SHEET), -1);
 
 	ds_writed((FIG_LIST_ELEM + FIGHTER_GFXBUF), ds_readd(FIG_CB_MARKER_BUF));
@@ -260,14 +260,14 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 		}
 	}
 
-	memcpy(p_datseg + 0xd823, ptr[found_dir], 20);
+	memcpy(p_datseg + FIG_MOVE_PATHDIR, ptr[found_dir], 20);
 
 	if (found != 0) {
 
 		i = 0;
 
-		while (ds_readbs(0xd823 + i++) != -1);
-		ds_writeb(0xd823 + i, -2);
+		while (ds_readbs(FIG_MOVE_PATHDIR + i++) != -1);
+		ds_writeb(FIG_MOVE_PATHDIR + i, -2);
 	}
 }
 
@@ -645,7 +645,7 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 					FIG_backtrack(ptr2, arr1[i], arr2[i], l_var2, host_readbs(in_ptr + 0x33), a4, two_fields, a1);
 				}
 
-				l_var11 = FIG_count_smth((signed char*)p_datseg + 0xd823);
+				l_var11 = FIG_count_smth((signed char*)p_datseg + FIG_MOVE_PATHDIR);
 
 				if ((l_var11 == 0)) {
 					l_var13 = i;

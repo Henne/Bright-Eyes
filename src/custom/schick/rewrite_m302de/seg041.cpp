@@ -532,10 +532,10 @@ void seg041_8c8(void)
 	signed short i;
 
 	for (i = 0; i < 8; i++)
-		memset(p_datseg + 0xd8ce + i * 0xf3, -1, 0xf3);
+		memset(p_datseg + FIG_ANISHEETS + i * 0xf3, -1, 0xf3);
 
 	/* That would be better */
-	/* memset(p_datseg + 0xd8ce, -1, 0xf3 * 8); */
+	/* memset(p_datseg + FIG_ANISHEETS, -1, 0xf3 * 8); */
 }
 
 /**

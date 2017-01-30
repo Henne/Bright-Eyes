@@ -1403,7 +1403,7 @@
 #define REPLENISH_STOCKS_MOD            (0xd331)    /* signed short */
 #define FIG_MSG_DATA                    (0xd333)    /* struct(4)[6]; struct{signed short type, damage;} */
 #define ENEMY_SHEETS                    (0xd34b)    /* struct(62)[20]; struct enemy[20] */
-//define FIG_UNKNOWN?                   (0xd823)    /* signed char[10] */
+#define FIG_MOVE_PATHDIR                (0xd823)    /* signed char[10] */
 //define FIG_UNKNOWN?                   (0xd82d)    /* signed char[10]; see FIG_ACTION_UNKNOWN2 */
 #define FIG_MONSTERS_UNKN               (0xd837)    /* unsigned char[20]; writeonly (0) */
 #define HERO_IS_TARGET                  (0xd84b)    /* signed char[7] */
@@ -1417,7 +1417,7 @@
 #define FIGHTOBJ_BUF_SEEK_PTR           (0xd86e)    /* RealPt; points to end of FIGHTOBJ buffer */
 #define NR_OF_ENEMIES                   (0xd872)    /* short; ? */
 #define FIGHTOBJ_LIST                   (0xd874)    /* unsigned char[90] */
-//define FIGHTANI_SHEETS                (0xd8ce)    /* struct(243)[8] */
+#define FIG_ANISHEETS                   (0xd8ce)    /* struct(243)[8] */
 #define FIG_LIST_ELEM                   (0xe066)    /* struct(35) */
 #define FIG_LIST_ARRAY                  (0xe089)    /* unsigned char[127] */
 #define FIG_LIST_HEAD                   (0xe108)    /* RealPt; to a list */
@@ -1440,9 +1440,10 @@
 #define ANI_CHANGE_DIR                  (0xe238)    /* signed short[10] */
 #define ANI_AREA_STATUS                 (0xe24c)    /* signed short[10] */
 #define ANI_AREA_TIMEOUT                (0xe260)    /* signed short[10] */
-//define FIG_DRAW?                      (0xe274)    /* RealPt[9] */
-//define FIG_MOVE?                      (0xe298)    /* signed short[8] */
-//define FIG_MOVE?                      (0xe2a8)    /* unsigned short[8] */
+#define BC_TIMER                        (0xe274)    /* RealPt */
+#define FIG_GFXBUFFERS                  (0xe278)    /* RealPt[8]; 0x508 byte segments in FIGHTOBJ_BUF */
+#define FIG_FIGLIST_READD               (0xe298)    /* signed short[8] */
+#define FIG_ANI_STATE                   (0xe2a8)    /* unsigned short[8] */
 #define FIG_ACTOR_GRAMMAR_TYPE          (0xe2b8)    /* unsigned short; 2 = hero, 1 = monster */
 #define FIG_ACTOR_GRAMMAR_ID            (0xe2ba)    /* unsigned short */
 #define FIG_TARGET_GRAMMAR_TYPE         (0xe2bc)    /* unsigned short; 2 = hero, 1 = monster */
@@ -1580,6 +1581,6 @@
 #define BUFFERSIZE                      (0xe5dc)    /* unsigned long; size of the global buffer */
 #define GLOBAL_BUFFER_PTR               (0xe5e0)    /* RealPt; points to the start of the global buffer */
 #define LARGE_BUF                       (0xe5e4)    /* signed char; {0,1} */
-/* Unknown Bytes: 831, Undetermined symbols: 35/1478 */
+/* Unknown Bytes: 831, Undetermined symbols: 30/1479 */
 
 #endif

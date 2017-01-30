@@ -1197,7 +1197,7 @@ signed short do_fight(signed short fight_id)
 		seg028_0555(ds_readbs(DUNGEON_INDEX) != 0 ? 0 : 1);
 	}
 
-	load_objects_nvf();
+	load_wallclock_nvf();
 	refresh_screen_size();
 
 	if ((ds_readbs(CURRENT_TOWN) != 0) && !ds_readb(SHOW_TRAVEL_MAP)) {
