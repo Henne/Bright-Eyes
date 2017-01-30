@@ -302,7 +302,7 @@ void show_treasure_map(void)
 		/* clear the screen */
 		wait_for_vsync();
 
-		set_palette(p_datseg + 0x26c3, 0, 0x20);
+		set_palette(p_datseg + PALETTE_ALLBLACK2, 0, 0x20);
 
 		do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 

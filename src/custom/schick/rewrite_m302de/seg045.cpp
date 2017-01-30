@@ -34,39 +34,39 @@ void seg045_0000(signed short fighter_id, signed short type, signed short a3)
 
 	ds_writew(FIG_LIST_ELEM, 0);
 
-	ds_writeb((FIG_LIST_ELEM+2), ds_readb(type * 2 + GFXTAB_SHOTBOLT_NVFNO));
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_NVF_NO), ds_readb(type * 2 + GFXTAB_SHOTBOLT_NVFNO));
 
 	if (type != 2) {
-		ds_writeb((FIG_LIST_ELEM+2), ds_readbs((FIG_LIST_ELEM+2)) + a3);
+		ds_writeb((FIG_LIST_ELEM+FIGHTER_NVF_NO), ds_readbs((FIG_LIST_ELEM+FIGHTER_NVF_NO)) + a3);
 	}
 
 	if (a3 == 0) {
 		obj_x += 2;
 	}
 
-	ds_writebs((FIG_LIST_ELEM+3), (signed char)obj_x);
-	ds_writebs((FIG_LIST_ELEM+4), (signed char)obj_y);
-	ds_writeb((FIG_LIST_ELEM+5), ds_readb(GFXTAB_SHOTBOLT_OX + type * 8 + a3 * 2));
-	ds_writeb((FIG_LIST_ELEM+6), ds_readb(GFXTAB_SHOTBOLT_OY + type * 8 + a3 * 2));
-	ds_writeb((FIG_LIST_ELEM+7), ds_readb(GFXTAB_SHOTBOLT_HEIGHT + type * 2));
-	ds_writeb((FIG_LIST_ELEM+8), ds_readb(GFXTAB_SHOTBOLT_WIDTH + type * 2));
-	ds_writeb((FIG_LIST_ELEM+9), 0);
-	ds_writeb((FIG_LIST_ELEM+10), 0);
+	ds_writebs((FIG_LIST_ELEM+FIGHTER_CBX), (signed char)obj_x);
+	ds_writebs((FIG_LIST_ELEM+FIGHTER_CBY), (signed char)obj_y);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETX), ds_readb(GFXTAB_SHOTBOLT_OX + type * 8 + a3 * 2));
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETY), ds_readb(GFXTAB_SHOTBOLT_OY + type * 8 + a3 * 2));
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_HEIGHT), ds_readb(GFXTAB_SHOTBOLT_HEIGHT + type * 2));
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_WIDTH), ds_readb(GFXTAB_SHOTBOLT_WIDTH + type * 2));
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_X1), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y1), 0);
 
-	ds_writebs((FIG_LIST_ELEM+11), ds_readbs(GFXTAB_SHOTBOLT_WIDTH + type * 2) - 1);
-	ds_writebs((FIG_LIST_ELEM+12), ds_readbs(GFXTAB_SHOTBOLT_HEIGHT + type * 2) - 1);
-	ds_writeb((FIG_LIST_ELEM+21), 0);
-	ds_writeb((FIG_LIST_ELEM+13), 0);
-	ds_writeb((FIG_LIST_ELEM+15), -1);
-	ds_writeb((FIG_LIST_ELEM+14), -1);
-	ds_writed((FIG_LIST_ELEM+23), ds_readd(FIG_SHOT_BOLT_BUF));
-	ds_writeb((FIG_LIST_ELEM+17), 100);
-	ds_writeb((FIG_LIST_ELEM+18), 0);
-	ds_writeb((FIG_LIST_ELEM+19), -1);
+	ds_writebs((FIG_LIST_ELEM+FIGHTER_X2), ds_readbs(GFXTAB_SHOTBOLT_WIDTH + type * 2) - 1);
+	ds_writebs((FIG_LIST_ELEM+FIGHTER_Y2), ds_readbs(GFXTAB_SHOTBOLT_HEIGHT + type * 2) - 1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_UNKN), -1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
+	ds_writed((FIG_LIST_ELEM+FIGHTER_GFXBUF), ds_readd(FIG_SHOT_BOLT_BUF));
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), 100);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_VISIBLE), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_TWOFIELDED), -1);
 
 	nvf.dst = Real2Host(ds_readd(FIG_SHOT_BOLT_BUF));
 	nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
-	nvf.no = ds_readbs((FIG_LIST_ELEM+2));
+	nvf.no = ds_readbs((FIG_LIST_ELEM+FIGHTER_NVF_NO));
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&obj_x;
 	nvf.height = (Bit8u*)&obj_x;
@@ -188,27 +188,27 @@ void seg045_0273(signed short x, signed short y, signed short spell_ani_id)
 #endif
 
 	ds_writew(FIG_LIST_ELEM, 0);
-	ds_writeb((FIG_LIST_ELEM+2), a.a[spell_ani_id - 1]);
-	ds_writeb((FIG_LIST_ELEM+3), (signed char)x);
-	ds_writeb((FIG_LIST_ELEM+4), (signed char)y);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_NVF_NO), a.a[spell_ani_id - 1]);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_CBX), (signed char)x);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_CBY), (signed char)y);
 
-	ds_writeb((FIG_LIST_ELEM+5), (unsigned char)b.a[spell_ani_id - 1]);
-	ds_writeb((FIG_LIST_ELEM+6), (unsigned char)c.a[spell_ani_id - 1]);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETX), (unsigned char)b.a[spell_ani_id - 1]);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETY), (unsigned char)c.a[spell_ani_id - 1]);
 
-	ds_writeb((FIG_LIST_ELEM+7), (unsigned char)height);
-	ds_writeb((FIG_LIST_ELEM+8), (unsigned char)width);
-	ds_writeb((FIG_LIST_ELEM+9), 0);
-	ds_writeb((FIG_LIST_ELEM+10), 0);
-	ds_writeb((FIG_LIST_ELEM+11), (unsigned char)(width - 1));
-	ds_writeb((FIG_LIST_ELEM+12), (unsigned char)(height - 1));
-	ds_writeb((FIG_LIST_ELEM+21), 0);
-	ds_writeb((FIG_LIST_ELEM+13), 0);
-	ds_writeb((FIG_LIST_ELEM+15), -1);
-	ds_writeb((FIG_LIST_ELEM+14), -1);
-	ds_writed((FIG_LIST_ELEM+23), ds_readd(FIG_SPELLGFX_BUF));
-	ds_writeb((FIG_LIST_ELEM+17), 99);
-	ds_writeb((FIG_LIST_ELEM+18), 0);
-	ds_writeb((FIG_LIST_ELEM+19), -1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_HEIGHT), (unsigned char)height);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_WIDTH), (unsigned char)width);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_X1), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y1), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_X2), (unsigned char)(width - 1));
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), (unsigned char)(height - 1));
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_UNKN), -1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
+	ds_writed((FIG_LIST_ELEM+FIGHTER_GFXBUF), ds_readd(FIG_SPELLGFX_BUF));
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), 99);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_VISIBLE), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_TWOFIELDED), -1);
 	ds_writeb(FIG_SPELLGFX_ID, FIG_add_to_list(-1));
 }
 

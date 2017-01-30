@@ -58,7 +58,7 @@ signed short DNG11_handler(void)
 
 			if (random_schick(100) <= 50)
 			{
-				ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x82f))));
+				ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0x82f))));
 				do_fight(FIGHTS_F131_01B);
 			}
 		}

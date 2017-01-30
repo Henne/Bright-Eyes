@@ -94,7 +94,7 @@ void FIG_preload_gfx(void)
 
 	for (i = 0; i < 127; i++) {
 		host_writeb(p1 + 0x10, -1);
-		p1+=0x23;
+		p1 += SIZEOF_FIGHTER;
 		ds_writeb(FIG_LIST_ARRAY + i, 0);
 	}
 
@@ -249,27 +249,27 @@ void FIG_draw_scenario(void)
 					}
 
 					ds_writew(FIG_LIST_ELEM, 0);
-					ds_writeb((FIG_LIST_ELEM+2), (signed char)obj_id);
-					ds_writeb((FIG_LIST_ELEM+3), (signed char)cb_x);
-					ds_writeb((FIG_LIST_ELEM+4), (signed char)cb_y);
-					ds_writeb((FIG_LIST_ELEM+5), ds_readb(GFXTAB_OBJ_OFFSET_X + obj_id * 2));
-					ds_writeb((FIG_LIST_ELEM+6), ds_readb(GFXTAB_OBJ_OFFSET_Y + obj_id * 2));
-					ds_writeb((FIG_LIST_ELEM+7), host_readb(Real2Host(ds_readd(FIGOBJ_GFXHEIGHT_TABLE)) + obj_id * 2));
-					ds_writeb((FIG_LIST_ELEM+8), host_readb(Real2Host(ds_readd(FIGOBJ_GFXWIDTH_TABLE)) + obj_id * 2));
-					ds_writeb((FIG_LIST_ELEM+9), 0);
-					ds_writeb((FIG_LIST_ELEM+10), 0);
-					ds_writebs((FIG_LIST_ELEM+11),
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_NVF_NO), (signed char)obj_id);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_CBX), (signed char)cb_x);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_CBY), (signed char)cb_y);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETX), ds_readb(GFXTAB_OBJ_OFFSET_X + obj_id * 2));
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETY), ds_readb(GFXTAB_OBJ_OFFSET_Y + obj_id * 2));
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_HEIGHT), host_readb(Real2Host(ds_readd(FIGOBJ_GFXHEIGHT_TABLE)) + obj_id * 2));
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_WIDTH), host_readb(Real2Host(ds_readd(FIGOBJ_GFXWIDTH_TABLE)) + obj_id * 2));
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_X1), 0);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_Y1), 0);
+					ds_writebs((FIG_LIST_ELEM+FIGHTER_X2),
 						host_readbs(Real2Host(ds_readd(FIGOBJ_GFXWIDTH_TABLE)) + obj_id * 2) - 1);
-					ds_writebs((FIG_LIST_ELEM+12),
+					ds_writebs((FIG_LIST_ELEM+FIGHTER_Y2),
 						host_readbs(Real2Host(ds_readd(FIGOBJ_GFXHEIGHT_TABLE)) + obj_id * 2) - 1);
-					ds_writeb((FIG_LIST_ELEM+21), 0);
-					ds_writeb((FIG_LIST_ELEM+13), 0);
-					ds_writeb((FIG_LIST_ELEM+15), -1);
-					ds_writeb((FIG_LIST_ELEM+14), -1);
-					ds_writed((FIG_LIST_ELEM+23), (Bit32u)ptr);
-					ds_writeb((FIG_LIST_ELEM+17), obj_id >= 58 && obj_id <= 61 ? -1 : 50);
-					ds_writeb((FIG_LIST_ELEM+18), 1);
-					ds_writeb((FIG_LIST_ELEM+19), -1);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_UNKN), -1);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
+					ds_writed((FIG_LIST_ELEM+FIGHTER_GFXBUF), (Bit32u)ptr);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), obj_id >= 58 && obj_id <= 61 ? -1 : 50);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_VISIBLE), 1);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_TWOFIELDED), -1);
 					ds_writeb(FIGHTOBJ_LIST + ds_readw(FIGHTOBJ_COUNT), FIG_add_to_list(-1));
 					inc_ds_ws(FIGHTOBJ_COUNT);
 #if !defined(__BORLANDC__)

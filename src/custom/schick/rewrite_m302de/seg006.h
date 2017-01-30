@@ -21,9 +21,9 @@ RealPt seg006_033c(signed short);
 
 void FIG_set_0e(signed char, signed char);
 
-void FIG_reset_12_13(signed char);
+void FIG_make_invisible(signed char);
 
-void FIG_set_12_13(signed short);
+void FIG_make_visible(signed short);
 
 void FIG_set_0f(signed char, signed char);
 

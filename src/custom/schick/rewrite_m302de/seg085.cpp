@@ -226,7 +226,7 @@ signed short DNG10_handler(void)
 		/* FIGHT: scared heshtot */
 		if (GUI_bool(get_tx(22)))
 		{
-			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0xa0d))));
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0xa0d))));
 			ds_writew(DNG_HANDLED_POS, 0);
 
 			if (!do_fight(FIGHTS_F129_17))

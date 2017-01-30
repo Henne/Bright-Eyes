@@ -93,8 +93,8 @@ void draw_fight_screen_pal(signed short mode)
 #endif
 
 		/* set palettes */
-		set_palette(p_datseg + 0x2783, 0x00, 0x20);
-		set_palette(p_datseg + 0x7d0e, 0x80, 0x14);
+		set_palette(p_datseg + PALETTE_FIGHT1, 0x00, 0x20);
+		set_palette(p_datseg + PALETTE_FIGHT2, 0x80, 0x14);
 		set_palette(Real2Host((RealPt)ds_readd(BUFFER8_PTR) + 0xfa02), 0x60, 0x20);
 
 		ds_writeb(PP20_INDEX, 0xff);

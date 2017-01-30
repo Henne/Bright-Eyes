@@ -1110,9 +1110,9 @@ void city_fade_and_colors(void)
 
 	if (ds_readb(FADING_STATE) == 3) {
 
-		set_palette(p_datseg + 0x26c3, 0x00, 0x20);
-		set_palette(p_datseg + 0x26c3, 0x80, 0x20);
-		set_palette(p_datseg + 0x26c3, 0xa0, 0x20);
+		set_palette(p_datseg + PALETTE_ALLBLACK2, 0x00, 0x20);
+		set_palette(p_datseg + PALETTE_ALLBLACK2, 0x80, 0x20);
+		set_palette(p_datseg + PALETTE_ALLBLACK2, 0xa0, 0x20);
 
 		ds_writeb(FADING_STATE, 1);
 	}

@@ -316,9 +316,9 @@ void GRP_switch_to_next(signed short mode)
 		if ( ( (ds_readbs(CURRENT_TOWN) != 0) && !ds_readbs(GROUPS_TOWN + group)) ||
 			(!ds_readbs(CURRENT_TOWN) && (ds_readbs(GROUPS_TOWN + group) != 0)))
 		{
-			set_palette(p_datseg + 0x26c3, 0x00, 0x20);
-			set_palette(p_datseg + 0x26c3, 0x80, 0x20);
-			set_palette(p_datseg + 0x26c3, 0xa0, 0x20);
+			set_palette(p_datseg + PALETTE_ALLBLACK2, 0x00, 0x20);
+			set_palette(p_datseg + PALETTE_ALLBLACK2, 0x80, 0x20);
+			set_palette(p_datseg + PALETTE_ALLBLACK2, 0xa0, 0x20);
 		}
 
 		if ((ds_readbs(GROUPS_DNG_INDEX + group)) && (ds_readbs(GROUPS_DNG_INDEX + group) != ds_readbs(DUNGEON_INDEX)))

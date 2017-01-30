@@ -362,7 +362,7 @@ signed short DNG15_handler(void)
 		/* FIGHT: */
 		if (random_schick(100) < 10)
 		{
-			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 6), 0x3932)));
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 6), 0x3932)));
 			ds_writew((FIG_FLEE_POSITION + 4), 0x3d25);
 
 			if (!do_fight(FIGHTS_DFIN26))
@@ -376,7 +376,7 @@ signed short DNG15_handler(void)
 		/* FIGHT: */
 		if (random_schick(100) < 10)
 		{
-			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x3d25))));
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0x3d25))));
 
 			if (!do_fight(FIGHTS_DFIN26))
 			{
