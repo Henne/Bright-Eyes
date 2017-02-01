@@ -48,81 +48,81 @@ signed short update_direction(unsigned char mod)
 
 void move(void)
 {
-	volatile signed short v2;
-	unsigned char v3;
+	volatile signed short boundary_flag;
+	unsigned char mapval;
 	volatile signed short i;
-	Bit8u *p1;
-	Bit8u *p2;
-	Bit8u *p3;
+	Bit8u *p_map_small;
+	Bit8u *p_map_large;
+	Bit8u *p_vis_field;
 
 	signed short x;
 	signed short y;
 
 
-	p1 = p2 = p_datseg + DNG_MAP;
+	p_map_small = p_map_large = p_datseg + DNG_MAP;
 
 	/* direction */
 
-	p3 = Real2Host(RealMake(datseg, ((ds_readb(DIRECTION) == 0) ? 0x4970 :
-				((ds_readb(DIRECTION) == 1) ? 0x49ae :
-				((ds_readb(DIRECTION) == 2) ? 0x49ec : 0x4a2a)))));
+	p_vis_field = Real2Host(RealMake(datseg, ((ds_readb(DIRECTION) == 0) ? VISUAL_FIELD_DIR0 :
+				((ds_readb(DIRECTION) == 1) ? VISUAL_FIELD_DIR1 :
+				((ds_readb(DIRECTION) == 2) ? VISUAL_FIELD_DIR2 : VISUAL_FIELD_DIR3)))));
 
-	for (i = 0; i < 29; i++, p3 += 2) {
-		v2 = 0;
-		x = ds_readws(X_TARGET) + host_readbs(p3);
-		y = ds_readw(Y_TARGET) + host_readbs(p3 + 1);
+	for (i = 0; i < 29; i++, p_vis_field += 2) {
+		boundary_flag = 0;
+		x = ds_readws(X_TARGET) + host_readbs(p_vis_field);
+		y = ds_readw(Y_TARGET) + host_readbs(p_vis_field + 1);
 
 		if (x < 0) {
 			x = 0;
-			v2 = 1;
+			boundary_flag = 1;
 		} else {
 			if (ds_readb(DNG_MAP_SIZE) - 1 < x) {
 				x = ds_readb(DNG_MAP_SIZE) - 1;
-				v2 = 1;
+				boundary_flag = 1;
 			}
 		}
 
 		if (y < 0) {
 			y = 0;
-			v2 = 1;
+			boundary_flag = 1;
 		} else {
 			if (y > 15) {
 				y = 15;
-				v2 = 1;
+				boundary_flag = 1;
 			}
 		}
 
-		v3 = (ds_readb(DNG_MAP_SIZE) == 0x10) ?
+		mapval = (ds_readb(DNG_MAP_SIZE) == 0x10) ?
 			/* dungeon */
-			host_readb(p1 + (y << 4) + x) :
+			host_readb(p_map_small + (y << 4) + x) :
 			/* city */
-			host_readb(p2 + (y << 5) + x);
+			host_readb(p_map_large + (y << 5) + x);
 
-		if (v2 != 0) {
-			ds_writeb(0xbd6e + i, ((v3 == 0xa0) || (v3 == 0xb0)) ? v3 : 0xb0);
+		if (boundary_flag != 0) {
+			ds_writeb(VISUAL_FIELD_VALS + i, ((mapval == 0xa0) || (mapval == 0xb0)) ? mapval : 0xb0);
 		} else {
-			ds_writeb(0xbd6e + i, v3);
+			ds_writeb(VISUAL_FIELD_VALS + i, mapval);
 		}
 	}
 
 	if (ds_readb(DNG_MAP_SIZE) == 0x10) {
 		/* dungeon mode */
-		ds_writeb(STEPTARGET_FRONT, host_readb(p1 +
-			((ds_readw(Y_TARGET) + host_readbs(p3 + 1)) << 4) +
-			ds_readw(X_TARGET) + host_readbs(p3)));
+		ds_writeb(STEPTARGET_FRONT, host_readb(p_map_small +
+			((ds_readw(Y_TARGET) + host_readbs(p_vis_field + 1)) << 4) +
+			ds_readw(X_TARGET) + host_readbs(p_vis_field)));
 
-		ds_writeb(STEPTARGET_BACK, host_readb(p1 +
-			((ds_readw(Y_TARGET) + host_readbs(p3 + 3)) << 4) +
-			ds_readw(X_TARGET) + host_readbs(p3 + 2)));
+		ds_writeb(STEPTARGET_BACK, host_readb(p_map_small +
+			((ds_readw(Y_TARGET) + host_readbs(p_vis_field + 3)) << 4) +
+			ds_readw(X_TARGET) + host_readbs(p_vis_field + 2)));
 	} else {
 		/* city mode */
-		ds_writeb(STEPTARGET_FRONT, host_readb(p2 +
-			((ds_readw(Y_TARGET) + host_readbs(p3 + 1)) << 5) +
-			 ds_readw(X_TARGET) + host_readbs(p3)));
+		ds_writeb(STEPTARGET_FRONT, host_readb(p_map_large +
+			((ds_readw(Y_TARGET) + host_readbs(p_vis_field + 1)) << 5) +
+			 ds_readw(X_TARGET) + host_readbs(p_vis_field)));
 
-		ds_writeb(STEPTARGET_BACK, host_readb(p2 +
-			((ds_readw(Y_TARGET) + host_readbs(p3 + 3)) << 5) +
-			ds_readw(X_TARGET) + host_readbs(p3 + 2)));
+		ds_writeb(STEPTARGET_BACK, host_readb(p_map_large +
+			((ds_readw(Y_TARGET) + host_readbs(p_vis_field + 3)) << 5) +
+			ds_readw(X_TARGET) + host_readbs(p_vis_field + 2)));
 	}
 }
 

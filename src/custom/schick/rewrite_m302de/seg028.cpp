@@ -150,7 +150,7 @@ void seg028_0224(void)
 
 		for (l_si = 0; l_si < 4; l_si++) {
 
-			if (ds_readb(0xe400 + l_si) != 0) {
+			if (ds_readb(CITY_HOUSE_COUNT + l_si) != 0) {
 
 				arr[l_si] = seg028_0444(!l_si ? ARCHIVE_FILE_HOUSE1_NVF :
 				    (l_si == 1 ? ARCHIVE_FILE_HOUSE2_NVF :
@@ -162,7 +162,7 @@ void seg028_0224(void)
 		}
 
 		for (l_si = 0; l_si < 4; l_si++) {
-			if (!ds_readb(0xe400 + l_si)) {
+			if (!ds_readb(CITY_HOUSE_COUNT + l_si)) {
 
 				arr[l_si] = (!l_si ? arr[l_si + 1] : arr[l_si - 1]);
 			}
@@ -388,40 +388,40 @@ void unused_store(signed short no)
 	height = host_readws((Bit8u*)&height);
 #endif
 
-	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x5ec0), 0);
-	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x5ec0) + 1, 1);
-	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x5ec0) + 2, 2);
-	EMS_map_memory(ds_readws(0xbd92), 0, 3);
+	EMS_map_memory(ds_readws(EMS_UNUSED_HANDLE), ds_readws(EMS_UNUSED_LPAGE), 0);
+	EMS_map_memory(ds_readws(EMS_UNUSED_HANDLE), ds_readws(EMS_UNUSED_LPAGE) + 1, 1);
+	EMS_map_memory(ds_readws(EMS_UNUSED_HANDLE), ds_readws(EMS_UNUSED_LPAGE) + 2, 2);
+	EMS_map_memory(ds_readws(EMS_UNUSED_HANDLE), 0, 3);
 
 	size = width * height;
-	memmove(Real2Host((RealPt)ds_readd(EMS_FRAME_PTR) + ds_readws(0x5ec2)),
+	memmove(Real2Host((RealPt)ds_readd(EMS_FRAME_PTR) + ds_readws(EMS_UNUSED_OFFSET)),
 			Real2Host((RealPt)ds_readd(RENDERBUF_PTR) + 0x7530),
 			size);
 
-	ptr = no * 5 + Real2Host(ds_readd(0xbd8c));
+	ptr = no * 5 + Real2Host(ds_readd(EMS_UNUSED_TAB));
 
-	host_writeb(ptr, (signed char)ds_readws(0x5ec0));
-	host_writeb(ptr + 1, ds_readws(0x5ec2) >> 8);
+	host_writeb(ptr, (signed char)ds_readws(EMS_UNUSED_LPAGE));
+	host_writeb(ptr + 1, ds_readws(EMS_UNUSED_OFFSET) >> 8);
 	host_writew(ptr + 2, width);
 	host_writeb(ptr + 4, (signed char)height);
 
-	ds_writew(0x5ec0, (ds_readw(0x5ec0) + ((ds_readw(0x5ec2) + size) >> 14)));
-	ds_writew(0x5ec2, ((((ds_readw(0x5ec2) + size) & 0x3fff) + 0x100) & 0xff00));
+	ds_writew(EMS_UNUSED_LPAGE, (ds_readw(0x5ec0) + ((ds_readw(EMS_UNUSED_OFFSET) + size) >> 14)));
+	ds_writew(EMS_UNUSED_OFFSET, ((((ds_readw(0x5ec2) + size) & 0x3fff) + 0x100) & 0xff00));
 }
 
 RealPt unused_load(signed short no)
 {
 	signed short l_si;
 
-	EMS_map_memory(ds_readws(0xbd92), 0, 3);
+	EMS_map_memory(ds_readws(EMS_UNUSED_HANDLE), 0, 3);
 
-	l_si = host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * no);
+	l_si = host_readb(Real2Host(ds_readd(EMS_UNUSED_TAB)) + 5 * no);
 
-	EMS_map_memory(ds_readws(0xbd92), l_si, 0);
-	EMS_map_memory(ds_readws(0xbd92), l_si + 1, 1);
-	EMS_map_memory(ds_readws(0xbd92), l_si + 2, 2);
+	EMS_map_memory(ds_readws(EMS_UNUSED_HANDLE), l_si, 0);
+	EMS_map_memory(ds_readws(EMS_UNUSED_HANDLE), l_si + 1, 1);
+	EMS_map_memory(ds_readws(EMS_UNUSED_HANDLE), l_si + 2, 2);
 
-	return (RealPt)ds_readd(EMS_FRAME_PTR) + 256 * host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * no + 1);
+	return (RealPt)ds_readd(EMS_FRAME_PTR) + 256 * host_readb(Real2Host(ds_readd(EMS_UNUSED_TAB)) + 5 * no + 1);
 }
 
 void load_map(void)

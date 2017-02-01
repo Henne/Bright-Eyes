@@ -83,7 +83,7 @@ signed short enter_location(signed short town_id)
 
 	move();
 
-	if ((b_index = get_border_index(cast_u16(ds_readbs((0xbd6e + 1))))) >= 2 && b_index <= 5) {
+	if ((b_index = get_border_index(cast_u16(ds_readbs((VISUAL_FIELD_VALS + 1))))) >= 2 && b_index <= 5) {
 
 		ds_writeb(LOCATION_BAK, 0);
 		ds_writew(CITYINDEX, ds_readb((TOWNS_CITYINDEX_TABLE-1) + town_id));
@@ -180,7 +180,7 @@ signed short enter_location_daspota(void)
 
 	move();
 
-	if ((b_index = get_border_index(cast_u16(ds_readb((0xbd6e + 1))))) >= 2 && b_index <= 5) {
+	if ((b_index = get_border_index(cast_u16(ds_readb((VISUAL_FIELD_VALS + 1))))) >= 2 && b_index <= 5) {
 
 		ds_writeb(LOCATION_BAK, 0);
 		ds_writebs(LOCATION, LOCATION_CITIZEN);
@@ -392,175 +392,175 @@ void seg066_06c1(void)
 {
 	signed short bi;
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 3)))) >= 2 && bi <= 5) {
-		ds_writeb((0xbd6e + 3), 0);
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 3)))) >= 2 && bi <= 5) {
+		ds_writeb((VISUAL_FIELD_VALS + 3), 0);
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 7)))) >= 2 && bi <= 5) {
-		ds_writeb((0xbd6e + 7), 0);
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 7)))) >= 2 && bi <= 5) {
+		ds_writeb((VISUAL_FIELD_VALS + 7), 0);
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 8)))) >= 2 && bi <= 5) {
-		ds_writeb((0xbd6e + 8), 0);
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 8)))) >= 2 && bi <= 5) {
+		ds_writeb((VISUAL_FIELD_VALS + 8), 0);
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 14)))) >= 2 && bi <= 5) {
-		ds_writeb((0xbd6e + 14), 0);
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 14)))) >= 2 && bi <= 5) {
+		ds_writeb((VISUAL_FIELD_VALS + 14), 0);
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 15)))) >= 2 && bi <= 5) {
-		ds_writeb((0xbd6e + 15), 0);
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 15)))) >= 2 && bi <= 5) {
+		ds_writeb((VISUAL_FIELD_VALS + 15), 0);
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 21)))) >= 2 && bi <= 5) {
-		ds_writeb((0xbd6e + 21), 0);
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 21)))) >= 2 && bi <= 5) {
+		ds_writeb((VISUAL_FIELD_VALS + 21), 0);
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 0)))) >= 2 && bi <= 5) {
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 0)))) >= 2 && bi <= 5) {
 
-		ds_writeb((0xbd6e + 9), ds_writeb((0xbd6e + 15), ds_writeb((0xbd6e + 22), 0)));
+		ds_writeb((VISUAL_FIELD_VALS + 9), ds_writeb((VISUAL_FIELD_VALS + 15), ds_writeb((VISUAL_FIELD_VALS + 22), 0)));
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 5)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 4), ds_writeb((0xbd6e + 10), ds_writeb((0xbd6e + 16), ds_writeb((0xbd6e + 23), 0))));
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 5)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 4), ds_writeb((VISUAL_FIELD_VALS + 10), ds_writeb((VISUAL_FIELD_VALS + 16), ds_writeb((VISUAL_FIELD_VALS + 23), 0))));
 		}
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 2)))) >= 2 && bi <= 5) {
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 2)))) >= 2 && bi <= 5) {
 
-		ds_writeb((0xbd6e + 13), ds_writeb((0xbd6e + 21), ds_writeb((0xbd6e + 28),0)));
+		ds_writeb((VISUAL_FIELD_VALS + 13), ds_writeb((VISUAL_FIELD_VALS + 21), ds_writeb((VISUAL_FIELD_VALS + 28),0)));
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 5)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 6), ds_writeb((0xbd6e + 12), ds_writeb((0xbd6e + 20), ds_writeb((0xbd6e + 27), 0))));
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 5)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 6), ds_writeb((VISUAL_FIELD_VALS + 12), ds_writeb((VISUAL_FIELD_VALS + 20), ds_writeb((VISUAL_FIELD_VALS + 27), 0))));
 		}
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 4)))) >= 2 && bi <= 5) {
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 4)))) >= 2 && bi <= 5) {
 
-		ds_writeb((0xbd6e + 9), ds_writeb((0xbd6e + 16), ds_writeb((0xbd6e + 22), ds_writeb((0xbd6e + 23), 0))));
+		ds_writeb((VISUAL_FIELD_VALS + 9), ds_writeb((VISUAL_FIELD_VALS + 16), ds_writeb((VISUAL_FIELD_VALS + 22), ds_writeb((VISUAL_FIELD_VALS + 23), 0))));
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 5)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 10), 0);
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 5)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 10), 0);
 		}
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 10), ds_writeb((0xbd6e + 17), ds_writeb((0xbd6e + 18), 0)));
-			ds_writeb((0xbd6e + 24), ds_writeb((0xbd6e + 25), 0));
-		}
-	}
-
-	if ((bi = get_border_index(ds_readb((0xbd6e + 5)))) >= 2 && bi <= 5) {
-
-		ds_writeb((0xbd6e + 11), ds_writeb((0xbd6e + 17), ds_writeb((0xbd6e + 18), 0)));
-
-		ds_writeb((0xbd6e + 19), ds_writeb((0xbd6e + 24), ds_writeb((0xbd6e + 25), 0)));
-
-		ds_writeb((0xbd6e + 26), 0);
-	}
-
-	if ((bi = get_border_index(ds_readb((0xbd6e + 6)))) >= 2 && bi <= 5) {
-
-		ds_writeb((0xbd6e + 13), ds_writeb((0xbd6e + 20), ds_writeb((0xbd6e + 27), ds_writeb((0xbd6e + 28), 0))));
-
-		if ((bi = get_border_index(ds_readb((0xbd6e + 5)))) >= 2 && bi <= 5) {
-
-			ds_writeb((0xbd6e + 11), ds_writeb((0xbd6e + 12), ds_writeb((0xbd6e + 17), 0)));
-
-			ds_writeb((0xbd6e + 18), ds_writeb((0xbd6e + 19), ds_writeb((0xbd6e + 24), 0)));
-
-			ds_writeb((0xbd6e + 25), ds_writeb((0xbd6e + 26), 0));
-		}
-
-		if ((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) {
-
-			ds_writeb((0xbd6e + 12), ds_writeb((0xbd6e + 18), ds_writeb((0xbd6e + 19), 0)));
-
-			ds_writeb((0xbd6e + 25), ds_writeb((0xbd6e + 26), 0));
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 11)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 10), ds_writeb((VISUAL_FIELD_VALS + 17), ds_writeb((VISUAL_FIELD_VALS + 18), 0)));
+			ds_writeb((VISUAL_FIELD_VALS + 24), ds_writeb((VISUAL_FIELD_VALS + 25), 0));
 		}
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 9)))) >= 2 && bi <= 5) {
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 5)))) >= 2 && bi <= 5) {
 
-		ds_writeb((0xbd6e + 22), 0);
+		ds_writeb((VISUAL_FIELD_VALS + 11), ds_writeb((VISUAL_FIELD_VALS + 17), ds_writeb((VISUAL_FIELD_VALS + 18), 0)));
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 17)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 16), ds_writeb((0xbd6e + 23), 0));
+		ds_writeb((VISUAL_FIELD_VALS + 19), ds_writeb((VISUAL_FIELD_VALS + 24), ds_writeb((VISUAL_FIELD_VALS + 25), 0)));
+
+		ds_writeb((VISUAL_FIELD_VALS + 26), 0);
+	}
+
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 6)))) >= 2 && bi <= 5) {
+
+		ds_writeb((VISUAL_FIELD_VALS + 13), ds_writeb((VISUAL_FIELD_VALS + 20), ds_writeb((VISUAL_FIELD_VALS + 27), ds_writeb((VISUAL_FIELD_VALS + 28), 0))));
+
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 5)))) >= 2 && bi <= 5) {
+
+			ds_writeb((VISUAL_FIELD_VALS + 11), ds_writeb((VISUAL_FIELD_VALS + 12), ds_writeb((VISUAL_FIELD_VALS + 17), 0)));
+
+			ds_writeb((VISUAL_FIELD_VALS + 18), ds_writeb((VISUAL_FIELD_VALS + 19), ds_writeb((VISUAL_FIELD_VALS + 24), 0)));
+
+			ds_writeb((VISUAL_FIELD_VALS + 25), ds_writeb((VISUAL_FIELD_VALS + 26), 0));
+		}
+
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 11)))) >= 2 && bi <= 5) {
+
+			ds_writeb((VISUAL_FIELD_VALS + 12), ds_writeb((VISUAL_FIELD_VALS + 18), ds_writeb((VISUAL_FIELD_VALS + 19), 0)));
+
+			ds_writeb((VISUAL_FIELD_VALS + 25), ds_writeb((VISUAL_FIELD_VALS + 26), 0));
 		}
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 13)))) >= 2 && bi <= 5) {
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 9)))) >= 2 && bi <= 5) {
 
-		ds_writeb((0xbd6e + 28), 0);
+		ds_writeb((VISUAL_FIELD_VALS + 22), 0);
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 19)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 20), ds_writeb((0xbd6e + 27), 0));
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 17)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 16), ds_writeb((VISUAL_FIELD_VALS + 23), 0));
 		}
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 10)))) >= 2 && bi <= 5) {
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 13)))) >= 2 && bi <= 5) {
 
-		ds_writeb((0xbd6e + 9), ds_writeb((0xbd6e + 16), ds_writeb((0xbd6e + 22), ds_writeb((0xbd6e + 23), 0))));
+		ds_writeb((VISUAL_FIELD_VALS + 28), 0);
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 18), 0);
-		}
-
-		if (((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) ||
-			((bi = get_border_index(ds_readb((0xbd6e + 18)))) >= 2 && bi <= 5)) {
-
-			ds_writeb((0xbd6e + 17), ds_writeb((0xbd6e + 24), ds_writeb((0xbd6e + 25), 0)));
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 19)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 20), ds_writeb((VISUAL_FIELD_VALS + 27), 0));
 		}
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 12)))) >= 2 && bi <= 5) {
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 10)))) >= 2 && bi <= 5) {
 
-		ds_writeb((0xbd6e + 13), ds_writeb((0xbd6e + 20), ds_writeb((0xbd6e + 27), ds_writeb((0xbd6e + 28), 0))));
+		ds_writeb((VISUAL_FIELD_VALS + 9), ds_writeb((VISUAL_FIELD_VALS + 16), ds_writeb((VISUAL_FIELD_VALS + 22), ds_writeb((VISUAL_FIELD_VALS + 23), 0))));
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 18), 0);
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 11)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 18), 0);
 		}
 
-		if (((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) ||
-			((bi = get_border_index(ds_readb((0xbd6e + 18)))) >= 2 && bi <= 5)) {
+		if (((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 11)))) >= 2 && bi <= 5) ||
+			((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 18)))) >= 2 && bi <= 5)) {
 
-			ds_writeb((0xbd6e + 19), ds_writeb((0xbd6e + 25), ds_writeb((0xbd6e + 26), 0)));
-		}
-	}
-
-	if ((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) {
-		ds_writeb((0xbd6e + 18), ds_writeb((0xbd6e + 25), 0));
-	}
-
-	if ((bi = get_border_index(ds_readb((0xbd6e + 16)))) >= 2 && bi <= 5) {
-
-		ds_writeb((0xbd6e + 22), 0);
-
-		if ((bi = get_border_index(ds_readb((0xbd6e + 24)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 23), 0);
+			ds_writeb((VISUAL_FIELD_VALS + 17), ds_writeb((VISUAL_FIELD_VALS + 24), ds_writeb((VISUAL_FIELD_VALS + 25), 0)));
 		}
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 20)))) >= 2 && bi <= 5) {
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 12)))) >= 2 && bi <= 5) {
 
-		ds_writeb((0xbd6e + 28), 0);
+		ds_writeb((VISUAL_FIELD_VALS + 13), ds_writeb((VISUAL_FIELD_VALS + 20), ds_writeb((VISUAL_FIELD_VALS + 27), ds_writeb((VISUAL_FIELD_VALS + 28), 0))));
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 26)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 27), 0);
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 11)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 18), 0);
+		}
+
+		if (((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 11)))) >= 2 && bi <= 5) ||
+			((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 18)))) >= 2 && bi <= 5)) {
+
+			ds_writeb((VISUAL_FIELD_VALS + 19), ds_writeb((VISUAL_FIELD_VALS + 25), ds_writeb((VISUAL_FIELD_VALS + 26), 0)));
 		}
 	}
 
-	if ((bi = get_border_index(ds_readb((0xbd6e + 18)))) >= 2 && bi <= 5) {
-		ds_writeb((0xbd6e + 25), 0);
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 11)))) >= 2 && bi <= 5) {
+		ds_writeb((VISUAL_FIELD_VALS + 18), ds_writeb((VISUAL_FIELD_VALS + 25), 0));
 	}
 
-	if (((bi = get_border_index(ds_readb((0xbd6e + 18)))) >= 2 && bi <= 5) ||
-		((bi = get_border_index(ds_readb((0xbd6e + 25)))) >= 2 && bi <= 5)) {
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 16)))) >= 2 && bi <= 5) {
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 17)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 24), 0);
+		ds_writeb((VISUAL_FIELD_VALS + 22), 0);
+
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 24)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 23), 0);
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 20)))) >= 2 && bi <= 5) {
+
+		ds_writeb((VISUAL_FIELD_VALS + 28), 0);
+
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 26)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 27), 0);
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 18)))) >= 2 && bi <= 5) {
+		ds_writeb((VISUAL_FIELD_VALS + 25), 0);
+	}
+
+	if (((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 18)))) >= 2 && bi <= 5) ||
+		((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 25)))) >= 2 && bi <= 5)) {
+
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 17)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 24), 0);
 		}
 
-		if ((bi = get_border_index(ds_readb((0xbd6e + 19)))) >= 2 && bi <= 5) {
-			ds_writeb((0xbd6e + 26), 0);
+		if ((bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + 19)))) >= 2 && bi <= 5) {
+			ds_writeb((VISUAL_FIELD_VALS + 26), 0);
 		}
 	}
 }
@@ -595,21 +595,21 @@ void seg066_0bad(void)
 
 	for (i = 28; i >= 0; i--) {
 
-		bi = get_border_index(ds_readb((0xbd6e + i)));
+		bi = get_border_index(ds_readb((VISUAL_FIELD_VALS + i)));
 
 		if (bi == -1) {
-			ds_writebs(0xbd50 + i, -1);
+			ds_writebs(VISUAL_FIELDS_TEX + i, -1);
 		} else {
-			ds_writebs(0xbd50 + i,	bi == 2 ? ds_readbs(0x7252 + i) : (
-						bi == 3 ? ds_readbs(0x726f + i) : (
-						bi == 4 ? ds_readbs(0x728c + i) : (
-						bi == 5 ? ds_readbs(0x72a9 + i) : (
-						bi == 6 ? ds_readbs(0x72c6 + i) : (
-						bi == 7 ? ds_readbs(0x72c6 + i) : (
-						bi == 8 ? ds_readbs(0x72e3 + i) : (
-						bi == 9 ? ds_readbs(0x7300 + i) : (
-						bi == 10 ? ds_readbs(0x731d + i) : (
-						bi == 1 ? ds_readbs(0x728c + i) : -1))))))))));
+			ds_writebs(VISUAL_FIELDS_TEX + i,	bi == 2 ? ds_readbs(SEG066_0BAD_UNKN0 + i) : (
+						bi == 3 ? ds_readbs(SEG066_0BAD_UNKN1 + i) : (
+						bi == 4 ? ds_readbs(SEG066_0BAD_UNKN2 + i) : (
+						bi == 5 ? ds_readbs(SEG066_0BAD_UNKN3 + i) : (
+						bi == 6 ? ds_readbs(SEG066_0BAD_UNKN4 + i) : (
+						bi == 7 ? ds_readbs(SEG066_0BAD_UNKN4 + i) : (
+						bi == 8 ? ds_readbs(SEG066_0BAD_UNKN5 + i) : (
+						bi == 9 ? ds_readbs(SEG066_0BAD_UNKN6 + i) : (
+						bi == 10 ? ds_readbs(SEG066_0BAD_UNKN7 + i) : (
+						bi == 1 ? ds_readbs(SEG066_0BAD_UNKN2 + i) : -1))))))))));
 		}
 	}
 }
@@ -630,8 +630,8 @@ void city_water_and_grass(void)
 
 	for (i = 0; i < 29; i++) {
 
-		c1 = ds_readbs(0x7c24 + i);
-		c2 = ds_readb(0xbd6e + c1);
+		c1 = ds_readbs(VISUAL_FIELD_DRAW_ORDER + i);
+		c2 = ds_readb(VISUAL_FIELD_VALS + c1);
 
 		if (c2 != 0) {
 
@@ -640,16 +640,16 @@ void city_water_and_grass(void)
 			if (bi == 6 || bi == 7) {
 				/* water or grass */
 
-				ptr = 4 * c1 + p_datseg + 0x7496;
+				ptr = 4 * c1 + p_datseg + VISUAL_FIELD_OFFSETS_GRASS;
 
 				x = host_readws(ptr);
 				y = host_readws(ptr + 2);
 
-				c1 = ds_readbs(0xbd50 + c1);
+				c1 = ds_readbs(VISUAL_FIELDS_TEX + c1);
 
 				if (c1 != -1) {
 
-					ptr = c1 * 18 + p_datseg + (0x750a - 18);
+					ptr = c1 * 18 + p_datseg + (TEX_DESCR_TABLE - 18);
 
 					if ((nvf_no = host_readws(ptr + 4)) != -1) {
 
@@ -682,31 +682,34 @@ void city_building_textures(void)
 
 	for (i = 0; i < 29; i++) {
 
-		c1 = ds_readbs(0x7c24 + i);
-		c2 = ds_readb(0xbd6e + c1);
+		c1 = ds_readbs(VISUAL_FIELD_DRAW_ORDER + i);
+		c2 = ds_readb(VISUAL_FIELD_VALS + c1);
 
 		if (c2 != 0) {
 
 			bi = (signed char)get_border_index(c2);
 
 			if (bi != 7 && bi != 6) {
+			    /* if not grass or water */
 
-				ptr = p_datseg + 0x733a + 4 * c1;
+				ptr = p_datseg + VISUAL_FIELD_OFFSETS_STD + 4 * c1;
 
 				if (bi == 8) {
-					ptr = p_datseg + 0x73ae + 4 * c1;
+				    /* direction sign */
+					ptr = p_datseg + VISUAL_FIELD_OFFSETS_SIGN + 4 * c1;
 				} else if (bi == 9 || bi == 10) {
-					ptr = p_datseg + 0x7422 + 4 * c1;
+				    /* tavern/inn or shop */
+					ptr = p_datseg + VISUAL_FIELD_OFFSETS_INN + 4 * c1;
 				}
 
 				x = host_readws(ptr);
 				y = host_readws(ptr + 2);
 
-				c1 = ds_readbs(0xbd50 + c1);
+				c1 = ds_readbs(VISUAL_FIELDS_TEX + c1);
 
 				if (c1 != -1) {
 
-					ptr = 18 * c1 + p_datseg + (0x750a - 18);
+					ptr = 18 * c1 + p_datseg + (TEX_DESCR_TABLE - 18);
 
 					l4 =	bi == 2 ? 186 : (
 						bi == 3 ? 187 : (
@@ -786,6 +789,11 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_no,
 	v4 -= 184;
 
 	nvf.dst = src = Real2Host(ds_readd(RENDERBUF_PTR)) + 30000;
+
+	/*
+	 * the following line accesses memory outside of the
+	 * texture array if v4 is 48 or 49!?
+	 */
 	nvf.src = Real2Host(ds_readd(TEX_FLOOR + v4 * 4));
 
 	if (v4 == 48 || v4 == 49) {
@@ -1170,43 +1178,47 @@ void seg066_172b(void)
 	signed short l_di;
 	Bit8u *ptr = p_datseg + DNG_MAP;
 
-	ds_writeb(0xe400, ds_writeb((0xe400+1), ds_writeb((0xe400+2), ds_writeb((0xe400+3), 0))));
+	ds_writeb(CITY_HOUSE_COUNT, ds_writeb((CITY_HOUSE_COUNT+1), ds_writeb((CITY_HOUSE_COUNT+2), ds_writeb((CITY_HOUSE_COUNT+3), 0))));
 
 	for (l_di = 0; ds_readb(DNG_MAP_SIZE) * 16 > l_di; l_di++) {
 
 		l_si = get_border_index(host_readb(ptr + l_di));
 
+		/* count number of houses of certain kind */
 		if (l_si == 2) {
-			inc_ds_bs_post(0xe400);
+			inc_ds_bs_post(CITY_HOUSE_COUNT);
 		} else if (l_si == 3) {
-			inc_ds_bs_post((0xe400+1));
+			inc_ds_bs_post((CITY_HOUSE_COUNT+1));
 		} else if ((l_si == 4) || (l_si == 1)) {
-			inc_ds_bs_post((0xe400+2));
+			inc_ds_bs_post((CITY_HOUSE_COUNT+2));
 		} else if (l_si == 5) {
-			inc_ds_bs_post((0xe400+3));
+			inc_ds_bs_post((CITY_HOUSE_COUNT+3));
 		}
 	}
 
 	l_di = 5;
 	l_si = 2000;
 
-	if (ds_readb(0xe400) < l_si) {
-		l_si = ds_readb(0xe400 + (l_di = 0));
+	/* find house with lowest count on current map */
+	if (ds_readb(CITY_HOUSE_COUNT) < l_si) {
+		l_si = ds_readb(CITY_HOUSE_COUNT + (l_di = 0));
 	}
 
-	if (ds_readb((0xe400+1)) < l_si) {
-		l_si = ds_readb(0xe400 + (l_di = 1));
+	if (ds_readb((CITY_HOUSE_COUNT+1)) < l_si) {
+		l_si = ds_readb(CITY_HOUSE_COUNT + (l_di = 1));
 	}
 
-	if (ds_readb((0xe400+2)) < l_si) {
-		l_si = ds_readb(0xe400 + (l_di = 2));
+	if (ds_readb((CITY_HOUSE_COUNT+2)) < l_si) {
+		l_si = ds_readb(CITY_HOUSE_COUNT + (l_di = 2));
 	}
 
-	if (ds_readb((0xe400+3)) < l_si) {
-		l_si = ds_readb(0xe400 + (l_di = 3));
+	if (ds_readb((CITY_HOUSE_COUNT+3)) < l_si) {
+		l_si = ds_readb(CITY_HOUSE_COUNT + (l_di = 3));
 	}
 
-	ds_writeb(0xe400 + l_di, 0);
+	/* the kind of house with lowest count is deactivated, i.e. it's texture is
+	 * not loaded and replaced by another texture in seg028_0224 */
+	ds_writeb(CITY_HOUSE_COUNT + l_di, 0);
 }
 
 #if !defined(__BORLANDC__)

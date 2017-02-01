@@ -629,8 +629,8 @@ void cleanup_game(void)
 			}
 		}
 
-		if (ds_readw(0xbd92) != 0) {
-			EMS_free_pages(ds_readw(0xbd92));
+		if (ds_readw(EMS_UNUSED_HANDLE) != 0) {
+			EMS_free_pages(ds_readw(EMS_UNUSED_HANDLE));
 		}
 
 		/* free map memory */

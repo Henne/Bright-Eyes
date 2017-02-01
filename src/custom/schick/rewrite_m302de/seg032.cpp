@@ -470,7 +470,7 @@ void FIG_do_round(void)
 		/* set BP */
 		ds_writeb((ENEMY_SHEETS + ENEMY_SHEET_BP) + SIZEOF_ENEMY_SHEET * i, ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_BP_ORIG) + SIZEOF_ENEMY_SHEET * i));
 
-		ds_writeb(FIG_MONSTERS_UNKN + i, 0);
+		ds_writeb((FIG_MONSTERS_UNKN+10) + i, 0);
 	}
 
 	l3 = 0;

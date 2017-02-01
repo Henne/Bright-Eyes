@@ -431,7 +431,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	/* first the enemy may turn */
 	if ((host_readbs(enemy + ENEMY_SHEET_VIEWDIR) != dir) &&
 		(	((f_action == 2) || (f_action == 15) ||
-			((f_action == 100) && !ds_readbs(0xd82d + (signed char)fid_attacker))) ||
+			((f_action == 100) && !ds_readbs(FIG_MONSTERS_UNKN + (signed char)fid_attacker))) ||
 			((ds_readw(ATTACKER_ATTACKS_AGAIN) != 0) && (a7 == 0)) ||
 			((ds_readw(DEFENDER_ATTACKS) != 0) && (a7 == 1))))
 		{
@@ -496,7 +496,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	}
 
 	if ((f_action == 2) || (f_action == 15) ||
-		((f_action == 100) && !ds_readbs(0xd82d + (signed char)fid_attacker)))
+		((f_action == 100) && !ds_readbs(FIG_MONSTERS_UNKN + (signed char)fid_attacker)))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p4 + l1 *2), 1);
 
@@ -567,7 +567,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	}
 
 	if (f_action == 100) {
-		ds_writeb(0xd82d + (signed char)fid_attacker, 1);
+		ds_writeb(FIG_MONSTERS_UNKN + (signed char)fid_attacker, 1);
 	}
 }
 

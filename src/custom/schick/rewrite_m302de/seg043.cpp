@@ -233,7 +233,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 				}
 			} else {
 				/* TODO */
-				if (ds_readbs(0xd82d + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)) == 1) {
+				if (ds_readbs(FIG_MONSTERS_UNKN + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)) == 1) {
 					attacker_at += 2;
 				}
 			}
@@ -297,7 +297,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 				if (randval <= attacker_at) {
 
 					if (((attack_hero != 0) && !ds_readbs((HERO_IS_TARGET-1) + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)) && check_hero(hero)) ||
-						(!attack_hero && (!ds_readbs(0xd82d + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)))))
+						(!attack_hero && (!ds_readbs(FIG_MONSTERS_UNKN + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)))))
 					{
 
 						randval2 = random_schick(20);

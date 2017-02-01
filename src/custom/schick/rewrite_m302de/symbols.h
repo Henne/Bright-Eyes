@@ -813,10 +813,10 @@
 #define DIARY_STRING6                   (0x4949)    /* char[19]; "~~ABENTEUER IN %s." */
 #define DIARY_STRING7                   (0x495c)    /* char[19]; "~~RUMH\x8eNGEN IN %s." */
 // ?1
-//define DIRECTION0                     (0x4970)    /* struct(2)[31]; struct{signed char x,y;} */
-//define DIRECTION1                     (0x49ae)    /* struct(2)[31]; struct{signed char x,y;} */
-//define DIRECTION2                     (0x49ec)    /* struct(2)[31]; struct{signed char x,y;} */
-//define DIRECTION3                     (0x4a2a)    /* struct(2)[31]; struct{signed char x,y;} */
+#define VISUAL_FIELD_DIR0               (0x4970)    /* struct(2)[31]; struct{signed char x,y;} */
+#define VISUAL_FIELD_DIR1               (0x49ae)    /* struct(2)[31]; struct{signed char x,y;} */
+#define VISUAL_FIELD_DIR2               (0x49ec)    /* struct(2)[31]; struct{signed char x,y;} */
+#define VISUAL_FIELD_DIR3               (0x4a2a)    /* struct(2)[31]; struct{signed char x,y;} */
 #define NOWAY_STRING                    (0x4a68)    /* char[40]; "IN DIESE RICHTUNG GEHT ES NICHT WEITER." */
 #define ANI_BUSY                        (0x4a90)    /* unsigned short; {0,1} */
 #define PIC_COPY_FLAG                   (0x4a92)    /* unsigned short; {0,1} */
@@ -875,8 +875,8 @@
 #define AREADESCR_DNG_LEVEL             (0x5eba)    /* unsigned short */
 #define AREADESCR_FILEID                (0x5ebc)    /* unsigned short */
 #define AREADESCR_DNG_FLAG              (0x5ebe)    /* unsigned short; {0,1} */
-//define EMS?                           (0x5ec0)    /* signed short */
-//define EMS?                           (0x5ec2)    /* signed short */
+#define EMS_UNUSED_LPAGE                (0x5ec0)    /* signed short */
+#define EMS_UNUSED_OFFSET               (0x5ec2)    /* signed short */
 // ?8
 #define LOADED_MENU_ICONS               (0x5ecc)    /* signed char[9]; { -2, -2, -2, -2, -2, -2, -2, -2, -2 } */
 // ?1
@@ -1034,20 +1034,20 @@
 #define TOWNS_CITYINDEX_TABLE           (0x71ca)    /* unsigned char[52] */
 #define DASPOTA_LOCLOOT_INDEX           (0x71fe)    /* RealPt[18] */
 #define MAPVAL_TO_LOCTYPE               (0x7246)    /* unsigned char[12]; { 0, 15, 31, 63, 95, 127, 159, 175, 191, 207, 223, 239 } */
-//define UNKNOWN?                       (0x7252)    /* signed char[29] */
-//define UNKNOWN?                       (0x726f)    /* signed char[29] */
-//define UNKNOWN?                       (0x728c)    /* signed char[29] */
-//define UNKNOWN?                       (0x72a9)    /* signed char[29] */
-//define UNKNOWN?                       (0x72c6)    /* signed char[29] */
-//define UNKNOWN?                       (0x72e3)    /* signed char[29] */
-//define UNKNOWN?                       (0x7300)    /* signed char[29] */
-//define UNKNOWN?                       (0x731d)    /* signed char[29] */
-//define TEXTURES_BUILDING?             (0x733a)    /* struct(4)[29]; struct{signed short x,y;} */
-//define TEXTURES_BUILDING?             (0x73ae)    /* struct(4)[29]; struct{signed short x,y;} */
-//define TEXTURES_BUILDING?             (0x7422)    /* struct(4)[29]; struct{signed short x,y;} */
-//define TEXTURES_WATER_GRASS?          (0x7496)    /* struct(4)[29]; struct{signed short x,y;} */
-//define TEXTURES?                      (0x750a)    /* struct(18)[101] */
-//define TEXTURES?                      (0x7c24)    /* signed char[29] */
+#define SEG066_0BAD_UNKN0               (0x7252)    /* signed char[29] */
+#define SEG066_0BAD_UNKN1               (0x726f)    /* signed char[29] */
+#define SEG066_0BAD_UNKN2               (0x728c)    /* signed char[29] */
+#define SEG066_0BAD_UNKN3               (0x72a9)    /* signed char[29] */
+#define SEG066_0BAD_UNKN4               (0x72c6)    /* signed char[29] */
+#define SEG066_0BAD_UNKN5               (0x72e3)    /* signed char[29] */
+#define SEG066_0BAD_UNKN6               (0x7300)    /* signed char[29] */
+#define SEG066_0BAD_UNKN7               (0x731d)    /* signed char[29] */
+#define VISUAL_FIELD_OFFSETS_STD        (0x733a)    /* struct(4)[29]; struct{signed short x,y;} */
+#define VISUAL_FIELD_OFFSETS_SIGN       (0x73ae)    /* struct(4)[29]; struct{signed short x,y;} */
+#define VISUAL_FIELD_OFFSETS_INN        (0x7422)    /* struct(4)[29]; struct{signed short x,y;} */
+#define VISUAL_FIELD_OFFSETS_GRASS      (0x7496)    /* struct(4)[29]; struct{signed short x,y;} */
+#define TEX_DESCR_TABLE                 (0x750a)    /* struct(18)[101] */
+#define VISUAL_FIELD_DRAW_ORDER         (0x7c24)    /* signed char[29] */
 #define CAN_MERGE_GROUP                 (0x7c41)    /* signed char; {-1,1} */
 #define C_EVENT_ACTIVE                  (0x7c42)    /* unsigned char; 0 = default, 1 = city event active */
 // ?1
@@ -1273,13 +1273,13 @@
 #define STEPTARGET_FRONT                (0xbd4d)    /* unsigned char */
 #define STEPTARGET_BACK                 (0xbd4e)    /* unsigned char */
 #define DIRECTION_UNKN                  (0xbd4f)    /* unsigned char; writeonly (1) */
-//define UNKNOWN?                       (0xbd50)    /* signed char[29] */
+#define VISUAL_FIELDS_TEX               (0xbd50)    /* signed char[29] */
 // ?1
-//define UNKNOWN?                       (0xbd6e)    /* unsigned char[29] */
+#define VISUAL_FIELD_VALS               (0xbd6e)    /* unsigned char[29] */
 // ?1
-//define EMS?                           (0xbd8c)    /* RealPt */
+#define EMS_UNUSED_TAB                  (0xbd8c)    /* RealPt */
 #define EMS_TRAVEL_MAP                  (0xbd90)    /* unsigned short */
-//define EMS?                           (0xbd92)    /* unsigned short */
+#define EMS_UNUSED_HANDLE               (0xbd92)    /* unsigned short */
 #define DNG_MAP_SIZE                    (0xbd94)    /* unsigned char; {16, 32} */
 #define DNG_MAP                         (0xbd95)    /* unsigned char[512] */
 #define RADIO_NAME_LIST                 (0xbf95)    /* RealPt[15]; used for items, heroes, spells, skills, recipes */
@@ -1404,8 +1404,7 @@
 #define FIG_MSG_DATA                    (0xd333)    /* struct(4)[6]; struct{signed short type, damage;} */
 #define ENEMY_SHEETS                    (0xd34b)    /* struct(62)[20]; struct enemy[20] */
 #define FIG_MOVE_PATHDIR                (0xd823)    /* signed char[10] */
-//define FIG_UNKNOWN?                   (0xd82d)    /* signed char[10]; see FIG_ACTION_UNKNOWN2 */
-#define FIG_MONSTERS_UNKN               (0xd837)    /* unsigned char[20]; writeonly (0) */
+#define FIG_MONSTERS_UNKN               (0xd82d)    /* signed char[30]; see FIG_ACTION_UNKNOWN2 */
 #define HERO_IS_TARGET                  (0xd84b)    /* signed char[7] */
 #define CHESSBOARD                      (0xd852)    /* RealPt */
 #define FIG_SPELLGFX_BUF                (0xd856)    /* RealPt */
@@ -1512,7 +1511,7 @@
 #define SEA_TRAVEL_SLEEP_QUALITY        (0xe3fa)    /* unsigned char */
 // ?1
 #define BUFFER9_PTR4                    (0xe3fc)    /* RealPt; copy of BUFFER9_PTR */
-//define 066_172b?                      (0xe400)    /* unsigned char[4]; dng map border index count? */
+#define CITY_HOUSE_COUNT                (0xe400)    /* unsigned char[4]; counts of the four different kinds of houses on the current map */
 #define BUFFER11_PTR                    (0xe404)    /* RealPt; to buffer of size 192, used for palettes */
 #define CITY_REFRESH_DIRECTION          (0xe408)    /* signed short */
 #define CITY_REFRESH_Y_TARGET           (0xe40a)    /* signed short */
@@ -1533,8 +1532,8 @@
 #define DNG_REFRESH_Y_TARGET            (0xe484)    /* unsigned short */
 #define DNG_REFRESH_X_TARGET            (0xe486)    /* unsigned short */
 #define DNG_MAP_PTR                     (0xe488)    /* RealPt; to DNG_MAP */
-//define DNG?                           (0xe48c)    /* unsigned char; {0,1}, changing every timestep */
-//define DNG?                           (0xe48d)    /* RealPt; to AUTOMAP_SHIPS, AUTOMAP_STONES or AUTOMAP_MARBLES */
+#define DNG_FLOOR_TEX                   (0xe48c)    /* unsigned char; {0,1}, changing every timestep */
+#define DNG_GFXTAB                      (0xe48d)    /* RealPt; to GFXTAB(_SHIPS|_STONES|_MARBLES) */
 // ?1
 #define LOCKPICK_TRY_COUNTER            (0xe492)    /* signed short; {0..4} */
 #define DUNGEON_FIGHTS_BUF              (0xe494)    /* RealPt; to buffer of size 630 */
@@ -1581,6 +1580,6 @@
 #define BUFFERSIZE                      (0xe5dc)    /* unsigned long; size of the global buffer */
 #define GLOBAL_BUFFER_PTR               (0xe5e0)    /* RealPt; points to the start of the global buffer */
 #define LARGE_BUF                       (0xe5e4)    /* signed char; {0,1} */
-/* Unknown Bytes: 831, Undetermined symbols: 30/1479 */
+/* Unknown Bytes: 831, Undetermined symbols: 0/1479 */
 
 #endif
