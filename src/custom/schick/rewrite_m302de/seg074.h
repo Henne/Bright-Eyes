@@ -10,7 +10,7 @@ signed short select_teleport_dest(void);
 
 /* 0x2f */
 /* should be static */
-void seg074_305(signed short);
+void render_automap(signed short);
 
 /* 0x2a */
 /* should be static */
@@ -42,7 +42,7 @@ signed short is_group_in_prison(signed short);
 
 /* 0x52 */
 /* should be static */
-signed short seg074_bbb(signed short, signed short);
+signed short get_maploc(signed short, signed short);
 
 #if !defined(__BORLANDC__)
 }

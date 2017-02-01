@@ -2826,8 +2826,8 @@ static int n_seg074(unsigned short offs)
 		Bit16s x_off = CPU_Pop16();
 		CPU_Push16(x_off);
 
-		seg074_305(x_off);
-		D1_LOG("seg074_305(%d)\n", x_off);
+		render_automap(x_off);
+		D1_LOG("render_automap(%d)\n", x_off);
 		return 1;
 	}
 	case 0x5f9: {
@@ -2867,8 +2867,8 @@ static int n_seg074(unsigned short offs)
 		CPU_Push16(y);
 		CPU_Push16(x);
 
-		reg_ax = seg074_bbb(x, y);
-		D1_LOG("seg074_bbb(%d, %d) = %d\n", x, y, reg_ax);
+		reg_ax = get_maploc(x, y);
+		D1_LOG("get_maploc(%d, %d) = %d\n", x, y, reg_ax);
 		return 1;
 	}
 	default:

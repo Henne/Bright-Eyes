@@ -1033,7 +1033,7 @@
 #define HYG_ANI_X9                      (0x71c7)    /* unsigned char[3] */
 #define TOWNS_CITYINDEX_TABLE           (0x71ca)    /* unsigned char[52] */
 #define DASPOTA_LOCLOOT_INDEX           (0x71fe)    /* RealPt[18] */
-//define BORDER_INDEX?                  (0x7246)    /* unsigned char[12]; { 0, 15, 31, 63, 95, 127, 159, 175, 191, 207, 223, 239 } */
+#define MAPVAL_TO_LOCTYPE               (0x7246)    /* unsigned char[12]; { 0, 15, 31, 63, 95, 127, 159, 175, 191, 207, 223, 239 } */
 //define UNKNOWN?                       (0x7252)    /* signed char[29] */
 //define UNKNOWN?                       (0x726f)    /* signed char[29] */
 //define UNKNOWN?                       (0x728c)    /* signed char[29] */
@@ -1519,7 +1519,7 @@
 #define CITY_REFRESH_X_TARGET           (0xe40c)    /* signed short */
 #define ALWAYS_ZERO1                    (0xe40e)    /* unsigned short; writeonly (0) */
 #define ALWAYS_ZERO2                    (0xe410)    /* unsigned short; writeonly (0) */
-//define BORDER_INDEX_DIRECTION?        (0xe412)    /* signed short */
+#define ENTRANCE_ANGLE                  (0xe412)    /* signed short */
 #define TEX_FLOOR                       (0xe414)    /* RealPt */
 #define TEX_SKY                         (0xe418)    /* RealPt */
 #define TEX_HOUSE1                      (0xe41c)    /* RealPt */

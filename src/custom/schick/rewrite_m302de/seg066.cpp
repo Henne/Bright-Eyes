@@ -574,11 +574,11 @@ signed short get_border_index(unsigned char val)
 	signed short i;
 
 	i = 0;
-	while (ds_readb(0x7246 + i) < val) {
+	while (ds_readb(MAPVAL_TO_LOCTYPE + i) < val) {
 		i++;
 	}
 
-	ds_writew(0xe412, (((val & 3) + 4) - ds_readbs(DIRECTION)) & 3);
+	ds_writew(ENTRANCE_ANGLE, (((val & 3) + 4) - ds_readbs(DIRECTION)) & 3);
 
 	if (i == 0)
 		i = 1;
@@ -718,7 +718,7 @@ void city_building_textures(void)
 
 					if ((nvf_no = host_readws(ptr + 4)) != -1) {
 
-						if (ds_readws(0xe412) == 2 && bi >= 1 && bi <= 5) {
+						if (ds_readws(ENTRANCE_ANGLE) == 2 && bi >= 1 && bi <= 5) {
 
 							if (bi == 1) {
 								nvf_no -= 5;
@@ -745,13 +745,13 @@ void city_building_textures(void)
 							l4 = 188;
 						}
 
-						if (ds_readws(0xe412) == 1 &&
+						if (ds_readws(ENTRANCE_ANGLE) == 1 &&
 							!(nvf_no & 0x8000) &&
 							bi >= 1 && bi <= 5)
 						{
 							nvf_no -= 10;
 
-						} else if (ds_readws(0xe412) == 3 && (nvf_no & 0x8000))
+						} else if (ds_readws(ENTRANCE_ANGLE) == 3 && (nvf_no & 0x8000))
 						{
 							nvf_no = ((unsigned short)(nvf_no & 0x7fff) - 10) | 0x8000;
 						}
@@ -977,7 +977,7 @@ signed short city_step(void)
 
 		if (!bi || bi == 7 || bi == 8) {
 			seg066_14dd(1);
-		} else if (bi >= 1 && bi <= 5 && ds_readw(0xe412) == 2) {
+		} else if (bi >= 1 && bi <= 5 && ds_readw(ENTRANCE_ANGLE) == 2) {
 			seg066_14dd(1);
 		} else {
 			no_way();
