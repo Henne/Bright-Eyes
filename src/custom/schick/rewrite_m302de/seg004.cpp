@@ -28,7 +28,7 @@ namespace M302de {
 
 void save_and_set_timer(void)
 {
-	ds_writefp(0xe274, (RealPt)bc_getvect(8));
+	ds_writefp(BC_TIMER, (RealPt)bc_getvect(8));
 	bc_setvect(8, (INTCAST)RealMake(0xb2a + reloc_game, 0x244));
 }
 
@@ -39,7 +39,7 @@ void set_timer(void)
 
 void reset_timer(void)
 {
-	bc_setvect(8, (INTCAST)ds_readd(0xe274));
+	bc_setvect(8, (INTCAST)ds_readd(BC_TIMER));
 }
 
 void init_ani(Bit16u v1)
@@ -301,7 +301,7 @@ void interrupt timer_isr(void)
 	}
 
 	/* call the old timer ISR */
-	((INTCAST)(ds_readd(0xe274)))();
+	((INTCAST)(ds_readd(BC_TIMER)))();
 }
 
 void unused_gfx_spinlock(void)
@@ -693,7 +693,7 @@ void restore_mouse_bg(void)
 
 }
 
-void load_objects_nvf(void)
+void load_wallclock_nvf(void)
 {
 	struct nvf_desc nvf;
 	unsigned short fd;
@@ -706,22 +706,28 @@ void load_objects_nvf(void)
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&fd;
 	nvf.height = (Bit8u*)&fd;
+
+	/* sky background */
 	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF));
 	nvf.no = 12;
 	process_nvf(&nvf);
 
+	/* mountains */
 	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0x683;
 	nvf.no = 13;
 	process_nvf(&nvf);
 
+	/* sun */
 	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0xcaf;
 	nvf.no = 14;
 	process_nvf(&nvf);
 
+	/* moon */
 	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0xcef;
 	nvf.no = 15;
 	process_nvf(&nvf);
 
+	/* shift palette by 0xe0 */
 	array_add(Real2Host(ds_readd(OBJECTS_NVF_BUF)), 0xd3f, 0xe0, 2);
 
 }

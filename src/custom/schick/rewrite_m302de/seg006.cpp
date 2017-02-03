@@ -186,12 +186,12 @@ RealPt FIG_get_hero_ptr(signed short v1)
 	return (RealPt)ds_readd(HEROS);
 }
 
-RealPt seg006_033c(signed short v)
+RealPt FIG_get_enemy_sheet(signed short fighter_id)
 {
 	signed short i;
 
 	for (i = 0; i < 20; i++) {
-		if (v == ds_readbs(ENEMY_SHEETS + ENEMY_SHEET_FIGHTER_ID + (i * SIZEOF_ENEMY_SHEET)))
+		if (fighter_id == ds_readbs(ENEMY_SHEETS + ENEMY_SHEET_FIGHTER_ID + (i * SIZEOF_ENEMY_SHEET)))
 #if !defined(__BORLANDC__)
 			return (RealPt)RealMake(datseg, ENEMY_SHEETS + i * SIZEOF_ENEMY_SHEET);
 #else
@@ -202,7 +202,7 @@ RealPt seg006_033c(signed short v)
 	return 0;
 }
 
-void FIG_set_0e(signed char fighter_id, signed char val)
+void FIG_set_sheet(signed char fighter_id, signed char val)
 {
 	Bit8u *ptr = Real2Host(ds_readd(FIG_LIST_HEAD));
 
@@ -292,7 +292,7 @@ void FIG_make_visible(signed short fighter_id)
 	}
 }
 
-void FIG_set_0f(signed char fighter_id, signed char val)
+void FIG_set_weapon_sheet(signed char fighter_id, signed char val)
 {
 	Bit8u *ptr = Real2Host(ds_readd(FIG_LIST_HEAD));
 
@@ -305,7 +305,7 @@ void FIG_set_0f(signed char fighter_id, signed char val)
 		ptr = Real2Host(host_readd(ptr + FIGHTER_NEXT));
 	}
 
-	host_writeb(ptr + FIGHTER_UNKN, val);
+	host_writeb(ptr + FIGHTER_WSHEET, val);
 }
 
 struct dummy {

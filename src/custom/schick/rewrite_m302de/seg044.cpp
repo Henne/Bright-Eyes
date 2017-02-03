@@ -201,11 +201,11 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	}
 
 	l1 += dir;
-	p1 = p_datseg + (0xd8ce + 1) + 0xf3 * a1;
-	p2 = p_datseg + (0xd8ce + 1 + 4*0xf3) + 0xf3 * a1;
+	p1 = p_datseg + (FIG_ANISHEETS + 1) + 0xf3 * a1;
+	p2 = p_datseg + (FIG_ANISHEETS + 1 + 4*0xf3) + 0xf3 * a1;
 
-	ds_writeb(0xd8ce + 0xf3 * a1, get_seq_header(host_readws(p3 + l1 * 2)));
-	ds_writeb((0xd8ce + 242) + 0xf3 * a1, host_readbs(hero + HERO_SPRITE_NO));
+	ds_writeb(FIG_ANISHEETS + 0xf3 * a1, get_seq_header(host_readws(p3 + l1 * 2)));
+	ds_writeb((FIG_ANISHEETS + 242) + 0xf3 * a1, host_readbs(hero + HERO_SPRITE_NO));
 
 	if (check_hero(hero) && (host_readbs(hero + HERO_VIEWDIR) != dir) &&
 
@@ -215,7 +215,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 			((ds_readws(DEFENDER_ATTACKS) != 0) && (a7 == 1))))
 	{
 
-			ds_writeb(0xd8ce + a1 * 0xf3, 0);
+			ds_writeb(FIG_ANISHEETS + a1 * 0xf3, 0);
 			l8 = l7 = -1;
 			l9 = host_readbs(hero + HERO_VIEWDIR);
 			l8 = l9;
@@ -318,14 +318,14 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		((ds_readw(ATTACKER_DEAD) != 0) && (a7 == 0)) ||
 		((ds_readw(DEFENDER_DEAD) != 0) && (a7 == 1)))
 	{
-		FIG_set_0e(host_readb(hero + HERO_FIGHTER_ID), (signed char)a1);
+		FIG_set_sheet(host_readb(hero + HERO_FIGHTER_ID), (signed char)a1);
 		host_writebs(p1, -1);
 
 		if ( (weapon_type != -1) && (weapon_type < 3) &&
 			(host_readb(hero + HERO_TYPE) != HERO_TYPE_MAGE) &&
 			(host_readb(hero + HERO_TYPE) != HERO_TYPE_DRUID))
 		{
-			FIG_set_0f(host_readb(hero + HERO_FIGHTER_ID), a1 + 4);
+			FIG_set_weapon_sheet(host_readb(hero + HERO_FIGHTER_ID), a1 + 4);
 			host_writeb(p2, 0xff);
 		}
 	}
@@ -421,22 +421,22 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 	l1 += dir;
 
-	p1 = p_datseg + (0xd8ce + 1) + a1 * 0xf3;
-	p2 = p_datseg + (0xd8ce + 1 + 4*0xf3) + a1 * 0xf3;
+	p1 = p_datseg + (FIG_ANISHEETS + 1) + a1 * 0xf3;
+	p2 = p_datseg + (FIG_ANISHEETS + 1 + 4*0xf3) + a1 * 0xf3;
 
 
-	ds_writeb(0xd8ce + 0xf3 * a1, get_seq_header(host_readws(p4 + l1 * 2)));
-	ds_writeb((0xd8ce + 242) + 0xf3 * a1, host_readbs(enemy + ENEMY_SHEET_GFX_ID));
+	ds_writeb(FIG_ANISHEETS + 0xf3 * a1, get_seq_header(host_readws(p4 + l1 * 2)));
+	ds_writeb((FIG_ANISHEETS + 242) + 0xf3 * a1, host_readbs(enemy + ENEMY_SHEET_GFX_ID));
 
 	/* first the enemy may turn */
 	if ((host_readbs(enemy + ENEMY_SHEET_VIEWDIR) != dir) &&
 		(	((f_action == 2) || (f_action == 15) ||
-			((f_action == 100) && !ds_readbs(0xd82d + (signed char)fid_attacker))) ||
+			((f_action == 100) && !ds_readbs(FIG_MONSTERS_UNKN + (signed char)fid_attacker))) ||
 			((ds_readw(ATTACKER_ATTACKS_AGAIN) != 0) && (a7 == 0)) ||
 			((ds_readw(DEFENDER_ATTACKS) != 0) && (a7 == 1))))
 		{
 
-		ds_writeb(0xd8ce + a1 * 0xf3, 0);
+		ds_writeb(FIG_ANISHEETS + a1 * 0xf3, 0);
 
 		/* find out the new direction */
 		l8 = l7 = -1;
@@ -496,7 +496,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	}
 
 	if ((f_action == 2) || (f_action == 15) ||
-		((f_action == 100) && !ds_readbs(0xd82d + (signed char)fid_attacker)))
+		((f_action == 100) && !ds_readbs(FIG_MONSTERS_UNKN + (signed char)fid_attacker)))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p4 + l1 *2), 1);
 
@@ -546,28 +546,28 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		p1 += copy_ani_seq(p1, host_readws(p4 + 0x28), 1);
 	}
 
-	FIG_set_0e(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID), (signed char)a1);
+	FIG_set_sheet(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID), (signed char)a1);
 	/* terminate figure animation array */
 	host_writebs(p1, -1);
 
 	/* does this sprite need two fields */
 	if (is_in_byte_array(host_readb(enemy + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID))	{
 
-		memcpy(p_datseg + (0xd8ce + 2*0xf3) + a1 * 0xf3, p_datseg + 0xd8ce + a1 * 0xf3, 0xf3);
+		memcpy(p_datseg + (FIG_ANISHEETS + 2*0xf3) + a1 * 0xf3, p_datseg + FIG_ANISHEETS + a1 * 0xf3, 0xf3);
 
 		p3 = Real2Host(FIG_get_ptr(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID)));
 
-		FIG_set_0e(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p3 + 0x13)), a1 + 2);
+		FIG_set_sheet(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p3 + 0x13)), a1 + 2);
 	}
 
 	if (weapon_type != -1) {
-		FIG_set_0f(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID), a1 + 4);
+		FIG_set_weapon_sheet(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID), a1 + 4);
 		/* terminate weapon animation array */
 		host_writeb(p2, 0xff);
 	}
 
 	if (f_action == 100) {
-		ds_writeb(0xd82d + (signed char)fid_attacker, 1);
+		ds_writeb(FIG_MONSTERS_UNKN + (signed char)fid_attacker, 1);
 	}
 }
 
@@ -631,12 +631,12 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 
 	l_di += (v2 == 4) ? dir : host_readbs(hero + HERO_VIEWDIR);
 
-	lp1 = p_datseg + (0xd8ce + 1) + v1 * 0xf3;
+	lp1 = p_datseg + (FIG_ANISHEETS + 1) + v1 * 0xf3;
 
-	ds_writeb(0xd8ce + v1 * 0xf3, get_seq_header(host_readws(lp2 + l_di * 2)));
+	ds_writeb(FIG_ANISHEETS + v1 * 0xf3, get_seq_header(host_readws(lp2 + l_di * 2)));
 
 #if !defined(__BORLANDC__)
-	ds_writeb((0xd8ce + 242) + v1 * 0xf3, host_readbs(hero + HERO_SPRITE_NO));
+	ds_writeb((FIG_ANISHEETS + 242) + v1 * 0xf3, host_readbs(hero + HERO_SPRITE_NO));
 #else
 	/* another ugly hack */
 	asm {
@@ -644,13 +644,13 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 		mov al, [es:bx+0x9b]
 		mov bx, v1
 		db 0x69, 0xdb, 0xf3, 0x00
-		mov [bx + (0xd8ce + 242)], al
+		mov [bx + (FIG_ANISHEETS + 242)], al
 	}
 #endif
 
 	if ((host_readbs(hero + HERO_VIEWDIR) != dir) && (v2 == 4)) {
 
-		ds_writeb(0xd8ce + v1 * 0xf3, 0);
+		ds_writeb(FIG_ANISHEETS + v1 * 0xf3, 0);
 		l3 = l2 = -1;
 		l_si = host_readbs(hero + HERO_VIEWDIR);
 		l3 = l_si;
@@ -770,18 +770,18 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	/* this is true if a monster attacks a hero */
 	l1 = (v2 == 4) ? 29 : 16;
 
-	lp1 = p_datseg + (0xd8ce + 1) + v1 * 0xf3;
+	lp1 = p_datseg + (FIG_ANISHEETS + 1) + v1 * 0xf3;
 
 	/* this is true if a monster attacks a hero */
 	l1 += (v2 == 4) ? dir : host_readbs(p + 0x27);
 
-	ds_writeb(0xd8ce + v1 * 0xf3, get_seq_header(host_readws(lp2 + l1 * 2)));
+	ds_writeb(FIG_ANISHEETS + v1 * 0xf3, get_seq_header(host_readws(lp2 + l1 * 2)));
 
-	ds_writeb((0xd8ce + 242) + v1 * 0xf3, host_readbs(p + 1));
+	ds_writeb((FIG_ANISHEETS + 242) + v1 * 0xf3, host_readbs(p + 1));
 
 	if ((host_readbs(p + 0x27) != dir) && (v2 == 4)) {
 
-		ds_writeb(0xd8ce + v1 * 0xf3, 0);
+		ds_writeb(FIG_ANISHEETS + v1 * 0xf3, 0);
 		l3 = l2 = -1;
 
 		dir2 = host_readbs(p + 0x27);
@@ -840,7 +840,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 
 	/* check if the moster sprite ID needs two fields */
 	if (is_in_byte_array(host_readb(p + 1),	p_datseg + TWO_FIELDED_SPRITE_ID)) {
-		memcpy(p_datseg + (0xd8ce + 2*0xf3) + v1 * 0xf3, p_datseg + 0xd8ce + v1 * 0xf3, 0xf3);
+		memcpy(p_datseg + (FIG_ANISHEETS + 2*0xf3) + v1 * 0xf3, p_datseg + FIG_ANISHEETS + v1 * 0xf3, 0xf3);
 	}
 
 }

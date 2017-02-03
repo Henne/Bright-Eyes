@@ -20,7 +20,7 @@ void restore_rect_rle(RealPt, Bit8u*, unsigned short, unsigned short, signed cha
 void draw_mouse_cursor(void);
 void save_mouse_bg(void);
 void restore_mouse_bg(void);
-void load_objects_nvf(void);
+void load_wallclock_nvf(void);
 void update_wallclock(void);
 void draw_wallclock(signed short, signed short);
 void array_add(Bit8u*, signed short, signed short, signed short);

@@ -76,7 +76,7 @@ void show_automap(void)
 					draw_loc_icons(3, 27, 26, 8);
 				}
 
-				seg074_305(l_si);
+				render_automap(l_si);
 				clear_ani_pal();
 				draw_automap_to_screen();
 				set_ani_pal(p_datseg + PALETTE_FIGHT2);
@@ -109,7 +109,7 @@ void show_automap(void)
 				if ((ds_readws(ACTION) == 129) || (ds_readws(ACTION) == 75)) {
 
 					if (l_si > 0) {
-						seg074_305(--l_si);
+						render_automap(--l_si);
 						draw_automap_to_screen();
 					}
 				}
@@ -117,7 +117,7 @@ void show_automap(void)
 				if ((ds_readws(ACTION) == 130) || (ds_readws(ACTION) == 77)) {
 
 					if (l_si < 16) {
-						seg074_305(++l_si);
+						render_automap(++l_si);
 						draw_automap_to_screen();
 					}
 				}
@@ -196,14 +196,18 @@ signed short is_group_in_prison(signed short group_no)
 	return 0;
 }
 
-/* render_automap */
-void seg074_305(signed short x_off)
+/**
+ * \brief   render the automap in RENDERBUF
+ *
+ * \param   x_off           x offset for vertical scroll
+ */
+void render_automap(signed short x_off)
 {
-	signed short l_si;
-	signed short l_di;
+	signed short tile_type;
+	signed short group_i;
 	signed short x;
 	signed short y;
-	signed short loc1;
+	signed short entrance_dir;
 
 	ds_writew(PIC_COPY_X1, 0);
 	ds_writew(PIC_COPY_Y1, 0);
@@ -219,47 +223,47 @@ void seg074_305(signed short x_off)
 
 				if (ds_readbs(DUNGEON_INDEX) != 0) {
 
-					l_si = div16(get_mapval_small(x, y));
+					tile_type = div16(get_mapval_small(x, y));
 
 					draw_automap_square(x, y,
-						(l_si <= 0)? 19 :
-							(((l_si == 1) || (l_si == 9) || l_si == 2) ? 11 :
-							((l_si == 4) ? 6 :
-							((l_si == 3) ? 3 :
-							((l_si == 5) ? 2 :
-							((l_si == 8) ? 17 :
-							((l_si == 6) ? 9 : 1)))))), -1);
+						(tile_type <= 0)? 19 :
+							(((tile_type == 1) || (tile_type == 9) || tile_type == 2) ? 11 :
+							((tile_type == 4) ? 6 :
+							((tile_type == 3) ? 3 :
+							((tile_type == 5) ? 2 :
+							((tile_type == 8) ? 17 :
+							((tile_type == 6) ? 9 : 1)))))), -1);
 
 
 				} else {
 
-					if (!(l_si = seg074_bbb(x + x_off, y))) {
-						l_si = get_border_index((ds_readb(DNG_MAP_SIZE) == 16) ?
+					if (!(tile_type = get_maploc(x + x_off, y))) {
+						tile_type = get_border_index((ds_readb(DNG_MAP_SIZE) == 16) ?
 										get_mapval_small(x, y) :
 										get_mapval_large(x + x_off, y));
 					}
 
 					draw_automap_square(x, y,
-						(l_si <= 0)? 19 :
-							((l_si == 6) ? 3 :
-							((l_si == 7) ? 18 :
-							((l_si == 8) ? 1 :
-							((l_si == 1) ? 12 :
-							((l_si == 9) ? 6 :
-							((l_si == 10) ? 15 :
-							((l_si == 11) ? 9 :
-							((l_si == 12) ? 5 :
-							((l_si == 13) ? 10 :
-							(((l_si >= 2) && (l_si <= 5)) ? 11 : 0)))))))))), -1);
+						(tile_type <= 0)? 19 :
+							((tile_type == 6) ? 3 :
+							((tile_type == 7) ? 18 :
+							((tile_type == 8) ? 1 :
+							((tile_type == 1) ? 12 :
+							((tile_type == 9) ? 6 :
+							((tile_type == 10) ? 15 :
+							((tile_type == 11) ? 9 :
+							((tile_type == 12) ? 5 :
+							((tile_type == 13) ? 10 :
+							(((tile_type >= 2) && (tile_type <= 5)) ? 11 : 0)))))))))), -1);
 
-					if ((l_si != 0) && (l_si != 7) && (l_si != 6) && (l_si != 8)) {
+					if ((tile_type != 0) && (tile_type != 7) && (tile_type != 6) && (tile_type != 8)) {
 
-						loc1 = (ds_readb(DNG_MAP_SIZE) == 16) ?
+						entrance_dir = (ds_readb(DNG_MAP_SIZE) == 16) ?
 										get_mapval_small(x, y) :
 										get_mapval_large(x + x_off, y);
 
-						loc1 &= 3;
-						draw_automap_entrance(x, y, loc1);
+						entrance_dir &= 3;
+						draw_automap_entrance(x, y, entrance_dir);
 					}
 				}
 			}
@@ -272,21 +276,21 @@ void seg074_305(signed short x_off)
 					4, ds_readbs(DIRECTION));
 	}
 
-	for (l_di = 0; l_di < 6; l_di++) {
+	for (group_i = 0; group_i < 6; group_i++) {
 
-		if ((ds_readbs(CURRENT_GROUP) != l_di) &&
-			(ds_readbs(GROUP_MEMBER_COUNTS + l_di) > 0) &&
-			(ds_readb(GROUPS_DNG_LEVEL + l_di) == ds_readbs(DUNGEON_LEVEL)) &&
-			(ds_readb(GROUPS_TOWN + l_di) == ds_readbs(CURRENT_TOWN)) &&
-			(ds_readb(GROUPS_DNG_INDEX + l_di) == ds_readbs(DUNGEON_INDEX)) &&
-			!is_group_in_prison(l_di) &&
-			(ds_readws(GROUPS_X_TARGET + 2 * l_di) - x_off >= 0) &&
-			(ds_readws(GROUPS_X_TARGET + 2 * l_di) - x_off <= 16))
+		if ((ds_readbs(CURRENT_GROUP) != group_i) &&
+			(ds_readbs(GROUP_MEMBER_COUNTS + group_i) > 0) &&
+			(ds_readb(GROUPS_DNG_LEVEL + group_i) == ds_readbs(DUNGEON_LEVEL)) &&
+			(ds_readb(GROUPS_TOWN + group_i) == ds_readbs(CURRENT_TOWN)) &&
+			(ds_readb(GROUPS_DNG_INDEX + group_i) == ds_readbs(DUNGEON_INDEX)) &&
+			!is_group_in_prison(group_i) &&
+			(ds_readws(GROUPS_X_TARGET + 2 * group_i) - x_off >= 0) &&
+			(ds_readws(GROUPS_X_TARGET + 2 * group_i) - x_off <= 16))
 		{
-			draw_automap_square(ds_readws(GROUPS_X_TARGET + 2 * l_di) - x_off,
-					ds_readws(GROUPS_Y_TARGET + 2 * l_di),
+			draw_automap_square(ds_readws(GROUPS_X_TARGET + 2 * group_i) - x_off,
+					ds_readws(GROUPS_Y_TARGET + 2 * group_i),
 					16,
-					ds_readbs(GROUPS_DIRECTION + l_di));
+					ds_readbs(GROUPS_DIRECTION + group_i));
 		}
 	}
 
@@ -307,18 +311,18 @@ void seg074_305(signed short x_off)
 void draw_automap_square(signed short x, signed short y, signed short color, signed short dir)
 {
 	signed short i;
-	unsigned short l_di;
-	RealPt dst;
-	signed char array[50];
+	unsigned short offset_y;
+	RealPt p_img_tile;
+	signed char tile[50];
 
-	l_di = y;
-	l_di <<= 3;
-	l_di *= 320;
+	offset_y = y;
+	offset_y <<= 3;
+	offset_y *= 320;
 
-	dst = (RealPt)ds_readd(RENDERBUF_PTR) + l_di + 8 * x + 0xca8;
+	p_img_tile = (RealPt)ds_readd(RENDERBUF_PTR) + offset_y + 8 * x + 0xca8;
 
 	for (i = 0; i < 49; i++) {
-		array[i] = (signed char)color;
+		tile[i] = (signed char)color;
 	}
 
 	if ((color == 4) || (color == 16)) {
@@ -346,7 +350,7 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 
 		for (i = 0; i < 49; i++) {
 			if (!host_readbs(Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i)) {
-				array[i] = 0;
+				tile[i] = 0;
 			}
 		}
 	}
@@ -355,14 +359,14 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 
 		for (i = 0; i < 49; i++) {
 			if (!ds_readb(AUTOMAP_TILE_CROSS + i)) {
-				array[i] = 0;
+				tile[i] = 0;
 			} else {
-				array[i] = (signed char)color;
+				tile[i] = (signed char)color;
 			}
 		}
 	}
 
-	ds_writed(PIC_COPY_DST, (Bit32u)dst);
+	ds_writed(PIC_COPY_DST, (Bit32u)p_img_tile);
 
 #if !defined(__BORLANDC__)
 	/* need 50 bytes on the DOSBox-Stack */
@@ -371,9 +375,9 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 	/* make a pointer to this position */
 	Bit8u *p = Real2Host(RealMake(SegValue(ss), reg_sp));
 
-	/* copy the array from host stack to DOSBox stack */
+	/* copy the tile from host stack to DOSBox stack */
 	for (i = 0; i < 50; i++, p++) {
-		host_writeb(p, array[i]);
+		host_writeb(p, tile[i]);
 	}
 
 	/* save the pointer as the graphic source */
@@ -382,7 +386,7 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 	/* free 50 bytes */
 	reg_esp += 50;
 #else
-	ds_writed(PIC_COPY_SRC, (Bit32u)&array);
+	ds_writed(PIC_COPY_SRC, (Bit32u)&tile);
 #endif
 	/* */
 	do_pic_copy(0);
@@ -398,34 +402,34 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
  */
 void draw_automap_entrance(signed short x, signed short y, signed short dir)
 {
-	unsigned short l_si = y;
+	unsigned short offset_y = y;
 	signed short d = dir;
-	signed short c;
-	Bit8u *dst;
+	signed short skipsize;
+	Bit8u *p_img_tile;
 
-	l_si <<= 3;
-	l_si *= 320;
+	offset_y <<= 3;
+	offset_y *= 320;
 
-	dst = Real2Host(ds_readd(RENDERBUF_PTR)) + l_si + 8 * x + 0xca8;
+	p_img_tile = Real2Host(ds_readd(RENDERBUF_PTR)) + offset_y + 8 * x + 0xca8;
 
 	if (!d) {
-		dst += 2;
-		c = 1;
+		p_img_tile += 2;
+		skipsize = 1;
 	} else if (d == 1) {
-		dst += 646;
-		c = 320;
+		p_img_tile += 646;
+		skipsize = 320;
 	} else if (d == 2) {
-		dst += 1922;
-		c = 1;
+		p_img_tile += 1922;
+		skipsize = 1;
 	} else {
-		dst += 640;
-		c = 320;
+		p_img_tile += 640;
+		skipsize = 320;
 	}
 
 	/* set 3 pixel to black */
-	host_writeb(dst, 0);
-	host_writeb(dst + c, 0);
-	host_writeb(dst + c + c, 0);
+	host_writeb(p_img_tile, 0);
+	host_writeb(p_img_tile + skipsize, 0);
+	host_writeb(p_img_tile + skipsize + skipsize, 0);
 }
 
 struct coords {
@@ -505,7 +509,7 @@ signed short select_teleport_dest(void)
 	textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
-	seg074_305(l_si);
+	render_automap(l_si);
 
 	clear_ani_pal();
 
@@ -545,7 +549,7 @@ signed short select_teleport_dest(void)
 			is_discovered(ds_readws(AUTOMAP_SELX) - 1, ds_readws(AUTOMAP_SELY)))
 		{
 			dec_ds_ws(AUTOMAP_SELX);
-			seg074_305(l_si);
+			render_automap(l_si);
 			draw_automap_to_screen();
 
 		} else if ((ds_readw(ACTION) == 72) &&
@@ -553,7 +557,7 @@ signed short select_teleport_dest(void)
 			is_discovered(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY) - 1))
 		{
 			dec_ds_ws(AUTOMAP_SELY);
-			seg074_305(l_si);
+			render_automap(l_si);
 			draw_automap_to_screen();
 
 		} else if ((ds_readw(ACTION) == 77) &&
@@ -561,7 +565,7 @@ signed short select_teleport_dest(void)
 			is_discovered(ds_readws(AUTOMAP_SELX) + 1, ds_readws(AUTOMAP_SELY)))
 		{
 			inc_ds_ws(AUTOMAP_SELX);
-			seg074_305(l_si);
+			render_automap(l_si);
 			draw_automap_to_screen();
 
 		} else if ((ds_readw(ACTION) == 80) &&
@@ -569,19 +573,19 @@ signed short select_teleport_dest(void)
 			is_discovered(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY) + 1))
 		{
 			inc_ds_ws(AUTOMAP_SELY);
-			seg074_305(l_si);
+			render_automap(l_si);
 			draw_automap_to_screen();
 		}
 
 		if (ds_readb(DNG_MAP_SIZE) != 16) {
 
 			if ((ds_readw(ACTION) == 129) && (l_si > 0)) {
-				seg074_305(--l_si);
+				render_automap(--l_si);
 				draw_automap_to_screen();
 			}
 
 			if ((ds_readw(ACTION) == 130) && (l_si < 16)) {
-				seg074_305(++l_si);
+				render_automap(++l_si);
 				draw_automap_to_screen();
 			}
 		}
@@ -630,57 +634,66 @@ signed short select_teleport_dest(void)
 	return ae_costs;
 }
 
-signed short seg074_bbb(signed short x, signed short y)
+/**
+ * \brief   get location type at given position on map
+ *
+ * \param   x           x-coordinate of the building
+ * \param   y           y-coordinate of the building
+ * \return              type of location
+ */
+signed short get_maploc(signed short x, signed short y)
 {
-	Bit8u *p;
-	unsigned short d = (x << 8) + y;
+	Bit8u *p_loc;
+	unsigned short pos_xy = (x << 8) + y;
 
-	if (ds_readbs(CURRENT_TOWN) == 1) {
+	if (ds_readbs(CURRENT_TOWN) == TOWNS_THORWAL) {
 
-		if (d == 1037) {
+		if (pos_xy == (4 << 8) + 13) {
 			return 13;
-		} else if (d == 1282) {
+		} else if (pos_xy == (5 << 8) + 2) {
 			return 8;
-		} else if ((d == 1281) || (d == 1284) || (d ==774) || (d == 3336) ||
-				(d == 5131) || (d == 1285) || (d == 778))
+		} else if ((pos_xy == ( 5 << 8) + 1)
+		        || (pos_xy == ( 5 << 8) + 4) || (pos_xy == ( 3 << 8) +  6)
+		        || (pos_xy == (13 << 8) + 8) || (pos_xy == (20 << 8) + 11)
+		        || (pos_xy == ( 5 << 8) + 5) || (pos_xy == ( 3 << 8) + 10))
 		{
 			return 9;
 		}
-	} else if (ds_readbs(CURRENT_TOWN) == 39) {
-		if (d == 7177) {
+	} else if (ds_readbs(CURRENT_TOWN) == TOWNS_PREM) {
+		if (pos_xy == (28 << 8) + 9) {
 			return 9;
 		}
-	} else if (ds_readbs(CURRENT_TOWN) == 32) {
-		if (d == 270) {
+	} else if (ds_readbs(CURRENT_TOWN) == TOWNS_GUDDASUN) {
+		if (pos_xy == (1 << 8) + 14) {
 			return 8;
 		}
 	}
 
-	p = p_datseg + LOCATIONS_TAB;
+	p_loc = p_datseg + LOCATIONS_TAB;
 
 	do {
 
-		if (host_readws(p) == d) {
+		if (host_readws(p_loc) == pos_xy) {
 
-			if (host_readbs(p + 2) == 2) {
+			if (host_readbs(p_loc + 2) == 2) {
 				return 1;
 			}
-			if (host_readbs(p + 2) == 5) {
+			if (host_readbs(p_loc + 2) == 5) {
 				return 10;
 			}
-			if (host_readbs(p + 2) == 8) {
+			if (host_readbs(p_loc + 2) == 8) {
 				return 11;
 			}
-			if ((host_readbs(p + 2) == 3) || (host_readbs(p + 2) == 7)) {
+			if ((host_readbs(p_loc + 2) == 3) || (host_readbs(p_loc + 2) == 7)) {
 				return 9;
 			}
-			if (host_readbs(p + 2) == 4) {
+			if (host_readbs(p_loc + 2) == 4) {
 				return 12;
 			}
 		}
 
-		p += 6;
-	} while (host_readws(p) != -1);
+		p_loc += 6;
+	} while (host_readws(p_loc) != -1);
 
 	return 0;
 }

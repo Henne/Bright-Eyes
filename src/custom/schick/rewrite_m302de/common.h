@@ -480,8 +480,8 @@ enum {
     FIGHTER_X2          = 0x0b,
     FIGHTER_Y2          = 0x0c,
     FIGHTER_RELOAD      = 0x0d, /* {0, -1 = update gfx data } */
-    FIGHTER_SHEET       = 0x0e, /* FIG_set_0e, 0xe274, 0xe2a8, 0xd8ce */
-    FIGHTER_UNKN        = 0x0f, /* FIG_set_0f, 0xe274 */
+    FIGHTER_SHEET       = 0x0e, /* 0xe274, 0xe2a8, 0xd8ce */
+    FIGHTER_WSHEET      = 0x0f, /* 0xe274 */
     FIGHTER_ID          = 0x10, /* position in FIG_LIST_ARRAY */
     FIGHTER_Z           = 0x11,
     FIGHTER_VISIBLE     = 0x12, /* {0,1,2} */

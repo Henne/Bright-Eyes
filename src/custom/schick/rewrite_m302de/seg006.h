@@ -17,15 +17,15 @@ void FIG_draw_pic(void);
 
 RealPt FIG_get_hero_ptr(signed short);
 
-RealPt seg006_033c(signed short);
+RealPt FIG_get_enemy_sheet(signed short);
 
-void FIG_set_0e(signed char, signed char);
+void FIG_set_sheet(signed char, signed char);
 
 void FIG_make_invisible(signed char);
 
 void FIG_make_visible(signed short);
 
-void FIG_set_0f(signed char, signed char);
+void FIG_set_weapon_sheet(signed char, signed char);
 
 void FIG_remove_from_list(signed char, signed char);
 

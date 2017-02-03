@@ -112,7 +112,7 @@ signed short DNG01_handler(void)
 	{
 		seg092_06b4(0);
 
-	} else if (ds_readbs((0xbd6e + 1)) == 2)
+	} else if (ds_readbs((VISUAL_FIELD_VALS + 1)) == 2)
 	{
 		/* TRAP: heros may loose 2 LE with probability 10% */
 		if (mod_day_timer(MINUTES(10)))

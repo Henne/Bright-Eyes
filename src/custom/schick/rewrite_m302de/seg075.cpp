@@ -45,7 +45,7 @@ void DNG_floor_ceil(void)
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
 	nvf.no = 0;
-	nvf.type = (!ds_readbs(0xe48c)) ? 3 : 5;
+	nvf.type = (!ds_readbs(DNG_FLOOR_TEX)) ? 3 : 5;
 	nvf.width = (unsigned char*)&width;
 	nvf.height = (unsigned char*)&height;
 	process_nvf(&nvf);
@@ -55,7 +55,7 @@ void DNG_floor_ceil(void)
 	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR)) + 0x4030;
 	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
 	nvf.no = (!(ds_readbs(DIRECTION)&1)) ? 1 : 2;
-	nvf.type = (!ds_readbs(0xe48c)) ? 3 : 5;
+	nvf.type = (!ds_readbs(DNG_FLOOR_TEX)) ? 3 : 5;
 	nvf.width = (unsigned char*)&width;
 	nvf.height = (unsigned char*)&height;
 	process_nvf(&nvf);
@@ -69,231 +69,231 @@ void DNG_turn(void)
 {
 	signed short tmp;
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 3)))) == 15) || (tmp == 1)) {
-		ds_writeb((0xbd6e + 3), 0);
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 3)))) == 15) || (tmp == 1)) {
+		ds_writeb((VISUAL_FIELD_VALS + 3), 0);
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 7)))) == 15) || (tmp == 1)) {
-		ds_writeb((0xbd6e + 7), 0);
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 7)))) == 15) || (tmp == 1)) {
+		ds_writeb((VISUAL_FIELD_VALS + 7), 0);
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 8)))) == 15) || (tmp == 1)) {
-		ds_writeb((0xbd6e + 8), 0);
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 8)))) == 15) || (tmp == 1)) {
+		ds_writeb((VISUAL_FIELD_VALS + 8), 0);
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 14)))) == 15) || (tmp == 1)) {
-		ds_writeb((0xbd6e + 14), 0);
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 14)))) == 15) || (tmp == 1)) {
+		ds_writeb((VISUAL_FIELD_VALS + 14), 0);
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 15)))) == 15) || (tmp == 1)) {
-		ds_writeb((0xbd6e + 15), 0);
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 15)))) == 15) || (tmp == 1)) {
+		ds_writeb((VISUAL_FIELD_VALS + 15), 0);
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 21)))) == 15) || (tmp == 1)) {
-		ds_writeb((0xbd6e + 21), 0);
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 21)))) == 15) || (tmp == 1)) {
+		ds_writeb((VISUAL_FIELD_VALS + 21), 0);
 	}
 
-	if ( ((tmp = div16(ds_readb(0xbd6e))) == 15) || (tmp == 1)) {
+	if ( ((tmp = div16(ds_readb(VISUAL_FIELD_VALS))) == 15) || (tmp == 1)) {
 
-		ds_writeb((0xbd6e + 9),
-			ds_writeb((0xbd6e + 15),
-			ds_writeb((0xbd6e + 22), 0)));
+		ds_writeb((VISUAL_FIELD_VALS + 9),
+			ds_writeb((VISUAL_FIELD_VALS + 15),
+			ds_writeb((VISUAL_FIELD_VALS + 22), 0)));
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 5)))) == 15) || (tmp == 1)) {
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 5)))) == 15) || (tmp == 1)) {
 
-			ds_writeb((0xbd6e + 4),
-				ds_writeb((0xbd6e + 10),
-				ds_writeb((0xbd6e + 16),
-				ds_writeb((0xbd6e + 23), 0))));
+			ds_writeb((VISUAL_FIELD_VALS + 4),
+				ds_writeb((VISUAL_FIELD_VALS + 10),
+				ds_writeb((VISUAL_FIELD_VALS + 16),
+				ds_writeb((VISUAL_FIELD_VALS + 23), 0))));
 		}
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 2)))) == 15) || (tmp == 1)) {
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 2)))) == 15) || (tmp == 1)) {
 
-		ds_writeb((0xbd6e + 13),
-			ds_writeb((0xbd6e + 21),
-			ds_writeb((0xbd6e + 28), 0)));
+		ds_writeb((VISUAL_FIELD_VALS + 13),
+			ds_writeb((VISUAL_FIELD_VALS + 21),
+			ds_writeb((VISUAL_FIELD_VALS + 28), 0)));
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 5)))) == 15) || (tmp == 1)) {
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 5)))) == 15) || (tmp == 1)) {
 
-			ds_writeb((0xbd6e + 6),
-				ds_writeb((0xbd6e + 12),
-				ds_writeb((0xbd6e + 20),
-				ds_writeb((0xbd6e + 27), 0))));
+			ds_writeb((VISUAL_FIELD_VALS + 6),
+				ds_writeb((VISUAL_FIELD_VALS + 12),
+				ds_writeb((VISUAL_FIELD_VALS + 20),
+				ds_writeb((VISUAL_FIELD_VALS + 27), 0))));
 		}
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 4)))) == 15) || (tmp == 1)) {
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 4)))) == 15) || (tmp == 1)) {
 
-		ds_writeb((0xbd6e + 9),
-			ds_writeb((0xbd6e + 16),
-			ds_writeb((0xbd6e + 22),
-			ds_writeb((0xbd6e + 23), 0))));
+		ds_writeb((VISUAL_FIELD_VALS + 9),
+			ds_writeb((VISUAL_FIELD_VALS + 16),
+			ds_writeb((VISUAL_FIELD_VALS + 22),
+			ds_writeb((VISUAL_FIELD_VALS + 23), 0))));
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 5)))) == 15) || (tmp == 1)) {
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 5)))) == 15) || (tmp == 1)) {
 
-			ds_writeb((0xbd6e + 10), 0);
+			ds_writeb((VISUAL_FIELD_VALS + 10), 0);
 		}
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 11)))) == 15) || (tmp == 1)) {
-				ds_writeb((0xbd6e + 10),
-					ds_writeb((0xbd6e + 17),
-					ds_writeb((0xbd6e + 18), 0)));
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 11)))) == 15) || (tmp == 1)) {
+				ds_writeb((VISUAL_FIELD_VALS + 10),
+					ds_writeb((VISUAL_FIELD_VALS + 17),
+					ds_writeb((VISUAL_FIELD_VALS + 18), 0)));
 
-				ds_writeb((0xbd6e + 24),
-					ds_writeb((0xbd6e + 25), 0));
-		}
-	}
-
-	if ( ((tmp = div16(ds_readb((0xbd6e + 5)))) == 15) || (tmp == 1)) {
-
-		ds_writeb((0xbd6e + 11),
-			ds_writeb((0xbd6e + 17),
-			ds_writeb((0xbd6e + 18), 0)));
-
-		ds_writeb((0xbd6e + 19),
-			ds_writeb((0xbd6e + 24),
-			ds_writeb((0xbd6e + 25), 0)));
-
-		ds_writeb((0xbd6e + 26), 0);
-	}
-
-	if ( ((tmp = div16(ds_readb((0xbd6e + 6)))) == 15) || (tmp == 1)) {
-
-		ds_writeb((0xbd6e + 13),
-			ds_writeb((0xbd6e + 20),
-			ds_writeb((0xbd6e + 27),
-			ds_writeb((0xbd6e + 28), 0))));
-
-		if ( ((tmp = div16(ds_readb((0xbd6e + 5)))) == 15) || (tmp == 1)) {
-
-			ds_writeb((0xbd6e + 11),
-				ds_writeb((0xbd6e + 12),
-				ds_writeb((0xbd6e + 17), 0)));
-
-			ds_writeb((0xbd6e + 18),
-				ds_writeb((0xbd6e + 19),
-				ds_writeb((0xbd6e + 24), 0)));
-
-			ds_writeb((0xbd6e + 25),
-				ds_writeb((0xbd6e + 26), 0));
-
-		}
-
-		if ( ((tmp = div16(ds_readb((0xbd6e + 11)))) == 15) || (tmp == 1)) {
-				ds_writeb((0xbd6e + 12),
-					ds_writeb((0xbd6e + 18),
-					ds_writeb((0xbd6e + 19), 0)));
-
-				ds_writeb((0xbd6e + 25),
-					ds_writeb((0xbd6e + 26), 0));
+				ds_writeb((VISUAL_FIELD_VALS + 24),
+					ds_writeb((VISUAL_FIELD_VALS + 25), 0));
 		}
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 9)))) == 15) || (tmp == 1)) {
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 5)))) == 15) || (tmp == 1)) {
 
-		ds_writeb((0xbd6e + 22), 0);
+		ds_writeb((VISUAL_FIELD_VALS + 11),
+			ds_writeb((VISUAL_FIELD_VALS + 17),
+			ds_writeb((VISUAL_FIELD_VALS + 18), 0)));
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 17)))) == 15) || (tmp == 1)) {
+		ds_writeb((VISUAL_FIELD_VALS + 19),
+			ds_writeb((VISUAL_FIELD_VALS + 24),
+			ds_writeb((VISUAL_FIELD_VALS + 25), 0)));
 
-			ds_writeb((0xbd6e + 16),
-				ds_writeb((0xbd6e + 23), 0));
+		ds_writeb((VISUAL_FIELD_VALS + 26), 0);
+	}
+
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 6)))) == 15) || (tmp == 1)) {
+
+		ds_writeb((VISUAL_FIELD_VALS + 13),
+			ds_writeb((VISUAL_FIELD_VALS + 20),
+			ds_writeb((VISUAL_FIELD_VALS + 27),
+			ds_writeb((VISUAL_FIELD_VALS + 28), 0))));
+
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 5)))) == 15) || (tmp == 1)) {
+
+			ds_writeb((VISUAL_FIELD_VALS + 11),
+				ds_writeb((VISUAL_FIELD_VALS + 12),
+				ds_writeb((VISUAL_FIELD_VALS + 17), 0)));
+
+			ds_writeb((VISUAL_FIELD_VALS + 18),
+				ds_writeb((VISUAL_FIELD_VALS + 19),
+				ds_writeb((VISUAL_FIELD_VALS + 24), 0)));
+
+			ds_writeb((VISUAL_FIELD_VALS + 25),
+				ds_writeb((VISUAL_FIELD_VALS + 26), 0));
+
+		}
+
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 11)))) == 15) || (tmp == 1)) {
+				ds_writeb((VISUAL_FIELD_VALS + 12),
+					ds_writeb((VISUAL_FIELD_VALS + 18),
+					ds_writeb((VISUAL_FIELD_VALS + 19), 0)));
+
+				ds_writeb((VISUAL_FIELD_VALS + 25),
+					ds_writeb((VISUAL_FIELD_VALS + 26), 0));
 		}
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 13)))) == 15) || (tmp == 1)) {
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 9)))) == 15) || (tmp == 1)) {
 
-		ds_writeb((0xbd6e + 28), 0);
+		ds_writeb((VISUAL_FIELD_VALS + 22), 0);
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 19)))) == 15) || (tmp == 1)) {
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 17)))) == 15) || (tmp == 1)) {
 
-			ds_writeb((0xbd6e + 20),
-				ds_writeb((0xbd6e + 27), 0));
+			ds_writeb((VISUAL_FIELD_VALS + 16),
+				ds_writeb((VISUAL_FIELD_VALS + 23), 0));
 		}
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 10)))) == 15) || (tmp == 1)) {
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 13)))) == 15) || (tmp == 1)) {
 
-		ds_writeb((0xbd6e + 9),
-			ds_writeb((0xbd6e + 16),
-			ds_writeb((0xbd6e + 22),
-			ds_writeb((0xbd6e + 23), 0))));
+		ds_writeb((VISUAL_FIELD_VALS + 28), 0);
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 11)))) == 15) || (tmp == 1)) {
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 19)))) == 15) || (tmp == 1)) {
 
-			ds_writeb((0xbd6e + 18), 0);
-		}
-
-		if ( ((tmp = div16(ds_readb((0xbd6e + 11)))) == 15) || (tmp == 1) ||
-			((tmp = div16(ds_readb((0xbd6e + 18)))) == 15) || (tmp == 1)) {
-
-			ds_writeb((0xbd6e + 17),
-				ds_writeb((0xbd6e + 24),
-				ds_writeb((0xbd6e + 25), 0)));
+			ds_writeb((VISUAL_FIELD_VALS + 20),
+				ds_writeb((VISUAL_FIELD_VALS + 27), 0));
 		}
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 12)))) == 15) || (tmp == 1)) {
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 10)))) == 15) || (tmp == 1)) {
 
-		ds_writeb((0xbd6e + 13),
-			ds_writeb((0xbd6e + 20),
-			ds_writeb((0xbd6e + 27),
-			ds_writeb((0xbd6e + 28), 0))));
+		ds_writeb((VISUAL_FIELD_VALS + 9),
+			ds_writeb((VISUAL_FIELD_VALS + 16),
+			ds_writeb((VISUAL_FIELD_VALS + 22),
+			ds_writeb((VISUAL_FIELD_VALS + 23), 0))));
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 11)))) == 15) || (tmp == 1)) {
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 11)))) == 15) || (tmp == 1)) {
 
-			ds_writeb((0xbd6e + 18), 0);
+			ds_writeb((VISUAL_FIELD_VALS + 18), 0);
 		}
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 11)))) == 15) || (tmp == 1) ||
-			((tmp = div16(ds_readb((0xbd6e + 18)))) == 15) || (tmp == 1)) {
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 11)))) == 15) || (tmp == 1) ||
+			((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 18)))) == 15) || (tmp == 1)) {
 
-			ds_writeb((0xbd6e + 19),
-				ds_writeb((0xbd6e + 25),
-				ds_writeb((0xbd6e + 26), 0)));
-		}
-	}
-
-	if ( ((tmp = div16(ds_readb((0xbd6e + 11)))) == 15) || (tmp == 1)) {
-		ds_writeb((0xbd6e + 18),
-			ds_writeb((0xbd6e + 25), 0));
-	}
-
-	if ( ((tmp = div16(ds_readb((0xbd6e + 16)))) == 15) || (tmp == 1)) {
-
-		ds_writeb((0xbd6e + 22), 0);
-
-		if ( ((tmp = div16(ds_readb((0xbd6e + 24)))) == 15) || (tmp == 1)) {
-
-			ds_writeb((0xbd6e + 23), 0);
+			ds_writeb((VISUAL_FIELD_VALS + 17),
+				ds_writeb((VISUAL_FIELD_VALS + 24),
+				ds_writeb((VISUAL_FIELD_VALS + 25), 0)));
 		}
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 20)))) == 15) || (tmp == 1)) {
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 12)))) == 15) || (tmp == 1)) {
 
-		ds_writeb((0xbd6e + 28), 0);
+		ds_writeb((VISUAL_FIELD_VALS + 13),
+			ds_writeb((VISUAL_FIELD_VALS + 20),
+			ds_writeb((VISUAL_FIELD_VALS + 27),
+			ds_writeb((VISUAL_FIELD_VALS + 28), 0))));
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 26)))) == 15) || (tmp == 1)) {
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 11)))) == 15) || (tmp == 1)) {
 
-			ds_writeb((0xbd6e + 27), 0);
+			ds_writeb((VISUAL_FIELD_VALS + 18), 0);
+		}
+
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 11)))) == 15) || (tmp == 1) ||
+			((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 18)))) == 15) || (tmp == 1)) {
+
+			ds_writeb((VISUAL_FIELD_VALS + 19),
+				ds_writeb((VISUAL_FIELD_VALS + 25),
+				ds_writeb((VISUAL_FIELD_VALS + 26), 0)));
 		}
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 18)))) == 15) || (tmp == 1)) {
-
-		ds_writeb((0xbd6e + 25), 0);
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 11)))) == 15) || (tmp == 1)) {
+		ds_writeb((VISUAL_FIELD_VALS + 18),
+			ds_writeb((VISUAL_FIELD_VALS + 25), 0));
 	}
 
-	if ( ((tmp = div16(ds_readb((0xbd6e + 18)))) == 15) || (tmp == 1) ||
-		((tmp = div16(ds_readb((0xbd6e + 25)))) == 15) || (tmp == 1)) {
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 16)))) == 15) || (tmp == 1)) {
 
-		if ( ((tmp = div16(ds_readb((0xbd6e + 17)))) == 15) || (tmp == 1)) {
+		ds_writeb((VISUAL_FIELD_VALS + 22), 0);
 
-			ds_writeb((0xbd6e + 24), 0);
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 24)))) == 15) || (tmp == 1)) {
+
+			ds_writeb((VISUAL_FIELD_VALS + 23), 0);
 		}
-		if ( ((tmp = div16(ds_readb((0xbd6e + 19)))) == 15) || (tmp == 1)) {
+	}
 
-			ds_writeb((0xbd6e + 26), 0);
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 20)))) == 15) || (tmp == 1)) {
+
+		ds_writeb((VISUAL_FIELD_VALS + 28), 0);
+
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 26)))) == 15) || (tmp == 1)) {
+
+			ds_writeb((VISUAL_FIELD_VALS + 27), 0);
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 18)))) == 15) || (tmp == 1)) {
+
+		ds_writeb((VISUAL_FIELD_VALS + 25), 0);
+	}
+
+	if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 18)))) == 15) || (tmp == 1) ||
+		((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 25)))) == 15) || (tmp == 1)) {
+
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 17)))) == 15) || (tmp == 1)) {
+
+			ds_writeb((VISUAL_FIELD_VALS + 24), 0);
+		}
+		if ( ((tmp = div16(ds_readb((VISUAL_FIELD_VALS + 19)))) == 15) || (tmp == 1)) {
+
+			ds_writeb((VISUAL_FIELD_VALS + 26), 0);
 		}
 
 	}
@@ -314,11 +314,11 @@ void DNG_stub2(void)
 {
 	signed short tmp;
 
-	tmp = div16(ds_readb((0xbd6e + 1)));
+	tmp = div16(ds_readb((VISUAL_FIELD_VALS + 1)));
 
 	if ((tmp == 2) || (tmp == 9)) {
 
-		if (div16(ds_readb((0xbd6e + 5))) == 15) {
+		if (div16(ds_readb((VISUAL_FIELD_VALS + 5))) == 15) {
 			DNG_draw_walls( ((ds_readb(DUNGEON_TYPE) == 1) ? 0x4e :
 						((ds_readb(DUNGEON_TYPE) == 2) ? 0x28 : 0x3e)),
 					0, 0x36);
@@ -333,9 +333,9 @@ void DNG_stub3(void)
 
 	for (i = 21; i >= 0; i--) {
 
-		tmp = div16(ds_readb(0xbd6e + i));
+		tmp = div16(ds_readb(VISUAL_FIELD_VALS + i));
 
-		ds_writeb(0xbd50 + i,
+		ds_writeb(VISUAL_FIELDS_TEX + i,
 			(tmp == 6) ? ds_readb(DNG_STUB3_UNKN1 + i) :
 				(tmp == 5) ? ds_readb(DNG_STUB3_UNKN2 + i) :
 				(tmp == 3) ? ds_readb(DNG_STUB3_UNKN4 + i) :
@@ -365,10 +365,10 @@ void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
 	flag = (a3 & 0x8000) ? 1 : 0;
 	a3 &= 0x3fff;
 
-	if ((a3 >= 8) && (a3 <= 13) && !ds_readbs(0xe48c)) {
+	if ((a3 >= 8) && (a3 <= 13) && !ds_readbs(DNG_FLOOR_TEX)) {
 		a3 += 6;
 	} else {
-		if ((a3 >= 14) && (a3 <= 19) && !ds_readbs(0xe48c)) {
+		if ((a3 >= 14) && (a3 <= 19) && !ds_readbs(DNG_FLOOR_TEX)) {
 			a3 -= 6;
 		}
 	}
@@ -438,7 +438,7 @@ void DNG_stub4(void)
 
 		l3 = ds_readbs(DNG_STUB4_UNKN4 + i);
 
-		l5 = ds_readbs(0xbd6e + l3);
+		l5 = ds_readbs(VISUAL_FIELD_VALS + l3);
 
 		l4 = (unsigned char)div16(l5);
 
@@ -450,11 +450,11 @@ void DNG_stub4(void)
 
 		l1 = host_readws(ptr);
 		l2 = host_readws(ptr + 2);
-		l3 = ds_readbs(0xbd50 + l3);
+		l3 = ds_readbs(VISUAL_FIELDS_TEX + l3);
 
 		if (l3 != -1) {
 
-			ptr = Real2Host(ds_readd(0xe48d)) + (l3 - 1) * 18;
+			ptr = Real2Host(ds_readd(DNG_GFXTAB)) + (l3 - 1) * 18;
 
 			if ((j = host_readws(ptr + 4)) != -1) {
 
@@ -544,12 +544,12 @@ void DNG_lights(void)
 
 	signed short i;
 
-	if (div16(ds_readb((0xbd6e + 1))) != 11) {
+	if (div16(ds_readb((VISUAL_FIELD_VALS + 1))) != 11) {
 
 		/* copy palette */
 		memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), Real2Host(ds_readd(BUFFER11_PTR)), 0xc0);
 
-		if (!(ds_readb((0xbd6e + 1)) & 1)) {
+		if (!(ds_readb((VISUAL_FIELD_VALS + 1)) & 1)) {
 
 			if (ds_readd(INGAME_TIMERS + 0x24)) {
 				l1 = 10;
@@ -644,7 +644,7 @@ void DNG_timestep(signed short a1)
 			}
 		}
 
-		xor_ds_bs(0xe48c, 1);
+		xor_ds_bs(DNG_FLOOR_TEX, 1);
 	}
 }
 
@@ -687,7 +687,7 @@ void DNG_open_door(void)
 
 	DNG_floor_ceil();
 	move();
-	ds_writebs((0xbd6e + 5), 32);
+	ds_writebs((VISUAL_FIELD_VALS + 5), 32);
 	DNG_turn();
 	DNG_stub3();
 	DNG_stub4();

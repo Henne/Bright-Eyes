@@ -762,7 +762,7 @@ void do_dungeon(void)
 
 		set_audio_track(ARCHIVE_FILE_DUNGEON_XMI);
 
-		ds_writed(0xe48d, (Bit32u)RealMake(datseg, (!ds_readb(DUNGEON_TYPE) ? DNG_GFXTAB_SHIPS : (ds_readb(DUNGEON_TYPE) == 1 ? DNG_GFXTAB_MARBLES : DNG_GFXTAB_STONES))));
+		ds_writed(DNG_GFXTAB, (Bit32u)RealMake(datseg, (!ds_readb(DUNGEON_TYPE) ? DNG_GFXTAB_SHIPS : (ds_readb(DUNGEON_TYPE) == 1 ? DNG_GFXTAB_MARBLES : DNG_GFXTAB_STONES))));
 
 		ds_writew(DNG_INIT_FLAG, 0);
 		ds_writew(REQUEST_REFRESH, 1);

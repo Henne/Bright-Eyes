@@ -19,7 +19,7 @@ void seg034_718(signed short, signed short, Bit8u*, Bit8u*, signed short, signed
 void FIG_latecomers(void);
 
 /* 0x39 */
-signed short seg034_aec(void);
+signed short FIG_move_pathlen(void);
 
 #if !defined(__BORLANDC__)
 }

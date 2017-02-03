@@ -57,7 +57,7 @@ void seg045_0000(signed short fighter_id, signed short type, signed short a3)
 	ds_writebs((FIG_LIST_ELEM+FIGHTER_Y2), ds_readbs(GFXTAB_SHOTBOLT_HEIGHT + type * 2) - 1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_UNKN), -1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
 	ds_writed((FIG_LIST_ELEM+FIGHTER_GFXBUF), ds_readd(FIG_SHOT_BOLT_BUF));
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), 100);
@@ -138,9 +138,9 @@ signed short seg045_01a0(signed short a1, signed short a2, signed short fighter_
 		return 0;
 	}
 
-	ptr = p_datseg + (0xd8ce + 1) + a1 * 0xf3;
-	ds_writeb(0xd8ce + a1 * 0xf3, 0);
-	ds_writeb((0xd8ce + 242) + a1 * 0xf3, 0);
+	ptr = p_datseg + (FIG_ANISHEETS + 1) + a1 * 0xf3;
+	ds_writeb(FIG_ANISHEETS + a1 * 0xf3, 0);
+	ds_writeb((FIG_ANISHEETS + 242) + a1 * 0xf3, 0);
 
 	for (i = 0; beeline - 1 > i; i++) {
 		ptr += FIG_copy_it(ptr, Real2Host(host_readd(Real2Host(ds_readd(ANITAB_SHOTBOLT_INDEX + a2 * 4)) + a5 * 4)), -1);
@@ -203,7 +203,7 @@ void seg045_0273(signed short x, signed short y, signed short spell_ani_id)
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), (unsigned char)(height - 1));
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_UNKN), -1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
 	ds_writed((FIG_LIST_ELEM+FIGHTER_GFXBUF), ds_readd(FIG_SPELLGFX_BUF));
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), 99);
@@ -233,10 +233,10 @@ void seg045_0394(signed short a1, Bit8u *hero, signed short spell_ani_id)
 	y = host_readws((Bit8u*)&y);
 #endif
 
-	ptr = p_datseg + a1 * 0xf3 + (0xd8ce + 1);
+	ptr = p_datseg + a1 * 0xf3 + (FIG_ANISHEETS + 1);
 
-	ds_writeb(0xd8ce + a1 * 0xf3, 0);
-	ds_writeb((0xd8ce + 242) + a1 * 0xf3, -1);
+	ds_writeb(FIG_ANISHEETS + a1 * 0xf3, 0);
+	ds_writeb((FIG_ANISHEETS + 242) + a1 * 0xf3, -1);
 
 	/* copy the ani sequence and terminate it */
 	ptr += FIG_copy_it(ptr, Real2Host(ds_readd((ANITAB_SPELL_INDEX - 4) + spell_ani_id * 4)), -1);
@@ -260,10 +260,10 @@ void seg045_041b(signed short a1, Bit8u *enemy, signed short spell_ani_id)
 	/* search the target on the chessboard */
 	FIG_search_obj_on_cb(host_readbs(enemy + ENEMY_SHEET_ENEMY_ID), &x, &y);
 
-	ptr = p_datseg + a1 * 0xf3 + (0xd8ce + 1);
+	ptr = p_datseg + a1 * 0xf3 + (FIG_ANISHEETS + 1);
 
-	ds_writeb(0xd8ce + a1 * 0xf3, 0);
-	ds_writeb((0xd8ce + 242) + a1 * 0xf3, -1);
+	ds_writeb(FIG_ANISHEETS + a1 * 0xf3, 0);
+	ds_writeb((FIG_ANISHEETS + 242) + a1 * 0xf3, -1);
 
 	/* copy the ani sequence and terminate it */
 	ptr += FIG_copy_it(ptr, Real2Host(ds_readd((ANITAB_SPELL_INDEX - 4) + spell_ani_id * 4)), -1);
