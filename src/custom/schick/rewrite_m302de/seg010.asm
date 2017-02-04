@@ -1,3 +1,6 @@
+.186
+.model large
+.code
 ;
 ;	Rewrite of DSA1 v3.02_de functions of seg010 (EMS)
 ;	Functions rewritten: 8/8 (complete)
@@ -10,8 +13,6 @@
 ;	TODO:	- Two calls to F_LXULSH
 ;		- Adresses of variables
 
-.186
-.model large
 
 ;EXTRN EMS_SEG:WORD, EMS_OFF:WORD, EMM_SIG:BYTE
 EMM_SIG	EQU 4BA2h
@@ -25,9 +26,7 @@ EMS_SEG EQU 4BACh
 	public _EMS_norm_ptr
 	public _EMS_init
 
-EMS_lib	segment byte public 'CODE'
-	assume cs:EMS_lib
-	assume es:nothing, ss:@DATA, ds:@DATA
+	assume cs:@code
 
 EMS_installed PROC NEAR
 	push bp
@@ -230,5 +229,5 @@ _done4:
 	pop bp
 	retf
 _EMS_init ENDP
-EMS_lib		ends
+
 	END

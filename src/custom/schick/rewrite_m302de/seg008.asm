@@ -4,9 +4,9 @@
 ; Only 14 of them are used in the game, and get meaningful names
 ; The other 18 are called unused_func01 .. unused_func18
 
-
 .186
 .model large
+.code
 
 	public _swap_u16
 	public _set_video_mode
@@ -23,9 +23,7 @@
 	public _copy_solid
 	public _decomp_rle
 
-Rasterlib	segment	byte public 'CODE'
-		assume cs:Rasterlib
-		assume es:nothing, ss:@DATA, ds:@DATA
+		assume cs:@code
 
 
 _swap_u16	proc far
@@ -2783,5 +2781,4 @@ arg_0		= dword	ptr  6
 
 unused_func18	endp
 
-Rasterlib	ends
 		end

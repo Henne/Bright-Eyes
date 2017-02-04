@@ -1,11 +1,9 @@
 .186
 .model large
-
+.code
 	public _decomp_pp20
 
-pp20		segment	byte public 'CODE'
-		assume cs:pp20
-		assume es:nothing, ss:@DATA, ds:@DATA
+	assume cs:@code
 
 NOP3		MACRO
 		nop
@@ -479,7 +477,5 @@ loc_20309:
 		retf
 
 _decomp_pp20	endp
-
-pp20		ends
 
 		end
