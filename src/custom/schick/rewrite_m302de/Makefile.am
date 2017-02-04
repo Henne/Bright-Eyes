@@ -116,4 +116,5 @@ libschick_rewrite_m302de_a_SOURCES = common.h v302de.h symbols.h\
 		seg120.cpp seg120.h\
 		seg121.cpp seg121.h\
 		seg122.cpp seg122.h\
-		t_map.cpp t_map.h
+		t_map.cpp t_map.h \
+		datseg.cpp datseg.h

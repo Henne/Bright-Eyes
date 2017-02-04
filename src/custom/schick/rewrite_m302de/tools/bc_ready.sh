@@ -202,6 +202,8 @@ for i in ${OBJDIR}/*.OBJ; do
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
 			if [ $LINES -ne 2 ]; then RETVAL=1; fi
 			;;
+		"DATSEG")
+			;;
 		*)
 			diff -q -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis
 			RETVAL=$?

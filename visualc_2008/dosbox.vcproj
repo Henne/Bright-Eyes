@@ -2000,6 +2000,14 @@
 						RelativePath="..\src\custom\schick\rewrite_m302de\t_map.h"
 						>
 					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\datseg.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\dagseg.h"
+						>
+					</File>
 				</Filter>
 				</Filter>
 				<Filter

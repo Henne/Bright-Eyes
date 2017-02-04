@@ -136,6 +136,7 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG120.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG121.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG122.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo DATSEG.CPP
 @REM -- here start the empty
 
 @REM examine the ouput and press anykey

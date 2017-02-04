@@ -66,10 +66,6 @@ void sub_light_timers(Bit32s);
 #endif
 
 
-#if defined(__BORLANDC__)
-char ds[DS_SIZE];
-#endif
-
 /* static */
 void play_music_file(signed short index)
 {
