@@ -971,7 +971,7 @@ struct hero_struct {
 
 #define reloc_game (0)
 
-#define DS_SIZE (0xf7af - 0x936)
+#define DS_SIZE (0xf7af - 0x936 -2)
 extern char ds[DS_SIZE];
 #define p_datseg (&ds[0x0000])
 #define datseg (_DS)
