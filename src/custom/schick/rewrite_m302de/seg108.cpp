@@ -141,7 +141,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					/* That does not happen */
 					if (item != 0x17) {
 						/* get an empty glass bottle */
-						give_hero_new_item(owner, 0x1f, 2, 1);
+						give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 					}
 				}
 			} else {
@@ -291,7 +291,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				drop_item(owner, pos, 1);
 
 				/* get glassbottle */
-				give_hero_new_item(owner, 0x1f, 2, 1);
+				give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 
 				/* Attribute +5 for 1h */
 				l_di = get_free_mod_slot();
@@ -314,7 +314,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				drop_item(owner, pos, 1);
 
 				/* get glassbottle */
-				give_hero_new_item(owner, 0x1f, 2, 1);
+				give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 
 				/* Attribute -7 for 1h */
 				l_di = get_free_mod_slot();
@@ -358,7 +358,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					add_hero_le(consumer, l_si);
 
 					/* give owner a glassbottle */
-					give_hero_new_item(owner, 0x1f, 2, 1);
+					give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -430,7 +430,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					}
 
 					/* give owner a glasbottle */
-					give_hero_new_item(owner, 0x1f, 2, 1);
+					give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -447,7 +447,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					host_writeb(consumer + HERO_RUHE_KOERPER, 3);
 
 					/* give owner a glasbottle */
-					give_hero_new_item(owner, 0x1f, 2, 1);
+					give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -470,7 +470,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 						add_hero_ae(consumer, l_si);
 
 						/* give hero a glassbottle */
-						give_hero_new_item(owner, 0x1f, 2, 1);
+						give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 
 						/* prepare output */
 						strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
@@ -494,7 +494,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 							(char*)get_ttx(804));
 
 						/* give owner a glassbottle */
-						give_hero_new_item(owner, 0x1f, 2, 1);
+						give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 					}
 
 					break;
@@ -514,7 +514,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 						add_hero_ae(consumer, l_si);
 
 						/* give owner a glassbottle */
-						give_hero_new_item(owner, 0x1f, 2, 1);
+						give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 
 
 						/* prepare output */
@@ -545,7 +545,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 							(char*)get_ttx(804));
 
 						/* give owner a glassbottle */
-						give_hero_new_item(owner, 0x1f, 2, 1);
+						give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 					}
 					break;
 				}
@@ -560,7 +560,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					}
 
 					/* give owner a glassbottle */
-					give_hero_new_item(owner, 0x1f, 2, 1);
+					give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -577,7 +577,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					host_writeb(consumer + disease * 5 + 0xaf, 0);
 
 					/* give owner a glassbottle */
-					give_hero_new_item(owner, 0x1f, 2, 1);
+					give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ttx(467),

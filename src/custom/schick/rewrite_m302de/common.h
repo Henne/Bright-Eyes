@@ -825,11 +825,17 @@ enum {
 
 enum {
   ITEM_ARROWS         = 0x0a,
+  ITEM_BOLTS          = 0x0d,
+  ITEM_DAGGER         = 0x0e,
+  ITEM_LONGBOW        = 0x13,
   ITEM_TORCH_ON       = 0x16,
+  ITEM_BEER           = 0x17,
   ITEM_LANTERN_OFF    = 0x19,
   ITEM_FLASK_GLASS    = 0x1f,
+  ITEM_CLIMBING_HOOKS = 0x28,
   ITEM_OIL            = 0x29,
   ITEM_FLASK_BRONZE   = 0x2a,
+  ITEM_FOOD_PACKAGES  = 0x2d,
   ITEM_SHIRT          = 0x30,
   ITEM_ARMOR_LEATHER  = 0x35,
   ITEM_EINBEERE       = 0x3c, /* two bytes */
@@ -837,28 +843,42 @@ enum {
   ITEM_GULMOND_LEAF   = 0x3f, /* two bytes */
   ITEM_TARNELE        = 0x40, /* two bytes */
   ITEM_TORCH_OFF      = 0x41,
+  ITEM_QUARTERSTAFF   = 0x45,
   ITEM_BALL_CRYSTAL   = 0x46,
   ITEM_ROBE_GREEN     = 0x4b,
+  ITEM_TINDERBOX      = 0x55,
   ITEM_WINE           = 0x5b, /* two bytes */
   ITEM_BRANDY         = 0x5c, /* two bytes */
+  ITEM_NET            = 0x61,
+  ITEM_TRIDENT        = 0x66,
+  ITEM_MENGBILAR      = 0x6d,
   ITEM_SHURIN         = 0x7a, /* two bytes */
   ITEM_BELMART        = 0x7b, /* two bytes */
   ITEM_DONF_SPRING    = 0x7c, /* two bytes */
   ITEM_MENCHAL        = 0x7d, /* two bytes */
   ITEM_FINAGE_TREE    = 0x81, /* two bytes */
   ITEM_JORUGA_ROOT    = 0x82, /* two bytes */
+  ITEM_MAGIC_WAND     = 0x85,
   ITEM_OLGIN_ROOT     = 0x9c, /* two bytes */
   ITEM_SICKLE         = 0xa1,
   ITEM_AMULET_BLUE    = 0xa3,
   ITEM_RING_RED       = 0xa5, /* four bytes */
   ITEM_CORONET_SILVER = 0xab,
+  ITEM_GRIMRING       = 0xb5,
   ITEM_BELT_SKULL     = 0xb6, /* two bytes */
   ITEM_GIRDLE_MIGHT   = 0xb7,
+  ITEM_KUKRIS_DAGGER  = 0xc1,
   ITEM_HELMET         = 0xc4,
+  ITEM_KUKRIS_MENGBILAR = 0xc8,
+  ITEM_SILVER_MACE    = 0xd6,
   ITEM_JEWELRY_SILVER = 0xd7,
   ITEM_CORONET_BLUE   = 0xd9, /* two bytes */
+  ITEM_BAG            = 0xdd,
   ITEM_CORONET_GREEN  = 0xf5,
-  ITEM_LANTERN_ON     = 0xf9
+  ITEM_LANTERN_ON     = 0xf9,
+  ITEM_200_ARROWS     = 0xfb,
+  ITEM_50_BOLTS       = 0xfc,
+  ITEM_20_CLIMBING_HOOKS = 0xfd
 };
 
 enum {

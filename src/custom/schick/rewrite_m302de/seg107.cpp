@@ -307,7 +307,7 @@ void item_weapon_poison(void)
 
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 168), 1);
 
-			bottle = 42;
+			bottle = ITEM_FLASK_BRONZE;
 			break;
 		}
 		case 166 : {
@@ -316,7 +316,7 @@ void item_weapon_poison(void)
 
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 166), 1);
 
-			bottle = 42;
+			bottle = ITEM_FLASK_BRONZE;
 			break;
 		}
 		case 55: {
@@ -324,7 +324,7 @@ void item_weapon_poison(void)
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 1);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 55), 1);
-			bottle = 31;
+			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
 		case 56: {
@@ -332,7 +332,7 @@ void item_weapon_poison(void)
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 2);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 56), 1);
-			bottle = 31;
+			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
 		case 57: {
@@ -340,7 +340,7 @@ void item_weapon_poison(void)
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 3);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 57), 1);
-			bottle = 31;
+			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
 		case 58: {
@@ -348,7 +348,7 @@ void item_weapon_poison(void)
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 4);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 58), 1);
-			bottle = 31;
+			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
 		case 59: {
@@ -356,7 +356,7 @@ void item_weapon_poison(void)
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 5);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 59), 1);
-			bottle = 31;
+			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
 		case 141: {
@@ -364,7 +364,7 @@ void item_weapon_poison(void)
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 7);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 141), 1);
-			bottle = 31;
+			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
 		case 142: {
@@ -372,7 +372,7 @@ void item_weapon_poison(void)
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 8);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 142), 1);
-			bottle = 31;
+			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
 		case 143: {
@@ -380,14 +380,14 @@ void item_weapon_poison(void)
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 9);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 143), 1);
-			bottle = 31;
+			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
 		case 144: {
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 6);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 144), 1);
-			bottle = 31;
+			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
 		}
@@ -453,7 +453,7 @@ void item_brenne(void)
 	/* load SPELLTXT*/
 	load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
-	if (ds_readws(USED_ITEM_ID) == 249) {
+	if (ds_readws(USED_ITEM_ID) == ITEM_LANTERN_ON) {
 		/* refill burning lantern */
 
 #ifdef M302de_ORIGINAL_BUGFIX
@@ -462,12 +462,12 @@ void item_brenne(void)
 		}
 #endif
 
-		/* look for oil at the spelluser() ??? */
-		pos = get_item_pos(get_spelluser(), 41);
+		/* look for oil at the spelluser() */
+		pos = get_item_pos(get_spelluser(), ITEM_OIL);
 
 		if (pos != -1) {
 			/* look for the burning lantern at the spelluser() ??? */
-			refill_pos = get_item_pos(get_spelluser(), 249);
+			refill_pos = get_item_pos(get_spelluser(), ITEM_LANTERN_ON);
 
 			/* reset the burning time of the lantern */
 			host_writeb(get_itemuser() + (HERO_ITEM_HEAD + 8) + refill_pos * 14, 100);
@@ -475,8 +475,8 @@ void item_brenne(void)
 			/* drop the oil */
 			drop_item(get_itemuser(), pos, 1);
 
-			/* give a copper flask */
-			give_hero_new_item(get_itemuser(), 42, 0, 1);
+			/* give a bronze flask */
+			give_hero_new_item(get_itemuser(), ITEM_FLASK_BRONZE, 0, 1);
 
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -490,7 +490,7 @@ void item_brenne(void)
 		}
 	} else {
 
-		if (get_item_pos(get_itemuser(), 85) == -1) {
+		if (get_item_pos(get_itemuser(), ITEM_TINDERBOX) == -1) {
 			/* No tinderbox */
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -498,10 +498,10 @@ void item_brenne(void)
 				(char*)get_itemuser() + HERO_NAME2);
 		} else {
 
-			if (ds_readws(USED_ITEM_ID) == 65) {
+			if (ds_readws(USED_ITEM_ID) == ITEM_TORCH_OFF) {
 				/* TORCH */
 				ds_writew(LIGHT_TYPE, 1);
-			} else if (ds_readws(USED_ITEM_ID) == 25 ) {
+			} else if (ds_readws(USED_ITEM_ID) == ITEM_LANTERN_OFF) {
 				/* LANTERN */
 				ds_writew(LIGHT_TYPE, 2);
 			} else {
@@ -548,7 +548,7 @@ void item_bag(void)
 	GUI_output(get_ttx(775));
 
 	/* drop the BAG */
-	drop_item(get_itemuser(), get_item_pos(get_itemuser(), 221), 1);
+	drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_BAG), 1);
 }
 
 #if !defined(__BORLANDC__)

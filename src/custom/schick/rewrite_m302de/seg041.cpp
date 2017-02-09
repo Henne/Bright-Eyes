@@ -339,7 +339,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		if ((right_hand == 172) && (enemy_gfx_id == 0x1c || enemy_gfx_id == 0x22)) {
 			damage++;
 		} else {
-			if (right_hand == 193) {
+			if (right_hand == ITEM_KUKRIS_DAGGER) {
 				/* KUKRIS DAGGER / KUKRISDOLCH */
 
 				/* Interesting */
@@ -347,24 +347,24 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 				/* drop the KUKRISDOLCH and equip a normal DOLCH / DAGGER */
 				drop_item(hero, 3, 1);
-				give_hero_new_item(hero, 14, 1 ,1);
-				move_item(3, get_item_pos(hero, 14), hero);
+				give_hero_new_item(hero, ITEM_DAGGER, 1 ,1);
+				move_item(3, get_item_pos(hero, ITEM_DAGGER), hero);
 
-			} else if (right_hand == 200) {
-				/* KUKRISMENGBILLAR */
+			} else if (right_hand == ITEM_KUKRIS_MENGBILAR) {
+				/* KUKRISMENGBILAR */
 
 				/* Interesting */
 				damage = 1000;
 
 				/* drop the KUKRISMENGBILAR and equip a normal MENGBILAR  */
 				drop_item(hero, 3, 1);
-				give_hero_new_item(hero, 109, 1 ,1);
-				move_item(3, get_item_pos(hero, 109), hero);
+				give_hero_new_item(hero, ITEM_MENGBILAR, 1 ,1);
+				move_item(3, get_item_pos(hero, ITEM_MENGBILAR), hero);
 
-			} else if ((right_hand == 214) && (enemy_gfx_id == 0x1c)) {
+			} else if ((right_hand == ITEM_SILVER_MACE) && (enemy_gfx_id == 0x1c)) {
 				/* SILVER MACE/ SILBERSTREITKOLBEN gives Damage + 4 to SKELETONS */
 				damage += 4;
-			} else if ((right_hand == 181) && (enemy_gfx_id == 0x18)) {
+			} else if ((right_hand == ITEM_GRIMRING) && (enemy_gfx_id == 0x18)) {
 				/* DAS SCHWERT GRIMRING gives Damage + 5 to ORCS */
 				damage += 5;
 			}
@@ -484,7 +484,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 
 		/* get position of Totenkopfguertel/Skullbelt */
 
-		if ( (pos = get_item_pos(hero, 0xb6)) != -1 &&
+		if ( (pos = get_item_pos(hero, ITEM_BELT_SKULL)) != -1 &&
 			(host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
 
@@ -562,7 +562,7 @@ signed short weapon_check(Bit8u *hero)
 		(item_weapon(item_p) &&
 			((host_readbs(item_p + 3) == 7) ||
 			(host_readbs(item_p + 3) == 8) ||
-			(host_readbs(item_p + 3) == 5 && item != 133 && item != 69))))
+			(host_readbs(item_p + 3) == 5 && item != ITEM_MAGIC_WAND && item != ITEM_QUARTERSTAFF))))
 	{
 		l_di = -1;
 	} else {

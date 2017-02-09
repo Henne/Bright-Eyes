@@ -2907,7 +2907,7 @@ void herokeeping(void)
 					if (host_readbs(hero + HERO_HUNGER) > 90) {
 
 						/* search for Lunchpack */
-						pos = get_item_pos(hero, 0x2d);
+						pos = get_item_pos(hero, ITEM_FOOD_PACKAGES);
 
 						if (pos != -1) {
 							/* Lunchpack found, consume quiet */
@@ -2920,7 +2920,7 @@ void herokeeping(void)
 
 							/* search for another Lunchpack */
 							/* print last ration message */
-							if (get_item_pos(hero, 0x2d) == -1) {
+							if (get_item_pos(hero, ITEM_FOOD_PACKAGES) == -1) {
 								ds_writeb(FOOD_MESSAGE + i, 6);
 							}
 						} else {
@@ -2980,7 +2980,7 @@ void herokeeping(void)
 							ds_writeb(CONSUME_QUIET, 1);
 
 							/* first check for beer :) */
-							pos = get_item_pos(hero, 0x17);
+							pos = get_item_pos(hero, ITEM_BEER);
 
 							/* and then for water */
 							if (pos == -1) {
@@ -2994,7 +2994,7 @@ void herokeeping(void)
 								D1_INFO("%s trinkt etwas\n", (char*)hero + HERO_NAME2);
 #endif
 								/* nothing to drink message */
-								if ((get_item_pos(hero, 0x17) == -1)
+								if ((get_item_pos(hero, ITEM_BEER) == -1)
 									&& (get_full_waterskin_pos(hero) == -1)) {
 									ds_writeb(FOOD_MESSAGE + i, 5);
 								}

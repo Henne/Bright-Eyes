@@ -528,7 +528,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 				inc_ptr_bs(hero2 + HERO_KS_TAKEN);
 
 				/* special items */
-				if (item2 == 0xa1) {
+				if (item2 == ITEM_SICKLE) {
 					host_writeb(hero1 + (HERO_TA_NATURE+3), host_readbs(hero1 + (HERO_TA_NATURE+3)) + 3);
 					host_writeb(hero2 + (HERO_TA_NATURE+3), host_readbs(hero2 + (HERO_TA_NATURE+3)) + -3);
 				}
@@ -536,7 +536,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 					host_writeb(hero1 + HERO_MR, host_readbs(hero1 + HERO_MR) + 5);
 					host_writeb(hero2 + HERO_MR, host_readbs(hero2 + HERO_MR) + -5);
 				}
-				if (item1 == 0xa1) {
+				if (item1 == ITEM_SICKLE) {
 					host_writeb(hero1 + (HERO_TA_NATURE+3), host_readbs(hero1 + (HERO_TA_NATURE+3)) + -3);
 					host_writeb(hero2 + (HERO_TA_NATURE+3), host_readbs(hero2 + (HERO_TA_NATURE+3)) + 3);
 				}
@@ -624,7 +624,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		memset(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM, 0, SIZEOF_KS_ITEM);
 
 		/* special items */
-		if (item1 == 0xa1) {
+		if (item1 == ITEM_SICKLE) {
 			host_writeb(hero1 + (HERO_TA_NATURE+3), host_readbs(hero1 + (HERO_TA_NATURE+3)) + -3);
 			host_writeb(hero2 + (HERO_TA_NATURE+3), host_readbs(hero2 + (HERO_TA_NATURE+3)) + 3);
 		}

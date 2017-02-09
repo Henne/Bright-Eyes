@@ -803,14 +803,14 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 			/* equip LONGBOW and ARROWS in the first round,
 			 * if the hero has them in the inventory */
 			if ((ds_readws(FIGHT_ROUND) == 0) &&
-				(host_readws(hero + HERO_ITEM_RIGHT) != 19) &&
-				(get_item_pos(hero, 10) != -1) &&
-				(get_item_pos(hero, 19) != -1))
+				(host_readws(hero + HERO_ITEM_RIGHT) != ITEM_LONGBOW) &&
+				(get_item_pos(hero, ITEM_ARROWS) != -1) &&
+				(get_item_pos(hero, ITEM_LONGBOW) != -1))
 			{
-				move_item(3, get_item_pos(hero, 19), hero);
+				move_item(3, get_item_pos(hero, ITEM_LONGBOW), hero);
 
-				if (host_readws(hero + HERO_ITEM_LEFT) != 10) {
-					move_item(4, get_item_pos(hero, 10), hero);
+				if (host_readws(hero + HERO_ITEM_LEFT) != ITEM_ARROWS) {
+					move_item(4, get_item_pos(hero, ITEM_ARROWS), hero);
 				}
 			}
 
@@ -821,14 +821,14 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				/* equip LONGBOW and ARROWS in the first round,
 				 * if the hero has them in the inventory */
 				if ((ds_readws(FIGHT_ROUND) == 0) &&
-					(host_readws(hero + HERO_ITEM_RIGHT) != 19) &&
-					(get_item_pos(hero, 10) != -1) &&
-					(get_item_pos(hero, 19) != -1))
+					(host_readws(hero + HERO_ITEM_RIGHT) != ITEM_LONGBOW) &&
+					(get_item_pos(hero, ITEM_ARROWS) != -1) &&
+					(get_item_pos(hero, ITEM_LONGBOW) != -1))
 				{
-					move_item(3, get_item_pos(hero, 19), hero);
+					move_item(3, get_item_pos(hero, ITEM_LONGBOW), hero);
 
-					if (host_readws(hero + HERO_ITEM_LEFT) != 10) {
-						move_item(4, get_item_pos(hero, 10), hero);
+					if (host_readws(hero + HERO_ITEM_LEFT) != ITEM_ARROWS) {
+						move_item(4, get_item_pos(hero, ITEM_ARROWS), hero);
 					}
 				} else if (FIG_get_range_weapon_type(hero) == -1)
 				{

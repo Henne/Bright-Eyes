@@ -59,22 +59,22 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 		host_writebs(hero + HERO_AT_MOD, host_writebs(hero + HERO_PA_MOD, 0));
 	}
 	/* unequip Kraftguertel KK - 5 */
-	if (item == 183)
+	if (item == ITEM_GIRDLE_MIGHT)
 		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_KK), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) - 5);
 	/* unequip Helm CH + 1 (cursed) */
-	if (item == 196)
+	if (item == ITEM_HELMET)
 		inc_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_CH));
 	/* unequip Silberschmuck TA + 1 */
-	if (item == 215)
+	if (item == ITEM_JEWELRY_SILVER)
 		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) + 2);
 	/* unequip Stirnreif or Ring MR - 2 */
-	if (item == 217 || item == 165)
+	if (item == ITEM_CORONET_BLUE || item == ITEM_RING_RED)
 		host_writeb(hero + HERO_MR, host_readb(hero + HERO_MR) - 2);
 	/* unequip Totenkopfguertel TA + 4 */
-	if (item == 182)
+	if (item == ITEM_BELT_SKULL)
 		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) + 4);
 	/* unequip Kristallkugel Gefahrensinn - 2 */
-	if (item == 70)
+	if (item == ITEM_BALL_CRYSTAL)
 		host_writeb(hero + HERO_TA_INTUITION, host_readb(hero + HERO_TA_INTUITION) - 2);
 }
 
@@ -430,10 +430,10 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 								done = 1;
 
 							/* special items */
-							if (item == 0xa1) {
+							if (item == ITEM_SICKLE) {
 								host_writeb(hero + (HERO_TA_NATURE+3), host_readb(hero + (HERO_TA_NATURE+3)) + 3);
 							}
-							if (item == 0xa3) {
+							if (item == ITEM_AMULET_BLUE) {
 								host_writeb(hero + HERO_MR, host_readb(hero + HERO_MR) + 5);
 							}
 
@@ -578,7 +578,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short no)
 		}
 
 		/* check for the piratecave to bring efferd a gift */
-		if ((item == 0x66 || item == 0x61) && ds_readb(DUNGEON_INDEX) == 11 &&
+		if ((item == ITEM_TRIDENT || item == ITEM_NET) && ds_readb(DUNGEON_INDEX) == 11 &&
 			ds_readw(X_TARGET) == 9 && ds_readw(Y_TARGET) == 9)
 		{
 			ds_writeb(DNG11_EFFERD_SACRIFICE, 1);
@@ -616,9 +616,9 @@ signed short get_item(signed short id, signed short unused, signed short no)
 	signed short autofight_bak;
 
 	/* Special stacked items */
-	if (id == 0xfb) { id = 0x0a; no = 200;} else
-	if (id == 0xfc) { id = 0x0d; no = 50;} else
-	if (id == 0xfd) { id = 0x28; no = 20;}
+	if (id == ITEM_200_ARROWS) { id = ITEM_ARROWS; no = 200;} else
+	if (id == ITEM_50_BOLTS) { id = ITEM_BOLTS; no = 50;} else
+	if (id == ITEM_20_CLIMBING_HOOKS) { id = ITEM_CLIMBING_HOOKS; no = 20;}
 
 	do {
 		hero_i = get_hero(0);

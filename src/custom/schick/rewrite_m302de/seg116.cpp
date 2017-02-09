@@ -378,7 +378,7 @@ void tevent_137(void)
 					!hero_dead(hero))
 				{
 					/* each hero gets five FOODPACKAGES */
-					give_hero_new_item(hero, 45, 1, 5);
+					give_hero_new_item(hero, ITEM_FOOD_PACKAGES, 1, 5);
 
 					/* search for the WATERSKIN */
 					if ((item_pos = get_item_pos(hero, 30)) != -1)
