@@ -323,9 +323,9 @@ void load_area_description(signed short type)
 		fd = load_archive_file(f_index + 0x8000);
 
 		if (!ds_readbs(DUNGEON_INDEX) &&
-			(ds_readb(CURRENT_TOWN) == 1
-				|| ds_readb(CURRENT_TOWN) == 39
-				|| ds_readb(CURRENT_TOWN) == 18))
+			(ds_readb(CURRENT_TOWN) == TOWNS_THORWAL
+				|| ds_readb(CURRENT_TOWN) == TOWNS_PREM
+				|| ds_readb(CURRENT_TOWN) == TOWNS_PHEXCAER))
 		{
 			/* path taken in THORWAL PREM and PHEXCAER */
 			bc__read(fd, p_datseg + DNG_MAP, 0x200);

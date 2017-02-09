@@ -206,10 +206,10 @@ void do_merchant(void)
 
 		handle_gui_input();
 
-		if (ds_readb(CURRENT_TOWN) == 1 ||	/* THORWAL */
-			ds_readb(CURRENT_TOWN) == 39 || /* PREM */
-			ds_readb(CURRENT_TOWN) == 18 ||	/* PHEXCAER */
-			ds_readb(CURRENT_TOWN) == 17)	/* OBERORKEN */
+		if (ds_readb(CURRENT_TOWN) == TOWNS_THORWAL ||
+			ds_readb(CURRENT_TOWN) == TOWNS_PREM ||
+			ds_readb(CURRENT_TOWN) == TOWNS_PHEXCAER ||
+			ds_readb(CURRENT_TOWN) == TOWNS_OBERORKEN)
 		{
 
 			/* debt logic in shops */

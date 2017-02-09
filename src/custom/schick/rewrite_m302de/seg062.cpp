@@ -60,7 +60,7 @@ void ask_miracle(void)
 
 		bonus = (signed short)((ga1.a[ds_readws(TEMPLE_GOD)] * (ds_readds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD)) / 100) / 10) - l3);
 
-		if (ds_readbs(CURRENT_TOWN) == 23) {
+		if (ds_readbs(CURRENT_TOWN) == TOWNS_CLANEGH) {
 			/* CLANEGH */
 			bonus += 2;
 		}

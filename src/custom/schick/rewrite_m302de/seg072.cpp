@@ -738,23 +738,24 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
 			ds_writew(DIALOG_NEXT_STATE, ds_readb(SWAFNILD_NOMAP) != 0 ? 38 : 39);
 		} else if (state == 7) {
 
-			if ((ds_readbs(CURRENT_TOWN) >= 1 && ds_readbs(CURRENT_TOWN) <= 10) ||
-				(ds_readbs(CURRENT_TOWN) >= 40 && ds_readbs(CURRENT_TOWN) <= 44))
+			if ((ds_readbs(CURRENT_TOWN) >= TOWNS_THORWAL && ds_readbs(CURRENT_TOWN) <= TOWNS_EFFERDUN) ||
+				(ds_readbs(CURRENT_TOWN) >= TOWNS_DASPOTA && ds_readbs(CURRENT_TOWN) <= TOWNS_VAERMHAG))
 			{
-				ds_writeb(SWAFNILD_TP1, 39);
-				ds_writeb(SWAFNILD_TP2, 38);
-				ds_writeb(SWAFNILD_TP3, 37);
-				ds_writeb(SWAFNILD_TP4, 35);
-			} else if (ds_readbs(CURRENT_TOWN) >= 30 && ds_readbs(CURRENT_TOWN) <= 34) {
-				ds_writeb(SWAFNILD_TP1, 37);
-				ds_writeb(SWAFNILD_TP2, 38);
-				ds_writeb(SWAFNILD_TP3, 39);
-				ds_writeb(SWAFNILD_TP4, 42);
+				ds_writeb(SWAFNILD_TP1, TOWNS_PREM);
+				ds_writeb(SWAFNILD_TP2, TOWNS_SKJAL);
+				ds_writeb(SWAFNILD_TP3, TOWNS_OTTARJE);
+				ds_writeb(SWAFNILD_TP4, TOWNS_ARYN);
+
+			} else if (ds_readbs(CURRENT_TOWN) >= TOWNS_ROVIK && ds_readbs(CURRENT_TOWN) <= TOWNS_TREBAN) {
+				ds_writeb(SWAFNILD_TP1, TOWNS_OTTARJE);
+				ds_writeb(SWAFNILD_TP2, TOWNS_SKJAL);
+				ds_writeb(SWAFNILD_TP3, TOWNS_PREM);
+				ds_writeb(SWAFNILD_TP4, TOWNS_LJASDAHL);
 			} else {
-				ds_writeb(SWAFNILD_TP1, 33);
-				ds_writeb(SWAFNILD_TP2, 34);
-				ds_writeb(SWAFNILD_TP3, 36);
-				ds_writeb(SWAFNILD_TP4, 32);
+				ds_writeb(SWAFNILD_TP1, TOWNS_KORD);
+				ds_writeb(SWAFNILD_TP2, TOWNS_TREBAN);
+				ds_writeb(SWAFNILD_TP3, TOWNS_RUNINSHA);
+				ds_writeb(SWAFNILD_TP4, TOWNS_GUDDASUN);
 			}
 		} else if (state == 17) {
 			/* mark RAGNA FIRUNJASDOTTER as known */

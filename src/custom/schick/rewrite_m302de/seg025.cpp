@@ -172,7 +172,7 @@ void do_house(void)
 
 				i = ds_readbs(CURRENT_TOWN);
 
-				if ((i == 1) || (i == 39) || (i == 18) || (i == 17)) {
+				if ((i == TOWNS_THORWAL) || (i == TOWNS_PREM) || (i == TOWNS_PHEXCAER) || (i == TOWNS_OBERORKEN)) {
 
 					/* sneak test failed in a town with guards */
 
@@ -825,10 +825,10 @@ void tumult(void)
 	/* the guards or a mob */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_ttx(765),
-		((ds_readb(CURRENT_TOWN) == 39 ||	/* PREM */
-			ds_readb(CURRENT_TOWN) == 18 ||	/* PHEXCAER */
-			ds_readb(CURRENT_TOWN) == 1 ||	/* THORWAL */
-			ds_readb(CURRENT_TOWN) == 17)	/* OBERORKEN */
+		((ds_readb(CURRENT_TOWN) == TOWNS_PREM ||
+			ds_readb(CURRENT_TOWN) == TOWNS_PHEXCAER ||
+			ds_readb(CURRENT_TOWN) == TOWNS_THORWAL ||
+			ds_readb(CURRENT_TOWN) == TOWNS_OBERORKEN)
 				? (char*)get_ttx(766) : (char*)get_ttx(767)));
 
 	GUI_output(Real2Host(ds_readd(DTP2)));

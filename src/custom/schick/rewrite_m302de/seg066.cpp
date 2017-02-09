@@ -199,8 +199,7 @@ void do_special_buildings(void)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	type = ds_readws(TYPEINDEX);
 
-	if (ds_readb(CURRENT_TOWN) == 1) {
-		/* THORWAL */
+	if (ds_readb(CURRENT_TOWN) == TOWNS_THORWAL) {
 
 		load_tx2(type < 41 ? ARCHIVE_FILE_THORWAL1_LTX : ARCHIVE_FILE_THORWAL2_LTX);
 		ds_writew(TEXTBOX_WIDTH, 9);
@@ -247,8 +246,7 @@ void do_special_buildings(void)
 			THO_tav_inn_combi();
 		}
 
-	} else if (ds_readb(CURRENT_TOWN) == 18) {
-		/* PHEXCAER */
+	} else if (ds_readb(CURRENT_TOWN) == TOWNS_PHEXCAER) {
 
 		load_tx2(type <= 3 ? ARCHIVE_FILE_PHEX2_LTX : ARCHIVE_FILE_PHEX1_LTX);
 		ds_writew(TEXTBOX_WIDTH, 9);
@@ -274,7 +272,7 @@ void do_special_buildings(void)
 		}
 
 
-	} else if (ds_readb(CURRENT_TOWN) == 21) {
+	} else if (ds_readb(CURRENT_TOWN) == TOWNS_EINSIEDL) {
 		/*  HERMITS LAKE / EINSIEDLERSEE */
 
 		if (type == 1) {
@@ -1012,8 +1010,8 @@ signed short city_step(void)
 		if ((ds_readws(Y_TARGET) != ds_readws(Y_TARGET_BAK) ||
 			(ds_readws(X_TARGET) != ds_readws(X_TARGET_BAK))) &&
 
-			(ds_readb(CURRENT_TOWN) == 1 || ds_readb(CURRENT_TOWN) == 39 ||
-			ds_readb(CURRENT_TOWN) == 18 || ds_readb(CURRENT_TOWN) == 17))
+			(ds_readb(CURRENT_TOWN) == TOWNS_THORWAL || ds_readb(CURRENT_TOWN) == TOWNS_PREM ||
+			ds_readb(CURRENT_TOWN) == TOWNS_PHEXCAER || ds_readb(CURRENT_TOWN) == TOWNS_OBERORKEN))
 		{
 
 			/* roll a dice */

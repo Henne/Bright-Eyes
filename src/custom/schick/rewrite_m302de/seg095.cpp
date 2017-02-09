@@ -35,7 +35,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		ds_writew(NPC_MEET_TAVERN, type_index);
 
 		/* Nariell */
-		if (ds_readb(CURRENT_TOWN) == 0x17 &&
+		if (ds_readb(CURRENT_TOWN) == TOWNS_CLANEGH &&
 			ds_readw(TYPEINDEX) == 0x30 &&
 			!ds_readb(NPC_TIMERS + NPC_NARIELL)) {
 
@@ -43,7 +43,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		} else
 
 		/* Harika */
-		if (ds_readb(CURRENT_TOWN) == 0x12 &&
+		if (ds_readb(CURRENT_TOWN) == TOWNS_PHEXCAER &&
 			ds_readw(TYPEINDEX) == 0x28 &&
 			!ds_readb(NPC_TIMERS + NPC_HARIKA)) {
 
@@ -51,7 +51,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		} else
 
 		/* Curian */
-		if (ds_readb(CURRENT_TOWN) == 0x1d &&
+		if (ds_readb(CURRENT_TOWN) == TOWNS_OVERTHORN &&
 			ds_readw(TYPEINDEX) == 0x3c &&
 			!ds_readb(NPC_TIMERS + NPC_CURIAN)) {
 
@@ -59,7 +59,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		} else
 
 		/* Ardora */
-		if (ds_readb(CURRENT_TOWN) == 0x1 &&
+		if (ds_readb(CURRENT_TOWN) == TOWNS_THORWAL &&
 			ds_readw(TYPEINDEX) == 0x6 &&
 			!ds_readb(NPC_TIMERS + NPC_ARDORA) &&
 			ds_readb(DNG01_ARDORA_FREED) != 0) {
@@ -68,7 +68,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		} else
 
 		/* Garsvik */
-		if (ds_readb(CURRENT_TOWN) == 0x27 &&
+		if (ds_readb(CURRENT_TOWN) == TOWNS_PREM &&
 			ds_readw(TYPEINDEX) == 0x4a &&
 			!ds_readb(NPC_TIMERS + NPC_GARSVIK)) {
 
@@ -76,7 +76,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		} else
 
 		/* Erwo */
-		if (ds_readb(CURRENT_TOWN) == 0x30 &&
+		if (ds_readb(CURRENT_TOWN) == TOWNS_MANRIN &&
 			ds_readw(TYPEINDEX) == 0x57 &&
 			!ds_readb(NPC_TIMERS + NPC_ERWO)) {
 
@@ -122,10 +122,10 @@ void npc_farewell(void)
 		case NPC_HARIKA: {
 			if (ds_readws(NPC_MONTHS) >= 2) {
 				if (ds_readws(NPC_MONTHS) >= 99 ||
-					ds_readb(CURRENT_TOWN) == 1 ||
-					ds_readb(CURRENT_TOWN) == 0x12 ||
-					ds_readb(CURRENT_TOWN) == 0x27 ||
-					ds_readb(CURRENT_TOWN) == 0x11) {
+					ds_readb(CURRENT_TOWN) == TOWNS_THORWAL ||
+					ds_readb(CURRENT_TOWN) == TOWNS_PHEXCAER ||
+					ds_readb(CURRENT_TOWN) == TOWNS_PREM ||
+					ds_readb(CURRENT_TOWN) == TOWNS_OBERORKEN) {
 
 					remove_npc(0x16, 0x1f, 0xe3,
 						get_ttx(754), get_tx(19));
