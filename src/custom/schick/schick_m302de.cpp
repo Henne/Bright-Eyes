@@ -1087,6 +1087,121 @@ static int n_seg006(unsigned offs)
 	}
 }
 
+static int n_seg012(unsigned offs)
+{
+	switch (offs) {
+	case 0x0012: {
+		return 0;
+	}
+	case 0x0142: {
+		return 0;
+	}
+	case 0x01b7: {
+		return 0;
+	}
+	case 0x01c3: {
+		return 0;
+	}
+	case 0x0208: {
+		return 0;
+	}
+	case 0x0265: {
+		return 0;
+	}
+	case 0x028d: {
+		return 0;
+	}
+	case 0x029d: {
+		D1_LOG("_INIT_MODULES()\n");
+		return 0;
+	}
+	case 0x031d: {
+		return 0;
+	}
+	case 0x03ea: {
+		return 0;
+	}
+	case 0x0423: {
+		return 0;
+	}
+	case 0x0468: {
+		return 0;
+	}
+	case 0x055c: {
+		return 0;
+	}
+	case 0x05a6: {
+		return 0;
+	}
+	case 0x0621: {
+		return 0;
+	}
+	case 0x0639: {
+		return 0;
+	}
+	case 0x0674: {
+		return 0;
+	}
+	case 0x0695: {
+		return 0;
+	}
+	case 0x06b3: {
+		return 0;
+	}
+	case 0x06e6: {
+		return 0;
+	}
+	case 0x0737: {
+		return 0;
+	}
+	case 0x0755: {
+		return 0;
+	}
+	case 0x0761: {
+		return 0;
+	}
+	case 0x0787: {
+		return 0;
+	}
+	case 0x07a3: {
+		return 0;
+	}
+	case 0x07af: {
+		return 0;
+	}
+	case 0x09cd: {
+		return 0;
+	}
+	case 0x0bd1: {
+		return 0;
+	}
+	case 0x0c24: {
+		return 0;
+	}
+	case 0x0c30: {
+		return 0;
+	}
+	case 0x0cd7: {
+		return 0;
+	}
+	case 0x0d06: {
+		return 0;
+	}
+	case 0x0d8d: {
+		return 0;
+	}
+	case 0x0e3f: {
+		return 0;
+	}
+	case 0x11ab: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg024(unsigned short offs)
 {
 	switch (offs) {
@@ -12691,6 +12806,7 @@ int schick_nearcall_v302de(unsigned offs)
 	else if (segm == 0xb2a) retval = n_seg004(offs);
 	else if (segm == 0xc85) retval = n_seg005(offs);
 	else if (segm == 0xe41) retval = n_seg006(offs);
+	else if (segm == 0x1112) retval = n_seg012(offs);
 	else if (is_ovrseg(0x12db)) retval = n_seg024(offs);
 	else if (is_ovrseg(0x12de)) retval = n_seg025(offs);
 	else if (is_ovrseg(0x12e5)) retval = n_seg026(offs);
