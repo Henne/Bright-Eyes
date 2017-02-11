@@ -3,7 +3,7 @@
 
 
 #if defined(__BORLANDC__)
-#define DS_SIZE (0xf7af - 0x936 - 2)
+#define DS_SIZE (0xf7af - 0x938 - 2)
 extern char ds[DS_SIZE];
 #endif
 
