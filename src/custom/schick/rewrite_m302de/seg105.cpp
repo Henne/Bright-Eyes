@@ -467,7 +467,7 @@ unsigned short item_pleasing_ingerimm(unsigned short item)
 	if (item_weapon(p_item) && (host_readb(p_item + 3) == 4))
 		return 1;
 
-	if (item_armor(p_item) && (ds_readbs(host_readbs(p_item + 4) * 2 + 0x877) > 1))
+	if (item_armor(p_item) && (ds_readbs(host_readbs(p_item + 4) * 2 + ARMORS_TABLE) > 1))
 		return 1;
 
 	return 0;
