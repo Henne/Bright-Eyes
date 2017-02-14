@@ -195,15 +195,15 @@ RealPt GUI_get_ptr(signed short genus, signed short causus)
 RealPt GUI_get_ptr2(signed short genus, signed short causus)
 {
 	if (genus == 0) {
-		return (causus == 0) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLES_TABLE) :
-				((causus == 1) ? (RealPt)RealMake(datseg, 0xa8e0) :
-				((causus == 3) ? (RealPt)RealMake(datseg, 0xa8e8) :
-					(RealPt)RealMake(datseg, 0xa8e4)));
+		return (causus == 0) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLE_DER) :
+				((causus == 1) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLE_DES) :
+				((causus == 3) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLE_DEM) :
+					(RealPt)RealMake(datseg, GRAMMAR_ARTICLE_DEN)));
 	} else {
-		return (causus == 0) ? (RealPt)RealMake(datseg, 0xa8d8) :
-				((causus == 1) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLES_TABLE) :
-				((causus == 3) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLES_TABLE) :
-					(RealPt)RealMake(datseg, 0xa8d8)));
+		return (causus == 0) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLE_DIE) :
+				((causus == 1) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLE_DER) :
+				((causus == 3) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLE_DER) :
+					(RealPt)RealMake(datseg, GRAMMAR_ARTICLE_DIE)));
 	}
 }
 
