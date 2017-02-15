@@ -32,10 +32,21 @@
 #define ITEMS_NOPLURAL                  (0x0270)    /* signed short[23]; { LAKRITZE (0x59), BONBONS (0x5a), SHURINKNOLLENGIFT (0x37), ARAXGIFT (0x38), ANGSTGIFT (0x39), SCHLAFGIFT (0x3a), GOLDLEIM (0x3b), LOTUSGIFT (0x8d), KUKRIS (0x8e), BANNSTAUB (0x8f), KROETENSCHEMELGIFT (0x90), ÖL (0x29), EXPURGICUM (0xa6), VOMICUM (0xa8), GEGENGIFT (0xb4), ERZKLUMPEN (0xb5), LOBPREISUNGEN (0xbd), PLATTENZEUG (0x52), LEDERZEUG (0x54), KETTENZEUG (0x53), MIASTHMATICUM (0xee), HYLAILIC_FIRE (0xef), -1 } */
 #define ITEMS_PLURALWORDS               (0x029e)    /* signed short[7]; { DIETRICHE (0x23), SCHUHE (0x32), STIEFEL (0x33), SCHNURSCHUHE (0x34), BONBONS (0x5a), LOBPREISUNGEN (0xbd), -1 } */
 #define ITEMS_GENDERS                   (0x02ac)    /* signed char[254] */
-#define WEARABLE_ITEMS_TABLES           (0x03aa)    /* short[327]; 13 arrays, each terminated by -1 */
+#define WEARABLE_ITEMS_JUGGLER          (0x03aa)    /* short[19]; array terminated by -1 */
+#define WEARABLE_ITEMS_HUNTER           (0x03d0)    /* short[19]; array terminated by -1 */
+#define WEARABLE_ITEMS_WARRIOR          (0x03f6)    /* short[12]; array terminated by -1 */
+#define WEARABLE_ITEMS_ESTRAY           (0x040e)    /* short[18]; array terminated by -1 */
+#define WEARABLE_ITEMS_THORWALIAN       (0x0432)    /* short[12]; array terminated by -1 */
+#define WEARABLE_ITEMS_DWARF            (0x044a)    /* short[9]; array terminated by -1 */
+#define WEARABLE_ITEMS_WITCH            (0x045c)    /* short[64]; array terminated by -1 */
+#define WEARABLE_ITEMS_DRUID            (0x04dc)    /* short[57]; array terminated by -1 */
+#define WEARABLE_ITEMS_MAGE             (0x054e)    /* short[64]; array terminated by -1 */
+#define WEARABLE_ITEMS_GREEN_ELF        (0x05ce)    /* short[15]; array terminated by -1 */
+#define WEARABLE_ITEMS_ICE_ELF          (0x05ec)    /* short[19]; array terminated by -1 */
+#define WEARABLE_ITEMS_SYLVAN_ELF       (0x0612)    /* short[19]; array terminated by -1 */
 #define WEARABLE_ITEMS_INDEX            (0x0638)    /* RealPt[12]; items wearable depending on hero type */
-#define RANGED_WEAPONS_TABLE            (0x0668)    /* struct(8)[9]; struct{char[8];} */
-#define WEAPONS_TABLE                   (0x06b0)    /* struct(7)[65]; struct{char[7];} */
+#define RANGED_WEAPONS_TABLE            (0x0668)    /* struct(8)[9]; struct{char unkn[8];} */
+#define WEAPONS_TABLE                   (0x06b0)    /* struct(7)[65]; struct{char unkn[7];} */
 #define ARMORS_TABLE                    (0x0877)    /* struct(2)[25]; struct{char rs, be;} */
 #define SPECIALITEMS_TABLE              (0x08a9)    /* struct(3)[14]; struct{char unkn1, unkn2, handler_no;} */
 #define POISON_POTIONS                  (0x08d3)    /* signed short[10]; { SHURINKNOLLENGIFT (0x37), ARAXGIFT (0x38), ANGSTGIFT (0x39), SCHLAFGIFT (0x3a), GOLDLEIM (0x3b), LOTUSGIFT (0x8d), KUKRIS (0x8e), BANNSTAUB (0x8f), KROETENSCHEMELGIFT (0x90), 0xff } */
@@ -49,7 +60,15 @@
 #define SPELL_DESCRIPTIONS              (0x099d)    /* struct(10)[87]; struct{char unkn0, attrib1, attrib2, attrib3, cost, combat, unkn6, target_type, range, fight;} */
 #define SPELLS_INDEX                    (0x0d03)    /* struct(2)[8]; struct{signed char first, length;}; { {1,5}, {6,12}, {18,6}, {24,3}, {27,6}, {33,5}, {38,7}, {45,4} } */
 #define SPELLS_INDEX2                   (0x0d13)    /* struct(2)[4]; struct{signed char first, length;}; { {49,9}, {58,2}, {60,16}, {76,10} } */
-#define MAGIC_SCHOOLS_TABLE             (0x0d1b)    /* short[62]; 9 arrays, each terminated by -1 */
+#define MAGIC_SCHOOLS_1                 (0x0d1b)    /* short[7]; array terminated by -1 */
+#define MAGIC_SCHOOLS_2                 (0x0d29)    /* short[6]; array terminated by -1 */
+#define MAGIC_SCHOOLS_3                 (0x0d35)    /* short[7]; array terminated by -1 */
+#define MAGIC_SCHOOLS_4                 (0x0d43)    /* short[6]; array terminated by -1 */
+#define MAGIC_SCHOOLS_5                 (0x0d4f)    /* short[6]; array terminated by -1 */
+#define MAGIC_SCHOOLS_6                 (0x0d5b)    /* short[8]; array terminated by -1 */
+#define MAGIC_SCHOOLS_7                 (0x0d6b)    /* short[8]; array terminated by -1 */
+#define MAGIC_SCHOOLS_8                 (0x0d7b)    /* short[6]; array terminated by -1 */
+#define MAGIC_SCHOOLS_9                 (0x0d87)    /* short[8]; array terminated by -1 */
 #define MAGIC_SCHOOLS_INDEX             (0x0d97)    /* RealPt[9] */
 #define SPELL_HANDLERS                  (0x0dbb)    /* long[86]; function pointer[86] */
 #define MON_SPELL_DESCRIPTIONS          (0x0f13)    /* struct(8)[15]; struct{char cost, mode, unkn1, attrib1, attrib2, attrib3, unkn2, ani_id;} */
@@ -63,7 +82,35 @@
 #define GFXTAB_FIGURES_MAIN             (0x12c0)    /* struct(5)[125]; struct{char figure_no, unkn2, unkn3, unkn4, unkn5;} */
 #define GFXTAB_OFFSETS_MAIN             (0x1531)    /* struct(2)[625]; struct{char x,y;}; by viewdir+dead */
 #define NVFTAB_FIGURES_DEAD             (0x1a13)    /* short[22] */
-#define GFX_ANI_DESCRIPTIONS            (0x1a3f)    /* short[1419]; 41 arrays */
+// ? 38
+#define GFX_ANI_DESCRIPTIONS_01         (0x1a65)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_02         (0x1ae7)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_03         (0x1b69)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_04         (0x1beb)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_05         (0x1c6d)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_06         (0x1cef)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_07         (0x1d71)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_08         (0x1df3)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_09         (0x1e75)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_10         (0x1ef7)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_11         (0x1f79)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_12         (0x1ffb)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_13         (0x207d)    /* short[65] */
+#define GFX_ANI_DESCRIPTIONS_14         (0x20ff)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_15         (0x2149)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_16         (0x2193)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_17         (0x21dd)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_18         (0x2227)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_19         (0x2271)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_20         (0x22bb)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_21         (0x2305)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_22         (0x234f)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_23         (0x2399)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_24         (0x23e3)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_25         (0x242d)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_26         (0x2477)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_27         (0x24c1)    /* short[37] */
+#define GFX_ANI_DESCRIPTIONS_28         (0x250b)    /* short[37] */
 #define GFX_ANI_INDEX                   (0x2555)    /* RealPt[41] */
 #define TWO_FIELDED_SPRITE_ID           (0x25f9)    /* char[5] */
 #define WEAPONANI_TABLE                 (0x25fe)    /* unsigned short[72] */
@@ -89,11 +136,11 @@
 // ?2
 #define PP20_INDEX                      (0x2845)    /* signed char; archive file index of current pp20 */
 #define REQUEST_REFRESH                 (0x2846)    /* signed short; {0,1} */
-#define DEFAULT_MOUSE_CURSOR            (0x2848)    /* struct(64); struct{char[32]; unsigned short mask[16];} */
-#define CURSOR_ARROW_UP                 (0x2888)    /* struct(64); struct{char[32]; unsigned short mask[16];} */
-#define CURSOR_ARROW_DOWN               (0x28c8)    /* struct(64); struct{char[32]; unsigned short mask[16];} */
-#define CURSOR_ARROW_LEFT               (0x2908)    /* struct(64); struct{char[32]; unsigned short mask[16];} */
-#define CURSOR_ARROW_RIGHT              (0x2948)    /* struct(64); struct{char[32]; unsigned short mask[16];} */
+#define DEFAULT_MOUSE_CURSOR            (0x2848)    /* struct(64); struct{char unkn[32]; unsigned short mask[16];} */
+#define CURSOR_ARROW_UP                 (0x2888)    /* struct(64); struct{char unkn[32]; unsigned short mask[16];} */
+#define CURSOR_ARROW_DOWN               (0x28c8)    /* struct(64); struct{char unkn[32]; unsigned short mask[16];} */
+#define CURSOR_ARROW_LEFT               (0x2908)    /* struct(64); struct{char unkn[32]; unsigned short mask[16];} */
+#define CURSOR_ARROW_RIGHT              (0x2948)    /* struct(64); struct{char unkn[32]; unsigned short mask[16];} */
 #define MOUSE_POSY_MIN                  (0x2988)    /* unsigned short */
 #define MOUSE_POSX_MIN                  (0x298a)    /* unsigned short */
 #define MOUSE_POSY_MAX                  (0x298c)    /* unsigned short */
@@ -198,11 +245,11 @@
 #define YEAR                            (0x2dc2)    /* char */
 #define SPECIAL_DAY                     (0x2dc3)    /* char */
 #define INGAME_TIMERS                   (0x2dc4)    /* signed long[26] */
-#define MODIFICATION_TIMERS             (0x2e2c)    /* struct(8)[100]; struct{long; short; char; char} */
+#define MODIFICATION_TIMERS             (0x2e2c)    /* struct(8)[100]; struct{long u1; short u2; char u3; char u4;} */
 // ?2
 #define GODS_ESTIMATION                 (0x314e)    /* signed long[15] */
 #define TAV_CHEATED_FLAGS               (0x318a)    /* unsigned char[88] */
-#define SMITH_REPAIRITEMS               (0x31e2)    /* struct(6)[50]; struct{short; long} */
+#define SMITH_REPAIRITEMS               (0x31e2)    /* struct(6)[50]; struct{short unkn1; long unkn2;} */
 #define DNG_HANDLED_POS                 (0x330e)    /* unsigned short */
 #define DEATHTRAP_STEPS                 (0x3310)    /* signed short */
 #define DEATHTRAP                       (0x3312)    /* signed short */
@@ -1001,7 +1048,20 @@
 #define SMITH_ITEMS_POSY                (0x6c79)    /* signed short[5]; { 35, 55, 75, 95, 115 } */
 // ?1
 #define TAVERN_DESCR_TABLE              (0x6c84)    /* struct(4)[89]; struct{short a,b;} */
-#define GOD_TEMPLES_TABLES              (0x6de8)    /* char[78]; 14 arrays, each terminated by -1 */
+#define GOD_TEMPLES_TABLE_01            (0x6de8)    /* char[2]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_02            (0x6dea)    /* char[6]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_03            (0x6df0)    /* char[11]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_04            (0x6dfb)    /* char[16]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_05            (0x6e0b)    /* char[2]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_06            (0x6e0d)    /* char[2]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_07            (0x6e0f)    /* char[4]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_08            (0x6e13)    /* char[2]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_09            (0x6e15)    /* char[6]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_10            (0x6e1b)    /* char[5]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_11            (0x6e20)    /* char[3]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_12            (0x6e23)    /* char[2]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_13            (0x6e25)    /* char[13]; array terminated by -1 */
+#define GOD_TEMPLES_TABLE_14            (0x6e32)    /* char[4]; array terminated by -1 */
 #define GOD_TEMPLES_INDEX               (0x6e36)    /* RealPt[15] */
 #define STR_TEMP_FILE_WILDCARD          (0x6e72)    /* char[8]; "TEMP\%s" */
 #define STR_NO_SAVE_IN_TEMPLE           (0x6e7a)    /* char[41]; "IN DIESEM TEMPEL KEIN SPEICHERN M\x99GLICH!" */
@@ -1009,7 +1069,7 @@
 #define TEMPLE_MIRACLE_BONUS            (0x6ea4)    /* signed char[15]; {0, 2, 15, 10, 20, 5, 10, 1, 15, 3, 15, 5, 10, 0} */
 #define TEMPLE_MIRACLE_DICE             (0x6eb3)    /* signed char[15]; {0, 9, 9, 10, 17, 6, 10, 10, 18, 10, 19, 8, 15, 0, 10} */
 #define SEA_TRAVEL_TX_CLASS             (0x6ec2)    /* signed short[7] */
-#define SEA_TRAVEL_QUALITY_TABLE        (0x6ed0)    /* struct(4)[8]; struct{unsigned char class,unkn,price,speed;} */
+#define SEA_TRAVEL_QUALITY_TABLE        (0x6ed0)    /* struct(4)[8]; struct{unsigned char cls,unkn,price,speed;} */
 #define SEA_TRAVEL_TX_SHIP              (0x6ef0)    /* signed short[8] */
 #define SEA_TRAVEL_PASSAGES             (0x6f00)    /* struct(8)[46] */
 #define TRAVEL_BY_SHIP                  (0x7070)    /* unsigned char; 0 = on land, 1 = at the ship */
@@ -1135,7 +1195,21 @@
 // ?4
 #define TRAVELING                       (0xa842)    /* unsigned char; {0,1} */
 #define TEVENTS_REPEATABLE              (0xa843)    /* unsigned char[145]; {0,1} */
-#define GRAMMAR_ARTICLES_TABLE          (0xa8d4)    /* char[67]; []{ "DER", "DIE", "DAS", "DES", "DEN", "DEM", "EIN", "EINE", "EINES", "EINER", "EINEN", "EINE", "EINEM", "VON" } */
+#define GRAMMAR_ARTICLE_DER             (0xa8d4)    /* char[4]; "DER" */
+#define GRAMMAR_ARTICLE_DIE             (0xa8d8)    /* char[4]; "DIE" */
+#define GRAMMAR_ARTICLE_DAS             (0xa8dc)    /* char[4]; "DAS" */
+#define GRAMMAR_ARTICLE_DES             (0xa8e0)    /* char[4]; "DES" */
+#define GRAMMAR_ARTICLE_DEN             (0xa8e4)    /* char[4]; "DEN" */
+#define GRAMMAR_ARTICLE_DEM             (0xa8e8)    /* char[4]; "DEM" */
+#define GRAMMAR_ARTICLE_EIN             (0xa8ec)    /* char[4]; "EIN" */
+#define GRAMMAR_ARTICLE_EINE            (0xa8f0)    /* char[5]; "EINE" */
+#define GRAMMAR_ARTICLE_EINES           (0xa8f5)    /* char[6]; "EINES" */
+#define GRAMMAR_ARTICLE_EINER           (0xa8fb)    /* char[6]; "EINER" */
+#define GRAMMAR_ARTICLE_EINEN           (0xa901)    /* char[6]; "EINEN" */
+#define GRAMMAR_ARTICLE_EINE2           (0xa907)    /* char[5]; "EINE" */
+#define GRAMMAR_ARTICLE_EINEM           (0xa90c)    /* char[6]; "EINEM" */
+#define GRAMMAR_ARTICLE_0               (0xa912)    /* char[1]; "" */
+#define GRAMMAR_ARTICLE_VON             (0xa913)    /* char[4]; "VON" */
 #define GRAMMAR_ARTICLES_INDEX          (0xa917)    /* RealPt[15] */
 #define GRAMMAR_DEF_TABLE               (0xa953)    /* short[24]; [8], by case, then by gender */
 #define GRAMMAR_INDEF_TABLE             (0xa983)    /* short[24]; [8], by case, then by gender */
@@ -1166,7 +1240,7 @@
 #define SPELL_SELECT_STR_KEYVAL         (0xac1a)    /* char[6]; "%s~%d" */
 #define SPELL_SELECT_STR_KEY            (0xac20)    /* char[5]; "\xf2%s\xf0" */
 #define SPELL_SELECT_STR_KEY_COLOR      (0xac25)    /* char[3]; "%s" */
-#define SPELL_SELECT_STR_KEYVAL_COLOR   (0xac28)    /* char[8]; "\xf2%s~%d\xf0 */
+#define SPELL_SELECT_STR_KEYVAL_COLOR   (0xac28)    /* char[8]; "\xf2%s~%d\xf0" */
 #define SPELL_SELECT_ONES               (0xac30)    /* signed char[12]; { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } */
 #define ANALUES_ITEMS                   (0xac3c)    /* struct(5)[28]; struct{signed short item_id, barrier; signed char dtp;} */
 #define HEXENKNOTEN_GFX_BUF             (0xacc8)    /* RealPt */
@@ -1231,7 +1305,7 @@
 #define CD_DRIVE_NO                     (0xbc52)    /* unsigned short */
 // ?6
 #define SAMPLE_AD_LENGTH                (0xbc5a)    /* unsigned short */
-#define SAMPLE_AD_IDX_ENTRY             (0xbc5c)    /* struct(6); struct{signed char; signed char; unsigned long;} */
+#define SAMPLE_AD_IDX_ENTRY             (0xbc5c)    /* struct(6); struct{signed char u1; signed char u2; unsigned long u3;} */
 #define PLAYMASK_US                     (0xbc62)    /* unsigned char; 1 = PLAYM_US, 0 = PLAYM_UK */
 #define GFXBUF_WAIT_KEYPRESS            (0xbc63)    /* char[100] */
 #define SPLASH_AE                       (0xbcc7)    /* long */
@@ -1340,7 +1414,7 @@
 #define GUI_TEXT_BUFFER                 (0xce87)    /* unsigned char[64] */
 #define LAST_CURSOR                     (0xcec7)    /* RealPt */
 #define CURRENT_CURSOR                  (0xcecb)    /* RealPt */
-#define GGST_CURSOR                     (0xcecf)    /* struct(64); struct{char[32]; unsigned short mask[16];} */
+#define GGST_CURSOR                     (0xcecf)    /* struct(64); struct{char unkn[32]; unsigned short mask[16];} */
 #define MOUSE_BG_BAK                    (0xcf0f)    /* unsigned char[256] */
 #define DNG_INIT_FLAG                   (0xd00f)    /* unsigned short; {0,1} */
 #define DNG_EXTRA_ACTION                (0xd011)    /* unsigned short; {0 = warehouse,1 = open door,2 = open chest,3 = close door,4 = lever,5 = smash door} */

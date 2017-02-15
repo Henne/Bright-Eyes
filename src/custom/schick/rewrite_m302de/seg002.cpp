@@ -2818,7 +2818,7 @@ void sub_light_timers(Bit32s quarter)
 
 						/* subtract weight of a torch */
 						sub_ptr_ws(hero_i + HERO_LOAD,
-							host_readws(Real2Host(ds_readd(ITEMSDAT)) + 0x10d));
+							host_readws(Real2Host(ds_readd(ITEMSDAT)) + (12*ITEM_TORCH_ON + 5)));
 
 						/* Remove Torch from inventory */
 						memset(hero_i + HERO_ITEM_HEAD + 14 * j, 0, 14);
