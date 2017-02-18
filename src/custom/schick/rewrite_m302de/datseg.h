@@ -4,7 +4,7 @@
 
 #if defined(__BORLANDC__)
 #define DS_SIZE (0xf7af - 0x938 - 2)
-extern char ds[DS_SIZE];
+extern char ds[1];
 #endif
 
 #endif

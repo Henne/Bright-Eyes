@@ -9,10 +9,7 @@
 #if !defined SYMBOLS_H
 #define SYMBOLS_H
 
-// ?4
-#define STR_BORLAND_CPP                 (0x0004)    /* char[43]; "Borland C++ - Copyright 1991 Borland Intl." */
-#define STR_DIVIDE_ERROR                (0x002f)    /* char[45]; "Divide error\r\nAbnormal program termination\r\n" */
-// ?57
+// ?1
 #define CD_INIT_SUCCESSFUL              (0x0095)    /* unsigned short; {0,1} */
 // ?4
 #define CD_AUDIO_REPEAT                 (0x009b)    /* unsigned short; {0,1} */
@@ -852,7 +849,7 @@
 // ?1
 #define FNAME_SCHICK_DAT                (0x48ca)    /* char[11]; "SCHICK.DAT" */
 #define SND_TXT_DISABLED_MEM2           (0x48d5)    /* char[43]; "MUSIK ABGESCHALTET - NICHT GENUG SPEICHER!" */
-#define DIARY_STRING1                   (0x4900)    /* char[14]; "%2d-~%-8s~%s." */
+#define DIARY_STRING1                   (0x4900)    /* char[14]; "%2d.~%-8s~%s." */
 #define DIARY_STRING2                   (0x490e)    /* char[17]; "%2d.~%-8s~IN %s." */
 #define DIARY_STRING3                   (0x491f)    /* char[27]; "%2d.~%-8s~BESUCHEN VON %s." */
 #define DIARY_STRING4                   (0x493a)    /* char[6]; "~~%s." */
@@ -902,10 +899,10 @@
 #define STR_TEMP_XX_PTR2                (0x4c88)    /* RealPt; to STR_TEMP_XX2 */
 #define FNAMES                          (0x4c8c)    /* long[308] */
 #define LOADED_HEAD_ID                  (0x515c)    /* unsigned short */
-#define STR_TEMP_XX2                    (0x515e)    /* char[8]; "TEMP\XX" */
+#define STR_TEMP_XX2                    (0x515e)    /* char[8]; "TEMP\%s" */
 #define SCHICK_DAT_FNAMES               (0x5166)    /* char[3288]; names of files in SCHICK.DAT */
 #define CHR_FILE_SUFFIX                 (0x5e3e)    /* char[5]; ".CHR" */
-#define SAVEGAME_SUFFIX                 (0x5e43)    /* char[5]; ".GAM" */
+#define SAVEGAME_SUFFIX                 (0x5e43)    /* char[5]; ".gam" */
 #define ALL_FILES_WILDCARD              (0x5e48)    /* char[4]; "*.*" */
 #define ALL_CHR_WILDCARD                (0x5e4c)    /* char[6]; "*.CHR" */
 #define EMPTY_STRING1                   (0x5e52)    /* char; "" */
@@ -1018,7 +1015,7 @@
 #define CAMPFIGHTS                      (0x6694)    /* signed short[4] */
 #define GATHER_HERBS_TABLE              (0x669c)    /* struct(4)[13]; struct{unsigned char herb_id,chance,ta_mod,max_count;} */
 #define GATHER_HERBS_SPECIAL            (0x66d0)    /* unsigned char */
-#define GATHER_HERBS_STR_FOUND          (0x66d1)    /* char[6]; "%d %s" */
+#define GATHER_HERBS_STR_FOUND          (0x66d1)    /* char[6]; "%d^%s" */
 #define GATHER_HERBS_STR_COMMA          (0x66d7)    /* char[3]; ", " */
 #define GATHER_HERBS_STR_AND            (0x66da)    /* char[6]; " UND " */
 #define GATHER_HERBS_STR_DOT            (0x66e0)    /* char[2]; "." */
@@ -1279,7 +1276,7 @@
 #define PALETTE_UNKNOWN4                (0xb251)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
 #define PALETTE_GENERAL                 (0xb2b1)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
 #define STR_BACKSLASH_TEMP              (0xb311)    /* char[6]; "\\TEMP" */
-#define STR_NOT_ENOUGH_MEM              (0xb317)    /* char[124]; "Not enough memory!\x0a\"Realms of Arkania - Blade of Destiny\" needs %ld Byte more memory!\x0aPlease uninstall resident programs!" */
+#define STR_NOT_ENOUGH_MEM              (0xb317)    /* char[124]; "\x0a\x0aNot enough memory!\x0a\"Realms of Arkania - Blade of Destiny\" needs %ld Byte more memory!\x0aPlease uninstall resident programs!" */
 #define STR_DRIVE_X                     (0xb393)    /* char[4]; "X:\" */
 #define STR_TEMP_DIR_FAIL               (0xb397)    /* char[280]; "\xf2!!!!! ACHTUNG !!!!!\xf0\x40\x40DAS SCHWARZE AUGE\x40KANN KEIN TEMPOR\x8eRES VERZEICHNIS ANLEGEN UND IST DAHER NICHT LAUFF\x8eHIG. WAHRSCHEINLICH VERSUCHEN SIE, DAS SPIEL AUF EINEM\xf2 SCHREIBGESCH\x9aTZTEN LAUFWERK\xf0\x40ZU STARTEN. BITTE INSTALLIEREN SIE DAS SPIEL AUF EINE FESTPLATTE.\x40\x40-TASTE ZUM BEENDEN-" */
 #define ALL_FILES_WILDCARD2             (0xb4af)    /* char[4]; "*.*" */
