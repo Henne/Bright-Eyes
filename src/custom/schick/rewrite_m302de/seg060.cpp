@@ -119,7 +119,7 @@ void talk_tavern(void)
 
 			} else if (txt_id == 66) {
 
-				sprintf(text_buffer, format, get_informer_hint());
+				sprintf(text_buffer, format, Real2Host(get_informer_hint()));
 
 			} else if (txt_id == 105) {
 
