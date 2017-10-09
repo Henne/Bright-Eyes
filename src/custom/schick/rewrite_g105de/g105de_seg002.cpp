@@ -4518,7 +4518,7 @@ void new_values()
 				type_names[6]);
 
 			ds_writew(0x1327, 0);
-		} while (di == -1);
+		} while (di == 0xffff);
 		di = values[di - 1];
 		hero.attribs[di].current = bv1;
 		hero.attribs[di].normal = bv1;
