@@ -151,7 +151,19 @@ void spell_odem_arcanum(void)
 	signed short pos;
 	signed short id;
 
+
 	pos = select_item_to_drop(get_spelluser());
+
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* If the player cancels item selection or has no items select_item_to_drop() returns -1.
+	   The original uses the return value to calculate an index, whithout checking for this. */
+	if (pos == -1)
+	{
+		sprintf((char*)Real2Host(ds_readd(DTP2)), "");
+		return;
+	}
+
+#endif
 
 	id = host_readws(get_spelluser() + pos * 14 + HERO_ITEM_HEAD);
 
