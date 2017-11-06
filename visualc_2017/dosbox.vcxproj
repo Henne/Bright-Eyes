@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7FCFFB9B-8629-4D51-849C-8490CECF8AB7}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.26730.12</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <TypeLibraryName>.\Debug/dosbox.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../include;../src/platform/visualc;../src/custom/schick;../src/custom/schick/rewrite_m302de;../src/custom/schweif;../src/custom/schweif/rewrite_c102de;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\Debug/dosbox.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
+      <ObjectFileName>.\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;winmm.lib;sdlmain.lib;sdl.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\Debug/dosbox.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <IgnoreSpecificDefaultLibraries>msvcrt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\Debug/dosbox.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <TypeLibraryName>.\Release/dosbox.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>../include;../src/platform/visualc;../src/custom/schick;../src/custom/schick/rewrite_m302de;../src/custom/schweif;../src/custom/schweif/rewrite_c102de;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\Release/dosbox.pch</PrecompiledHeaderOutputFile>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
+      <ObjectFileName>.\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;winmm.lib;sdlmain.lib;sdl.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\Release/dosbox.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <FixedBaseAddress>false</FixedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\cpu\callback.cpp" />
+    <ClCompile Include="..\src\cpu\core_dynrec.cpp" />
+    <ClCompile Include="..\src\cpu\core_dyn_x86.cpp" />
+    <ClCompile Include="..\src\cpu\core_full.cpp" />
+    <ClCompile Include="..\src\cpu\core_normal.cpp" />
+    <ClCompile Include="..\src\cpu\core_prefetch.cpp" />
+    <ClCompile Include="..\src\cpu\core_simple.cpp" />
+    <ClCompile Include="..\src\cpu\cpu.cpp" />
+    <ClCompile Include="..\src\cpu\flags.cpp" />
+    <ClCompile Include="..\src\cpu\modrm.cpp" />
+    <ClCompile Include="..\src\cpu\paging.cpp" />
+    <ClCompile Include="..\src\custom\custom.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg000.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg001.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg002.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg003.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg004.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg005.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg006.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\datseg.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg000.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg001.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg002.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg003.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg004.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg005.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg006.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg007.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg008.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg009.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg010.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg011.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg024.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg025.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg026.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg027.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg028.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg029.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg030.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg031.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg032.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg033.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg034.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg035.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg036.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg037.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg038.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg039.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg040.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg041.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg042.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg043.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg044.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg045.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg046.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg047.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg048.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg049.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg050.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg051.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg052.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg053.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg054.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg055.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg056.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg057.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg058.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg059.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg060.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg061.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg062.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg063.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg064.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg065.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg066.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg067.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg068.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg069.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg070.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg071.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg072.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg073.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg074.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg075.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg076.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg077.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg078.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg079.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg080.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg081.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg082.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg083.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg084.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg085.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg086.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg087.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg088.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg089.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg090.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg091.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg092.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg093.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg094.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg095.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg096.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg097.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg098.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg099.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg100.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg101.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg102.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg103.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg104.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg105.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg106.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg107.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg108.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg109.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg110.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg111.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg112.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg113.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg114.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg115.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg116.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg117.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg118.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg119.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg120.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg121.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg122.cpp" />
+    <ClCompile Include="..\src\custom\schick\rewrite_m302de\t_map.cpp" />
+    <ClCompile Include="..\src\custom\schick\schick.cpp" />
+    <ClCompile Include="..\src\custom\schick\schick_g105de.cpp" />
+    <ClCompile Include="..\src\custom\schick\schick_m302de.cpp" />
+    <ClCompile Include="..\src\custom\schick\schick_status.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg000.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg002.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg013.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg024.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg029.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg033.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg034.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg037.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg043.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg066.cpp" />
+    <ClCompile Include="..\src\custom\schweif\rewrite_c102de\c102de_seg136.cpp" />
+    <ClCompile Include="..\src\custom\schweif\schweif.cpp" />
+    <ClCompile Include="..\src\custom\schweif\schweif_c102de.cpp" />
+    <ClCompile Include="..\src\debug\debug.cpp" />
+    <ClCompile Include="..\src\debug\debug_disasm.cpp" />
+    <ClCompile Include="..\src\debug\debug_gui.cpp" />
+    <ClCompile Include="..\src\debug\debug_win32.cpp" />
+    <ClCompile Include="..\src\dosbox.cpp" />
+    <ClCompile Include="..\src\dos\cdrom.cpp" />
+    <ClCompile Include="..\src\dos\cdrom_aspi_win32.cpp" />
+    <ClCompile Include="..\src\dos\cdrom_image.cpp" />
+    <ClCompile Include="..\src\dos\cdrom_ioctl_win32.cpp" />
+    <ClCompile Include="..\src\dos\dos.cpp" />
+    <ClCompile Include="..\src\dos\dos_classes.cpp" />
+    <ClCompile Include="..\src\dos\dos_devices.cpp" />
+    <ClCompile Include="..\src\dos\dos_execute.cpp" />
+    <ClCompile Include="..\src\dos\dos_files.cpp" />
+    <ClCompile Include="..\src\dos\dos_ioctl.cpp" />
+    <ClCompile Include="..\src\dos\dos_keyboard_layout.cpp" />
+    <ClCompile Include="..\src\dos\dos_memory.cpp" />
+    <ClCompile Include="..\src\dos\dos_misc.cpp" />
+    <ClCompile Include="..\src\dos\dos_mscdex.cpp" />
+    <ClCompile Include="..\src\dos\dos_programs.cpp" />
+    <ClCompile Include="..\src\dos\dos_tables.cpp" />
+    <ClCompile Include="..\src\dos\drives.cpp" />
+    <ClCompile Include="..\src\dos\drive_cache.cpp" />
+    <ClCompile Include="..\src\dos\drive_fat.cpp" />
+    <ClCompile Include="..\src\dos\drive_iso.cpp" />
+    <ClCompile Include="..\src\dos\drive_local.cpp" />
+    <ClCompile Include="..\src\dos\drive_virtual.cpp" />
+    <ClCompile Include="..\src\fpu\fpu.cpp" />
+    <ClCompile Include="..\src\gui\midi.cpp" />
+    <ClCompile Include="..\src\gui\render.cpp" />
+    <ClCompile Include="..\src\gui\render_scalers.cpp" />
+    <ClCompile Include="..\src\gui\sdlmain.cpp" />
+    <ClCompile Include="..\src\gui\sdl_gui.cpp" />
+    <ClCompile Include="..\src\gui\sdl_mapper.cpp" />
+    <ClCompile Include="..\src\hardware\adlib.cpp" />
+    <ClCompile Include="..\src\hardware\cmos.cpp" />
+    <ClCompile Include="..\src\hardware\dbopl.cpp" />
+    <ClCompile Include="..\src\hardware\disney.cpp" />
+    <ClCompile Include="..\src\hardware\dma.cpp" />
+    <ClCompile Include="..\src\hardware\gameblaster.cpp" />
+    <ClCompile Include="..\src\hardware\gus.cpp" />
+    <ClCompile Include="..\src\hardware\hardware.cpp" />
+    <ClCompile Include="..\src\hardware\iohandler.cpp" />
+    <ClCompile Include="..\src\hardware\ipx.cpp" />
+    <ClCompile Include="..\src\hardware\ipxserver.cpp" />
+    <ClCompile Include="..\src\hardware\joystick.cpp" />
+    <ClCompile Include="..\src\hardware\keyboard.cpp" />
+    <ClCompile Include="..\src\hardware\memory.cpp" />
+    <ClCompile Include="..\src\hardware\mixer.cpp" />
+    <ClCompile Include="..\src\hardware\mpu401.cpp" />
+    <ClCompile Include="..\src\hardware\pcspeaker.cpp" />
+    <ClCompile Include="..\src\hardware\pic.cpp" />
+    <ClCompile Include="..\src\hardware\sblaster.cpp" />
+    <ClCompile Include="..\src\hardware\serialport\directserial.cpp" />
+    <ClCompile Include="..\src\hardware\serialport\libserial.cpp" />
+    <ClCompile Include="..\src\hardware\serialport\misc_util.cpp" />
+    <ClCompile Include="..\src\hardware\serialport\nullmodem.cpp" />
+    <ClCompile Include="..\src\hardware\serialport\serialdummy.cpp" />
+    <ClCompile Include="..\src\hardware\serialport\serialport.cpp" />
+    <ClCompile Include="..\src\hardware\serialport\softmodem.cpp" />
+    <ClCompile Include="..\src\hardware\tandy_sound.cpp" />
+    <ClCompile Include="..\src\hardware\timer.cpp" />
+    <ClCompile Include="..\src\hardware\vga.cpp" />
+    <ClCompile Include="..\src\hardware\vga_attr.cpp" />
+    <ClCompile Include="..\src\hardware\vga_crtc.cpp" />
+    <ClCompile Include="..\src\hardware\vga_dac.cpp" />
+    <ClCompile Include="..\src\hardware\vga_draw.cpp" />
+    <ClCompile Include="..\src\hardware\vga_gfx.cpp" />
+    <ClCompile Include="..\src\hardware\vga_memory.cpp" />
+    <ClCompile Include="..\src\hardware\vga_misc.cpp" />
+    <ClCompile Include="..\src\hardware\vga_other.cpp" />
+    <ClCompile Include="..\src\hardware\vga_paradise.cpp" />
+    <ClCompile Include="..\src\hardware\vga_s3.cpp" />
+    <ClCompile Include="..\src\hardware\vga_seq.cpp" />
+    <ClCompile Include="..\src\hardware\vga_tseng.cpp" />
+    <ClCompile Include="..\src\hardware\vga_xga.cpp" />
+    <ClCompile Include="..\src\ints\bios.cpp" />
+    <ClCompile Include="..\src\ints\bios_disk.cpp" />
+    <ClCompile Include="..\src\ints\bios_keyboard.cpp" />
+    <ClCompile Include="..\src\ints\ems.cpp" />
+    <ClCompile Include="..\src\ints\int10.cpp" />
+    <ClCompile Include="..\src\ints\int10_char.cpp" />
+    <ClCompile Include="..\src\ints\int10_memory.cpp" />
+    <ClCompile Include="..\src\ints\int10_misc.cpp" />
+    <ClCompile Include="..\src\ints\int10_modes.cpp" />
+    <ClCompile Include="..\src\ints\int10_pal.cpp" />
+    <ClCompile Include="..\src\ints\int10_put_pixel.cpp" />
+    <ClCompile Include="..\src\ints\int10_vesa.cpp" />
+    <ClCompile Include="..\src\ints\int10_video_state.cpp" />
+    <ClCompile Include="..\src\ints\int10_vptable.cpp" />
+    <ClCompile Include="..\src\ints\mouse.cpp" />
+    <ClCompile Include="..\src\ints\xms.cpp" />
+    <ClCompile Include="..\src\libs\gui_tk\gui_tk.cpp" />
+    <ClCompile Include="..\src\misc\cross.cpp" />
+    <ClCompile Include="..\src\misc\messages.cpp" />
+    <ClCompile Include="..\src\misc\programs.cpp" />
+    <ClCompile Include="..\src\misc\setup.cpp" />
+    <ClCompile Include="..\src\misc\support.cpp" />
+    <ClCompile Include="..\src\shell\shell.cpp" />
+    <ClCompile Include="..\src\shell\shell_batch.cpp" />
+    <ClCompile Include="..\src\shell\shell_cmds.cpp" />
+    <ClCompile Include="..\src\shell\shell_misc.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\winres.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\bios.h" />
+    <ClInclude Include="..\include\bios_disk.h" />
+    <ClInclude Include="..\include\callback.h" />
+    <ClInclude Include="..\include\control.h" />
+    <ClInclude Include="..\include\cpu.h" />
+    <ClInclude Include="..\include\cross.h" />
+    <ClInclude Include="..\include\custom.h" />
+    <ClInclude Include="..\include\debug.h" />
+    <ClInclude Include="..\include\dma.h" />
+    <ClInclude Include="..\include\dosbox.h" />
+    <ClInclude Include="..\include\dos_inc.h" />
+    <ClInclude Include="..\include\dos_system.h" />
+    <ClInclude Include="..\include\fpu.h" />
+    <ClInclude Include="..\include\hardware.h" />
+    <ClInclude Include="..\include\inout.h" />
+    <ClInclude Include="..\include\joystick.h" />
+    <ClInclude Include="..\include\keyboard.h" />
+    <ClInclude Include="..\include\logging.h" />
+    <ClInclude Include="..\include\mem.h" />
+    <ClInclude Include="..\include\mixer.h" />
+    <ClInclude Include="..\include\modules.h" />
+    <ClInclude Include="..\include\mouse.h" />
+    <ClInclude Include="..\include\paging.h" />
+    <ClInclude Include="..\include\pic.h" />
+    <ClInclude Include="..\include\programs.h" />
+    <ClInclude Include="..\include\regs.h" />
+    <ClInclude Include="..\include\render.h" />
+    <ClInclude Include="..\include\serialport.h" />
+    <ClInclude Include="..\include\setup.h" />
+    <ClInclude Include="..\include\shell.h" />
+    <ClInclude Include="..\include\support.h" />
+    <ClInclude Include="..\include\timer.h" />
+    <ClInclude Include="..\include\vga.h" />
+    <ClInclude Include="..\include\video.h" />
+    <ClInclude Include="..\src\cpu\core_dynrec\cache.h" />
+    <ClInclude Include="..\src\cpu\core_dynrec\decoder.h" />
+    <ClInclude Include="..\src\cpu\core_dynrec\decoder_basic.h" />
+    <ClInclude Include="..\src\cpu\core_dynrec\decoder_opcodes.h" />
+    <ClInclude Include="..\src\cpu\core_dynrec\dyn_fpu.h" />
+    <ClInclude Include="..\src\cpu\core_dynrec\operators.h" />
+    <ClInclude Include="..\src\cpu\core_dynrec\risc_x64.h" />
+    <ClInclude Include="..\src\cpu\core_dynrec\risc_x86.h" />
+    <ClInclude Include="..\src\cpu\core_dyn_x86\cache.h" />
+    <ClInclude Include="..\src\cpu\core_dyn_x86\decoder.h" />
+    <ClInclude Include="..\src\cpu\core_dyn_x86\dyn_fpu.h" />
+    <ClInclude Include="..\src\cpu\core_dyn_x86\dyn_fpu_dh.h" />
+    <ClInclude Include="..\src\cpu\core_dyn_x86\helpers.h" />
+    <ClInclude Include="..\src\cpu\core_dyn_x86\risc_x86.h" />
+    <ClInclude Include="..\src\cpu\core_dyn_x86\string.h" />
+    <ClInclude Include="..\src\cpu\core_full\ea_lookup.h" />
+    <ClInclude Include="..\src\cpu\core_full\load.h" />
+    <ClInclude Include="..\src\cpu\core_full\loadwrite.h" />
+    <ClInclude Include="..\src\cpu\core_full\op.h" />
+    <ClInclude Include="..\src\cpu\core_full\optable.h" />
+    <ClInclude Include="..\src\cpu\core_full\save.h" />
+    <ClInclude Include="..\src\cpu\core_full\string.h" />
+    <ClInclude Include="..\src\cpu\core_full\support.h" />
+    <ClInclude Include="..\src\cpu\core_normal\helpers.h" />
+    <ClInclude Include="..\src\cpu\core_normal\prefix_0f.h" />
+    <ClInclude Include="..\src\cpu\core_normal\prefix_66.h" />
+    <ClInclude Include="..\src\cpu\core_normal\prefix_66_0f.h" />
+    <ClInclude Include="..\src\cpu\core_normal\prefix_none.h" />
+    <ClInclude Include="..\src\cpu\core_normal\string.h" />
+    <ClInclude Include="..\src\cpu\core_normal\support.h" />
+    <ClInclude Include="..\src\cpu\core_normal\table_ea.h" />
+    <ClInclude Include="..\src\cpu\instructions.h" />
+    <ClInclude Include="..\src\cpu\lazyflags.h" />
+    <ClInclude Include="..\src\cpu\modrm.h" />
+    <ClInclude Include="..\src\custom\custom_hooks.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg000.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg001.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg003.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg004.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg005.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg006.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_g105de\port.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\common.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\dagseg.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg000.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg001.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg002.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg003.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg004.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg005.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg006.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg007.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg008.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg009.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg010.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg011.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg024.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg025.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg026.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg027.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg028.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg029.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg030.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg031.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg032.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg033.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg034.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg035.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg036.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg037.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg038.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg039.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg040.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg041.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg042.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg043.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg044.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg045.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg046.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg047.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg048.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg049.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg050.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg051.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg052.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg053.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg054.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg055.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg056.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg057.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg058.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg059.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg060.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg061.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg062.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg063.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg064.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg065.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg066.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg067.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg068.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg069.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg070.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg071.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg072.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg073.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg074.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg075.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg076.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg077.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg078.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg079.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg080.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg081.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg082.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg083.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg084.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg085.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg086.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg087.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg088.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg089.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg090.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg091.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg092.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg093.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg094.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg095.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg096.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg097.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg098.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg099.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg100.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg101.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg102.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg103.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg104.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg105.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg106.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg107.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg108.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg109.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg110.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg111.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg112.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg113.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg114.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg115.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg116.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg117.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg118.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg119.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg120.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg121.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg122.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\symbols.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\t_map.h" />
+    <ClInclude Include="..\src\custom\schick\rewrite_m302de\v302de.h" />
+    <ClInclude Include="..\src\custom\schick\schick.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg000.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg002.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg013.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg024.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg029.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg033.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg034.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg037.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg043.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg066.h" />
+    <ClInclude Include="..\src\custom\schweif\rewrite_c102de\c102de_seg136.h" />
+    <ClInclude Include="..\src\custom\schweif\schweif.h" />
+    <ClInclude Include="..\src\debug\debug_inc.h" />
+    <ClInclude Include="..\src\debug\disasm_tables.h" />
+    <ClInclude Include="..\src\dos\cdrom.h" />
+    <ClInclude Include="..\src\dos\dev_con.h" />
+    <ClInclude Include="..\src\dos\drives.h" />
+    <ClInclude Include="..\src\dos\Ntddcdrm.h" />
+    <ClInclude Include="..\src\dos\Ntddscsi.h" />
+    <ClInclude Include="..\src\dos\Ntddstor.h" />
+    <ClInclude Include="..\src\dos\scsidefs.h" />
+    <ClInclude Include="..\src\dos\wnaspi32.h" />
+    <ClInclude Include="..\src\fpu\fpu_instructions.h" />
+    <ClInclude Include="..\src\fpu\fpu_instructions_x86.h" />
+    <ClInclude Include="..\src\gui\midi_win32.h" />
+    <ClInclude Include="..\src\gui\render_scalers.h" />
+    <ClInclude Include="..\src\gui\render_templates.h" />
+    <ClInclude Include="..\src\hardware\font-switch.h" />
+    <ClInclude Include="..\src\hardware\serialport\directserial.h" />
+    <ClInclude Include="..\src\hardware\serialport\libserial.h" />
+    <ClInclude Include="..\src\hardware\serialport\misc_util.h" />
+    <ClInclude Include="..\src\hardware\serialport\nullmodem.h" />
+    <ClInclude Include="..\src\hardware\serialport\serialdummy.h" />
+    <ClInclude Include="..\src\hardware\serialport\softmodem.h" />
+    <ClInclude Include="..\src\ints\int10.h" />
+    <ClInclude Include="..\src\ints\xms.h" />
+    <ClInclude Include="..\src\platform\visualc\config.h" />
+    <ClInclude Include="..\src\platform\visualc\unistd.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\src\dosbox.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

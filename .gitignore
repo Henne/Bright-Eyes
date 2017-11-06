@@ -15,3 +15,5 @@ autom4te.cache
 aclocal.m4
 lastbuild.log
 src/dosbox
+/visualc_2017/Debug
+/visualc_2017/Release
