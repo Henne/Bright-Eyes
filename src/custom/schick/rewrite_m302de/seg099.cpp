@@ -965,7 +965,15 @@ RealPt spell_analues(void)
 	}
 
 	item_pos = select_item_to_drop(get_spelluser());
+
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* If the player cancels item selection or has no items select_item_to_drop() returns -1.
+	The original uses the return value to calculate an index, whithout checking for this. */
+	if (item_pos == -1) item_id = 0;
+	else item_id = host_readws(get_spelluser() + 14 * item_pos + HERO_ITEM_HEAD);
+#else
 	item_id = host_readws(get_spelluser() + 14 * item_pos + HERO_ITEM_HEAD);
+#endif
 
 	strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_tx(52));
 
