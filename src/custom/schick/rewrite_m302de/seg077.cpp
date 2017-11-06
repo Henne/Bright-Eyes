@@ -281,11 +281,17 @@ void DNG01_chest7_x2(RealPt chest)
 
 void DNG01_chest6_x3(RealPt chest)
 {
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* Enabling the extra loot in function DNG01_chest6_x1() also causes the special chest handler to call this function instead of DNG01_chest6_x1().
+	   Without this additional check the player will always get another golden key and the same text as the first time the chest is successfully opened.*/
+	if (!ds_readbs(DNG01_KEY_TAKEN))
+	{
+#endif
 	/* ITEM: the GOLDEN KEY */
 	get_item(219, 1, 1);
 
-/* Original-Bug: The string 14 from SHIP.DTX needs a pointer to the name of the hero, not an integer.
- */
+	/* Original-Bug: The string 14 from SHIP.DTX needs a pointer to the name of the hero, not an integer.
+	 */
 #ifdef M302de_ORIGINAL_BUGFIX
 	sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
 		(char*)get_tx(14),
@@ -297,6 +303,15 @@ void DNG01_chest6_x3(RealPt chest)
 	print_msg_with_first_hero(Real2Host(ds_readfp(TEXT_OUTPUT_BUF)));
 
 	ds_writeb(DNG01_KEY_TAKEN, 1);
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* We also need to close the if-block...*/
+	}
+	else 
+	{
+		/* ... and tell the player that the chest is now empty.*/
+		GUI_output(get_ttx(522));
+	}
+#endif
 }
 
 void DNG01_chest6_x2(RealPt chest)
