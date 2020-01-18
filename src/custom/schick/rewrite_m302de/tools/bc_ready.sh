@@ -51,6 +51,7 @@ if [ "${USE_KVM}" = "true" ]; then
 
 	#unmounten
 	sudo umount ${MOUNT}
+	sudo qemu-nbd --disconnect ${DEVICE}
 
 	#kompilieren
 	pushd ~/qemu/BE-compile/
@@ -58,6 +59,9 @@ if [ "${USE_KVM}" = "true" ]; then
 	popd
 	sync
 
+
+	sudo qemu-nbd --connect=${DEVICE} ${HDD_IMAGE}
+	sudo partprobe ${DEVICE}
 
 	#mounten
 	sudo mount ${DEVICE}p1 ${MOUNT} -t vfat -o ro,users,sync
