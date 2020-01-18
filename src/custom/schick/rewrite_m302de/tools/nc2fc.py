@@ -19,7 +19,7 @@
 # innerhalb des Segments in aufseteigender Adressrichtung liegt.
 
 # Compiler:	call absadr
-# Linker:	nop ; push cs; call word reladr
+# Linker:	nop ; push cs; call reladr
 
 import sys
 import string
@@ -47,7 +47,7 @@ while line is not None and line != "":
 		o = o + "  "
 		o = o + "9A00000000"
 		o = o + "        "
-		o = o + "call word 0x0:0x0\n"
+		o = o + "call 0x0:0x0\n"
 		outfile.write(o)
 		fc = fc + 1
 
@@ -100,7 +100,7 @@ while line is not None and line != "":
 					o = o + "0000        "
 
 					#create assembly
-					o = o + "call word 0x0:"
+					o = o + "call 0x0:"
 					o = o + hex(new_add) + "\n"
 					outfile.write(o)
 
