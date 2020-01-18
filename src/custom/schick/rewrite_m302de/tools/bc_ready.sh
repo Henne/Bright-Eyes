@@ -122,10 +122,10 @@ for i in ${OBJDIR}/*.OBJ; do
 #	ndisasm -b16 -e4 ${PREFIX}.BIN >${PREFIX}.dis
 
 	# count lines of the original disassembly
-	LINES=$(wc -l ${DISORIG}/${PREFIX}.dis |cut -d " " -f 1);
+	ORIGLINES=$(wc -l ${DISORIG}/${PREFIX}.dis | cut -d " " -f 1)
 
 	# make the fresh file have the same length
-	head -n $LINES ${DISDIR}/${PREFIX}.dis >${DISDIR}/${PREFIX}.tmp
+	head -n $ORIGLINES ${DISDIR}/${PREFIX}.dis >${DISDIR}/${PREFIX}.tmp
 	mv ${DISDIR}/${PREFIX}.tmp ${DISDIR}/${PREFIX}.dis
 
 
@@ -134,25 +134,25 @@ for i in ${OBJDIR}/*.OBJ; do
 	case "${PREFIX}" in
 		"SEG001")
 			# exact 23 differing lines are allowed
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
 
-			if [ $LINES -ne 23 ]; then RETVAL=1; fi
+			if [ $DIFFLINES -ne 23 ]; then RETVAL=1; fi
 			;;
 		"SEG002")
 			# exact 26 differing lines are allowed
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 26 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 26 ]; then RETVAL=1; fi
 			;;
 		"SEG004")
 			# exact 1 differing lines are allowed
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 1 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 1 ]; then RETVAL=1; fi
 			;;
 		"SEG008")
 			# exact 42 differing lines are allowed
 			# adresses in unalinged codesegment
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 42 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 42 ]; then RETVAL=1; fi
 			;;
 		"SEG011")
 			# AIL: dump_obj produces uncomparable files due to BSS
@@ -163,48 +163,48 @@ for i in ${OBJDIR}/*.OBJ; do
 		"SEG048")
 			# exact 27 differing lines are allowed
 			# other code in switch statements
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 27 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 27 ]; then RETVAL=1; fi
 			;;
 		"SEG049")
 			# exact two differing lines are allowed
 			# (function pointer argument)
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 2 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 2 ]; then RETVAL=1; fi
 			;;
 		"SEG050")
 			# exact 1 differing lines are allowed
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 1 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 1 ]; then RETVAL=1; fi
 			;;
 		"SEG055")
 			# exact 6 differing lines are allowed
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 6 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 6 ]; then RETVAL=1; fi
 			;;
 		"SEG092")
 			# exact 2 differing lines are allowed
 			# (function pointer argument)
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 2 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 2 ]; then RETVAL=1; fi
 			;;
 		"SEG106")
 			# exact 57 differing lines are allowed
 			# (function pointer argument)
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 57 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 57 ]; then RETVAL=1; fi
 			;;
 		"SEG113")
 			# exact 2 differing lines are allowed
 			# (function pointer argument)
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 2 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 2 ]; then RETVAL=1; fi
 			;;
 		"SEG120")
 			# exact 2 differing lines are allowed
 			# (function pointer argument)
-			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 2 ]; then RETVAL=1; fi
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $DIFFLINES -ne 2 ]; then RETVAL=1; fi
 			;;
 		"DATSEG")
 			;;
