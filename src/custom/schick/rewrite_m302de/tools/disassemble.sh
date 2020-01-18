@@ -96,7 +96,7 @@ ndisasm -b16 -e $((0x51820 + 0x2400)) ${GAMEFILE} | head -n 1043 >${OUTDIR}/SEG0
 ndisasm -b16 -e $((0x52780 + 0x2400)) ${GAMEFILE} | head -n 1855 >${OUTDIR}/SEG072.dis
 ndisasm -b16 -e $((0x53cc0 + 0x2400)) ${GAMEFILE} | head -n 807 >${OUTDIR}/SEG073.dis
 ndisasm -b16 -e $((0x545f0 + 0x2400)) ${GAMEFILE} | head -n 1182 >${OUTDIR}/SEG074.dis
-ndisasm -b16 -e $((0x55310 + 0x2400)) ${GAMEFILE} | head -n 2014 >${OUTDIR}/SEG075.dis
+ndisasm -b16 -e $((0x55310 + 0x2400)) ${GAMEFILE} | head -n 2002 >${OUTDIR}/SEG075.dis
 ndisasm -b16 -e $((0x56960 + 0x2400)) ${GAMEFILE} | head -n 1520 >${OUTDIR}/SEG076.dis
 ndisasm -b16 -e $((0x57c80 + 0x2400)) ${GAMEFILE} | head -n 654 >${OUTDIR}/SEG077.dis
 ndisasm -b16 -e $((0x58500 + 0x2400)) ${GAMEFILE} | head -n 1552 >${OUTDIR}/SEG078.dis
