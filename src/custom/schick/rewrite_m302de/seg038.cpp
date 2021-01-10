@@ -168,6 +168,14 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 	x_bak = target_x;
 	y_bak = target_y;
 
+	/* potential Original-Bug:
+	 * found_dir is not initialized and may stay so in case that FIG_backtrack is called with equal target and hero/enemy position.
+	 * See https://www.crystals-dsa-foren.de/showthread.php?tid=5383&pid=155007#pid155007
+	 */
+#ifdef M302de_ORIGINAL_BUGFIX
+	found_dir = 0;
+#endif
+
 	/* for each direction */
 	for (i = 0; i < 4; i++) {
 
