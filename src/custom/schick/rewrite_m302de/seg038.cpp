@@ -640,9 +640,9 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 			for (i = 0; i < l_si; i++) {
 
 				if ((a4 == 0) || (a4 == 2) || (a4 == 4) || (a4 == 6) || (a4 == 7)) {
-					FIG_backtrack(ptr2, arr1[i], arr2[i], l_var2, host_readbs(in_ptr + 0x23), a4, two_fields, a1);
+					FIG_backtrack(ptr2, arr1[i], arr2[i], l_var2, host_readbs(in_ptr + ENEMY_SHEET_BP), a4, two_fields, a1);
 				} else {
-					FIG_backtrack(ptr2, arr1[i], arr2[i], l_var2, host_readbs(in_ptr + 0x33), a4, two_fields, a1);
+					FIG_backtrack(ptr2, arr1[i], arr2[i], l_var2, host_readbs(in_ptr + HERO_BP_LEFT), a4, two_fields, a1);
 				}
 
 				l_var11 = FIG_count_smth((signed char*)p_datseg + FIG_MOVE_PATHDIR);
@@ -659,9 +659,9 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 			}
 
 			if ((a4 == 0) || (a4 == 2) || (a4 == 4) || (a4 == 6) || (a4 == 7)) {
-				FIG_backtrack(ptr2, arr1[l_var13], arr2[l_var13], l_var2, host_readbs(in_ptr + 0x23), a4, two_fields, a1);
+				FIG_backtrack(ptr2, arr1[l_var13], arr2[l_var13], l_var2, host_readbs(in_ptr + ENEMY_SHEET_BP), a4, two_fields, a1);
 			} else {
-				FIG_backtrack(ptr2, arr1[l_var13], arr2[l_var13], l_var2, host_readbs(in_ptr + 0x33), a4, two_fields, a1);
+				FIG_backtrack(ptr2, arr1[l_var13], arr2[l_var13], l_var2, host_readbs(in_ptr + HERO_BP_LEFT), a4, two_fields, a1);
 			}
 		}
 	}
