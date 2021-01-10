@@ -474,12 +474,12 @@ static inline unsigned short hero_cursed(Bit8u *hero) {
 }
 
 /**
- * hero_unc() -	check if hero is unconscious
+ * hero_uncon() -	check if hero is unconscious
  * @hero:	ptr to hero
  *
  * 0 = awake / 1 = unconscious
  */
-static inline unsigned short hero_unc(Bit8u *hero) {
+static inline unsigned short hero_uncon(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 6) & 1) == 0)
 		return 0;
 	else
@@ -494,7 +494,7 @@ static inline unsigned short hero_unkn2(Bit8u *hero) {
 		return 1;
 }
 
-static inline unsigned short hero_unkn3(Bit8u *hero) {
+static inline unsigned short hero_scared(Bit8u *hero) {
 
 	if (((host_readb(hero + 0xab) >> 0) & 1) == 0)
 		return 0;
@@ -623,7 +623,7 @@ static inline unsigned short enemy_illusion(Bit8u *enemy) {
 		return 1;
 }
 
-static inline unsigned short enemy_bit8(Bit8u *enemy) {
+static inline unsigned short enemy_tame(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x32) >> 0) & 1) == 0)
 		return 0;
 	else
@@ -643,14 +643,14 @@ static inline unsigned short enemy_bb(Bit8u *enemy) {
 		return 1;
 }
 
-static inline unsigned short enemy_bit10(Bit8u *enemy) {
+static inline unsigned short enemy_scared(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x32) >> 2) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
-static inline unsigned short enemy_bit11(Bit8u *enemy) {
+static inline unsigned short enemy_dancing(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x32) >> 3) & 1) == 0)
 		return 0;
 	else
@@ -1122,10 +1122,10 @@ struct bittest {
 #define hero_busy(hero)		((*(struct hero_status*)(hero + 0xaa)).busy)
 #define hero_cham(hero)		((*(struct hero_status*)(hero + 0xaa)).cham)
 #define hero_cursed(hero)	((*(struct hero_status*)(hero + 0xaa)).cursed)
-#define hero_unc(hero)		((*(struct hero_status*)(hero + 0xaa)).uncon)
+#define hero_uncon(hero)	((*(struct hero_status*)(hero + 0xaa)).uncon)
 #define hero_unkn2(hero)	((*(struct hero_status*)(hero + 0xaa)).unkn2)
 
-#define hero_unkn3(hero)	((*(struct hero_status*)(hero + 0xaa)).unkn3)
+#define hero_scared(hero)	((*(struct hero_status*)(hero + 0xaa)).scared)
 #define hero_dummy1(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy1)
 #define hero_dummy3(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy3)
 #define hero_dummy4(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy4)
@@ -1144,10 +1144,10 @@ struct bittest {
 #define enemy_uncon(enemy)	(((struct enemy_sheets*)(enemy))->status1.uncon)
 #define enemy_illusion(enemy)	(((struct enemy_sheets*)(enemy))->status1.illusion)
 
-#define enemy_bit8(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit8)
+#define enemy_tame(enemy)	(((struct enemy_sheets*)(enemy))->status2.tame)
 #define enemy_bb(enemy)		(((struct enemy_sheets*)(enemy))->status2.bb)
-#define enemy_bit10(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit10)
-#define enemy_bit11(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit11)
+#define enemy_scared(enemy)	(((struct enemy_sheets*)(enemy))->status2.scared)
+#define enemy_dancing(enemy)	(((struct enemy_sheets*)(enemy))->status2.dancing)
 
 #define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + 0x196))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)
 

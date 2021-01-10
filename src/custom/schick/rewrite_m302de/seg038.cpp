@@ -375,7 +375,7 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 			obj_id = host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var7 * 25) + l_var6);
 
 			if (obj_id > 0) {
-				if ((obj_id < 10) && (hero_dead(get_hero(obj_id - 1)) || hero_unc(get_hero(obj_id - 1))))
+				if ((obj_id < 10) && (hero_dead(get_hero(obj_id - 1)) || hero_uncon(get_hero(obj_id - 1))))
 				{
 					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var7 * 25) + l_var6, 0);
 				} else if ((obj_id >= 10) && (obj_id < 30) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 49) + obj_id * SIZEOF_ENEMY_SHEET)))

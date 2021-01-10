@@ -61,7 +61,7 @@ enum {
  *	@cursed:	1 = cursed		/ 0 = not cursed
  *	@uncon:		1 = unconscious		/ 0 = conscious
  *	@unkn2:		yet unknown, maybe unused
- *	@unkn3:		yet unknown, but used
+ *	@scared:	1 = scared and wants to flee (from 'Horriphobus' spell)	/ 0 = not scared
  *	@dup:		1 = Duplicatus active	/ not active
  *	@dummy1:	yet unknown, maybe unused
  *	@dummy2:	yet unknown, maybe unused
@@ -287,10 +287,10 @@ struct enemy_status1 {
 };
 
 struct enemy_status2 {
-	unsigned short bit8	:1;
+	unsigned short tame	:1; /* from 'Bannbaladin', 'Herr der Tiere' or 'Sanftmut' spell */
 	unsigned short bb	:1;
-	unsigned short bit10	:1;
-	unsigned short bit11	:1;
+	unsigned short scared	:1; /* from 'Horriphobus' spell */
+	unsigned short dancing	:1; /* from 'Zwingtanz' spell */
 };
 
 struct item_status {
