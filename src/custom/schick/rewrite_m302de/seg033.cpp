@@ -79,7 +79,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 		FIG_init_list_elem(hero_pos + 1);
 		draw_fight_screen_pal(0);
 
-		if ((hero_unkn3(hero)) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE)) {
+		if ((hero_scared(hero)) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE)) {
 
 			and_ptr_bs(hero + HERO_STATUS1, 0x7f);
 			and_ptr_bs(hero + HERO_STATUS1, 0xfb);
@@ -927,7 +927,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					} else if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
 						&& (test_bit2(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 0x32 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
-						&& (hero_unkn3(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
+						&& (hero_scared(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{
 
 						/* GUI_output(get_tx(29)); */

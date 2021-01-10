@@ -458,7 +458,7 @@ void FIG_latecomers(void)
 			if (!host_readbs(p_mon + ENEMY_SHEET_ROUND_APPEAR)) {
 				/* let monster enter the fight */
 
-				if (!enemy_bit10(p_mon)) {
+				if (!enemy_scared(p_mon)) {
 
 					if (is_in_byte_array(host_readbs(p_mon + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
@@ -792,7 +792,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 					} else if (l12 >0) {
 
 						if (!hero_dead(get_hero(l12 - 1)) &&
-							!hero_unc(get_hero(l12 - 1)) &&
+							!hero_uncon(get_hero(l12 - 1)) &&
 							(l12 != hero_pos + 1))
 						{
 							problem = 3;

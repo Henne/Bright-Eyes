@@ -4156,7 +4156,7 @@ signed short check_hero(Bit8u *hero)
 		hero_sleeps(hero) ||
 		hero_dead(hero) ||
 		hero_stoned(hero) ||
-		hero_unc(hero) ||
+		hero_uncon(hero) ||
 		hero_cursed(hero) ||
 		/* Check if ??? */
 		(host_readb(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE))
@@ -4177,7 +4177,7 @@ signed short check_hero_no2(Bit8u *hero)
 	if (!host_readbs(hero + HERO_TYPE) ||
 		hero_dead(hero) ||
 		hero_stoned(hero) ||
-		hero_unc(hero) ||
+		hero_uncon(hero) ||
 		hero_cursed(hero))
 	{
 		return 0;
@@ -4198,7 +4198,7 @@ signed short check_hero_no3(Bit8u *hero)
 	if (!host_readbs(hero + HERO_TYPE) ||
 		hero_dead(hero) ||
 		hero_stoned(hero) ||
-		hero_unc(hero))
+		hero_uncon(hero))
 	{
 		return 0;
 	}
@@ -4459,7 +4459,7 @@ void add_hero_le(Bit8u *hero, signed short le)
 			host_writew(hero + HERO_LE, host_readws(hero + HERO_LE_ORIG));
 
 		/* if current LE is >= 5 and the hero is unconscissous */
-		if ((host_readws(hero + HERO_LE) >= 5) && hero_unc(hero)) {
+		if ((host_readws(hero + HERO_LE) >= 5) && hero_uncon(hero)) {
 
 			/* awake */
 			and_ptr_bs(hero + HERO_STATUS1, 0xbf);

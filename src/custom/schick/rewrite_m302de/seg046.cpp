@@ -326,7 +326,7 @@ void status_show(Bit16u index)
 	if (hero_dead(Real2Host(hero)))
 		/* print if dead */
 		GUI_print_string(get_tx2(0), 155, 9);
-	else if (hero_unc(Real2Host(hero)))
+	else if (hero_uncon(Real2Host(hero)))
 		/* print if uncounscious */
 		GUI_print_string(get_tx2(6), 155, 9);
 	else if (host_readb(Real2Host(hero) + HERO_DRUNK))
