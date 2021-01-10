@@ -201,7 +201,18 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 
 					if ((obj_id == bp_needed)	&&
 						((!arg7 ) ||
+							/* Original-Bug
+							 * A fight with two-fielded enemies may freeze in an infinite loop here.
+							 * The following check for space for the back part of a two-fielded monster is executed for every single backtracking step.
+							 * However, in the function seg038 this check is not applied for the last step to the target in certain circumstances.
+							 * Fix: don't apply the check in the last step, i.e. the first step in the backtracking.
+							 * See discussion at https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=165957#pid165957
+							 */
+#ifdef M302de_ORIGINAL_BUGFIX
 						(arg7 &&
+#else
+						(bp_needed == bp_bak-1 &&
+#endif
 							((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (lvar8 * 25) + lvar7)) ||
 							(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (lvar8 * 25) + lvar7) == (arg8 + 10)) ||
 							(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (lvar8 * 25) + lvar7) == (arg8 + 30))) &&
