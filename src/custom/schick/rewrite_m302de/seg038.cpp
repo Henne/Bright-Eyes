@@ -139,7 +139,6 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 	signed short found;
 	struct dummy dst;
 	Bit8u *ptr[4];
-
 #if !defined(__BORLANDC__)
 	for (int i = 0; i < 4; i++) {
 		dst.o[i].x = host_readws(p_datseg + VIEWDIR_INVOFFSETS1 + 4 * i);
@@ -151,6 +150,14 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 
 	found = 0;
 	min = 99;
+
+	/* potential Original-Bug:
+	 * found_dir is not initialized and may stay so in case that FIG_backtrack is called with equal target and hero/enemy position.
+	 * See https://www.crystals-dsa-foren.de/showthread.php?tid=5383&pid=155007#pid155007
+	 */
+#ifdef M302de_ORIGINAL_BUGFIX
+	found_dir = 0;
+#endif
 
 	memset(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 0, 80);
 	ptr[0] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF));
