@@ -106,133 +106,155 @@ void FIG_unused(signed short a1, signed short a2,  Bit8u *p1, Bit8u *p2)
 
 }
 
-struct vec2 {
+struct coordinates {
 	signed short x;
 	signed short y;
 };
 
 struct dummy {
-	struct vec2 o[4];
+	struct coordinates o[4];
 };
 
-void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
-			signed short bp_needed, signed char bp_avail,
-			signed short arg6, signed short arg7, signed short arg8)
+/**
+ * \brief  Computes path via backtracking on the distance table
+ *
+ * \param   dist_table_ptr    pointer to the distance table
+ * \param   target_x          x-coordinate of the target
+ * \param   target_y          y_coordinate of the target
+ * \param   dist              distance to the target
+ * \param   bp_avail          left BP of the fighter
+ * \param   mode              mode (see FIG_find_path_to_target)
+ * \param   two_squares       fighter occupies two squares on the map (wolves, dogs, lions)
+ */
+void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short target_x, signed short target_y,
+			signed short dist, signed char bp_avail,
+			signed short mode, signed short two_squares, signed short fighter_id)
 {
 	signed short i;
-	signed short bp_left;
-	signed short lvar2;
-	signed short lvar3;
-	signed short obj_id;
-	signed short bp_bak;
-	signed short out_of_field = 0;
-	signed short lvar7;
-	signed short lvar8;
+	signed short dist_duplicate; /* duplicates the dist variable. apparently redundant */
+	signed short backtrack_x;
+	signed short backtrack_y;
+	signed short cb_or_dist_entry; /* used for both a chessboard entry and as a distance table entry */
+	signed short dist_bak;
+	signed short out_of_map = 0;
+	signed short tail_x;
+	signed short tail_y;
 	signed short dir;
-	signed short done;
-	signed short min;
-	signed short lvar12;
-	signed short found_dir;
-	Bit8u *ptr_cur;
+	signed short success;
+	signed short lowest_nr_dir_changes;
+	signed short nr_dir_changes;
+	signed short best_dir;
+	Bit8u *path_cur;
 	signed short x_bak;
 	signed short y_bak;
 	signed short found;
-	struct dummy dst;
-	Bit8u *ptr[4];
+	struct dummy inverse_coordinate_offset;
+	Bit8u *path_table[4];
 
 #if !defined(__BORLANDC__)
 	for (int i = 0; i < 4; i++) {
-		dst.o[i].x = host_readws(p_datseg + VIEWDIR_INVOFFSETS1 + 4 * i);
-		dst.o[i].y = host_readws(p_datseg + VIEWDIR_INVOFFSETS1 + 4 * i + 2);
+		inverse_coordinate_offset.o[i].x = host_readws(p_datseg + VIEWDIR_INVOFFSETS1 + 4 * i);
+		inverse_coordinate_offset.o[i].y = host_readws(p_datseg + VIEWDIR_INVOFFSETS1 + 4 * i + 2);
 	}
 #else
-	dst = *((struct dummy*)(p_datseg + VIEWDIR_INVOFFSETS1));
+	inverse_coordinate_offset = *((struct dummy*)(p_datseg + VIEWDIR_INVOFFSETS1));
 #endif
 
 	found = 0;
-	min = 99;
+	lowest_nr_dir_changes = 99;
 
 	memset(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 0, 80);
-	ptr[0] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF));
-	ptr[1] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 20;
-	ptr[2] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 40;
-	ptr[3] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 60;
+	path_table[0] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF));
+	path_table[1] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 20;
+	path_table[2] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 40;
+	path_table[3] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 60;
 
-	obj_id = get_cb_val(target_x, target_y);
+	cb_or_dist_entry = get_cb_val(target_x, target_y);
 
-	if ((obj_id < 0) || (target_y < 0) || (target_y > 23) || (target_x < 0) || (target_x > 23)) {
-		out_of_field = 1;
+	if ((cb_or_dist_entry < 0) || (target_y < 0) || (target_y > 23) || (target_x < 0) || (target_x > 23)) {
+		out_of_map = 1;
 	}
 
-	bp_bak = bp_needed;
+	dist_bak = dist;
 	x_bak = target_x;
 	y_bak = target_y;
 
 	/* potential Original-Bug:
-	 * found_dir is not initialized and may stay so in case that FIG_backtrack is called with equal target and hero/enemy position.
+	 * best_dir is not initialized and may stay so in case that FIG_find_path_to_target_backtrack is called with equal target and hero/enemy position.
 	 * See https://www.crystals-dsa-foren.de/showthread.php?tid=5383&pid=155007#pid155007
 	 */
 #ifdef M302de_ORIGINAL_BUGFIX
-	found_dir = 0;
+	best_dir = 0;
 #endif
 
 	/* for each direction */
 	for (i = 0; i < 4; i++) {
 
-		bp_needed = bp_bak;
+		dist = dist_bak;
 		target_x = x_bak;
 		target_y = y_bak;
 		dir = i;
 
-		ptr_cur = ptr[i];
-		bp_left = bp_needed;
+		path_cur = path_table[i];
+		dist_duplicate = dist;
 
-		host_writeb(ptr_cur + bp_left, -1);
-		bp_left--;
-		bp_needed--;
+		host_writeb(path_cur + dist_duplicate, -1);
+		dist_duplicate--;
+		dist--;
 
-		while (bp_needed >= 0) {
+		while (dist >= 0) {
 
-			done = 0;
+			success = 0;
 
-			while (done == 0) {
+			while (success == 0) {
 
-				lvar3 = target_y + dst.o[dir].y;
-				lvar2 = target_x + dst.o[dir].x;
-				lvar8 = lvar3 + dst.o[dir].y;
-				lvar7 = lvar2 + dst.o[dir].x;
+				backtrack_y = target_y + inverse_coordinate_offset.o[dir].y;
+				backtrack_x = target_x + inverse_coordinate_offset.o[dir].x;
+				tail_y = backtrack_y + inverse_coordinate_offset.o[dir].y;
+				tail_x = backtrack_x + inverse_coordinate_offset.o[dir].x;
 
-				if ((lvar3 < 24) && (lvar3 >= 0) &&
-					(lvar2 < 24) && (lvar2 >= 0))
+				if ((backtrack_y < 24) && (backtrack_y >= 0) &&
+					(backtrack_x < 24) && (backtrack_x >= 0))
 				{
-					obj_id = host_readbs(in_ptr + (25 * lvar3) + lvar2);
+					cb_or_dist_entry = host_readbs(dist_table_ptr + (25 * backtrack_y) + backtrack_x);
 
-					if ((obj_id == bp_needed)	&&
-						((!arg7 ) ||
-						(arg7 &&
-							((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (lvar8 * 25) + lvar7)) ||
-							(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (lvar8 * 25) + lvar7) == (arg8 + 10)) ||
-							(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (lvar8 * 25) + lvar7) == (arg8 + 30))) &&
-							(lvar8 < 24) && (lvar8 >= 0) && (lvar7 < 24) && (lvar7 >= 0))))
+					if ((cb_or_dist_entry == dist)	&&
+						((!two_squares) || (
+							/* Original-Bug
+							 * A fight with two-squares enemies may freeze in an infinite loop here.
+							 * The following check for space for the tail part of a two-squares monster is executed for every single backtracking step.
+							 * However, in the function seg038 this check is not applied for the last step to the target in certain circumstances.
+							 * Fix: don't apply the check in the last step, i.e. the first step in the backtracking.
+							 * See discussion at https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=165957#pid165957
+							 */
+#ifdef M302de_ORIGINAL_BUGFIX
+							dist == dist_bak-1 &&
+#else
+							two_squares &&
+#endif
+							((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x)) || /* square is empty */
+							(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x) == (fighter_id + 10)) || /* head of active enemy is on square */
+							(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x) == (fighter_id + 30))) && /* tail of active enemy is on square */
+							(tail_y < 24) && (tail_y >= 0) && (tail_x < 24) && (tail_x >= 0))))
 					{
-						target_y = lvar3;
-						target_x = lvar2;
+						target_y = backtrack_y;
+						target_x = backtrack_x;
 
-						if (bp_avail <= bp_needed) {
-							host_writeb(ptr_cur + bp_left, -1);
-							bp_left--;
+						if (bp_avail <= dist) {
+							host_writeb(path_cur + dist_duplicate, -1);
+							dist_duplicate--;
 							found = 1;
 						} else {
-							host_writebs(ptr_cur + bp_left, (signed char)dir);
-							bp_left--;
+							host_writebs(path_cur + dist_duplicate, (signed char)dir);
+							dist_duplicate--;
 						}
 
-						bp_needed--;
-						done = 1;
+						dist--;
+						success = 1;
 					}
 				}
 
-				if (done == 0) {
+				if (success == 0) {
 
 					dir++;
 
@@ -243,32 +265,32 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 			}
 		}
 
-		if ((bp_avail >= bp_bak) && (out_of_field == 0) && (arg6 < 6))
+		if ((bp_avail >= dist_bak) && (out_of_map == 0) && (mode < 6))
 		{
 #if !defined(__BORLANDC__)
-			host_writeb(ptr_cur + bp_bak - 1, -1);
+			host_writeb(path_cur + dist_bak - 1, -1);
 #else
-			ptr_cur[bp_bak - 1] = -1;
+			path_cur[dist_bak - 1] = -1;
 #endif
 		}
 
-		if (host_readbs(ptr_cur) != -1) {
+		if (host_readbs(path_cur) != -1) {
 
-			lvar12 = FIG_count_smth((signed char*)ptr_cur);
+			nr_dir_changes = FIG_count_direction_changes((signed char*)path_cur);
 
-			if (lvar12 < min) {
+			if (nr_dir_changes < lowest_nr_dir_changes) {
 
-				found_dir = i;
-				min = lvar12;
+				best_dir = i;
+				lowest_nr_dir_changes = nr_dir_changes;
 
-				if (lvar12 == 0) {
+				if (nr_dir_changes == 0) {
 					break;
 				}
 			}
 		}
 	}
 
-	memcpy(p_datseg + FIG_MOVE_PATHDIR, ptr[found_dir], 20);
+	memcpy(p_datseg + FIG_MOVE_PATHDIR, path_table[best_dir], 20);
 
 	if (found != 0) {
 
@@ -280,19 +302,19 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 }
 
 //static
-signed short FIG_count_smth(signed char *p)
+signed short FIG_count_direction_changes(signed char *path_ptr)
 {
 
 	signed short i = 0;
 	signed short count = 0;
 
-	if (p[0] == -1) {
+	if (path_ptr[0] == -1) {
 		return 99;
 	}
 
 	i++;
-	while (p[i] != -1) {
-		if (p[i - 1] != p[i]) {
+	while (path_ptr[i] != -1) {
+		if (path_ptr[i - 1] != path_ptr[i]) {
 			count++;
 		}
 
@@ -303,140 +325,150 @@ signed short FIG_count_smth(signed char *p)
 }
 
 /**
- * \brief   TODO
+ * \brief  Search target for fighter and compute path. 
  *
- * \param   in_ptr      pointer to hero or monster, depends on value of a4
- * \param   a1          no of hero or monster
- * \param   x_in        x-coordinate
- * \param   y_in        y-coordinate
- * \param   a4          fight_action
- * \return              {-1,1}
+ * Searches for a target (depending on given mode) for a fighter and computes a path to it. The computed path is written at FIG_MOVE_PATHDIR in the data segment.
+ *
+ * \param   fighter_ptr    pointer to a fighter (hero or enemy, depending on mode)
+ * \param   fighter_id     id of fighter. hero: range 1..9 or; monster: range 10..29.
+ * \param   x_in           x-coordinate of fighter
+ * \param   y_in           y-coordinate of fighter
+ * \param   mode           0: enemy to hero melee / 1: hero to hero melee / 2: enemy to enemy melee / 3: hero to enemy melee / 4: enemy is fleeing / 5: hero is fleeing / 6: enemy to hero ranged /  7: enemy to enemy ranged / 8: hero to hero ranged / 9: hero to enemy ranged / 10: hero movement (target labeled with 124 on the chess board)
+ * \return                 1: reachable target found, path written / -1: no reachable target found.
  */
-signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed short y_in, signed short a4)
+signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id, signed short x_in, signed short y_in, signed short mode)
 {
-	signed short l_si;
+	signed short nr_targets_reached;
 	signed short i;
-	signed short l_var1 = 0;
-	signed short l_var2 = 0;
-	signed short l_var3;
-	signed short l_var4;
-	signed short l_var5;
-	signed short l_var6;
-	signed short l_var7;
-	signed short l_var8;
-	signed short l_var9;
-	signed short l_var10;
-	signed short l_var11;
-	signed short l_var12;
-	signed short l_var13;
-	signed char obj_id;
-	signed char l_var15;
-	Bit8u *ptr2;
+	signed short target_reached = 0;
+	signed short dist = 0;
+	signed short new_squares_reached;
+	signed short new_x;
+	signed short new_y;
+	signed short x;
+	signed short y;
+	signed short tail_x;
+	signed short tail_y;
+	signed short dir;
+	signed short nr_dir_changes;
+	signed short lowest_nr_dir_changes;
+	signed short best_target;
+	signed char cb_or_dist_entry; /* used for both a chessboard entry and as a distance table entry */
+	signed char cb_entry;
+	Bit8u *dist_table_ptr;
 	Bit8u *hero_ptr;
 	Bit8u *enemy_ptr;
-	signed short l_var17;
-	signed short l_var18;
-	Bit8u *ptr3;
-	signed char two_fields;
-	signed short arr1[10];
-	signed short arr2[10];
-	signed short arr3[10];
+	signed short done;
+	signed short ranged_dist;
+	Bit8u *fighter_enemy_ptr; /* not needed, in principal. is only used for tests with NOT_NULL at a few places to determine wether the fighter is an enemy. could also be done based on mode. */
+	signed char two_squares;
+	signed short target_reached_x[10];
+	signed short target_reached_y[10];
+	signed short unused[10]; /* array gets only written, but never read */
 
-	struct dummy dst;
+	struct dummy coordinate_offset;
 
 #if !defined(__BORLANDC__)
 	for (int i = 0; i < 4; i++) {
-		dst.o[i].x = host_readws(p_datseg + VIEWDIR_OFFSETS7 + 4 * i);
-		dst.o[i].y = host_readws(p_datseg + VIEWDIR_OFFSETS7 + 4 * i + 2);
+		coordinate_offset.o[i].x = host_readws(p_datseg + VIEWDIR_OFFSETS7 + 4 * i);
+		coordinate_offset.o[i].y = host_readws(p_datseg + VIEWDIR_OFFSETS7 + 4 * i + 2);
 	}
 #else
-	dst = *((struct dummy*)(p_datseg + VIEWDIR_OFFSETS7));
+	coordinate_offset = *((struct dummy*)(p_datseg + VIEWDIR_OFFSETS7));
 #endif
 
-	ptr3 = NULL;
-	two_fields = 0;
+	fighter_enemy_ptr = NULL;
+	two_squares = 0;
 
-	if ((a4 == 0) || (a4 == 2) || (a4 == 4) || (a4 == 6) || (a4 == 7))
+	if ((mode == 0) || (mode == 2) || (mode == 4) || (mode == 6) || (mode == 7)) /* fighter is an enemy */
 	{
-		ptr3 = in_ptr;
-		if (is_in_byte_array(host_readbs(ptr3 + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
+		fighter_enemy_ptr = fighter_ptr;
+		if (is_in_byte_array(host_readbs(fighter_enemy_ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
 		{
-			two_fields = 1;
+			two_squares = 1;
 		}
 	}
 
-	ptr2 = Real2Host(ds_readd(DTP2));
+	dist_table_ptr = Real2Host(ds_readd(DTP2));
 	ds_writed(CHESSBOARD_CPY, (Bit32u)((RealPt)ds_readd(DTP2) + 600));
-	l_var3 = 1;
-	memset(ptr2, -1, 600);
-	host_writeb(ptr2 + (y_in * 25) + x_in, 0);
+	new_squares_reached = 1;
+	memset(dist_table_ptr, -1, 600);
+	host_writeb(dist_table_ptr + (y_in * 25) + x_in, 0);
 	memcpy(Real2Host(ds_readd(CHESSBOARD_CPY)), Real2Host(ds_readd(CHESSBOARD)), 600);
 
 	for (i = 0; i < 10; i++) {
-		arr1[i] = arr2[i] = arr3[i] = 0;
+		target_reached_x[i] = target_reached_y[i] = unused[i] = 0;
 	}
 
-	/* make the field where dead heros/enemies lie walkable */
-	for (l_var7 = 0; l_var7 < 24; l_var7++) {
-		for (l_var6 = 0; l_var6 < 24; l_var6++) {
+	/* make squares with dead heros/enemies walkable */
+	for (y = 0; y < 24; y++) {
+		for (x = 0; x < 24; x++) {
 
-			obj_id = host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var7 * 25) + l_var6);
+			cb_or_dist_entry = host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x);
 
-			if (obj_id > 0) {
-				if ((obj_id < 10) && (hero_dead(get_hero(obj_id - 1)) || hero_uncon(get_hero(obj_id - 1))))
+			if (cb_or_dist_entry > 0) {
+				if ((cb_or_dist_entry < 10) && (hero_dead(get_hero(cb_or_dist_entry - 1)) || hero_uncon(get_hero(cb_or_dist_entry - 1))))
 				{
-					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var7 * 25) + l_var6, 0);
-				} else if ((obj_id >= 10) && (obj_id < 30) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 49) + obj_id * SIZEOF_ENEMY_SHEET)))
+					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
+				} else if ((cb_or_dist_entry >= 10) && (cb_or_dist_entry < 30) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + cb_or_dist_entry * SIZEOF_ENEMY_SHEET)))
 				{
-						host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var7 * 25) + l_var6, 0);
+						host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
 				}
 			}
 		}
 	}
 
-	if ((a4 == 6) || (a4 == 8)) {
+	if ((mode == 6) || (mode == 8)) { /* ranged attack to some hero. mark possible base squares for launching the attack. */
 
-		for (i = 0; i <= 6; i++) {
-			if ((a4 != 8) || (i != a1)) {
+		for (i = 0; i <= 6; i++) { /* loop over all heros */
+			if ((mode != 8) || (i != fighter_id)) { /* hero should not attack himself */
 
 				hero_ptr = get_hero(i);
 
 				if ((host_readbs(hero_ptr + HERO_TYPE) != HERO_TYPE_NONE) &&
 					(host_readbs(hero_ptr + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero_ptr))
-				{
-					FIG_search_obj_on_cb(i + 1, &l_var6, &l_var7);
+				{ /* hero_ptr points to an actual alive hero in the current group */
+					FIG_search_obj_on_cb(i + 1, &x, &y);
 
 #if !defined(__BORLANDC__)
 					/* BE-fix */
-					l_var6 = host_readws((Bit8u*)&l_var6);
-					l_var7 = host_readws((Bit8u*)&l_var7);
+					x = host_readws((Bit8u*)&x);
+					y = host_readws((Bit8u*)&y);
 #endif
-					for (l_var10 = 0; l_var10 < 4; l_var10++) {
+					for (dir = 0; dir < 4; dir++) {
 
-						l_var17 = 0;
-						l_var18 = 1;
+						done = 0;
+						ranged_dist = 1;
 
-						while (l_var17 == 0) {
+						while (done == 0) {
 
-							l_var5 = l_var7 + l_var18 * dst.o[l_var10].y;
-							l_var4 = l_var6 + l_var18 * dst.o[l_var10].x;
+							new_y = y + ranged_dist * coordinate_offset.o[dir].y;
+							new_x = x + ranged_dist * coordinate_offset.o[dir].x;
 
 
-							if ((l_var5 < 0) || (l_var5 > 23) ||
+							if ((new_y < 0) || (new_y > 23) || (new_x < 0) ||
 								/* Original-Bug: */
-								 (l_var4 < 0) || (l_var5 > 23))
+#ifdef M302de_ORIGINAL_BUGFIX
+									(new_x > 23)
+#else
+									(new_y > 23)
+#endif
+								)
 							{
-								l_var17 = 1;
+								/* search passed the border of the map */
+								done = 1;
 							} else {
-								if (!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * l_var5) + l_var4))
+								if (!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * new_y) + new_x))
 								{
-									host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * l_var5) + l_var4, 9);
+									/* sqare empty and may be used as base square for launching the ranged attack. set target marker */
+									host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * new_y) + new_x, 9);
 								} else {
-									l_var17 = 1;
+									/* square blocked */
+									done = 1;
 								}
 							}
-							l_var18++;
+							ranged_dist++;
 						}
 					}
 				}
@@ -444,47 +476,54 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 		}
 	}
 
-	if ((a4 == 7) || (a4 == 9)) {
+	if ((mode == 7) || (mode == 9)) { /* ranged attack to some enemy. mark possible base squares for launching the attack */
 
-		for (i = 0; i < 20; i++) {
+		for (i = 0; i < 20; i++) { /* loop over all enemies */
 
-			if ((a4 != 7) || (i != a1)) {
+			if ((mode != 7) || (i != fighter_id)) { /* enemy shoud not attack himself */
 
 				enemy_ptr = p_datseg + ENEMY_SHEETS + i * SIZEOF_ENEMY_SHEET;
 
 				if ((host_readbs(enemy_ptr + ENEMY_SHEET_MON_ID) != 0) && !enemy_dead(enemy_ptr)) {
 
-					FIG_search_obj_on_cb(i + 10, &l_var6, &l_var7);
+					FIG_search_obj_on_cb(i + 10, &x, &y);
 
 #if !defined(__BORLANDC__)
 					/* BE-fix */
-					l_var6 = host_readws((Bit8u*)&l_var6);
-					l_var7 = host_readws((Bit8u*)&l_var7);
+					x = host_readws((Bit8u*)&x);
+					y = host_readws((Bit8u*)&y);
 #endif
-					for (l_var10 = 0; l_var10 < 4; l_var10++) {
-						l_var17 = 0;
-						l_var18 = 1;
+					for (dir = 0; dir < 4; dir++) {
+						done = 0;
+						ranged_dist = 1;
 
-						while (l_var17 == 0) {
-							l_var5 = l_var7 + l_var18 * dst.o[l_var10].y;
-							l_var4 = l_var6 + l_var18 * dst.o[l_var10].x;
+						while (done == 0) {
+							new_y = y + ranged_dist * coordinate_offset.o[dir].y;
+							new_x = x + ranged_dist * coordinate_offset.o[dir].x;
 
-
-							if ((l_var5 < 0) || (l_var5 > 23) ||
+							if ((new_y < 0) || (new_y > 23) || (new_x < 0) ||
 								/* Original-Bug: */
-								 (l_var4 < 0) || (l_var5 > 23))
+#ifdef M302de_ORIGINAL_BUGFIX
+									(new_x > 23)
+#else
+									(new_y > 23)
+#endif
+								)
 							{
-								l_var17 =1;
+								/* search passed the border of the map */
+								done =1;
 							} else {
-								if (!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * l_var5) + l_var4))
+								if (!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * new_y) + new_x))
 								{
-									host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * l_var5) + l_var4, 49);
+									/* sqare empty and may be used as base square for launching the ranged attack. set target marker */
+									host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * new_y) + new_x, 49);
 								} else {
-									l_var17 = 1;
+									/* square blocked */
+									done = 1;
 								}
 							}
 
-							l_var18++;
+							ranged_dist++;
 						}
 					}
 				}
@@ -492,144 +531,150 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 		}
 	}
 
-	while ( (l_var1 == 0) && (l_var3 != 0) && (l_var2 < 50)) {
-		l_var3 = 0;
-		l_var2++;
-		l_si = 0;
+	/* breadth-first search to fill the distance table 
+	 * search stops if for the last distance, a target was found, no new reachable squares have been found, or if the new distance will be as large as 50.
+	 * Moreover, the search will stop with a break if for the current distance, 10 targets have been found. */
+	while ( (target_reached == 0) && (new_squares_reached != 0) && (dist < 50)) {
+		new_squares_reached = 0;
+		dist++;
+		nr_targets_reached = 0;
 
-		for (l_var7 = 0; l_var7 < 24; l_var7++) {
+		for (y = 0; y < 24; y++) {
 
-			if (l_si == 10) {
+			if (nr_targets_reached == 10) {
 				break;
 			}
 
-			for (l_var6 = 0; l_var6 < 24; l_var6++) {
+			for (x = 0; x < 24; x++) {
 
-				if (l_si == 10) {
+				if (nr_targets_reached == 10) {
 					break;
 				}
 
-				if (host_readbs(ptr2 + (l_var7 * 25) + l_var6) == (l_var2 - 1)) {
+				if (host_readbs(dist_table_ptr + (y * 25) + x) == (dist - 1)) {
 
 					for (i = 0; i < 4; i++) {
 
-						l_var5 = l_var7 + dst.o[i].y;
-						l_var4 = l_var6 + dst.o[i].x;
-						l_var9 = l_var7 - dst.o[i].y;
-						l_var8 = l_var6 - dst.o[i].x;
+						new_y = y + coordinate_offset.o[i].y;
+						new_x = x + coordinate_offset.o[i].x;
+						tail_y = y - coordinate_offset.o[i].y; /* for movement of two-squares fighters */
+						tail_x = x - coordinate_offset.o[i].x; /* for movement of two-squares fighters */
 
-						if ((l_var5 < 24) && (l_var5 >= 0) && (l_var4 < 24) && (l_var4 >= 0)) {
+						if ((new_y < 24) && (new_y >= 0) && (new_x < 24) && (new_x >= 0)) {
 
-							obj_id = host_readbs(ptr2 + (l_var5 * 25) + l_var4);
-							l_var15 = host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var5 * 25) + l_var4);
+							cb_or_dist_entry = host_readbs(dist_table_ptr + (new_y * 25) + new_x);
+							cb_entry = host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (new_y * 25) + new_x);
 
-							if (obj_id < 0) {
+							if (cb_or_dist_entry < 0) { /* square has not been reached before */
 
-								if (l_var15 == 0) {
+								if (cb_entry == 0) { /* square is empty */
 
-									if (!NOT_NULL(ptr3) ||
-										(NOT_NULL(ptr3) && (!two_fields ||
-													((two_fields != 0) &&
-														((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) ||
-														(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8))  == (a1 + 10)||
-														(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) == (a1 + 30)) &&
-														((l_var9 < 24) && (l_var9 >= 0) && (l_var8 < 24) && (l_var8 >= 0))))))
+									if (!NOT_NULL(fighter_enemy_ptr) || 
+										(NOT_NULL(fighter_enemy_ptr) && (!two_squares ||
+													((two_squares != 0) &&
+														((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x)) || /* square is empty */
+														(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x))  == (fighter_id + 10)|| /* head of active enemy is on square */
+														(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x)) == (fighter_id + 30)) && /* tail of active enemy is on square */
+														((tail_y < 24) && (tail_y >= 0) && (tail_x < 24) && (tail_x >= 0))))))
 									{
-										host_writebs(ptr2 + (l_var5 * 25) + l_var4, (signed char)l_var2);
-										l_var3 = 1;
+										host_writebs(dist_table_ptr + (new_y * 25) + new_x, (signed char)dist);
+										new_squares_reached = 1;
 									}
 								} else {
-									if (l_var15 < 0) {
+									if (cb_entry < 0) { /* square out of regular area, can be used to flee */
 
-										if ((a4 == 4) || (a4 == 5)) {
-											arr3[l_si] = 1;
-											arr1[l_si] = l_var4;
-											arr2[l_si] = l_var5;
-											l_si++;
-											if (l_si == 10) {
+										if ((mode == 4) || (mode == 5)) { /* fighter is fleeing */
+											unused[nr_targets_reached] = 1;
+											target_reached_x[nr_targets_reached] = new_x;
+											target_reached_y[nr_targets_reached] = new_y;
+											nr_targets_reached++;
+											if (nr_targets_reached == 10) {
 												break;
 											}
 										} else {
-											host_writeb(ptr2 + (l_var5 * 25) + l_var4, 100);
+											host_writeb(dist_table_ptr + (new_y * 25) + new_x, 100); /* for all other modes: square is blocked */
 										}
-									} else if (l_var15 == 124) {
-										arr3[l_si] = 1;
-										arr1[l_si] = l_var4;
-										arr2[l_si] = l_var5;
-										l_si++;
-										if (l_si == 10) {
+									} else if (cb_entry == 124) { /* target marker for hero movement (implies mode == 10 (hero movement)) */
+										unused[nr_targets_reached] = 1;
+										target_reached_x[nr_targets_reached] = new_x;
+										target_reached_y[nr_targets_reached] = new_y;
+										nr_targets_reached++;
+										if (nr_targets_reached == 10) {
 											break;
 										}
-									} else if (l_var15 >= 50) {
-										host_writeb(ptr2 + (l_var5 * 25) + l_var4, 100);
-									} else if (l_var15 < 10) {
+									} else if (cb_entry >= 50) { /* square is blocked */
+										host_writeb(dist_table_ptr + (new_y * 25) + new_x, 100);
+									} else if (cb_entry < 10) {
 
-										if (l_var15 == 9) {
-											arr3[l_si] = 1;
-											arr1[l_si] = l_var4;
-											arr2[l_si] = l_var5;
-											l_si++;
-											if (l_si == 10) {
+										if (cb_entry == 9) { /* target marker for ranged attack to some hero (implies mode == 6 or mode == 8) */
+											unused[nr_targets_reached] = 1;
+											target_reached_x[nr_targets_reached] = new_x;
+											target_reached_y[nr_targets_reached] = new_y;
+											nr_targets_reached++;
+											if (nr_targets_reached == 10) {
 												break;
 											}
-										} else {
-											if (((a4 == 0) || (a4 == 1)) && (!NOT_NULL(ptr3) ||
-												(NOT_NULL(ptr3) && (!two_fields ||
-															((two_fields != 0) &&
-																((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) ||
-																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8))  == (a1 + 10)||
-																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) == (a1 + 30)) &&
-																((l_var9 < 24) && (l_var9 >= 0) && (l_var8 < 24) && (l_var8 >= 0)))))))
+										} else { /* some hero on square */
+											if (((mode == 0) || (mode == 1)) /* melee attack */
+												&& (!NOT_NULL(fighter_enemy_ptr) || (NOT_NULL(fighter_enemy_ptr) && (!two_squares ||
+															((two_squares != 0) &&
+																((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x)) ||
+																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x))  == (fighter_id + 10)||
+																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x)) == (fighter_id + 30)) &&
+																((tail_y < 24) && (tail_y >= 0) && (tail_x < 24) && (tail_x >= 0)))))))
 											{
-												arr3[l_si] = 1;
-												arr1[l_si] = l_var4;
-												arr2[l_si] = l_var5;
-												l_si++;
-												if (l_si == 10) {
+												unused[nr_targets_reached] = 1;
+												target_reached_x[nr_targets_reached] = new_x;
+												target_reached_y[nr_targets_reached] = new_y;
+												nr_targets_reached++;
+												if (nr_targets_reached == 10) {
 													break;
 												}
-											}
+											} /* if a two-squares monster cannot attack, because there is no space for the tail, the entry in dist_table stays at -1.
+											     In this way, later the hero may be considered again as a target from a different direction. */
 										}
-									} else if (l_var15 < 50) {
-										if (l_var15 == 49) {
-											arr3[l_si] = 1;
-											arr1[l_si] = l_var4;
-											arr2[l_si] = l_var5;
-											l_si++;
-											if (l_si == 10) {
+									} else if (cb_entry < 50) {
+										if (cb_entry == 49) { /* target marker for ranged attack to enemy (implies mode == 7 or mode == 9) */
+											unused[nr_targets_reached] = 1;
+											target_reached_x[nr_targets_reached] = new_x;
+											target_reached_y[nr_targets_reached] = new_y;
+											nr_targets_reached++;
+											if (nr_targets_reached == 10) {
 												break;
 											}
-										} else {
-											if (((a4 == 2) || (a4 == 3)) && (l_var15 < 30) && (!NOT_NULL(ptr3) ||
-												(NOT_NULL(ptr3) && (!two_fields ||
-															((two_fields != 0) &&
-																((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) ||
-																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8))  == (a1 + 10)||
-																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) == (a1 + 30)) &&
-																((l_var9 < 24) && (l_var9 >= 0) && (l_var8 < 24) && (l_var8 >= 0)))))))
+										} else { /* enemy on square */
+											if (((mode == 2) || (mode == 3)) && /* melee attack */
+												(cb_entry < 30) && (!NOT_NULL(fighter_enemy_ptr) || (NOT_NULL(fighter_enemy_ptr) && (!two_squares ||
+															((two_squares != 0) &&
+																((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x)) ||
+																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x))  == (fighter_id + 10)||
+																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x)) == (fighter_id + 30)) &&
+																((tail_y < 24) && (tail_y >= 0) && (tail_x < 24) && (tail_x >= 0)))))))
 											{
-												arr3[l_si] = 1;
-												arr1[l_si] = l_var4;
-												arr2[l_si] = l_var5;
-												l_si++;
-												if (l_si == 10) {
+												unused[nr_targets_reached] = 1;
+												target_reached_x[nr_targets_reached] = new_x;
+												target_reached_y[nr_targets_reached] = new_y;
+												nr_targets_reached++;
+												if (nr_targets_reached == 10) {
 													break;
 												}
-											}
+											} /* if a two-squares monster cannot attack, because there is no space for the tail, the entry in dist_table stays at -1.
+											     In this way, later the enemy may be considered again as a target from a different direction. */
+
 										}
 									}
 								}
 							}
 						} else {
-							if (((a4 == 4) || (a4 == 5)) &&
+							if (((mode == 4) || (mode == 5)) && /* fighter is fleeing */
 								((host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) > 3) ||
-									((host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) <= 3) && ((l_var4 > 23) || (l_var5 > 23) || (l_var5 < 0)))))
+									((host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) <= 3) && ((new_x > 23) || (new_y > 23) || (new_y < 0)))))
 							{
-								arr3[l_si] = 1;
-								arr1[l_si] = l_var4;
-								arr2[l_si] = l_var5;
-								l_si++;
-								if (l_si == 10) {
+								unused[nr_targets_reached] = 1;
+								target_reached_x[nr_targets_reached] = new_x;
+								target_reached_y[nr_targets_reached] = new_y;
+								nr_targets_reached++;
+								if (nr_targets_reached == 10) {
 									break;
 								}
 							}
@@ -640,42 +685,43 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 
 		}
 
-		if (l_si) {
-			l_var1 = 1;
-			l_var13 = 0;
-			l_var12 = 99;
+		if (nr_targets_reached) {
+			target_reached = 1;
+			best_target = 0;
+			lowest_nr_dir_changes = 99;
 
-			for (i = 0; i < l_si; i++) {
+			/* find target whose path has the lowest number of direction changes */
+			for (i = 0; i < nr_targets_reached; i++) {
 
-				if ((a4 == 0) || (a4 == 2) || (a4 == 4) || (a4 == 6) || (a4 == 7)) {
-					FIG_backtrack(ptr2, arr1[i], arr2[i], l_var2, host_readbs(in_ptr + ENEMY_SHEET_BP), a4, two_fields, a1);
-				} else {
-					FIG_backtrack(ptr2, arr1[i], arr2[i], l_var2, host_readbs(in_ptr + HERO_BP_LEFT), a4, two_fields, a1);
+				if ((mode == 0) || (mode == 2) || (mode == 4) || (mode == 6) || (mode == 7)) { /* fighter is an enemy */
+					FIG_find_path_to_target_backtrack(dist_table_ptr, target_reached_x[i], target_reached_y[i], dist, host_readbs(fighter_ptr + ENEMY_SHEET_BP), mode, two_squares, fighter_id);
+				} else { /* fighter is a hero */
+					FIG_find_path_to_target_backtrack(dist_table_ptr, target_reached_x[i], target_reached_y[i], dist, host_readbs(fighter_ptr + HERO_BP_LEFT), mode, two_squares, fighter_id);
 				}
 
-				l_var11 = FIG_count_smth((signed char*)p_datseg + FIG_MOVE_PATHDIR);
+				nr_dir_changes = FIG_count_direction_changes((signed char*)p_datseg + FIG_MOVE_PATHDIR);
 
-				if ((l_var11 == 0)) {
-					l_var13 = i;
+				if ((nr_dir_changes == 0)) {
+					best_target = i;
 					break;
 				}
 
-				if (l_var11 < l_var12) {
-					l_var12 = l_var11;
-					l_var13 = i;
+				if (nr_dir_changes < lowest_nr_dir_changes) {
+					lowest_nr_dir_changes = nr_dir_changes;
+					best_target = i;
 				}
 			}
 
-			if ((a4 == 0) || (a4 == 2) || (a4 == 4) || (a4 == 6) || (a4 == 7)) {
-				FIG_backtrack(ptr2, arr1[l_var13], arr2[l_var13], l_var2, host_readbs(in_ptr + ENEMY_SHEET_BP), a4, two_fields, a1);
-			} else {
-				FIG_backtrack(ptr2, arr1[l_var13], arr2[l_var13], l_var2, host_readbs(in_ptr + HERO_BP_LEFT), a4, two_fields, a1);
+			if ((mode == 0) || (mode == 2) || (mode == 4) || (mode == 6) || (mode == 7)) { /* fighter is an enemy */
+				FIG_find_path_to_target_backtrack(dist_table_ptr, target_reached_x[best_target], target_reached_y[best_target], dist, host_readbs(fighter_ptr + ENEMY_SHEET_BP), mode, two_squares, fighter_id);
+			} else { /* fighter is a hero */
+				FIG_find_path_to_target_backtrack(dist_table_ptr, target_reached_x[best_target], target_reached_y[best_target], dist, host_readbs(fighter_ptr + HERO_BP_LEFT), mode, two_squares, fighter_id);
 			}
 		}
 	}
 
 
-	if (l_var1 != 0) {
+	if (target_reached != 0) {
 		return 1;
 	} else {
 		return -1;

@@ -379,7 +379,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
-					/* the twelfe will grant miracles again */
+					/* the twelve will grant miracles again */
 					and_ptr_bs(hero + HERO_STATUS2, 0xdf);
 				}
 			}

@@ -1009,12 +1009,11 @@ signed short do_fight(signed short fight_id)
 				&& (host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 			{
 
-				and_ptr_bs(hero + HERO_STATUS1, 0x7f);
-				and_ptr_bs(hero + HERO_STATUS1, 0xfd);
-				and_ptr_bs(hero + HERO_STATUS1, 0xef);
-				/* reset duplicatus spell flag */
-				and_ptr_bs(hero + HERO_STATUS2, 0xfb);
-				and_ptr_bs(hero + HERO_STATUS2, 0xfe);
+				and_ptr_bs(hero + HERO_STATUS1, 0x7f); /* reset unconscious flag */
+				and_ptr_bs(hero + HERO_STATUS1, 0xfd); /* reset sleeping flag */
+				and_ptr_bs(hero + HERO_STATUS1, 0xef); /* reset Chamaelioni flag */
+				and_ptr_bs(hero + HERO_STATUS2, 0xfb); /* reset duplicatus spell flag */
+				and_ptr_bs(hero + HERO_STATUS2, 0xfe); /* reset Angstgift flag */
 				host_writebs(hero + HERO_BLIND, 0);
 				host_writebs(hero + HERO_ECLIPTIFACTUS, 0);
 				host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);

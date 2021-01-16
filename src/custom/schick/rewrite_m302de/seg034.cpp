@@ -744,7 +744,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 						bp_cost = 0;
 					} else {
 						FIG_set_cb_field(sel_y, sel_x, 124);
-						l4 = seg038(hero, hero_pos, host_readws(px), host_readws(py), 10);
+						l4 = FIG_find_path_to_target(hero, hero_pos, host_readws(px), host_readws(py), 10);
 						bp_cost = (signed char)FIG_move_pathlen();
 					}
 

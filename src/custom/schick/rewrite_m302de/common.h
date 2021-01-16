@@ -156,8 +156,8 @@ enum {
     HERO_AXXELERATUS        = 0x0A0, /* 1 = active, 0 = inactive */
     HERO_DRUNK              = 0x0A1,
     HERO_UNKNOWN10          = 0x0A2, /* never used? */
-    HERO_STATUS1            = 0x0AA, /* Bit0 = tot, Bit1 = schläft, Bit2 = versteinert, Bit4 = Chamaelioni, Bit5 = verflucht, Bit6 = bewusstlos */
-    HERO_STATUS2            = 0x0AB, /* Bit1 = Duplicatus */
+    HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = sleeping, Bit2 = stoned, Bit4 = Chamaelioni, Bit5 = cursed, Bit6 = unconscious */
+    HERO_STATUS2            = 0x0AB, /* Bit0 = Angstgift, Bit2 = Duplicatus, Bit5 = set to 0: "the twelve grant wonderes again"?? (seg082.cpp), Bit6 = transformed (each good attribute decreased by 1; canceled by 'Verwandlung beenden' spell or Praios/Hesinde wonder), Bit7 = MU increased by 3 (seg082.cpp) */
     HERO_UNKNOWN11          = 0x0AC, /* never used? */
     HERO_ILLNESS_EMPTY      = 0x0AE,
     HERO_ILLNESS            = 0x0B3,
@@ -288,7 +288,7 @@ struct enemy_status1 {
 
 struct enemy_status2 {
 	unsigned short tame	:1; /* from 'Bannbaladin', 'Herr der Tiere' or 'Sanftmut' spell */
-	unsigned short bb	:1;
+	unsigned short bb	:1; /* from 'Boeser Blick' spell */
 	unsigned short scared	:1; /* from 'Horriphobus' spell */
 	unsigned short dancing	:1; /* from 'Zwingtanz' spell */
 };

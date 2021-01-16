@@ -1917,10 +1917,10 @@ static int n_seg038(unsigned offs)
 		Bit16s arg7 = CPU_Pop16();
 		Bit16s arg8 = CPU_Pop16();
 
-		D1_LOG("FIG_backtrack(%x, %d, %d, %d, %d, %d, %d, %d)\n",
+		D1_LOG("FIG_find_path_to_target_backtrack(%x, %d, %d, %d, %d, %d, %d, %d)\n",
 			in_ptr, x, y, arg4, arg5, arg6, arg7, arg8);
 
-		FIG_backtrack(Real2Host(in_ptr), x, y, arg4, (Bit8s)arg5,
+		FIG_find_path_to_target_backtrack(Real2Host(in_ptr), x, y, arg4, (Bit8s)arg5,
 							arg6, arg7, arg8);
 
 		CPU_Push16(arg8);
@@ -1938,8 +1938,8 @@ static int n_seg038(unsigned offs)
 		RealPt p = CPU_Pop32();
 		CPU_Push32(p);
 
-		reg_ax = FIG_count_smth((signed char*)Real2Host(p));
-		D1_LOG("FIG_count_smth(%x) = %d\n", p, reg_ax);
+		reg_ax = FIG_count_direction_changes((signed char*)Real2Host(p));
+		D1_LOG("FIG_count_direction_changes(%x) = %d\n", p, reg_ax);
 
 		return 1;
 	}
@@ -7844,8 +7844,8 @@ static int seg038(unsigned short offs) {
 			Bit16s y_in = CPU_Pop16();
 			Bit16s a4 = CPU_Pop16();
 
-			reg_ax = seg038(Real2Host(in_ptr), a1, x_in, y_in, (Bit8s)a4);
-			D1_LOG("seg038(%x, %d, %d, %d, %d) = %d\n",
+			reg_ax = FIG_find_path_to_target(Real2Host(in_ptr), a1, x_in, y_in, (Bit8s)a4);
+			D1_LOG("FIG_find_path_to_target(%x, %d, %d, %d, %d) = %d\n",
 				in_ptr, a1, x_in, y_in, (Bit8s)a4, (Bit16s)reg_ax);
 
 			CPU_Push16(a4);
