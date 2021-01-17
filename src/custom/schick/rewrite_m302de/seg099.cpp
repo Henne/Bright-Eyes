@@ -282,7 +282,7 @@ void spell_boeser_blick(void)
 	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET)));
 
-	/* this spell does not work on all kind of sleletons */
+	/* this spell does not work on all kind of skeletons */
 	if (host_readb(get_spelltarget_e() + ENEMY_SHEET_GFX_ID) == 0x1c) {
 		ds_writew(SPELL_SPECIAL_AECOST, -2);
 	} else {
@@ -313,7 +313,7 @@ void spell_grosse_ver(void)
 	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET)));
 
-	/* this spell does not work on all kind of sleletons */
+	/* this spell does not work on all kind of skeletons */
 	if (host_readb(get_spelltarget_e() + ENEMY_SHEET_GFX_ID) == 0x1c) {
 		ds_writew(SPELL_SPECIAL_AECOST, -2);
 		return;
@@ -372,7 +372,7 @@ void spell_horriphobus(void)
 	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET)));
 
-	/* this spell does not work on all kind of sleletons */
+	/* this spell does not work on all kind of skeletons */
 	if (host_readb(get_spelltarget_e() + ENEMY_SHEET_GFX_ID) == 0x1c) {
 		ds_writew(SPELL_SPECIAL_AECOST, -2);
 	} else {
@@ -415,7 +415,7 @@ void spell_somnigravis(void)
 		ds_writed(SPELLTARGET_E,
 			(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET)));
 
-		/* this spell does not work on all kind of sleletons */
+		/* this spell does not work on all kind of skeletons */
 		if (host_readb(get_spelltarget_e() + ENEMY_SHEET_GFX_ID) == 0x1c) {
 			ds_writew(SPELL_SPECIAL_AECOST, -2);
 			return;
@@ -464,7 +464,7 @@ void spell_zwingtanz(void)
 	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET)));
 
-	/* this spell does not work on all kind of sleletons */
+	/* this spell does not work on all kind of skeletons */
 	if (host_readb(get_spelltarget_e() + ENEMY_SHEET_GFX_ID) == 0x1c) {
 		ds_writew(SPELL_SPECIAL_AECOST, -2);
 	} else {

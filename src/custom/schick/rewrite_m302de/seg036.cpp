@@ -398,7 +398,7 @@ signed short KI_search_spell_target(signed short x, signed short y,
  * \param   cursed      0 = hero is not cursed, 1 = hero is cursed
  * \param   x           x-coordinate of the hero
  * \param   y           y-coordinate of the hero
- * \return              0 = no target found, 1 = target_found (long distance), 2 = target fount (short distance)
+ * \return              0 = no target found, 1 = target found (long distance), 2 = target found (short distance)
  */
 signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed short cursed, signed short x, signed short y)
 {
