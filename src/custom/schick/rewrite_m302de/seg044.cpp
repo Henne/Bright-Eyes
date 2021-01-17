@@ -753,7 +753,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	x_caster = host_readws((Bit8u*)&x_caster);
 	y_caster = host_readws((Bit8u*)&y_caster);
 	x_target = host_readws((Bit8u*)&x_target);
-	x_target = host_readws((Bit8u*)&y_target);
+	y_target = host_readws((Bit8u*)&y_target);
 #endif
 	if (x_target == x_caster) {
 		if (y_caster < y_target)
