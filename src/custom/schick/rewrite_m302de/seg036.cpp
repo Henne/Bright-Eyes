@@ -463,9 +463,9 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 			if (!hero_unkn2(hero)) {
 
 				if (cursed == 0) {
-					l5 = seg038(hero, hero_pos, x, y, 9);
+					l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 9);
 				} else {
-					l5 = seg038(hero, hero_pos, x, y, 8);
+					l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 8);
 				}
 
 				if (l5 != -1) {
@@ -650,9 +650,9 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 						} else if (!hero_unkn2(hero)) {
 
 							if (spell_mode == 0) {
-								l5 = seg038(hero, hero_pos, x, y, 3);
+								l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 3);
 							} else {
-								l5 = seg038(hero, hero_pos, x, y, 1);
+								l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 1);
 							}
 
 							if (l5 != -1) {
@@ -706,9 +706,9 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 						} else if (!hero_unkn2(hero)) {
 
 							if (spell_mode == 0) {
-								l5 = seg038(hero, hero_pos, x, y, 9);
+								l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 9);
 							} else {
-								l5 = seg038(hero, hero_pos, x, y, 8);
+								l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 8);
 							}
 
 							if (l5 != -1) {
@@ -904,7 +904,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 			if (!hero_unkn2(hero)) {
 
-				l4 = seg038(hero, hero_pos, x, y, 5);
+				l4 = FIG_find_path_to_target(hero, hero_pos, x, y, 5);
 
 				if (l4 != -1) {
 
@@ -1018,9 +1018,9 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 						if (!hero_unkn2(hero)) {
 
 							if (!hero_cursed(hero)) {
-								l4  = seg038(hero , hero_pos, x, y, 3);
+								l4  = FIG_find_path_to_target(hero, hero_pos, x, y, 3);
 							} else {
-								l4  = seg038(hero , hero_pos, x, y, 1);
+								l4  = FIG_find_path_to_target(hero, hero_pos, x, y, 1);
 							}
 
 							if (l4 != -1) {

@@ -524,9 +524,9 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 							if (!enemy_cursed(enemy)) {
 
 								if (mode == 1)
-									l6 = seg038(enemy, enemy_no, x, y, 2);
+									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 2);
 								else
-									l6 = seg038(enemy, enemy_no, x, y, 0);
+									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 0);
 
 								if (l6 != -1) {
 									seg037_00ae(enemy, enemy_no);
@@ -573,9 +573,9 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 							if (!enemy_cursed(enemy)) {
 
 								if (mode == 1)
-									l6 = seg038(enemy, enemy_no, x, y, 7);
+									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 7);
 								else
-									l6 = seg038(enemy, enemy_no, x, y, 6);
+									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 6);
 
 								if (l6 != -1) {
 									seg037_00ae(enemy, enemy_no);
@@ -655,9 +655,9 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_no, signed short attac
 
 					if (!enemy_cursed(enemy)) {
 						if (attack_foe == 0)
-							l4 = seg038(enemy, enemy_no, x, y, 6);
+							l4 = FIG_find_path_to_target(enemy, enemy_no, x, y, 6);
 						else
-							l4 = seg038(enemy, enemy_no, x, y, 7);
+							l4 = FIG_find_path_to_target(enemy, enemy_no, x, y, 7);
 
 						if (l4 != -1) {
 							seg037_00ae(enemy, enemy_no);
@@ -867,13 +867,13 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 			if (!enemy_cursed(enemy)) {
 
 				if (enemy_bit10(enemy)) {
-					l1 = seg038(enemy, enemy_no, x, y, 4);
+					l1 = FIG_find_path_to_target(enemy, enemy_no, x, y, 4);
 					host_writeb(enemy + ENEMY_SHEET_BP, 0);
 				} else {
 					if (enemy_bb(enemy))
-						l1 = seg038(enemy, enemy_no, x, y, 2);
+						l1 = FIG_find_path_to_target(enemy, enemy_no, x, y, 2);
 					else
-						l1 = seg038(enemy, enemy_no, x, y, 0);
+						l1 = FIG_find_path_to_target(enemy, enemy_no, x, y, 0);
 				}
 
 				if (l1 != -1) {
