@@ -53,42 +53,42 @@ enum {
 
 /**
  *	struct hero_status - status of the hero
- *	@dead:		1 = dead		/ 0 = not dead
- *	@sleeps:	1 = sleeps		/ 0 = awake
- *	@stoned:	1 = stoned		/ 0 = not stoned
- *	@unkn1:		yet unknown, maybe unused
- *	@cham:		1 = Chamaelioni active	/ 0 = not active
- *	@cursed:	1 = cursed		/ 0 = not cursed
- *	@uncon:		1 = unconscious		/ 0 = conscious
+ *	@dead:		1 = dead			/ 0 = not dead
+ *	@sleeps:	1 = sleeps			/ 0 = awake
+ *	@petrified:	1 = petrified			/ 0 = not petrified
+ *	@busy:		??
+ *	@cham:		1 = 'Chamaelioni' spell active	/ 0 = spell not active
+ *	@cursed:	1 = cursed			/ 0 = not cursed
+ *	@uncon:		1 = unconscious			/ 0 = conscious
  *	@unkn2:		yet unknown, maybe unused
- *	@scared:	1 = scared and wants to flee (from 'Horriphobus' spell)	/ 0 = not scared
- *	@dup:		1 = Duplicatus active	/ not active
+ *	@scared:	1 = scared and wants to flee (from 'Horriphobus' spell or Angstgift)	/ 0 = not scared
+ *	@dup:		1 = 'Duplicatus' spell active	/ spell not active (the bit may have no real effect)
  *	@dummy1:	yet unknown, maybe unused
  *	@dummy2:	yet unknown, maybe unused
  *	@dummy3:	yet unknown, maybe unused
- *	@dummy4:	yet unknown, maybe unused
- *	@transf:	1 = hero is transformed / 0 not transformed
- *	@dummy6:	yet unknown, maybe unused
+ *	@dummy4:	yet unknown, maybe unused. 0 = "the twelve grant wonderes again"?? (seg082.cpp)
+ *	@transf:	1 = hero is transformed (all positive attributes -1, from a chest trap) / 0 not transformed (can be cured by 'Verwandlung beenden' spell or Praios/Hesinde wonder)
+ *	@dummy6:	yet unknown, maybe unused. 1 = MU increased by 3 (seg082.cpp, probably a dungeon event) / 0 = attibutes back to normal.
  */
 struct hero_status {
 	/* hero + 0xaa */
-	unsigned short dead	:1;
-	unsigned short sleeps	:1;
-	unsigned short stoned	:1;
-	unsigned short busy	:1;
-	unsigned short cham	:1;
-	unsigned short cursed	:1;
-	unsigned short uncon	:1;
-	unsigned short unkn2	:1;
+	unsigned short dead		:1;
+	unsigned short sleeps		:1;
+	unsigned short petrified	:1;
+	unsigned short busy		:1;
+	unsigned short cham		:1;
+	unsigned short cursed		:1;
+	unsigned short uncon		:1;
+	unsigned short unkn2		:1;
 	/* hero + 0xab */
-	unsigned short unkn3	:1;
-	unsigned short dup	:1;
-	unsigned short dummy1	:1;
-	unsigned short dummy2	:1;
-	unsigned short dummy3	:1;
-	unsigned short dummy4	:1;
-	unsigned short transf	:1;
-	unsigned short dummy6	:1;
+	unsigned short unkn3		:1;
+	unsigned short dup		:1;
+	unsigned short dummy1		:1;
+	unsigned short dummy2		:1;
+	unsigned short dummy3		:1;
+	unsigned short dummy4		:1;
+	unsigned short transf		:1;
+	unsigned short dummy6		:1;
 };
 
 enum {
@@ -156,7 +156,7 @@ enum {
     HERO_AXXELERATUS        = 0x0A0, /* 1 = active, 0 = inactive */
     HERO_DRUNK              = 0x0A1,
     HERO_UNKNOWN10          = 0x0A2, /* never used? */
-    HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = sleeping, Bit2 = stoned, Bit4 = Chamaelioni, Bit5 = cursed, Bit6 = unconscious */
+    HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = sleeping, Bit2 = petrified, Bit4 = Chamaelioni, Bit5 = cursed, Bit6 = unconscious */
     HERO_STATUS2            = 0x0AB, /* Bit0 = Angstgift, Bit2 = Duplicatus, Bit5 = set to 0: "the twelve grant wonderes again"?? (seg082.cpp), Bit6 = transformed (each good attribute decreased by 1; canceled by 'Verwandlung beenden' spell or Praios/Hesinde wonder), Bit7 = MU increased by 3 (seg082.cpp) */
     HERO_UNKNOWN11          = 0x0AC, /* never used? */
     HERO_ILLNESS_EMPTY      = 0x0AE,
@@ -276,14 +276,14 @@ enum {
 
 struct enemy_status1 {
 	/* enemy + 0x31 */
-	unsigned short dead	:1;
-	unsigned short sleeps	:1;
-	unsigned short stoned	:1;
-	unsigned short busy	:1;
-	unsigned short bit4	:1;
-	unsigned short cursed	:1;
-	unsigned short uncon	:1;
-	unsigned short illusion	:1;
+	unsigned short dead		:1;
+	unsigned short sleeps		:1;
+	unsigned short petrified	:1;
+	unsigned short busy		:1;
+	unsigned short bit4		:1;
+	unsigned short cursed		:1;
+	unsigned short uncon		:1;
+	unsigned short illusion		:1;
 };
 
 struct enemy_status2 {

@@ -418,7 +418,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	if (attack_hero == 0) {
 		damage -= host_readbs(enemy_p + 2);
 
-		if (enemy_stoned(enemy_p)) {
+		if (enemy_petrified(enemy_p)) {
 			damage = 0;
 		}
 
@@ -432,7 +432,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	} else {
 		damage -= host_readbs(target + HERO_RS_BONUS1);
 
-		if (hero_stoned(target)) {
+		if (hero_petrified(target)) {
 			damage = 0;
 		}
 
@@ -498,8 +498,8 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 			}
 		}
 
-		/* no damage if the hero is stoned */
-		if (hero_stoned(hero))
+		/* no damage if the hero is petrified */
+		if (hero_petrified(hero))
 			damage = 0;
 	} else {
 		/* the attacked is an enemy */
@@ -507,8 +507,8 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		/* subtract RS */
 		damage -= host_readbs(attacked + ENEMY_SHEET_RS);
 
-		/* check unknown flag, maybe stoned */
-		if (enemy_stoned(attacked))
+		/* check if enemy is petrified */
+		if (enemy_petrified(attacked))
 			damage = 0;
 
 		/* check if the attacked is immune

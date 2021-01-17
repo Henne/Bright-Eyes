@@ -136,7 +136,7 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 	signed short backtrack_y;
 	signed short cb_or_dist_entry; /* used for both a chessboard entry and as a distance table entry */
 	signed short dist_bak;
-	signed short out_of_map = 0;
+	signed short target_is_escape_square = 0;
 	signed short tail_x;
 	signed short tail_y;
 	signed short dir;
@@ -147,7 +147,7 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 	Bit8u *path_cur;
 	signed short x_bak;
 	signed short y_bak;
-	signed short found;
+	signed short target_out_of_reach; /* will be set to 1 if the target is out of reach with avail_bp steps. Redundant, as this could simply be tested by (avail_bp < dist). */
 	struct dummy inverse_coordinate_offset;
 	Bit8u *path_table[4];
 
@@ -160,7 +160,7 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 	inverse_coordinate_offset = *((struct dummy*)(p_datseg + VIEWDIR_INVOFFSETS1));
 #endif
 
-	found = 0;
+	target_out_of_reach = 0;
 	lowest_nr_dir_changes = 99;
 
 	memset(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 0, 80);
@@ -169,10 +169,10 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 	path_table[2] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 40;
 	path_table[3] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 60;
 
-	cb_or_dist_entry = get_cb_val(target_x, target_y);
+	cb_or_dist_entry = get_cb_val(target_x, target_y); /* possibly reads out of the boundary of the chessboard. not critical, as the following condition is always true for coordinates (target_x, target_y) out of the map. */
 
 	if ((cb_or_dist_entry < 0) || (target_y < 0) || (target_y > 23) || (target_x < 0) || (target_x > 23)) {
-		out_of_map = 1;
+		target_is_escape_square = 1;
 	}
 
 	dist_bak = dist;
@@ -187,13 +187,14 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 	best_dir = 0;
 #endif
 
-	/* for each direction */
+	/* the following appears to be a simplistic way to produce paths with few (but not necessarily the fewest possible number of) direction changes.
+	 * the value i in the following loop is the "preferred" direction. The backtracking always tries this direction first. */
 	for (i = 0; i < 4; i++) {
 
 		dist = dist_bak;
 		target_x = x_bak;
 		target_y = y_bak;
-		dir = i;
+		dir = i; /* start with the preferred direction */
 
 		path_cur = path_table[i];
 		dist_duplicate = dist;
@@ -223,7 +224,7 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 							/* Original-Bug
 							 * A fight with two-squares enemies may freeze in an infinite loop here.
 							 * The following check for space for the tail part of a two-squares monster is executed for every single backtracking step.
-							 * However, in the function seg038 this check is not applied for the last step to the target in certain circumstances.
+							 * However, in the function FIG_find_path_to_target this check is not applied for the last step to the target in certain circumstances.
 							 * Fix: don't apply the check in the last step, i.e. the first step in the backtracking.
 							 * See discussion at https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=165957#pid165957
 							 */
@@ -241,10 +242,12 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 						target_x = backtrack_x;
 
 						if (bp_avail <= dist) {
+						    	/* if the old square (target_x, target_y) (before updating to (backtrack_x, backtrack_y)) cannot be reached with the available BP, write -1 to the path */
 							host_writeb(path_cur + dist_duplicate, -1);
 							dist_duplicate--;
-							found = 1;
+							target_out_of_reach = 1;
 						} else {
+						    	/* otherwise, write the found direction to the path */
 							host_writebs(path_cur + dist_duplicate, (signed char)dir);
 							dist_duplicate--;
 						}
@@ -265,8 +268,11 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 			}
 		}
 
-		if ((bp_avail >= dist_bak) && (out_of_map == 0) && (mode < 6))
+		if ((bp_avail >= dist_bak) && (target_is_escape_square == 0) && (mode < 6))
+		/* if mode < 6, i.e. the mode is melee attack or flee, and the target is an escape square which can be reached with the available BP.
+		 * As the target square is always an escape square for the flee mode, this should be logically equivalent to (bp_avail >= dist_bak) && (mode < 4) */
 		{
+		    	/* remove the last step from the path (as for melee attack, the target should not be entered) */
 #if !defined(__BORLANDC__)
 			host_writeb(path_cur + dist_bak - 1, -1);
 #else
@@ -292,12 +298,13 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 
 	memcpy(p_datseg + FIG_MOVE_PATHDIR, path_table[best_dir], 20);
 
-	if (found != 0) {
+	if (target_out_of_reach != 0) {
 
 		i = 0;
 
 		while (ds_readbs(FIG_MOVE_PATHDIR + i++) != -1);
 		ds_writeb(FIG_MOVE_PATHDIR + i, -2);
+		/* replace the first -1 entry in the path by -2 */
 	}
 }
 
@@ -581,7 +588,7 @@ signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id
 										new_squares_reached = 1;
 									}
 								} else {
-									if (cb_entry < 0) { /* square out of regular area, can be used to flee */
+									if (cb_entry < 0) { /* escape square */
 
 										if ((mode == 4) || (mode == 5)) { /* fighter is fleeing */
 											unused[nr_targets_reached] = 1;

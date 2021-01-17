@@ -294,7 +294,7 @@ void mspell_verwandlung(void)
 	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET)));
 
-	if (enemy_stoned(get_spelltarget_e())) {
+	if (enemy_petrified(get_spelltarget_e())) {
 
 		/* set the spellcosts */
 		ds_writew(MONSTER_SPELL_COST, 5 * random_schick(10));
@@ -302,7 +302,7 @@ void mspell_verwandlung(void)
 		if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_COST)) {
 			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		} else {
-			/* unset stoned flag */
+			/* unset petrified flag */
 			and_ptr_bs(get_spelltarget_e() + 0x31, 0xfb);
 
 			/* prepare message */

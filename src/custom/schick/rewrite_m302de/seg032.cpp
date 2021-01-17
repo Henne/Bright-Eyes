@@ -262,7 +262,7 @@ signed short FIG_count_active_enemies(void)
 
 		if ((host_readb(enemy + ENEMY_SHEET_MON_ID) != 0) &&
 			!enemy_dead(enemy) &&
-			!enemy_stoned(enemy) &&
+			!enemy_petrified(enemy) &&
 			!enemy_cursed(enemy) &&
 			!enemy_uncon(enemy) &&
 			!enemy_busy(enemy) &&
@@ -286,7 +286,7 @@ signed short FIG_is_enemy_active(Bit8u *enemy)
 {
 	if (enemy_sleeps(enemy) ||
 		enemy_dead(enemy) ||
-		enemy_stoned(enemy) ||
+		enemy_petrified(enemy) ||
 		enemy_dancing(enemy) ||
 		enemy_uncon(enemy) ||
 		enemy_busy(enemy) ||
@@ -315,7 +315,7 @@ signed short FIG_get_first_active_hero(void)
 		if ((host_readb(hero_i + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			!hero_dead(hero_i) &&
-			!hero_stoned(hero_i) &&
+			!hero_petrified(hero_i) &&
 			!hero_cursed(hero_i) &&
 			!hero_scared(hero_i) &&
 			!hero_uncon(hero_i))
