@@ -337,7 +337,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 					inc_ptr_bs(hero + HERO_ATTRIB_ORIG + 3 * randval);
 					inc_ptr_bs(hero + HERO_ATTRIB + 3 * randval);
 
-					/* ... but the twelfe won't grand miracles */
+					/* ... but the twelve won't grant miracles */
 					or_ptr_bs(hero + 0xab, 0x20);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -379,7 +379,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
-					/* the twelfe will grant miracles again */
+					/* the twelve will grant miracles again */
 					and_ptr_bs(hero + HERO_STATUS2, 0xdf);
 				}
 			}

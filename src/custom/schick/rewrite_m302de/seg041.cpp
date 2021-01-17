@@ -475,7 +475,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		/* subtract RS */
 		damage -= host_readbs(hero + HERO_RS_BONUS1);
 
-		/* armour bonus against skelettons an zombies */
+		/* armour bonus against skeletons and zombies */
 		if (host_readw(hero + HERO_ITEM_BODY) == 0xc5 && (
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
