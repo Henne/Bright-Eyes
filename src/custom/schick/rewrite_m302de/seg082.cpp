@@ -328,7 +328,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 			if (random_schick(100) <= prob)
 			{
 				if (random_schick(100) < 50 &&
-					!hero_dummy4(hero) &&
+					!hero_gods_pissed(hero) &&
 					!ds_readb(NAMELESS_DESTROYED))
 				{
 					/* increase one attribute of the leader permanently */

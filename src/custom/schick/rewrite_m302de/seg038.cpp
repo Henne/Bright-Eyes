@@ -418,7 +418,7 @@ signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id
 			cb_or_dist_entry = host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x);
 
 			if (cb_or_dist_entry > 0) {
-				if ((cb_or_dist_entry < 10) && (hero_dead(get_hero(cb_or_dist_entry - 1)) || hero_unc(get_hero(cb_or_dist_entry - 1))))
+				if ((cb_or_dist_entry < 10) && (hero_dead(get_hero(cb_or_dist_entry - 1)) || hero_unconscious(get_hero(cb_or_dist_entry - 1))))
 				{
 					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
 				} else if ((cb_or_dist_entry >= 10) && (cb_or_dist_entry < 30) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + cb_or_dist_entry * SIZEOF_ENEMY_SHEET)))

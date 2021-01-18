@@ -50,7 +50,7 @@ void FIG_tidy_monsters(void)
 		/* if the monster is not able to fight anymore ... */
 		if ((ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i + ENEMY_SHEET_MON_ID) != 0) &&
 			(enemy_dead(Real2Host(RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i))) ||
-			enemy_uncon(Real2Host(RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i))) ||
+			enemy_unconscious(Real2Host(RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i))) ||
 			enemy_stoned(Real2Host(RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i))) ||
 			((host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + SIZEOF_FIGHT_MONSTER * i + FIGHT_MONSTERS_ROUND_APPEAR) != 0) && (monsters == 0))))
 		{

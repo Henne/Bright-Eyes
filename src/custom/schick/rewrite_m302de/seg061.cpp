@@ -431,7 +431,7 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			!hero_dummy4(hero) &&
+			!hero_gods_pissed(hero) &&
 			!hero_dead(hero) &&
 			((le_diff = host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE)) > le))
 		{
@@ -474,7 +474,7 @@ void miracle_resurrect(Bit8u *str)
 
 		if (hero_dead(hero) &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-			!hero_dummy4(hero))
+			!hero_gods_pissed(hero))
 		{
 
 			/* resurrect from the dead */
@@ -515,7 +515,7 @@ void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 		if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(Real2Host(hero)) &&
-			!hero_dummy4(Real2Host(hero)))
+			!hero_gods_pissed(Real2Host(hero)))
 		{
 			slot = get_free_mod_slot();
 			ptr = hero;
@@ -549,7 +549,7 @@ void miracle_weapon(Bit8u *str, signed short mode)
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			!hero_dummy4(hero))
+			!hero_gods_pissed(hero))
 		{
 			for (i = 0; i < 23; i++)
 			{

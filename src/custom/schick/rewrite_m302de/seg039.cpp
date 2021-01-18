@@ -489,7 +489,7 @@ void FIG_init_heroes(void)
 				ds_readb((GFXTAB_OFFSETS_MAIN + 8) + host_readbs(hero + HERO_SPRITE_NO) * 10));
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETY),
 				ds_readb((GFXTAB_OFFSETS_MAIN + 9) + host_readbs(hero + HERO_SPRITE_NO) * 10));
-		} else if (hero_sleeps(hero) || hero_unc(hero)) {
+		} else if (hero_sleeps(hero) || hero_unconscious(hero)) {
 			/* sleeps or is unconscious */
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_NVF_NO),
 				ds_readb(NVFTAB_FIGURES_UNCONSCIOUS + host_readbs(hero + HERO_SPRITE_NO) * 2) + host_readbs(hero + HERO_VIEWDIR));

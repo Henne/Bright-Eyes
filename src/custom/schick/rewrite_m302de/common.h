@@ -53,42 +53,42 @@ enum {
 
 /**
  *	struct hero_status - status of the hero
- *	@dead:		1 = dead		/ 0 = not dead
- *	@sleeps:	1 = sleeps		/ 0 = awake
- *	@stoned:	1 = stoned		/ 0 = not stoned
- *	@unkn1:		yet unknown, maybe unused
- *	@cham:		1 = Chamaelioni active	/ 0 = not active
- *	@cursed:	1 = cursed		/ 0 = not cursed
- *	@uncon:		1 = unconscious		/ 0 = conscious
+ *	@dead:		1 = dead				/ 0 = not dead
+ *	@sleeps:	1 = sleeps				/ 0 = awake
+ *	@stoned:	1 = stoned				/ 0 = not stoned
+ *	@busy:		??
+ *	@chamaelioni	1 = 'Chamaelioni' spell active		/ 0 = spell not active
+ *	@cursed:	1 = cursed				/ 0 = not cursed
+ *	@unconscious	1 = unconscious				/ 0 = conscious
  *	@unkn2:		yet unknown, maybe unused
- *	@unkn3:		yet unknown, but used
- *	@dup:		1 = Duplicatus active	/ not active
+ *	@scared:	1 = scared and wants to flee (from 'Horriphobus' spell or Angstgift)	/ 0 = not scared
+ *	@duplicatus:	1 = 'Duplicatus' spell active	/ spell not active (the bit may have no real effect)
  *	@dummy1:	yet unknown, maybe unused
  *	@dummy2:	yet unknown, maybe unused
  *	@dummy3:	yet unknown, maybe unused
- *	@dummy4:	yet unknown, maybe unused
- *	@transf:	1 = hero is transformed / 0 not transformed
- *	@dummy6:	yet unknown, maybe unused
+ *	@gods_pissed	1 = gods pissed (no more miracles)	/ 0 = gods normal	(activated by praising the nameless god)
+ *	@transf:	1 = hero is transformed (all positive attributes -1, from a chest trap) / 0 not transformed (can be cured by 'Verwandlung beenden' spell or Praios/Hesinde miracle)
+ *	@dummy6:	yet unknown, maybe unused. 1 = MU increased by 3 (seg082.cpp, probably a dungeon event) / 0 = attibutes back to normal.
  */
 struct hero_status {
 	/* hero + 0xaa */
-	unsigned short dead	:1;
-	unsigned short sleeps	:1;
+	unsigned short dead		:1;
+	unsigned short sleeps		:1;
 	unsigned short stoned	:1;
-	unsigned short busy	:1;
-	unsigned short cham	:1;
-	unsigned short cursed	:1;
-	unsigned short uncon	:1;
-	unsigned short unkn2	:1;
+	unsigned short busy		:1;
+	unsigned short chamaelioni	:1;
+	unsigned short cursed		:1;
+	unsigned short unconscious	:1;
+	unsigned short unkn2		:1;
 	/* hero + 0xab */
-	unsigned short unkn3	:1;
-	unsigned short dup	:1;
-	unsigned short dummy1	:1;
-	unsigned short dummy2	:1;
-	unsigned short dummy3	:1;
-	unsigned short dummy4	:1;
-	unsigned short transf	:1;
-	unsigned short dummy6	:1;
+	unsigned short scared		:1;
+	unsigned short duplicatus	:1;
+	unsigned short dummy1		:1;
+	unsigned short dummy2		:1;
+	unsigned short dummy3		:1;
+	unsigned short gods_pissed	:1;
+	unsigned short transf		:1;
+	unsigned short dummy6		:1;
 };
 
 enum {
@@ -156,8 +156,8 @@ enum {
     HERO_AXXELERATUS        = 0x0A0, /* 1 = active, 0 = inactive */
     HERO_DRUNK              = 0x0A1,
     HERO_UNKNOWN10          = 0x0A2, /* never used? */
-    HERO_STATUS1            = 0x0AA, /* Bit0 = tot, Bit1 = schläft, Bit2 = versteinert, Bit4 = Chamaelioni, Bit5 = verflucht, Bit6 = bewusstlos */
-    HERO_STATUS2            = 0x0AB, /* Bit1 = Duplicatus */
+    HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = sleeping, Bit2 = stoned, Bit4 = Chamaelioni, Bit5 = cursed, Bit6 = unconscious */
+    HERO_STATUS2            = 0x0AB, /* Bit0 = Angstgift, Bit2 = Duplicatus, Bit5 = gods pissed (no more miracles. from praising the nameless god), Bit6 = transformed (each good attribute decreased by 1. canceled by 'Verwandlung beenden' spell or Praios/Hesinde miracle), Bit7 = MU increased by 3 (seg082.cpp) */
     HERO_UNKNOWN11          = 0x0AC, /* never used? */
     HERO_ILLNESS_EMPTY      = 0x0AE,
     HERO_ILLNESS            = 0x0B3,
@@ -276,46 +276,46 @@ enum {
 
 struct enemy_status1 {
 	/* enemy + 0x31 */
-	unsigned short dead	:1;
-	unsigned short sleeps	:1;
-	unsigned short stoned	:1;
-	unsigned short busy	:1;
-	unsigned short bit4	:1;
-	unsigned short cursed	:1;
-	unsigned short uncon	:1;
-	unsigned short illusion	:1;
+	unsigned short dead		:1;
+	unsigned short sleeps		:1;
+	unsigned short stoned		:1;
+	unsigned short busy		:1;
+	unsigned short bit4		:1;
+	unsigned short cursed		:1;
+	unsigned short unconscious	:1;
+	unsigned short illusion		:1;
 };
 
 struct enemy_status2 {
-	unsigned short bit8	:1;
-	unsigned short bb	:1;
-	unsigned short bit10	:1;
-	unsigned short bit11	:1;
+	unsigned short tame	:1; /* from 'Bannbaladin', 'Herr der Tiere' or 'Sanftmut' spell */
+	unsigned short bb	:1; /* from 'Boeser Blick' spell */
+	unsigned short scared	:1; /* from 'Horriphobus' spell */
+	unsigned short dancing	:1; /* from 'Zwingtanz' spell */
 };
 
 struct item_status {
 	/* item + 0x02 */
-	unsigned short armor		 :1;
-	unsigned short weapon		 :1;
-	unsigned short useable	 :1;
-	unsigned short food		 :1;
+	unsigned short armor		:1;
+	unsigned short weapon		:1;
+	unsigned short useable	 	:1;
+	unsigned short food		:1;
 
-	unsigned short stackable	 :1;
-	unsigned short herb_potion	 :1;
-	unsigned short undropable	 :1;
-	unsigned short bit7		 :1;
+	unsigned short stackable	:1;
+	unsigned short herb_potion	:1;
+	unsigned short undropable	:1;
+	unsigned short bit7		:1;
 };
 
 struct knapsack_status {
 	/* knapsack position + 0x04 */
-	unsigned short broken		 :1;
-	unsigned short half_empty	 :1;
-	unsigned short empty		 :1;
-	unsigned short magic_hidden	 :1;
-	unsigned short bit4		 :1;
-	unsigned short poison1		 :1;
-	unsigned short poison2		 :1;
-	unsigned short magic_known	 :1;
+	unsigned short broken		:1;
+	unsigned short half_empty	:1;
+	unsigned short empty		:1;
+	unsigned short magic_hidden	:1;
+	unsigned short bit4		:1;
+	unsigned short poison1		:1;
+	unsigned short poison2		:1;
+	unsigned short magic_known	:1;
 
 	unsigned short bit8	:1;
 	unsigned short bit9	:1;
