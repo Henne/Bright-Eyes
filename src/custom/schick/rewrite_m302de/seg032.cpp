@@ -264,7 +264,7 @@ signed short FIG_count_active_enemies(void)
 			!enemy_dead(enemy) &&
 			!enemy_stoned(enemy) &&
 			!enemy_cursed(enemy) &&
-			!enemy_uncon(enemy) &&
+			!enemy_unconscious(enemy) &&
 			!enemy_busy(enemy) &&
 			!host_readbs(enemy + ENEMY_SHEET_ROUND_APPEAR))
 		{
@@ -287,10 +287,10 @@ signed short FIG_is_enemy_active(Bit8u *enemy)
 	if (enemy_sleeps(enemy) ||
 		enemy_dead(enemy) ||
 		enemy_stoned(enemy) ||
-		enemy_bit11(enemy) ||
-		enemy_uncon(enemy) ||
+		enemy_dancing(enemy) ||
+		enemy_unconscious(enemy) ||
 		enemy_busy(enemy) ||
-		enemy_bit8(enemy) ||
+		enemy_tame(enemy) ||
 		(host_readbs(enemy + ENEMY_SHEET_ROUND_APPEAR) > 0))
 	{
 		return 0;
@@ -317,8 +317,8 @@ signed short FIG_get_first_active_hero(void)
 			!hero_dead(hero_i) &&
 			!hero_stoned(hero_i) &&
 			!hero_cursed(hero_i) &&
-			!hero_unkn3(hero_i) &&
-			!hero_unc(hero_i))
+			!hero_scared(hero_i) &&
+			!hero_unconscious(hero_i))
 		{
 			return i;
 		}

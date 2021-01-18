@@ -249,7 +249,7 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 		/* target is hero or enemy */
 		if ( ( (target > 0) && (target < 10) &&
 			!hero_dead(get_hero(target - 1)) &&
-			!hero_unc(get_hero(target - 1))
+			!hero_unconscious(get_hero(target - 1))
 			) || (
 
 			((target >= 10) && (target < 30) &&
@@ -274,7 +274,7 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 		/* target is a hero */
 		if ((target > 0) && (target < 10) &&
 			!hero_dead(get_hero(target - 1)) &&
-			!hero_unc(get_hero(target - 1))) {
+			!hero_unconscious(get_hero(target - 1))) {
 
 			return 1;
 		} else {
@@ -337,7 +337,7 @@ signed short KI_search_spell_target(signed short x, signed short y,
 			/* attack everyone */
 			if ( ((obj_id > 0) && (obj_id < 10) &&
 				!hero_dead(get_hero(obj_id - 1)) &&
-				!hero_unc(get_hero(obj_id - 1))
+				!hero_unconscious(get_hero(obj_id - 1))
 				) || (
 				(obj_id >= 10) && (obj_id < 30) &&
 					!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + obj_id * SIZEOF_ENEMY_SHEET) &&
@@ -370,7 +370,7 @@ signed short KI_search_spell_target(signed short x, signed short y,
 #endif
 						 (((obj_id < 10) &&
 						!hero_dead(get_hero(obj_id - 1)) &&
-						!hero_unc(get_hero(obj_id - 1))
+						!hero_unconscious(get_hero(obj_id - 1))
 						) || (
 							(obj_id >= 50) &&
 							!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + CB_OBJ_NONOBSTACLE))

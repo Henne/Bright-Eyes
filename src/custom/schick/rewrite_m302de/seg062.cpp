@@ -1,5 +1,5 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg062 (temple: wonder)
+ *	Rewrite of DSA1 v3.02_de functions of seg062 (temple: miracle)
  *	Functions rewritten: 1/1 (complete)
  *
  *	Borlandified and identical
@@ -100,7 +100,7 @@ void ask_miracle(void)
 
 								i = get_random_hero();
 
-								if (i != -1 && !hero_dummy4(get_hero(i))) {
+								if (i != -1 && !hero_gods_pissed(get_hero(i))) {
 
 									slot = get_free_mod_slot();
 									set_mod_slot(slot, DAYS(3), get_hero(i) + HERO_MR,
@@ -133,7 +133,7 @@ void ask_miracle(void)
 								} else {
 									if (hero_cursed(hero) &&
 										host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-										!hero_dummy4(hero))
+										!hero_gods_pissed(hero))
 									{
 										/* unset curse */
 										and_ptr_bs(hero + HERO_STATUS1, 0xdf);
@@ -189,13 +189,13 @@ void ask_miracle(void)
 				case 4: {
 					/* TRAVIA */
 					if (l_si <= 10) {
-						/* food wonder */
+						/* food miracle */
 						for (i = 0; i <= 6; i++) {
 							hero = get_hero(i);
 
 							if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-								!hero_dummy4(hero))
+								!hero_gods_pissed(hero))
 							{
 								host_writebs(hero + HERO_HUNGER, host_writebs(hero + HERO_THIRST, 0));
 							}
@@ -255,7 +255,7 @@ void ask_miracle(void)
 							} else {
 								if (hero_cursed(hero) &&
 									host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-									!hero_dummy4(hero))
+									!hero_gods_pissed(hero))
 								{
 									/* unset curse */
 									and_ptr_bs(hero + HERO_STATUS1, 0xdf);
@@ -290,7 +290,7 @@ void ask_miracle(void)
 
 							i = get_random_hero();
 
-							if (i != -1 && !hero_dummy4(get_hero(i))) {
+							if (i != -1 && !hero_gods_pissed(get_hero(i))) {
 
 								slot = get_free_mod_slot();
 								set_mod_slot(slot, DAYS(7), get_hero(i) + HERO_HUNGER_TIMER,
@@ -319,7 +319,7 @@ void ask_miracle(void)
 							if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero) &&
-								!hero_dummy4(hero))
+								!hero_gods_pissed(hero))
 							{
 								/* heal hero completely */
 								add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
@@ -374,7 +374,7 @@ void ask_miracle(void)
 
 							if (disease != 0 &&
 								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-								!hero_dummy4(hero))
+								!hero_gods_pissed(hero))
 							{
 								host_writeb(hero + (HERO_ILLNESS-5) + 5 * disease, 1);
 								host_writeb(hero + (HERO_ILLNESS-4) + 5 * disease, 0);
@@ -398,7 +398,7 @@ void ask_miracle(void)
 							if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero) &&
-								!hero_dummy4(hero))
+								!hero_gods_pissed(hero))
 							{
 
 								for (j = 0; j < 23; j++) {
@@ -454,7 +454,7 @@ void ask_miracle(void)
 								if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 									host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 									!hero_dead(hero) &&
-									!hero_dummy4(hero))
+									!hero_gods_pissed(hero))
 								{
 									inc_ptr_bs(hero + (HERO_TA_SOCIAL+1));
 									inc_ptr_bs(hero + (HERO_TA_BODY+7));
@@ -468,7 +468,7 @@ void ask_miracle(void)
 					}
 					break;
 				}
-				/* NO wonders for SWAFNIR */
+				/* NO miracles for SWAFNIR */
 				}
 			}
 		}

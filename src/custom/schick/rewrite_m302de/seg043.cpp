@@ -223,7 +223,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 				}
 
 				/* spell_chamaelioni() is active on that hero => AT-5 */
-				if (hero_cham(hero) == 1) {
+				if (hero_chamaelioni(hero) == 1) {
 					attacker_at -= 5;
 				}
 
