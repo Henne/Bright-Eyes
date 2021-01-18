@@ -10,6 +10,7 @@
 #include "custom_hooks.h"
 static Bit8u custom_runs;
 
+static Bit8u soa_runs;
 static Bit8u schick_runs;
 static Bit8u schweif_runs;
 Bit16u custom_oldCS, custom_oldIP;
@@ -30,6 +31,10 @@ void custom_init_prog(char *name, Bit16u relocate, Bit16u init_cs, Bit16u init_i
 	/* from here on only Borland C++ executables are supported */
 
 	/* run all detectors */
+	if (soa_init(name, relocate, init_cs, init_ip)) {
+		custom_runs++;
+		soa_runs++;
+	}
 	if (init_schick(name, relocate, init_cs, init_ip)) {
 		custom_runs++;
 		schick_runs++;
@@ -46,6 +51,10 @@ void custom_exit_prog(Bit8u exitcode)
 		return;
 
 	custom_runs--;
+	if (soa_runs) {
+		soa_exit(exitcode);
+		soa_runs--;
+	}
 	if (schick_runs) {
 		exit_schick(exitcode);
 		schick_runs--;
@@ -63,6 +72,9 @@ int custom_calln(Bit16u IP)
 	if (!custom_runs)
 		return 0;
 
+	if (soa_runs)
+		return soa_calln(IP);
+
 	if (schick_runs)
 		return schick_calln16(IP);
 
@@ -79,6 +91,8 @@ int custom_callf(Bitu CS, Bitu IP)
 	if (!custom_runs)
 		return 0;
 
+	if (soa_runs)
+		return soa_callf(CS, IP);
 	if (schick_runs)
 		return schick_callf(CS, IP);
 	if (schweif_runs)

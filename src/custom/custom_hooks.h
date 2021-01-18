@@ -1,9 +1,29 @@
+#define DOSBOX_SOA_H
 #define DOSBOX_SCHICK_H
 #define DOSBOX_SCHWEIF_H
 
 #ifdef DOSBOX_CUSTOM
 
 bool check_bcc(char *, unsigned short , unsigned short, unsigned short);
+
+
+#ifdef DOSBOX_SOA_H
+/* prototypes for Execution operations */
+bool soa_init(char *, unsigned short, unsigned short, unsigned short);
+void soa_exit(unsigned char);
+
+/* prototypes for CPU operations */
+int soa_callf(unsigned, unsigned);
+int soa_calln(unsigned);
+#else /* DOSBOX_SOA_H */
+/* prototypes for Execution operations */
+inline bool soa_init(char *, unsigned short, unsigned short, unsigned short) { return false; };
+inline void soa_exit(unsigned char) {};
+
+/* prototypes for CPU operations */
+inline int soa_callf(unsigned, unsigned) {return 0;};
+inline int soa_calln(unsigned) {return 0;};
+#endif /* DOSBOX_SOA_H */
 
 #ifdef DOSBOX_SCHICK_H
 /* prototypes for Execution operations */

@@ -1,6 +1,6 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include -Wall -pedantic
 
-SUBDIRS = schick schweif
+SUBDIRS = soa schick schweif
 SUBDIRS += tools
 
 noinst_LIBRARIES = libcustom.a
