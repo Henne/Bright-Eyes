@@ -34,7 +34,7 @@ namespace M302de {
 unsigned short is_hero_healable(Bit8u *hero)
 {
 
-	if (hero_dead(hero) || hero_stoned(hero)) {
+	if (hero_dead(hero) || hero_petrified(hero)) {
 		/* this hero can not be helped */
 		GUI_output(get_ttx(778));
 		return 0;

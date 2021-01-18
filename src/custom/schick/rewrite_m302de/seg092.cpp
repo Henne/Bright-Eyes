@@ -100,7 +100,7 @@ void chest_protected_brutal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
 }
 
-void chest_stoned(void)
+void chest_petrified(void)
 {
 	/* a protected chest */
 	print_msg_with_first_hero(get_ttx(776));
@@ -108,7 +108,7 @@ void chest_stoned(void)
 	/* save pointer of the first hero */
 	ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group());
 
-	/* and make him stoned */
+	/* and make him petrified */
 	or_ptr_bs(Real2Host(ds_readd(MAIN_ACTING_HERO)) + 0xaa, 0x04);
 }
 

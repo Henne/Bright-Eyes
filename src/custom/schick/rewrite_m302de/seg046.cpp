@@ -337,8 +337,8 @@ void status_show(Bit16u index)
 	if (hero_sleeps(Real2Host(hero)))
 		GUI_print_string(get_tx2(1), 155, 16);
 
-	/* print stoned */
-	if (hero_stoned(Real2Host(hero)))
+	/* print petrified */
+	if (hero_petrified(Real2Host(hero)))
 		GUI_print_string(get_tx2(2), 155, 23);
 
 	/* print diseased */

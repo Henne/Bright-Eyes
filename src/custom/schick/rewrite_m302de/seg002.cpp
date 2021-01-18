@@ -4166,7 +4166,7 @@ void seg002_484f(void)
 }
 
 /**
- * \brief   returns true if heros not dead, stoned or unconscious
+ * \brief   returns true if heros not dead, petrified or unconscious
  *
  * \param   hero        pointer to the hero
  * \return              {0, 1}
@@ -4177,7 +4177,7 @@ signed short check_hero(Bit8u *hero)
 	if (!host_readbs(hero + HERO_TYPE) ||
 		hero_sleeps(hero) ||
 		hero_dead(hero) ||
-		hero_stoned(hero) ||
+		hero_petrified(hero) ||
 		hero_unconscious(hero) ||
 		hero_cursed(hero) ||
 		/* Check if ??? */
@@ -4190,7 +4190,7 @@ signed short check_hero(Bit8u *hero)
 }
 
 /**
- * \brief   returns true if heros not dead, stoned or unconscious
+ * \brief   returns true if heros not dead, petrified or unconscious
  */
 /* should be static */
 signed short check_hero_no2(Bit8u *hero)
@@ -4198,7 +4198,7 @@ signed short check_hero_no2(Bit8u *hero)
 
 	if (!host_readbs(hero + HERO_TYPE) ||
 		hero_dead(hero) ||
-		hero_stoned(hero) ||
+		hero_petrified(hero) ||
 		hero_unconscious(hero) ||
 		hero_cursed(hero))
 	{
@@ -4209,7 +4209,7 @@ signed short check_hero_no2(Bit8u *hero)
 }
 
 /**
- * \brief   check if hero is not dead, stoned or unconscious
+ * \brief   check if hero is not dead, petrified or unconscious
  *
  * \param   hero        pointer to the hero
  * \return              {0, 1}
@@ -4219,7 +4219,7 @@ signed short check_hero_no3(Bit8u *hero)
 {
 	if (!host_readbs(hero + HERO_TYPE) ||
 		hero_dead(hero) ||
-		hero_stoned(hero) ||
+		hero_petrified(hero) ||
 		hero_unconscious(hero))
 	{
 		return 0;

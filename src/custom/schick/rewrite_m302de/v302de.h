@@ -423,12 +423,12 @@ static inline unsigned short hero_sleeps(Bit8u *hero) {
 }
 
 /**
- * hero_stoned() -	check if hero is stoned
+ * hero_petrified() -	check if hero is petrified
  * @hero:	ptr to hero
  *
- * 0 = non-stoned / 1 = stoned
+ * 0 = non-petrified / 1 = petrified
  */
-static inline unsigned short hero_stoned(Bit8u *hero) {
+static inline unsigned short hero_petrified(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 2) & 1) == 0)
 		return 0;
 	else
@@ -577,12 +577,12 @@ static inline unsigned short enemy_sleeps(Bit8u *enemy) {
 }
 
 /**
- * enemy_stoned() -	check if enemy is stoned
+ * enemy_petrified() -	check if enemy is petrified
  * @enemy:	ptr to enemy
  *
- * 0 = not stoned / 1 = stoned
+ * 0 = not petrified / 1 = petrified
  */
-static inline unsigned short enemy_stoned(Bit8u *enemy) {
+static inline unsigned short enemy_petrified(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 2) & 1) == 0)
 		return 0;
 	else
@@ -1118,7 +1118,7 @@ struct bittest {
 
 #define hero_dead(hero)		((*(struct hero_status*)(hero + 0xaa)).dead)
 #define hero_sleeps(hero)	((*(struct hero_status*)(hero + 0xaa)).sleeps)
-#define hero_stoned(hero)	((*(struct hero_status*)(hero + 0xaa)).stoned)
+#define hero_petrified(hero)	((*(struct hero_status*)(hero + 0xaa)).petrified)
 #define hero_busy(hero)		((*(struct hero_status*)(hero + 0xaa)).busy)
 #define hero_chamaelioni(hero)	((*(struct hero_status*)(hero + 0xaa)).chamaelioni)
 #define hero_cursed(hero)	((*(struct hero_status*)(hero + 0xaa)).cursed)
@@ -1138,7 +1138,7 @@ struct bittest {
 
 #define enemy_dead(enemy)		(((struct enemy_sheets*)(enemy))->status1.dead)
 #define enemy_sleeps(enemy)		(((struct enemy_sheets*)(enemy))->status1.sleeps)
-#define enemy_stoned(enemy)		(((struct enemy_sheets*)(enemy))->status1.stoned)
+#define enemy_petrified(enemy)		(((struct enemy_sheets*)(enemy))->status1.petrified)
 #define enemy_busy(enemy)		(((struct enemy_sheets*)(enemy))->status1.busy)
 #define enemy_cursed(enemy)		(((struct enemy_sheets*)(enemy))->status1.cursed)
 #define enemy_unconscious(enemy)	(((struct enemy_sheets*)(enemy))->status1.unconscious)

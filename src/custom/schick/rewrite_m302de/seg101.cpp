@@ -478,7 +478,7 @@ void spell_paral(void)
 		ds_writed(SPELLTARGET_E,
 			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
-		/* set the enemy to stoned */
+		/* set the enemy to petrified */
 		or_ptr_bs(get_spelltarget_e() + 0x31, 0x04);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -502,7 +502,7 @@ void spell_paral(void)
 				strcpy((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_tx(112));
 			} else {
-				/* set the hero to stoned */
+				/* set the hero to petrified */
 				or_ptr_bs(get_spelltarget() + 0xaa, 0x4);
 
 				/* prepare message */
