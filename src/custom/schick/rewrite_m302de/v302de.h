@@ -1144,9 +1144,9 @@ struct bittest {
 #define enemy_unconscious(enemy)	(((struct enemy_sheets*)(enemy))->status1.unconscious)
 #define enemy_illusion(enemy)		(((struct enemy_sheets*)(enemy))->status1.illusion)
 
-#define enemy_tame(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit8)
+#define enemy_tame(enemy)	(((struct enemy_sheets*)(enemy))->status2.tame)
 #define enemy_bb(enemy)		(((struct enemy_sheets*)(enemy))->status2.bb)
-#define enemy_scared(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit10)
+#define enemy_scared(enemy)	(((struct enemy_sheets*)(enemy))->status2.scared)
 #define enemy_dancing(enemy)	(((struct enemy_sheets*)(enemy))->status2.dancing)
 
 #define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + 0x196))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)
