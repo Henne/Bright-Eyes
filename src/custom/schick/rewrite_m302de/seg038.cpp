@@ -221,20 +221,20 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 					cb_or_dist_entry = host_readbs(dist_table_ptr + (25 * backtrack_y) + backtrack_x);
 
 					if ((cb_or_dist_entry == dist)	&&
-						((!two_squares) || (
-							/* Original-Bug
-							 * A fight with two-squares enemies may freeze in an infinite loop here.
-							 * The following check of the tail-condition (space for the tail part of a two-squares monster) is executed for every single backtracking step.
-							 * However, in the function FIG_find_path_to_target this check is not applied for the last step to the target of a fleeing two-squares monster.
-							 * Fix: don't apply the check in the last step, i.e. the first step of the backtracking.
-							 * (another, maybe better fix would be to add the missing tests of the tail-condition in FIG_find_path_to_target)
-							 * See discussion at https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=165957#pid165957
-							 */
+						((!two_squares) ||
+						/* Original-Bug
+						 * A fight with two-squares enemies may freeze in an infinite loop here.
+						 * The following check of the tail-condition (space for the tail part of a two-squares monster) is executed for every single backtracking step.
+						 * However, in the function FIG_find_path_to_target this check is not applied for the last step to the target of a fleeing two-squares monster.
+						 * Fix: don't apply the check in the last step, i.e. the first step of the backtracking.
+						 * (another, maybe better fix would be to add the missing tests of the tail-condition in FIG_find_path_to_target)
+						 * See discussion at https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=165957#pid165957
+						 */
 #ifdef M302de_ORIGINAL_BUGFIX
-							dist == dist_bak-1 &&
-#else
-							two_squares &&
+						(dist == dist_bak-1) ||
 #endif
+						(
+							two_squares && /* this check is redundant, as we had (!two_squares) || ... before */
 							((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x)) || /* square is empty */
 							(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x) == (fighter_id + 10)) || /* head of active enemy is on square */
 							(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (tail_y * 25) + tail_x) == (fighter_id + 30))) && /* tail of active enemy is on square */
