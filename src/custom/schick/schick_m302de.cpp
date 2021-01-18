@@ -10387,8 +10387,8 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x70: {
-		D1_LOG("chest_stoned()\n");
-		chest_stoned();
+		D1_LOG("chest_petrified()\n");
+		chest_petrified();
 		return 1;
 	}
 	case 0x75: {
