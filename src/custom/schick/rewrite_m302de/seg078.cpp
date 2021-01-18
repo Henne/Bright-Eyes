@@ -625,7 +625,7 @@ void DNG02_chest04_func3(RealPt)
 
 		if (answer == 1)
 		{
-			chest_stoned();
+			chest_petrified();
 		} else {
 			ds_writeb(DNG02_APPARATURE_DESTROYED, 1);
 

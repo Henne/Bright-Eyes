@@ -151,7 +151,7 @@ void spell_verwandlung(void)
 	ds_writed(SPELLTARGET,
 		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
-	if (hero_stoned(get_spelltarget())) {
+	if (hero_petrified(get_spelltarget())) {
 
 		/* set AEcosts */
 		ds_writew(SPELL_SPECIAL_AECOST, random_schick(10) * 5);
@@ -162,7 +162,7 @@ void spell_verwandlung(void)
 			ds_writew(SPELL_SPECIAL_AECOST, -2);
 		} else {
 			/* YES: spell has effect */
-			/* unset stoned bit */
+			/* unset petrified bit */
 			and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xfb);
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(4),
