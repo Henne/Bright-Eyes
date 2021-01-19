@@ -302,7 +302,7 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 
 	/* In the way the path has been created, it is terminated by at least one symbol -1.
 	 * In the case that the path doesnt reach the target (because of insufficient bp_avail),
-	 * the (first) terminal marker -1 will be replaced by -2. */
+	 * after the (first) end marker -1 another marker -2 is appended. */
 	if (target_out_of_reach != 0) {
 
 		i = 0;
@@ -339,6 +339,12 @@ signed short FIG_count_direction_changes_of_path(signed char *path_ptr)
  * \brief  Find target for fighter and compute path
  *
  * Searches for a target (depending on given mode) for a fighter and computes a path to it. The computed path is written at FIG_MOVE_PATHDIR in the data segment.
+ * The path is a sequence of the following symbols:
+ * 0: right / 1: down / 2: left / 3: up
+ * -1: end marker of the path. The length of the path (without end marker) is at most the number of available BP of the fighter.
+ * -2: the end marker of the path will be followed by -2, if the available BP of the fighter are not sufficient to reach the target.
+ * 
+ * A return value of 1 means that there is a path of length <50 from the fighter to a target (depending on mode), independently of the available BP.
  *
  * \param   fighter_ptr    pointer to a fighter (hero or enemy, depending on mode)
  * \param   fighter_id     id of fighter. hero: range 1..9 or; monster: range 10..29.
@@ -420,8 +426,10 @@ signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id
 			if (cb_or_dist_entry > 0) {
 				if ((cb_or_dist_entry < 10) && (hero_dead(get_hero(cb_or_dist_entry - 1)) || hero_unconscious(get_hero(cb_or_dist_entry - 1))))
 				{
+					/* cb_or_dist_entry is a dead or unsonscious hero */
 					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
 				} else if ((cb_or_dist_entry >= 10) && (cb_or_dist_entry < 30) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + cb_or_dist_entry * SIZEOF_ENEMY_SHEET)))
+					/* cb_or_dist_entry is a dead enemy. tail parts of two-squares enemies are not considered. */
 				{
 						host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
 				}
