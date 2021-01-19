@@ -281,7 +281,7 @@ struct enemy_status1 {
 	unsigned short petrified	:1;
 	unsigned short busy		:1;
 	unsigned short bit4		:1;
-	unsigned short cursed		:1;
+	unsigned short cursed		:1; /* bit is set for all enemies except the Orkchampion in the final fight */
 	unsigned short unconscious	:1;
 	unsigned short illusion		:1;
 };

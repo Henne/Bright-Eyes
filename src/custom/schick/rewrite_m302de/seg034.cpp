@@ -209,7 +209,8 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 	do {
 		handle_input();
 
-		if ((ds_readws(ACTION) == 1) || (ds_readws(MOUSE2_EVENT) != 0)) {
+		if ((ds_readws(ACTION) == 1) || /* ESC */
+			(ds_readws(MOUSE2_EVENT) != 0)) {
 
 			/* cancel */
 
@@ -226,10 +227,10 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 
 		from_kbd = 0;
 
-		if ((ds_readws(ACTION) == 72) ||
-			(ds_readws(ACTION) == 80) ||
-			(ds_readws(ACTION) == 77) ||
-			(ds_readws(ACTION) == 75))
+		if ((ds_readws(ACTION) == 72) || /* up */
+			(ds_readws(ACTION) == 80) || /* down */
+			(ds_readws(ACTION) == 77) || /* right */
+			(ds_readws(ACTION) == 75)) /* left */
 		{
 			from_kbd = 1;
 		} else {
@@ -260,7 +261,7 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 		}
 
 		if (ds_readws(MOUSE1_EVENT1) != 0) {
-			ds_writew(ACTION, 28);
+			ds_writew(ACTION, 28); /* return */
 			ds_writew(MOUSE1_EVENT1, 0);
 		}
 
@@ -325,7 +326,7 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 			FIG_set_gfx();
 		}
 
-	} while (ds_readws(ACTION) != 28);
+	} while (ds_readws(ACTION) != 28); /* != return */
 
 	FIG_remove_from_list(ds_readbs(FIG_CB_SELECTOR_ID), 0);
 
