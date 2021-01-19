@@ -256,7 +256,7 @@ void tevent_097(void)
 /**
  * \brief   travelevent 98: a gap
  *
- *          disappeared heros can be found in the efferd temple in liskor
+ *          disappeared heros can be found in the Efferd temple in Liskor
  */
 void tevent_098(void)
 {

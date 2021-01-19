@@ -229,7 +229,7 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 				FIG_set_cb_field(y, x + i, object);
 		}
 	} else {
-		/* if object is an enemy an needs 2 fields */
+		/* if object is an enemy and needs 2 fields */
 		if (object >= 10 &&
 			is_in_byte_array(type, p_datseg + TWO_FIELDED_SPRITE_ID))
 		{
