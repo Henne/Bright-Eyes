@@ -143,15 +143,15 @@ void FIG_find_path_to_target_backtrack(Bit8u *dist_table_ptr, signed short targe
 	signed short success;
 	signed short lowest_nr_dir_changes;
 	signed short nr_dir_changes;
+#ifndef M302de_ORIGINAL_BUGFIX
 	/* potential Original-Bug:
 	 * best_dir is not initialized and may stay so in case that FIG_find_path_to_target_backtrack is called with equal target and hero/enemy position.
 	 * It's not clear however if this does indeed happen.
 	 * See https://www.crystals-dsa-foren.de/showthread.php?tid=5383&pid=155007#pid155007
 	 */
-#ifdef M302de_ORIGINAL_BUGFIX
-	signed short best_dir = 0;
-#else
 	signed short best_dir;
+#else
+	signed short best_dir = 0;
 #endif
 	Bit8u *path_cur;
 	signed short x_bak;
@@ -428,10 +428,20 @@ signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id
 				{
 					/* cb_or_dist_entry is a dead or unsonscious hero */
 					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
-				} else if ((cb_or_dist_entry >= 10) && (cb_or_dist_entry < 30) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + cb_or_dist_entry * SIZEOF_ENEMY_SHEET)))
+				} else if ((cb_or_dist_entry >= 10) && (cb_or_dist_entry < 30) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + cb_or_dist_entry * SIZEOF_ENEMY_SHEET))) {
 					/* cb_or_dist_entry is a dead enemy. tail parts of two-squares enemies are not considered. */
-				{
-						host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
+					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
+					/* Original-Bug: The tail parts of dead two-squares enemies have been forgotten,
+					 * meaning that they are not walkable.
+					 * The fact that they are invisible does not make things better.
+					 * However, in the target selection of the hero movement, tail parts of two-squares monsters are allowed.
+					 * The weird outcome is that dead tail-parts can be entered, but not crossed by heros.
+					 * For enemies, squares with dead tail-parts are blocked completely. */
+#ifdef M302de_ORIGINAL_BUGFIX
+					/* make dead tail-parts walkable */
+				} else if ((cb_or_dist_entry >= 30) && (cb_or_dist_entry < 50) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + cb_or_dist_entry * SIZEOF_ENEMY_SHEET))) {
+					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
+#endif
 				}
 			}
 		}
@@ -467,14 +477,13 @@ signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id
 
 
 							if ((new_y < 0) || (new_y > 23) || (new_x < 0) ||
-								/* Original-Bug: */
-#ifdef M302de_ORIGINAL_BUGFIX
-									(new_x > 23)
+#ifndef M302de_ORIGINAL_BUGFIX
+								/* Original-Bug: new_y > 23 gets checked twice, new_x > 23 is missing */
+								(new_y > 23)
 #else
-									(new_y > 23)
+								(new_x > 23)
 #endif
-								)
-							{
+							) {
 								/* search passed the border of the map */
 								done = 1;
 							} else {
@@ -482,6 +491,8 @@ signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id
 								{
 									/* sqare empty and may be used as base square for launching the ranged attack. set target marker */
 									host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * new_y) + new_x, 9);
+									/* DANGER: The id 9 is in the range [1..9] which is typically considered as a hero.
+									 * However, as there are at most 7 heros, this should not be a problem, hopefully. */
 								} else {
 									/* square blocked */
 									done = 1;
@@ -521,14 +532,13 @@ signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id
 							new_x = x + ranged_dist * coordinate_offset.o[dir].x;
 
 							if ((new_y < 0) || (new_y > 23) || (new_x < 0) ||
-								/* Original-Bug: */
-#ifdef M302de_ORIGINAL_BUGFIX
-									(new_x > 23)
+#ifndef M302de_ORIGINAL_BUGFIX
+								/* Original-Bug: new_y > 23 gets checked twice, new_x > 23 is missing */
+								(new_y > 23)
 #else
-									(new_y > 23)
+								(new_x > 23)
 #endif
-								)
-							{
+							) {
 								/* search passed the border of the map */
 								done =1;
 							} else {
@@ -536,6 +546,9 @@ signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id
 								{
 									/* sqare empty and may be used as base square for launching the ranged attack. set target marker */
 									host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * new_y) + new_x, 49);
+									/* DANGER: The id 49 is in the range [30..49] which is typically considered as the tail of a two-squares enemy.
+									 * However, presumably there is no fight involving the last id 49 in this range.
+									 * So hopefully, there is no collision. */
 								} else {
 									/* square blocked */
 									done = 1;

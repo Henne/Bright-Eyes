@@ -811,7 +811,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 						 * This results in the incorrect message "ZIEL: 99 BP" if the target is pointing at a dead monster
 						 * which is not reachable within the available BP or not reachable at all. */
 					} else if (cb_entry_bak > 0) {
-						/* cb_entry_bak is a hero */
+						/* target square contains is a hero */
 						if (!hero_dead(get_hero(cb_entry_bak - 1)) &&
 							!hero_unconscious(get_hero(cb_entry_bak - 1)) &&
 							(cb_entry_bak != hero_pos + 1))
