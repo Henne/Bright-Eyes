@@ -525,10 +525,12 @@ signed short FIG_move_pathlen(void)
 {
 	signed short i = 0;
 
+	/* count everything till the end marker -1 of the path */
 	while (ds_readbs(FIG_MOVE_PATHDIR + i) != -1) {
 		i++;
 	}
 
+	/* if the end marker -1 is followed by a -2, the available BP are not sufficient */
 	if (ds_readbs((FIG_MOVE_PATHDIR + 1) + i) == -2) {
 		return 99;
 	}
@@ -550,7 +552,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	signed short path_end;
 	signed short sel_x;
 	signed short sel_y;
-	signed short l4;
+	signed short target_reachable;
 	signed short curr_x;
 	signed short curr_y;
 	signed short fg_bak;
@@ -560,10 +562,10 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	signed short from_kbd;
 	signed short base_x = 9;
 	signed short base_y = 116;
-	signed char l12;
+	signed char cb_entry_bak;
 	signed char bp_cost;
-	signed char l14;
-	signed short l15;
+	signed char cb_entry_bak_escape;
+	signed short escape_dir; /* 0: no escape; 1: left; 2: down; 3: up. not compatible with the directions in the path! */
 	signed short mouse_cb_x;
 	signed short mouse_cb_y;
 
@@ -658,6 +660,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			sel_y = mouse_cb_y;
 		}
 
+		/* treatment of the two visible corners of the map */
 		if ((sel_x < 0) && (sel_y < 0)) {
 			sel_x = 0;
 		}
@@ -698,72 +701,80 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			problem = 0;
 			bp_cost = 0;
 
-			if ((host_readws(px) != sel_x) || (host_readws(py) != sel_y)) {
+			if ((host_readws(px) != sel_x) || (host_readws(py) != sel_y)) { /* selected square is different from active hero position */
 
-				l15 = 0;
+				escape_dir = 0;
 
-				/* TODO: why not (sel_x > 23) ? */
+				/* (sel_x > 23) is missing as the right border of the map is not visible, so it cannot be used for escape (I guess...) */
 				if ((sel_x < 0) || (sel_y < 0) || (sel_y > 23)) {
+					/* active hero wants to escape over the border of the map */
 
+					/* reset (sel_x, sel_y) to the square at the border of the map. remember the direction of the escape */
 					if (sel_x < 0) {
 						sel_x = 0;
-						l15 = 1;
+						escape_dir = 1;
 					} else if (sel_y < 0) {
 						sel_y = 0;
-						l15 = 2;
+						escape_dir = 2;
 					} else {
 						sel_y = 23;
-						l15 = 3;
+						escape_dir = 3;
 					}
 
 					if ((get_cb_val(sel_x, sel_y) != 0) &&
 						((host_readws(px) != sel_x) || (host_readws(py) != sel_y)))
 					{
+						/* the reset square (sel_x, sel_y) is blocked and different from the position of the active hero */
 
-						problem = 3;
+						problem = 3; /* target square blocked */
 
-						if (l15 == 1) {
+						/* again reset (sel_x, sel_y) to the square beyond the border */
+						if (escape_dir == 1) {
 							sel_x = -1;
-						} else if (l15 == 2) {
+						} else if (escape_dir == 2) {
 							sel_y = -1;
 						} else {
+							/*  escape_dir == 3 */
 							sel_y = 24;
 						}
 
 					} else {
-						l14 = get_cb_val(sel_x, sel_y);
+						cb_entry_bak_escape = get_cb_val(sel_x, sel_y);
 					}
 				} else {
-					l12 = get_cb_val(sel_x, sel_y);
+					cb_entry_bak = get_cb_val(sel_x, sel_y);
 				}
 
 				if (problem != 3) {
 
-					if ((l15 != 0) && (host_readws(px) == sel_x) && (host_readws(py) == sel_y))
+					if ((escape_dir != 0) && (host_readws(px) == sel_x) && (host_readws(py) == sel_y))
 					{
+						/* active hero wants to escape over the border of the map and is already at the border. */
 						ds_writeb(FIG_MOVE_PATHDIR, -1);
 						bp_cost = 0;
 					} else {
 						FIG_set_cb_field(sel_y, sel_x, 124); /* target marker for FIG_find_path_to_target */
-						l4 = FIG_find_path_to_target(hero, hero_pos, host_readws(px), host_readws(py), 10);
+						target_reachable = FIG_find_path_to_target(hero, hero_pos, host_readws(px), host_readws(py), 10);
+						/* target_reachable = 1: there is a path of length < 50 to the target square; target_reachable = -1: there is no such path */
 						bp_cost = (signed char)FIG_move_pathlen();
 					}
 
-					if (l15 != 0) {
-						FIG_set_cb_field(sel_y, sel_x, l14);
+					if (escape_dir != 0) {
+						FIG_set_cb_field(sel_y, sel_x, cb_entry_bak_escape);
 
 						path_end = 0;
 						while (ds_readbs(FIG_MOVE_PATHDIR + path_end) != -1) {
 							path_end++;
 						}
 
-						if (l15 == 1) {
+						/* add the last escape step to the path */
+						if (escape_dir == 1) {
 							sel_x = -1;
 							if (host_readbs(hero + HERO_BP_LEFT) > bp_cost) {
 								ds_writeb((FIG_MOVE_PATHDIR + 0) + path_end, 2);
 								ds_writeb((FIG_MOVE_PATHDIR + 1) + path_end, -1);
 							}
-						} else if (l15 == 2) {
+						} else if (escape_dir == 2) {
 							sel_y = -1;
 							if (bp_cost < (host_readbs(hero + HERO_BP_LEFT) - 1)) {
 								ds_writeb((FIG_MOVE_PATHDIR + 0) + path_end, 1);
@@ -779,26 +790,28 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 						bp_cost++;
 					} else {
-						FIG_set_cb_field(sel_y, sel_x, l12);
+						FIG_set_cb_field(sel_y, sel_x, cb_entry_bak);
 					}
 
-					if (l12 >= 50) {
-						problem = 3;
-					} else if (l12 >= 10) {
-						/* l12 is a monster */
-						if (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * (l12 - 10 - (l12 >= 30 ? 20 : 0))))
+					if (cb_entry_bak >= 50) {
+						problem = 3; /* target square blocked */
+					} else if (cb_entry_bak >= 10) {
+						/* cb_entry_bak is a monster */
+						if (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * (cb_entry_bak - 10 - (cb_entry_bak >= 30 ? 20 : 0))))
 						{
+							/* monster is not dead */
 							problem = 3;
 						}
-					} else if (l12 >0) {
-
-						if (!hero_dead(get_hero(l12 - 1)) &&
-							!hero_unconscious(get_hero(l12 - 1)) &&
-							(l12 != hero_pos + 1))
+					} else if (cb_entry_bak >0) {
+						/* cb_entry_bak is a hero */
+						if (!hero_dead(get_hero(cb_entry_bak - 1)) &&
+							!hero_unconscious(get_hero(cb_entry_bak - 1)) &&
+							(cb_entry_bak != hero_pos + 1))
 						{
+							/* hero is not dead, not unconscious, and not the active hero */
 							problem = 3;
 						}
-					} else if (l4 == -1) {
+					} else if (target_reachable == -1) {
 						problem = 4;
 					} else if (host_readbs(hero + HERO_BP_LEFT) < bp_cost) {
 						problem = 2;
