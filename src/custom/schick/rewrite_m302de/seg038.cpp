@@ -343,7 +343,7 @@ signed short FIG_count_direction_changes_of_path(signed char *path_ptr)
  * 0: right / 1: down / 2: left / 3: up
  * -1: end marker of the path. The length of the path (without end marker) is at most the number of available BP of the fighter.
  * -2: the end marker of the path will be followed by -2, if the available BP of the fighter are not sufficient to reach the target.
- * 
+ *
  * A return value of 1 means that there is a path of length <50 from the fighter to a target (depending on mode), independently of the available BP.
  *
  * \param   fighter_ptr    pointer to a fighter (hero or enemy, depending on mode)
