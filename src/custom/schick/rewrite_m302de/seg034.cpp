@@ -753,13 +753,14 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 						ds_writeb(FIG_MOVE_PATHDIR, -1);
 						bp_cost = 0;
 					} else {
-						FIG_set_cb_field(sel_y, sel_x, 124); /* target marker for FIG_find_path_to_target */
+						FIG_set_cb_field(sel_y, sel_x, 124); /* target marker for FIG_find_path_to_target. The original content of this square has been backuped before in 'cb_entry_bak' or 'cb_entry_bak_escape'. */
 						target_reachable = FIG_find_path_to_target(hero, hero_pos, host_readws(px), host_readws(py), 10);
 						/* target_reachable = 1: there is a path of length < 50 to the target square; target_reachable = -1: there is no such path */
 						bp_cost = (signed char)FIG_move_pathlen();
 					}
 
 					if (escape_dir != 0) {
+						/* restore the original entry of the target square, which has been overwritten by the target marker. */
 						FIG_set_cb_field(sel_y, sel_x, cb_entry_bak_escape);
 
 						path_end = 0;
@@ -790,19 +791,26 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 						bp_cost++;
 					} else {
+						/* restore the original entry of the target square, which has been overwritten by the target marker. */
 						FIG_set_cb_field(sel_y, sel_x, cb_entry_bak);
 					}
 
 					if (cb_entry_bak >= 50) {
 						problem = 3; /* target square blocked */
+#ifndef M302de_ORIGINAL_BUGFIX
 					} else if (cb_entry_bak >= 10) {
-						/* cb_entry_bak is a monster */
+						/* target square contains a monster (including the tail of a two-squares monster) */
 						if (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * (cb_entry_bak - 10 - (cb_entry_bak >= 30 ? 20 : 0))))
 						{
 							/* monster is not dead */
 							problem = 3;
 						}
-					} else if (cb_entry_bak >0) {
+						/* Original-Bug:
+						 * If the target square contains a dead monster,
+						 * the checks for target_reachable and bp_cost below are not executed because of the "nested if" structure of the code.
+						 * This results in the incorrect message "ZIEL: 99 BP" if the target is pointing at a dead monster
+						 * which is not reachable within the available BP or not reachable at all. */
+					} else if (cb_entry_bak > 0) {
 						/* cb_entry_bak is a hero */
 						if (!hero_dead(get_hero(cb_entry_bak - 1)) &&
 							!hero_unconscious(get_hero(cb_entry_bak - 1)) &&
@@ -811,6 +819,21 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 							/* hero is not dead, not unconscious, and not the active hero */
 							problem = 3;
 						}
+						/* Original-Bug:
+						 * If the target square contains a dead or unconscious hero different from the active hero,
+						 * the checks for target_reachable and bp_cost below are not executed because of the "nested if" structure of the code.
+						 * This results in the incorrect message "ZIEL: 99 BP" if the target is pointing at a dead/unconscious hero
+						 * which is not reachable within the available BP or not reachable at all. */
+#else
+						/* Bug fix:
+						 * flatten the nested if branches. */
+					} else if ((cb_entry_bak >= 10) && (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * (cb_entry_bak - 10 - (cb_entry_bak >= 30 ? 20 : 0))))) {
+						/* target square contains a non-dead monster (including the tail of a two-squares monster) */
+						problem = 3;
+					} else if ((cb_entry_bak > 0) && (cb_entry_bak < 10) && !hero_dead(get_hero(cb_entry_bak - 1)) && !hero_unconscious(get_hero(cb_entry_bak - 1)) && (cb_entry_bak != hero_pos + 1)) {
+						/* target square contains a non-dead and non-unconscious hero different from the active hero */
+						problem = 3;
+#endif
 					} else if (target_reachable == -1) {
 						problem = 4;
 					} else if (host_readbs(hero + HERO_BP_LEFT) < bp_cost) {
