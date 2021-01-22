@@ -468,7 +468,7 @@ void spell_mutabili(void)
 #endif
 }
 
-void spell_paral(void)
+void spell_paralue(void)
 {
 
 	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) >= 10) {

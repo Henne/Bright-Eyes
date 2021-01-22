@@ -117,7 +117,7 @@ static void (*spellhandler[])(void) = {
 	spell_inc_kl,
 	spell_inc_mu,
 	spell_mutabili,
-	spell_paral,
+	spell_paralue,
 	spell_salander,
 	spell_see,
 	spell_visibili,

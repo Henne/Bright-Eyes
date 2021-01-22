@@ -41,12 +41,12 @@ static void (*mspell[])(void) = {
 	mspell_plumbumbarum,		/* 11 */
 	mspell_saft_kraft,		/* 12 */
 	mspell_armatrutz,		/* 13 */
-	mspell_paral,			/* 14 */
+	mspell_paralue,			/* 14 */
 };
 
 #endif
 
-void MON_do_damage(signed short damage)
+void MON_do_spell_damage(signed short damage)
 {
 	if (damage > 0) {
 
@@ -126,7 +126,7 @@ signed short MON_get_target_RS(void)
 			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
 		/* return RS-value */
-		return host_readbs(get_spelltarget() + 0x30);
+		return host_readbs(get_spelltarget() + HERO_RS_BONUS1);
 
 	} else {
 		/* target is a monster */
@@ -136,7 +136,7 @@ signed short MON_get_target_RS(void)
 			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* return PA-value */
-		return host_readbs(get_spelltarget_e() + 0x02);
+		return host_readbs(get_spelltarget_e() + ENEMY_SHEET_RS);
 	}
 }
 
@@ -552,7 +552,7 @@ void mspell_fulminictus(void)
 	}
 
 	/* do the damage */
-	MON_do_damage(damage);
+	MON_do_spell_damage(damage);
 
 	/* set the cost */
 	ds_writew(MONSTER_SPELL_COST, damage);
@@ -579,7 +579,7 @@ void mspell_ignifaxius(void)
 	}
 
 	/* do the damage */
-	MON_do_damage(damage);
+	MON_do_spell_damage(damage);
 
 	/* calc RS malus */
 	rs_malus = damage / 10;
@@ -727,7 +727,7 @@ void mspell_armatrutz(void)
 		host_readbs(get_spelluser_e() + ENEMY_SHEET_RS) + (signed char)rs_bonus);
 }
 
-void mspell_paral(void)
+void mspell_paralue(void)
 {
 
 	if (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) >= 10) {

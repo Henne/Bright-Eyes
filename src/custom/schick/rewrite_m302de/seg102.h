@@ -45,11 +45,11 @@ void mspell_saft_kraft(void);
 void mspell_armatrutz(void);
 
 /* 0x66 */
-void mspell_paral(void);
+void mspell_paralue(void);
 
 /* 0x6b */
 /* should be static */
-void MON_do_damage(signed short);
+void MON_do_spell_damage(signed short);
 
 /* 0x70 */
 /* unused */
