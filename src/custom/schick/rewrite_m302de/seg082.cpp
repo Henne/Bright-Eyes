@@ -265,7 +265,7 @@ signed short DNG07_handler(void)
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
 				if (host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE &&
-					hero_dummy6(hero))
+					hero_encouraged(hero))
 				{
 					sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3);
 					and_ptr_bs(hero + HERO_STATUS2, 0x7f);

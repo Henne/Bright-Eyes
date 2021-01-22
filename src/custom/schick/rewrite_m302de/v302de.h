@@ -518,7 +518,7 @@ static inline unsigned short hero_gods_pissed(Bit8u *hero) {
 		return 1;
 }
 
-static inline unsigned short hero_dummy6(Bit8u *hero) {
+static inline unsigned short hero_encouraged(Bit8u *hero) {
 
 	if (((host_readb(hero + 0xab) >> 7) & 1) == 0)
 		return 0;
@@ -1128,13 +1128,13 @@ struct bittest {
 #define hero_scared(hero)	((*(struct hero_status*)(hero + 0xaa)).scared)
 #define hero_dummy1(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy1)
 #define hero_dummy3(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy3)
-#define hero_gods_pissed(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy4)
+#define hero_gods_pissed(hero)	((*(struct hero_status*)(hero + 0xaa)).gods_pissed)
 #define hero_duplicatus(hero)	((*(struct hero_status*)(hero + 0xaa)).duplicatus)
 
 #define hero_dummy3_set(hero, v) ((*(struct hero_status*)(hero + 0xaa)).dummy3 = v)
 
-#define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
-#define hero_dummy6(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy6)
+#define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transformed)
+#define hero_encouraged(hero)	((*(struct hero_status*)(hero + 0xaa)).encouraged)
 
 #define enemy_dead(enemy)		(((struct enemy_sheets*)(enemy))->status1.dead)
 #define enemy_sleeps(enemy)		(((struct enemy_sheets*)(enemy))->status1.sleeps)
