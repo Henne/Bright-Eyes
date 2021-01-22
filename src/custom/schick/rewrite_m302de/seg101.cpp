@@ -69,10 +69,17 @@ void spell_armatrutz(void)
 	max_bonus = 0;
 
 	/* calc the maximal RS bonus */
+#ifndef M302de_ORIGINAL_BUGFIX
 	/* Original-Bug: you can get one RS point more that you have AE for */
 	while (max_bonus * max_bonus < host_readws(get_spelluser() + HERO_AE)) {
 		max_bonus++;
 	}
+#else
+	while (max_bonus * max_bonus <= host_readws(get_spelluser() + HERO_AE)) {
+		max_bonus++;
+	}
+	--max_bonus;
+#endif;
 
 	/* the maximum bonus is 9 */
 	if (max_bonus > 9)
