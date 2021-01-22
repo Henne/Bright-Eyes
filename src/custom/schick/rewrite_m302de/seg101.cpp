@@ -61,46 +61,46 @@ void spell_arcano(void)
 
 void spell_armatrutz(void)
 {
-	signed short max_boni;
+	signed short max_bonus;
 	signed short pos;
-	signed short boni;
+	signed short bonus;
 	signed short slot;
 
-	max_boni = 0;
+	max_bonus = 0;
 
-	/* calc the maximal RS boni */
+	/* calc the maximal RS bonus */
 	/* Original-Bug: you can get one RS point more that you have AE for */
-	while (max_boni * max_boni < host_readws(get_spelluser() + HERO_AE)) {
-		max_boni++;
+	while (max_bonus * max_bonus < host_readws(get_spelluser() + HERO_AE)) {
+		max_bonus++;
 	}
 
-	/* the maximum boni is 9 */
-	if (max_boni > 9)
-		max_boni = 9;
+	/* the maximum bonus is 9 */
+	if (max_bonus > 9)
+		max_bonus = 9;
 
-	/* aks the user which boni he wants */
+	/* aks the user which bonus he wants */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)get_tx(99), max_boni);
-	boni = GUI_input(Real2Host(ds_readd(DTP2)), 1);
+		(char*)get_tx(99), max_bonus);
+	bonus = GUI_input(Real2Host(ds_readd(DTP2)), 1);
 
 	/* fix wrong input */
-	if (boni > max_boni)
-		boni = max_boni;
+	if (bonus > max_bonus)
+		bonus = max_bonus;
 
-	if (boni != -1) {
+	if (bonus != -1) {
 
 		pos = get_hero_index(get_spelluser());
-		ds_writew(SPELL_SPECIAL_AECOST, boni * boni);
+		ds_writew(SPELL_SPECIAL_AECOST, bonus * bonus);
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, MINUTES(5),
 			get_spelluser() + HERO_RS_BONUS1,
-			(signed char)boni, (signed char)pos);
+			(signed char)bonus, (signed char)pos);
 
 		/* prepare output message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_tx(100),
 			(char*)get_spelluser() + HERO_NAME2,
-			boni);
+			bonus);
 
 	} else {
 		/* spell canceled */
