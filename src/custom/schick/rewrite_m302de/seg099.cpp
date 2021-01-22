@@ -543,7 +543,7 @@ void spell_kraehenruf(void)
 
 void spell_skelettarius(void)
 {
-	Bit8u *enemy;
+	Bit8u *fighter;
 	signed short x;
 	signed short y;
 	signed char unk;
@@ -571,25 +571,23 @@ void spell_skelettarius(void)
 			Real2Host(GUI_names_grammar((signed short)0x8000,
 				host_readbs(get_spelltarget_e() + ENEMY_SHEET_MON_ID), 1)));
 
-		enemy = Real2Host(FIG_get_ptr(host_readbs(get_spelltarget_e() + ENEMY_SHEET_FIGHTER_ID)));
+		fighter = Real2Host(FIG_get_ptr(host_readbs(get_spelltarget_e() + ENEMY_SHEET_FIGHTER_ID)));
 
-		x = host_readbs(enemy + 3);
-		y = host_readbs(enemy + 4);
+		x = host_readbs(fighter + FIGHTER_CBX);
+		y = host_readbs(fighter + FIGHTER_CBY);
 
-		if (host_readbs(enemy + ENEMY_SHEET_LE) != -1) {
-			FIG_remove_from_list(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(enemy + ENEMY_SHEET_LE)), 0);
+		if (host_readbs(fighter + FIGHTER_TWOFIELDED) != -1) {
+			FIG_remove_from_list(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(fighter + FIGHTER_TWOFIELDED)), 0);
 		}
 
 		FIG_remove_from_list(host_readbs(get_spelltarget_e() + ENEMY_SHEET_FIGHTER_ID), 0);
 
 		unk = host_readbs(get_spelltarget_e() + ENEMY_SHEET_DUMMY2);
 
+
 		fill_enemy_sheet(host_readbs(get_spelluser() + HERO_ENEMY_ID) - 10, 0x10, 0);
 
 		FIG_load_enemy_sprites(get_spelltarget_e() + ENEMY_SHEET_MON_ID, x, y);
-
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2);
-		host_writebs(get_spelltarget_e() + ENEMY_SHEET_DUMMY2, unk);
 	}
 }
 
