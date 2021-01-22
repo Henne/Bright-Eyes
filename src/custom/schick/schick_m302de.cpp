@@ -3585,8 +3585,8 @@ static int n_seg102(unsigned short offs)
 		Bit16s damage = CPU_Pop16();
 		CPU_Push16(damage);
 
-		D1_LOG("MON_do_damage(%d)\n", damage);
-		MON_do_damage(damage);
+		D1_LOG("MON_do_spell_damage(%d)\n", damage);
+		MON_do_spell_damage(damage);
 
 		return 1;
 	}
@@ -11269,7 +11269,7 @@ static int seg101(unsigned short offs) {
 		return 1;
 	}
 	case 0x5c: {
-		spell_paral();
+		spell_paralue();
 		return 1;
 	}
 	case 0x61: {
@@ -11396,7 +11396,7 @@ static int seg102(unsigned short offs)
 		return 1;
 	}
 	case 0x66: {
-		mspell_paral();
+		mspell_paralue();
 		return 1;
 	}
 	default:
