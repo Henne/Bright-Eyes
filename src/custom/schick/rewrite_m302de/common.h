@@ -228,19 +228,19 @@ enum {
 
 enum {
     HERO_TYPE_NONE = 0,
-    HERO_TYPE_JUGGLER = 1,
-    HERO_TYPE_HUNTER = 2,
-    HERO_TYPE_WARRIOR = 3,
-    HERO_TYPE_ESTRAY = 4,
-    HERO_TYPE_THORWALIAN = 5,
-    HERO_TYPE_DWARF = 6,
+    HERO_TYPE_JUGGLER = 1,	/* Gaukler */
+    HERO_TYPE_HUNTER = 2,	/* Jaeger */
+    HERO_TYPE_WARRIOR = 3,	/* Krieger */
+    HERO_TYPE_ESTRAY = 4,	/* Streuner */
+    HERO_TYPE_THORWALIAN = 5,	/* Thorwaler */
+    HERO_TYPE_DWARF = 6,	/* Zwerg */
     /* Magic users > 6 */
-    HERO_TYPE_WITCH = 7,
-    HERO_TYPE_DRUID = 8,
-    HERO_TYPE_MAGE = 9,
-    HERO_TYPE_GREEN_ELF = 10, /* Auelf */
-    HERO_TYPE_ICE_ELF = 11, /* Firnelf */
-    HERO_TYPE_SYLVAN_ELF = 12, /* Waldelf */
+    HERO_TYPE_WITCH = 7,	/* Hexe */
+    HERO_TYPE_DRUID = 8,	/* Druide */
+    HERO_TYPE_MAGE = 9,		/* Magier */
+    HERO_TYPE_GREEN_ELF = 10,	/* Auelf */
+    HERO_TYPE_ICE_ELF = 11,	/* Firnelf */
+    HERO_TYPE_SYLVAN_ELF = 12,	/* Waldelf */
 };
 
 enum {
@@ -413,7 +413,7 @@ enum {
     ENEMY_SHEET_MAG_ID          = 0x25,
     ENEMY_SHEET_FIGHTER_ID      = 0x26,
     ENEMY_SHEET_VIEWDIR         = 0x27,
-    ENEMY_SHEET_DUMMY2          = 0x28,
+    ENEMY_SHEET_DUMMY2          = 0x28, /* copied in 'Skelettarius' spell */
     ENEMY_SHEET_LEVEL           = 0x29,
     ENEMY_SHEET_DUMMY3          = 0x2a,
     ENEMY_SHEET_ACTION_ID       = 0x2b,
@@ -485,8 +485,8 @@ enum {
     FIGHTER_ID          = 0x10, /* position in FIG_LIST_ARRAY */
     FIGHTER_Z           = 0x11,
     FIGHTER_VISIBLE     = 0x12, /* {0,1,2} */
-    FIGHTER_TWOFIELDED  = 0x13,
-    FIGHTER_OBJ_ID      = 0x14,
+    FIGHTER_TWOFIELDED  = 0x13, /* position in FIG_TWOFIELDED_TABLE. -1 if fighter is not twofielded. */
+    FIGHTER_OBJ_ID      = 0x14, /* stores the id of the cb_entry of the square before the fighter entered it */
     FIGHTER_MONSTER     = 0x15, /* {0 = hero, 1 = monster} */
     FIGHTER_SPRITE_NO   = 0x16, /* 0x12c0, 0x1531, 0x1210 */
     FIGHTER_GFXBUF      = 0x17, /* RealPt */

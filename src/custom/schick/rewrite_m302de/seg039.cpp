@@ -129,15 +129,13 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 
 	/* Terrible hack:
 		if the current fight is 188, set MR to 5 (Travel-Event 84),
-		if the current fight is 192, and the enemy
-		is no "Orkchampion" then set a flag */
+		if the current fight is 192, and the enemy is no "Orkchampion" then set the 'cursed' status bit */
 	if (ds_readw(CURRENT_FIG_NO) == 188) {
 
 		host_writeb(sheet + ENEMY_SHEET_MR, 5);
 
 	} else if ((ds_readw(CURRENT_FIG_NO) == 192) && (host_readb(sheet + ENEMY_SHEET_MON_ID) != 0x48)) {
-	        // 0x20 = 0010 0000
-			or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20);
+		or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20); /* set 'cursed' status bit */
 
 	}
 
@@ -157,8 +155,7 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 	host_writeb(sheet + ENEMY_SHEET_MAG_ID, host_readb(monster + MONSTER_MAG_ID));
 
 	/* bogus this value is 0x00 or 0x20 */
-	/* sets the STATUS1 byte's lsb to 0 */
-	and_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0xfe);
+	and_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0xfe); /* unset 'dead' status bit */
 
 	host_writeb(sheet + ENEMY_SHEET_FIGHTER_ID, 0xff);
 	host_writeb(sheet + ENEMY_SHEET_LEVEL, host_readb(monster + MONSTER_LEVEL));
@@ -176,11 +173,10 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 	host_writeb(sheet + ENEMY_SHEET_LE_FLEE, host_readb(monster + MONSTER_LE_FLEE));
 
 	/* Another hack:
-		If the current fight == 94 and the enemy is "Kultist",
-		set a flag */
+		If the current fight == 94 and the enemy is "Kultist", set the 'scared' status bit */
 	if ((ds_readw(CURRENT_FIG_NO) == 94) && (host_readb(sheet + ENEMY_SHEET_MON_ID) == 0x38)) {
 
-		or_ptr_bs(sheet + ENEMY_SHEET_STATUS2, 0x4);
+		or_ptr_bs(sheet + ENEMY_SHEET_STATUS2, 0x4); /* set 'scared' status bit -> Kultist will flee */
 
 	}
 }

@@ -535,14 +535,14 @@ void FIG_do_round(void)
 
 					/* awake him (or her) */
 
-					and_ptr_bs(Real2Host(hero) + HERO_STATUS1, 0xfd);
+					and_ptr_bs(Real2Host(hero) + HERO_STATUS1, 0xfd); /* unset 'sleep' status bit */
 
 					p1 = Real2Host(FIG_get_ptr(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID)));
 
-					host_writeb(p1 + 0x02, host_readbs(Real2Host(hero) + HERO_VIEWDIR));
-					host_writeb(p1 + 0x0d, -1);
-					host_writeb(p1 + 0x05, 0);
-					host_writeb(p1 + 0x06, 0);
+					host_writeb(p1 + FIGHTER_NVF_NO, host_readbs(Real2Host(hero) + HERO_VIEWDIR));
+					host_writeb(p1 + FIGHTER_RELOAD, -1);
+					host_writeb(p1 + FIGHTER_OFFSETX, 0);
+					host_writeb(p1 + FIGHTER_OFFSETY, 0);
 				}
 			}
 
@@ -578,17 +578,23 @@ void FIG_do_round(void)
 						FIG_do_hero_action(hero, pos);
 
 						if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) >= 10) {
+							/* hero did attack some enemy (by weapon/spell/item etc.) */
 
+							/* if the tail of a two-squares enemy has been attacked,
+							 * replace HERO_ENEMY_ID by the main id of that enemy */
 							if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) >= 30) {
 								sub_ptr_bs(Real2Host(hero) + HERO_ENEMY_ID, 20);
 							}
 
 							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)))
 							{
+								/* attacked enemy is dead */
 								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
+									/* attacked dead enemy is two-squares */
 
 									FIG_search_obj_on_cb(host_readbs(Real2Host(hero) + HERO_ENEMY_ID) + 20, &x, &y);
+									/* (x,y) are the coordinates of the tail of the enemy */
 
 #if !defined(__BORLANDC__)
 									/* BE-fix */
@@ -598,12 +604,19 @@ void FIG_do_round(void)
 
 
 									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))));
-									p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + 0x13))));
+									/* intermediate: p1 points to the FIGHTER_SHEET entry of the enemy */
 
-									if (host_readbs(p1 + 0x14) >= 0) {
-										FIG_set_cb_field(y, x, host_readbs(p1 + 0x14));
+									p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + FIGHTER_TWOFIELDED))));
+									/* p1 now points the FIGHTER_SHEET entry of the tail part of the enemy */
+									/* should be true: (host_readbs(p1 + FIGHTER_CBX) == x) and (host_readbs(p1 + FIGHTER_CBY) == y) */
+
+									if (host_readbs(p1 + FIGHTER_OBJ_ID) >= 0) {
+										/* if the id of a cb_entry has been saved in FIGHTER_OBJ_ID (meaning that the tail part is standing on it),
+										 * restore that to the cb */
+										FIG_set_cb_field(y, x, host_readbs(p1 + FIGHTER_OBJ_ID));
 									} else {
-										FIG_set_cb_field(host_readbs(p1 + 0x04), host_readbs(p1 + 0x03), 0);
+										/* otherwise, set the square in the cb to 0 (free) */
+										FIG_set_cb_field(host_readbs(p1 + FIGHTER_CBY), host_readbs(p1 + FIGHTER_CBX), 0);
 									}
 								}
 							}

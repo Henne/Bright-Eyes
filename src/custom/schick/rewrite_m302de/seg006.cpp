@@ -315,7 +315,7 @@ struct dummy {
 /**
  * \brief   removes an element from the FIG_LIST
  *
- * \param   fighter_id  identificates the element to remove
+ * \param   fighter_id  the element to remove
  * \param   keep_in_memory whether to save the removed element in FIG_LIST_ELEM, useful for moving element to end of list
  */
 void FIG_remove_from_list(signed char fighter_id, signed char keep_in_memory)

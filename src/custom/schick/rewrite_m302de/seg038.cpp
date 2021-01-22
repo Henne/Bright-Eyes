@@ -350,7 +350,7 @@ signed short FIG_count_direction_changes_of_path(signed char *path_ptr)
  * \param   fighter_id     id of fighter. hero: range 1..9 or; monster: range 10..29.
  * \param   x_in           x-coordinate of fighter
  * \param   y_in           y-coordinate of fighter
- * \param   mode           0: enemy to hero melee / 1: hero to hero melee / 2: enemy to enemy melee / 3: hero to enemy melee / 4: enemy is fleeing / 5: hero is fleeing / 6: enemy to hero ranged /  7: enemy to enemy ranged / 8: hero to hero ranged / 9: hero to enemy ranged / 10: hero movement (target labeled with 124 on the chess board)
+ * \param   mode           0: enemy to hero melee / 1: hero to hero melee / 2: enemy to enemy melee / 3: hero to enemy melee / 4: enemy is fleeing / 5: hero is fleeing / 6: enemy to hero ranged /  7: enemy to enemy ranged / 8: hero to hero ranged / 9: hero to enemy ranged / 10: hero movement (target marker 124 on the chess board)
  * \return                 1: reachable target found, path written / -1: no reachable target found.
  */
 signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id, signed short x_in, signed short y_in, signed short mode)
