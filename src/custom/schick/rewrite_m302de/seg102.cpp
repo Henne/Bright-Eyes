@@ -385,10 +385,10 @@ void mspell_axxeleratus(void)
 	/* #Attacks + 1 */
 	inc_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_ATTACKS);
 
-	/* AT +1 */
+	/* AT + 1 */
 	add_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_AT, 1);
 
-	/* PA +1 */
+	/* PA + 1 */
 	add_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_PA, 1);
 
 	/* BP * 2 */
@@ -396,7 +396,6 @@ void mspell_axxeleratus(void)
 
 }
 
-/* Original-Bug: how much LE are restored, when le is 7? */
 void mspell_balsam(void)
 {
 	signed short le;
@@ -405,29 +404,50 @@ void mspell_balsam(void)
 	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET)));
 
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug:
+	 * very strange behaviour.
+	 * If LE loss is less then 14, 7 LE will be healed, price AE = LE.
+	 * If not enouh AE available, number of healed LE is lowered accordingly.
+	 *
+	 * Problem 1: For LE loss < 7, LE may be healed above max.
+	 * Problem 2: For LE loss >=14, no effect. No healing.
+	 *
+	 * Hard to guess what the intended behaviour was. */
+
 	ds_writew(MONSTER_SPELL_COST, 0);
 
-	/* heal half of the missing LE */
-	le = (host_readws(get_spelltarget_e() + ENEMY_SHEET_LE_ORIG) - host_readws(get_spelltarget_e() + ENEMY_SHEET_LE)) / 2;
+	le = (host_readws(get_spelltarget_e() + ENEMY_SHEET_LE_ORIG) - host_readws(get_spelltarget_e() + ENEMY_SHEET_LE)) / 2; /* half of the missing LE */
 
 	if (le) {
-
 		if (le < 7) {
 			/* AE costs are at least 7 */
 			ds_writew(MONSTER_SPELL_COST, 7);
 		}
-
 		if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_COST)) {
-
 			/* not enough AE: heal only that many LE as the spellcaster has AE available */
-
 			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		}
-
 		add_ptr_ws(get_spelltarget_e() + ENEMY_SHEET_LE, ds_readws(MONSTER_SPELL_COST));
 	}
+#else
+	/* Fix:
+	 * Let's do it this way:
+	 * Heal (missing LE)/2 LE, but at least 7, as long as it won't be healed above max.
+	 * If not enouh AE available, number of healed LE is lowered accordingly. */
+	le = host_readws(get_spelltarget_e() + ENEMY_SHEET_LE_ORIG) - host_readws(get_spelltarget_e() + ENEMY_SHEET_LE); /* missing LE */
+	if (le >= 16) {
+		le /= 2;
+	} else if (le > 7) {
+		le = 7;
+	}
+	if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < le) {
+		le = host_readws(get_spelluser_e() + ENEMY_SHEET_AE);
+	}
+	ds_writew(MONSTER_SPELL_COST, le);
+	add_ptr_ws(get_spelltarget_e() + ENEMY_SHEET_LE, le);
+#endif
 }
-
 
 void mspell_blitz(void)
 {
