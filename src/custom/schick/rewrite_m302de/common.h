@@ -57,18 +57,18 @@ enum {
  *	@sleeps:	1 = sleeps				/ 0 = awake
  *	@petrified:	1 = petrified				/ 0 = not petrified
  *	@busy:		??
- *	@chamaelioni	1 = 'Chamaelioni' spell active		/ 0 = spell not active
- *	@cursed:	1 = cursed				/ 0 = not cursed
- *	@unconscious	1 = unconscious				/ 0 = conscious
+ *	@chamaelioni:	1 = 'Chamaelioni' spell active		/ 0 = spell not active
+ *	@cursed:	1 = cursed (from 'Boeser Blick' spell)	/ 0 = not cursed
+ *	@unconscious:	1 = unconscious				/ 0 = conscious
  *	@unkn2:		yet unknown, maybe unused
  *	@scared:	1 = scared and wants to flee (from 'Horriphobus' spell or Angstgift)	/ 0 = not scared
  *	@duplicatus:	1 = 'Duplicatus' spell active	/ spell not active (the bit may have no real effect)
  *	@dummy1:	yet unknown, maybe unused
- *	@dummy2:	yet unknown, maybe unused
+ *	@tame:		1 = tame (from 'Bannbaladin' spell)	/ 0 = normal
  *	@dummy3:	yet unknown, maybe unused
- *	@gods_pissed	1 = gods pissed (no more miracles)	/ 0 = gods normal	(activated by praising the nameless god)
- *	@transf:	1 = hero is transformed (all positive attributes -1, from a chest trap) / 0 not transformed (can be cured by 'Verwandlung beenden' spell or Praios/Hesinde miracle)
- *	@dummy6:	yet unknown, maybe unused. 1 = MU increased by 3 (seg082.cpp, probably a dungeon event) / 0 = attibutes back to normal.
+ *	@gods_pissed:	1 = gods pissed (no more miracles)	/ 0 = gods normal	(activated by praising the nameless god)
+ *	@transformed:	1 = hero is transformed (all positive attributes -1, from a chest trap) / 0 not transformed (can be cured by 'Verwandlung beenden' spell or Praios/Hesinde miracle)
+ *	@encouraged:	1 = MU increased by 3 (seg082.cpp, probably a dungeon event) / 0 = attibutes back to normal.
  */
 struct hero_status {
 	/* hero + 0xaa */
@@ -84,11 +84,11 @@ struct hero_status {
 	unsigned short scared		:1;
 	unsigned short duplicatus	:1;
 	unsigned short dummy1		:1;
-	unsigned short dummy2		:1;
+	unsigned short tame		:1;
 	unsigned short dummy3		:1;
 	unsigned short gods_pissed	:1;
-	unsigned short transf		:1;
-	unsigned short dummy6		:1;
+	unsigned short transformed	:1;
+	unsigned short encouraged	:1;
 };
 
 enum {
@@ -144,9 +144,9 @@ enum {
     HERO_RECIPE_ID          = 0x093, /* alchemy */
     HERO_RECIPE_TIMER       = 0x094, /* timer between failed alchemy attempts */
     HERO_RUHE_KOERPER       = 0x095, /* 1 = Ruhe Koerper spell is active */
-    HERO_BLIND              = 0x096, /* blind rounds remaining */
+    HERO_BLIND              = 0x096, /* blind rounds remaining from 'Blitz' spell */
     HERO_ECLIPTIFACTUS      = 0x097, /* shadow rounds remaining */
-    HERO_SAFTKRAFT          = 0x098, /* stores extra damage of spell Saft, Kraft, Monstermacht */
+    HERO_SAFTKRAFT          = 0x098, /* stores extra damage of spell 'Saft, Kraft, Monstermacht' */
     HERO_FIREBAN            = 0x099, /* 1 = active, 0 = inactive */
     HERO_INVISIBLE          = 0x09A, /* 1 = active, 0 = inactive */
     HERO_SPRITE_NO          = 0x09B, /* fight gfx of char, depending on type and sex */
@@ -157,7 +157,7 @@ enum {
     HERO_DRUNK              = 0x0A1,
     HERO_UNKNOWN10          = 0x0A2, /* never used? */
     HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = sleeping, Bit2 = petrified, Bit4 = Chamaelioni, Bit5 = cursed, Bit6 = unconscious */
-    HERO_STATUS2            = 0x0AB, /* Bit0 = Angstgift, Bit2 = Duplicatus, Bit5 = gods pissed (no more miracles. from praising the nameless god), Bit6 = transformed (each good attribute decreased by 1. canceled by 'Verwandlung beenden' spell or Praios/Hesinde miracle), Bit7 = MU increased by 3 (seg082.cpp) */
+    HERO_STATUS2            = 0x0AB, /* Bit0 = scared (will flee), Bit2 = Duplicatus, Bit5 = gods pissed (no more miracles. from praising the nameless god), Bit6 = transformed (each good attribute decreased by 1. cancelled by 'Verwandlung beenden' spell or Praios/Hesinde miracle), Bit7 = MU increased by 3 (seg082.cpp) */
     HERO_UNKNOWN11          = 0x0AC, /* never used? */
     HERO_ILLNESS_EMPTY      = 0x0AE,
     HERO_ILLNESS            = 0x0B3,
@@ -419,9 +419,9 @@ enum {
     ENEMY_SHEET_ACTION_ID       = 0x2b,
     ENEMY_SHEET_CUR_SPELL       = 0x2c,
     ENEMY_SHEET_ENEMY_ID        = 0x2d,
-    ENEMY_SHEET_DUMMY5          = 0x2e,
-    ENEMY_SHEET_BLIND           = 0x2f,
-    ENEMY_SHEET_BROKEN          = 0x30, /* 0 = no, 1 = yes */
+    ENEMY_SHEET_SAFTKRAFT       = 0x2e, /* stores extra damage of spell 'Saft, Kraft, Monstermacht' */
+    ENEMY_SHEET_BLIND           = 0x2f, /* blind rounds remaining from 'Blitz' spell */
+    ENEMY_SHEET_BROKEN          = 0x30, /* weapon broken? 0 = no, 1 = yes */
     ENEMY_SHEET_STATUS1         = 0x31,
     ENEMY_SHEET_STATUS2         = 0x32,
     ENEMY_SHEET_UNUSED8         = 0x33,

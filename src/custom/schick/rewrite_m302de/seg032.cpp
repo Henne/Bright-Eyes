@@ -155,7 +155,7 @@ signed short FIG_choose_next_hero(void)
 						retval = i;
 			}
 
-			/* exit if we didnt found a hero */
+			/* exit if we didn't find a hero */
 			if (retval == -1) {
 				D1_ERR("Sorry, this is an infinite loop.\n");
 				D1_ERR("I'll exit\n");
@@ -230,7 +230,7 @@ signed short FIG_choose_next_enemy(void)
 						retval = i;
 			}
 
-			/* exit if we didnt found an enemy */
+			/* exit if we didn't find an enemy */
 			if (retval == -1) {
 				D1_ERR("Sorry, this is an infinite loop.\n");
 				D1_ERR("I'll exit\n");

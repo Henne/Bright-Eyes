@@ -517,7 +517,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 	}
 
 	/* damage bonus */
-	damage += host_readbs(attacker + ENEMY_SHEET_DUMMY5);
+	damage += host_readbs(attacker + ENEMY_SHEET_SAFTKRAFT);
 
 	/* half damage */
 	if (host_readb(attacker + ENEMY_SHEET_BROKEN) != 0)
