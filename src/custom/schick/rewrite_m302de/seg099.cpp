@@ -580,6 +580,14 @@ void spell_skelettarius(void)
 			FIG_remove_from_list(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(fighter + FIGHTER_TWOFIELDED)), 0);
 		}
 #ifdef M302de_ORIGINAL_BUGFIX
+		/* Original-Bug 1:
+		 * If the dead target monster is lying on top of the body of another dead monster,
+		 * after the 'Skelettarius' the other body is still displayed, but cannot be selected for 'Skelettarius'.
+		 *
+		 * Fix: store and restore the FIGHTER_OBJ_ID value. */
+		signed char obj_id_bak = host_readbs(fighter + FIGHTER_OBJ_ID);
+#endif
+#ifdef M302de_ORIGINAL_BUGFIX
 		/* Original-Bug 2:
 		 * reported at https://www.crystals-dsa-foren.de/showthread.php?tid=5039&pid=148171#pid148171
 		 * Every 'Skelettarius' spell adds 1288 (=0x508) bytes at the end of FIGHTOBJ_BUF for the animation of the fighter.
@@ -613,6 +621,12 @@ void spell_skelettarius(void)
 
 		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2); /* sets the 'bb' ("Boeser Blick") status bit -> zombie will fight for the heros */
 		host_writebs(get_spelltarget_e() + ENEMY_SHEET_DUMMY2, unk);
+#ifdef M302de_ORIGINAL_BUGFIX
+		/* Original-Bug 1:
+		 * restore the FIGHTER_OBJ_ID value. */
+		fighter = Real2Host(FIG_get_ptr(host_readbs(get_spelltarget_e() + ENEMY_SHEET_FIGHTER_ID)));
+		host_writebs(fighter + FIGHTER_OBJ_ID, obj_id_bak);
+#endif
 	}
 }
 
