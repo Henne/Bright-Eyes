@@ -726,15 +726,17 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 		}
 
 	} else if ((ds_readws(CURRENT_FIG_NO) == 189) &&
-			(random_interval(8, 12) <= ds_readws(FIGHT_ROUND))) {
 		/* F099: fight against four HARPIES */
+			(random_interval(8, 12) <= ds_readws(FIGHT_ROUND))) {
 
+			/* after 8-12 rounds, the enemies flee by setting the 'scared' status bit) */
 			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
 
 	} else if ((ds_readws(CURRENT_FIG_NO) == 191) &&
-			(FIG_count_active_enemies() <= 3)) {
 		/* F122: fight against 13 WOLVES */
+			(FIG_count_active_enemies() <= 3)) {
 
+			/* if at most 3 wolves are left, the enemies flee by setting the 'scared' status bit. */
 			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
 
 	} else if (ds_readws(CURRENT_FIG_NO) == 192) {

@@ -757,6 +757,9 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 						target_reachable = FIG_find_path_to_target(hero, hero_pos, host_readws(px), host_readws(py), 10);
 						/* target_reachable = 1: there is a path of length < 50 to the target square; target_reachable = -1: there is no such path */
 						bp_cost = (signed char)FIG_move_pathlen();
+#if !defined(__BORLANDC__)
+						D1_INFO("x: %d, y: %d, target id: %d, reachable: %d, distance: %d\n", escape_dir?cb_entry_bak_escape:sel_x, sel_y, cb_entry_bak, target_reachable, bp_cost);
+#endif
 					}
 
 					if (escape_dir != 0) {
@@ -811,7 +814,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 						 * This results in the incorrect message "ZIEL: 99 BP" if the target is pointing at a dead monster
 						 * which is not reachable within the available BP or not reachable at all. */
 					} else if (cb_entry_bak > 0) {
-						/* target square contains is a hero */
+						/* target square contains a hero */
 						if (!hero_dead(get_hero(cb_entry_bak - 1)) &&
 							!hero_unconscious(get_hero(cb_entry_bak - 1)) &&
 							(cb_entry_bak != hero_pos + 1))
