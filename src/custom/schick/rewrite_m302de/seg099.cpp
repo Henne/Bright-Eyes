@@ -588,6 +588,9 @@ void spell_skelettarius(void)
 		fill_enemy_sheet(host_readbs(get_spelluser() + HERO_ENEMY_ID) - 10, 0x10, 0);
 
 		FIG_load_enemy_sprites(get_spelltarget_e() + ENEMY_SHEET_MON_ID, x, y);
+
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2); /* sets the 'bb' ("Boeser Blick") status bit -> zombie will fight for the heros */
+		host_writebs(get_spelltarget_e() + ENEMY_SHEET_DUMMY2, unk);
 	}
 }
 
