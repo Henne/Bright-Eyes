@@ -579,6 +579,22 @@ void spell_skelettarius(void)
 		if (host_readbs(fighter + FIGHTER_TWOFIELDED) != -1) {
 			FIG_remove_from_list(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(fighter + FIGHTER_TWOFIELDED)), 0);
 		}
+#ifdef M302de_ORIGINAL_BUGFIX
+		/* Original-Bug 2:
+		 * reported at https://www.crystals-dsa-foren.de/showthread.php?tid=5039&pid=148171#pid148171
+		 * Every 'Skelettarius' spell adds 1288 (=0x508) bytes at the end of FIGHTOBJ_BUF for the animation of the fighter.
+		 * If too many Skelettarius spells are cast, this causes an overflow in FIG_load_enemy_sprites(..)
+		 *
+		 * Hacky fix by NRS:
+		 * modify FIGHTOBJ_BUF_SEEK_PTR to point to the buffer entry of the enemy which is replaced by 'Skelettarius',
+		 * such that the buffer space is reused.
+		 * restore the pointer later, and adjust FIGHTOBJ_BUF_FREESPACE to the right value
+		 * https://www.crystals-dsa-foren.de/showthread.php?tid=5039&pid=148252#pid148252
+		 * https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=166097#pid166097
+		 * */
+                RealPt buf_seek_ptr_bak = ds_readfp(FIGHTOBJ_BUF_SEEK_PTR); /* backup the entry of FIGHTOBJ_BUF_SEEK_PTR */
+		ds_writefp(FIGHTOBJ_BUF_SEEK_PTR, host_readd(fighter + FIGHTER_GFXBUF));
+#endif
 
 		FIG_remove_from_list(host_readbs(get_spelltarget_e() + ENEMY_SHEET_FIGHTER_ID), 0);
 
@@ -588,6 +604,12 @@ void spell_skelettarius(void)
 		fill_enemy_sheet(host_readbs(get_spelluser() + HERO_ENEMY_ID) - 10, 0x10, 0);
 
 		FIG_load_enemy_sprites(get_spelltarget_e() + ENEMY_SHEET_MON_ID, x, y);
+#ifdef M302de_ORIGINAL_BUGFIX
+		/* Original-Bug 2:
+		 * set FIGHTOBJ_BUF_FREESPACE and FIGHTOBJ_BUF_SEEK_PTR to the correct values as discussed above */
+		add_ds_fp(FIGHTOBJ_BUF_FREESPACE,0x508);
+		ds_writefp(FIGHTOBJ_BUF_SEEK_PTR,buf_seek_ptr_bak);
+#endif
 
 		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2); /* sets the 'bb' ("Boeser Blick") status bit -> zombie will fight for the heros */
 		host_writebs(get_spelltarget_e() + ENEMY_SHEET_DUMMY2, unk);
