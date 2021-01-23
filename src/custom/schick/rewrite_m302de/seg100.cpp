@@ -575,6 +575,7 @@ void spell_ignifaxius(void)
 
 	} else {
 		/* ... autofight mode */
+		/* always cast at maximum possible spell level */
 		level = host_readbs(get_spelluser() + HERO_LEVEL) + 1;
 	}
 
@@ -639,7 +640,7 @@ void spell_ignifaxius(void)
 			-level / 2, (signed char)hero_pos);
 
 	} else {
-		/* target is a enemy */
+		/* target is an enemy */
 
 		/* set a pointer to the enemy */
 		ds_writed(SPELLTARGET_E,
@@ -656,6 +657,7 @@ void spell_ignifaxius(void)
 	host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
 	if (mummy != 0) {
+		/* halve damage to get the correct AE costs */
 		damage /= 2;
 	}
 
@@ -688,7 +690,7 @@ void spell_plumbumbarum(void)
 
 		} else {
 
-			/* give a short AT-malus of -3 to the targets current weapon */
+			/* give a short AT-malus of -3 to the current weapon of the target */
 			slot = get_free_mod_slot();
 			set_mod_slot(slot, 0x2d,
 				get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS),
@@ -704,7 +706,7 @@ void spell_plumbumbarum(void)
 
 	}
 
-	/* target is a enemy */
+	/* target is an enemy */
 
 	/* set a pointer to the enemy */
 	ds_writed(SPELLTARGET_E,
@@ -754,7 +756,7 @@ void spell_saft_kraft(void)
 		get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WP_CLASS),
 		-5, (signed char)target);
 
-	/* TODO: this position is unknown */
+	/* +5 extra damage */
 	slot = get_free_mod_slot();
 
 	set_mod_slot(slot, rounds * 9L,
@@ -796,11 +798,11 @@ void spell_scharfes_auge(void)
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + 8), 3, (signed char)target);
+	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + 8), 3, (signed char)target); /* TA_WURFWAFFEN */
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + 7), 3, (signed char)target);
+	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + 7), 3, (signed char)target); /* TA_SCHUSSWAFFEN */
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_tx(97),
