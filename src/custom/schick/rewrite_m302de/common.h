@@ -282,7 +282,7 @@ struct enemy_status1 {
 	unsigned short busy		:1;
 	unsigned short bit4		:1;
 	unsigned short cursed		:1; /* bit is set for all enemies except the Orkchampion in the final fight */
-	unsigned short mushroom		:1; /* 1: enemy is a mushroom (from 'Santander' spell) */
+	unsigned short mushroom		:1; /* 1: enemy is a mushroom (from 'Salander' spell) */
 	unsigned short illusion		:1;
 };
 
