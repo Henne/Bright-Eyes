@@ -104,11 +104,21 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 
 		dec_ptr_bs(hero + HERO_SP_RISE);
 
+#ifndef M302de_ORIGINAL_BUGFIX
+		/* Original-Bug:
+		 * this is not exactly the spell increase mechanism as in DSA 2/3. */
 		if (host_readbs(hero + HERO_SPELLS + spell) >= 11) {
 			randval = random_interval(3, 18);
 		} else {
 			randval = random_interval(2, 12);
 		}
+#else
+		if (host_readbs(hero + HERO_SPELLS + spell) >= 10) {
+			randval = dice_roll(3,6,0);
+		} else {
+			randval = dice_roll(2,6,0);
+		}
+#endif
 
 		if (host_readbs(hero + HERO_SPELLS + spell) < randval) {
 
@@ -163,11 +173,21 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 
 		dec_ptr_bs(hero + HERO_TA_RISE);
 
+#ifndef M302de_ORIGINAL_BUGFIX
+		/* Original-Bug:
+		 * this is not exactly the skill increase mechanism as in DSA 2/3. */
 		if (host_readbs(hero + HERO_TA_FIGHT + skill) >= 11) {
 			randval = random_interval(3, 18);
 		} else {
 			randval = random_interval(2, 12);
 		}
+#else
+		if (host_readbs(hero + HERO_TA_FIGHT + skill) >= 10) {
+			randval = dice_roll(3,6,0);
+		} else {
+			randval = dice_roll(2,6,0);
+		}
+#endif
 
 		if (host_readbs(hero + HERO_TA_FIGHT + skill) < randval) {
 
