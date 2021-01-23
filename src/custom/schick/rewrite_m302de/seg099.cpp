@@ -250,7 +250,7 @@ void spell_bannbaladin(void)
 	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET)));
 
-	if (host_readbs(get_spelltarget_e() + ENEMY_SHEET_FLAGS) != 0) {
+	if (host_readbs(get_spelltarget_e() + ENEMY_SHEET_IS_ANIMAL) != 0) {
 		/* spell does not work on animals */
 
 		ds_writew(SPELL_SPECIAL_AECOST, 0);
@@ -339,7 +339,8 @@ void spell_herrdertiere(void)
 	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET)));
 
-	if (!host_readbs(get_spelltarget_e() + ENEMY_SHEET_FLAGS)) {
+	if (!host_readbs(get_spelltarget_e() + ENEMY_SHEET_IS_ANIMAL)) {
+	    	/* spell does not work on animals */
 
 		ds_writew(SPELL_SPECIAL_AECOST, 0);
 

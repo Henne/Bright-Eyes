@@ -160,7 +160,7 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 	host_writeb(sheet + ENEMY_SHEET_FIGHTER_ID, 0xff);
 	host_writeb(sheet + ENEMY_SHEET_LEVEL, host_readb(monster + MONSTER_LEVEL));
 	host_writeb(sheet + ENEMY_SHEET_SIZE, host_readb(monster + MONSTER_SIZE));
-	host_writeb(sheet + ENEMY_SHEET_FLAGS, host_readb(monster + MONSTER_FLAGS));
+	host_writeb(sheet + ENEMY_SHEET_IS_ANIMAL, host_readb(monster + MONSTER_IS_ANIMAL));
 	host_writeb(sheet + ENEMY_SHEET_ROUND_APPEAR, round);
 
 	host_writeb(sheet + ENEMY_SHEET_VIEWDIR,

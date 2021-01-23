@@ -422,7 +422,7 @@ void spell_eisenrost(void)
 	signed short id;
 
 	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) < 10) {
-		/* cast a hero */
+		/* target is a hero */
 
 		/* set the spell target */
 		ds_writed(SPELLTARGET,
@@ -464,12 +464,12 @@ void spell_eisenrost(void)
 			}
 		}
 	} else {
-		/* set a pointer to the enemy */
+		/* target is an enemy */
 		ds_writed(SPELLTARGET_E,
 			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* check if target is an animal */
-		if (host_readbs(get_spelltarget_e() + ENEMY_SHEET_FLAGS) != 0)
+		if (host_readbs(get_spelltarget_e() + ENEMY_SHEET_IS_ANIMAL) != 0)
 		{
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(89));

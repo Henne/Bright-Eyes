@@ -413,7 +413,7 @@ enum {
     ENEMY_SHEET_MAG_ID          = 0x25,
     ENEMY_SHEET_FIGHTER_ID      = 0x26,
     ENEMY_SHEET_VIEWDIR         = 0x27,
-    ENEMY_SHEET_DUMMY2          = 0x28, /* copied in 'Skelettarius' spell */
+    ENEMY_SHEET_DUMMY2          = 0x28, /* unclear. copied in 'Skelettarius' spell */
     ENEMY_SHEET_LEVEL           = 0x29,
     ENEMY_SHEET_DUMMY3          = 0x2a,
     ENEMY_SHEET_ACTION_ID       = 0x2b,
@@ -427,7 +427,7 @@ enum {
     ENEMY_SHEET_UNUSED8         = 0x33,
     ENEMY_SHEET_SIZE            = 0x34,
     ENEMY_SHEET_ROUND_APPEAR    = 0x35,
-    ENEMY_SHEET_FLAGS           = 0x36,
+    ENEMY_SHEET_IS_ANIMAL       = 0x36, /* is the enemy an animal? */
     ENEMY_SHEET_SHOTS           = 0x37,
     ENEMY_SHEET_SHOT_DAM        = 0x38,
     ENEMY_SHEET_THROWS          = 0x3a,
@@ -456,7 +456,7 @@ enum {
     MONSTER_MAG_ID      = 0x21,
     MONSTER_LEVEL       = 0x22,
     MONSTER_SIZE        = 0x23,
-    MONSTER_FLAGS       = 0x24,
+    MONSTER_IS_ANIMAL   = 0x24,
     MONSTER_SHOTS       = 0x25,
     MONSTER_SHOT_DAM    = 0x26,
     MONSTER_THROWS      = 0x28,
