@@ -1309,6 +1309,12 @@ void GFX_LosingFocus(void) {
 	MAPPER_LosingFocus();
 }
 
+#if defined(LINUX)
+#define SDL_XORG_FIX 1
+#else
+#define SDL_XORG_FIX 0
+#endif
+
 void GFX_Events() {
 	SDL_Event event;
 #if defined (REDUCE_JOYSTICK_POLLING)
@@ -1321,6 +1327,19 @@ void GFX_Events() {
 	}
 #endif
 	while (SDL_PollEvent(&event)) {
+#if SDL_XORG_FIX
+		// Special code for broken SDL with Xorg 1.20.1, where pairs of inputfocus gain and loss events are generated
+		// when locking the mouse in windowed mode.
+		if (event.type == SDL_ACTIVEEVENT && event.active.state == SDL_APPINPUTFOCUS && event.active.gain == 0) {
+			SDL_Event test; //Check if the next event would undo this one.
+			if (SDL_PeepEvents(&test,1,SDL_PEEKEVENT,SDL_ACTIVEEVENTMASK) == 1 && test.active.state == SDL_APPINPUTFOCUS && test.active.gain == 1) {
+				// Skip both events.
+				SDL_PeepEvents(&test,1,SDL_GETEVENT,SDL_ACTIVEEVENTMASK);
+				continue;
+			}
+		}
+#endif
+
 		switch (event.type) {
 		case SDL_ACTIVEEVENT:
 			if (event.active.state & SDL_APPINPUTFOCUS) {
