@@ -486,7 +486,7 @@ void spell_paralue(void)
 			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* set the enemy to petrified */
-		or_ptr_bs(get_spelltarget_e() + 0x31, 0x04);
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0x04);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_tx(103),
@@ -510,7 +510,7 @@ void spell_paralue(void)
 					(char*)get_tx(112));
 			} else {
 				/* set the hero to petrified */
-				or_ptr_bs(get_spelltarget() + 0xaa, 0x4);
+				or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x4);
 
 				/* prepare message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -524,6 +524,11 @@ void spell_paralue(void)
 	}
 }
 
+/**
+ * \brief   Salander Mutanderer hero spell
+ *
+ * Turns the target into a mushroom
+ */
 void spell_salander(void)
 {
 	signed short ae_cost;
@@ -533,7 +538,7 @@ void spell_salander(void)
 	ds_writed(SPELLTARGET_E, (Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 	/* read a value from that struct */
-	ae_cost = host_readbs(get_spelltarget_e() + 0x19) * 3;
+	ae_cost = host_readbs(get_spelltarget_e() + ENEMY_SHEET_MR) * 3;
 
 	/* set the minimal astral cost to 25 AE */
 	if (ae_cost < 25)
@@ -541,7 +546,7 @@ void spell_salander(void)
 
 	if (host_readws(get_spelluser() + HERO_AE) >= ae_cost) {
 
-		or_ptr_bs(get_spelltarget_e() + 0x31, 0x40);
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0x40); /* sets 'mushroom' status bit */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),

@@ -4144,7 +4144,7 @@ void seg002_484f(void)
 }
 
 /**
- * \brief   returns true if heros not dead, petrified or unconscious
+ * \brief   returns true if heros not sleeping, dead, petrified or unconscious, cursed or fleeing
  *
  * \param   hero        pointer to the hero
  * \return              {0, 1}
@@ -4168,7 +4168,7 @@ signed short check_hero(Bit8u *hero)
 }
 
 /**
- * \brief   returns true if heros not dead, petrified or unconscious
+ * \brief   returns true if heros not dead, petrified or unconscious of cursed
  */
 /* should be static */
 signed short check_hero_no2(Bit8u *hero)
@@ -4458,11 +4458,11 @@ void add_hero_le(Bit8u *hero, signed short le)
 		if (host_readws(hero + HERO_LE) > host_readws(hero + HERO_LE_ORIG))
 			host_writew(hero + HERO_LE, host_readws(hero + HERO_LE_ORIG));
 
-		/* if current LE is >= 5 and the hero is unconscissous */
+		/* if current LE is >= 5 and the hero is unconscious */
 		if ((host_readws(hero + HERO_LE) >= 5) && hero_unconscious(hero)) {
 
 			/* awake */
-			and_ptr_bs(hero + HERO_STATUS1, 0xbf);
+			and_ptr_bs(hero + HERO_STATUS1, 0xbf); /* set conscious status bit */
 
 			/* maybe if we are in a fight */
 			if (ds_readw(IN_FIGHT)) {

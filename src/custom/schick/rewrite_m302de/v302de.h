@@ -603,7 +603,7 @@ static inline unsigned short enemy_cursed(Bit8u *enemy) {
 		return 1;
 }
 
-static inline unsigned short enemy_unconscious(Bit8u *enemy) {
+static inline unsigned short enemy_mushroom(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 6) & 1) == 0)
 		return 0;
 	else
@@ -1141,7 +1141,7 @@ struct bittest {
 #define enemy_petrified(enemy)		(((struct enemy_sheets*)(enemy))->status1.petrified)
 #define enemy_busy(enemy)		(((struct enemy_sheets*)(enemy))->status1.busy)
 #define enemy_cursed(enemy)		(((struct enemy_sheets*)(enemy))->status1.cursed)
-#define enemy_unconscious(enemy)	(((struct enemy_sheets*)(enemy))->status1.unconscious)
+#define enemy_mushroom(enemy)	(((struct enemy_sheets*)(enemy))->status1.mushroom)
 #define enemy_illusion(enemy)		(((struct enemy_sheets*)(enemy))->status1.illusion)
 
 #define enemy_tame(enemy)	(((struct enemy_sheets*)(enemy))->status2.tame)

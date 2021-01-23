@@ -311,7 +311,7 @@ void mspell_verwandlung(void)
 				Real2Host(GUI_names_grammar((signed short)0x8000, host_readbs(get_spelltarget_e()), 1)));
 		}
 	} else {
-		if (enemy_unconscious(get_spelltarget_e())) {
+		if (enemy_mushroom(get_spelltarget_e())) {
 
 			/* set the spellcosts */
 			ds_writew(MONSTER_SPELL_COST, 5 * random_schick(10));
@@ -319,7 +319,7 @@ void mspell_verwandlung(void)
 			if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_COST)) {
 				ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 			} else {
-				/* unset unconscious flag */
+				/* unset mushroom flag */
 				and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0xbf);
 
 				ds_writew(MSPELL_AWAKE_FLAG, 1);

@@ -278,11 +278,11 @@ struct enemy_status1 {
 	/* enemy + 0x31 */
 	unsigned short dead		:1;
 	unsigned short sleeps		:1;
-	unsigned short petrified	:1;
+	unsigned short petrified	:1; /* 1: enemy is petrified (from 'Paralue' spell) */
 	unsigned short busy		:1;
 	unsigned short bit4		:1;
 	unsigned short cursed		:1; /* bit is set for all enemies except the Orkchampion in the final fight */
-	unsigned short unconscious	:1;
+	unsigned short mushroom		:1; /* 1: enemy is a mushroom (from 'Santander' spell) */
 	unsigned short illusion		:1;
 };
 
