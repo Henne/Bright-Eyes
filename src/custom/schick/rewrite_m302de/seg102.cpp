@@ -300,6 +300,7 @@ void mspell_verwandlung(void)
 		ds_writew(MONSTER_SPELL_COST, 5 * random_schick(10));
 
 		if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_COST)) {
+			/* if not enough AE, all AE will be consumed, without further effect */
 			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		} else {
 			/* unset petrified flag */
@@ -310,23 +311,22 @@ void mspell_verwandlung(void)
 				(char*)get_tx(114),
 				Real2Host(GUI_names_grammar((signed short)0x8000, host_readbs(get_spelltarget_e()), 1)));
 		}
-	} else {
-		if (enemy_mushroom(get_spelltarget_e())) {
+	} else if (enemy_mushroom(get_spelltarget_e())) {
 
-			/* set the spellcosts */
-			ds_writew(MONSTER_SPELL_COST, 5 * random_schick(10));
+		/* set the spellcosts */
+		ds_writew(MONSTER_SPELL_COST, 5 * random_schick(10));
 
-			if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_COST)) {
-				ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
-			} else {
-				/* unset mushroom flag */
-				and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0xbf);
-
-				ds_writew(MSPELL_AWAKE_FLAG, 1);
-			}
+		if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_COST)) {
+			/* if not enough AE, all AE will be consumed, without further effect */
+			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		} else {
-			ds_writew(MONSTER_SPELL_COST, 2);
+			/* unset mushroom flag */
+			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0xbf);
+
+			ds_writew(MSPELL_AWAKE_FLAG, 1);
 		}
+	} else {
+		ds_writew(MONSTER_SPELL_COST, 2);
 	}
 }
 
