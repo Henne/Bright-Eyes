@@ -525,7 +525,7 @@ void spell_paralue(void)
 }
 
 /**
- * \brief   Salander Mutanderer hero spell
+ * \brief   hero spell 'Salander Mutanderer'
  *
  * Turns the target into a mushroom
  */
@@ -573,6 +573,11 @@ void spell_see(void)
 #endif
 }
 
+/**
+ * \brief   hero spell 'Visibili Vanitar'
+ *
+ * Makes the spell caster invisible for a certain amount of time. This allows him to skip fights in dungeons.
+ */
 void spell_visibili(void)
 {
 	signed short slot;
@@ -633,6 +638,11 @@ void spell_aeolitus(void)
 #endif
 }
 
+/**
+ * \brief   hero spell 'Brenne, toter Stoff!'
+ *
+ * Ignites a lantern (1 oil is consumed) or a torch in the inventory.
+ */
 void spell_brenne(void)
 {
 	signed short oil_pos;
@@ -704,7 +714,7 @@ void spell_brenne(void)
 
 		if (oil_pos != -1) {
 
-			/* change torch to burning lantern */
+			/* change lantern to burning lantern */
 			host_writew(get_spelluser() + HERO_ITEM_HEAD + lantern_pos * 14, ITEM_LANTERN_ON);
 
 			/* set counter to 100 */
