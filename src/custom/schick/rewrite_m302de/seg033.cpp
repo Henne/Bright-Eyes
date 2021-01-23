@@ -266,11 +266,11 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							GUI_output(get_tx(3));
 						} else if (((target_id < 10) && hero_dead(get_hero(target_id - 1))) ||
 								((target_id >= 10) && (target_id < 30) &&
-										/* unconscious or dead */
+										/* mushroom or dead */
 										(test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) ||
 										test_bit6(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))) ||
 								((target_id >= 30) &&
-										/* unconscious or dead */
+										/* mushroom or dead */
 										(test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) ||
 										test_bit6(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))))
 						{

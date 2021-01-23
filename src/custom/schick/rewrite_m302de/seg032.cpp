@@ -264,7 +264,7 @@ signed short FIG_count_active_enemies(void)
 			!enemy_dead(enemy) &&
 			!enemy_petrified(enemy) &&
 			!enemy_cursed(enemy) &&
-			!enemy_unconscious(enemy) &&
+			!enemy_mushroom(enemy) &&
 			!enemy_busy(enemy) &&
 			!host_readbs(enemy + ENEMY_SHEET_ROUND_APPEAR))
 		{
@@ -288,7 +288,7 @@ signed short FIG_is_enemy_active(Bit8u *enemy)
 		enemy_dead(enemy) ||
 		enemy_petrified(enemy) ||
 		enemy_dancing(enemy) ||
-		enemy_unconscious(enemy) ||
+		enemy_mushroom(enemy) ||
 		enemy_busy(enemy) ||
 		enemy_tame(enemy) ||
 		(host_readbs(enemy + ENEMY_SHEET_ROUND_APPEAR) > 0))
