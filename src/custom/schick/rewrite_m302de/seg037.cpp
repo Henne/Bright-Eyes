@@ -212,7 +212,7 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
 			) || (
 			(cb_val >= 10) && (cb_val < 30) &&
 				(!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + cb_val * SIZEOF_ENEMY_SHEET))  &&
-				(enemy_bb(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + cb_val * SIZEOF_ENEMY_SHEET)))
+				(enemy_renegade(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + cb_val * SIZEOF_ENEMY_SHEET)))
 			)
 		{
 			return 1;
@@ -300,7 +300,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 					) || (
 					(cb_val >= 10) && (cb_val < 30) &&
 						!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * cb_val) &&
-						enemy_bb(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * cb_val))
+						enemy_renegade(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * cb_val))
 				)
 				{
 					can_attack = 1;
@@ -521,7 +521,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 							retval = 1;
 							done = 1;
 						} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
-							if (!enemy_cursed(enemy)) {
+							if (!enemy_stalled(enemy)) {
 
 								if (mode == 1)
 									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 2);
@@ -570,7 +570,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 							retval = 1;
 							done = 1;
 						} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
-							if (!enemy_cursed(enemy)) {
+							if (!enemy_stalled(enemy)) {
 
 								if (mode == 1)
 									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 7);
@@ -653,7 +653,7 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_no, signed short attac
 				done = 1;
 			} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
 
-					if (!enemy_cursed(enemy)) {
+					if (!enemy_stalled(enemy)) {
 						if (attack_foe == 0)
 							l4 = FIG_find_path_to_target(enemy, enemy_no, x, y, 6);
 						else
@@ -742,7 +742,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 	} else if (ds_readws(CURRENT_FIG_NO) == 192) {
 		/* F144: final fight */
 
-		if (enemy_cursed(enemy)) {
+		if (enemy_stalled(enemy)) {
 			host_writeb(enemy + ENEMY_SHEET_BP, 0);
 		}
 	}
@@ -783,7 +783,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 
 			attack_foe = 0;
 
-			if (enemy_bb(enemy)) {
+			if (enemy_renegade(enemy)) {
 				attack_foe = 1;
 			}
 
@@ -866,13 +866,13 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 			done = 1;
 		} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
 
-			if (!enemy_cursed(enemy)) {
+			if (!enemy_stalled(enemy)) {
 
 				if (enemy_scared(enemy)) {
 					l1 = FIG_find_path_to_target(enemy, enemy_no, x, y, 4);
 					host_writeb(enemy + ENEMY_SHEET_BP, 0);
 				} else {
-					if (enemy_bb(enemy))
+					if (enemy_renegade(enemy))
 						l1 = FIG_find_path_to_target(enemy, enemy_no, x, y, 2);
 					else
 						l1 = FIG_find_path_to_target(enemy, enemy_no, x, y, 0);

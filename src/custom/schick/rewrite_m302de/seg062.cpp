@@ -131,7 +131,7 @@ void ask_miracle(void)
 										(char*)hero + HERO_NAME2);
 									break;
 								} else {
-									if (hero_cursed(hero) &&
+									if (hero_renegade(hero) &&
 										host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 										!hero_gods_pissed(hero))
 									{
@@ -153,8 +153,8 @@ void ask_miracle(void)
 					/* RONDRA */
 					if (l_si <= 5) {
 						if (!ds_readd(INGAME_TIMERS + 0x30)) {
-							miracle_modify(get_hero(0) + (HERO_TA_FIGHT + 3) - get_hero(0), 3 * HOURS(24), 1);
-							miracle_modify(get_hero(0) + (HERO_AT + 3) - get_hero(0), 3 * HOURS(24), 1);
+							miracle_modify(get_hero(0) + (HERO_TA_FIGHT + TA_SCHWERTER) - get_hero(0), 3 * HOURS(24), 1); /* for 3 days: skill 'Schwerter' + 1 */
+							miracle_modify(get_hero(0) + (HERO_AT + 3) - get_hero(0), 3 * HOURS(24), 1); /* for 3 days: AT + 1 */
 							ds_writed(INGAME_TIMERS + 0x30, 3 * HOURS(24));
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(4));
 						}
@@ -235,7 +235,7 @@ void ask_miracle(void)
 							ds_writed(INGAME_TIMERS + 0x40, 4 * HOURS(24));
 						}
 					} else if (l_si <= 6) {
-						/* remove a transformation or a curse of one hero */
+						/* unset transformation or renegade state of the first feasible hero */
 						for (i = 0; i <= 6; i++) {
 							hero = get_hero(i);
 
@@ -252,19 +252,17 @@ void ask_miracle(void)
 									(char*)get_ttx(565),
 									(char*)hero + HERO_NAME2);
 								break;
-							} else {
-								if (hero_cursed(hero) &&
-									host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-									!hero_gods_pissed(hero))
-								{
-									/* unset curse */
-									and_ptr_bs(hero + HERO_STATUS1, 0xdf);
+							} else if (hero_renegade(hero) &&
+								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+								!hero_gods_pissed(hero))
+							{
+								/* unset renegade */
+								and_ptr_bs(hero + HERO_STATUS1, 0xdf);
 
-									sprintf((char*)Real2Host(ds_readd(DTP2)),
-										(char*)get_tx2(17),
-										(char*)hero + HERO_NAME2);
-									break;
-								}
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_tx2(17),
+									(char*)hero + HERO_NAME2);
+								break;
 							}
 						}
 					} else if (l_si <= 7) {

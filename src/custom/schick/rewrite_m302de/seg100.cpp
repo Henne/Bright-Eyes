@@ -798,11 +798,11 @@ void spell_scharfes_auge(void)
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + 8), 3, (signed char)target); /* TA_WURFWAFFEN */
+	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + TA_WURFWAFFEN), 3, (signed char)target); /* TA_WURFWAFFEN */
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + 7), 3, (signed char)target); /* TA_SCHUSSWAFFEN */
+	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + TA_SCHUSSWAFFEN), 3, (signed char)target); /* TA_SCHUSSWAFFEN */
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_tx(97),

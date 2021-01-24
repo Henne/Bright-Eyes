@@ -546,13 +546,14 @@ void THO_academy(void)
 	Bit32s p_money;
 	Bit8u *hero;
 
-	/* find the position of the first cursed hero */
+	/* find the position of the first cursed (=renegade) hero */
 	hero = get_hero(0);
-	for (item_pos = cursed_hero_pos = 0; item_pos <= 6; item_pos++, hero += SIZEOF_HERO) {
+	cursed_hero_pos = 0;
+	for (item_pos = 0; item_pos <= 6; item_pos++, hero += SIZEOF_HERO) {
 
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-			hero_cursed(hero))
+			hero_renegade(hero))
 		{
 			cursed_hero_pos = item_pos;
 			break;
@@ -624,7 +625,7 @@ void THO_academy(void)
 
 							ds_writew(ACADEMY_DAILY_CURSE, 1);
 
-							and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf);
+							and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf); /* unset renegate status bit */
 
 						} else {
 							GUI_input(get_tx2(70), 0);
@@ -641,7 +642,7 @@ void THO_academy(void)
 
 					ds_writew(ACADEMY_DAILY_CURSE, 1);
 
-					and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf);
+					and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf); /* unset renegate status bit */
 
 				} else {
 					GUI_input(get_ttx(401), 0);

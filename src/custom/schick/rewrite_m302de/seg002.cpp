@@ -4144,7 +4144,7 @@ void seg002_484f(void)
 }
 
 /**
- * \brief   returns true if heros not sleeping, dead, petrified or unconscious, cursed or fleeing
+ * \brief   returns true if heros not sleeping, dead, petrified, unconscious, renegade or fleeing
  *
  * \param   hero        pointer to the hero
  * \return              {0, 1}
@@ -4157,7 +4157,7 @@ signed short check_hero(Bit8u *hero)
 		hero_dead(hero) ||
 		hero_petrified(hero) ||
 		hero_unconscious(hero) ||
-		hero_cursed(hero) ||
+		hero_renegade(hero) ||
 		/* Check if ??? */
 		(host_readb(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE))
 	{
@@ -4168,7 +4168,7 @@ signed short check_hero(Bit8u *hero)
 }
 
 /**
- * \brief   returns true if heros not dead, petrified or unconscious of cursed
+ * \brief   returns true if heros not dead, petrified, unconscious or renegade
  */
 /* should be static */
 signed short check_hero_no2(Bit8u *hero)
@@ -4178,7 +4178,7 @@ signed short check_hero_no2(Bit8u *hero)
 		hero_dead(hero) ||
 		hero_petrified(hero) ||
 		hero_unconscious(hero) ||
-		hero_cursed(hero))
+		hero_renegade(hero))
 	{
 		return 0;
 	}

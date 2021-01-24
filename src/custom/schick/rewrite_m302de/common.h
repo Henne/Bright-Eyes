@@ -58,7 +58,7 @@ enum {
  *	@petrified:	1 = petrified				/ 0 = not petrified
  *	@busy:		??
  *	@chamaelioni:	1 = 'Chamaelioni' spell active		/ 0 = spell not active
- *	@cursed:	1 = cursed (from 'Boeser Blick' spell)	/ 0 = not cursed
+ *	@renegade:	1 = renegade(from 'Boeser Blick' spell)	/ 0 = normal
  *	@unconscious:	1 = unconscious				/ 0 = conscious
  *	@unkn2:		yet unknown, maybe unused
  *	@scared:	1 = scared and wants to flee (from 'Horriphobus' spell or Angstgift)	/ 0 = not scared
@@ -77,7 +77,7 @@ struct hero_status {
 	unsigned short petrified	:1;
 	unsigned short busy		:1;
 	unsigned short chamaelioni	:1;
-	unsigned short cursed		:1;
+	unsigned short renegade		:1;
 	unsigned short unconscious	:1;
 	unsigned short unkn2		:1;
 	/* hero + 0xab */
@@ -156,7 +156,7 @@ enum {
     HERO_AXXELERATUS        = 0x0A0, /* 1 = active, 0 = inactive */
     HERO_DRUNK              = 0x0A1,
     HERO_UNKNOWN10          = 0x0A2, /* never used? */
-    HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = sleeping, Bit2 = petrified, Bit4 = Chamaelioni, Bit5 = cursed, Bit6 = unconscious */
+    HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = sleeping, Bit2 = petrified, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious */
     HERO_STATUS2            = 0x0AB, /* Bit0 = scared (will flee), Bit2 = Duplicatus, Bit5 = gods pissed (no more miracles. from praising the nameless god), Bit6 = transformed (each good attribute decreased by 1. cancelled by 'Verwandlung beenden' spell or Praios/Hesinde miracle), Bit7 = MU increased by 3 (seg082.cpp) */
     HERO_UNKNOWN11          = 0x0AC, /* never used? */
     HERO_ILLNESS_EMPTY      = 0x0AE,
@@ -281,14 +281,14 @@ struct enemy_status1 {
 	unsigned short petrified	:1; /* 1: enemy is petrified (from 'Paralue' spell) */
 	unsigned short busy		:1;
 	unsigned short bit4		:1;
-	unsigned short cursed		:1; /* bit is set for all enemies except the Orkchampion in the final fight */
+	unsigned short stalled		:1; /* 1: enemy is stalled (all enemies in the final fight except the Orkchampion) */
 	unsigned short mushroom		:1; /* 1: enemy is a mushroom (from 'Salander' spell) */
 	unsigned short illusion		:1;
 };
 
 struct enemy_status2 {
 	unsigned short tame	:1; /* from 'Bannbaladin', 'Herr der Tiere' or 'Sanftmut' spell */
-	unsigned short bb	:1; /* from 'Boeser Blick' spell */
+	unsigned short renegade	:1; /* from 'Boeser Blick' spell */
 	unsigned short scared	:1; /* from 'Horriphobus' spell */
 	unsigned short dancing	:1; /* from 'Zwingtanz' spell */
 };

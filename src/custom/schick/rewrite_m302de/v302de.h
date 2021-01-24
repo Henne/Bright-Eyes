@@ -461,12 +461,12 @@ static inline unsigned short hero_chamaelioni(Bit8u *hero) {
 		return 1;
 }
 /**
- * hero_cursed() -	check if hero is cursed
+ * hero_renegade() -	check if hero is renegade
  * @hero:	ptr to hero
  *
- * 0 = not cursed / 1 = cursed
+ * 0 = no / 1 = yes
  */
-static inline unsigned short hero_cursed(Bit8u *hero) {
+static inline unsigned short hero_renegade(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 5) & 1) == 0)
 		return 0;
 	else
@@ -596,7 +596,7 @@ static inline unsigned short enemy_busy(Bit8u *enemy) {
 		return 1;
 }
 
-static inline unsigned short enemy_cursed(Bit8u *enemy) {
+static inline unsigned short enemy_stalled(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 5) & 1) == 0)
 		return 0;
 	else
@@ -631,12 +631,12 @@ static inline unsigned short enemy_tame(Bit8u *enemy) {
 }
 
 /**
- * enemy_bb() -	check if enemy is under boeser blick spell
+ * enemy_renegade() -	check if enemy is under boeser blick spell
  * @enemy:	ptr to enemy
  *
  * 0 = no / 1 = casted
  */
-static inline unsigned short enemy_bb(Bit8u *enemy) {
+static inline unsigned short enemy_renegade(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x32) >> 1) & 1) == 0)
 		return 0;
 	else
@@ -1121,7 +1121,7 @@ struct bittest {
 #define hero_petrified(hero)	((*(struct hero_status*)(hero + 0xaa)).petrified)
 #define hero_busy(hero)		((*(struct hero_status*)(hero + 0xaa)).busy)
 #define hero_chamaelioni(hero)	((*(struct hero_status*)(hero + 0xaa)).chamaelioni)
-#define hero_cursed(hero)	((*(struct hero_status*)(hero + 0xaa)).cursed)
+#define hero_renegade(hero)	((*(struct hero_status*)(hero + 0xaa)).renegade)
 #define hero_unconscious(hero)	((*(struct hero_status*)(hero + 0xaa)).unconscious)
 #define hero_unkn2(hero)	((*(struct hero_status*)(hero + 0xaa)).unkn2)
 
@@ -1140,12 +1140,12 @@ struct bittest {
 #define enemy_sleeps(enemy)		(((struct enemy_sheets*)(enemy))->status1.sleeps)
 #define enemy_petrified(enemy)		(((struct enemy_sheets*)(enemy))->status1.petrified)
 #define enemy_busy(enemy)		(((struct enemy_sheets*)(enemy))->status1.busy)
-#define enemy_cursed(enemy)		(((struct enemy_sheets*)(enemy))->status1.cursed)
+#define enemy_stalled(enemy)		(((struct enemy_sheets*)(enemy))->status1.stalled)
 #define enemy_mushroom(enemy)	(((struct enemy_sheets*)(enemy))->status1.mushroom)
 #define enemy_illusion(enemy)		(((struct enemy_sheets*)(enemy))->status1.illusion)
 
 #define enemy_tame(enemy)	(((struct enemy_sheets*)(enemy))->status2.tame)
-#define enemy_bb(enemy)		(((struct enemy_sheets*)(enemy))->status2.bb)
+#define enemy_renegade(enemy)	(((struct enemy_sheets*)(enemy))->status2.renegade)
 #define enemy_scared(enemy)	(((struct enemy_sheets*)(enemy))->status2.scared)
 #define enemy_dancing(enemy)	(((struct enemy_sheets*)(enemy))->status2.dancing)
 

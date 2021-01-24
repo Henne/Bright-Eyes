@@ -263,7 +263,7 @@ signed short FIG_count_active_enemies(void)
 		if ((host_readb(enemy + ENEMY_SHEET_MON_ID) != 0) &&
 			!enemy_dead(enemy) &&
 			!enemy_petrified(enemy) &&
-			!enemy_cursed(enemy) &&
+			!enemy_stalled(enemy) &&
 			!enemy_mushroom(enemy) &&
 			!enemy_busy(enemy) &&
 			!host_readbs(enemy + ENEMY_SHEET_ROUND_APPEAR))
@@ -316,7 +316,7 @@ signed short FIG_get_first_active_hero(void)
 			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			!hero_dead(hero_i) &&
 			!hero_petrified(hero_i) &&
-			!hero_cursed(hero_i) &&
+			!hero_renegade(hero_i) &&
 			!hero_scared(hero_i) &&
 			!hero_unconscious(hero_i))
 		{

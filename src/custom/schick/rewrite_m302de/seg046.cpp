@@ -615,10 +615,10 @@ void status_show(Bit16u index)
 				pa,
 
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xdc)),
-				host_readbs(Real2Host(hero) + (HERO_TA_FIGHT + 7)) + j,
+				host_readbs(Real2Host(hero) + (HERO_TA_FIGHT + TA_SCHUSSWAFFEN)) + j,
 
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xe0)),
-				host_readbs(Real2Host(hero) + (HERO_TA_FIGHT + 8)) + j);
+				host_readbs(Real2Host(hero) + (HERO_TA_FIGHT + TA_WURFWAFFEN)) + j);
 
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 60);
 			break;

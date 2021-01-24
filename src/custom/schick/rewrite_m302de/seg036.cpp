@@ -254,7 +254,7 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 
 			((target >= 10) && (target < 30) &&
 				!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + target * SIZEOF_ENEMY_SHEET) &&
-				enemy_bb(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + target * SIZEOF_ENEMY_SHEET))))
+				enemy_renegade(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + target * SIZEOF_ENEMY_SHEET))))
 		{
 			return 1;
 		} else {
@@ -291,11 +291,11 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
  * \param   x           x-coordinate of the hero
  * \param   y           y-coordinate of the hero
  * \param   dir         looking direction of the hero
- * \param   cursed      0 = hero is not cursed, 1 = hero is cursed
+ * \param   renegade    0 = hero is normal, 1 = hero is renegade
  * \return              0 = no target found, fight-id of the target
  */
 signed short KI_search_spell_target(signed short x, signed short y,
-				signed short dir, signed short cursed)
+				signed short dir, signed short renegade)
 {
 	signed short x_diff;
 	signed short y_diff;
@@ -332,16 +332,16 @@ signed short KI_search_spell_target(signed short x, signed short y,
 		/* get the fight object ID of the object on that field */
 		obj_id = get_cb_val(x + x_diff, y + y_diff);
 
-		if (cursed == 1) {
+		if (renegade == 1) {
 
-			/* attack everyone */
+			/* attack only heros and renegade enemies */
 			if ( ((obj_id > 0) && (obj_id < 10) &&
 				!hero_dead(get_hero(obj_id - 1)) &&
 				!hero_unconscious(get_hero(obj_id - 1))
 				) || (
 				(obj_id >= 10) && (obj_id < 30) &&
 					!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + obj_id * SIZEOF_ENEMY_SHEET) &&
-					enemy_bb(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + obj_id * SIZEOF_ENEMY_SHEET))
+					enemy_renegade(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + obj_id * SIZEOF_ENEMY_SHEET))
 				)
 			{
 				will_attack = 1;
@@ -356,7 +356,7 @@ signed short KI_search_spell_target(signed short x, signed short y,
 					done = 1;
 				}
 
-		} else if (cursed == 0) {
+		} else if (renegade == 0) {
 
 			/* attack only enemies */
 			if ((obj_id >= 10) && (obj_id < 30) && !enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + obj_id * SIZEOF_ENEMY_SHEET))
@@ -395,12 +395,12 @@ signed short KI_search_spell_target(signed short x, signed short y,
  *
  * \param   hero        pointer to the hero
  * \param   hero_pos    position of the hero in the party
- * \param   cursed      0 = hero is not cursed, 1 = hero is cursed
+ * \param   renegade    0 = hero normal, 1 = hero renegade
  * \param   x           x-coordinate of the hero
  * \param   y           y-coordinate of the hero
  * \return              0 = no target found, 1 = target found (long distance), 2 = target found (short distance)
  */
-signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed short cursed, signed short x, signed short y)
+signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed short renegade, signed short x, signed short y)
 {
 	signed short dir;
 	signed short count;
@@ -427,7 +427,7 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 			/* try to find a target clockwise from current direction */
 			while (!host_readbs(hero + HERO_ENEMY_ID) && (count < 4)) {
 
-				host_writebs(hero + HERO_ENEMY_ID, (signed char)KI_search_spell_target(x, y, dir, cursed));
+				host_writebs(hero + HERO_ENEMY_ID, (signed char)KI_search_spell_target(x, y, dir, renegade));
 
 				count++;
 
@@ -462,7 +462,7 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 
 			if (!hero_unkn2(hero)) {
 
-				if (cursed == 0) {
+				if (renegade == 0) {
 					l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 9);
 				} else {
 					l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 8);
@@ -500,10 +500,10 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
  * \brief   TODO
  *
  * \param   spell       spell index
- * \param   cursed      0 = hero is not cursed, 1 = hero is cursed
+ * \param   renegade    0 = hero normal, 1 = hero renegade
  * \return              TODO	{-1, 0, 1, 2}
  */
-signed short KI_get_spell(signed short spell, signed short cursed)
+signed short KI_get_spell(signed short spell, signed short renegade)
 {
 	Bit8u *p;
 	signed short retval = -1;
@@ -511,7 +511,7 @@ signed short KI_get_spell(signed short spell, signed short cursed)
 	/* make a pointer to the spell description */
 	p = p_datseg + spell * 10 + SPELL_DESCRIPTIONS;
 
-	if (cursed == 0) {
+	if (renegade == 0) {
 		if (host_readb(p + 7) == 2)
 			retval = 1;
 		else if (host_readb(p + 7) == 1 || host_readb(p + 7) == 3)
@@ -542,12 +542,12 @@ struct dummy {
  *
  * \param   hero        pointer to the hero
  * \param   hero_pos    position of the hero in the party
- * \param   cursed      0 = hero is not cursed, 1 = hero is cursed
+ * \param   renegade    0 = hero normal, 1 = hero renegade
  * \param   x           x-coordinate of the hero
  * \param   y           y-coordinate of the hero
  * \return              {0, 1}
  */
-signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed, signed short x, signed short y)
+signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short renegade, signed short x, signed short y)
 {
 	signed short l_si;
 	signed short count;
@@ -603,7 +603,7 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 		/* reset the target of the hero */
 		host_writebs(hero + HERO_ENEMY_ID, 0);
 
-		if ((spell_mode = KI_get_spell(spell, cursed)) != -1) {
+		if ((spell_mode = KI_get_spell(spell, renegade)) != -1) {
 
 			if (spell_mode == 2) {
 
@@ -951,7 +951,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				(ds_readws(CURRENT_FIG_NO) != 192) &&	/* not in the final fight */
 				(ds_readbs(AUTOFIGHT_MAGIC) != 0))		/* ??? a bool variable, maybe autofight magic */
 			{
-				if (seg036_8cf(hero, hero_pos, hero_cursed(hero), x, y)) {
+				if (seg036_8cf(hero, hero_pos, hero_renegade(hero), x, y)) {
 
 					host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_SPELL);
 					host_writeb(hero + HERO_BP_LEFT, 0);
@@ -967,7 +967,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 					if (range_attack_check_ammo(hero, 2)) {
 
-						l8 = KI_select_spell_target(hero, hero_pos, hero_cursed(hero), x, y);
+						l8 = KI_select_spell_target(hero, hero_pos, hero_renegade(hero), x, y);
 
 						if (l8 != 0) {
 							if (l8 == 2) {
@@ -996,7 +996,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 						while (!host_readbs(hero + HERO_ENEMY_ID) && (l1 < 4)) {
 
-							if (KI_can_attack_neighbour(x, y, a.a[l_di].x, a.a[l_di].y, hero_cursed(hero)))
+							if (KI_can_attack_neighbour(x, y, a.a[l_di].x, a.a[l_di].y, hero_renegade(hero)))
 							{
 								host_writeb(hero + HERO_ENEMY_ID, get_cb_val(x + a.a[l_di].x, y + a.a[l_di].y));
 							}
@@ -1017,7 +1017,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 						if (!hero_unkn2(hero)) {
 
-							if (!hero_cursed(hero)) {
+							if (!hero_renegade(hero)) {
 								l4  = FIG_find_path_to_target(hero, hero_pos, x, y, 3);
 							} else {
 								l4  = FIG_find_path_to_target(hero, hero_pos, x, y, 1);
