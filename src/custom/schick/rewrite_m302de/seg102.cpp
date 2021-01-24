@@ -352,7 +352,7 @@ void mspell_boeser_blick(void)
                         (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
-	or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x20); /* set 'cursed' status bit */
+	or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x20); /* set 'renegade' status bit */
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -368,7 +368,7 @@ void mspell_horriphobus(void)
 
 	/* set the flag */
 	or_ptr_bs(get_spelltarget() + HERO_STATUS2, 0x01); /* set 'scared' status bit */
-	and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xdf); /* unset 'cursed' status bit */
+	and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xdf); /* unset 'renegade' status bit */
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),

@@ -833,7 +833,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 	void (*func)(void);
 	signed short l4;
 
-	if (!check_hero(Real2Host(hero)) && !hero_cursed(Real2Host(hero))) {
+	if (!check_hero(Real2Host(hero)) && !hero_renegade(Real2Host(hero))) {
 
 		return 0;
 	}

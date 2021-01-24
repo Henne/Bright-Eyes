@@ -129,13 +129,13 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 
 	/* Terrible hack:
 		if the current fight is 188, set MR to 5 (Travel-Event 84),
-		if the current fight is 192, and the enemy is no "Orkchampion" then set the 'cursed' status bit */
+		if the current fight is 192, and the enemy is no "Orkchampion" then set the 'stalled' status bit */
 	if (ds_readw(CURRENT_FIG_NO) == 188) {
 
 		host_writeb(sheet + ENEMY_SHEET_MR, 5);
 
 	} else if ((ds_readw(CURRENT_FIG_NO) == 192) && (host_readb(sheet + ENEMY_SHEET_MON_ID) != 0x48)) {
-		or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20); /* set 'cursed' status bit */
+		or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20); /* set 'stalled' status bit */
 
 	}
 

@@ -37,7 +37,7 @@ void spell_beherrschung(void)
 	ds_writed(SPELLTARGET,
 		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
-	if (!hero_cursed(get_spelltarget())) {
+	if (!hero_renegade(get_spelltarget())) {
 		ds_writew(SPELL_SPECIAL_AECOST, -2);
 	} else {
 		if (get_spelltarget() == get_spelluser()) {
@@ -49,7 +49,7 @@ void spell_beherrschung(void)
 			if (host_readws(get_spelluser() + HERO_AE) < ds_readws(SPELL_SPECIAL_AECOST)) {
 				ds_writew(SPELL_SPECIAL_AECOST, -2);
 			} else {
-				and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xdf);
+				and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xdf); /* unset renegade status bit */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_tx(1),
 					(char*)get_spelltarget() + HERO_NAME2);

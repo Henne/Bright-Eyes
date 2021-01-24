@@ -279,10 +279,12 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				if ((two_w_6 == 2) && (weapon_type != -1) &&
 					(host_readbs(p_weapon + 0x06) != (signed char)0x9d))
 				{
+					/* weapon broken */
 					or_ptr_bs(p_weapon + 0x4 , 1);
 					FIG_add_msg(6, 0);
 
 				} else if ((two_w_6 >= 3) && (two_w_6 <= 8) && (l16 == 0)) {
+					/* defender gets a free attack */
 
 					ds_writew(DEFENDER_ATTACKS, 1);
 
@@ -318,6 +320,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					}
 
 				} else if ((two_w_6 >= 9) && (two_w_6 <= 11)) {
+					/* attacker hurts himself. 1W6 damage. */
 
 					damage = random_schick(6);
 

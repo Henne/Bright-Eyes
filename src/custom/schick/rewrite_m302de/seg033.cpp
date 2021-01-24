@@ -89,7 +89,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 			}
 			done = 1;
 
-		} else if (hero_cursed(hero) || (host_readbs(hero + HERO_NPC_ID) > 0)|| (ds_readws(AUTOFIGHT) != 0)) {
+		} else if (hero_renegade(hero) || (host_readbs(hero + HERO_NPC_ID) > 0)|| (ds_readws(AUTOFIGHT) != 0)) {
 
 			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 
@@ -781,8 +781,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					host_readws(hero + HERO_AE), host_readws(hero + HERO_AE_ORIG),
 					/* poison */
 					hero_is_poisoned(hero) ? get_tx(36) : p_datseg + EMPTY_STRING4,
-					/* cursed */
-					hero_cursed(hero) == 1 ? get_tx(38) : p_datseg + EMPTY_STRING5);
+					/* renegade */
+					hero_renegade(hero) == 1 ? get_tx(38) : p_datseg + EMPTY_STRING5);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
