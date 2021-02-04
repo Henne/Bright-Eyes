@@ -184,6 +184,7 @@ signed short DNG02_handler(void)
 	{
 		if (ds_readb(DNG02_SPHERE_ACTIVE) != 0)
 		{
+			/* Sphaerenriss */
 			GUI_output(get_tx(41));
 
 			hero = get_hero(0);
@@ -204,12 +205,12 @@ signed short DNG02_handler(void)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					!hero_dummy3(hero))
+					!hero_seen_phantom(hero))
 				{
 					mod_slot = get_free_mod_slot();
 					set_mod_slot(mod_slot, HOURS(5), hero + (HERO_ATTRIB + 3 * ATTRIB_MU), -3, (signed char)i);
 					{
-						hero_dummy3_set(hero, (mod_slot = 1));
+						hero_seen_phantom_set(hero, (mod_slot = 1)); /* set 'seen_phantom' status bit */
 					}
 				}
 			}
@@ -333,7 +334,7 @@ signed short DNG02_handler(void)
 				!hero_dead(hero) &&
 				host_readbs(hero + HERO_MR) < 8)
 			{
-				or_ptr_bs(hero + HERO_STATUS1, 0x04);
+				or_ptr_bs(hero + HERO_STATUS1, 0x04); /* set 'petrified' status bit */
 
 				sprintf((char*)Real2Host(ds_readfp(DTP2)),
 					(char*)get_tx(42),

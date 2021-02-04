@@ -34,7 +34,7 @@ int random_interval(const int lo, const int hi)
 }
 
 /**
- * \brief   generates a u16 random number
+ * \brief   generates a u16 random number in the range [1..val]
  */
 int random_schick(const int val)
 {

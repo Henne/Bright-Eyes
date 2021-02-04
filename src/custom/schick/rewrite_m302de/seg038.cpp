@@ -428,7 +428,8 @@ signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id
 				{
 					/* cb_or_dist_entry is a dead or unsonscious hero */
 					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
-				} else if ((cb_or_dist_entry >= 10) && (cb_or_dist_entry < 30) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + cb_or_dist_entry * SIZEOF_ENEMY_SHEET))) {
+				} else if ((cb_or_dist_entry >= 10) && (cb_or_dist_entry < 30) &&
+					(test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + cb_or_dist_entry * SIZEOF_ENEMY_SHEET))) { /* test 'dead' status bit */
 					/* cb_or_dist_entry is a dead enemy. tail parts of two-squares enemies are not considered. */
 					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
 					/* Original-Bug: The tail parts of dead two-squares enemies have been forgotten,
@@ -439,7 +440,8 @@ signed short FIG_find_path_to_target(Bit8u *fighter_ptr, signed short fighter_id
 					 * For enemies, squares with dead tail-parts are blocked completely. */
 #ifdef M302de_ORIGINAL_BUGFIX
 					/* make dead tail-parts walkable */
-				} else if ((cb_or_dist_entry >= 30) && (cb_or_dist_entry < 50) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + cb_or_dist_entry * SIZEOF_ENEMY_SHEET))) {
+				} else if ((cb_or_dist_entry >= 30) && (cb_or_dist_entry < 50) &&
+					(test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + cb_or_dist_entry * SIZEOF_ENEMY_SHEET))) { /* test 'dead' status bit */
 					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (y * 25) + x, 0);
 #endif
 				}

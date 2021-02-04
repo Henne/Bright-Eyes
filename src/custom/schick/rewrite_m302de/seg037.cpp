@@ -95,9 +95,9 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_no)
 
 	signed short i;
 
-	ds_writeb((FIG_ANISHEETS + 0xf3), 0);
-	ds_writeb((FIG_ANISHEETS + 242 + 0xf3), host_readbs(enemy + ENEMY_SHEET_GFX_ID));
-	p1 = p_datseg + (FIG_ANISHEETS + 1 + 0xf3);
+	ds_writeb((FIG_ANISHEETS + 0xf3), 0); /* first position of the second FIG_ANISHEET (0xf3 == 243, FIG_ANISHEET is a struct(243)[8]) */
+	ds_writeb((FIG_ANISHEETS + 242 + 0xf3), host_readbs(enemy + ENEMY_SHEET_GFX_ID)); /* last position of the second FIG_ANISHEET */
+	p1 = p_datseg + (FIG_ANISHEETS + 1 + 0xf3); /* second position of the second FIG_ANISHEET */
 
 	i = 0;
 	p3 = Real2Host(ds_readd(GFX_ANI_INDEX + host_readbs(enemy + ENEMY_SHEET_GFX_ID) * 4));
@@ -174,14 +174,14 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_no)
 
 		p2 = Real2Host(FIG_get_ptr(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID)));
 
-		FIG_set_sheet(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p2 + 0x13)), 3);
+		FIG_set_sheet(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p2 + FIGHTER_TWOFIELDED)), 3);
 	}
 
 	/* draw_fight_screen */
 	draw_fight_screen(0);
 
-	memset(p_datseg + (FIG_ANISHEETS + 0xf3), -1, 0xf3);
-	memset(p_datseg + (FIG_ANISHEETS + 3*0xf3), -1, 0xf3);
+	memset(p_datseg + (FIG_ANISHEETS + 0xf3), -1, 0xf3); /* set second FIG_ANISHEET to -1 */
+	memset(p_datseg + (FIG_ANISHEETS + 3*0xf3), -1, 0xf3); /* set fourth FIG_ANISHEET to -1 */
 
 	FIG_init_list_elem(enemy_no + 10);
 }
@@ -521,7 +521,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 							retval = 1;
 							done = 1;
 						} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
-							if (!enemy_stalled(enemy)) {
+							if (!enemy_tied(enemy)) {
 
 								if (mode == 1)
 									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 2);
@@ -570,7 +570,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 							retval = 1;
 							done = 1;
 						} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
-							if (!enemy_stalled(enemy)) {
+							if (!enemy_tied(enemy)) {
 
 								if (mode == 1)
 									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 7);
@@ -653,7 +653,7 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_no, signed short attac
 				done = 1;
 			} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
 
-					if (!enemy_stalled(enemy)) {
+					if (!enemy_tied(enemy)) {
 						if (attack_foe == 0)
 							l4 = FIG_find_path_to_target(enemy, enemy_no, x, y, 6);
 						else
@@ -687,14 +687,14 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_no, signed short attac
 
 void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed short y)
 {
-	signed short l1;
+	signed short target_reachable;
 	signed short attack_foe;
 	signed short dir;
 	signed short l3;
 	signed short done;
 	signed short l5;
-	signed short l6;
-	signed short l7;
+	signed short x_bak;
+	signed short y_bak;
 	struct dummy diff;
 	signed short l_di;
 
@@ -729,20 +729,20 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 		/* F099: fight against four HARPIES */
 			(random_interval(8, 12) <= ds_readws(FIGHT_ROUND))) {
 
-			/* after 8-12 rounds, the enemies flee by setting the 'scared' status bit) */
-			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
+			/* after 8-12 rounds, the enemies flee */
+			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4); /* set 'scared' status bit */
 
 	} else if ((ds_readws(CURRENT_FIG_NO) == 191) &&
 		/* F122: fight against 13 WOLVES */
 			(FIG_count_active_enemies() <= 3)) {
 
-			/* if at most 3 wolves are left, the enemies flee by setting the 'scared' status bit. */
-			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
+			/* if at most 3 wolves are left, the enemies flee */
+			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4); /* set 'scared' status bit */
 
 	} else if (ds_readws(CURRENT_FIG_NO) == 192) {
 		/* F144: final fight */
 
-		if (enemy_stalled(enemy)) {
+		if (enemy_tied(enemy)) {
 			host_writeb(enemy + ENEMY_SHEET_BP, 0);
 		}
 	}
@@ -766,7 +766,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 #if !defined(__BORLANDC__)
 			D1_INFO("Feind %d flieht\n", enemy_no);
 #endif
-			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
+			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4); /* set 'scared' status bit */
 		}
 
 		/* chance of 4% that an illusion enemy disappears */
@@ -776,7 +776,8 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 				D1_INFO("Feind %d verliert seinen Illusionszauber\n", enemy_no);
 			}
 #endif
-			and_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 0xdf);
+			/* Original-Bug? Why unset 'tied' and not 'illusion'?? */
+			and_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 0xdf); /* unset 'tied' status bit */
 		}
 
 		if (!enemy_scared(enemy)) {
@@ -866,21 +867,21 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 			done = 1;
 		} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
 
-			if (!enemy_stalled(enemy)) {
+			if (!enemy_tied(enemy)) {
 
 				if (enemy_scared(enemy)) {
-					l1 = FIG_find_path_to_target(enemy, enemy_no, x, y, 4);
+					target_reachable = FIG_find_path_to_target(enemy, enemy_no, x, y, 4);
 					host_writeb(enemy + ENEMY_SHEET_BP, 0);
 				} else {
 					if (enemy_renegade(enemy))
-						l1 = FIG_find_path_to_target(enemy, enemy_no, x, y, 2);
+						target_reachable = FIG_find_path_to_target(enemy, enemy_no, x, y, 2);
 					else
-						l1 = FIG_find_path_to_target(enemy, enemy_no, x, y, 0);
+						target_reachable = FIG_find_path_to_target(enemy, enemy_no, x, y, 0);
 				}
 
-				if (l1 != -1) {
-					l6 = x;
-					l7 = y;
+				if (target_reachable != -1) {
+					x_bak = x;
+					y_bak = y;
 					seg037_00ae(enemy, enemy_no);
 					FIG_search_obj_on_cb(enemy_no + 10, &x, &y);
 
@@ -889,7 +890,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 					x = host_readws((Bit8u*)&x);
 					y = host_readws((Bit8u*)&y);
 #endif
-					if ((l6 == x) && (l7 == y)) {
+					if ((x_bak == x) && (y_bak == y)) {
 						host_writeb(enemy + ENEMY_SHEET_BP, 0);
 					}
 

@@ -471,7 +471,7 @@ void miracle_resurrect(Bit8u *str)
 		{
 
 			/* resurrect from the dead */
-			and_ptr_bs(hero + HERO_STATUS1, 0xfe);
+			and_ptr_bs(hero + HERO_STATUS1, 0xfe); /* unset 'dead' status bit */
 
 			/* add 7 LE */
 			add_hero_le(hero, 7);

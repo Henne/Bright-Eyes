@@ -126,7 +126,7 @@ void do_citycamp(void)
 							answer = -1;
 						}
 
-						if (answer != -1 && hero_busy(get_hero(answer))) {
+						if (answer != -1 && hero_brewing(get_hero(answer))) {
 							GUI_output(get_ttx(730));
 							answer = -1;
 						}
@@ -146,7 +146,7 @@ void do_citycamp(void)
 
 			answer = select_hero_ok(get_ttx(317));
 
-			if (answer != -1 && hero_busy(get_hero(answer))) {
+			if (answer != -1 && hero_brewing(get_hero(answer))) {
 				GUI_output(get_ttx(730));
 				answer = -1;
 			}

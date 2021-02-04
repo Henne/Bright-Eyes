@@ -7,7 +7,7 @@ void do_inn(void);
 /* 0x25 */
 void talk_inn(void);
 /* 0x2a */
-RealPt get_first_busy_hero(void);
+RealPt get_first_brewing_hero(void);
 /* 0x2f */
 void TLK_herberg(signed short);
 

@@ -4153,7 +4153,7 @@ void seg002_484f(void)
 signed short check_hero(Bit8u *hero)
 {
 	if (!host_readbs(hero + HERO_TYPE) ||
-		hero_sleeps(hero) ||
+		hero_asleep(hero) ||
 		hero_dead(hero) ||
 		hero_petrified(hero) ||
 		hero_unconscious(hero) ||
@@ -4231,6 +4231,7 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 
 		if ((host_readb(hero + HERO_TYPE) == HERO_TYPE_MAGE) &&
 		    (host_readbs(hero + HERO_STAFFSPELL_LVL) >= 4)) {
+			/* 4th staff spell reduces AE cost by 2 */
 			ae -= 2;
 			if (ae < 0)
 				ae = 0;
@@ -4307,10 +4308,10 @@ void sub_hero_le(Bit8u *hero, signed short le)
 		old_le = host_readw(hero + HERO_LE);
 		sub_ptr_ws(hero + HERO_LE, le);
 
-		if (hero_sleeps(hero)) {
+		if (hero_asleep(hero)) {
 
 			/* awake him/her */
-			and_ptr_bs(hero + HERO_STATUS1, 0xfd);
+			and_ptr_bs(hero + HERO_STATUS1, 0xfd); /* unset 'asleep' status bit */
 
 			/* in fight mode */
 			if (ds_readw(IN_FIGHT) != 0) {
@@ -4332,7 +4333,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			host_writew(hero + HERO_LE, 0);
 
 			/* mark hero as dead */
-			or_ptr_bs(hero + HERO_STATUS1, 1);
+			or_ptr_bs(hero + HERO_STATUS1, 1); /* set 'dead' status bit */
 
 			ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 0);
 
@@ -4385,7 +4386,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			if ((old_le >= 5) && (host_readws(hero + HERO_LE) < 5)) {
 
 				/* make hero unsonscious */
-				or_ptr_bs(hero + HERO_STATUS1, 0x40);
+				or_ptr_bs(hero + HERO_STATUS1, 0x40); /* set 'unconscious' status bit */
 
 				/* unknown yet */
 				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);

@@ -54,38 +54,39 @@ enum {
 /**
  *	struct hero_status - status of the hero
  *	@dead:		1 = dead				/ 0 = not dead
- *	@sleeps:	1 = sleeps				/ 0 = awake
+ *	@asleep:	1 = asleep				/ 0 = awake
  *	@petrified:	1 = petrified				/ 0 = not petrified
- *	@busy:		??
- *	@chamaelioni:	1 = 'Chamaelioni' spell active		/ 0 = spell not active
- *	@renegade:	1 = renegade(from 'Boeser Blick' spell)	/ 0 = normal
+ *	@brewing:	1 = brewing an alchemical recipe in an inn / 0 = not brewing
+ *	@chamaelioni:	1 = 'Chamaelioni' spell active		/ 0 = spell not active (effect of active 'Chamaelioni': AT-5 for attacker)
+ *	@renegade:	1 = renegade (from 'Boeser Blick' spell)	/ 0 = normal
  *	@unconscious:	1 = unconscious				/ 0 = conscious
- *	@unkn2:		yet unknown, maybe unused
+ *	@tied:		1 = hero tied                           / 0 = not tied (from hero 'Band und Fessel' spell)
+ *
  *	@scared:	1 = scared and wants to flee (from 'Horriphobus' spell or Angstgift)	/ 0 = not scared
- *	@duplicatus:	1 = 'Duplicatus' spell active	/ spell not active (the bit may have no real effect)
- *	@dummy1:	yet unknown, maybe unused
- *	@tame:		1 = tame (from 'Bannbaladin' spell)	/ 0 = normal
- *	@dummy3:	yet unknown, maybe unused
- *	@gods_pissed:	1 = gods pissed (no more miracles)	/ 0 = gods normal	(activated by praising the nameless god)
- *	@transformed:	1 = hero is transformed (all positive attributes -1, from a chest trap) / 0 not transformed (can be cured by 'Verwandlung beenden' spell or Praios/Hesinde miracle)
- *	@encouraged:	1 = MU increased by 3 (seg082.cpp, probably a dungeon event) / 0 = attibutes back to normal.
+ *	@dummy2:	probably unused
+ *	@duplicatus:	1 = 'Duplicatus' spell active	/ spell not active (effect: AT/2 for attacker, applied after the 'Chamaelioni' effect)
+ *	@tame:		1 = tame (from enemy 'Bannbaladin' spell)	/ 0 = normal
+ *	@seen_phantom:	1 = hero has seen the horrible phantom in the 'Verlassene Herberge' dungeon which gave MU -3 for 5 hours (same position where the Sphaerenriss can happen).
+ *	@gods_pissed:	1 = gods pissed (no more miracles)	/ 0 = gods normal	(activated by praising the nameless god, deactivated by destroying the statue of the nameless god)
+ *	@transformed:	1 = hero is transformed (all positive attributes -1, from the cursed chest on the Totenschiff) / 0 not transformed (can be cured by 'Verwandlung beenden' spell or Praios/Hesinde miracle)
+ *	@encouraged:	1 = MU increased by 3 (seg082.cpp, probably a dungeon event) / 0 = attibute back to normal.
  */
 struct hero_status {
 	/* hero + 0xaa */
 	unsigned short dead		:1;
-	unsigned short sleeps		:1;
+	unsigned short asleep		:1;
 	unsigned short petrified	:1;
-	unsigned short busy		:1;
+	unsigned short brewing		:1;
 	unsigned short chamaelioni	:1;
 	unsigned short renegade		:1;
 	unsigned short unconscious	:1;
-	unsigned short unkn2		:1;
+	unsigned short tied		:1;
 	/* hero + 0xab */
 	unsigned short scared		:1;
+	unsigned short dummy2		:1;
 	unsigned short duplicatus	:1;
-	unsigned short dummy1		:1;
 	unsigned short tame		:1;
-	unsigned short dummy3		:1;
+	unsigned short seen_phantom	:1;
 	unsigned short gods_pissed	:1;
 	unsigned short transformed	:1;
 	unsigned short encouraged	:1;
@@ -142,7 +143,7 @@ enum {
     HERO_HEAL_TIMER         = 0x08B,
     HERO_STAFFSPELL_TIMER   = 0x08F,
     HERO_RECIPE_ID          = 0x093, /* alchemy */
-    HERO_RECIPE_TIMER       = 0x094, /* timer between failed alchemy attempts */
+    HERO_RECIPE_TIMER       = 0x094, /* timer till completion of alchemical brewing process, in days */
     HERO_RUHE_KOERPER       = 0x095, /* 1 = Ruhe Koerper spell is active */
     HERO_BLIND              = 0x096, /* blind rounds remaining from 'Blitz' spell */
     HERO_ECLIPTIFACTUS      = 0x097, /* shadow rounds remaining */
@@ -157,7 +158,7 @@ enum {
     HERO_DRUNK              = 0x0A1,
     HERO_UNKNOWN10          = 0x0A2, /* never used? */
     HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = sleeping, Bit2 = petrified, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious */
-    HERO_STATUS2            = 0x0AB, /* Bit0 = scared (will flee), Bit2 = Duplicatus, Bit5 = gods pissed (no more miracles. from praising the nameless god), Bit6 = transformed (each good attribute decreased by 1. cancelled by 'Verwandlung beenden' spell or Praios/Hesinde miracle), Bit7 = MU increased by 3 (seg082.cpp) */
+    HERO_STATUS2            = 0x0AB, /* Bit0 = scared, Bit1 = dummy2, Bit2 = duplicatus, Bit3 = tame, Bit4 = dummy3, Bit5 = gods_pissed, Bit6 = transformed, Bit7 = encouraged */
     HERO_UNKNOWN11          = 0x0AC, /* never used? */
     HERO_ILLNESS_EMPTY      = 0x0AE,
     HERO_ILLNESS            = 0x0B3,
@@ -277,11 +278,11 @@ enum {
 struct enemy_status1 {
 	/* enemy + 0x31 */
 	unsigned short dead		:1;
-	unsigned short sleeps		:1;
+	unsigned short asleep		:1;
 	unsigned short petrified	:1; /* 1: enemy is petrified (from 'Paralue' spell) */
 	unsigned short busy		:1;
 	unsigned short bit4		:1;
-	unsigned short stalled		:1; /* 1: enemy is stalled (all enemies in the final fight except the Orkchampion) */
+	unsigned short tied		:1; /* 1: enemy is tied (from 'Band und Fessel' spell; all enemies in the final fight except the Orkchampion) */
 	unsigned short mushroom		:1; /* 1: enemy is a mushroom (from 'Salander' spell) */
 	unsigned short illusion		:1;
 };
@@ -887,4 +888,13 @@ enum {
   IS_LANTERN = 2
 };
 
+enum {
+  RECIPE_ITEM_ID = 0, /* two bytes */ /* item id of the recipe */
+  RECIPE_INGREDIENTS = 2, /* two bytes [10] */ /* list of ingredients, two bytes each (item ids), terminated by -1 entry */
+  RECIPE_OUTCOME = 22, /* two bytes */ /* item id of the outcome of the recipe */
+  RECIPE_AE = 24, /* AE needed */
+  RECIPE_DIFFICULTY = 26, /* Erschwernis fuer die Alchemie-Talentprobe */
+  RECIPE_DURATION = 27, /* time needed to brew the recipe, in hours */
+  RECIPE_SIZE = 28
+};
 #endif

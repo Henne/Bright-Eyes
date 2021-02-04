@@ -553,10 +553,10 @@ void show_outro(void)
 			/* get 50D */
 			add_party_money(5000);
 
-			and_ptr_bs(hero + HERO_STATUS1, 0xfd);
-			and_ptr_bs(hero + HERO_STATUS1, 0xfb);
-			and_ptr_bs(hero + HERO_STATUS1, 0xf7);
-			and_ptr_bs(hero + HERO_STATUS1, 0xdf);
+			and_ptr_bs(hero + HERO_STATUS1, 0xfd); /* unset 'asleep' status bit */
+			and_ptr_bs(hero + HERO_STATUS1, 0xfb); /* unset 'petrified' status bit */
+			and_ptr_bs(hero + HERO_STATUS1, 0xf7); /* unset 'brewing' status bit */
+			and_ptr_bs(hero + HERO_STATUS1, 0xdf); /* unset 'renegade' status bit */
 
 			/* reset every disease */
 			for (j = 0; j < 8; j++) {

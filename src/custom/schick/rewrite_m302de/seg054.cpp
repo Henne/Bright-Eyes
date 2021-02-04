@@ -35,9 +35,9 @@ void talk_inn(void)
 }
 
 /**
- * \brief   returns a pointer to the first busy hero, who is not in this group, but in this location
+ * \brief   returns a pointer to the first brewing hero, who is not in this group, but in this location
  */
-RealPt get_first_busy_hero(void)
+RealPt get_first_brewing_hero(void)
 {
 	RealPt hero;
 	signed short i;
@@ -46,7 +46,7 @@ RealPt get_first_busy_hero(void)
 	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 		if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(Real2Host(hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
-			hero_busy(Real2Host(hero)) &&
+			hero_brewing(Real2Host(hero)) &&
 			host_readbs(Real2Host(hero) + HERO_HOSTEL_ID) == ds_readws(TYPEINDEX))
 		{
 			return hero;
@@ -90,7 +90,7 @@ void do_inn(void)
 
 		hero = get_first_hero_available_in_group();
 
-		if (hero_busy(Real2Host(hero))) {
+		if (hero_brewing(Real2Host(hero))) {
 
 			draw_status_line();
 
@@ -112,11 +112,12 @@ void do_inn(void)
 					stay = 1;
 				}
 			} else {
+				/* hero brewing, HERO_RECIPE_TIMER == 0. STAFFSPELL_TIMER not checked */
 				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 0);
 			}
 		}
 
-	} else if ((hero = get_first_busy_hero())) {
+	} else if ((hero = get_first_brewing_hero())) {
 
 		draw_status_line();
 
@@ -132,6 +133,10 @@ void do_inn(void)
 			ds_writews(TEXTBOX_WIDTH, 4);
 
 			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(734), get_ttx(562));
+			/* <Held> befindet sich inmitten eines alchimistischen Versuchs, der wohl noch <DAYS> Tage dauert.
+			 * * Versuch abbrechen
+			 * * Weiter brauen lassen
+			 * */
 
 			ds_writews(TEXTBOX_WIDTH, tw_bak);
 

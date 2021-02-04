@@ -263,7 +263,7 @@ signed short FIG_count_active_enemies(void)
 		if ((host_readb(enemy + ENEMY_SHEET_MON_ID) != 0) &&
 			!enemy_dead(enemy) &&
 			!enemy_petrified(enemy) &&
-			!enemy_stalled(enemy) &&
+			!enemy_tied(enemy) &&
 			!enemy_mushroom(enemy) &&
 			!enemy_busy(enemy) &&
 			!host_readbs(enemy + ENEMY_SHEET_ROUND_APPEAR))
@@ -284,7 +284,7 @@ signed short FIG_count_active_enemies(void)
 //static
 signed short FIG_is_enemy_active(Bit8u *enemy)
 {
-	if (enemy_sleeps(enemy) ||
+	if (enemy_asleep(enemy) ||
 		enemy_dead(enemy) ||
 		enemy_petrified(enemy) ||
 		enemy_dancing(enemy) ||
@@ -527,9 +527,9 @@ void FIG_do_round(void)
 
 			dec_ptr_bs(Real2Host(hero) + HERO_ACTIONS);
 
-			if (hero_sleeps(Real2Host(hero)) && !hero_dead(Real2Host(hero))) {
+			if (hero_asleep(Real2Host(hero)) && !hero_dead(Real2Host(hero))) {
 
-				/* hero sleeps and is not dead */
+				/* hero asleep and is not dead: 74% chance of waking up */
 
 				if (random_schick(100) < 75) {
 
@@ -586,7 +586,7 @@ void FIG_do_round(void)
 								sub_ptr_bs(Real2Host(hero) + HERO_ENEMY_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)))
+							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))) /* check 'dead' status bit */
 							{
 								/* attacked enemy is dead */
 								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
@@ -673,17 +673,23 @@ void FIG_do_round(void)
 						FIG_do_monster_action(monster, pos);
 
 						if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) >= 10) {
+						/* enemy did attack some enemy (by weapon/spell/item etc.) */
 
+						/* if the tail of a two-squares enemy has been attacked,
+						 * replace HERO_ENEMY_ID by the main id of that enemy */
 							if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) >= 30) {
 								sub_ptr_bs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)))
+							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID))) /* check 'dead' status bit */
 							{
+								/* attacked enemy is dead */
 								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
+									/* attacked dead enemy is two-squares */
 
 									FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) + 20, &x, &y);
+									/* (x,y) are the coordinates of the tail of the enemy */
 
 #if !defined(__BORLANDC__)
 									/* BE-fix */
@@ -691,13 +697,20 @@ void FIG_do_round(void)
 									y = host_readws((Bit8u*)&y);
 #endif
 
-									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 38) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID))));
-									p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + 0x13))));
+									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID))));
+									/* intermediate: p1 points to the FIGHTER_SHEET entry of the enemy */
 
-									if (host_readbs(p1 + 0x14) >= 0) {
-										FIG_set_cb_field(y, x, host_readbs(p1 + 0x14));
+									p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + FIGHTER_TWOFIELDED))));
+									/* p1 now points the FIGHTER_SHEET entry of the tail part of the enemy */
+									/* should be true: (host_readbs(p1 + FIGHTER_CBX) == x) and (host_readbs(p1 + FIGHTER_CBY) == y) */
+
+									if (host_readbs(p1 + FIGHTER_OBJ_ID) >= 0) {
+										/* if the id of a cb_entry has been saved in FIGHTER_OBJ_ID (meaning that the tail part is standing on it),
+										 * restore that to the cb */
+										FIG_set_cb_field(y, x, host_readbs(p1 + FIGHTER_OBJ_ID));
 									} else {
-										FIG_set_cb_field(host_readbs(p1 + 0x04), host_readbs(p1 + 0x03), 0);
+										/* otherwise, set the square in the cb to 0 (free) */
+										FIG_set_cb_field(host_readbs(p1 + FIGHTER_CBY), host_readbs(p1 + FIGHTER_CBX), 0);
 									}
 								}
 							}
@@ -1022,11 +1035,11 @@ signed short do_fight(signed short fight_id)
 				&& (host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 			{
 
-				and_ptr_bs(hero + HERO_STATUS1, 0x7f); /* reset unconscious flag */
-				and_ptr_bs(hero + HERO_STATUS1, 0xfd); /* reset sleeping flag */
-				and_ptr_bs(hero + HERO_STATUS1, 0xef); /* reset chamaelioni flag */
-				and_ptr_bs(hero + HERO_STATUS2, 0xfb); /* reset duplicatus flag */
-				and_ptr_bs(hero + HERO_STATUS2, 0xfe); /* reset scared flag */
+				and_ptr_bs(hero + HERO_STATUS1, 0x7f); /* unset 'unconscious' status bit */
+				and_ptr_bs(hero + HERO_STATUS1, 0xfd); /* unset 'sleeping' status bit */
+				and_ptr_bs(hero + HERO_STATUS1, 0xef); /* unset 'chamaelioni' status bit */
+				and_ptr_bs(hero + HERO_STATUS2, 0xfb); /* unset 'duplicatus' status bit */
+				and_ptr_bs(hero + HERO_STATUS2, 0xfe); /* unset 'scared' status bit */
 
 				host_writebs(hero + HERO_BLIND, 0);
 				host_writebs(hero + HERO_ECLIPTIFACTUS, 0);
@@ -1083,8 +1096,7 @@ signed short do_fight(signed short fight_id)
 			if ((ds_readws(MAX_ENEMIES) != 0) && (ds_readws(FIG_DISCARD) == 0)) {
 
 				for (l_di = 0; l_di < 20; l_di++) {
-					// set the STATUS1 byte's lsb to 1
-					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * l_di, 1);
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * l_di, 1); /* set 'dead' status bit */
 				}
 			}
 

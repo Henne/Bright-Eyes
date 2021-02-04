@@ -130,7 +130,7 @@ void spell_illusionen(void)
 			/* YES: spell has effect */
 			ds_writew(SPELL_ILLUSIONEN, 1);
 			/* kill enemy */
-			or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 1);
+			or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 1); /* set 'dead' status bit */
 		}
 	} else {
 		/* print a failure message */
@@ -163,7 +163,7 @@ void spell_verwandlung(void)
 		} else {
 			/* YES: spell has effect */
 			/* unset petrified bit */
-			and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xfb);
+			and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xfb); /* unset 'petrified' status bit */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(4),
 				(char*)get_spelltarget() + HERO_NAME2);
@@ -171,7 +171,7 @@ void spell_verwandlung(void)
 	} else {
 		if (hero_transformed(get_spelltarget())) {
 
-			and_ptr_bs(get_spelltarget() + HERO_STATUS2, 0xbf);
+			and_ptr_bs(get_spelltarget() + HERO_STATUS2, 0xbf); /* unset 'transformed' status bit */
 
 			/* increase attributes */
 			for (i = 0; i <= 6; i++)
@@ -194,6 +194,14 @@ void spell_verwandlung(void)
 	}
 }
 
+/**
+ * \brief   hero spell 'Band und Fessel'
+ *
+ * cast on ememy: cannot do anything any more (for the whole fight)
+ * cast on hero: every turn of the fight, a MU + 2 probe is executed.
+ * 	Success: spell is broken, can act normally again.
+ * 	Failure: MU - 2 for 7 hours, cannot do anything in this turn.
+ */
 void spell_band(void)
 {
 	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) >= 10) {
@@ -209,7 +217,7 @@ void spell_band(void)
 			return;
 		}
 
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0x20);
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0x20); /* set 'tied' status bit */
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(6),
@@ -233,7 +241,7 @@ void spell_band(void)
 				(char*)get_tx(112));
 		} else {
 			/* set status bit */
-			or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x80);
+			or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x80); /* set 'tied' status bit */
 
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -267,7 +275,7 @@ void spell_bannbaladin(void)
 			return;
 		}
 
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 1);
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 1); /* set 'tame' status bit */
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(9),
@@ -286,11 +294,9 @@ void spell_boeser_blick(void)
 	if (host_readb(get_spelltarget_e() + ENEMY_SHEET_GFX_ID) == 0x1c) {
 		ds_writew(SPELL_SPECIAL_AECOST, -2);
 	} else {
-		/* set "Boeser Blick" Flag */
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2);
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2); /* set 'renegade' status bit */
 
-		/* set number of attacks to 2 */
-		host_writeb(get_spelltarget_e() + ENEMY_SHEET_ATTACKS, 2);
+		host_writeb(get_spelltarget_e() + ENEMY_SHEET_ATTACKS, 2); /* set number of attacks to 2 */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -356,7 +362,7 @@ void spell_herrdertiere(void)
 			ds_writew(SPELL_SPECIAL_AECOST, -2);
 		} else {
 
-			or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 1);
+			or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 1); /* set 'tame' status bit */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(9),
@@ -377,8 +383,8 @@ void spell_horriphobus(void)
 	if (host_readb(get_spelltarget_e() + ENEMY_SHEET_GFX_ID) == 0x1c) {
 		ds_writew(SPELL_SPECIAL_AECOST, -2);
 	} else {
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 4);
-		and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 0xfd);
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 4); /* set 'scared' status bit */
+		and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 0xfd); /* unset 'renegade' status bit */
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_tx(12),
@@ -422,8 +428,7 @@ void spell_somnigravis(void)
 			return;
 		}
 
-		/* set the flag */
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 2);
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 2); /* set 'asleep' status bit */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -450,7 +455,7 @@ void spell_somnigravis(void)
 			(char*)get_tx(112));
 	} else {
 		/* set the flag */
-		or_ptr_bs(get_spelltarget() + HERO_STATUS1, 2);
+		or_ptr_bs(get_spelltarget() + HERO_STATUS1, 2); /* set 'sleep' status bit */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -471,7 +476,7 @@ void spell_zwingtanz(void)
 	} else {
 
 		/* set the flag */
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 8);
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 8); /* set 'dancing' status bit */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -620,7 +625,8 @@ void spell_skelettarius(void)
 		ds_writefp(FIGHTOBJ_BUF_SEEK_PTR,buf_seek_ptr_bak);
 #endif
 
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2); /* sets the 'bb' ("Boeser Blick") status bit -> zombie will fight for the heros */
+		/* zombie will fight for the heros */
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2); /* set 'renegade' status bit */
 		host_writebs(get_spelltarget_e() + ENEMY_SHEET_DUMMY2, unk);
 #ifdef M302de_ORIGINAL_BUGFIX
 		/* Original-Bug 1:

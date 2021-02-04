@@ -486,7 +486,7 @@ void spell_paralue(void)
 			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* set the enemy to petrified */
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0x04);
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0x04); /* set 'petrified' status bit */
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_tx(103),
@@ -509,8 +509,7 @@ void spell_paralue(void)
 				strcpy((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_tx(112));
 			} else {
-				/* set the hero to petrified */
-				or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x4);
+				or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x4); /* set 'petrified' status bit */
 
 				/* prepare message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),

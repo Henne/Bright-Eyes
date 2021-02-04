@@ -303,8 +303,7 @@ void mspell_verwandlung(void)
 			/* if not enough AE, all AE will be consumed, without further effect */
 			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		} else {
-			/* unset petrified flag */
-			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0xfb);
+			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0xfb); /* unset 'petrified' status bit */
 
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -320,8 +319,7 @@ void mspell_verwandlung(void)
 			/* if not enough AE, all AE will be consumed, without further effect */
 			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		} else {
-			/* unset mushroom flag */
-			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0xbf);
+			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0xbf); /* unset 'mushroom' status bit */
 
 			ds_writew(MSPELL_AWAKE_FLAG, 1);
 		}
@@ -752,7 +750,7 @@ void mspell_paralue(void)
 			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
 		/* set the flag */
-		or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x04); /* set 'petrified' status bit
+		or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x04); /* set 'petrified' status bit */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
