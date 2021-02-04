@@ -176,7 +176,7 @@ void FIG_add_msg(unsigned short f_action, unsigned short damage)
  * \param   damage      the damage
  * \param   flag        impact on 'bb' (Boeser Blick) status bit. 0: not affacted. 1: reset bb to 0 (monster will be hostile again)
  */
-void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short revert_bb)
+void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short preserve_renegade)
 {
 	signed short i;
 
@@ -185,10 +185,8 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short revert_bb)
 
 	/* are the enemies LE lower than 0 */
 	if (host_readws(enemy + ENEMY_SHEET_LE) <= 0) {
-		/* set 'dead' status bit */
-		or_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 1);
-		/* set LE to 0 */
-		host_writew(enemy + ENEMY_SHEET_LE, 0);
+		or_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 1); /* set 'dead' status bit */
+		host_writew(enemy + ENEMY_SHEET_LE, 0); /* set LE to 0 */
 
 		if ((ds_readw(CURRENT_FIG_NO) == 94) && (host_readb(enemy) == 0x38)) {
 			/* slaying a special cultist */
@@ -204,11 +202,11 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short revert_bb)
 
 		} else if ((ds_readw(CURRENT_FIG_NO) == 180) && (host_readb(enemy) == 0x46)) {
 
-			/* slaying Gorah make everything flee except Heshthot*/
+			/* slaying Gorah make everyone flee except Heshthot */
 			for (i = 0; i < 20; i++) {
 #if !defined(__BORLANDC__)
 				if (ds_readb(ENEMY_SHEETS + ENEMY_SHEET_GFX_ID + i * SIZEOF_ENEMY_SHEET) != 26)
-					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS2) + i * SIZEOF_ENEMY_SHEET, 4);
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS2) + i * SIZEOF_ENEMY_SHEET, 4); /* set 'scared' status bit */
 #else
 				if ( ((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].gfx_id != 0x1a)
 					((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].status2.scared = 1;
@@ -217,8 +215,8 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short revert_bb)
 		}
 	}
 
-	if (!revert_bb)
-		and_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 0xfd); /* unset bb ('Boeser Blick') status bit */
+	if (!preserve_renegade)
+		and_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 0xfd); /* unset 'renegade' status bit */
 }
 
 signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed short attack_hero)

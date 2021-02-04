@@ -187,8 +187,8 @@ signed short DNG07_handler(void)
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
-					add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3);
-					or_ptr_bs(hero + HERO_STATUS2, 0x80);
+					add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3); /* MU + 3 */
+					or_ptr_bs(hero + HERO_STATUS2, 0x80); /* set 'encouraged' status bit */
 				}
 			}
 		} else {
@@ -267,8 +267,8 @@ signed short DNG07_handler(void)
 				if (host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					hero_encouraged(hero))
 				{
-					sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3);
-					and_ptr_bs(hero + HERO_STATUS2, 0x7f);
+					sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3); /* MU - 3 */
+					and_ptr_bs(hero + HERO_STATUS2, 0x7f); /* unset 'encouraged' status bit */
 				}
 			}
 
@@ -337,8 +337,8 @@ void DNG09_statues(signed short prob, signed short bonus)
 					inc_ptr_bs(hero + HERO_ATTRIB_ORIG + 3 * randval);
 					inc_ptr_bs(hero + HERO_ATTRIB + 3 * randval);
 
-					/* ... but the twelve won't grant miracles */
-					or_ptr_bs(hero + 0xab, 0x20);
+					/* ... but the twelve won't grant miracles any more */
+					or_ptr_bs(hero + HERO_STATUS2, 0x20); /* set 'gods_pissed' status bit */
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx(8),
@@ -380,7 +380,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 					!hero_dead(hero))
 				{
 					/* the twelve will grant miracles again */
-					and_ptr_bs(hero + HERO_STATUS2, 0xdf);
+					and_ptr_bs(hero + HERO_STATUS2, 0xdf); /* unset 'gods_pissed' status bit */
 				}
 			}
 

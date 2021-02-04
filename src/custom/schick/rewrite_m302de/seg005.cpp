@@ -692,7 +692,7 @@ void draw_fight_screen(Bit16u val)
 										if (host_readbs(list_i + FIGHTER_MONSTER) == 1) {
 											p_enemy_sheet = Real2Host(FIG_get_enemy_sheet(host_readbs(list_i + FIGHTER_ID)));
 											if (NOT_NULL(p_enemy_sheet)) {
-												or_ptr_bs(p_enemy_sheet + ENEMY_SHEET_STATUS1, 1);
+												or_ptr_bs(p_enemy_sheet + ENEMY_SHEET_STATUS1, 1); /* set 'dead' status bit */
 												host_writeb(p_enemy_sheet + ENEMY_SHEET_BP, 0);
 												figlist_remove[host_readbs(list_i + FIGHTER_SHEET)] = host_readbs(p_enemy_sheet + ENEMY_SHEET_FIGHTER_ID);
 
@@ -704,7 +704,7 @@ void draw_fight_screen(Bit16u val)
 											hero = Real2Host(FIG_get_hero_ptr(host_readbs(list_i + FIGHTER_ID)));
 											if (NOT_NULL(hero)) {
 												host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
-												or_ptr_bs(hero + HERO_STATUS2, 1);
+												or_ptr_bs(hero + HERO_STATUS2, 1); /* set 'scared' status bit */
 
 												host_writew(hero + HERO_UNKNOWN9,
 													ds_readws(FIG_FLEE_POSITION + 2 * ((host_readbs(hero + HERO_VIEWDIR) == 3) ? 0 : (host_readbs(hero + HERO_VIEWDIR) + 1))));

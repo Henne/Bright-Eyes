@@ -150,6 +150,8 @@ void chest_crossbow_bolts(void)
 
 void chest_cursed(void)
 {
+	/* cursed chest on the Totenschiff. 50D, but each good attribute of the group leader is decreased by 1.
+	 * can be cured by 'Verwandlung beenden' spell or a Praios/Hesinde miracle */
 	signed short i;
 	Bit8u *hero;
 
@@ -158,8 +160,7 @@ void chest_cursed(void)
 
 	if (!hero_transformed(hero)) {
 
-		/* set transformed flag */
-		or_ptr_bs(hero + HERO_STATUS2, 0x40);
+		or_ptr_bs(hero + HERO_STATUS2, 0x40); /* set 'transformed' status bit */
 
 		/* decrement each good attribute */
 		for (i = 0; i <= 6; i++) {

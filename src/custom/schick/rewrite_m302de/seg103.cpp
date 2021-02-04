@@ -355,7 +355,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
 						/* set patient timer */
-						host_writed(patient + HERO_HEAL_TIMER, 0x5460);
+						host_writed(patient + HERO_HEAL_TIMER, 0x5460); /* 4 hours */
 
 						if (test_skill(hero, TA_HEILEN_GIFT, bonus) > 0) {
 
@@ -474,7 +474,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 					} else {
-						host_writed(patient + HERO_HEAL_TIMER, 0x1fa40L);
+						host_writed(patient + HERO_HEAL_TIMER, 0x1fa40L); /* 1 day */
 
 						if (test_skill(hero, TA_HEILEN_WUNDEN, bonus) > 0) {
 							if (test_skill(hero, TA_HEILEN_WUNDEN, bonus) > 0) {
@@ -508,7 +508,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 								l_si = 0;
 
-								host_writed(patient + HERO_STAFFSPELL_TIMER, 0x1fa40L);
+								host_writed(patient + HERO_STAFFSPELL_TIMER, 0x1fa40L); /* 1 day */
 							}
 						} else {
 
@@ -709,7 +709,7 @@ signed short GUI_use_skill2(signed short bonus, Bit8u *msg)
 
 		hero_pos = select_hero_ok(msg);
 
-		if ((hero_pos != -1) && (hero_busy(get_hero(hero_pos)))) {
+		if ((hero_pos != -1) && (hero_brewing(get_hero(hero_pos)))) {
 			GUI_output(get_ttx(730));
 			hero_pos = -1;
 		}

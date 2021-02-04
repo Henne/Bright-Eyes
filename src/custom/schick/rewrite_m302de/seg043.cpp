@@ -84,6 +84,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 		FIG_clear_msgs();
 
+		/* set l4, ATTACKER_ATTACKS_AGAIN, DEFENDER_ATTACKS, ATTACKER_DEAD, DEFENDER_DEAD all to 0 */
 		l4 = ds_writews(ATTACKER_ATTACKS_AGAIN, ds_writews(DEFENDER_ATTACKS, ds_writews(ATTACKER_DEAD, ds_writews(DEFENDER_DEAD, 0))));
 
 		ds_writew(FIG_ACTOR_GRAMMAR_TYPE, 1);
@@ -103,6 +104,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 			attack_hero = 1;
 		} else {
+			/* monster attacks monster */
 
 			mon = p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID);
 
@@ -222,13 +224,13 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 					attacker_at += 2;
 				}
 
-				/* spell_chamaelioni() is active on that hero => AT-5 */
+				/* 'Chamaelioni' spell is active on the target hero => AT-5 */
 				if (hero_chamaelioni(hero) == 1) {
 					attacker_at -= 5;
 				}
 
-				/* TODO */
-				if (hero_dummy1(hero) == 1) {
+				/* 'Duplicatus' spell is active on the target hero => AT/2 */
+				if (hero_duplicatus(hero) == 1) {
 					attacker_at /= 2;
 				}
 			} else {
@@ -319,7 +321,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 										if (damage > 0) {
 
-											/* HESHTOT */
+											/* HESHTHOT */
 											if (host_readbs(Real2Host(monster)) != 77) {
 												sub_hero_le(hero, damage);
 											}

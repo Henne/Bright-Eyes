@@ -29,18 +29,18 @@ signed short hero_has_ingrendients(Bit8u *hero, signed short recipe_index)
 {
 	signed short i = 0;
 	signed short retval = 1;
-	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * 28;
+	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * RECIPE_SIZE;
 	signed short item_pos;
 
 	/* loop over ingrendients */
-	while ((host_readws(r_ptr + i * 2 + 2) != -1) && (retval)) {
+	while ((host_readws(r_ptr + i * 2 + RECIPE_INGREDIENTS) != -1) && (retval)) {
 
-		item_pos = get_item_pos(hero, host_readws(r_ptr + i * 2 + 2));
+		item_pos = get_item_pos(hero, host_readws(r_ptr + i * 2 + RECIPE_INGREDIENTS));
 
 		if (item_pos == -1) {
 			/* needed item missing */
 			retval = 0;
-			ds_writew(ALCHEMY_MISSING_ITEM, host_readws(r_ptr + i * 2 + 2));
+			ds_writew(ALCHEMY_MISSING_ITEM, host_readws(r_ptr + i * 2 + RECIPE_INGREDIENTS));
 		} else {
 			/* drop all needed items */
 			drop_item(hero, item_pos, 1);
@@ -57,7 +57,7 @@ signed short hero_has_ingrendients(Bit8u *hero, signed short recipe_index)
 
 	while (i >= 0) {
 		/* give all needed items back */
-		give_hero_new_item(hero, host_readws(r_ptr + i * 2 + 2), 1, 1);
+		give_hero_new_item(hero, host_readws(r_ptr + i * 2 + RECIPE_INGREDIENTS), 1, 1);
 		i--;
 	}
 
@@ -67,26 +67,26 @@ signed short hero_has_ingrendients(Bit8u *hero, signed short recipe_index)
 void hero_use_ingrendients(Bit8u *hero, signed short recipe_index)
 {
 	signed short i = 0;
-	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * 28;
+	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * RECIPE_SIZE;
 	signed short item_pos;
 
 	/* loop over ingrendients */
-	while (host_readws(r_ptr + i * 2 + 2) != -1) {
+	while (host_readws(r_ptr + i * 2 + RECIPE_INGREDIENTS) != -1) {
 
-		item_pos = get_item_pos(hero, host_readws(r_ptr + i * 2 + 2));
+		item_pos = get_item_pos(hero, host_readws(r_ptr + i * 2 + RECIPE_INGREDIENTS));
 
 		/* drop all needed items */
 		drop_item(hero, item_pos, 1);
 
 		/* exchange wine- or brandybottles into glass flask */
-		if ((host_readws(r_ptr + i * 2 + 2) == ITEM_WINE) ||
-			(host_readws(r_ptr + i * 2 + 2) == ITEM_BRANDY))
+		if ((host_readws(r_ptr + i * 2 + RECIPE_INGREDIENTS) == ITEM_WINE) ||
+			(host_readws(r_ptr + i * 2 + RECIPE_INGREDIENTS) == ITEM_BRANDY))
 		{
 			give_hero_new_item(hero, ITEM_FLASK_GLASS, 1, 1);
 		}
 
 		/* exchange oil into bronze flask */
-		if (host_readws(r_ptr + i * 2 + 2) == ITEM_OIL)
+		if (host_readws(r_ptr + i * 2 + RECIPE_INGREDIENTS) == ITEM_OIL)
 		{
 			give_hero_new_item(hero, ITEM_FLASK_BRONZE, 1, 1);
 		}
@@ -97,41 +97,41 @@ void hero_use_ingrendients(Bit8u *hero, signed short recipe_index)
 
 signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short flag)
 {
-	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * 28;
+	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * RECIPE_SIZE;
 
 	hero_use_ingrendients(hero, recipe_index);
 
-	sub_ae_splash(hero, host_readws(r_ptr + 0x18));
+	sub_ae_splash(hero, host_readws(r_ptr + RECIPE_AE));
 
-	and_ptr_bs(hero + HERO_STATUS1, 0xf7);
+	and_ptr_bs(hero + HERO_STATUS1, 0xf7); /* unset 'brewing' status bit */
 	host_writeb(hero + HERO_RECIPE_TIMER, 0);
 	/* set heros receipe to 0 */
 	host_writeb(hero + HERO_RECIPE_ID, 0);
 	host_writeb(hero + HERO_HOSTEL_ID, 0);
 
-	if ((test_skill(hero, 0x20, host_readbs(r_ptr + 0x1a)) > 0) && (flag == 0))
+	if ((test_skill(hero, TA_ALCHIMIE, host_readbs(r_ptr + RECIPE_DIFFICULTY)) > 0) && (flag == 0))
 	{
 		/* success */
 
-		give_hero_new_item(hero, host_readws(r_ptr + 0x16), 1, 1);
+		give_hero_new_item(hero, host_readws(r_ptr + RECIPE_OUTCOME), 1, 1);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ttx(731),
 			hero + HERO_NAME2,
-			Real2Host(GUI_names_grammar(1, host_readws(r_ptr + 0x16), 0)));
+			Real2Host(GUI_names_grammar(1, host_readws(r_ptr + RECIPE_OUTCOME), 0)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
 		return 1;
 	} else {
-		/* fail */
-
-		give_hero_new_item(hero, host_readws(r_ptr + 2), 1, 1);
+		/* failure */
+		/* give first ingredient back, which is always the bottle (glass or bronze). */
+		give_hero_new_item(hero, host_readws(r_ptr + RECIPE_INGREDIENTS), 1, 1);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ttx(732),
 			hero + HERO_NAME2,
-			Real2Host(GUI_names_grammar(2, host_readws(r_ptr + 0x16), 0)));
+			Real2Host(GUI_names_grammar(2, host_readws(r_ptr + RECIPE_OUTCOME), 0)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 		return 0;
@@ -145,7 +145,7 @@ signed short plan_alchemy(Bit8u *hero)
 	signed short item_pos;
 	signed short recipes;
 	signed short answer;
-	signed short l4;
+	signed short decision;
 	signed short l5;
 	signed short i;
 	signed char recipe_index;
@@ -158,17 +158,17 @@ signed short plan_alchemy(Bit8u *hero)
 	recipes = 0;
 	item_pos = get_item_pos(hero, 47);
 	if (item_pos == -1) {
-		/* no alchemyset */
+		/* no alchemy set */
 		GUI_output(get_tx(42));
 		retval = 0;
 	} else {
 
-		/* count all recipes an prepare the menu */
+		/* count all recipes and prepare the menu */
 		for (i = 0; i <= 12; i++) {
-			if (get_item_pos(hero, ds_readws(ALCHEMY_RECIPES + i * 28)) != -1) {
+			if (get_item_pos(hero, ds_readws(ALCHEMY_RECIPES + i * RECIPE_SIZE)) != -1) {
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)) + recipes * 50,
-					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws((ALCHEMY_RECIPES+22) + i * 28)))));
+					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws((ALCHEMY_RECIPES+22) + i * RECIPE_SIZE)))));
 
 				ds_writed(RADIO_NAME_LIST + recipes * 4, (Bit32u)((RealPt)ds_readd(DTP2) + recipes * 50));
 				array[recipes] = (signed char)i;
@@ -206,7 +206,7 @@ signed short plan_alchemy(Bit8u *hero)
 				if (hero_has_ingrendients(hero, recipe_index)) {
 
 					/* check AE costs */
-					if (ds_readws((ALCHEMY_RECIPES+24) + recipe_index * 28) > host_readws(hero + HERO_AE)) {
+					if (ds_readws((ALCHEMY_RECIPES + RECIPE_AE) + recipe_index * RECIPE_SIZE) > host_readws(hero + HERO_AE)) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ttx(607),
@@ -218,30 +218,31 @@ signed short plan_alchemy(Bit8u *hero)
 					} else {
 
 						if ((ds_readbs(LOCATION) == LOCATION_INN) && (ds_readbs(SLEEP_QUALITY) == -1)) {
+							/* no room booked => brewing not possible */
 
 							GUI_output(get_ttx(346));
 
 							return 0;
 						}
 
-						/* check if the alchemic process takes more than 8h */
-						if ((ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8) && (ds_readbs(LOCATION) != LOCATION_INN)) {
-								sprintf((char*)Real2Host(ds_readd(DTP2)),
-									(char*)get_tx(44),
-									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28));
+						if ((ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) > 8) && (ds_readbs(LOCATION) != LOCATION_INN)) {
+							/* recipes with durations > 8 hours have to be done in a inn. */
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_tx(44),
+								ds_readbs((ALCHEMY_RECIPES+RECIPE_DURATION) + recipe_index * RECIPE_SIZE));
 
-									GUI_output(Real2Host(ds_readd(DTP2)));
+							GUI_output(Real2Host(ds_readd(DTP2)));
 
-									retval = 0;
+							retval = 0;
 						} else {
 							if ((ds_readbs(TOTAL_HERO_COUNTER) > 1) &&
 								(ds_readbs(LOCATION) != LOCATION_WILDCAMP) &&
-								(ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8))
+								(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) > 8))
 							{
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_tx(45),
-									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28));
+									ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE));
 
 								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 									(char*)get_tx(47),
@@ -250,20 +251,21 @@ signed short plan_alchemy(Bit8u *hero)
 								ds_writew(TEXTBOX_WIDTH, 7);
 
 								do {
-									l4 = GUI_radio(Real2Host(ds_readd(DTP2)), 3,
-											get_tx(46),
-											Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-											get_tx(48));
-								} while (l4 == -1);
+									decision = GUI_radio(Real2Host(ds_readd(DTP2)), 3,
+											get_tx(46), /* Die Zeit einfach verstreichen lassen */
+											Real2Host(ds_readd(TEXT_OUTPUT_BUF)), /* <Held> von der Gruppe trennen */
+											get_tx(48)); /* Lieber doch nicht brauen */
+								} while (decision == -1);
 
 								ds_writew(TEXTBOX_WIDTH, 3);
 
 							} else {
-								l4 = 1;
+								decision = 1;
 							}
 
-							if (l4 == 1) {
-								timewarp(ds_readbs((ALCHEMY_RECIPES+27) + recipe_index *28) * 0x1518L);
+							if (decision == 1) {
+								/* rest of group waits */
+								timewarp(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) * 0x1518L);
 
 								if (ds_readbs(LOCATION) != LOCATION_WILDCAMP) {
 									hero_p = get_hero(0);
@@ -275,16 +277,17 @@ signed short plan_alchemy(Bit8u *hero)
 										}
 									}
 								} else {
-									host_writed(hero + HERO_STAFFSPELL_TIMER, 0x1fa40);
+									host_writed(hero + HERO_STAFFSPELL_TIMER, 0x1fa40); /* 1 day. Why STAFFSPELL ?? */
 								}
 
 								retval = do_alchemy(hero, recipe_index, 0);
 
 								ds_writeb(SLEEP_QUALITY, -1);
 
-							} else if (l4 == 2) {
+							} else if (decision == 2) {
+								/* split group */
 
-								/* find a empty group */
+								/* find an empty group */
 								for (l5 = 0; ds_readbs(GROUP_MEMBER_COUNTS + l5) != 0; l5++);
 
 								host_writebs(hero + HERO_GROUP_NO, (signed char)l5);
@@ -292,14 +295,16 @@ signed short plan_alchemy(Bit8u *hero)
 								dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
 								host_writeb(hero + HERO_RECIPE_TIMER,
-									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) / 24);
+									ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) / 24);
+									/* time in days, rounded down */
 
 								host_writeb(hero + HERO_RECIPE_ID, recipe_index);
 								host_writeb(hero + HERO_HOSTEL_ID, ds_readbs(TYPEINDEX));
-								or_ptr_bs(hero + HERO_STATUS1, 8);
+								or_ptr_bs(hero + HERO_STATUS1, 8); /* set 'brewing' status bit */
 
 								GRP_save_pos(l5);
 							} else {
+								/* decision == 3, abort brewing process */
 								retval = 0;
 							}
 						}

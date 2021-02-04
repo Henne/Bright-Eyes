@@ -81,11 +81,11 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 		if ((hero_scared(hero)) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE)) {
 
-			and_ptr_bs(hero + HERO_STATUS1, 0x7f);
-			and_ptr_bs(hero + HERO_STATUS1, 0xfb);
+			and_ptr_bs(hero + HERO_STATUS1, 0x7f); /* unset 'tied' status bit (why??) */
+			and_ptr_bs(hero + HERO_STATUS1, 0xfb); /* unset 'petrified' status bit (why???) */
 
 			if (FIG_find_path_to_target(hero, hero_pos, x, y, 5) != -1) {
-				seg036_00ae(hero, hero_pos);
+				seg036_00ae(hero, hero_pos); /* probably: execute hero movement based on path saved in 'FIG_MOVE_PATHDIR'. */
 			}
 			done = 1;
 
@@ -166,20 +166,21 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 			if (selected == FIG_ACTION_MOVE) {
 				/* MOVE / BEWEGEN */
 
-				if (hero_unkn2(hero)) {
-					/* MU + 2 */
+				if (hero_tied(hero)) {
+					/* Probe: MU + 2 */
 					if (test_attrib(hero, ATTRIB_MU, 2) > 0) {
-
-						/* unset this bit */
-						and_ptr_bs(hero + HERO_STATUS1, 0x7f);
+						/* Success */
+						and_ptr_bs(hero + HERO_STATUS1, 0x7f); /* unset 'tied' status bit */
 
 					} else if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU)) > 4) {
+						/* Failure */
+						/* MU - 2 for 7 hours */
 						slot_no = get_free_mod_slot();
 						set_mod_slot(slot_no, HOURS(7), hero + (HERO_ATTRIB + 3 * ATTRIB_MU), -2, (signed char)hero_pos);
 					}
 				}
 
-				if (!hero_unkn2(hero)) {
+				if (!hero_tied(hero)) {
 
 					host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 
@@ -200,7 +201,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						y = host_readws((Bit8u*)&y);
 #endif
 						update_mouse_cursor();
-						and_ptr_bs(hero + HERO_STATUS1, 0xef);
+						and_ptr_bs(hero + HERO_STATUS1, 0xef); /* unset 'chamaelioni' status bit (???) */
 
 					} else {
 						/* no BP left */
@@ -267,12 +268,12 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						} else if (((target_id < 10) && hero_dead(get_hero(target_id - 1))) ||
 								((target_id >= 10) && (target_id < 30) &&
 										/* mushroom or dead */
-										(test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) ||
-										test_bit6(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))) ||
+										(test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) || /* check 'dead' status bit */
+										test_bit6(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))) || /* check 'mushroom' status bit */
 								((target_id >= 30) &&
 										/* mushroom or dead */
-										(test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) ||
-										test_bit6(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))))
+										(test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) || /* check 'dead' status bit */
+										test_bit6(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id)))) /* check 'mushroom' status bit */
 						{
 							GUI_output(get_tx(29));
 
@@ -913,7 +914,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					/* TODO: check fighter_id upper bound */
 					if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 49) + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
+						&& (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) || /* check 'dead' status bit */
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
 						&& (hero_dead(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{
@@ -925,7 +926,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					/* TODO: check fighter_id upper bound */
 					} else if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit2(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 0x32 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
+						&& (test_bit2(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS2 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) || /* check 'scared' status bit */
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
 						&& (hero_scared(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{
@@ -948,13 +949,13 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 		}
 	}
 
-	if ((ds_readws(CURRENT_FIG_NO) == 192) &&
+	if ((ds_readws(CURRENT_FIG_NO) == 192) && /* final fight vs. Orkchampion */
 		(get_hero_index(Real2Host(ds_readd(MAIN_ACTING_HERO))) != hero_pos) &&
 		((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_ATTACK) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) ||
 		(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM)))
 	{
 		for (slot_no = 0; slot_no < 20; slot_no++) {
-			and_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * slot_no, (signed char)0xdf);
+			and_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * slot_no, (signed char)0xdf); /* unset 'tied' status bit */
 		}
 
 		ds_writeb(FINALFIGHT_TUMULT, 1);

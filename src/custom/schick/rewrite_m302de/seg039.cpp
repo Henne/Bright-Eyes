@@ -129,13 +129,13 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 
 	/* Terrible hack:
 		if the current fight is 188, set MR to 5 (Travel-Event 84),
-		if the current fight is 192, and the enemy is no "Orkchampion" then set the 'stalled' status bit */
+		if the current fight is 192, and the enemy is no "Orkchampion" then set the 'tied' status bit */
 	if (ds_readw(CURRENT_FIG_NO) == 188) {
 
 		host_writeb(sheet + ENEMY_SHEET_MR, 5);
 
 	} else if ((ds_readw(CURRENT_FIG_NO) == 192) && (host_readb(sheet + ENEMY_SHEET_MON_ID) != 0x48)) {
-		or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20); /* set 'stalled' status bit */
+		or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20); /* set 'tied' status bit */
 
 	}
 
@@ -175,8 +175,8 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 	/* Another hack:
 		If the current fight == 94 and the enemy is "Kultist", set the 'scared' status bit */
 	if ((ds_readw(CURRENT_FIG_NO) == 94) && (host_readb(sheet + ENEMY_SHEET_MON_ID) == 0x38)) {
-
-		or_ptr_bs(sheet + ENEMY_SHEET_STATUS2, 0x4); /* set 'scared' status bit -> Kultist will flee */
+		/* Kultist will flee */
+		or_ptr_bs(sheet + ENEMY_SHEET_STATUS2, 0x4); /* set 'scared' status bit */
 
 	}
 }
@@ -356,8 +356,7 @@ void FIG_init_enemies(void)
 
 			ds_writeb(ENEMY_SHEETS + ENEMY_SHEET_FIGHTER_ID + i * SIZEOF_ENEMY_SHEET, -1);
 		}
-		// Sets the STATUS1 byte's lsb to 1.
-		or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + i * SIZEOF_ENEMY_SHEET, 1);
+		or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + i * SIZEOF_ENEMY_SHEET, 1); /* set 'dead' status bit */
 	}
 
 	ds_writew(NR_OF_ENEMIES, 0);
@@ -456,7 +455,7 @@ void FIG_init_heroes(void)
 		/* heros sleep until they appear */
 		if (host_readb(Real2Host(ds_readd(CURRENT_FIGHT)) + l_si * SIZEOF_FIGHT_PLAYER + FIGHT_PLAYERS_ROUND_APPEAR) != 0) {
 			if (!hero_dead(hero))
-				or_ptr_bs(hero + HERO_STATUS1, 2);
+				or_ptr_bs(hero + HERO_STATUS1, 2); /* set 'sleep' status bit */
 		}
 
 		place_obj_on_cb(cb_x, cb_y, l_si + 1,
@@ -478,15 +477,15 @@ void FIG_init_heroes(void)
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETY), 0);
 
 		if (hero_dead(hero)) {
-			/* if hero is dead */
+			/* hero is dead */
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_NVF_NO),
 				ds_readb(NVFTAB_FIGURES_DEAD + host_readbs(hero + HERO_SPRITE_NO) * 2));
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETX),
 				ds_readb((GFXTAB_OFFSETS_MAIN + 8) + host_readbs(hero + HERO_SPRITE_NO) * 10));
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETY),
 				ds_readb((GFXTAB_OFFSETS_MAIN + 9) + host_readbs(hero + HERO_SPRITE_NO) * 10));
-		} else if (hero_sleeps(hero) || hero_unconscious(hero)) {
-			/* sleeps or is unconscious */
+		} else if (hero_asleep(hero) || hero_unconscious(hero)) {
+			/* hero is asleep or unconscious */
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_NVF_NO),
 				ds_readb(NVFTAB_FIGURES_UNCONSCIOUS + host_readbs(hero + HERO_SPRITE_NO) * 2) + host_readbs(hero + HERO_VIEWDIR));
 

@@ -410,12 +410,12 @@ static inline unsigned short hero_dead(Bit8u *hero) {
 }
 
 /**
- * hero_sleeps() -	check if hero is sleeping
+ * hero_asleep() -	check if hero is sleeping
  * @hero:	ptr to hero
  *
- * 0 = awake / 1 = sleeps
+ * 0 = awake / 1 = asleep
  */
-static inline unsigned short hero_sleeps(Bit8u *hero) {
+static inline unsigned short hero_asleep(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 1) & 1) == 0)
 		return 0;
 	else
@@ -436,12 +436,12 @@ static inline unsigned short hero_petrified(Bit8u *hero) {
 }
 
 /**
- * hero_busy() -	check if hero is busy
+ * hero_brewing() -	check if hero is brewing
  * @hero:	ptr to hero
  *
- * 0 = not busy / 1 = busy
+ * 0 = not brewing / 1 = brewing
  */
-static inline unsigned short hero_busy(Bit8u *hero) {
+static inline unsigned short hero_brewing(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 3) & 1) == 0)
 		return 0;
 	else
@@ -486,7 +486,7 @@ static inline unsigned short hero_unconscious(Bit8u *hero) {
 		return 1;
 }
 
-static inline unsigned short hero_unkn2(Bit8u *hero) {
+static inline unsigned short hero_tied(Bit8u *hero) {
 
 	if (((host_readb(hero + 0xaa) >> 7) & 1) == 0)
 		return 0;
@@ -502,7 +502,31 @@ static inline unsigned short hero_scared(Bit8u *hero) {
 		return 1;
 }
 
-static inline unsigned short hero_dummy3(Bit8u *hero) {
+static inline unsigned short hero_dummy2(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 1) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short hero_duplicatus(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 2) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short hero_tame(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 3) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short hero_seen_phantom(Bit8u *hero) {
 
 	if (((host_readb(hero + 0xab) >> 4) & 1) == 0)
 		return 0;
@@ -516,30 +540,6 @@ static inline unsigned short hero_gods_pissed(Bit8u *hero) {
 		return 0;
 	else
 		return 1;
-}
-
-static inline unsigned short hero_encouraged(Bit8u *hero) {
-
-	if (((host_readb(hero + 0xab) >> 7) & 1) == 0)
-		return 0;
-	else
-		return 1;
-}
-
-static inline unsigned short hero_dummy1(Bit8u *hero) {
-
-	if (((host_readb(hero + 0xab) >> 2) & 1) == 0)
-		return 0;
-	else
-		return 1;
-}
-
-static inline unsigned short hero_dummy3_set(Bit8u *hero, unsigned short val)
-{
-	/* unset this bit */
-	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) & 0xef);
-	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) | ((val & 1) << 4));
-	return (val & 1);
 }
 
 /**
@@ -556,6 +556,22 @@ static inline unsigned short hero_transformed(Bit8u *hero) {
 		return 1;
 }
 
+static inline unsigned short hero_encouraged(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 7) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short hero_seen_phantom_set(Bit8u *hero, unsigned short val)
+{
+	/* unset this bit */
+	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) & 0xef);
+	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) | ((val & 1) << 4));
+	return (val & 1);
+}
+
 /**
  * enemy_dead() -	check if enemy is dead
  * @enemy:	ptr to enemy
@@ -569,7 +585,7 @@ static inline unsigned short enemy_dead(Bit8u *enemy) {
 		return 1;
 }
 
-static inline unsigned short enemy_sleeps(Bit8u *enemy) {
+static inline unsigned short enemy_asleep(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 1) & 1) == 0)
 		return 0;
 	else
@@ -596,7 +612,7 @@ static inline unsigned short enemy_busy(Bit8u *enemy) {
 		return 1;
 }
 
-static inline unsigned short enemy_stalled(Bit8u *enemy) {
+static inline unsigned short enemy_tied(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 5) & 1) == 0)
 		return 0;
 	else
@@ -1117,32 +1133,32 @@ struct bittest {
 #define test_bit6(a)		((*(struct bittest*)(a)).bit6)
 
 #define hero_dead(hero)		((*(struct hero_status*)(hero + 0xaa)).dead)
-#define hero_sleeps(hero)	((*(struct hero_status*)(hero + 0xaa)).sleeps)
+#define hero_asleep(hero)	((*(struct hero_status*)(hero + 0xaa)).asleep)
 #define hero_petrified(hero)	((*(struct hero_status*)(hero + 0xaa)).petrified)
-#define hero_busy(hero)		((*(struct hero_status*)(hero + 0xaa)).busy)
+#define hero_brewing(hero)	((*(struct hero_status*)(hero + 0xaa)).brewing)
 #define hero_chamaelioni(hero)	((*(struct hero_status*)(hero + 0xaa)).chamaelioni)
 #define hero_renegade(hero)	((*(struct hero_status*)(hero + 0xaa)).renegade)
 #define hero_unconscious(hero)	((*(struct hero_status*)(hero + 0xaa)).unconscious)
-#define hero_unkn2(hero)	((*(struct hero_status*)(hero + 0xaa)).unkn2)
+#define hero_tied(hero)		((*(struct hero_status*)(hero + 0xaa)).tied)
 
 #define hero_scared(hero)	((*(struct hero_status*)(hero + 0xaa)).scared)
-#define hero_dummy1(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy1)
-#define hero_dummy3(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy3)
-#define hero_gods_pissed(hero)	((*(struct hero_status*)(hero + 0xaa)).gods_pissed)
+#define hero_dummy2(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy2)
 #define hero_duplicatus(hero)	((*(struct hero_status*)(hero + 0xaa)).duplicatus)
-
-#define hero_dummy3_set(hero, v) ((*(struct hero_status*)(hero + 0xaa)).dummy3 = v)
-
+#define hero_tame(hero)		((*(struct hero_status*)(hero + 0xaa)).tame)
+#define hero_seen_phantom(hero)	((*(struct hero_status*)(hero + 0xaa)).seen_phantom)
+#define hero_gods_pissed(hero)	((*(struct hero_status*)(hero + 0xaa)).gods_pissed)
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transformed)
 #define hero_encouraged(hero)	((*(struct hero_status*)(hero + 0xaa)).encouraged)
 
-#define enemy_dead(enemy)		(((struct enemy_sheets*)(enemy))->status1.dead)
-#define enemy_sleeps(enemy)		(((struct enemy_sheets*)(enemy))->status1.sleeps)
-#define enemy_petrified(enemy)		(((struct enemy_sheets*)(enemy))->status1.petrified)
-#define enemy_busy(enemy)		(((struct enemy_sheets*)(enemy))->status1.busy)
-#define enemy_stalled(enemy)		(((struct enemy_sheets*)(enemy))->status1.stalled)
+#define hero_seen_phantom_set(hero, v) ((*(struct hero_status*)(hero + 0xaa)).seen_phantom = v)
+
+#define enemy_dead(enemy)	(((struct enemy_sheets*)(enemy))->status1.dead)
+#define enemy_asleep(enemy)	(((struct enemy_sheets*)(enemy))->status1.asleep)
+#define enemy_petrified(enemy)	(((struct enemy_sheets*)(enemy))->status1.petrified)
+#define enemy_busy(enemy)	(((struct enemy_sheets*)(enemy))->status1.busy)
+#define enemy_tied(enemy)	(((struct enemy_sheets*)(enemy))->status1.tied)
 #define enemy_mushroom(enemy)	(((struct enemy_sheets*)(enemy))->status1.mushroom)
-#define enemy_illusion(enemy)		(((struct enemy_sheets*)(enemy))->status1.illusion)
+#define enemy_illusion(enemy)	(((struct enemy_sheets*)(enemy))->status1.illusion)
 
 #define enemy_tame(enemy)	(((struct enemy_sheets*)(enemy))->status2.tame)
 #define enemy_renegade(enemy)	(((struct enemy_sheets*)(enemy))->status2.renegade)

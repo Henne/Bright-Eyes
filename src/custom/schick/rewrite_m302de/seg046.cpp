@@ -333,8 +333,8 @@ void status_show(Bit16u index)
 		/* print if drunk */
 		GUI_print_string(get_tx2(54), 155, 9);
 
-	/* print sleeps */
-	if (hero_sleeps(Real2Host(hero)))
+	/* print asleep */
+	if (hero_asleep(Real2Host(hero)))
 		GUI_print_string(get_tx2(1), 155, 16);
 
 	/* print petrified */

@@ -136,7 +136,7 @@ void do_wildcamp(void)
 						}
 
 						if (answer != -1) {
-							if (hero_busy(get_hero(answer))) {
+							if (hero_brewing(get_hero(answer))) {
 								GUI_output(get_ttx(730));
 								answer = -1;
 							}
@@ -170,7 +170,7 @@ void do_wildcamp(void)
 			answer = select_hero_ok(get_ttx(317));
 
 			if (answer != -1) {
-				if (hero_busy(get_hero(answer))) {
+				if (hero_brewing(get_hero(answer))) {
 					GUI_output(get_ttx(730));
 					answer = -1;
 				}
@@ -209,7 +209,7 @@ void do_wildcamp(void)
 
 			answer = select_hero_ok(get_ttx(326));
 
-			if (answer != -1 && hero_busy(get_hero(answer))) {
+			if (answer != -1 && hero_brewing(get_hero(answer))) {
 				GUI_output(get_ttx(730));
 				answer = -1;
 			}
@@ -479,7 +479,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 	ds_writews(SKILLED_HERO_POS, get_skilled_hero_pos(TA_WILDNISLEBEN));
 	hero_pos = select_hero_ok(get_ttx(322));
 
-	if (hero_pos != -1 && hero_busy(get_hero(hero_pos))) {
+	if (hero_pos != -1 && hero_brewing(get_hero(hero_pos))) {
 		GUI_output(get_ttx(730));
 		hero_pos = -1;
 	}

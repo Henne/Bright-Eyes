@@ -212,8 +212,7 @@ void spell_sensibar(void)
 /* Illusion */
 void spell_chamaelioni(void)
 {
-	/* set the flag for this spell */
-	or_ptr_bs(get_spelluser() + HERO_STATUS1, 0x10);
+	or_ptr_bs(get_spelluser() + HERO_STATUS1, 0x10); /* set 'chamaelioni' status bit */
 
 	/* prepare the message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -226,7 +225,7 @@ void spell_chamaelioni(void)
 void spell_duplicatus(void)
 {
 	/* set the flag for this spell */
-	or_ptr_bs(get_spelluser() + HERO_STATUS2, 0x04);
+	or_ptr_bs(get_spelluser() + HERO_STATUS2, 0x04); /* set 'duplicatus' status bit
 
 	/* prepare the message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),

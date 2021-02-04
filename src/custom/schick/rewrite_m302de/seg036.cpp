@@ -460,7 +460,7 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 		} else {
 			/* try a more expensive search */
 
-			if (!hero_unkn2(hero)) {
+			if (!hero_tied(hero)) {
 
 				if (renegade == 0) {
 					l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 9);
@@ -647,7 +647,7 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short renegad
 							}
 
 							done = 1;
-						} else if (!hero_unkn2(hero)) {
+						} else if (!hero_tied(hero)) {
 
 							if (spell_mode == 0) {
 								l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 3);
@@ -703,7 +703,7 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short renegad
 							}
 
 							done = 1;
-						} else if (!hero_unkn2(hero)) {
+						} else if (!hero_tied(hero)) {
 
 							if (spell_mode == 0) {
 								l5 = FIG_find_path_to_target(hero, hero_pos, x, y, 9);
@@ -902,7 +902,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 		if ((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
-			if (!hero_unkn2(hero)) {
+			if (!hero_tied(hero)) {
 
 				l4 = FIG_find_path_to_target(hero, hero_pos, x, y, 5);
 
@@ -1015,7 +1015,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 					} else {
 
-						if (!hero_unkn2(hero)) {
+						if (!hero_tied(hero)) {
 
 							if (!hero_renegade(hero)) {
 								l4  = FIG_find_path_to_target(hero, hero_pos, x, y, 3);
