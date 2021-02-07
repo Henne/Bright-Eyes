@@ -262,7 +262,7 @@ void FIG_draw_scenario(void)
 						host_readbs(Real2Host(ds_readd(FIGOBJ_GFXWIDTH_TABLE)) + obj_id * 2) - 1);
 					ds_writebs((FIG_LIST_ELEM+FIGHTER_Y2),
 						host_readbs(Real2Host(ds_readd(FIGOBJ_GFXHEIGHT_TABLE)) + obj_id * 2) - 1);
-					ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
+					ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 0);
 					ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
 					ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 					ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);

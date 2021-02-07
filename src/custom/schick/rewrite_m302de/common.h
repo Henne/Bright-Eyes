@@ -152,7 +152,7 @@ enum {
     HERO_INVISIBLE          = 0x09A, /* 1 = active, 0 = inactive */
     HERO_SPRITE_NO          = 0x09B, /* fight gfx of char, depending on type and sex */
     HERO_HOSTEL_ID          = 0x09C, /* alchemy */
-    HERO_UNKNOWN9           = 0x09D,
+    HERO_ESCAPE_POSITION    = 0x09D, /* the dungeon square the hero escaped to in a fight. read from FIG_FLEE_POSITION */
     HERO_JAIL               = 0x09F, /* 1 = true, 0 = false */
     HERO_AXXELERATUS        = 0x0A0, /* 1 = active, 0 = inactive */
     HERO_DRUNK              = 0x0A1,
@@ -414,7 +414,7 @@ enum {
     ENEMY_SHEET_MAG_ID          = 0x25,
     ENEMY_SHEET_FIGHTER_ID      = 0x26,
     ENEMY_SHEET_VIEWDIR         = 0x27,
-    ENEMY_SHEET_DUMMY2          = 0x28, /* unclear. copied in 'Skelettarius' spell */
+    ENEMY_SHEET_ATTACKS_LEFT    = 0x28, /* number attacks left in the current turn of a battle */
     ENEMY_SHEET_LEVEL           = 0x29,
     ENEMY_SHEET_DUMMY3          = 0x2a,
     ENEMY_SHEET_ACTION_ID       = 0x2b,
@@ -488,7 +488,7 @@ enum {
     FIGHTER_VISIBLE     = 0x12, /* {0,1,2} */
     FIGHTER_TWOFIELDED  = 0x13, /* position in FIG_TWOFIELDED_TABLE. -1 if fighter is not twofielded. */
     FIGHTER_OBJ_ID      = 0x14, /* stores the id of the cb_entry of the square before the fighter entered it */
-    FIGHTER_MONSTER     = 0x15, /* {0 = hero, 1 = monster} */
+    FIGHTER_IS_ENEMY    = 0x15, /* {0 = hero, 1 = enemy, 2 = hero} */ /* strangly, at one position in seg039.cpp the value 2 is written */
     FIGHTER_SPRITE_NO   = 0x16, /* 0x12c0, 0x1531, 0x1210 */
     FIGHTER_GFXBUF      = 0x17, /* RealPt */
     FIGHTER_NEXT        = 0x1b, /* RealPt */

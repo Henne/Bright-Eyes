@@ -1579,8 +1579,8 @@ static int n_seg032(unsigned offs)
 	}
 	/* Callers: 1 */
 	case 0x2db: {
-		reg_ax = seg032_02db();
-		D1_LOG("near seg032_02db() = %d\n", reg_ax);
+		reg_ax = FIG_all_heroes_escaped();
+		D1_LOG("near FIG_all_heroes_escaped() = %d\n", reg_ax);
 		return 1;
 	}
 	/* Callers: 1 */

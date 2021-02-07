@@ -926,7 +926,7 @@
 // ?1
 #define INFORMER_TAB                    (0x5ed6)    /* struct(4)[15]; struct{short name_id; char town, unkn;} */
 #define FIG_DROPPED_COUNTER             (0x5f12)    /* signed short */
-#define FIG_ALL_HEROES_WITHDRAWN        (0x5f14)    /* unsigned short; {0,1} */
+#define FIG_ALL_HEROES_ESCAPED          (0x5f14)    /* unsigned short; {0,1} */
 #define MAX_ENEMIES                     (0x5f16)    /* signed short; an upper bound for the number of enemies */
 #define STR_ERROR_ON_OBJ_MALLOC         (0x5f18)    /* char[23]; "ERROR ON OBJECT MALLOC" */
 // ?1
@@ -1468,7 +1468,7 @@
 #define TXT_TABPOS6                     (0xd31d)    /* signed short */
 #define TXT_TABPOS7                     (0xd31f)    /* signed short */
 #define TOWNPAL_BUF                     (0xd321)    /* RealPt */
-#define FIG_FLEE_POSITION               (0xd325)    /* signed short[4]; see HERO_UNKNOWN9 */
+#define FIG_FLEE_POSITION               (0xd325)    /* signed short[4]; the goal square in the dungeon if a hero escapes, depending on the direction the fight board is exited. the direction is stored at HERO_ESCAPE_POSITION */
 #define WILDCAMP_SLEEP_QUALITY          (0xd32d)    /* signed short */
 #define GATHER_HERBS_MOD                (0xd32f)    /* signed short */
 #define REPLENISH_STOCKS_MOD            (0xd331)    /* signed short */

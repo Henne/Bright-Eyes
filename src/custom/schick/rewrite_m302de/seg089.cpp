@@ -360,7 +360,7 @@ signed short DNG15_handler(void)
 	} else if (target_pos == 0x3b02 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* FIGHT: */
-		if (random_schick(100) < 10)
+		if (random_schick(100) < 10) /* 9% chance */
 		{
 			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 6), 0x3932)));
 			ds_writew((FIG_FLEE_POSITION + 4), 0x3d25);

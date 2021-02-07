@@ -612,7 +612,7 @@ void spell_skelettarius(void)
 
 		FIG_remove_from_list(host_readbs(get_spelltarget_e() + ENEMY_SHEET_FIGHTER_ID), 0);
 
-		unk = host_readbs(get_spelltarget_e() + ENEMY_SHEET_DUMMY2);
+		unk = host_readbs(get_spelltarget_e() + ENEMY_SHEET_ATTACKS_LEFT);
 
 
 		fill_enemy_sheet(host_readbs(get_spelluser() + HERO_ENEMY_ID) - 10, 0x10, 0);
@@ -627,7 +627,7 @@ void spell_skelettarius(void)
 
 		/* zombie will fight for the heros */
 		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2); /* set 'renegade' status bit */
-		host_writebs(get_spelltarget_e() + ENEMY_SHEET_DUMMY2, unk);
+		host_writebs(get_spelltarget_e() + ENEMY_SHEET_ATTACKS_LEFT, unk);
 #ifdef M302de_ORIGINAL_BUGFIX
 		/* Original-Bug 1:
 		 * restore the FIGHTER_OBJ_ID value. */

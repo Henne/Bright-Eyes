@@ -83,7 +83,7 @@ void FIG_init_list_elem(signed short obj)
 	ds_writeb((FIG_LIST_ELEM + FIGHTER_X2), 21);
 	ds_writeb((FIG_LIST_ELEM + FIGHTER_Y2), 10);
 
-	ds_writeb((FIG_LIST_ELEM + FIGHTER_MONSTER), 0);
+	ds_writeb((FIG_LIST_ELEM + FIGHTER_IS_ENEMY), 0);
 	ds_writeb((FIG_LIST_ELEM + FIGHTER_RELOAD), 0);
 	ds_writeb((FIG_LIST_ELEM + FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM + FIGHTER_SHEET), -1);

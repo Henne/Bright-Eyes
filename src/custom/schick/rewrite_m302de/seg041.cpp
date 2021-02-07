@@ -174,7 +174,7 @@ void FIG_add_msg(unsigned short f_action, unsigned short damage)
  *
  * \param   enemy       pointer to the enemy
  * \param   damage      the damage
- * \param   flag        impact on 'bb' (Boeser Blick) status bit. 0: not affacted. 1: reset bb to 0 (monster will be hostile again)
+ * \param   flag        impact on 'renegade' status bit. 0: not affacted. 1: reset 'renegade' to 0 (monster will be hostile again)
  */
 void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short preserve_renegade)
 {
@@ -202,7 +202,7 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short preserve_renegad
 
 		} else if ((ds_readw(CURRENT_FIG_NO) == 180) && (host_readb(enemy) == 0x46)) {
 
-			/* slaying Gorah make everyone flee except Heshthot */
+			/* slaying Gorah makes everyone flee except Heshthot */
 			for (i = 0; i < 20; i++) {
 #if !defined(__BORLANDC__)
 				if (ds_readb(ENEMY_SHEETS + ENEMY_SHEET_GFX_ID + i * SIZEOF_ENEMY_SHEET) != 26)

@@ -243,6 +243,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 			randval = random_schick(20);
 
 			if ((randval == 20) && (random_schick(20) > attacker_at - 9)) {
+				/* critical attack failure */
 
 				if (!attack_hero || check_hero(hero)) {
 
@@ -690,7 +691,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 							ds_writeb((FIG_LIST_ELEM + FIGHTER_Y2), 39);
 							ds_writeb((FIG_LIST_ELEM + FIGHTER_HEIGHT), 40);
 							ds_writeb((FIG_LIST_ELEM + FIGHTER_WIDTH), 32);
-							ds_writeb((FIG_LIST_ELEM + FIGHTER_MONSTER), 1);
+							ds_writeb((FIG_LIST_ELEM + FIGHTER_IS_ENEMY), 1);
 							ds_writeb((FIG_LIST_ELEM + FIGHTER_RELOAD), -1);
 							ds_writeb((FIG_LIST_ELEM + FIGHTER_WSHEET), -1);
 							ds_writeb((FIG_LIST_ELEM + FIGHTER_SHEET), -1);

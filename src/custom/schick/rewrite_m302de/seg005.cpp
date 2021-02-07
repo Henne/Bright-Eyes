@@ -649,7 +649,7 @@ void draw_fight_screen(Bit16u val)
 						}
 					} else {
 
-						/* move a figure */
+						/* move a hero/enemy */
 						if (host_readbs(sheet + (ds_readw(FIG_ANI_STATE +  host_readbs(list_i + FIGHTER_SHEET) * 2) * 3) + 1) == -2) {
 
 							if (host_readbs(list_i + FIGHTER_SHEET) < 6) {
@@ -688,8 +688,10 @@ void draw_fight_screen(Bit16u val)
 									|| (host_readbs(list_i + FIGHTER_CBX) < 0) || (host_readbs(list_i + FIGHTER_CBY) < 0)
 									|| (host_readbs(list_i + FIGHTER_OBJ_ID) < 0))
 								{
+									/* hero/enemy escapes */
 
-										if (host_readbs(list_i + FIGHTER_MONSTER) == 1) {
+										if (host_readbs(list_i + FIGHTER_IS_ENEMY) == 1) {
+											/* enemy escapes */
 											p_enemy_sheet = Real2Host(FIG_get_enemy_sheet(host_readbs(list_i + FIGHTER_ID)));
 											if (NOT_NULL(p_enemy_sheet)) {
 												or_ptr_bs(p_enemy_sheet + ENEMY_SHEET_STATUS1, 1); /* set 'dead' status bit */
@@ -701,12 +703,17 @@ void draw_fight_screen(Bit16u val)
 												}
 											}
 										} else {
+											/* hero escapes */
 											hero = Real2Host(FIG_get_hero_ptr(host_readbs(list_i + FIGHTER_ID)));
 											if (NOT_NULL(hero)) {
 												host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
 												or_ptr_bs(hero + HERO_STATUS2, 1); /* set 'scared' status bit */
 
-												host_writew(hero + HERO_UNKNOWN9,
+												/* set the dungeon position the hero escapes to.
+												 * This depends on the direction the escape square on the battlefield has been entered.
+												 * Note: Apparently, this is done in any fight, including seafights and wilderness fights where it doesn't make sense.
+												 * The distinction is done only later. */
+												host_writew(hero + HERO_ESCAPE_POSITION,
 													ds_readws(FIG_FLEE_POSITION + 2 * ((host_readbs(hero + HERO_VIEWDIR) == 3) ? 0 : (host_readbs(hero + HERO_VIEWDIR) + 1))));
 												figlist_remove[host_readbs(list_i + FIGHTER_SHEET)] = host_readbs(hero + HERO_FIGHTER_ID);
 
@@ -727,7 +734,6 @@ void draw_fight_screen(Bit16u val)
 									}
 								}
 							} else {
-								/* move for non-heros */
 								host_writeb(list_i + FIGHTER_CBX, host_readbs(list_i + FIGHTER_CBX) +
 									host_readbs(sheet + ds_readw(FIG_ANI_STATE + (host_readbs(list_i + FIGHTER_SHEET) * 2)) * 3 + 2));
 

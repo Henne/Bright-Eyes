@@ -294,7 +294,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 0x27);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_HEIGHT), 0x28);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WIDTH), 0x20);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SPRITE_NO), host_readbs(ptr + ENEMY_SHEET_GFX_ID)); /* gfx_set_id */
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
@@ -334,7 +334,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_X2), ds_readb(GFXTAB_TWOFIELDED_EXTRA_X2 + host_readbs(ptr + ENEMY_SHEET_VIEWDIR)));
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_Y1), 0);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 0x27);
-		ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 1);
+		ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 1);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), 10);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_TWOFIELDED), ds_readb(FIG_TWOFIELDED_COUNT) + 20);
 		ds_writeb(FIG_TWOFIELDED_TABLE + ds_readbs(FIG_TWOFIELDED_COUNT), FIG_add_to_list(-1));
@@ -502,7 +502,11 @@ void FIG_init_heroes(void)
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_Y1), 0);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_X2), 31);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 39);
-		ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 2);
+
+		/* in the next line, value 0 (hero) would make better sense.
+		 * however, the apparently only read operation checks for ==1, so the value 2 does not make a difference */
+		ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 2);
+
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_SPRITE_NO), host_readb(hero + HERO_SPRITE_NO));
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0xff);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), 0xff);
