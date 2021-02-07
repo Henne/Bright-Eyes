@@ -193,7 +193,7 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y1), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_X2), 21);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 10);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
@@ -603,7 +603,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 10);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_HEIGHT), 11);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WIDTH), 22);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);

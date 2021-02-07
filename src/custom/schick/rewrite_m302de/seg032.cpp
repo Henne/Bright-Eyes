@@ -223,10 +223,10 @@ signed short FIG_choose_next_enemy(void)
 			for (i = 0; i < ds_readw(NR_OF_ENEMIES); i++, enemy += SIZEOF_ENEMY_SHEET) {
 				D1_ERR("Enemy %02d %x %x\n",
 					i, host_readb(enemy),
-					host_readb(enemy + ENEMY_SHEET_DUMMY2));
+					host_readb(enemy + ENEMY_SHEET_ATTACKS_LEFT));
 
 				if (host_readb(enemy) &&
-					host_readb(enemy + ENEMY_SHEET_DUMMY2))
+					host_readb(enemy + ENEMY_SHEET_ATTACKS_LEFT))
 						retval = i;
 			}
 
@@ -243,7 +243,7 @@ signed short FIG_choose_next_enemy(void)
 #endif
 
 	} while (ds_readbs(ENEMY_SHEETS + retval * SIZEOF_ENEMY_SHEET + ENEMY_SHEET_MON_ID) == 0
-	    || ds_readbs(ENEMY_SHEETS + ENEMY_SHEET_DUMMY2 + retval * SIZEOF_ENEMY_SHEET) == 0);
+	    || ds_readbs(ENEMY_SHEETS + ENEMY_SHEET_ATTACKS_LEFT + retval * SIZEOF_ENEMY_SHEET) == 0);
 
 	return retval;
 }
@@ -328,14 +328,14 @@ signed short FIG_get_first_active_hero(void)
 }
 
 /**
- * \brief   1 if all (active) heroes in group withdrew from the fight
+ * \brief   1 if all (active) heroes in group escaped from the fight
  *
  * \return              1 if FIG_get_first_active_hero() returns -1
  *                      and at least one hero in the group is not dead and has
  *                      something at offset HERO_ACTION_ID set (maybe sleeping).
  */
 //static
-unsigned short seg032_02db(void)
+unsigned short FIG_all_heroes_escaped(void)
 {
 	Bit8u *hero_i;
 	signed short i;
@@ -362,8 +362,8 @@ unsigned short seg032_02db(void)
 unsigned short FIG_fight_continues(void)
 {
 
-	if (seg032_02db()) {
-		ds_writew(FIG_ALL_HEROES_WITHDRAWN, 1);
+	if (FIG_all_heroes_escaped()) {
+		ds_writew(FIG_ALL_HEROES_ESCAPED, 1);
 		return 0;
 	}
 
@@ -386,7 +386,7 @@ void FIG_do_round(void)
 	signed short pos;
 	signed short x_coord;
 	signed short y_coord;
-	signed short l3;
+	signed short nr_consecutive_attacks_left;
 	signed char turn;
 	RealPt hero;
 	RealPt monster;
@@ -437,7 +437,7 @@ void FIG_do_round(void)
 			}
 
 			/* TODO: */
-			host_writew(Real2Host(hero) + HERO_UNKNOWN9, 0);
+			host_writew(Real2Host(hero) + HERO_ESCAPE_POSITION, 0);
 
 			hero_attacks++;
 
@@ -463,7 +463,7 @@ void FIG_do_round(void)
 	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
 
 		/* set #attacks */
-		ds_writeb((ENEMY_SHEETS + ENEMY_SHEET_DUMMY2) + SIZEOF_ENEMY_SHEET * i, ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_ATTACKS) + SIZEOF_ENEMY_SHEET * i));
+		ds_writeb((ENEMY_SHEETS + ENEMY_SHEET_ATTACKS_LEFT) + SIZEOF_ENEMY_SHEET * i, ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_ATTACKS) + SIZEOF_ENEMY_SHEET * i));
 
 		monster_attacks += ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_ATTACKS) + SIZEOF_ENEMY_SHEET * i);
 
@@ -473,10 +473,10 @@ void FIG_do_round(void)
 		ds_writeb((FIG_MONSTERS_UNKN+10) + i, 0);
 	}
 
-	l3 = 0;
+	nr_consecutive_attacks_left = 0;
 
 
-	/* turn == 0 means monsters attack first, turn == 1 means heros attack fisrt */
+	/* turn == 0 means monsters attack first, turn == 1 means heros attack first */
 	turn = (ds_readbs(FIG_INITIATIVE) == 2 ? 1 : (ds_readbs(FIG_INITIATIVE) == 1 ? 0 : random_interval(0, 1)));
 
 
@@ -487,21 +487,26 @@ void FIG_do_round(void)
 		}
 
 		/* decide if heros or monsters are next */
-		if (l3 == 0) {
+		if (nr_consecutive_attacks_left == 0) {
 
 			/* flip turn */
 			turn ^= 1;
 
 			if (!turn) {
 
+				/* this might be an Original-Bug:
+				 * The block here is m
+				 * I'd expect first do check hero_attacks == 0 -> switch turn to enemies
+				 * and then check hero_attacks <= monster_attacks
+				 * as below in the corresponding lines for the monsters. */
 				if (hero_attacks <= monster_attacks) {
-					l3 = 1;
+					nr_consecutive_attacks_left = 1;
 				} else if (!hero_attacks) {
 					turn = 1;
 				} else if (monster_attacks != 0) {
-					l3 = hero_attacks / monster_attacks;
+					nr_consecutive_attacks_left = hero_attacks / monster_attacks;
 				} else {
-					l3 = hero_attacks;
+					nr_consecutive_attacks_left = hero_attacks;
 				}
 			}
 
@@ -509,11 +514,11 @@ void FIG_do_round(void)
 
 				if (monster_attacks == 0) {
 					turn = 0;
-					l3 = 1;
+					nr_consecutive_attacks_left = 1;
 				} else if (monster_attacks <= hero_attacks) {
-					l3 = 1;
+					nr_consecutive_attacks_left = 1;
 				} else {
-					l3 = (hero_attacks ? monster_attacks / hero_attacks : monster_attacks);
+					nr_consecutive_attacks_left = (hero_attacks ? monster_attacks / hero_attacks : monster_attacks);
 				}
 			}
 		}
@@ -589,9 +594,10 @@ void FIG_do_round(void)
 							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))) /* check 'dead' status bit */
 							{
 								/* attacked enemy is dead */
-								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
+								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_GFX_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
 									/* attacked dead enemy is two-squares */
+									/* goal: remove tail part */
 
 									FIG_search_obj_on_cb(host_readbs(Real2Host(hero) + HERO_ENEMY_ID) + 20, &x, &y);
 									/* (x,y) are the coordinates of the tail of the enemy */
@@ -604,10 +610,10 @@ void FIG_do_round(void)
 
 
 									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))));
-									/* intermediate: p1 points to the FIGHTER_SHEET entry of the enemy */
+									/* intermediate: p1 points to the FIGHTER entry of the enemy */
 
 									p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + FIGHTER_TWOFIELDED))));
-									/* p1 now points the FIGHTER_SHEET entry of the tail part of the enemy */
+									/* p1 now points the FIGHTER entry of the tail part of the enemy */
 									/* should be true: (host_readbs(p1 + FIGHTER_CBX) == x) and (host_readbs(p1 + FIGHTER_CBY) == y) */
 
 									if (host_readbs(p1 + FIGHTER_OBJ_ID) >= 0) {
@@ -644,7 +650,7 @@ void FIG_do_round(void)
 
 			monster = (RealPt)RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * pos);
 
-			dec_ptr_bs(Real2Host(monster) + ENEMY_SHEET_DUMMY2);
+			dec_ptr_bs(Real2Host(monster) + ENEMY_SHEET_ATTACKS_LEFT);
 
 			if (FIG_search_obj_on_cb(pos + 10, &x_coord, &y_coord) &&
 				FIG_is_enemy_active(Real2Host(monster)))
@@ -673,7 +679,7 @@ void FIG_do_round(void)
 						FIG_do_monster_action(monster, pos);
 
 						if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) >= 10) {
-						/* enemy did attack some enemy (by weapon/spell/item etc.) */
+						/* enemy did attack some enemy (by weapon/spell etc.) */
 
 						/* if the tail of a two-squares enemy has been attacked,
 						 * replace HERO_ENEMY_ID by the main id of that enemy */
@@ -684,9 +690,10 @@ void FIG_do_round(void)
 							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID))) /* check 'dead' status bit */
 							{
 								/* attacked enemy is dead */
-								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
+								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_GFX_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
 									/* attacked dead enemy is two-squares */
+									/* goal: remove tail part */
 
 									FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) + 20, &x, &y);
 									/* (x,y) are the coordinates of the tail of the enemy */
@@ -698,10 +705,10 @@ void FIG_do_round(void)
 #endif
 
 									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID))));
-									/* intermediate: p1 points to the FIGHTER_SHEET entry of the enemy */
+									/* intermediate: p1 points to the FIGHTER entry of the enemy */
 
 									p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + FIGHTER_TWOFIELDED))));
-									/* p1 now points the FIGHTER_SHEET entry of the tail part of the enemy */
+									/* p1 now points the FIGHTER entry of the tail part of the enemy */
 									/* should be true: (host_readbs(p1 + FIGHTER_CBX) == x) and (host_readbs(p1 + FIGHTER_CBY) == y) */
 
 									if (host_readbs(p1 + FIGHTER_OBJ_ID) >= 0) {
@@ -730,7 +737,7 @@ void FIG_do_round(void)
 			monster_attacks--;
 		}
 
-		l3--;
+		nr_consecutive_attacks_left--;
 
 		if (ds_readbs(FIG_CB_MAKRER_ID) != -1) {
 
@@ -854,23 +861,23 @@ void FIG_load_ship_sprites(void)
  */
 signed short do_fight(signed short fight_id)
 {
-	signed short l_di;
+	signed short i;
 
 	signed short fd;
-	signed short l1;
-	signed short l3;
-	signed short l4;
-	signed short l5;
+	signed short j;
+	signed short new_escape_position_found;
+	signed short group_nr;
+	signed short group_size;
 	signed short retval = 0;
 	Bit8u *hero;
 	Bit8u *ptr;
-	signed short l7;
+	signed short nr_escape_positions;
 	signed short x_target_bak;
 	signed short y_target_bak;
 	signed short dungeon_level_bak;
 	signed short direction_bak;
 	signed short textbox_width_bak;
-	signed short tmp[6];
+	signed short escape_positions[6];
 
 	if ((ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) == 1)
 		&& (host_readbs(get_hero(0) + HERO_INVISIBLE) != 0))
@@ -918,7 +925,7 @@ signed short do_fight(signed short fight_id)
 	ds_writew(IN_FIGHT, 1);
 
 	/* set some vars to 0 */
-	ds_writew(AUTOFIGHT, ds_writew(FIGHT_ROUND, ds_writew(FIG_ALL_HEROES_WITHDRAWN, 0)));
+	ds_writew(AUTOFIGHT, ds_writew(FIGHT_ROUND, ds_writew(FIG_ALL_HEROES_ESCAPED, 0)));
 	/* set some vars to -1 */
 	ds_writew(FIG_FIGURE1, ds_writew(FIG_FIGURE2, -1));
 	ds_writew(FIGHT_FIGS_INDEX, -1);
@@ -936,8 +943,8 @@ signed short do_fight(signed short fight_id)
 
 	ds_writew(FIG_DROPPED_COUNTER, 0);
 
-	for (l_di = 0; l_di < 30; l_di++) {
-		ds_writew(FIG_DROPPED_WEAPONS + 2 * l_di, 0);
+	for (i = 0; i < 30; i++) {
+		ds_writew(FIG_DROPPED_WEAPONS + 2 * i, 0);
 	}
 
 	load_tx(ARCHIVE_FILE_FIGHTTXT_LTX);
@@ -1004,7 +1011,7 @@ signed short do_fight(signed short fight_id)
 			/* increment round counter */
 			inc_ds_ws(FIGHT_ROUND);
 			/* do a timewarp */
-			timewarp(9L);
+			timewarp(9L); /* 6 seconds */
 
 			if (ds_readws(IN_FIGHT) != 0) {
 				FIG_latecomers();
@@ -1026,10 +1033,12 @@ signed short do_fight(signed short fight_id)
 		}
 	}
 
+	/* aftermath */
+
 	if (ds_readws(GAME_STATE) != GAME_STATE_FIGQUIT) {
 
 		hero = get_hero(0);
-		for (l_di = 0; l_di <=6; l_di++, hero += SIZEOF_HERO) {
+		for (i = 0; i <=6; i++, hero += SIZEOF_HERO) {
 
 			if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE)
 				&& (host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
@@ -1057,12 +1066,12 @@ signed short do_fight(signed short fight_id)
 
 					ds_writeb(TRAVEL_DETOUR, 99);
 					ptr = get_hero(0);
-					for (l1 = 0; l1 <=6; l1++, ptr += SIZEOF_HERO) {
+					for (j = 0; j <=6; j++, ptr += SIZEOF_HERO) {
 
 						if ((host_readbs(ptr + HERO_TYPE) != HERO_TYPE_NONE)
 							&& (host_readbs(ptr + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 						{
-							hero_disappear(ptr, l1, -2);
+							hero_disappear(ptr, j, -2);
 						}
 					}
 				}
@@ -1077,17 +1086,17 @@ signed short do_fight(signed short fight_id)
 			retval = 2;
 		}
 
-		if (ds_readws(FIG_ALL_HEROES_WITHDRAWN) != 0) {
+		if (ds_readws(FIG_ALL_HEROES_ESCAPED) != 0) {
 			retval = 1;
 		}
 
 		if (retval == 0) {
 			/* the heros won the fight => loot */
 
-			l_di = 0;
-			while (ds_readws(FIG_DROPPED_WEAPONS + 2 * l_di) != 0) {
+			i = 0;
+			while (ds_readws(FIG_DROPPED_WEAPONS + 2 * i) != 0) {
 				/* give automatic items to the heros. dropped broken weapons ?*/
-				get_item(ds_readws(FIG_DROPPED_WEAPONS + 2 * l_di++), 0, 1);
+				get_item(ds_readws(FIG_DROPPED_WEAPONS + 2 * i++), 0, 1);
 			}
 
 			FIG_loot_monsters();
@@ -1095,8 +1104,8 @@ signed short do_fight(signed short fight_id)
 
 			if ((ds_readws(MAX_ENEMIES) != 0) && (ds_readws(FIG_DISCARD) == 0)) {
 
-				for (l_di = 0; l_di < 20; l_di++) {
-					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * l_di, 1); /* set 'dead' status bit */
+				for (i = 0; i < 20; i++) {
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * i, 1); /* set 'dead' status bit */
 				}
 			}
 
@@ -1108,82 +1117,82 @@ signed short do_fight(signed short fight_id)
 			write_fight_lst();
 		}
 
-		if ((retval == 1) && (ds_readbs(DUNGEON_INDEX) != 0)) {
+		if ((retval == 1) && (ds_readbs(DUNGEON_INDEX) != 0)) { /* heroes escaped and fight was in a dungeon => distribute escaped heroes and split group */
 
-			l7 = 0;
+			nr_escape_positions = 0;
 
-			for (l_di = 0; ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > l_di; l_di++) {
+			for (i = 0; ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > i; i++) {
 
-				hero = get_hero(l_di);
+				hero = get_hero(i);
 
-				if (host_readws(hero + HERO_UNKNOWN9) != 0) {
+				if (host_readws(hero + HERO_ESCAPE_POSITION) != 0) {
 
-					l3 = 0;
+					new_escape_position_found = 0;
 
-					for (l1 = 0; l1 < l7; l1++) {
-						if (tmp[l1] == host_readws(hero + HERO_UNKNOWN9)) {
-							l3 = 1;
+					for (j = 0; j < nr_escape_positions; j++) {
+						if (escape_positions[j] == host_readws(hero + HERO_ESCAPE_POSITION)) {
+							new_escape_position_found = 1;
 						}
 					}
 
-					if (l3 == 0) {
-						tmp[l7++] = host_readws(hero + HERO_UNKNOWN9);
+					if (new_escape_position_found == 0) {
+						escape_positions[nr_escape_positions++] = host_readws(hero + HERO_ESCAPE_POSITION);
 					}
 				}
 			}
 
-			if (l7 > 0) {
+			if (nr_escape_positions > 0) {
 
-				for (l_di = 0; l7 - 1 > l_di; l_di++) {
+				for (i = 0; nr_escape_positions - 1 > i; i++) {
 
-					l4 = 0;
-					while (ds_readb(GROUP_MEMBER_COUNTS + l4) != 0) {
-						l4++;
+					group_nr = 0;
+					while (ds_readb(GROUP_MEMBER_COUNTS + group_nr) != 0) {
+						group_nr++;
 					}
 
-					l5 = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
+					group_size = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 					x_target_bak = ds_readws(X_TARGET);
 					y_target_bak = ds_readws(Y_TARGET);
 					direction_bak = ds_readbs(DIRECTION);
 					dungeon_level_bak = ds_readbs(DUNGEON_LEVEL);
 
-					ds_writew(X_TARGET, (tmp[l_di] >> 8) & 0x0f);
-					ds_writew(Y_TARGET, tmp[l_di] & 0x0f);
-					ds_writeb(DIRECTION, (tmp[l_di] & 0xf0) >> 4);
-					ds_writeb(DUNGEON_LEVEL, tmp[l_di] >> 12);
+					ds_writew(X_TARGET, (escape_positions[i] >> 8) & 0x0f); /* bits 8..11 */
+					ds_writew(Y_TARGET, escape_positions[i] & 0x0f); /* bits 0..3 */
+					ds_writeb(DIRECTION, (escape_positions[i] & 0xf0) >> 4); /* bits 4..7 */
+					ds_writeb(DUNGEON_LEVEL, escape_positions[i] >> 12); /* bits 12..15 */
 
-					for (l1 = 0; l1 < l5; l1++) {
+					for (j = 0; j < group_size; j++) {
 
-						hero = get_hero(l1);
+						hero = get_hero(j);
 
-						if (tmp[l_di] == host_readws(hero + HERO_UNKNOWN9)) {
+						if (escape_positions[i] == host_readws(hero + HERO_ESCAPE_POSITION)) {
 
-							host_writeb(hero + HERO_GROUP_NO, (signed char)l4);
-							host_writew(hero + HERO_UNKNOWN9, 0);
-							inc_ds_bs_post(GROUP_MEMBER_COUNTS + l4);
+							host_writeb(hero + HERO_GROUP_NO, (signed char)group_nr);
+							host_writew(hero + HERO_ESCAPE_POSITION, 0);
+							inc_ds_bs_post(GROUP_MEMBER_COUNTS + group_nr);
 							dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 						}
 					}
 
-					GRP_save_pos(l4 | 0x8000);
+					GRP_save_pos(group_nr | 0x8000);
 					ds_writews(X_TARGET, x_target_bak);
 					ds_writews(Y_TARGET, y_target_bak);
 					ds_writebs(DIRECTION, (signed char)direction_bak);
 					ds_writebs(DUNGEON_LEVEL, (signed char)dungeon_level_bak);
 				}
 
-				l5 = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
+				group_size = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
-				for (l1 = 0; l1 < l5; l1++) {
-					host_writews(get_hero(l1) + HERO_UNKNOWN9, 0);
+				for (j = 0; j < group_size; j++) {
+					host_writews(get_hero(j) + HERO_ESCAPE_POSITION, 0);
 				}
 
-				ds_writew(X_TARGET, (tmp[l_di] >> 8) & 0x0f);
-				ds_writew(Y_TARGET, tmp[l_di] & 0x0f);
-				ds_writeb(DIRECTION, (tmp[l_di] & 0xf0) >> 4);
+				ds_writew(X_TARGET, (escape_positions[i] >> 8) & 0x0f);
+				ds_writew(Y_TARGET, escape_positions[i] & 0x0f);
+				ds_writeb(DIRECTION, (escape_positions[i] & 0xf0) >> 4);
 
 				ds_writebs(DUNGEON_LEVEL_BAK, ds_readbs(DUNGEON_LEVEL));
-				ds_writeb(DUNGEON_LEVEL, tmp[l_di] >> 12);
+				ds_writeb(DUNGEON_LEVEL, escape_positions[i] >> 12);
 
 				if (ds_readbs(DUNGEON_LEVEL) != ds_readbs(DUNGEON_LEVEL_BAK)) {
 					load_area_description(1);
