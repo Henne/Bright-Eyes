@@ -670,6 +670,53 @@ void FIG_do_round(void)
 
 					enemy_turn(Real2Host(monster), pos, x_coord, y_coord);
 
+#ifdef M302de_ORIGINAL_BUGFIX
+					/* Original-Bug:
+					 * Tails of dead/disappeared two-squared enemies must be removed separately.
+					 * Otherwise, those tails are an obstacle for movement (by another bug) or can be used
+					 * as a target of the 'Skelettarius' spell, which may result in weired situations, see
+					 * https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=166089#pid166089
+					 *
+					 * The tails are removed correctly (by some code further below) if the enemies have been
+					 * killed in "regularly" by a hero (attack/spell/item) or a (renegade) enemy. However, it
+					 * has been forgotten for escaped enemies, and for enemies which killed themselves by a
+					 * critical attack failure. (Hopefully, this list is complete.) */
+					 
+					if (enemy_dead(Real2Host(monster))) { /* check 'dead' status bit */
+						/* attacking enemy is dead
+						 * either because of critical attack failure, or because he escaped the battle
+						 * (note that for escaped enemies, the 'dead' status bit is set in seg005.cpp */
+						if (is_in_byte_array(host_readbs(Real2Host(monster) + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+							/* attacking dead enemy is two-squares */
+							/* goal: remove tail part */
+
+							FIG_search_obj_on_cb(pos + 30, &x, &y);
+							/* (x,y) are the coordinates of the tail of the enemy */
+
+#if !defined(__BORLANDC__)
+							/* BE-fix */
+							x = host_readws((Bit8u*)&x);
+							y = host_readws((Bit8u*)&y);
+#endif
+							p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID))));
+							/* intermediate: p1 points to the FIGHTER entry of the enemy */
+
+							p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + FIGHTER_TWOFIELDED))));
+							/* p1 now points the FIGHTER entry of the tail part of the enemy */
+							/* should be true: (host_readbs(p1 + FIGHTER_CBX) == x) and (host_readbs(p1 + FIGHTER_CBY) == y) */
+
+							if (host_readbs(p1 + FIGHTER_OBJ_ID) >= 0) {
+								/* if the id of a cb_entry has been saved in FIGHTER_OBJ_ID (meaning that the tail part is standing on it),
+								 * restore that to the cb */
+								FIG_set_cb_field(y, x, host_readbs(p1 + FIGHTER_OBJ_ID));
+							} else {
+								/* otherwise, set the square in the cb to 0 (free) */
+								FIG_set_cb_field(host_readbs(p1 + FIGHTER_CBY), host_readbs(p1 + FIGHTER_CBX), 0);
+							}
+						}
+					}
+#endif
+
 					if ((host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_ATTACK) ||
 						(host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_SPELL) ||
 						(host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_USE_ITEM) ||
