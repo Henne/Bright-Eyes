@@ -423,10 +423,11 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 											FIG_add_msg(6, 0);
 										} else {
-											D1_INFO("BF increased from %d to %d.\n",host_readbs(p_weapon + 6),host_readbs(p_weapon + 6) + 1);
+											D1_INFO("BF increased from %d -> %d.\n",host_readbs(p_weapon + 6),host_readbs(p_weapon + 6) + 1);
 											inc_ptr_bs(p_weapon + 6);
 										}
 									} else {
+										D1_INFO("BF increased %d -> %d.\n",host_readbs(p_weapon + 6),host_readbs(p_weapon + 6) + 1);
 										inc_ptr_bs(p_weapon + 6);
 									}
 								}
