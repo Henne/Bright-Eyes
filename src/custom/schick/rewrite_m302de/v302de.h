@@ -947,6 +947,7 @@ static inline char* get_itemname(unsigned short item)
 
 #define DUMMY_WARNING() D1_ERR("Error: %s is not implemented\n", __func__)
 
+// end #if !defined(__BORLANDC__)
 #else
 
 #define DUMMY_WARNING()
@@ -958,17 +959,6 @@ static inline char* get_itemname(unsigned short item)
 #else
 #define INTCAST void interrupt (*)()
 #endif
-
-typedef unsigned char Bit8u;
-typedef signed char Bit8s;
-typedef unsigned short Bit16u;
-typedef signed short Bit16s;
-typedef unsigned long Bit32u;
-typedef signed long Bit32s;
-
-typedef Bit8u* RealPt;
-typedef Bit8u* PhysPt;
-typedef Bit8u huge * HugePt;
 
 #include <DOS.H>
 

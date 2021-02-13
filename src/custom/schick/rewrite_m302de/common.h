@@ -1,5 +1,20 @@
 #if !defined(COMMON_H)
 #define COMMON_H
+
+#if defined(__BORLANDC__)
+typedef unsigned char Bit8u;
+typedef signed char Bit8s;
+typedef unsigned short Bit16u;
+typedef signed short Bit16s;
+typedef unsigned long Bit32u;
+typedef signed long Bit32s;
+typedef Bit8u* RealPt;
+typedef Bit8u* PhysPt;
+typedef Bit8u huge * HugePt;
+#else
+#include "mem.h"
+#endif
+
 /**
 	struct nvf_desc - nvf descriptor
 	@src:	pointer to a buffer containing the nvf file
@@ -833,21 +848,36 @@ enum {
   ITEM_BEER           = 0x17,
   ITEM_LANTERN_OFF    = 0x19,
   ITEM_FLASK_GLASS    = 0x1f,
+  ITEM_PICKLOCKS      = 0x23,
   ITEM_CLIMBING_HOOKS = 0x28,
   ITEM_OIL            = 0x29,
   ITEM_FLASK_BRONZE   = 0x2a,
   ITEM_FOOD_PACKAGES  = 0x2d,
   ITEM_SHIRT          = 0x30,
+  ITEM_SHOES          = 0x32,
+  ITEM_BOOTS          = 0x33,
+  ITEM_LACEUP_SHOE    = 0x34,
   ITEM_ARMOR_LEATHER  = 0x35,
+  ITEM_SHURIN_POISON  = 0x37,
+  ITEM_ARAX_POISON    = 0x38,
+  ITEM_ANGST_POISON   = 0x39,
+  ITEM_SLEEP_POISON   = 0x3a,
+  ITEM_GOLDLEIM       = 0x3b,
   ITEM_EINBEERE       = 0x3c, /* two bytes */
   ITEM_WHIRLWEED      = 0x3d, /* two bytes */
+  ITEM_KROTENSCHEMEL  = 0x3e,
   ITEM_GULMOND_LEAF   = 0x3f, /* two bytes */
   ITEM_TARNELE        = 0x40, /* two bytes */
   ITEM_TORCH_OFF      = 0x41,
   ITEM_QUARTERSTAFF   = 0x45,
   ITEM_BALL_CRYSTAL   = 0x46,
   ITEM_ROBE_GREEN     = 0x4b,
+  ITEM_PLATTENZEUG    = 0x52,
+  ITEM_KETTENZEUG     = 0x53,
+  ITEM_LEDERZEUG      = 0x54,
   ITEM_TINDERBOX      = 0x55,
+  ITEM_LICORICE       = 0x59,
+  ITEM_BONBONS        = 0x5a,
   ITEM_WINE           = 0x5b, /* two bytes */
   ITEM_BRANDY         = 0x5c, /* two bytes */
   ITEM_NET            = 0x61,
@@ -857,17 +887,36 @@ enum {
   ITEM_BELMART        = 0x7b, /* two bytes */
   ITEM_DONF_SPRING    = 0x7c, /* two bytes */
   ITEM_MENCHAL        = 0x7d, /* two bytes */
+  ITEM_ALRAUNE        = 0x7e,
+  ITEM_ILMENBLATT     = 0x80,
   ITEM_FINAGE_TREE    = 0x81, /* two bytes */
   ITEM_JORUGA_ROOT    = 0x82, /* two bytes */
+  ITEM_LOTUS          = 0x84,
   ITEM_MAGIC_WAND     = 0x85,
+  ITEM_LOTUS_POISON   = 0x8d,
+  ITEM_KUKRIS         = 0x8e,
+  ITEM_BANNSTAUB      = 0x8f,
+  ITEM_KROETEN_POISON = 0x90,
+  ITEM_MU_ELIXIR      = 0x93,
+  ITEM_KL_ELIXIR      = 0x94,
+  ITEM_CH_ELIXIR      = 0x95,
+  ITEM_FF_ELIXIR      = 0x96,
+  ITEM_GE_ELIXIR      = 0x97,
+  ITEM_IN_ELIXIR      = 0x98,
+  ITEM_KK_ELIXIR      = 0x99,
   ITEM_OLGIN_ROOT     = 0x9c, /* two bytes */
+  ITEM_KAIRANHALM     = 0x9d,
   ITEM_SICKLE         = 0xa1,
   ITEM_AMULET_BLUE    = 0xa3,
   ITEM_RING_RED       = 0xa5, /* four bytes */
+  ITEM_EXPURGICUM     = 0xa6,
+  ITEM_VOMICUM        = 0xa8,
   ITEM_CORONET_SILVER = 0xab,
+  ITEM_ANTIVENOM      = 0xb4,
   ITEM_GRIMRING       = 0xb5,
   ITEM_BELT_SKULL     = 0xb6, /* two bytes */
   ITEM_GIRDLE_MIGHT   = 0xb7,
+  ITEM_LOBPREISUNGEN  = 0xbd,
   ITEM_KUKRIS_DAGGER  = 0xc1,
   ITEM_HELMET         = 0xc4,
   ITEM_KUKRIS_MENGBILAR = 0xc8,
@@ -875,6 +924,15 @@ enum {
   ITEM_JEWELRY_SILVER = 0xd7,
   ITEM_CORONET_BLUE   = 0xd9, /* two bytes */
   ITEM_BAG            = 0xdd,
+  ITEM_MU_ELIXIR_BAD  = 0xe2,
+  ITEM_KL_ELIXIR_BAD  = 0xe3,
+  ITEM_CH_ELIXIR_BAD  = 0xe4,
+  ITEM_FF_ELIXIR_BAD  = 0xe5,
+  ITEM_GE_ELIXIR_BAD  = 0xe6,
+  ITEM_IN_ELIXIR_BAD  = 0xe7,
+  ITEM_KK_ELIXIR_BAD  = 0xe8,
+  ITEM_MIASTHMATICUM  = 0xee,
+  ITEM_HYLAILIC_FIRE  = 0xef,
   ITEM_CORONET_GREEN  = 0xf5,
   ITEM_LANTERN_ON     = 0xf9,
   ITEM_200_ARROWS     = 0xfb,

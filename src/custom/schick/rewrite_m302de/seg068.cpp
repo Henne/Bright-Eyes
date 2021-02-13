@@ -548,8 +548,7 @@ void THO_academy(void)
 
 	/* find the position of the first cursed (=renegade) hero */
 	hero = get_hero(0);
-	cursed_hero_pos = 0;
-	for (item_pos = 0; item_pos <= 6; item_pos++, hero += SIZEOF_HERO) {
+	for (item_pos = cursed_hero_pos = 0; item_pos <= 6; item_pos++, hero += SIZEOF_HERO) {
 
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
