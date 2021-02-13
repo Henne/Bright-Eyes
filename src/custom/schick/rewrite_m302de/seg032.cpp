@@ -678,7 +678,7 @@ void FIG_do_round(void)
 					 * https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=166089#pid166089
 					 *
 					 * The tails are removed correctly (by some code further below) if the enemies have been
-					 * killed in "regularly" by a hero (attack/spell/item) or a (renegade) enemy. However, it
+					 * killed "regularly" by a hero (attack/spell/item) or a (renegade) enemy. However, it
 					 * has been forgotten for escaped enemies, and for enemies which killed themselves by a
 					 * critical attack failure. (Hopefully, this list is complete.) */
 					 

@@ -530,6 +530,7 @@ void spell_paralue(void)
  */
 void spell_salander(void)
 {
+	/* TODO: Original-Bug: Strange effect when cast on a two-squared monster */
 	signed short ae_cost;
 
 	/* BC-TODO: calculation of ptr could be better */
