@@ -244,7 +244,9 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 			if ((randval == 20) && (random_schick(20) > attacker_at - 9)) {
 				/* critical attack failure */
+#if !defined(__BORLANDC__)
 				D1_INFO("Critical attack failure...");
+#endif
 
 				if (!attack_hero || check_hero(hero)) {
 					/* if enemy has been attacked, or if hero has been attacked and that hero
@@ -252,12 +254,16 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 					FIG_add_msg(3, 0);
 
 					two_w_6 = random_interval(2, 12);
+#if !defined(__BORLANDC__)
 					D1_INFO("rolled %d ...", two_w_6);
+#endif
 
 					if ((two_w_6 >= 3) && (two_w_6 <= 8)) {
 						/* defender gets a free attack,
 						 * which cannot be parried and which cannot fail critically */
+#if !defined(__BORLANDC__)
 						D1_INFO("defender gets a free attack.\n");
+#endif
 
 						ds_writew(DEFENDER_ATTACKS, 1);
 
@@ -287,7 +293,9 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 						}
 					} else if ((two_w_6 >= 9) && (two_w_6 <= 11)) {
 						/* attacker gets 1W6 damage */
+#if !defined(__BORLANDC__)
 						D1_INFO("1D6 damage.\n");
+#endif
 
 						damage = random_schick(6);
 
@@ -301,9 +309,11 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 							ds_writew(ATTACKER_DEAD, 1);
 						}
 					} else if (two_w_6 == 12) {
+#if !defined(__BORLANDC__)
 						D1_INFO("nothing happens.\n");
+#endif
 					}
-#ifdef SCHICK_INFO
+#if !defined(__BORLANDC__)
 					else {
 						D1_INFO("nothing happens.\n");
 					}
@@ -321,17 +331,23 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 						if ((randval2 == 20) && (random_schick(20) > defender_pa - 7)) {
 							/* critical parry failure */
+#if !defined(__BORLANDC__)
 							D1_INFO("Critical parry failure...");
+#endif
 
 							FIG_add_msg(2, 0);
 
 							two_w_6 = random_interval(2, 12);
+#if !defined(__BORLANDC__)
 							D1_INFO("rolled %d ...", two_w_6);
+#endif
 
 							if ((two_w_6 >= 3) && (two_w_6 <= 8)) {
 								/* attacker gets an additional attack,
 								 * which cannot be parried and which cannot fail critically */
+#if !defined(__BORLANDC__)
 								D1_INFO("attacker gets a free attack.\n");
+#endif
 
 								ds_writew(ATTACKER_ATTACKS_AGAIN, 1);
 
@@ -371,7 +387,9 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 							} else if ((two_w_6 >= 9) && (two_w_6 <= 11)) {
 								/* defender gegs 1W6 damage */
+#if !defined(__BORLANDC__)
 								D1_INFO("1D6 damage.\n");
+#endif
 
 								damage = random_schick(6);
 
@@ -396,7 +414,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 									}
 								}
 							}
-#ifdef SCHICK_INFO
+#if !defined(__BORLANDC__)
 							else {
 								D1_INFO("nothing happens.\n");
 							}
@@ -412,22 +430,30 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 								if ((randval2 == randval) && (attack_hero != 0) && (host_readbs(p_weapon + 6) != -99)) {
 									/* if both random values agree and hero got attacked and his weapon is not unbreakable (?) (note that ITEM+6 is BF (Bruchfaktor)) */
 									/* now if 1W12 + BF is >= 16, weapon is broken. Otherwise, BF is increased by 1. */
+#if !defined(__BORLANDC__)
 									D1_INFO("weapon of defender gets damaged...");
+#endif
 
 									if (host_readbs(p_weapon + 6) > 3) {
 
 										if (random_schick(12) + host_readbs(p_weapon + 6) > 15) {
+#if !defined(__BORLANDC__)
 											D1_INFO("broken.\n");
+#endif
 
 											or_ptr_bs(p_weapon + 4, 1);
 
 											FIG_add_msg(6, 0);
 										} else {
+#if !defined(__BORLANDC__)
 											D1_INFO("BF increased from %d -> %d.\n",host_readbs(p_weapon + 6),host_readbs(p_weapon + 6) + 1);
+#endif
 											inc_ptr_bs(p_weapon + 6);
 										}
 									} else {
+#if !defined(__BORLANDC__)
 										D1_INFO("BF increased %d -> %d.\n",host_readbs(p_weapon + 6),host_readbs(p_weapon + 6) + 1);
+#endif
 										inc_ptr_bs(p_weapon + 6);
 									}
 								}

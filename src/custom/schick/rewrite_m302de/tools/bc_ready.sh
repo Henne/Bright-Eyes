@@ -97,6 +97,18 @@ else
 	mv ${DRIVE_C}/src/*.MAP $DIR 2>/dev/null
 fi
 
+ls ${OBJDIR}/*.OBJ | grep -o -E "SEG[0-9]+" >${OBJDIR}/summary
+grep -o -P "SEG[0-9]+(?=\.(OBJ|CPP))" bc_ready.bat >bc_ready.summary
+if cmp --silent ${OBJDIR}/summary bc_ready.summary; then
+    echo "BCC hat alle OBJ-Dateien erzeugt."
+    rm ${OBJDIR}/summary bc_ready.summary
+else
+    echo "Kompilieren der folgenden Segmente fehlgeschlagen:"
+    comm -13 ${OBJDIR}/summary bc_ready.summary
+    rm ${OBJDIR}/summary bc_ready.summary
+    exit 1
+fi
+
 N=0
 GOOD=0
 FAIL=0
@@ -117,13 +129,16 @@ for i in ${OBJDIR}/*.OBJ; do
 	ndisasm -b16 ${BINDIR}/${PREFIX}.BIN >${DISDIR}/${PREFIX}.dis
 #	ndisasm -b16 -e4 ${PREFIX}.BIN >${PREFIX}.dis
 
-	# count lines of the original disassembly
-	LINES=$(wc -l ${DISORIG}/${PREFIX}.dis |cut -d " " -f 1);
+    if [ -f "${DISORIG}/${PREFIX}.dis" ]; then
+        # count lines of the original disassembly
+        LINES=$(wc -l ${DISORIG}/${PREFIX}.dis |cut -d " " -f 1);
 
-	# make the fresh file have the same length
-	head -n $LINES ${DISDIR}/${PREFIX}.dis >${DISDIR}/${PREFIX}.tmp
-	mv ${DISDIR}/${PREFIX}.tmp ${DISDIR}/${PREFIX}.dis
-
+        # make the fresh file have the same length
+        head -n $LINES ${DISDIR}/${PREFIX}.dis >${DISDIR}/${PREFIX}.tmp
+        mv ${DISDIR}/${PREFIX}.tmp ${DISDIR}/${PREFIX}.dis
+    else
+        echo "Warnung: ${PREFIX} is nicht im Disassembly der Original-EXE."
+    fi
 
 	RETVAL=0
 	# count the lines containing '|' => difference
