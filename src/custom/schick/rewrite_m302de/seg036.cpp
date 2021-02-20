@@ -136,7 +136,7 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 				}
 			}
 
-			/* set heros looking direction */
+			/* set heroes looking direction */
 			host_writeb(hero + HERO_VIEWDIR, ds_readbs(FIG_MOVE_PATHDIR + i));
 
 			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + dir2 * 2), 2);
@@ -334,7 +334,7 @@ signed short KI_search_spell_target(signed short x, signed short y,
 
 		if (renegade == 1) {
 
-			/* attack only heros and renegade enemies */
+			/* attack only heroes and renegade enemies */
 			if ( ((obj_id > 0) && (obj_id < 10) &&
 				!hero_dead(get_hero(obj_id - 1)) &&
 				!hero_unconscious(get_hero(obj_id - 1))
@@ -738,12 +738,12 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short renegad
 }
 
 /**
- * \brief   count the other heros in the current group
+ * \brief   count the other heroes in the current group
  *
  * \param   hero_pos    position of the calling hero
- * \return              number of heros in the group - 1
+ * \return              number of heroes in the group - 1
  */
-signed short KI_count_heros(signed short hero_pos)
+signed short KI_count_heroes(signed short hero_pos)
 {
 	signed short cnt = 0;
 	signed short i;
@@ -853,7 +853,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == NPC_GARSVIK) {
 
-			if (!KI_count_heros(hero_pos)) {
+			if (!KI_count_heroes(hero_pos)) {
 				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
 			}
 
@@ -949,7 +949,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				(host_readws(hero + HERO_AE) > 10) &&	/* AE > 10 */
 				(l5 != 0) &&
 				(ds_readws(CURRENT_FIG_NO) != 192) &&	/* not in the final fight */
-				(ds_readbs(AUTOFIGHT_MAGIC) != 0))		/* ??? a bool variable, maybe autofight magic */
+				(ds_readbs(AUTOFIGHT_MAGIC) != 0)) /* magic activated in auto fight */
 			{
 				if (seg036_8cf(hero, hero_pos, hero_renegade(hero), x, y)) {
 

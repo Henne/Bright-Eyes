@@ -26,7 +26,7 @@ namespace M302de {
 void PHX_drogentempel(void)
 {
 	signed short answer;
-	signed short nr_heros;
+	signed short nr_heroes;
 	Bit32s money;
 
 	load_ani(3);
@@ -41,13 +41,13 @@ void PHX_drogentempel(void)
 
 		load_in_head(6);
 
-		nr_heros = count_heroes_in_group();
+		nr_heroes = count_heroes_in_group();
 
-		if (ds_readb(DRUG_TIMER) && (nr_heros * 2000 <= money)) {
+		if (ds_readb(DRUG_TIMER) && (nr_heroes * 2000 <= money)) {
 
 			GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(15), get_tx2(14), 0);
 
-			money -= nr_heros * 2000;
+			money -= nr_heroes * 2000;
 			set_party_money(money);
 
 		} else {
@@ -115,7 +115,7 @@ void PHX_drogentempel(void)
 		/* load the picture of EKTOR GREMOB */
 		load_in_head(8);
 
-		nr_heros = count_heroes_in_group();
+		nr_heroes = count_heroes_in_group();
 
 		if (ds_readb(GREMOB_INVITED) != 0) {
 
@@ -125,11 +125,11 @@ void PHX_drogentempel(void)
 			do_fight(FIGHTS_PHEX3);
 		} else {
 
-			if (ds_readb(DRUG_TIMER) && (nr_heros * 2500 <= money)) {
+			if (ds_readb(DRUG_TIMER) && (nr_heroes * 2500 <= money)) {
 
 				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(16), get_tx2(28), 0);
 
-				money -= nr_heros * 2500;
+				money -= nr_heroes * 2500;
 				set_party_money(money);
 			} else {
 
@@ -154,10 +154,10 @@ void PHX_drogentempel(void)
 
 					GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx2(16), get_tx2(26), 0);
 
-					if (nr_heros * 2000 <= money) {
+					if (nr_heroes * 2000 <= money) {
 
 						if (GUI_bool(get_tx2(31))) {
-							money -= nr_heros * 2000;
+							money -= nr_heroes * 2000;
 							set_party_money(money);
 						}
 					}

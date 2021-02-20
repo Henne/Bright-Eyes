@@ -489,7 +489,7 @@ signed short DNG15_handler(void)
 }
 
 /**
- * \brief   heros may get small wounds
+ * \brief   heroes may get small wounds
  *
  *          Each alive hero in the group makes a GE-3 test.
  *          If it fails he looses 1 LE.

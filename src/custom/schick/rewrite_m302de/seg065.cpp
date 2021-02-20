@@ -544,7 +544,7 @@ void show_outro(void)
 	sub_mod_timers(DAYS(30));
 	sub_light_timers(100);
 
-	/* give the heros the reward and restore them */
+	/* give the heroes the reward and restore them */
 	hero = get_hero(0);
 	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
@@ -580,7 +580,7 @@ void show_outro(void)
 
 #ifdef M302de_ORIGINAL_BUGFIX
 			/* Original-Bug: restore permanent LE-damage at the end of game */
-			/*  Famous heros get healed for free */
+			/*  Famous heroes get healed for free */
 			if (host_readbs(hero + HERO_LE_MOD) > 0)
 			{
 				add_ptr_ws(hero + HERO_LE_ORIG, host_readbs(hero + HERO_LE_MOD));

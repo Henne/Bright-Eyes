@@ -706,7 +706,7 @@ static int n_seg002(unsigned short offs)
 	}
 	case 0x3230: {
 		/* input routines are called faster now,
-		   so heros would starve earlier if the cycles are to high */
+		   so heroes would starve earlier if the cycles are to high */
 		if (reg_eip == 0x1d7b || reg_eip == 0x1a4b)
 			return 0;
 
@@ -817,8 +817,8 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 2 */
 	case 0x573e: {
-		reg_ax = count_heros_available();
-		D1_LOG("count_heros_available() = %d;\n", reg_ax);
+		reg_ax = count_heroes_available();
+		D1_LOG("count_heroes_available() = %d;\n", reg_ax);
 		return 1;
 	}
 	/* Callers: 3 */
@@ -1546,7 +1546,7 @@ static int n_seg032(unsigned offs)
 	case 0xa8: {
 		reg_ax = FIG_choose_next_hero();
 		D1_LOG("FIG_choose_next_hero() = %s\n",
-		schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO));
+		schick_getCharname(ds_readd(HEROES) + reg_ax * SIZEOF_HERO));
 		return 1;
 	}
 	/* Callers: 1 */
@@ -1574,7 +1574,7 @@ static int n_seg032(unsigned offs)
 	case 0x242: {
 		reg_ax = FIG_get_first_active_hero();
 		D1_LOG("near FIG_get_first_active_hero() = %s\n",
-			(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO) : "none");
+			(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(HEROES) + reg_ax * SIZEOF_HERO) : "none");
 		return 1;
 	}
 	/* Callers: 1 */
@@ -1780,8 +1780,8 @@ static int n_seg036(unsigned offs)
 		Bit16u v = CPU_Pop16();
 		CPU_Push16(v);
 
-		reg_ax = KI_count_heros(v);
-		D1_LOG("KI_count_heros(%d); = %d\n", v, reg_ax);
+		reg_ax = KI_count_heroes(v);
+		D1_LOG("KI_count_heroes(%d); = %d\n", v, reg_ax);
 		return 1;
 	}
 	default:
@@ -2209,8 +2209,8 @@ static int n_seg049(unsigned short offs)
 {
 	switch (offs) {
 	case 0x01da: {
-		GRP_sort_heros();
-		D1_LOG("near GRP_sort_heros()\n");
+		GRP_sort_heroes();
+		D1_LOG("near GRP_sort_heroes()\n");
 		return 1;
 	}
 	case 0x0224: {
@@ -5610,7 +5610,7 @@ static int seg002(unsigned short offs) {
 		reg_ax = get_random_hero();
 
 		D1_LOG("get_random_hero(); -> %s\n",
-			schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO));
+			schick_getCharname(ds_readd(HEROES) + reg_ax * SIZEOF_HERO));
 		return 1;
 	}
 	case 0x51c2: {
@@ -5751,8 +5751,8 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x573e: {
-		reg_ax = count_heros_available();
-		D1_LOG("count_heros_available() = %d\n", reg_ax);
+		reg_ax = count_heroes_available();
+		D1_LOG("count_heroes_available() = %d\n", reg_ax);
 		return 1;
 	}
 	case 0x5799: {
@@ -7611,7 +7611,7 @@ static int seg032(unsigned short offs) {
 			reg_ax = FIG_get_first_active_hero();
 
 			D1_LOG("FIG_get_first_active_hero(); = %s\n",
-				(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO) : "none");
+				(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(HEROES) + reg_ax * SIZEOF_HERO) : "none");
 			return 1;
 		}
 		default:
@@ -8110,8 +8110,8 @@ static int seg043(unsigned short offs) {
 		CPU_Push16(target);
 		CPU_Push32(monster);
 
-		D1_LOG("FIG_do_monster_action(%x, %d)\n", monster, target);
-		FIG_do_monster_action(monster, target);
+		D1_LOG("FIG_do_enemy_action(%x, %d)\n", monster, target);
+		FIG_do_enemy_action(monster, target);
 
 		return 1;
 	}
@@ -8362,8 +8362,8 @@ static int seg047(unsigned short offs) {
 		signed short val = CPU_Pop16();
 		CPU_Push16(val);
 
-		reg_ax = check_heros_KK(val);
-		D1_LOG("check_heros_KK(%d); = %d\n", val, reg_ax);
+		reg_ax = check_heroes_KK(val);
+		D1_LOG("check_heroes_KK(%d); = %d\n", val, reg_ax);
 
 		return 1;
 	}
@@ -8513,8 +8513,8 @@ static int seg049(unsigned short offs)
 {
 	switch(offs) {
 	case 0x20: {
-		D1_LOG("GRP_swap_heros()\n");
-		GRP_swap_heros();
+		D1_LOG("GRP_swap_heroes()\n");
+		GRP_swap_heroes();
 		return 1;
 	}
 	case 0x25: {
@@ -8554,8 +8554,8 @@ static int seg049(unsigned short offs)
 	case 0x43: {
 		RealPt p1 = CPU_Pop32();
 		RealPt p2 = CPU_Pop32();
-		reg_ax = GRP_compare_heros((void*)Real2Host(p1), (void*)Real2Host(p2));
-		D1_LOG("GRP_compare_heros() = %d\n", (signed short)reg_ax);
+		reg_ax = GRP_compare_heroes((void*)Real2Host(p1), (void*)Real2Host(p2));
+		D1_LOG("GRP_compare_heroes() = %d\n", (signed short)reg_ax);
 		CPU_Push32(p2);
 		CPU_Push32(p1);
 		return 1;

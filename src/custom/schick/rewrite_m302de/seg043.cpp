@@ -46,7 +46,7 @@ struct msg {
  * \param   monster     pointer to a monster datasheet
  * \param   monster_pos position of the monster (fighter_id = monster_pos + 10)
  */
-void FIG_do_monster_action(RealPt monster, signed short monster_pos)
+void FIG_do_enemy_action(RealPt monster, signed short monster_pos)
 {
 	signed short damage;
 
@@ -61,7 +61,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 	signed short attacker_at;
 	signed short defender_at;
 	signed short defender_pa;
-	signed char attack_hero;
+	signed char target_is_hero;
 	signed short l11;
 	signed short l12;
 	signed short l13;
@@ -102,7 +102,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 				return;
 			}
 
-			attack_hero = 1;
+			target_is_hero = 1;
 		} else {
 			/* monster attacks monster */
 
@@ -115,7 +115,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 				return;
 			}
 
-			attack_hero = 0;
+			target_is_hero = 0;
 
 			if ((is_in_byte_array(host_readbs(mon + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) &&
 				(l17 == 0))
@@ -183,7 +183,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 					defender_pa = host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WP_CLASS)) - host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_PA_MOD);
 				}
 
-				/* guarding heros get a PA-bonus of 3 */
+				/* guarding heroes get a PA-bonus of 3 */
 				if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_GUARD) {
 					defender_pa += 3;
 				}
@@ -217,7 +217,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 				attacker_at -= 4;
 			}
 
-			if (attack_hero != 0) {
+			if (target_is_hero != 0) {
 
 				/* TODO */
 				if (ds_readbs((HERO_IS_TARGET-1) + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)) == 1) {
@@ -235,7 +235,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 				}
 			} else {
 				/* TODO */
-				if (ds_readbs(FIG_MONSTERS_UNKN + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)) == 1) {
+				if (ds_readbs(FIG_ACTORS_UNKN + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)) == 1) {
 					attacker_at += 2;
 				}
 			}
@@ -246,7 +246,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 				/* critical attack failure */
 				D1_INFO("Critical attack failure...");
 
-				if (!attack_hero || check_hero(hero)) {
+				if (!target_is_hero || check_hero(hero)) {
 					/* if enemy has been attacked, or if hero has been attacked and that hero
 					 * is not asleep, dead, petrified, unconscious, renegade or fleeing */
 					FIG_add_msg(3, 0);
@@ -263,7 +263,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 						if (random_schick(20) <= defender_at) {
 
-							if (attack_hero != 0) {
+							if (target_is_hero != 0) {
 								damage = FIG_get_hero_melee_attack_damage(hero, Real2Host(monster), 0);
 							} else {
 								damage = FIG_get_enemy_attack_damage(mon, Real2Host(monster), 1);
@@ -313,8 +313,8 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 				if (randval <= attacker_at) {
 
-					if (((attack_hero != 0) && !ds_readbs((HERO_IS_TARGET-1) + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)) && check_hero(hero)) ||
-						(!attack_hero && (!ds_readbs(FIG_MONSTERS_UNKN + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)))))
+					if (((target_is_hero != 0) && !ds_readbs((HERO_IS_TARGET-1) + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)) && check_hero(hero)) ||
+						(!target_is_hero && (!ds_readbs(FIG_ACTORS_UNKN + host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)))))
 					{
 
 						randval2 = random_schick(20);
@@ -337,7 +337,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 								if (random_schick(20) <= attacker_at) {
 
-									if (attack_hero != 0) {
+									if (target_is_hero != 0) {
 										damage = FIG_get_enemy_attack_damage(Real2Host(monster), hero, 0);
 
 										if (damage > 0) {
@@ -375,7 +375,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 								damage = random_schick(6);
 
-								if (attack_hero != 0) {
+								if (target_is_hero != 0) {
 
 									sub_hero_le(hero, damage);
 
@@ -409,7 +409,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 								FIG_add_msg(5, 0);
 
-								if ((randval2 == randval) && (attack_hero != 0) && (host_readbs(p_weapon + 6) != -99)) {
+								if ((randval2 == randval) && (target_is_hero != 0) && (host_readbs(p_weapon + 6) != -99)) {
 									/* if both random values agree and hero got attacked and his weapon is not unbreakable (?) (note that ITEM+6 is BF (Bruchfaktor)) */
 									/* now if 1W12 + BF is >= 16, weapon is broken. Otherwise, BF is increased by 1. */
 									D1_INFO("weapon of defender gets damaged...");
@@ -439,7 +439,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 					if (defender_gets_hit != 0) {
 
-						if (attack_hero != 0) {
+						if (target_is_hero != 0) {
 
 							damage = FIG_get_enemy_attack_damage(Real2Host(monster), hero, 0);
 
@@ -476,7 +476,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 			seg041_8c8();
 
-			if (attack_hero != 0) {
+			if (target_is_hero != 0) {
 
 				if (check_hero(hero) || (ds_readws(DEFENDER_DEAD) != 0)) {
 
@@ -506,9 +506,9 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 					dec_ptr_bs(Real2Host(monster) + ENEMY_SHEET_THROWS);
 				}
 
-				if (attack_hero != 0) {
+				if (target_is_hero != 0) {
 
-					/* attack_hero */
+					/* attack hero */
 
 					damage = dice_template(l15 == 3 ? host_readws(Real2Host(monster) + ENEMY_SHEET_SHOT_DAM) : host_readws(Real2Host(monster) + ENEMY_SHEET_THROW_DAM));
 
@@ -575,7 +575,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 				if (ds_readws(DEFENDER_DEAD) != 0) {
 
-					if (attack_hero != 0) {
+					if (target_is_hero != 0) {
 
 						FIG_prepare_hero_fight_ani(1, hero, -1, 0, host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID), monster_pos + 10, 1);
 					} else {
@@ -629,7 +629,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 							if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) > 0) {
 
-								if (!attack_hero) {
+								if (!target_is_hero) {
 
 									seg044_002f(1, mon, 99, host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID), monster_pos + 10, 1);
 								} else {
@@ -672,7 +672,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 							FIG_set_sheet(ds_readbs(FIG_SPELLGFX_ID), 6);
 						}
 
-						if (!attack_hero) {
+						if (!target_is_hero) {
 
 							FIG_set_sheet(host_readbs(mon + ENEMY_SHEET_FIGHTER_ID), 1);
 
@@ -681,7 +681,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 								l16 = Real2Host(FIG_get_ptr(host_readbs(mon + ENEMY_SHEET_FIGHTER_ID)));
 
-								FIG_set_sheet(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(l16 + 0x13)), 3);
+								FIG_set_sheet(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(l16 + FIGHTER_TWOFIELDED)), 3);
 							}
 						} else {
 
@@ -741,7 +741,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 									l16 = Real2Host(FIG_get_ptr(host_readbs(mon + ENEMY_SHEET_FIGHTER_ID)));
 
-									FIG_make_invisible(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(l16 + 0x13)));
+									FIG_make_invisible(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(l16 + FIGHTER_TWOFIELDED)));
 								}
 							} else {
 

@@ -66,7 +66,7 @@ void tevent_110(void)
 					sub_hero_le(hero, random_schick(10));
 
 				} else {
-					/* all heros in the group have no ropes */
+					/* all heroes in the group have no ropes */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx2(86),
 						(char*)hero + HERO_NAME2);

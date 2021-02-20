@@ -309,8 +309,8 @@ signed short load_game_state(void)
 			}
 		}
 
-		/* clear the heros */
-		hero_i = (RealPt)ds_readd(HEROS);
+		/* clear the heroes */
+		hero_i = (RealPt)ds_readd(HEROES);
 		for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 			memset(Real2Host(hero_i), 0, SIZEOF_HERO);
 		}
@@ -805,7 +805,7 @@ void write_chr_temp(unsigned short hero_pos)
 		fname);
 
 	fd = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
-	bc__write(fd, (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos, SIZEOF_HERO);
+	bc__write(fd, (RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos, SIZEOF_HERO);
 	bc_close(fd);
 }
 

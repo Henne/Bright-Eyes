@@ -459,7 +459,7 @@ void THO_ugdalf(void)
 		if (ds_readw(QUEST_UGDALF) == 1) {
 			add_party_money(2000L);
 
-		/* Original-Bug:	Everytime the heros enter the dungeon the get 20D.
+		/* Original-Bug:	Everytime the heroes enter the dungeon the get 20D.
 					Why this fix works is not seen that easy.
 					As long as ds_readb(DNG14_UGDALF_DONE) is 0 this block is executed.
 		 */
@@ -513,7 +513,7 @@ void academy_analues(void)
 
 	if (hero_pos != -1) {
 
-		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
+		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 
 		buffer1_bak = ds_readws(TX_FILE_INDEX);
 

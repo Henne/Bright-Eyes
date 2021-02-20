@@ -51,7 +51,7 @@ void disease_effect(void)
 
 		if ((host_readbs(get_hero(i) + HERO_TYPE) != HERO_TYPE_NONE) && !hero_dead(get_hero(i))) {
 
-			hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * i;
+			hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * i;
 
 			disease_ptr = Real2Host(hero) + HERO_ILLNESS;
 

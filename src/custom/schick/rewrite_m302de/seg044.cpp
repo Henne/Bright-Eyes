@@ -188,16 +188,16 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 
 	if ((weapon_type == -1) || ((host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) && (weapon == 0x85))) {
 
-		l1 = (f_action == 2) ? 45 :			/* melee attack */
+		l1 = (f_action == FIG_ACTION_ATTACK) ? 45 :			/* melee attack */
 			(f_action == 102) ? 41 :		/* drink potion */
 			(f_action == 103) ? 53 :		/* cast spell */
 			49;
 
 	} else {
-		l1 = (f_action == 2) ?  21:			/* melee attack */
+		l1 = (f_action == FIG_ACTION_ATTACK) ?  21:			/* melee attack */
 			(f_action == 102) ? 41 :		/* drink potion */
 			(f_action == 103) ? 53 :		/* cast spell */
-			(f_action != 15) ? 25 :
+			(f_action != FIG_ACTION_RANGE_ATTACK) ? 25 :
 			(weapon_type == 3) ? 33 :
 			(weapon_type == 4) ? 57 :
 			61;
@@ -212,8 +212,8 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 
 	if (check_hero(hero) && (host_readbs(hero + HERO_VIEWDIR) != dir) &&
 
-		((f_action == 2) || (f_action == 15) || (f_action == 103) ||
-			((f_action == 100) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker)) ||
+		((f_action == FIG_ACTION_ATTACK) || (f_action == FIG_ACTION_RANGE_ATTACK) || (f_action == 103) ||
+			((f_action == FIG_ACTION_UNKNOWN2) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker)) ||
 			((ds_readws(ATTACKER_ATTACKS_AGAIN) != 0) && (a7 == 0)) ||
 			((ds_readws(DEFENDER_ATTACKS) != 0) && (a7 == 1))))
 	{
@@ -268,9 +268,9 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		}
 	}
 
-	if ((check_hero(hero) && (f_action == 2)) ||
-		((f_action == 15) || (f_action == 102) || (f_action == 103) ||
-			((f_action == 100) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker))))
+	if ((check_hero(hero) && (f_action == FIG_ACTION_ATTACK)) ||
+		((f_action == FIG_ACTION_RANGE_ATTACK) || (f_action == 102) || (f_action == 103) ||
+			((f_action == FIG_ACTION_UNKNOWN2) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker))))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p3 + l1 *2), 2);
 
@@ -287,7 +287,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 			p2 += copy_ani_seq(p2,
 				ds_readw(WEAPONANI_TABLE +
 				((ds_readbs(WEAPONANI_TYPES + host_readbs(hero + HERO_SPRITE_NO)) * 48 + weapon_type * 16) +
-				((f_action == 2) ? 0 : 1) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2)), 3);
+				((f_action == FIG_ACTION_ATTACK) ? 0 : 1) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2)), 3);
 		}
 	}
 
@@ -303,7 +303,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 				p2 += copy_ani_seq(p2,
 					ds_readw(WEAPONANI_TABLE +
 					((ds_readbs(WEAPONANI_TYPES + host_readbs(hero + HERO_SPRITE_NO)) * 48 + weapon_type * 16) +
-					((f_action == 2) ? 0 : 1) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2)), 3);
+					((f_action == FIG_ACTION_ATTACK) ? 0 : 1) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2)), 3);
 			}
 	}
 
@@ -334,7 +334,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	}
 
 	host_writeb(p1, 0xff);
-	if (f_action == 100) {
+	if (f_action == FIG_ACTION_UNKNOWN2) {
 		ds_writeb((HERO_IS_TARGET-1) + (signed char)fid_attacker, 1);
 	}
 }
@@ -405,7 +405,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 
 
-	l1 = (f_action == 2) ? 21 :			/* melee attack */
+	l1 = (f_action == FIG_ACTION_ATTACK) ? 21 :			/* melee attack */
 		25;
 
 	if ((host_readbs(enemy + ENEMY_SHEET_GFX_ID) == 8) ||
@@ -414,10 +414,10 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		(host_readbs(enemy + ENEMY_SHEET_GFX_ID) == 20))
 	{
 		weapon_type = -1;
-		l1 = (f_action == 2) ? 45 : 49;
+		l1 = (f_action == FIG_ACTION_ATTACK) ? 45 : 49;
 	}
 
-	if (f_action == 15) {
+	if (f_action == FIG_ACTION_RANGE_ATTACK) {
 		l1 = 33;
 		weapon_type = -1;
 	}
@@ -433,8 +433,8 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 	/* first the enemy may turn */
 	if ((host_readbs(enemy + ENEMY_SHEET_VIEWDIR) != dir) &&
-		(	((f_action == 2) || (f_action == 15) ||
-			((f_action == 100) && !ds_readbs(FIG_MONSTERS_UNKN + (signed char)fid_attacker))) ||
+		(	((f_action == FIG_ACTION_ATTACK) || (f_action == FIG_ACTION_RANGE_ATTACK) ||
+			((f_action == FIG_ACTION_UNKNOWN2) && !ds_readbs(FIG_ACTORS_UNKN + (signed char)fid_attacker))) ||
 			((ds_readw(ATTACKER_ATTACKS_AGAIN) != 0) && (a7 == 0)) ||
 			((ds_readw(DEFENDER_ATTACKS) != 0) && (a7 == 1))))
 		{
@@ -498,8 +498,8 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		}
 	}
 
-	if ((f_action == 2) || (f_action == 15) ||
-		((f_action == 100) && !ds_readbs(FIG_MONSTERS_UNKN + (signed char)fid_attacker)))
+	if ((f_action == FIG_ACTION_ATTACK) || (f_action == FIG_ACTION_RANGE_ATTACK) ||
+		((f_action == FIG_ACTION_UNKNOWN2) && !ds_readbs(FIG_ACTORS_UNKN + (signed char)fid_attacker)))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p4 + l1 *2), 1);
 
@@ -517,7 +517,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 				ds_readws(WEAPONANI_TABLE +
 					(	ds_readbs(WEAPONANI_TYPES + host_readbs(enemy + ENEMY_SHEET_GFX_ID)) * 48 +
 						weapon_type * 16 +
-						((f_action == 2) ? 0 : 1) * 8 +
+						((f_action == FIG_ACTION_ATTACK) ? 0 : 1) * 8 +
 						host_readbs(enemy + ENEMY_SHEET_VIEWDIR) * 2
 					)
 				), 3);
@@ -535,7 +535,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 				p2 += copy_ani_seq(p2,
 					ds_readws(WEAPONANI_TABLE +
 					((ds_readbs(WEAPONANI_TYPES + host_readbs(enemy + ENEMY_SHEET_GFX_ID)) * 48 + weapon_type * 16) +
-					((f_action == 2) ? 0 : 1) * 8 + host_readbs(enemy + ENEMY_SHEET_VIEWDIR) * 2)), 3);
+					((f_action == FIG_ACTION_ATTACK) ? 0 : 1) * 8 + host_readbs(enemy + ENEMY_SHEET_VIEWDIR) * 2)), 3);
 			}
 	}
 
@@ -569,8 +569,8 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		host_writeb(p2, 0xff);
 	}
 
-	if (f_action == 100) {
-		ds_writeb(FIG_MONSTERS_UNKN + (signed char)fid_attacker, 1);
+	if (f_action == FIG_ACTION_UNKNOWN2) {
+		ds_writeb(FIG_ACTORS_UNKN + (signed char)fid_attacker, 1);
 	}
 }
 

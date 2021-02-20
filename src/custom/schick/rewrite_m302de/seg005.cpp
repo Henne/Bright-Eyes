@@ -121,7 +121,7 @@ void FIG_set_star_color(Bit8u *ptr, unsigned short count, unsigned char color)
 RealPt FIG_name_3rd_case(unsigned short type, volatile unsigned short pos)
 {
 	if (type == 2) {
-		return (RealPt)ds_readd(HEROS) + pos * SIZEOF_HERO + HERO_NAME2;
+		return (RealPt)ds_readd(HEROES) + pos * SIZEOF_HERO + HERO_NAME2;
 	} else {
 		return GUI_names_grammar(3, pos, 1);
 	}
@@ -139,7 +139,7 @@ RealPt FIG_name_4th_case(unsigned short type, volatile unsigned short pos)
 {
 
 	if (type == 2)
-		return (RealPt)ds_readd(HEROS) + pos * SIZEOF_HERO + HERO_NAME2;
+		return (RealPt)ds_readd(HEROES) + pos * SIZEOF_HERO + HERO_NAME2;
 	else
 		return GUI_names_grammar(2, pos, 1);
 }
@@ -156,7 +156,7 @@ RealPt FIG_name_1st_case(unsigned short type, volatile unsigned short pos)
 {
 
 	if (type == 2)
-		return (RealPt)ds_readd(HEROS) + pos * SIZEOF_HERO + HERO_NAME2;
+		return (RealPt)ds_readd(HEROES) + pos * SIZEOF_HERO + HERO_NAME2;
 	else
 		return GUI_names_grammar(0, pos, 1);
 }
@@ -236,7 +236,7 @@ unsigned short fight_printer(void)
 				set_textcolor(0xff, 0);
 
 				if (f_action == 1 || f_action == 3) {
-//					case 1:	/* heros attack fails */
+//					case 1:	/* heroes attack fails */
 //					case 3: /* enemy attack fails */
 
 					sprintf(getString(ds_readd(TEXT_OUTPUT_BUF)),
@@ -699,6 +699,14 @@ void draw_fight_screen(Bit16u val)
 												figlist_remove[host_readbs(list_i + FIGHTER_SHEET)] = host_readbs(p_enemy_sheet + ENEMY_SHEET_FIGHTER_ID);
 
 												if (host_readbs(list_i + FIGHTER_TWOFIELDED) != -1) {
+#ifdef M302de_ORIGINAL_BUGFIX
+													/* Original-Bug 4:
+													 * remove tail of the escaped two-fielded enemy from the chessboard
+													 * For more on this bug, see Original-Bug 3 at seg032.cpp */
+													Bit8u *fighter_tmp = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(list_i + FIGHTER_TWOFIELDED))));
+													D1_INFO("Remove tail part of escaped enemy at FIGHTER_CBX = %d, FIGHTER_CBY = %d to obj_id=%d\n", host_readbs(fighter_tmp + FIGHTER_CBX), host_readbs(fighter_tmp + FIGHTER_CBY), host_readbs(fighter_tmp + FIGHTER_OBJ_ID));
+													FIG_set_cb_field(host_readbs(fighter_tmp + FIGHTER_CBY), host_readbs(fighter_tmp + FIGHTER_CBX), host_readbs(fighter_tmp + FIGHTER_OBJ_ID));
+#endif
 													figlist_remove[2 + host_readbs(list_i + FIGHTER_SHEET)] = ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(list_i + FIGHTER_TWOFIELDED));
 												}
 											}

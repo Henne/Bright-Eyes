@@ -474,7 +474,7 @@ void FIG_latecomers(void)
 						host_writebs(p2 + 3, (signed char)x);
 						host_writebs(p2 + 4, (signed char)y);
 
-						l4 = ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p2 + 0x13));
+						l4 = ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p2 + FIGHTER_TWOFIELDED));
 
 						p3 = Real2Host(FIG_get_ptr((signed char)l4));
 

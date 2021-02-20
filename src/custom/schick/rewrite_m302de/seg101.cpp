@@ -43,7 +43,7 @@ void spell_arcano(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROES) + target * SIZEOF_HERO));
 
 
 	/* get a free mod_slot */
@@ -85,7 +85,7 @@ void spell_armatrutz(void)
 	if (max_bonus > 9)
 		max_bonus = 9;
 
-	/* aks the user which bonus he wants */
+	/* ask the user which bonus he wants */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_tx(99), max_bonus);
 	bonus = GUI_input(Real2Host(ds_readd(DTP2)), 1);
@@ -127,7 +127,7 @@ void spell_inc_ch(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROES) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (get_spelltarget() == get_spelluser()) {
@@ -199,7 +199,7 @@ void spell_inc_ff(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROES) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (get_spelltarget() == get_spelluser()) {
@@ -245,7 +245,7 @@ void spell_inc_ge(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROES) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (get_spelltarget() == get_spelluser()) {
@@ -291,7 +291,7 @@ void spell_inc_in(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROES) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (get_spelltarget() == get_spelluser()) {
@@ -337,7 +337,7 @@ void spell_inc_kk(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROES) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (get_spelltarget() == get_spelluser()) {
@@ -383,7 +383,7 @@ void spell_inc_kl(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROES) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (get_spelltarget() == get_spelluser()) {
@@ -429,7 +429,7 @@ void spell_inc_mu(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROES) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (get_spelltarget() == get_spelluser()) {
@@ -498,7 +498,7 @@ void spell_paralue(void)
 
 			/* set the target  */
 			ds_writed(SPELLTARGET,
-				(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+				(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 			/* check again */
 			if (get_spelltarget() == get_spelluser()) {

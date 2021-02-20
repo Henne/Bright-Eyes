@@ -134,7 +134,7 @@ RealPt get_proper_hero(signed short skill)
 	retval = 0;
 #endif
 
-	hero_i = (RealPt)ds_readd(HEROS);
+	hero_i = (RealPt)ds_readd(HEROES);
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		if ((host_readbs(Real2Host(hero_i) + HERO_TYPE) != HERO_TYPE_NONE) &&

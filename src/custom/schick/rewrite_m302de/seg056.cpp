@@ -626,7 +626,7 @@ void buy_screen(void)
  *
  * \param   shop_ptr    pointer to the shop description
  * \param   hero        pointer to the hero
- * \param   item_pos    position of the item in the heros inventory
+ * \param   item_pos    position of the item in the heroes inventory
  * \param   shop_pos    position if the item in the sales array
  */
 void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, signed short shop_pos)

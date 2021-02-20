@@ -64,10 +64,10 @@ void FIG_set_cb_field(signed short y, signed short x, signed short object)
 void FIG_set_cb_field(signed short y, signed short x, signed char object)
 #endif
 {
-
 	/* check that the object is in the borders */
-	if (y < 0 || y > 24 || x < 0 || x > 24)
+	if (y < 0 || y > 24 || x < 0 || x > 24) {
 		return;
+	}
 
 	set_cb_val(x, y, object);
 }
@@ -381,18 +381,28 @@ unsigned short FIG_fight_continues(void)
 void FIG_do_round(void)
 {
 	signed short i;
-	signed short hero_attacks;
-	signed short monster_attacks;
-	signed short pos;
+	signed short nr_hero_action_phases_left_in_round; /* total number over all heroes */
+	signed short nr_enemy_action_phases_left_in_round; /* total number over all enemies */
+	signed short actor_id;
 	signed short x_coord;
 	signed short y_coord;
-	signed short nr_consecutive_attacks_left;
-	signed char turn;
+	signed short nr_action_phases_left_in_turn; /* number of action phases left in the turn of an actor */
+	signed char is_enemies_turn; /* 0: enemies' turn; 1: heroes' turn */
 	RealPt hero;
-	RealPt monster;
+	RealPt enemy;
 	signed short x;
 	signed short y;
-	Bit8u *p1;
+	Bit8u *fighter_ptr;
+
+	/* A round is the phase of a fight where all heroes and enemies get their number of BP (Bewegungspunkte; depending on load, enemy type etc.) and use them to perform a series of actions.
+	 * Actions are performed in action phases, An action phase consists of one or more actions by the active actor, where the actions 'melee attack', 'ranged attack',
+	 * 'cast spell', 'use item', 'guard' (and others?) terminate the phase and 'move', 'change weapon', 'change item' etc. do not.
+	 * The total number of action phases per round of an actor is usually 1, but can be 2 for certain types of enmies or with active Axxeleratus or Boeser Blick spells.
+	 *
+	 * A round is divided into turns, which alternate between heroes' and enemies' turns.
+	 * In a turn, a number of action phases is performed by actors on the active side.
+	 * This number of action phases depends on the relation between the number of remaining action phases of the heroes and the enemies.
+	 * Phase by phase the actor on the active side is picked randomly among the actors which have action phases left. */
 
 	if (!FIG_fight_continues()) {
 		/* this fight is over */
@@ -403,132 +413,132 @@ void FIG_do_round(void)
 	D1_INFO("Kampfrunde %d beginnt\n", ds_readws(FIGHT_ROUND));
 #endif
 
-	hero_attacks = 0;
+	nr_hero_action_phases_left_in_round = 0;
 
-	/* initialize heros #attacks and BP */
-	for (i = 0; i <= 6; ds_writeb(((HERO_IS_TARGET-1) + 1) + i, 0), i++) {
+	/* initialize heroes' #action phases and BP */
+	for (i = 0; i <= 6; ds_writeb(HERO_IS_TARGET + i, 0), i++) {
 
-		hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * i;
+		hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * i;
 
 		if ((host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			(host_readbs(Real2Host(hero) + HERO_ACTION_ID) != FIG_ACTION_FLEE))
 		{
-			/* set #attacks to 1 */
+			/* set #action phases to 1 */
 			host_writeb(Real2Host(hero) + HERO_ACTIONS, 1);
 
 			/* give this hero 8 BP */
 			host_writeb(Real2Host(hero) + HERO_BP_LEFT, 8);
 
 			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 50 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
-				/* give BP Malus -1 */
+				/* load at least 50% of carrying capacity: give BP malus -1 */
 				dec_ptr_bs(Real2Host(hero) + HERO_BP_LEFT);
 			}
 
 			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 75 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
-				/* give BP Malus -2 */
+				/* load at least 75% of carrying capacity: give additional BP malus -2 */
 				sub_ptr_bs(Real2Host(hero) + HERO_BP_LEFT, 2);
 			}
 
 			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
-				/* give BP Malus -2 */
+				/* load at least 100% of carrying capacity: give additional give BP malus -2 */
 				sub_ptr_bs(Real2Host(hero) + HERO_BP_LEFT, 2);
 
 			}
 
-			/* TODO: */
 			host_writew(Real2Host(hero) + HERO_ESCAPE_POSITION, 0);
 
-			hero_attacks++;
+			nr_hero_action_phases_left_in_round++;
 
 			if (host_readbs(Real2Host(hero) + HERO_AXXELERATUS) != 0) {
-				/* Axxeleratus => BP + 4 */
+				/* Axxeleratus => BP + 4 ... */
 				add_ptr_bs(Real2Host(hero) + HERO_BP_LEFT, 4);
 
-				/* one extra attack */
+				/* ... and one extra action phase */
 				inc_ptr_bs(Real2Host(hero) + HERO_ACTIONS);
 
-				hero_attacks++;
+				nr_hero_action_phases_left_in_round++;
 			}
 
 			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 110 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
-				/* too much weight, set BP to 1 */
+				/* load at least 110% of carrying capacity: set BP to 1 */
 				host_writeb(Real2Host(hero) + HERO_BP_LEFT, 1);
 			}
 		}
 	}
 
-	monster_attacks = 0;
+	nr_enemy_action_phases_left_in_round = 0;
 
 	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
 
-		/* set #attacks */
+		/* set #phases */
 		ds_writeb((ENEMY_SHEETS + ENEMY_SHEET_ATTACKS_LEFT) + SIZEOF_ENEMY_SHEET * i, ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_ATTACKS) + SIZEOF_ENEMY_SHEET * i));
 
-		monster_attacks += ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_ATTACKS) + SIZEOF_ENEMY_SHEET * i);
+		nr_enemy_action_phases_left_in_round += ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_ATTACKS) + SIZEOF_ENEMY_SHEET * i);
 
 		/* set BP */
 		ds_writeb((ENEMY_SHEETS + ENEMY_SHEET_BP) + SIZEOF_ENEMY_SHEET * i, ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_BP_ORIG) + SIZEOF_ENEMY_SHEET * i));
 
-		ds_writeb((FIG_MONSTERS_UNKN+10) + i, 0);
+		ds_writeb((FIG_ACTORS_UNKN + 10) + i, 0);
 	}
 
-	nr_consecutive_attacks_left = 0;
+	nr_action_phases_left_in_turn = 0;
 
 
-	/* turn == 0 means monsters attack first, turn == 1 means heros attack first */
-	turn = (ds_readbs(FIG_INITIATIVE) == 2 ? 1 : (ds_readbs(FIG_INITIATIVE) == 1 ? 0 : random_interval(0, 1)));
+	is_enemies_turn = (ds_readbs(FIG_INITIATIVE) == 2 ? 1 : (ds_readbs(FIG_INITIATIVE) == 1 ? 0 : random_interval(0, 1))); /* the variable is set up 'the wrong way round', as it will be flipped in the first run */
 
 
-	while ((ds_readws(IN_FIGHT) != 0) && (hero_attacks + monster_attacks > 0)) {
+	while ((ds_readws(IN_FIGHT) != 0) && (nr_hero_action_phases_left_in_round + nr_enemy_action_phases_left_in_round > 0)) {
 
 		if (ds_readws(AUTOFIGHT) == 2) {
 			ds_writew(AUTOFIGHT, 0);
 		}
 
-		/* decide if heros or monsters are next */
-		if (nr_consecutive_attacks_left == 0) {
+		/* decide if heroes or enemies are next */
+		if (nr_action_phases_left_in_turn == 0) {
 
 			/* flip turn */
-			turn ^= 1;
+			is_enemies_turn ^= 1;
 
-			if (!turn) {
+			if (!is_enemies_turn) {
+				/* heroes' turn */
 
 				/* this might be an Original-Bug:
-				 * The block here is m
-				 * I'd expect first do check hero_attacks == 0 -> switch turn to enemies
-				 * and then check hero_attacks <= monster_attacks
-				 * as below in the corresponding lines for the monsters. */
-				if (hero_attacks <= monster_attacks) {
-					nr_consecutive_attacks_left = 1;
-				} else if (!hero_attacks) {
-					turn = 1;
-				} else if (monster_attacks != 0) {
-					nr_consecutive_attacks_left = hero_attacks / monster_attacks;
+				 * The code block here is similar, but not equivalent to to the corresponding block for the enemies' turn below.
+				 * I'd expect first to check nr_hero_action_phases_left_in_round == 0 -> switch turn to enemies
+				 * and then check nr_hero_action_phases_left_in_round <= nr_enemy_action_phases_left_in_round
+				 * as below in the corresponding lines for the enemies. */
+				if (nr_hero_action_phases_left_in_round <= nr_enemy_action_phases_left_in_round) {
+					nr_action_phases_left_in_turn = 1;
+				} else if (nr_hero_action_phases_left_in_round == 0) {
+					is_enemies_turn = 1;
+				} else if (nr_enemy_action_phases_left_in_round != 0) {
+					nr_action_phases_left_in_turn = nr_hero_action_phases_left_in_round / nr_enemy_action_phases_left_in_round;
 				} else {
-					nr_consecutive_attacks_left = hero_attacks;
+					nr_action_phases_left_in_turn = nr_hero_action_phases_left_in_round;
 				}
 			}
 
-			if (turn == 1) {
+			if (is_enemies_turn == 1) {
+				/* enemies' turn */
 
-				if (monster_attacks == 0) {
-					turn = 0;
-					nr_consecutive_attacks_left = 1;
-				} else if (monster_attacks <= hero_attacks) {
-					nr_consecutive_attacks_left = 1;
+				if (nr_enemy_action_phases_left_in_round == 0) {
+					is_enemies_turn = 0;
+					nr_action_phases_left_in_turn = 1;
+				} else if (nr_enemy_action_phases_left_in_round <= nr_hero_action_phases_left_in_round) {
+					nr_action_phases_left_in_turn = 1;
 				} else {
-					nr_consecutive_attacks_left = (hero_attacks ? monster_attacks / hero_attacks : monster_attacks);
+					nr_action_phases_left_in_turn = (nr_hero_action_phases_left_in_round ? nr_enemy_action_phases_left_in_round / nr_hero_action_phases_left_in_round : nr_enemy_action_phases_left_in_round);
 				}
 			}
 		}
 
-		if (turn == 0) {
-			/* heros on turn */
+		if (is_enemies_turn == 0) {
+			/* heroes on turn */
 
-			pos = FIG_choose_next_hero();
+			actor_id = FIG_choose_next_hero();
 
-			hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * pos;
+			hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * actor_id;
 
 			dec_ptr_bs(Real2Host(hero) + HERO_ACTIONS);
 
@@ -542,16 +552,16 @@ void FIG_do_round(void)
 
 					and_ptr_bs(Real2Host(hero) + HERO_STATUS1, 0xfd); /* unset 'sleep' status bit */
 
-					p1 = Real2Host(FIG_get_ptr(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID)));
+					fighter_ptr = Real2Host(FIG_get_ptr(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID)));
 
-					host_writeb(p1 + FIGHTER_NVF_NO, host_readbs(Real2Host(hero) + HERO_VIEWDIR));
-					host_writeb(p1 + FIGHTER_RELOAD, -1);
-					host_writeb(p1 + FIGHTER_OFFSETX, 0);
-					host_writeb(p1 + FIGHTER_OFFSETY, 0);
+					host_writeb(fighter_ptr + FIGHTER_NVF_NO, host_readbs(Real2Host(hero) + HERO_VIEWDIR));
+					host_writeb(fighter_ptr + FIGHTER_RELOAD, -1);
+					host_writeb(fighter_ptr + FIGHTER_OFFSETX, 0);
+					host_writeb(fighter_ptr + FIGHTER_OFFSETY, 0);
 				}
 			}
 
-			if (FIG_search_obj_on_cb(pos + 1, &x_coord, &y_coord) &&
+			if (FIG_search_obj_on_cb(actor_id + 1, &x_coord, &y_coord) &&
 				check_hero(Real2Host(hero)))
 			{
 
@@ -569,10 +579,10 @@ void FIG_do_round(void)
 					}
 
 					/* save the fighter_id of this hero */
-					ds_writew(FIG_CHAR_PIC, pos + 1);
+					ds_writew(FIG_CHAR_PIC, actor_id + 1);
 
 					/* select a fight action */
-					FIG_menu(Real2Host(hero), pos, x_coord, y_coord);
+					FIG_menu(Real2Host(hero), actor_id, x_coord, y_coord);
 
 					if ((host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_ATTACK) ||
 						(host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_SPELL) ||
@@ -580,7 +590,7 @@ void FIG_do_round(void)
 						(host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK))
 					{
 
-						FIG_do_hero_action(hero, pos);
+						FIG_do_hero_action(hero, actor_id);
 
 						if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) >= 10) {
 							/* hero did attack some enemy (by weapon/spell/item etc.) */
@@ -600,7 +610,7 @@ void FIG_do_round(void)
 									/* goal: remove tail part */
 
 									FIG_search_obj_on_cb(host_readbs(Real2Host(hero) + HERO_ENEMY_ID) + 20, &x, &y);
-									/* (x,y) are the coordinates of the tail of the enemy */
+									/* (x,y) are the coordinates of the tail of the enemy. redundant as fighter_ptr + FIGHTER_CBX, fighter_ptr + FIGHTER_CBY could have been used later. */
 
 #if !defined(__BORLANDC__)
 									/* BE-fix */
@@ -609,20 +619,21 @@ void FIG_do_round(void)
 #endif
 
 
-									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))));
-									/* intermediate: p1 points to the FIGHTER entry of the enemy */
+									fighter_ptr = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))));
+									/* intermediate: fighter_ptr points to the FIGHTER entry of the enemy */
 
-									p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + FIGHTER_TWOFIELDED))));
-									/* p1 now points the FIGHTER entry of the tail part of the enemy */
-									/* should be true: (host_readbs(p1 + FIGHTER_CBX) == x) and (host_readbs(p1 + FIGHTER_CBY) == y) */
+									fighter_ptr = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(fighter_ptr + FIGHTER_TWOFIELDED))));
+									/* fighter_ptr now points the FIGHTER entry of the tail part of the enemy */
+									/* should be true: (host_readbs(fighter_ptr + FIGHTER_CBX) == x) and (host_readbs(fighter_ptr + FIGHTER_CBY) == y) */
 
-									if (host_readbs(p1 + FIGHTER_OBJ_ID) >= 0) {
+									/* Probably, the following if-then-else-condition is not necessary as the condition is always true. */
+									if (host_readbs(fighter_ptr + FIGHTER_OBJ_ID) >= 0) {
 										/* if the id of a cb_entry has been saved in FIGHTER_OBJ_ID (meaning that the tail part is standing on it),
 										 * restore that to the cb */
-										FIG_set_cb_field(y, x, host_readbs(p1 + FIGHTER_OBJ_ID));
+										FIG_set_cb_field(y, x, host_readbs(fighter_ptr + FIGHTER_OBJ_ID));
 									} else {
 										/* otherwise, set the square in the cb to 0 (free) */
-										FIG_set_cb_field(host_readbs(p1 + FIGHTER_CBY), host_readbs(p1 + FIGHTER_CBX), 0);
+										FIG_set_cb_field(host_readbs(fighter_ptr + FIGHTER_CBY), host_readbs(fighter_ptr + FIGHTER_CBX), 0);
 									}
 								}
 							}
@@ -641,109 +652,62 @@ void FIG_do_round(void)
 				ds_writew(IN_FIGHT, 0);
 			}
 
-			hero_attacks--;
+			nr_hero_action_phases_left_in_round--;
 
 		} else {
-			/* monsters on turn */
+			/* enemies on turn */
 
-			pos = FIG_choose_next_enemy();
+			actor_id = FIG_choose_next_enemy();
 
-			monster = (RealPt)RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * pos);
+			enemy = (RealPt)RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * actor_id);
 
-			dec_ptr_bs(Real2Host(monster) + ENEMY_SHEET_ATTACKS_LEFT);
+			dec_ptr_bs(Real2Host(enemy) + ENEMY_SHEET_ATTACKS_LEFT);
 
-			if (FIG_search_obj_on_cb(pos + 10, &x_coord, &y_coord) &&
-				FIG_is_enemy_active(Real2Host(monster)))
+			if (FIG_search_obj_on_cb(actor_id + 10, &x_coord, &y_coord) &&
+				FIG_is_enemy_active(Real2Host(enemy)))
 			{
 #if !defined(__BORLANDC__)
 				/* BE-fix */
 				x_coord = host_readws((Bit8u*)&x_coord);
 				y_coord = host_readws((Bit8u*)&y_coord);
 #endif
-				if (host_readbs(Real2Host(monster) + ENEMY_SHEET_BLIND) != 0) {
-					dec_ptr_bs(Real2Host(monster) + ENEMY_SHEET_BLIND);
+				if (host_readbs(Real2Host(enemy) + ENEMY_SHEET_BLIND) != 0) {
+					dec_ptr_bs(Real2Host(enemy) + ENEMY_SHEET_BLIND);
 				} else {
 
-					ds_writew(FIG_ENEMY_PIC, pos + 10);
+					ds_writew(FIG_ENEMY_PIC, actor_id + 10);
 
-					host_writebs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID, 1);
+					host_writebs(Real2Host(enemy) + ENEMY_SHEET_ACTION_ID, 1);
 
-					enemy_turn(Real2Host(monster), pos, x_coord, y_coord);
+					enemy_turn(Real2Host(enemy), actor_id, x_coord, y_coord);
 
-#ifdef M302de_ORIGINAL_BUGFIX
-					/* Original-Bug:
-					 * Tails of dead/disappeared two-squared enemies must be removed separately.
-					 * Otherwise, those tails are an obstacle for movement (by another bug) or can be used
-					 * as a target of the 'Skelettarius' spell, which may result in weired situations, see
-					 * https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=166089#pid166089
-					 *
-					 * The tails are removed correctly (by some code further below) if the enemies have been
-					 * killed "regularly" by a hero (attack/spell/item) or a (renegade) enemy. However, it
-					 * has been forgotten for escaped enemies, and for enemies which killed themselves by a
-					 * critical attack failure. (Hopefully, this list is complete.) */
-					 
-					if (enemy_dead(Real2Host(monster))) { /* check 'dead' status bit */
-						/* attacking enemy is dead
-						 * either because of critical attack failure, or because he escaped the battle
-						 * (note that for escaped enemies, the 'dead' status bit is set in seg005.cpp */
-						if (is_in_byte_array(host_readbs(Real2Host(monster) + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
-							/* attacking dead enemy is two-squares */
-							/* goal: remove tail part */
-
-							FIG_search_obj_on_cb(pos + 30, &x, &y);
-							/* (x,y) are the coordinates of the tail of the enemy */
-
-#if !defined(__BORLANDC__)
-							/* BE-fix */
-							x = host_readws((Bit8u*)&x);
-							y = host_readws((Bit8u*)&y);
-#endif
-							p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID))));
-							/* intermediate: p1 points to the FIGHTER entry of the enemy */
-
-							p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + FIGHTER_TWOFIELDED))));
-							/* p1 now points the FIGHTER entry of the tail part of the enemy */
-							/* should be true: (host_readbs(p1 + FIGHTER_CBX) == x) and (host_readbs(p1 + FIGHTER_CBY) == y) */
-
-							if (host_readbs(p1 + FIGHTER_OBJ_ID) >= 0) {
-								/* if the id of a cb_entry has been saved in FIGHTER_OBJ_ID (meaning that the tail part is standing on it),
-								 * restore that to the cb */
-								FIG_set_cb_field(y, x, host_readbs(p1 + FIGHTER_OBJ_ID));
-							} else {
-								/* otherwise, set the square in the cb to 0 (free) */
-								FIG_set_cb_field(host_readbs(p1 + FIGHTER_CBY), host_readbs(p1 + FIGHTER_CBX), 0);
-							}
-						}
-					}
-#endif
-
-					if ((host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_ATTACK) ||
-						(host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_SPELL) ||
-						(host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_USE_ITEM) ||
-						(host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_RANGE_ATTACK))
+					if ((host_readbs(Real2Host(enemy) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_ATTACK) ||
+						(host_readbs(Real2Host(enemy) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_SPELL) ||
+						(host_readbs(Real2Host(enemy) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_USE_ITEM) ||
+						(host_readbs(Real2Host(enemy) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_RANGE_ATTACK))
 					{
 
-						FIG_do_monster_action(monster, pos);
+						FIG_do_enemy_action(enemy, actor_id);
 
-						if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) >= 10) {
+						if (host_readbs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID) >= 10) {
 						/* enemy did attack some enemy (by weapon/spell etc.) */
 
 						/* if the tail of a two-squares enemy has been attacked,
-						 * replace HERO_ENEMY_ID by the main id of that enemy */
-							if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) >= 30) {
-								sub_ptr_bs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID, 20);
+						 * replace ENEMY_SHEET_ENEMY_ID by the main id of that enemy */
+							if (host_readbs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID) >= 30) {
+								sub_ptr_bs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID))) /* check 'dead' status bit */
+							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID))) /* check 'dead' status bit */
 							{
 								/* attacked enemy is dead */
-								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_GFX_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
+								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_GFX_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
 									/* attacked dead enemy is two-squares */
 									/* goal: remove tail part */
 
-									FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) + 20, &x, &y);
-									/* (x,y) are the coordinates of the tail of the enemy */
+									FIG_search_obj_on_cb(host_readbs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID) + 20, &x, &y);
+									/* (x,y) are the coordinates of the tail of the enemy. redundant as fighter_ptr + FIGHTER_CBX, fighter_ptr + FIGHTER_CBY could have been used later. */
 
 #if !defined(__BORLANDC__)
 									/* BE-fix */
@@ -751,24 +715,60 @@ void FIG_do_round(void)
 									y = host_readws((Bit8u*)&y);
 #endif
 
-									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID))));
-									/* intermediate: p1 points to the FIGHTER entry of the enemy */
+									fighter_ptr = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID))));
+									/* intermediate: fighter_ptr points to the FIGHTER entry of the killed enemy */
 
-									p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + FIGHTER_TWOFIELDED))));
-									/* p1 now points the FIGHTER entry of the tail part of the enemy */
-									/* should be true: (host_readbs(p1 + FIGHTER_CBX) == x) and (host_readbs(p1 + FIGHTER_CBY) == y) */
+									fighter_ptr = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(fighter_ptr + FIGHTER_TWOFIELDED))));
+									/* fighter_ptr now points the FIGHTER entry of the tail part of the killed enemy */
+									/* should be true: (host_readbs(fighter_ptr + FIGHTER_CBX) == x) and (host_readbs(fighter_ptr + FIGHTER_CBY) == y) */
 
-									if (host_readbs(p1 + FIGHTER_OBJ_ID) >= 0) {
+									/* Probably, the following if-then-else-condition is not necessary as the condition is always true. */
+									if (host_readbs(fighter_ptr + FIGHTER_OBJ_ID) >= 0) {
 										/* if the id of a cb_entry has been saved in FIGHTER_OBJ_ID (meaning that the tail part is standing on it),
 										 * restore that to the cb */
-										FIG_set_cb_field(y, x, host_readbs(p1 + FIGHTER_OBJ_ID));
+										FIG_set_cb_field(y, x, host_readbs(fighter_ptr + FIGHTER_OBJ_ID));
 									} else {
 										/* otherwise, set the square in the cb to 0 (free) */
-										FIG_set_cb_field(host_readbs(p1 + FIGHTER_CBY), host_readbs(p1 + FIGHTER_CBX), 0);
+										FIG_set_cb_field(host_readbs(fighter_ptr + FIGHTER_CBY), host_readbs(fighter_ptr + FIGHTER_CBX), 0);
 									}
 								}
 							}
 						}
+#ifdef M302de_ORIGINAL_BUGFIX
+						/* Original-Bug 3:
+						 * Tails of dead/disappeared two-squared enemies must be removed separately.
+						 * Otherwise, those tails are an obstacle for movement (by another bug) or can be used
+						 * as a target of the 'Skelettarius' spell, which may result in weired situations, see
+						 * https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=166089#pid166089
+						 *
+						 * The tails are removed correctly (by some code above) if the enemies have been
+						 * killed "regularly" by a hero (melee/ranged attack/spell/item) or by a (renegade) enemy.
+						 * However, it has been forgotten for escaped enemies, as well as enemies which killed
+						 * themselves by a critical melee attack failure. (Hopefully, this list is complete.)
+						 *
+						 * The following adds the missing code for self-killed enemies.
+						 * The case of escaped enemies is dealt with in seg005.cpp
+						 * It cannot be treated here as the FIGHTER entry of the tail is
+						 * removed in seg005.cpp, which is needed to restore the object under the tail. */
+
+						if (enemy_dead(Real2Host(enemy))) { /* check 'dead' status bit */
+							/* attacking enemy is dead because of critical attack failure */
+							if (is_in_byte_array(host_readbs(Real2Host(enemy) + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+								/* attacking dead enemy is two-squares */
+								/* goal: remove tail part */
+
+								fighter_ptr = Real2Host(FIG_get_ptr(host_readbs(Real2Host(enemy) + ENEMY_SHEET_FIGHTER_ID)));
+								/* intermediate: fighter_ptr points to the FIGHTER entry of the enemy */
+
+								fighter_ptr = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(fighter_ptr + FIGHTER_TWOFIELDED))));
+								/* fighter_ptr now points the FIGHTER entry of the tail part of the enemy */
+								/* should be true: (host_readbs(fighter_ptr + FIGHTER_CBX) == x) and (host_readbs(fighter_ptr + FIGHTER_CBY) == y) */
+
+								/* restore the cb_entry stored at FIGHTER_OBJ_ID (meaning that the tail part is standing on it). */
+								FIG_set_cb_field(host_readbs(fighter_ptr + FIGHTER_CBY), host_readbs(fighter_ptr + FIGHTER_CBX), host_readbs(fighter_ptr + FIGHTER_OBJ_ID));
+							}
+						}
+#endif
 
 						herokeeping();
 					}
@@ -781,10 +781,10 @@ void FIG_do_round(void)
 				ds_writew(IN_FIGHT, 0);
 			}
 
-			monster_attacks--;
+			nr_enemy_action_phases_left_in_round--;
 		}
 
-		nr_consecutive_attacks_left--;
+		nr_action_phases_left_in_turn--;
 
 		if (ds_readbs(FIG_CB_MAKRER_ID) != -1) {
 
@@ -901,10 +901,10 @@ void FIG_load_ship_sprites(void)
 }
 
 /**
- * \brief   the heros encounter a fight
+ * \brief   the heroes encounter a fight
  *
- * \param   fight_id    number of the fight
- * \return              0 = ???, 1 = no monsters in the fight, 2 = , 3 = sneaked arround
+ * \param   fight_id    id of the fight
+ * \return              0 = heroes are in Hygellik's ruin and cursed -> no fight (?); 1 = no enemies -> no fight; 2 = ?; 3 = sneaked around -> no fight;
  */
 signed short do_fight(signed short fight_id)
 {
@@ -1105,7 +1105,7 @@ signed short do_fight(signed short fight_id)
 
 		if (ds_readws(GAME_STATE) != GAME_STATE_MAIN) {
 
-			if ((fight_id != 192) && count_heros_available()) {
+			if ((fight_id != 192) && count_heroes_available()) {
 
 				ds_writew(GAME_STATE, GAME_STATE_MAIN);
 
@@ -1138,11 +1138,11 @@ signed short do_fight(signed short fight_id)
 		}
 
 		if (retval == 0) {
-			/* the heros won the fight => loot */
+			/* the heroes won the fight => loot */
 
 			i = 0;
 			while (ds_readws(FIG_DROPPED_WEAPONS + 2 * i) != 0) {
-				/* give automatic items to the heros. dropped broken weapons ?*/
+				/* give automatic items to the heroes. dropped broken weapons ?*/
 				get_item(ds_readws(FIG_DROPPED_WEAPONS + 2 * i++), 0, 1);
 			}
 

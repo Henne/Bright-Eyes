@@ -1581,7 +1581,7 @@ void handle_gui_input(void)
 		}
 
 		if (ds_readw(BIOSKEY_EVENT) == 15) {
-			GRP_swap_heros();
+			GRP_swap_heroes();
 			l_si = 0;
 		}
 
@@ -1830,16 +1830,16 @@ void game_loop(void)
 
 			ds_writeb(CHECK_PARTY, 0);
 
-			if (!count_heros_available() ||
-				((count_heros_available() == 1) && check_hero(get_hero(6))))
+			if (!count_heroes_available() ||
+				((count_heroes_available() == 1) && check_hero(get_hero(6))))
 			{
-				/* no heros or only the NPC can act => GAME OVER */
+				/* no heroes or only the NPC can act => GAME OVER */
 				ds_writew(GAME_STATE, GAME_STATE_DEAD);
 
 			} else if (!count_heroes_available_in_group() ||
 				((count_heroes_available_in_group() == 1) && is_hero_available_in_group(get_hero(6))))
 			{
-				/* no heros or only the NPC in this group can act => switch to next */
+				/* no heroes or only the NPC in this group can act => switch to next */
 				GRP_switch_to_next(2);
 			}
 
@@ -2576,7 +2576,7 @@ void sub_mod_timers(Bit32s val)
 					/* if a hero/npc is determined */
 
 					mp = get_hero(h_index);
-					/* make a pointer to the heros attribute mod */
+					/* make a pointer to the heroes attribute mod */
 					mp += (Bit32u)host_readw(sp + 4);
 					/* subtract the mod */
 					sub_ptr_bs(mp, host_readbs(sp + 7));
@@ -4144,7 +4144,7 @@ void seg002_484f(void)
 }
 
 /**
- * \brief   returns true if heros not sleeping, dead, petrified, unconscious, renegade or fleeing
+ * \brief   returns true if heroes not sleeping, dead, petrified, unconscious, renegade or fleeing
  *
  * \param   hero        pointer to the hero
  * \return              {0, 1}
@@ -4168,7 +4168,7 @@ signed short check_hero(Bit8u *hero)
 }
 
 /**
- * \brief   returns true if heros not dead, petrified, unconscious or renegade
+ * \brief   returns true if heroes not dead, petrified, unconscious or renegade
  */
 /* should be static */
 signed short check_hero_no2(Bit8u *hero)
@@ -4263,7 +4263,7 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 }
 
 /**
- * \brief   add AE points to heros current AE
+ * \brief   add AE points to heroes current AE
  */
 void add_hero_ae(Bit8u* hero, signed short ae)
 {
@@ -4273,7 +4273,7 @@ void add_hero_ae(Bit8u* hero, signed short ae)
 		signed short tmp = ds_readw(UPDATE_STATUSLINE);
 		ds_writew(UPDATE_STATUSLINE, 0);
 
-		/* add AE to heros current AE */
+		/* add AE to heroes current AE */
 		add_ptr_ws(hero + HERO_AE, ae);
 
 		/* if current AE is greater than AE maximum
@@ -4510,7 +4510,7 @@ void add_group_le(signed short le)
 }
 
 /**
- * \brief   damages starving heros
+ * \brief   damages starving heroes
  *
  * \param   hero        a pointer to the hero
  * \param   index       the index number of the hero
@@ -4525,7 +4525,7 @@ void do_starve_damage(Bit8u *hero, signed short index, signed short type)
 		signed short bak = ds_readw(UPDATE_STATUSLINE);
 		ds_writew(UPDATE_STATUSLINE, 0);
 
-		/* decrement the heros LE */
+		/* decrement the heroes LE */
 		dec_ptr_ws(hero + HERO_LE);
 
 		/* set the critical message type for the hero */
@@ -4728,7 +4728,7 @@ signed short get_random_hero(void)
 /**
  * \brief   get the money of the current group
  *
- * \return              the sum of the money of all heros in the current group
+ * \return              the sum of the money of all heroes in the current group
  */
 Bit32s get_party_money(void)
 {
@@ -5054,7 +5054,7 @@ void sub_group_le(signed short le)
 RealPt get_first_hero_available_in_group(void)
 {
 	signed short i;
-	RealPt hero_i = (RealPt)ds_readd(HEROS);
+	RealPt hero_i = (RealPt)ds_readd(HEROES);
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
@@ -5068,7 +5068,7 @@ RealPt get_first_hero_available_in_group(void)
 		}
 	}
 
-	return (RealPt) ds_readd(HEROS);
+	return (RealPt) ds_readd(HEROES);
 }
 
 /**
@@ -5082,7 +5082,7 @@ RealPt get_second_hero_available_in_group(void)
 	signed short tmp;
 	RealPt hero_i;
 
-	hero_i = (RealPt)ds_readd(HEROS);
+	hero_i = (RealPt)ds_readd(HEROES);
 
 	for (i = tmp = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class, group and check_hero() */
@@ -5102,11 +5102,11 @@ RealPt get_second_hero_available_in_group(void)
 }
 
 /**
- * \brief   count available heros
+ * \brief   count available heroes
  *
- * \return              number of available heros in all groups
+ * \return              number of available heroes in all groups
  */
-signed short count_heros_available(void)
+signed short count_heroes_available(void)
 {
 	signed short i;
 	signed short retval;
@@ -5151,7 +5151,7 @@ signed short count_heroes_available_in_group(void)
 
 void seg002_57f1(void)
 {
-	if (!count_heros_available()) {
+	if (!count_heroes_available()) {
 		/* game over */
 		ds_writew(GAME_STATE, GAME_STATE_DEAD);
 

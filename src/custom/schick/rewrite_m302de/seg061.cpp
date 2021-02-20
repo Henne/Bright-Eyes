@@ -501,7 +501,7 @@ void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 	signed short i;
 	signed short slot;
 	HugePt ptr;
-	RealPt hero = (RealPt)ds_readd(HEROS);
+	RealPt hero = (RealPt)ds_readd(HEROES);
 
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 

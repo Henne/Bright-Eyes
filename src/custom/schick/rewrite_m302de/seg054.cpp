@@ -42,7 +42,7 @@ RealPt get_first_brewing_hero(void)
 	RealPt hero;
 	signed short i;
 
-	hero = (RealPt)ds_readd(HEROS);
+	hero = (RealPt)ds_readd(HEROES);
 	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 		if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(Real2Host(hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
@@ -74,7 +74,7 @@ void do_inn(void)
 	Bit32s price;
 	signed char stay;
 	signed short tw_bak;
-	signed short nr_heros;
+	signed short nr_heroes;
 	Bit32s l8;
 	Bit32s l9;
 	Bit32s l10;
@@ -306,11 +306,11 @@ void do_inn(void)
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
 
-				nr_heros = count_heroes_in_group();
+				nr_heroes = count_heroes_in_group();
 
-				l8 *= nr_heros;
-				l9 *= nr_heros;
-				l10 *= nr_heros;
+				l8 *= nr_heroes;
+				l9 *= nr_heroes;
+				l10 *= nr_heroes;
 				party_money = get_party_money();
 
 				price = ds_readbs(SLEEP_QUALITY) == 1 ? l8 : (ds_readbs(SLEEP_QUALITY) == 2 ? l9 : l10);
@@ -348,7 +348,7 @@ void do_inn(void)
 
 				if (answer != -1) {
 
-					hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
+					hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer;
 
 					if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
 
@@ -388,7 +388,7 @@ void do_inn(void)
 
 					ds_writeb(FOOD_MOD, 0);
 
-					hero = (RealPt)ds_readd(HEROS);
+					hero = (RealPt)ds_readd(HEROES);
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 						if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&

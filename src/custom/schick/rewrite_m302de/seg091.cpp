@@ -180,7 +180,7 @@ void DNG13_unblock_passage(Bit8u* text, Bit8u* flag)
 	/* check if passage is blocked */
 	if (!host_readb(flag))
 	{
-		/* ask if the heros want to try */
+		/* ask if the heroes want to try */
 		if (GUI_bool(text))
 		{
 			/* check if the group has ALL of these items:
@@ -284,7 +284,7 @@ void DNG13_collapsing_ceiling(void)
 
 	if (fails > 1)
 	{
-		/* at least two heros failed in the skill test */
+		/* at least two heroes failed in the skill test */
 		GUI_output(get_tx(19));
 
 		sub_group_le(dice_roll(1, 6, 4));
@@ -334,7 +334,7 @@ void DNG13_collapsing_ceiling_easy(void)
 
 	if (fails > 1)
 	{
-		/* at least two heros failed in the skill test */
+		/* at least two heroes failed in the skill test */
 		GUI_output(get_tx(19));
 
 		sub_group_le(dice_roll(1, 6, 5));

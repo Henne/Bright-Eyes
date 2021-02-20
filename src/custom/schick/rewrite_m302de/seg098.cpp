@@ -168,7 +168,7 @@ void magic_heal_ani(Bit8u *hero)
 	bc_close(fd);
 
 	target_no = host_readbs(hero + HERO_ENEMY_ID) - 1;
-	target = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * target_no;
+	target = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * target_no;
 
 	ds_writew(PIC_COPY_V1, 0);
 	ds_writew(PIC_COPY_V2, 0);
@@ -221,7 +221,7 @@ void FIG_do_spell_damage(signed short le)
 
 		/* set pointer */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+			(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 
 		/* ensure the spelluser does not attack himself */
@@ -272,7 +272,7 @@ signed short get_attackee_parade(void)
 		/* attacked a hero */
 
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+			(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 		/* calculate PA  */
 
@@ -306,7 +306,7 @@ signed short get_attackee_rs(void)
 		/* attacked a hero */
 
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+			(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 		return host_readbs(get_spelltarget() + 0x30);
 
@@ -816,7 +816,7 @@ signed short select_magic_user(void)
 	if (answer != -1) {
 		/* valid answer => cast spell */
 /*		return use_spell(get_hero(answer), 1, 0); */
-		return use_spell((RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer, 1, 0);
+		return use_spell((RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer, 1, 0);
 	}
 
 	/* abort with error message */

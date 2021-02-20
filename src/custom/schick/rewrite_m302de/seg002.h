@@ -182,7 +182,7 @@ signed short get_first_hero_with_item_in_group(signed short, signed short);
 void sub_group_le(signed short);
 RealPt get_first_hero_available_in_group(void);
 RealPt get_second_hero_available_in_group(void);
-signed short count_heros_available(void);
+signed short count_heroes_available(void);
 signed short count_heroes_available_in_group(void);
 void seg002_57f1(void);
 int schick_main(int, char **);

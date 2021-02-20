@@ -640,14 +640,14 @@ void tevent_144(void)
 						(char*)get_tx2(38),
 						(char*)get_hero(6) + HERO_NAME2);
 
-					GUI_dialogbox((RealPt)ds_readd(HEROS) + SIZEOF_HERO * 6 + HERO_PORTRAIT,
-							Real2Host(ds_readd(HEROS)) + SIZEOF_HERO * 6  + HERO_NAME2,
+					GUI_dialogbox((RealPt)ds_readd(HEROES) + SIZEOF_HERO * 6 + HERO_PORTRAIT,
+							Real2Host(ds_readd(HEROES)) + SIZEOF_HERO * 6  + HERO_NAME2,
 							Real2Host(ds_readd(DTP2)), 0);
 				}
 
 			} while (grimring_hero_pos == 6);
 
-			ds_writed(MAIN_ACTING_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * grimring_hero_pos));
+			ds_writed(MAIN_ACTING_HERO, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * grimring_hero_pos));
 
 			final_intro();
 			if (!TRV_fight_event(FIGHTS_F144, 144)) {
@@ -711,7 +711,7 @@ void TLK_old_woman(signed short state)
 			}
 		}
 
-		ds_writed(RANDOM_TLK_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
+		ds_writed(RANDOM_TLK_HERO, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * get_random_hero()));
 
 		ds_writew(DIALOG_NEXT_STATE, count_heroes_in_group() == counter ? 24 : 25);
 

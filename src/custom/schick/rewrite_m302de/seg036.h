@@ -31,7 +31,7 @@ signed short seg036_8cf(Bit8u*, signed short, signed short, signed short, signed
 
 /* 0x43 */
 /* should be static */
-signed short KI_count_heros(signed short);
+signed short KI_count_heroes(signed short);
 
 /* 0x48 */
 void KI_hero(Bit8u*, signed short, signed short, signed short);

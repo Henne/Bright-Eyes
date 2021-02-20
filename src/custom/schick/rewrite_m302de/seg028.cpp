@@ -537,7 +537,7 @@ void save_npc(signed short index)
 
 	fd = load_archive_file(index | 0x8000);
 
-	bc__write(fd, (RealPt)ds_readd(HEROS) + 6 * SIZEOF_HERO, SIZEOF_HERO);
+	bc__write(fd, (RealPt)ds_readd(HEROES) + 6 * SIZEOF_HERO, SIZEOF_HERO);
 
 	bc_close(fd);
 }

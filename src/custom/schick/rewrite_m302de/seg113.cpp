@@ -256,7 +256,7 @@ void tevent_097(void)
 /**
  * \brief   travelevent 98: a gap
  *
- *          disappeared heros can be found in the Efferd temple in Liskor
+ *          disappeared heroes can be found in the Efferd temple in Liskor
  */
 void tevent_098(void)
 {
@@ -432,7 +432,7 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 		ds_writew(REQUEST_REFRESH, 1);
 	}
 
-	/* set flag to check all heros */
+	/* set flag to check all heroes */
 	ds_writeb(CHECK_PARTY, 1);
 }
 
@@ -614,7 +614,7 @@ void tevent_104(void)
 	signed short l_si;
 	signed short done;
 	signed short i;
-	signed short nr_heros;
+	signed short nr_heroes;
 	Bit8u *hero;
 	signed short spell_result;
 
@@ -628,13 +628,13 @@ void tevent_104(void)
 
 		hero = get_hero(0);
 
-		for (i = l_si = nr_heros = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		for (i = l_si = nr_heroes = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{
-				nr_heros++;
+				nr_heroes++;
 
 				/* test for HA+0 */
 
@@ -661,9 +661,9 @@ void tevent_104(void)
 			GUI_dialog_na(0, get_tx2(63));
 			done = 1;
 
-		} else if (l_si == nr_heros) {
+		} else if (l_si == nr_heroes) {
 
-			/* all heros have failed the test */
+			/* all heroes have failed the test */
 
 			do {
 				l_si = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
@@ -692,15 +692,15 @@ void tevent_104(void)
 
 		} else {
 
-			/* some heros, but not all, have failed the test */
+			/* some heroes, but not all, have failed the test */
 
-			nr_heros = 0;
+			nr_heroes = 0;
 
 			do {
 
 				do {
 					l_si = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
-								(nr_heros == 0 ? get_tx2(59) : get_tx2(87)), 3,
+								(nr_heroes == 0 ? get_tx2(59) : get_tx2(87)), 3,
 								get_tx2(60), get_tx2(61), get_tx2(62));
 				} while (l_si == -1);
 
@@ -735,7 +735,7 @@ void tevent_104(void)
 
 							sub_ae_splash(hero, get_spell_cost(7, 1));
 
-							nr_heros = 1;
+							nr_heroes = 1;
 
 						} else {
 

@@ -113,7 +113,7 @@ static inline Bit8u *get_hero(signed short index) {
 	if (index < 0 || index > 6) {
 		D1_ERR("ERROR: Versuch auf Held an Position %d zuzugreifen\n", index);
 	}
-	return Real2Host(ds_readd(HEROS)) + index * SIZEOF_HERO;
+	return Real2Host(ds_readd(HEROES)) + index * SIZEOF_HERO;
 }
 
 static inline void add_ds_ws(Bit16u off, Bit16s val)
@@ -1065,7 +1065,7 @@ struct hero_struct {
 #define mem_writew(p, d) (*(Bit16u*)(p) = (d))
 #define mem_writed(p, d) (*(Bit32u*)(p) = (d))
 
-#define get_hero(no) ((Bit8u*)ds_readfp(HEROS) + SIZEOF_HERO * (no))
+#define get_hero(no) ((Bit8u*)ds_readfp(HEROES) + SIZEOF_HERO * (no))
 
 #ifdef M302de_ORIGINAL_BUGFIX
 #define ds_writeb_z(addr, val) (if (ds_readb(addr) == 0) ds_writeb(addr, val))

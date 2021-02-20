@@ -328,7 +328,7 @@ signed short DNG03_handler(void)
 				ds_writews((FIG_FLEE_POSITION + 4),
 				ds_writews((FIG_FLEE_POSITION + 6), 0x150d))));
 
-			/* drop all crystals from the heros of that group */
+			/* drop all crystals from the heroes of that group */
 			i = get_first_hero_with_item(225);
 
 			do {
