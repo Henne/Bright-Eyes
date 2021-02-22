@@ -49,7 +49,7 @@ unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y)
 
 	if (host_readb(p + FIGHTER_VISIBLE) != 0) {
 
-        /* animated objects always need a refresh */
+	/* animated objects always need a refresh */
 		if ((host_readbs(p + FIGHTER_SHEET) != -1) || (host_readbs(p + FIGHTER_VISIBLE) == 3))
 			goto damn_label;
 
@@ -57,7 +57,7 @@ unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y)
 		/* check if given object overlaps with any of the objects behind it */
 		for (i = Real2Host(ds_readd(FIG_LIST_HEAD)); i != p; i = Real2Host(host_readd(i + FIGHTER_NEXT)))
 		{
-		    /* Ignore invisible objects or objects, that are not refreshed */
+			/* Ignore invisible objects or objects, that are not refreshed */
 			if (host_readbs(i + FIGHTER_VISIBLE) >= 2) {
 
 				ox = 10 - host_readbs(i + FIGHTER_WIDTH) / 2
@@ -315,8 +315,8 @@ void draw_fight_screen(Bit16u val)
 	signed short viewdir_before;
 	signed short viewdir_after;
 	signed short target_id;
-	signed char twofielded_move;
-	RealPt target_ptr;
+	signed char twofielded_move_tail_first;
+	RealPt fighter_head_ptr;
 	signed short viewdir_unconsc;
 	Bit8u *sheet;
 	Bit8u *p_weapon_anisheet;
@@ -525,10 +525,10 @@ void draw_fight_screen(Bit16u val)
 						}
 
 						if (host_readws(list_i + FIGHTER_FIGURE) >= 88) {
-						    /* fighter uses figure from MONSTER file */
+							/* fighter uses figure from MONSTER file */
 
 							if (host_readbs(list_i + FIGHTER_NVF_NO) > 3) {
-							    /* not standing still */
+								/* not standing still */
 								host_writeb(list_i + FIGHTER_OFFSETX,
 										ds_readbs((GFXTAB_OFFSETS_MAIN + 8) + host_readbs(list_i + FIGHTER_SPRITE_NO) * 10));
 								host_writeb(list_i + FIGHTER_OFFSETY,
@@ -597,6 +597,7 @@ void draw_fight_screen(Bit16u val)
 						p_figure_gfx = (RealPt)host_readd(list_i + FIGHTER_GFXBUF);
 
 						if (host_readbs(list_i + FIGHTER_TWOFIELDED) > 20) {
+							/* list_i is the fighter entry of the tail of a twofielded enemy */
 
 							viewdir_after = (host_readbs(list_i + FIGHTER_NVF_NO) > 3) ? 1 : host_readbs(list_i + FIGHTER_NVF_NO);
 
@@ -605,10 +606,11 @@ void draw_fight_screen(Bit16u val)
 							host_writeb(list_i + FIGHTER_X1, ds_readbs(GFXTAB_TWOFIELDED_EXTRA_X1 + viewdir_after));
 							host_writeb(list_i + FIGHTER_X2, ds_readbs(GFXTAB_TWOFIELDED_EXTRA_X2 + viewdir_after));
 
-							obj_id = get_cb_val(host_readbs(list_i + FIGHTER_CBX), host_readbs(list_i + FIGHTER_CBY));
+							obj_id = get_cb_val(host_readbs(list_i + FIGHTER_CBX), host_readbs(list_i + FIGHTER_CBY)); /* enemy_id + 30 of the enemy the tail belongs to */
 
 							FIG_set_cb_field(host_readbs(list_i + FIGHTER_CBY), host_readbs(list_i + FIGHTER_CBX), host_readbs(list_i + FIGHTER_OBJ_ID));
 
+							/* update CBX depending on the view direction */
 							if ( ((viewdir_after == 2) && ((viewdir_before == 1) || (viewdir_before == 3))) ||
 								(((viewdir_after == 3) || (viewdir_after == 1)) && (viewdir_before == 0)))
 							{
@@ -619,6 +621,7 @@ void draw_fight_screen(Bit16u val)
 									dec_ptr_bs(list_i + FIGHTER_CBX);
 							}
 
+							/* update CBY depending on the view direction */
 							if ( ((viewdir_after == 3) && ((viewdir_before == 0) || (viewdir_before == 2))) ||
 								(((viewdir_after == 0) || (viewdir_after == 2)) && (viewdir_before == 1)))
 							{
@@ -633,9 +636,9 @@ void draw_fight_screen(Bit16u val)
 								host_writeb(list_i + FIGHTER_CBY, host_readbs(list_i + FIGHTER_CBY) + 2);
 							}
 
-							target_id = get_cb_val(host_readbs(list_i + FIGHTER_CBX), host_readbs(list_i + FIGHTER_CBY));
-							host_writeb(list_i + FIGHTER_OBJ_ID, (signed char)target_id);
-							FIG_set_cb_field(host_readbs(list_i + FIGHTER_CBY), host_readbs(list_i + FIGHTER_CBX), obj_id);
+							target_id = get_cb_val(host_readbs(list_i + FIGHTER_CBX), host_readbs(list_i + FIGHTER_CBY)); /* object id of the square the tail moves to */
+							host_writeb(list_i + FIGHTER_OBJ_ID, (signed char)target_id); /* move it to FIGHTER_OBJ_ID */
+							FIG_set_cb_field(host_readbs(list_i + FIGHTER_CBY), host_readbs(list_i + FIGHTER_CBX), obj_id); /* set object id of the target square to enemy_id + 30 */
 
 							obj_x = 10 - (host_readbs(list_i + FIGHTER_WIDTH) / 2) +
 								(10 * (host_readbs(list_i + FIGHTER_CBX) + host_readbs(list_i + FIGHTER_CBY)));
@@ -656,6 +659,7 @@ void draw_fight_screen(Bit16u val)
 
 								obj_id = get_cb_val(host_readbs(list_i + FIGHTER_CBX), host_readbs(list_i + FIGHTER_CBY));
 
+								/* copy FIGHTER_OBJ_ID back to the chessboard */
 								FIG_set_cb_field(host_readbs(list_i + FIGHTER_CBY),
 									host_readbs(list_i + FIGHTER_CBX),
 									host_readbs(list_i + FIGHTER_OBJ_ID));
@@ -666,19 +670,36 @@ void draw_fight_screen(Bit16u val)
 								host_writeb(list_i + FIGHTER_CBY,	host_readbs(list_i + FIGHTER_CBY) +
 									host_readbs(sheet + 3 + ds_readw(FIG_ANI_STATE + (host_readbs(list_i + FIGHTER_SHEET) * 2)) * 3));
 
-								twofielded_move = 0;
+								twofielded_move_tail_first = 0;
 
-								/* get the value from the cb where the hero wants to move to */
+								/* get the value from the cb where the actor wants to move to */
 								target_id = get_cb_val(host_readbs(list_i + FIGHTER_CBX), host_readbs(list_i + FIGHTER_CBY));
 
 								if ((host_readbs(list_i + FIGHTER_TWOFIELDED) > 20) && (obj_id - 20 == target_id)) {
+									/* for a two-fielded enemy, either the head part or the tail part is moved first.
+									 * This is the case that the tail part is moved first (the target square is the head part). */
 
+#ifndef M302de_ORIGINAL_BUGFIX
+									/* Original-Bug 5: */
+									/* the removal of the following line is not strictly necessary, but it is not needed as a replacement is added further below. */
 									host_writeb(list_i + FIGHTER_OBJ_ID, 0);
-									twofielded_move = 1;
+#endif
+									twofielded_move_tail_first = 1;
 
-									target_ptr = FIG_get_ptr(ds_readbs(((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + target_id * SIZEOF_ENEMY_SHEET));
+									/* create pointer to the head part of the enemy */
+									fighter_head_ptr = FIG_get_ptr(ds_readbs(((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + target_id * SIZEOF_ENEMY_SHEET));
 
-									host_writeb(Real2Host(target_ptr) + FIGHTER_OBJ_ID,  (signed char)obj_id);
+#ifdef M302de_ORIGINAL_BUGFIX
+									/* Original-Bug 5: */
+									/* The FIGHTER_OBJ_ID entry of the head part will be overwritten by the next line in the original code.
+									 * In this way, sometimes dead bodies are lost from the chessboard after a two-fielded enemy walks over it.
+									 * The right thing is to copy it to the FIGHTER_OBJ_ID of tail part. */
+									host_writeb(list_i + FIGHTER_OBJ_ID, (signed char)host_readbs(Real2Host(fighter_head_ptr) + FIGHTER_OBJ_ID));
+#endif
+									host_writeb(Real2Host(fighter_head_ptr) + FIGHTER_OBJ_ID,  (signed char)obj_id);
+									/* write cb_id of the tail part at FIGHTER_OBJ_ID of the head part.
+									 * when the head part moves lated, it will be written to the cb.
+									 * possible bug: the overwritten FIGHTER_OBJ_ID is lost! */
 								} else {
 									host_writeb(list_i + FIGHTER_OBJ_ID, (signed char)target_id);
 								}
@@ -704,7 +725,6 @@ void draw_fight_screen(Bit16u val)
 													 * remove tail of the escaped two-fielded enemy from the chessboard
 													 * For more on this bug, see Original-Bug 3 at seg032.cpp */
 													Bit8u *fighter_tmp = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(list_i + FIGHTER_TWOFIELDED))));
-													D1_INFO("Remove tail part of escaped enemy at FIGHTER_CBX = %d, FIGHTER_CBY = %d to obj_id=%d\n", host_readbs(fighter_tmp + FIGHTER_CBX), host_readbs(fighter_tmp + FIGHTER_CBY), host_readbs(fighter_tmp + FIGHTER_OBJ_ID));
 													FIG_set_cb_field(host_readbs(fighter_tmp + FIGHTER_CBY), host_readbs(fighter_tmp + FIGHTER_CBX), host_readbs(fighter_tmp + FIGHTER_OBJ_ID));
 #endif
 													figlist_remove[2 + host_readbs(list_i + FIGHTER_SHEET)] = ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(list_i + FIGHTER_TWOFIELDED));
@@ -737,7 +757,7 @@ void draw_fight_screen(Bit16u val)
 										}
 
 								} else {
-									if (!twofielded_move) {
+									if (!twofielded_move_tail_first) {
 										FIG_set_cb_field(host_readbs(list_i + FIGHTER_CBY), host_readbs(list_i + FIGHTER_CBX), obj_id);
 									}
 								}

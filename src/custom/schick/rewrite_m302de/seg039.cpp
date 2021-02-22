@@ -242,7 +242,7 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 
 			FIG_set_cb_field(y + ds_readws((GFXTAB_TWOFIELDED_EXTRA_CB + 2) + dir * 4),
 				x + ds_readws(GFXTAB_TWOFIELDED_EXTRA_CB + dir * 4),
-					object + 20);
+				object + 20);
 		}
 	}
 
@@ -324,6 +324,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 	host_writeb(ptr + ENEMY_SHEET_FIGHTER_ID, FIG_add_to_list(-1));
 
 	if (is_in_byte_array(host_readb(ptr + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+		/* create fighter entry for the tail of a two-fielded enemy */
 
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_CBX), x + ds_readbs(GFXTAB_TWOFIELDED_EXTRA_CB + host_readbs(ptr + ENEMY_SHEET_VIEWDIR) * 4));
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_CBY), y + ds_readbs((GFXTAB_TWOFIELDED_EXTRA_CB + 2) + host_readbs(ptr + ENEMY_SHEET_VIEWDIR) * 4));

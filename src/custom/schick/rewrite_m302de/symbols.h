@@ -1489,7 +1489,7 @@
 #define FIGHTOBJ_LIST                   (0xd874)    /* unsigned char[90] */
 #define FIG_ANISHEETS                   (0xd8ce)    /* struct(243)[8] */
 #define FIG_LIST_ELEM                   (0xe066)    /* struct(35) */
-#define FIG_LIST_ARRAY                  (0xe089)    /* unsigned char[127] */
+#define FIG_LIST_ARRAY                  (0xe089)    /* unsigned char[127]; list of flags (0 or 1) indicating if the corresponding FIGHTER_ID is in use. more precisely: FIG_LIST_ARRAY[i] is 1 (otherwise 0) if the index i is the FIGHTER_ID of a fighter object. */
 #define FIG_LIST_HEAD                   (0xe108)    /* RealPt; to a list */
 #define LOCATION_MARKET_FLAG            (0xe10c)    /* unsigned char; {0,1} */
 #define WALLCLOCK_REDRAW                (0xe10d)    /* unsigned short; {0,1} */
@@ -1541,7 +1541,7 @@
 #define AUTOFIGHT                       (0xe318)    /* signed short */
 #define FIG_DROPPED_WEAPONS             (0xe31a)    /* signed short[30] */
 #define CHESSBOARD_CPY                  (0xe356)    /* RealPt */
-#define FIG_TWOFIELDED_TABLE            (0xe35a)    /* signed char[21]; table containing the fighter-ids of twofielded enemies */
+#define FIG_TWOFIELDED_TABLE            (0xe35a)    /* signed char[21]; table containing the fighter-ids of the head parts of the twofielded enemies */
 #define FIG_TWOFIELDED_COUNT            (0xe36f)    /* signed char */
 #define FIGHTOBJ_BUF_FREESPACE          (0xe370)    /* signed long */
 #define BUFFER_WEAPANIDAT               (0xe374)    /* RealPt; pointer to WEAPANI.DAT */
