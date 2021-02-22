@@ -501,7 +501,7 @@ enum {
     FIGHTER_ID          = 0x10, /* position in FIG_LIST_ARRAY */
     FIGHTER_Z           = 0x11,
     FIGHTER_VISIBLE     = 0x12, /* {0,1,2} */
-    FIGHTER_TWOFIELDED  = 0x13, /* position in FIG_TWOFIELDED_TABLE. -1 if fighter is not twofielded. */
+    FIGHTER_TWOFIELDED  = 0x13, /* -1 if fighter is not twofielded. for twofielded fighter: head part: FIGHTER_TWOFIELDED can be used as index for FIG_TWOFIELDED_TABLE which contains the FIGHTER_ID); tail part: entry is FIGHTER_TWOFIELDED+20 of the head part. */
     FIGHTER_OBJ_ID      = 0x14, /* stores the id of the cb_entry of the square before the fighter entered it */
     FIGHTER_IS_ENEMY    = 0x15, /* {0 = hero, 1 = enemy, 2 = hero} */ /* strangly, at one position in seg039.cpp the value 2 is written */
     FIGHTER_SPRITE_NO   = 0x16, /* 0x12c0, 0x1531, 0x1210 */
