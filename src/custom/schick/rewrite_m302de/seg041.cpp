@@ -53,92 +53,103 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 	left_hand = host_readws(hero + HERO_ITEM_LEFT);
 
 	switch (right_hand) {
-	case 0x5:	/* SPEER	/ spear */
-	case 0x10:	/* WURFBEIL	/ francesca */
-	case 0x11:	/* WURFSTERN	/ throwing star */
-	case 0x21:	/* WURFAXT	/ throwing axe */
-	case 0x62:	/* WURFMESSER	/ throwing dagger */
-	case 0x89:	/* SCHNEIDEZAHN	/ cutting tooth */
-	case 0xda:
-	{
-		if (!arg) {
+		case 0x5:	/* SPEER	/ spear */
+		case 0x10:	/* WURFBEIL	/ francesca */
+		case 0x11:	/* WURFSTERN	/ throwing star */
+		case 0x21:	/* WURFAXT	/ throwing axe */
+		case 0x62:	/* WURFMESSER	/ throwing dagger */
+		case 0x89:	/* SCHNEIDEZAHN	/ cutting tooth */
+		case 0xda:
+			{
+				if (!arg) {
 
-			if (ds_readws(FIG_DROPPED_COUNTER) < 30) {
-				ds_writew(FIG_DROPPED_WEAPONS + ds_readw(FIG_DROPPED_COUNTER) * 2, right_hand);
-				inc_ds_ws(FIG_DROPPED_COUNTER);
+					if (ds_readws(FIG_DROPPED_COUNTER) < 30) {
+						ds_writew(FIG_DROPPED_WEAPONS + ds_readw(FIG_DROPPED_COUNTER) * 2, right_hand);
+						inc_ds_ws(FIG_DROPPED_COUNTER);
+					}
+
+					drop_item(hero, 3, 1);
+
+					if (left_hand == right_hand) {
+						move_item(3, 4, hero);
+					}
+
+				}
+				retval = 1;
+				break;
 			}
+		case 0x9:	/* KURZBOGEN	/ SHORT BOW */
+		case 0x13:	/* LANGBOGEN	/ LONG BOW */
+			{
+				/* PFEIL / ARROWS */
+				if (left_hand != 10) {
+					if (arg != 2) {
 
-			drop_item(hero, 3, 1);
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_tx(8),
+								(char*)hero + HERO_NAME2);
 
-			if (left_hand == right_hand) {
-				move_item(3, 4, hero);
+						GUI_output(Real2Host(ds_readd(DTP2)));
+					}
+
+				} else {
+					if (!arg) {
+						drop_item(hero, 4, 1);
+					}
+					retval = 1;
+				}
+				break;
 			}
+		case 0xc:	/* ARMBRUST	/ CROSSBOW */
+			{
+				/* BOLZEN / BOLT */
+				if (left_hand != 13) {
+					if (arg != 2) {
 
-		}
-		retval = 1;
-		break;
-	}
-	case 0x9:	/* KURZBOGEN	/ SHORT BOW */
-	case 0x13:	/* LANGBOGEN	/ LONG BOW */
-	{
-		/* PFEIL / ARROWS */
-		if (left_hand != 10) {
-			if (arg != 2) {
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_tx(9),
+								(char*)hero + HERO_NAME2);
 
-				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(8),
-					(char*)hero + HERO_NAME2);
-
-				GUI_output(Real2Host(ds_readd(DTP2)));
+						GUI_output(Real2Host(ds_readd(DTP2)));
+					}
+				} else {
+					if (!arg) {
+						drop_item(hero, 4, 1);
+					}
+					retval = 1;
+				}
+				break;
 			}
+		case 0x78:	/* SCHLEUDER	/ SLING */
+			{
+#ifndef M302DE_FEATURE_MOD
+				/* sling does not work in the original game.
+				 * there is no object with the id 999 */
+				if (left_hand != 999) {
+					if (arg != 2) {
 
-		} else {
-			if (!arg) {
-				drop_item(hero, 4, 1);
-			}
-			retval = 1;
-		}
-		break;
-	}
-	case 0xc:	/* ARMBRUST	/ CROSSBOW */
-	{
-		/* BOLZEN / BOLT */
-		if (left_hand != 13) {
-			if (arg != 2) {
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_tx(10),
+								(char*)hero + HERO_NAME2);
 
-				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(9),
-					(char*)hero + HERO_NAME2);
-
-				GUI_output(Real2Host(ds_readd(DTP2)));
+						GUI_output(Real2Host(ds_readd(DTP2)));
+					}
+				} else {
+					if (!arg) {
+						drop_item(hero, 4, 1);
+					}
+					retval = 1;
+				}
+#else
+				/* Feature mod 3:
+				 * Make the sling item usable, based on the following decisions:
+				 * * No ammunition is needed (rationale: stones don't exist in the original game and are ubiquitos)
+				 * * left hand may hold an item (like a shield) (rationale: https://de.wikipedia.org/wiki/Datei:Liber.jpg)
+				 */
+				retval = 1;
+#endif
+				break;
 			}
-		} else {
-			if (!arg) {
-				drop_item(hero, 4, 1);
-			}
-			retval = 1;
-		}
-		break;
-	}
-	case 0x78:	/* SCHLEUDER	/ SLING */
-	{
-		if (left_hand != 999) {
-			if (arg != 2) {
-
-				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(10),
-					(char*)hero + HERO_NAME2);
-
-				GUI_output(Real2Host(ds_readd(DTP2)));
-			}
-		} else {
-			if (!arg) {
-				drop_item(hero, 4, 1);
-			}
-			retval = 1;
-		}
-		break;
-	}
 	}
 	return retval;
 }
