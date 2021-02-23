@@ -122,7 +122,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 			}
 		case 0x78:	/* SCHLEUDER	/ SLING */
 			{
-#ifndef M302DE_FEATURE_MOD
+#ifndef M302de_FEATURE_MOD
 				/* sling does not work in the original game.
 				 * there is no object with the id 999 */
 				if (left_hand != 999) {
