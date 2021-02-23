@@ -417,6 +417,13 @@ void status_show(Bit16u index)
 				bp -= 2;
 			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(Real2Host(hero) + HERO_LOAD))
 				bp -= 2;
+#ifdef M302de_ORIGINAL_BUGFIX
+			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 110 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
+				/* Original-Bug 6: If the load of a hero is at least 110% of carrying capacity, the hero gets only 1 BP.
+				 * see function FIG_do_round in seg032.cpp */
+				bp = 1;
+			}
+#endif
 
 			if (ds_readw(GAME_MODE) == 2) {
 				/* advanded mode */
