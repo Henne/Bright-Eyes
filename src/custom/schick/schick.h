@@ -11,6 +11,10 @@
 /* comment this out to have the original, but buggy behaviour */
 #define M302de_ORIGINAL_BUGFIX
 
+/* BrightEyes implements a few (moderate) feature extensions/mods.
+ * comment this out to avoid the new features */
+#define M302de_FEATURE_MOD
+
 /* slow down when too fast */
 #define M302de_SPEEDFIX
 
