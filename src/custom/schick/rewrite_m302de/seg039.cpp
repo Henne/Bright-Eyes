@@ -115,8 +115,13 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 
 	/* roll out LE and save it to the sheet */
 	host_writew(sheet + ENEMY_SHEET_LE_ORIG, dice_template(host_readw(monster + MONSTER_LE)));
+
+	/* Feature mod 1: avoid the a posteriori weakening of the enemies (5/6 LE) of the original game. */
+#ifndef M302DE_FEATURE_MOD
 	/* recalculate LE = LE / 6 * 5; */
 	host_writew(sheet + ENEMY_SHEET_LE_ORIG, host_readws(sheet + ENEMY_SHEET_LE_ORIG) / 6 * 5);
+#endif
+
 	/* copy LE*/
 	host_writew(sheet + ENEMY_SHEET_LE, host_readw(sheet + ENEMY_SHEET_LE_ORIG));
 
