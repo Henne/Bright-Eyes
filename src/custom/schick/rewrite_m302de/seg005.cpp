@@ -316,7 +316,7 @@ void draw_fight_screen(Bit16u val)
 	signed short viewdir_after;
 	signed short target_id;
 	signed char twofielded_move_tail_first;
-	RealPt fighter_head_ptr;
+	RealPt p_fighter_tmp;
 	signed short viewdir_unconsc;
 	Bit8u *sheet;
 	Bit8u *p_weapon_anisheet;
@@ -687,16 +687,16 @@ void draw_fight_screen(Bit16u val)
 									twofielded_move_tail_first = 1;
 
 									/* create pointer to the head part of the enemy */
-									fighter_head_ptr = FIG_get_ptr(ds_readbs(((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + target_id * SIZEOF_ENEMY_SHEET));
+									p_fighter_tmp = FIG_get_ptr(ds_readbs(((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + target_id * SIZEOF_ENEMY_SHEET));
 
 #ifdef M302de_ORIGINAL_BUGFIX
 									/* Original-Bug 5: */
 									/* The FIGHTER_OBJ_ID entry of the head part will be overwritten by the next line in the original code.
 									 * In this way, sometimes dead bodies are lost from the chessboard after a two-fielded enemy walks over it.
 									 * The right thing is to copy it to the FIGHTER_OBJ_ID of tail part. */
-									host_writeb(list_i + FIGHTER_OBJ_ID, (signed char)host_readbs(Real2Host(fighter_head_ptr) + FIGHTER_OBJ_ID));
+									host_writeb(list_i + FIGHTER_OBJ_ID, (signed char)host_readbs(Real2Host(p_fighter_tmp) + FIGHTER_OBJ_ID));
 #endif
-									host_writeb(Real2Host(fighter_head_ptr) + FIGHTER_OBJ_ID,  (signed char)obj_id);
+									host_writeb(Real2Host(p_fighter_tmp) + FIGHTER_OBJ_ID,  (signed char)obj_id);
 									/* write cb_id of the tail part at FIGHTER_OBJ_ID of the head part.
 									 * when the head part moves lated, it will be written to the cb.
 									 * possible bug: the overwritten FIGHTER_OBJ_ID is lost! */
@@ -724,8 +724,8 @@ void draw_fight_screen(Bit16u val)
 													/* Original-Bug 4:
 													 * remove tail of the escaped two-fielded enemy from the chessboard
 													 * For more on this bug, see Original-Bug 3 at seg032.cpp */
-													Bit8u *fighter_tmp = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(list_i + FIGHTER_TWOFIELDED))));
-													FIG_set_cb_field(host_readbs(fighter_tmp + FIGHTER_CBY), host_readbs(fighter_tmp + FIGHTER_CBX), host_readbs(fighter_tmp + FIGHTER_OBJ_ID));
+													p_fighter_tmp = FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(list_i + FIGHTER_TWOFIELDED)));
+													FIG_set_cb_field(host_readbs(Real2Host(p_fighter_tmp) + FIGHTER_CBY), host_readbs(Real2Host(p_fighter_tmp) + FIGHTER_CBX), host_readbs(Real2Host(p_fighter_tmp) + FIGHTER_OBJ_ID));
 #endif
 													figlist_remove[2 + host_readbs(list_i + FIGHTER_SHEET)] = ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(list_i + FIGHTER_TWOFIELDED));
 												}
