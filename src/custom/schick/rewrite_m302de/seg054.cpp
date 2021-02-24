@@ -43,7 +43,13 @@ RealPt get_first_brewing_hero(void)
 	signed short i;
 
 	hero = (RealPt)ds_readd(HEROES);
-	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
+# ifndef M302de_ORIGINAL_BUGFIX
+	for (i = 0; i < 6; i++, hero += SIZEOF_HERO)
+# else
+	/* Original-Bug 7: Now NPCs can brew */
+	for (i = 0; i < 7; i++, hero += SIZEOF_HERO)
+# endif
+	{
 		if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(Real2Host(hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
 			hero_brewing(Real2Host(hero)) &&
@@ -92,12 +98,14 @@ void do_inn(void)
 	stay = 0;
 	ds_writebs(SLEEP_QUALITY, -1);
 
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 8 */
 	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) == 1) {
+		/* current group consists only of a single hero */
 
 		hero = get_first_hero_available_in_group();
 
 		if (hero_brewing(Real2Host(hero))) {
-
 			draw_status_line();
 
 			if (host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) != 0) {
@@ -109,8 +117,13 @@ void do_inn(void)
 					(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ttx(735) : get_ttx(736)));
 
 				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(734), get_ttx(537));
+				/* <HERO> befindet sich inmitten eines alchimistischen Versuchs, der wohl noch <DAYS> Tage dauert.
+				 * * Versuch abbrechen
+				 * * Weiter brauen lassen
+				 */
 
 				if (answer == 1) {
+					/* abort brewing */
 					do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 1);
 				} else {
 					done = 1;
@@ -122,8 +135,9 @@ void do_inn(void)
 				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 0);
 			}
 		}
-
-	} else if ((hero = get_first_brewing_hero())) {
+	}
+	else if ((hero = get_first_brewing_hero())) {
+		/* Original-Bug 9 */
 
 		draw_status_line();
 
@@ -147,14 +161,125 @@ void do_inn(void)
 			ds_writews(TEXTBOX_WIDTH, tw_bak);
 
 			if (answer == 1) {
+				/* abort brewing */
 				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 1);
+				/* Original-Bug 10 */
 				GRP_merge();
 			}
 		} else {
+			/* hero brewing, HERO_RECIPE_TIMER == 0. STAFFSPELL_TIMER not checked */
 			do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 0);
 			GRP_merge();
 		}
 	}
+#else
+	/* fix Original-Bug 8, 9, 10 */
+	hero = get_first_hero_available_in_group();
+	if (hero_brewing(Real2Host(hero))) {
+		draw_status_line();
+
+		if (host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) != 0) {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ttx(733),
+					(char*)Real2Host(hero) + HERO_NAME2,
+					host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER),
+					(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ttx(735) : get_ttx(736)));
+
+			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(734), get_ttx(537));
+			/* <HERO> befindet sich inmitten eines alchimistischen Versuchs, der wohl noch <DAYS> Tage dauert.
+			 * * Versuch abbrechen
+			 * * Weiter brauen lassen
+			 */
+
+			if (answer == 1) {
+				/* abort brewing */
+				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 1);
+			} else {
+				done = 1;
+				ds_writew(COMBO_MODE, 0);
+				stay = 1;
+			}
+		} else {
+			/* hero brewing, HERO_RECIPE_TIMER == 0. STAFFSPELL_TIMER not checked */
+			do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 0);
+		}
+	} else {
+		hero = (RealPt)ds_readd(HEROES);
+		for (i = 0; i < 7; i++, hero += SIZEOF_HERO) {
+			if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
+					host_readbs(Real2Host(hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
+					hero_brewing(Real2Host(hero)) &&
+					host_readbs(Real2Host(hero) + HERO_HOSTEL_ID) == ds_readws(TYPEINDEX))
+			{
+				draw_status_line();
+
+				signed int finalize_alchemy = -1;
+
+				if (host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) != 0) {
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ttx(733),
+							(char*)Real2Host(hero) + HERO_NAME2,
+							host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER),
+							(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ttx(735) : get_ttx(736)));
+
+					tw_bak = ds_readws(TEXTBOX_WIDTH);
+					ds_writews(TEXTBOX_WIDTH, 4);
+
+					answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(734), get_ttx(562));
+					/* <HERO> befindet sich inmitten eines alchimistischen Versuchs, der wohl noch <DAYS> Tage dauert.
+					 * * Versuch abbrechen
+					 * * Weiter brauen lassen
+					 */
+
+					ds_writews(TEXTBOX_WIDTH, tw_bak);
+
+					if (answer == 1) {
+						/* abort brewing */
+						finalize_alchemy = 1;
+					}
+				} else {
+					/* hero brewing, HERO_RECIPE_TIMER == 0. STAFFSPELL_TIMER not checked */
+					finalize_alchemy = 0;
+				}
+				if (finalize_alchemy != -1) {
+					do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), finalize_alchemy);
+
+					signed char group_nr = host_readbs(Real2Host(hero) + HERO_GROUP_NO);
+
+					/* ASSERT */
+					/*
+					if ((host_readbs(GROUP_MEMBER_COUNTS + group_nr)) != 1) {
+						D1_INFO("FEHLER: Gruppengroesse eines brauenden Helden ist nicht 1.");
+					}
+					*/
+
+					/* the following lines are taken (& adjusted) from function GRP_merge (seg049.cpp) */
+					ds_writeb(GROUPS_DIRECTION + group_nr, 0);
+					ds_writew(GROUPS_X_TARGET + group_nr * 2,0);
+					ds_writew(GROUPS_Y_TARGET + group_nr * 2,0);
+					ds_writebs(GROUPS_TOWN + group_nr,0);
+					ds_writeb(GROUPS_DNG_INDEX + group_nr,0);
+					ds_writeb(GROUPS_DNG_LEVEL + group_nr,0);
+					ds_writeb(GROUPS_DIRECTION_BAK + group_nr,0);
+					ds_writew(GROUPS_X_TARGET_BAK + group_nr * 2,0);
+					ds_writew(GROUPS_Y_TARGET_BAK + group_nr * 2,0);
+					ds_writebs(GROUPS_LOCATION_BAK + group_nr,0);
+					ds_writeb(GROUPS_TOWN_BAK + group_nr,0);
+					ds_writeb(GROUPS_DNG_INDEX_BAK + group_nr,0);
+					ds_writeb(GROUPS_DNG_LEVEL_BAK + group_nr, 0);
+					ds_writeb(GROUP_MEMBER_COUNTS + group_nr, 0);
+
+					inc_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
+					host_writeb(Real2Host(hero) + HERO_GROUP_NO, ds_readbs(CURRENT_GROUP));
+
+					GRP_sort_heroes();
+				}
+			}
+		}
+	}
+#endif
 
 	if (done == 0) {
 
