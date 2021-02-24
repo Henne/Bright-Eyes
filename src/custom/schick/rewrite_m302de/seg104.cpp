@@ -95,7 +95,9 @@ void hero_use_ingrendients(Bit8u *hero, signed short recipe_index)
 	}
 }
 
-signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short flag)
+signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short flag_abort)
+	/* flag_abort = 0: finalize running brewing process
+	 * flag_abort = 1: abort running brewing process */
 {
 	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * RECIPE_SIZE;
 
@@ -109,7 +111,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 	host_writeb(hero + HERO_RECIPE_ID, 0);
 	host_writeb(hero + HERO_HOSTEL_ID, 0);
 
-	if ((test_skill(hero, TA_ALCHIMIE, host_readbs(r_ptr + RECIPE_DIFFICULTY)) > 0) && (flag == 0))
+	if ((test_skill(hero, TA_ALCHIMIE, host_readbs(r_ptr + RECIPE_DIFFICULTY)) > 0) && (flag_abort == 0))
 	{
 		/* success */
 
