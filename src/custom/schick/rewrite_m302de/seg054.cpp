@@ -66,7 +66,13 @@ void do_inn(void)
 	signed short done;
 	signed short refresh;
 	signed short portion_size;
+# ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 7: NPC Curian cannot do magic actions in an inn.
+	 * Problem: no space allocated for the NPC (= seventh hero). */
 	signed char magic_act[6];
+# else
+	signed char magic_act[7];
+# endif
 	RealPt hero;
 	Bit8u *hero2;
 	Bit8u *inn_ptr;
@@ -133,10 +139,10 @@ void do_inn(void)
 			ds_writews(TEXTBOX_WIDTH, 4);
 
 			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(734), get_ttx(562));
-			/* <Held> befindet sich inmitten eines alchimistischen Versuchs, der wohl noch <DAYS> Tage dauert.
+			/* <HERO> befindet sich inmitten eines alchimistischen Versuchs, der wohl noch <DAYS> Tage dauert.
 			 * * Versuch abbrechen
 			 * * Weiter brauen lassen
-			 * */
+			 */
 
 			ds_writews(TEXTBOX_WIDTH, tw_bak);
 
@@ -156,7 +162,13 @@ void do_inn(void)
 
 		draw_loc_icons(ds_readws(COMBO_MODE) == 0 ? 7 : 8, 21, 13, 19, 25, 11, 17, 8, 50);
 
-		for (i = 0; i < 6; i++) {
+# ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 7: NPC Curian cannot do magic actions in an inn. */
+		for (i = 0; i < 6; i++)
+# else
+		for (i = 0; i < 7; i++)
+# endif
+		{
 			magic_act[i] = 0;
 		}
 	}
@@ -395,6 +407,9 @@ void do_inn(void)
 							host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 						{
 							if (booked_days > 1) {
+								/* Original-Bug 7:
+								 * magic_act[6] = 0 writes out of boundary.
+								 * Fixed above. */
 								magic_act[i] = 0;
 							}
 
