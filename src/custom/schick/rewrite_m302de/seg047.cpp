@@ -292,6 +292,9 @@ void update_atpa(Bit8u *hero)
 
 	/* ATPA base = (IN + KK + GE) / 5 rounded */
 	erg = div(host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_IN)) + host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_GE)), 5);
+	/* Original-Bug:
+	 * According to DSA 3 rules, AT basis value is (MU + KK + GE) / 5
+	 * (PA basis (IN + KK + GE)/5 is correct */
 
 	/* round up */
 	if (erg.rem >= 3)
