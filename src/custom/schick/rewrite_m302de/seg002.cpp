@@ -2576,7 +2576,7 @@ void sub_mod_timers(Bit32s val)
 					/* if a hero/npc is determined */
 
 					mp = get_hero(h_index);
-					/* make a pointer to the heroes attribute mod */
+					/* make a pointer to the hero's attribute mod */
 					mp += (Bit32u)host_readw(sp + 4);
 					/* subtract the mod */
 					sub_ptr_bs(mp, host_readbs(sp + 7));
@@ -4144,7 +4144,7 @@ void seg002_484f(void)
 }
 
 /**
- * \brief   returns true if heroes not sleeping, dead, petrified, unconscious, renegade or fleeing
+ * \brief   returns true if the hero is not sleeping, dead, petrified, unconscious, renegade or fleeing
  *
  * \param   hero        pointer to the hero
  * \return              {0, 1}
@@ -4167,7 +4167,7 @@ signed short check_hero(Bit8u *hero)
 }
 
 /**
- * \brief   returns true if heroes not dead, petrified, unconscious or renegade
+ * \brief   returns true if the hero is not dead, petrified, unconscious or renegade
  */
 /* should be static */
 signed short check_hero_no2(Bit8u *hero)
@@ -4262,7 +4262,7 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 }
 
 /**
- * \brief   add AE points to heroes current AE
+ * \brief   add AE points to the current AE of a hero.
  */
 void add_hero_ae(Bit8u* hero, signed short ae)
 {
@@ -4272,7 +4272,7 @@ void add_hero_ae(Bit8u* hero, signed short ae)
 		signed short tmp = ds_readw(UPDATE_STATUSLINE);
 		ds_writew(UPDATE_STATUSLINE, 0);
 
-		/* add AE to heroes current AE */
+		/* add AE to hero's current AE */
 		add_ptr_ws(hero + HERO_AE, ae);
 
 		/* if current AE is greater than AE maximum
@@ -4524,7 +4524,7 @@ void do_starve_damage(Bit8u *hero, signed short index, signed short type)
 		signed short bak = ds_readw(UPDATE_STATUSLINE);
 		ds_writew(UPDATE_STATUSLINE, 0);
 
-		/* decrement the heroes LE */
+		/* decrement LE of the hero */
 		dec_ptr_ws(hero + HERO_LE);
 
 		/* set the critical message type for the hero */
