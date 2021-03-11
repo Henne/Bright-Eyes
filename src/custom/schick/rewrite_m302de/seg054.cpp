@@ -44,9 +44,12 @@ RealPt get_first_brewing_hero(void)
 
 	hero = (RealPt)ds_readd(HEROES);
 # ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 11: If NPC Curian got separated from the group for brewing a recipe at an inn,
+	 * he is stuck in the inn. When the group enters the inn where they left him, no dialog appears.
+	 * Also, switch group does not help, as his group cannot be selected.
+	 * ("In dieser Gruppe ist momentan niemand in der Lage, etwas zu tun.") */
 	for (i = 0; i < 6; i++, hero += SIZEOF_HERO)
 # else
-	/* Original-Bug 7: Now NPCs can brew */
 	for (i = 0; i < 7; i++, hero += SIZEOF_HERO)
 # endif
 	{

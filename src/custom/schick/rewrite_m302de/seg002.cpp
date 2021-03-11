@@ -4158,7 +4158,6 @@ signed short check_hero(Bit8u *hero)
 		hero_petrified(hero) ||
 		hero_unconscious(hero) ||
 		hero_renegade(hero) ||
-		/* Check if ??? */
 		(host_readb(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE))
 	{
 		return 0;
@@ -5128,7 +5127,9 @@ signed short count_heroes_available(void)
 }
 
 /**
- * \brief   TODO
+ * \brief   count available (= not dead, petrified, unconscious, renegade) heroes in current group
+ *
+ * \return   number of available (= not dead, petrified, unconscious, renegade) heroes in current group
  */
 signed short count_heroes_available_in_group(void)
 {
@@ -5137,10 +5138,9 @@ signed short count_heroes_available_in_group(void)
 	Bit8u *hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
-		/* Check class, group and check_hero_no2() */
-		if (host_readbs(hero_i + HERO_TYPE) &&
-			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
-			check_hero_no2(hero_i))
+		if (host_readbs(hero_i + HERO_TYPE) && /* != HERO_TYPE_NONE */
+			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) && /* hero in current group */
+			check_hero_no2(hero_i)) /* hero not dead, petrified, unconscious or renegade */
 		{
 			heroes++;
 		}

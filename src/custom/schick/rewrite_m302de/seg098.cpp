@@ -385,7 +385,7 @@ signed short use_magic(RealPt hero)
 				thonny_pos = -1;
 			}
 
-			/* Aks how many LE should be used */
+			/* Asks how many LE should be used */
 			le = GUI_input(get_ttx(333), 2);
 
 			if (le != -1) {

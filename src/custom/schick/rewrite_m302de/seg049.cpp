@@ -163,20 +163,28 @@ void GRP_save_pos(signed short group)
 
 void GRP_split(void)
 {
-	signed short new_group;
+	signed short new_group_id;
 	signed short not_empty;
 	signed short answer;
 
-	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1)) {
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 13:
+	 * Split group does not work if the active group consists of 2 available heroes and there is an NPC in another group. */
+	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1))
+#else
+	if (count_heroes_available_in_group() <= (((host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE) && (host_readbs(get_hero(6) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))) ? 2 : 1))
+#endif
+	{
+		/* don't allow to split a group consisting of a single hero or of a single hero + NPC */
 
-		GUI_output(get_ttx(514));
+		GUI_output(get_ttx(514)); /* Einer alleine kann sich doch nicht aufteilen... Oder soll er sich zerreissen? */
 	} else {
 
 		not_empty = 0;
-		new_group = 0;
+		new_group_id = 0;
 
-		while (ds_readbs(GROUP_MEMBER_COUNTS + new_group) != 0) {
-			new_group++;
+		while (ds_readbs(GROUP_MEMBER_COUNTS + new_group_id) != 0) {
+			new_group_id++;
 		}
 
 		do {
@@ -188,15 +196,22 @@ void GRP_split(void)
 			} else {
 
 				not_empty = 1;
-				host_writeb(get_hero(answer) + HERO_GROUP_NO, (signed char)new_group);
-				inc_ds_bs_post(GROUP_MEMBER_COUNTS + new_group);
+				host_writeb(get_hero(answer) + HERO_GROUP_NO, (signed char)new_group_id);
+				inc_ds_bs_post(GROUP_MEMBER_COUNTS + new_group_id);
 				dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 			}
 
-		} while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1));
+		}
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 14:
+	 * Split group does not allow to select all but one available hero of the active group if there is an NPC in another group. */
+		while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1));
+#else
+		while	(count_heroes_available_in_group() > (((host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE) && (host_readbs(get_hero(6) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))) ? 2 : 1));
+#endif
 
 		if (not_empty) {
-			GRP_save_pos(new_group);
+			GRP_save_pos(new_group_id);
 		}
 	}
 }
