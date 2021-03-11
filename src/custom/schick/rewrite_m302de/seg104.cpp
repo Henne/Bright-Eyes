@@ -207,8 +207,8 @@ signed short plan_alchemy(Bit8u *hero)
 
 				if (hero_has_ingrendients(hero, recipe_index)) {
 
-					/* check AE costs */
 					if (ds_readws((ALCHEMY_RECIPES + RECIPE_AE) + recipe_index * RECIPE_SIZE) > host_readws(hero + HERO_AE)) {
+						/* AE not sufficient => brewing not possible */
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ttx(607),
@@ -218,6 +218,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 							retval = 0;
 					} else {
+						/* AE sufficient */
 
 						if ((ds_readbs(LOCATION) == LOCATION_INN) && (ds_readbs(SLEEP_QUALITY) == -1)) {
 							/* no room booked => brewing not possible */
@@ -237,10 +238,18 @@ signed short plan_alchemy(Bit8u *hero)
 
 							retval = 0;
 						} else {
-							if ((ds_readbs(TOTAL_HERO_COUNTER) > 1) &&
+							if (
+#ifndef M302de_ORIGINAL_BUGFIX
+								/* Original-Bug 12: If the total number of heroes is >= 2, and the current group consists only of a single available hero (+possibly the non-brewing NPC),
+								 * the option to separate that hero from the group is shown, resulting in an active group which is empty or contains only the NPC and dead/petrified/unconscious/renegade heroes
+								 * See https://www.crystals-dsa-foren.de/showthread.php?tid=98&pid=166399#pid166399 and the following posts. */
+								(ds_readbs(TOTAL_HERO_COUNTER) > 1) &&
+#else
+								(count_heroes_available_in_group() >= ((host_readbs(get_hero(6) + HERO_TYPE) == HERO_TYPE_NONE) || (host_readbs(get_hero(6) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) || (hero == get_hero(6)) ? 2 : 3)) &&
+#endif
 								(ds_readbs(LOCATION) != LOCATION_WILDCAMP) &&
-								(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) > 8))
-							{
+								(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) > 8)
+							) {
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_tx(45),
@@ -290,6 +299,7 @@ signed short plan_alchemy(Bit8u *hero)
 								/* split group */
 
 								/* find an empty group */
+								/* Original-Bug: only 6 groups, but 7 heroes might cause an 'out of boundary' here */
 								for (l5 = 0; ds_readbs(GROUP_MEMBER_COUNTS + l5) != 0; l5++);
 
 								host_writebs(hero + HERO_GROUP_NO, (signed char)l5);

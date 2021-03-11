@@ -106,7 +106,10 @@ void THO_botschaft(void)
 {
 	int closed = 0;
 
-	/* At the 6th month in year 17 Hal another message is shown */
+	/* At the 6th month in year 17 Hal the embassy is closed and another message is shown */
+	/* Reason:
+	 * Diplomatische Probleme infolge des Bruchs des Garether Vertrags? (Die Thorwaler besetzen im Hesinde Salzerhaven) *
+	 * https://www.crystals-dsa-foren.de/showthread.php?tid=700&pid=99706#pid99706 */
 	if (ds_readbs(YEAR) > 17 ||
 		(ds_readbs(YEAR) == 17 && ds_readbs(MONTH) > 5)) {
 
