@@ -161,9 +161,6 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 				host_readbs(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA)) - 4);
 
 			if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
-				/* Original-Bug:
-				 * Belt animation is also shown when the belt is equipped in a fight (via "Gegenstand wechseln").
-				 * This leaves the game in a corrupted state. */
 				equip_belt_ani();
 			}
 		}

@@ -5147,7 +5147,7 @@ signed short count_heroes_available_in_group(void)
 }
 
 #ifdef M302de_ORIGINAL_BUGFIX
-/* this function allows cleaner fixes for Original-Bug 12 and 13 */
+/* this function allows cleaner fixes for Original-Bug 12, 13 and 14 */
 signed short count_heroes_available_in_group_ignore_npc(void)
 {
 	signed short heroes = 0;
