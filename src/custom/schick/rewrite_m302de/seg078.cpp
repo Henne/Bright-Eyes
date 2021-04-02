@@ -324,6 +324,7 @@ signed short DNG02_handler(void)
 
 	} else if (target_pos == 0x1809 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG02_APPARATURE_DESTROYED))
 	{
+		/* petrification trap */
 		GUI_output(get_tx(25));
 
 		hero = get_hero(0);

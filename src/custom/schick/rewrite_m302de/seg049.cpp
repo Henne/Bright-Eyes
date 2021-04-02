@@ -172,7 +172,7 @@ void GRP_split(void)
 	 * Split group does not work if the active group consists of 2 available heroes and there is an NPC in another group. */
 	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1))
 #else
-	if (count_heroes_available_in_group() <= (((host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE) && (host_readbs(get_hero(6) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))) ? 2 : 1))
+	if (count_heroes_available_in_group_ignore_npc() <= 1)
 #endif
 	{
 		/* don't allow to split a group consisting of a single hero or of a single hero + NPC */
@@ -205,9 +205,9 @@ void GRP_split(void)
 #ifndef M302de_ORIGINAL_BUGFIX
 	/* Original-Bug 14:
 	 * Split group does not allow to select all but one available hero of the active group if there is an NPC in another group. */
-		while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1));
+		while (count_heroes_available_in_group() > (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1));
 #else
-		while	(count_heroes_available_in_group() > (((host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE) && (host_readbs(get_hero(6) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))) ? 2 : 1));
+		while (count_heroes_available_in_group_ignore_npc() > 1);
 #endif
 
 		if (not_empty) {

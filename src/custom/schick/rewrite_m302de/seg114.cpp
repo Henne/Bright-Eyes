@@ -353,7 +353,7 @@ void tevent_113(void)
 	}
 }
 
-/* a swamp */
+/* Phexcaer - Skelellen: a swamp */
 void tevent_114(void)
 {
 	signed short i;
@@ -548,7 +548,7 @@ void tevent_119(void)
 	}
 }
 
-/* wolves attack */
+/* Orvil - Rovik: wolves threaten a sheperd */
 void tevent_122(void)
 {
 	signed short answer;
@@ -563,6 +563,7 @@ void tevent_122(void)
 
 		if (answer == 1)
 		{
+			/* attack wolves */
 			if (!TRV_fight_event(FIGHTS_F122, 122))
 			{
 				ds_writeb(TEVENT122_FLAG, 1);
@@ -574,6 +575,7 @@ void tevent_122(void)
 				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(68), get_tx2(63), 0);
 			}
 		} else {
+			/* decline to help */
 			sub_hero_ap_all(20);
 		}
 	}

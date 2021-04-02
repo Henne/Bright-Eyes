@@ -1830,14 +1830,12 @@ void game_loop(void)
 
 			ds_writeb(CHECK_PARTY, 0);
 
-			if (!count_heroes_available() ||
-				((count_heroes_available() == 1) && check_hero(get_hero(6))))
+			if (!count_heroes_available() || ((count_heroes_available() == 1) && check_hero(get_hero(6)))) // count_heroes_available_ignore_npc() == 0
 			{
 				/* no heroes or only the NPC can act => GAME OVER */
 				ds_writew(GAME_STATE, GAME_STATE_DEAD);
 
-			} else if (!count_heroes_available_in_group() ||
-				((count_heroes_available_in_group() == 1) && is_hero_available_in_group(get_hero(6))))
+			} else if (!count_heroes_available_in_group() || ((count_heroes_available_in_group() == 1) && is_hero_available_in_group(get_hero(6)))) // count_heroes_available_in_group_ignore_npc() == 0
 			{
 				/* no heroes or only the NPC in this group can act => switch to next */
 				GRP_switch_to_next(2);
@@ -4250,9 +4248,9 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 		ds_writew(UPDATE_STATUSLINE, tmp);
 
 #ifdef M302de_ORIGINAL_BUGFIX
-		/* AE Bar was not updated in Pseudo 3D mode */
+		/* AE bar was not updated in pseudo 3D mode */
 		if (ds_readw(IN_FIGHT) == 0 && ds_readw(MOUSE1_DOUBLECLICK) != 0) {
-			/* redraw AE Bar */
+			/* redraw AE bar */
 			draw_bar(1, get_hero_index(hero), host_readw(hero + HERO_AE),
 				host_readw(hero + HERO_AE_ORIG), 0);
 		}
@@ -4365,8 +4363,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 			if ((ds_readb(TRAVELING) != 0)
 				&& (ds_readw(IN_FIGHT) == 0) &&
-				(!count_heroes_available_in_group() ||
-				((count_heroes_available_in_group() == 1) && (is_hero_available_in_group(get_hero(6))))))
+				(!count_heroes_available_in_group() || ((count_heroes_available_in_group() == 1) && is_hero_available_in_group(get_hero(6))))) /* count_heroes_available_in_group_ignore_npc() == 0 */
 			{
 
 				ds_writeb(TRAVEL_DETOUR, 99);
@@ -5149,8 +5146,37 @@ signed short count_heroes_available_in_group(void)
 	return heroes;
 }
 
+#ifdef M302de_ORIGINAL_BUGFIX
+/* this function allows cleaner fixes for Original-Bug 12 and 13 */
+signed short count_heroes_available_in_group_ignore_npc(void)
+{
+	signed short heroes = 0;
+	signed short i;
+	Bit8u *hero_i = get_hero(0);
+
+	for (i = 0; i < 6; i++, hero_i += SIZEOF_HERO) {
+		if (host_readbs(hero_i + HERO_TYPE) && /* != HERO_TYPE_NONE */
+			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) && /* hero in current group */
+			check_hero_no2(hero_i)) /* hero not dead, petrified, unconscious or renegade */
+		{
+			heroes++;
+		}
+	}
+
+	return heroes;
+}
+#endif
+
 void seg002_57f1(void)
 {
+	/* called from only a single position, namely the petrification trap in 'Verfallene Herberge' in DNG02_handler in seg078.cpp */
+
+	/* Original-Bug 15:
+	 * If the group steps into the petrification trap in "Verfallene Herberge" and all but the NPC get petrified
+	 * (for example, Curian (MR 6) equipped with the red ring (MR +2) of Gorah's chest), the group is still active
+	 * with the NPC as the only active member (which is impossible in other circumstances). If this is the only group,
+	 * a click on "switch group" results in an infinite loop with the window "In dieser Gruppe ist niemand in der Lage etwas zu tun!". */
+
 	if (!count_heroes_available()) {
 		/* game over */
 		ds_writew(GAME_STATE, GAME_STATE_DEAD);
@@ -5313,11 +5339,7 @@ signed short copy_protection(void)
 	signed short tries;
 	signed short l1;
 
-#if !defined(__BORLANDC__)
-	/* disable copy protection for now */
-	return 1;
-#endif
-
+#ifndef M302de_FEATURE_MOD
 	load_tx(ARCHIVE_FILE_FIGHTTXT_LTX);
 
 	ds_writew(TEXTBOX_WIDTH, 4);
@@ -5394,6 +5416,10 @@ signed short copy_protection(void)
 	}
 
 	return 0;
+#else
+	/* Feature mod 5: disable copy protection */
+	return 1;
+#endif
 }
 
 #if !defined(__BORLANDC__)
