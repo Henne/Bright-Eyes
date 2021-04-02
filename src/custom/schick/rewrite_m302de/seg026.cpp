@@ -453,31 +453,38 @@ signed short save_game_state(void)
 	/* prepare the header for the radio box */
 	if (ds_readws(GAME_STATE) == GAME_STATE_VICTORY) {
 
-		/* game done */
-		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(810));
+		/* game won. creating savegame for import in DSA2 */
+		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(810)); /* "Welcher Spielstand soll fuer die Fortsetzung abgespeichert werden?" */
 
 	} else {
 
+#ifndef M302de_FEATURE_MOD
+		/* Feature mod 4: In the original game, when creating a savegame while not being in a temple, the AP of all heroes is decreased by 1. This feature mod stops the AP decrease.
+		 * Here, the warning message "Dabei verliert jeder Held in der Gruppe einen Abenteuerpunkt" is displayed. */
 		if (ds_readbs(LOCATION) != LOCATION_TEMPLE && ds_readws(GAME_STATE) != GAME_STATE_VICTORY) {
 
-			/* save outside the temple */
+			/* create savegame not in a temple */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(813),
+				(char*)get_ttx(813), /* "Dabei verliert jeder Held in der Gruppe einen Abenteuerpunkt" */
 				1,
 				get_ttx(392),
 				p_datseg + EMPTY_STRING1);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_ttx(1),
+				(char*)get_ttx(1), /* "Welchen Spielstand wollen Sie abspeichern ?" */
 				(char*)Real2Host(ds_readd(DTP2)));
 		} else {
+#endif
 
-			/* save inside a temple */
+			/* create savegame inside a temple */
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_ttx(1),
+				(char*)get_ttx(1), /* "Welchen Spielstand wollen Sie abspeichern ?" */
 				(char*)p_datseg + EMPTY_STRING2);
+#ifndef M302de_FEATURE_MOD
+		/* Feature mod 4: In the original game, when creating a savegame while not being in a temple, the AP of all heroes is decreased by 1. This mod stops the AP decrease. */
 		}
+#endif
 	}
 
 	/* get the slot number */
@@ -537,12 +544,16 @@ signed short save_game_state(void)
 				/* save position on the playmask */
 				host_writebs(get_hero(tw_bak) + HERO_GROUP_POS, tw_bak + 1);
 
+#ifndef M302de_FEATURE_MOD
+				/* Feature mod 4: In the original game, when creating a savegame while not being in a temple, the AP of all heroes is decrease by 1. This feature mod stops the AP decrease.
+				 * Here, the actual decrease is executed */
 				if (ds_readws(GAME_STATE) != GAME_STATE_VICTORY &&
 					ds_readbs(LOCATION) != LOCATION_TEMPLE &&
 					host_readds(get_hero(tw_bak) + HERO_AP) > 0)
 				{
 					add_hero_ap(get_hero(tw_bak), -1L);
 				}
+#endif
 
 				write_chr_temp(tw_bak);
 			}

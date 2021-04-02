@@ -245,7 +245,7 @@ signed short plan_alchemy(Bit8u *hero)
 								 * See https://www.crystals-dsa-foren.de/showthread.php?tid=98&pid=166399#pid166399 and the following posts. */
 								(ds_readbs(TOTAL_HERO_COUNTER) > 1) &&
 #else
-								(count_heroes_available_in_group() >= ((host_readbs(get_hero(6) + HERO_TYPE) == HERO_TYPE_NONE) || (host_readbs(get_hero(6) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) || (hero == get_hero(6)) ? 2 : 3)) &&
+								((hero == get_hero(6)) || (count_heroes_available_in_group_ignore_npc() > 1)) && /* still allow to single out the NPC if he is the brewing hero */
 #endif
 								(ds_readbs(LOCATION) != LOCATION_WILDCAMP) &&
 								(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) > 8)
