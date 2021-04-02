@@ -110,18 +110,18 @@ struct hero_status {
 enum {
     HERO_NAME               = 0x000,
     HERO_NAME2              = 0x010,
-    HERO_KS_TAKEN           = 0x020,
+    HERO_KS_TAKEN           = 0x020, /* number of occupied "regular" item slots */
     HERO_TYPE               = 0x021, /* See enum HERO_TYPE_* below. */
     HERO_SEX                = 0x022,
-    HERO_HEIGHT             = 0x023,
-    HERO_WEIGHT             = 0x024,
+    HERO_HEIGHT             = 0x023, /* height in cm */
+    HERO_WEIGHT             = 0x024, /* weight in ounces */
     HERO_GOD                = 0x026,
     HERO_LEVEL              = 0x027,
     HERO_AP                 = 0x028,
     HERO_MONEY              = 0x02C, /* Heller */
     HERO_RS_BONUS1          = 0x030, /* RS-Bonus = RS-Bonus1 + RS-Bonus2 */
     HERO_RS_BONUS2          = 0x031,
-    HERO_RS_BE              = 0x032,
+    HERO_RS_BE              = 0x032, /* Ruestungsschutzbehinderung */
     HERO_BP_LEFT            = 0x033,
     HERO_ATTRIB_ORIG        = 0x034, /* See enum ATTRIB_* below. */
     HERO_ATTRIB             = 0x035, /* See enum ATTRIB_* below. */
