@@ -392,13 +392,21 @@ void tevent_098(void)
 	} while (repeat);
 }
 
-void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
+/**
+ * \brief   makes a hero disappear
+ *
+ * \param   hero        the hero
+ * \param   pos         the position of the hero
+ * \param   temple_id	value = -2, -1: hero disappears completely; value >= 0: hero can be found in the temple with that id.
+ */
+void hero_disappear(Bit8u *hero, unsigned short pos, signed short temple_id)
 {
 
 	/* decrement the number of heroes */
 	dec_ds_bs_post(TOTAL_HERO_COUNTER);
 
 	/* load a new savegame if no hero is present */
+	/* TODO: potential Original-Bug: What if only the NPC is left? */
 	if (!ds_readbs(TOTAL_HERO_COUNTER)) {
 		ds_writew(GAME_STATE, GAME_STATE_DEAD);
 	}
@@ -406,8 +414,8 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 	/* decrement group counter */
 	dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
-	/* write type to character sheet */
-	host_writeb(hero + HERO_TEMPLE_ID, (signed char)type);
+	/* write temple_id to character sheet */
+	host_writeb(hero + HERO_TEMPLE_ID, (signed char)temple_id);
 
 	/* reset position in group */
 	host_writeb(hero + HERO_GROUP_POS, 0);
@@ -426,7 +434,7 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 	/* set typus to 0 */
 	host_writeb(hero + HERO_TYPE, 0);
 
-	if (type != -2) {
+	if (temple_id != -2) {
 		draw_main_screen();
 		init_ani(2);
 		ds_writew(REQUEST_REFRESH, 1);

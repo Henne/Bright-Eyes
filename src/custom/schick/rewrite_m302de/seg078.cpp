@@ -192,7 +192,7 @@ signed short DNG02_handler(void)
 			{
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
-					!hero_dead(hero))
+					!hero_dead(hero)) /* TODO: Why !dead? */
 				{
 					hero_disappear(hero, i, -1);
 				}

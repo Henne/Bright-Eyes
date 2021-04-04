@@ -1,5 +1,5 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg086 (dungeon: piratecave)
+ *	Rewrite of DSA1 v3.02_de functions of seg086 (dungeon: pirate cave on Manrek)
  *	Functions rewritten: 16/16 (complete)
  *
  *	Borlandified and identical
@@ -157,6 +157,7 @@ signed short DNG11_handler(void)
 	} else if ((target_pos == 0x600 || target_pos == 0x700 || target_pos == 0x800 || target_pos == 0x900) &&
 			target_pos != ds_readws(DNG_HANDLED_POS))
 	{
+		/* boat. if entered, the complete group is drowned */
 		if (GUI_radio(get_tx(18), 2, get_tx(19), get_tx(20)) == 1)
 		{
 			GUI_output(get_tx(21));

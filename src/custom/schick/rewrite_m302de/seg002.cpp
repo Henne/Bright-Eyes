@@ -4315,10 +4315,10 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHTER_ID)));
 
 				/* update looking dir and other  */
-				host_writeb(ptr + 2, host_readb(hero + HERO_VIEWDIR));
-				host_writeb(ptr + 0xd, -1);
-				host_writeb(ptr + 5, 0);
-				host_writeb(ptr + 6, 0);
+				host_writeb(ptr + FIGHTER_NVF_NO, host_readb(hero + HERO_VIEWDIR));
+				host_writeb(ptr + FIGHTER_RELOAD, -1);
+				host_writeb(ptr + FIGHTER_OFFSETX, 0);
+				host_writeb(ptr + FIGHTER_OFFSETY, 0);
 			}
 		}
 

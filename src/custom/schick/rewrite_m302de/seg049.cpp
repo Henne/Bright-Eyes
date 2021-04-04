@@ -758,7 +758,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 					}
 				} else {
 					/* hero brewing, HERO_STAFFSPELL_TIMER == 0, HERO_RECIPE_TIMER == 0, not dead, not deseased, not poisoned */
-					/* potential Original-Bug: why is 'not poisoned', 'not deseased' and 'HERO_STAFFSPELL_TIMER == 0' needed to complete the brewing process? */
+					/* TODO: potential Original-Bug: why is 'not poisoned', 'not deseased' and 'HERO_STAFFSPELL_TIMER == 0' needed to complete the brewing process? */
 					do_alchemy(hero, host_readbs(hero + HERO_RECIPE_ID), 0);
 				}
 			} else {

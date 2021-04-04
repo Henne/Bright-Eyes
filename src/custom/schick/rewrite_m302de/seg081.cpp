@@ -531,6 +531,14 @@ void DNG06_chest2(RealPt chest)
 	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
+/**
+ * \brief   handles the pit in Kultstaette des Namenlosen, level 2, square (3,12)
+ *
+ * 	heroes in the pit are separated into a new group.
+ * 	This group will have an entry GROUPS_DNG_LEVEL = 2,
+ * 	which indicates that it is in the pit.
+ */
+
 void DNG09_pitfall(void)
 {
 	signed short i;
@@ -549,6 +557,7 @@ void DNG09_pitfall(void)
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_skill(hero, TA_GEFAHRENSINN, 4) > 0)
+				/* TODO: potential Original-Bug: Why should 'petrified' or 'uncouscious' (or maybe other properties ) be o.k. here?? */
 			{
 				l3 = 1;
 			}

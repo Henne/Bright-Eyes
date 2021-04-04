@@ -577,14 +577,14 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short no)
 			}
 		}
 
-		/* check for the piratecave to bring efferd a gift */
+		/* check for the pirate cave on Manrek to bring Efferd a gift */
 		if ((item == ITEM_TRIDENT || item == ITEM_NET) && ds_readb(DUNGEON_INDEX) == 11 &&
 			ds_readw(X_TARGET) == 9 && ds_readw(Y_TARGET) == 9)
 		{
 			ds_writeb(DNG11_EFFERD_SACRIFICE, 1);
 		}
 
-		/* check for the mine in oberorken to bring ingerimm a gift */
+		/* check for the mine in Oberorken to bring Ingerimm a gift */
 		if (item_pleasing_ingerimm(item) && ds_readb(DUNGEON_INDEX) == 12 &&
 			ds_readw(X_TARGET) == 2 && ds_readw(Y_TARGET) == 14 &&
 			ds_readb(DUNGEON_LEVEL) == 1)

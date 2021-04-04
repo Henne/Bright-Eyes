@@ -929,7 +929,8 @@ signed short do_fight(signed short fight_id)
 	if ((ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) == 1)
 		&& (host_readbs(get_hero(0) + HERO_INVISIBLE) != 0))
 	{
-		/* only one hero in the group with spell_visibili active */
+		/* group consists of a single hero with an active Visibili spell */
+		/* TODO: potential Original-Bug: what about groups with >= 2 heroes where all have an active Visibili? */
 		return 3;
 	}
 
@@ -1092,7 +1093,7 @@ signed short do_fight(signed short fight_id)
 			{
 
 				and_ptr_bs(hero + HERO_STATUS1, 0x7f); /* unset 'unconscious' status bit */
-				and_ptr_bs(hero + HERO_STATUS1, 0xfd); /* unset 'sleeping' status bit */
+				and_ptr_bs(hero + HERO_STATUS1, 0xfd); /* unset 'sleeps' status bit */
 				and_ptr_bs(hero + HERO_STATUS1, 0xef); /* unset 'chamaelioni' status bit */
 				and_ptr_bs(hero + HERO_STATUS2, 0xfb); /* unset 'duplicatus' status bit */
 				and_ptr_bs(hero + HERO_STATUS2, 0xfe); /* unset 'scared' status bit */
@@ -1104,6 +1105,7 @@ signed short do_fight(signed short fight_id)
 		}
 
 		if (ds_readws(GAME_STATE) != GAME_STATE_MAIN) {
+			/* GAME_STATE is neither GAME_STATE_FIGQUIT nor GAME_STATE_MAIN. Does that mean that the fight is lost?? */
 
 			if ((fight_id != 192) && count_heroes_available()) {
 

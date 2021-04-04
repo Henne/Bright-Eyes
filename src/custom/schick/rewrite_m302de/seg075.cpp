@@ -901,64 +901,68 @@ signed short DNG_check_climb_tools(void)
 			(get_first_hero_with_item(0x20) != -1)) ? 0 : -1;
 }
 
-signed short DNG_fallpit(signed short a1)
+signed short DNG_fallpit(signed short max_damage)
 {
-	signed short l_si;
-	signed short l_di;
-	signed short l1;
-	signed short l2;
+	signed short hero_id;
+	signed short i;
+	signed short nr_fallen_heroes;
+	signed short new_group;
 	signed short retval;
 
-	l2 = 0;
+	new_group = 0;
 	retval = 0;
 
 	ds_writew(DNG_LEVEL_CHANGED, 1);
-	l1 = random_schick(ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)));
+	nr_fallen_heroes = random_schick(ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)));
 
-	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) - 1 == l1) {
-		l1 = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
+	/* If the result was rolled that all but one hero of the active group should fall down, all heroes will fall down.
+	 * Reason probably: Avoid that the NPC gets separated into a single group (as he might be the single hero not falling down) */
+
+	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) - 1 == nr_fallen_heroes) {
+		nr_fallen_heroes = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 	}
 
-	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) != l1) {
+	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) != nr_fallen_heroes) {
+		/* only a part of the heroes of the active group falls down */
 
-		while (ds_readbs(GROUP_MEMBER_COUNTS + l2)) {
-			l2++;
+		/* find empty group */
+		while (ds_readbs(GROUP_MEMBER_COUNTS + new_group)) {
+			new_group++;
 		}
 
-		for (l_di = 0; l_di < l1; l_di++) {
+		for (i = 0; i < nr_fallen_heroes; i++) {
 
 			do {
-				l_si = random_schick(7) - 1;
+				hero_id = random_schick(7) - 1;
 
-			} while ( (!host_readbs(get_hero(l_si) + HERO_TYPE)) ||
-					(host_readbs(get_hero(l_si) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) ||
-					((l1 == 1) && (l_si == 6)));
+			} while ( (!host_readbs(get_hero(hero_id) + HERO_TYPE)) ||
+					(host_readbs(get_hero(hero_id) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) ||
+					((nr_fallen_heroes == 1) && (hero_id == 6))); /* avoid that the NPC gets separated into a single group */
 
-			host_writeb(get_hero(l_si) + HERO_GROUP_NO, (unsigned char)l2);
-			inc_ds_bs_post(GROUP_MEMBER_COUNTS + l2);
+			host_writeb(get_hero(hero_id) + HERO_GROUP_NO, (unsigned char)new_group);
+			inc_ds_bs_post(GROUP_MEMBER_COUNTS + new_group);
 			dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
-			sub_hero_le(get_hero(l_si), random_schick(a1));
-
+			sub_hero_le(get_hero(hero_id), random_schick(max_damage));
 		}
 
-		GRP_save_pos(l2);
-		ds_writeb(GROUPS_DNG_LEVEL + l2, ds_readbs(DUNGEON_LEVEL) + 1);
+		GRP_save_pos(new_group);
+		ds_writeb(GROUPS_DNG_LEVEL + new_group, ds_readbs(DUNGEON_LEVEL) + 1);
 
 		retval = 1;
 
 	} else {
 
-		l_si = 0;
+		hero_id = 0;
 
-		for (l_di = 0; l_di < l1; l_di++) {
+		for (i = 0; i < nr_fallen_heroes; i++) {
 
-			while (!host_readbs(get_hero(l_si) + HERO_TYPE) ||
-				(host_readbs(get_hero(l_si) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
+			while (!host_readbs(get_hero(hero_id) + HERO_TYPE) ||
+				(host_readbs(get_hero(hero_id) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
 			{
-				l_si++;
+				hero_id++;
 			}
 
-			sub_hero_le(get_hero(l_si++), random_schick(a1));
+			sub_hero_le(get_hero(hero_id++), random_schick(max_damage));
 		}
 
 		DNG_inc_level();

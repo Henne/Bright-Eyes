@@ -241,12 +241,14 @@ signed short DNG08_handler(void)
 
 	} else if (target_pos == 0xb0e && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
+		/* latrine */
 		GUI_output(get_tx(12));
 
 	} else if (target_pos == 0xb0b &&
 			 (target_pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readbs(DIRECTION) == 3)
 	{
+		/* lever, opens door at (8,13)  */
 		do {
 			i = GUI_radio(get_tx(13), 3,
 					get_tx(14),
@@ -268,6 +270,7 @@ signed short DNG08_handler(void)
 
 			GUI_output(Real2Host(ds_readfp(DTP2)));
 
+			/* open door at (8,13) */
 			and_ptr_bs(amap_ptr + 0xd8, 0x0f);
 			or_ptr_bs(amap_ptr + 0xd8, 0x20);
 
@@ -275,7 +278,7 @@ signed short DNG08_handler(void)
 			{
 				ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 
-				for (tmp = 0; ds_readbs(GROUP_MEMBER_COUNTS + tmp) != 0; tmp++);
+				for (tmp = 0; ds_readbs(GROUP_MEMBER_COUNTS + tmp) != 0; tmp++); /* find empty group */
 
 				host_writebs(hero + HERO_GROUP_NO, (signed char)tmp);
 				inc_ds_bs_post(GROUP_MEMBER_COUNTS + tmp);
@@ -290,6 +293,10 @@ signed short DNG08_handler(void)
 
 	} else if ((target_pos == 0xb0a || target_pos == 0xb0c) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
+		/* squares next to lever: check if group at the lever moved away and the door must be closed */
+		/* TODO: potential Original-Bug: What if the group at the lever to use Transversalis to teleport away? I guess the door is still open */
+
+		/* check if there is still another group on the square of the lever */
 		for (i = tmp = 0; i < 6; i++)
 		{
 			if (ds_readws(GROUPS_X_TARGET + 2 * i) == 0x0b &&
@@ -300,6 +307,7 @@ signed short DNG08_handler(void)
 			}
 		}
 
+		/* if not, close door at (8,13) */
 		if (tmp == 0)
 		{
 			and_ptr_bs(amap_ptr + 0xd8, 0x0f);
