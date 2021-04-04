@@ -282,6 +282,7 @@ signed short DNG09_handler(void)
 	} else if (target_pos == 0x170d && target_pos != ds_readws(DNG_HANDLED_POS) &&
 			!ds_readb(DNG09_LEVER_FAST))
 	{
+		/* lever, removes wall at (4,5), level 2 */
 		do {
 			i = GUI_radio(get_tx(39), 3,
 					get_tx(40),
@@ -305,6 +306,7 @@ signed short DNG09_handler(void)
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
+				/* remove wall at (4,5), lvl 2 */
 				and_ptr_bs(amap_ptr + 0x54, 0x0f);
 				or_ptr_bs(amap_ptr + 0x53, 0xf0);
 
@@ -335,6 +337,10 @@ signed short DNG09_handler(void)
 	} else if ((target_pos == 0x180d || target_pos == 0x170e) &&
 			target_pos != ds_readws(DNG_HANDLED_POS))
 	{
+		/* squares next to lever: check if group at the lever moved away and the wall must be closed */
+		/* TODO: potential Original-Bug: What if the group at the lever to use Transversalis to teleport away? I guess the wall is still open */
+
+		/* check if there is still another group on the square of the lever */
 		for (i = l3 = 0; i < 6; i++)
 		{
 			if (ds_readws(GROUPS_X_TARGET + 2 * i) == 7 &&
@@ -346,6 +352,7 @@ signed short DNG09_handler(void)
 			}
 		}
 
+		/* if not, close wall at (4,5), lvl 2 */
 		if (l3 == 0)
 		{
 			or_ptr_bs(amap_ptr + 0x54, 0xf0);

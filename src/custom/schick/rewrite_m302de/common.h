@@ -172,8 +172,8 @@ enum {
     HERO_AXXELERATUS        = 0x0A0, /* 1 = active, 0 = inactive */
     HERO_DRUNK              = 0x0A1,
     HERO_UNKNOWN10          = 0x0A2, /* never used? */
-    HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = sleeping, Bit2 = petrified, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious */
-    HERO_STATUS2            = 0x0AB, /* Bit0 = scared, Bit1 = dummy2, Bit2 = duplicatus, Bit3 = tame, Bit4 = dummy3, Bit5 = gods_pissed, Bit6 = transformed, Bit7 = encouraged */
+    HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = asleep, Bit2 = petrified, Bit3 = brewing, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious, Bit7 = tied */
+    HERO_STATUS2            = 0x0AB, /* Bit0 = scared, Bit1 = unused?, Bit2 = duplicatus, Bit3 = tame, Bit4 = seen_phantom, Bit5 = gods_pissed, Bit6 = transformed, Bit7 = encouraged */
     HERO_UNKNOWN11          = 0x0AC, /* never used? */
     HERO_ILLNESS_EMPTY      = 0x0AE,
     HERO_ILLNESS            = 0x0B3,

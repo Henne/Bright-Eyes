@@ -102,7 +102,11 @@ void do_inn(void)
 	ds_writebs(SLEEP_QUALITY, -1);
 
 #ifndef M302de_ORIGINAL_BUGFIX
-	/* Original-Bug 8 */
+	/* Original-Bug 8:
+	 * If a group of >=2 heroes enters an inn where another hero is brewing,
+	 * a textbox is shown with the possibility to interrupt the brewing process.
+	 * However, this textbox is not shown if a single hero enters the inn. */
+
 	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) == 1) {
 		/* current group consists only of a single hero */
 
@@ -140,7 +144,10 @@ void do_inn(void)
 		}
 	}
 	else if ((hero = get_first_brewing_hero())) {
-		/* Original-Bug 9 */
+		/* Original-Bug 9:
+		 * If a group of heroes enters an inn where more then one hero is brewing (each of them forms his own group),
+		 * you get asked if the brewing process of the first hero should be aborted.
+		 * If you answer 'no', you are not asked for the second brewing hero. */
 
 		draw_status_line();
 
