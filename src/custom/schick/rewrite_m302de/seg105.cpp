@@ -62,20 +62,20 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 	if (item == ITEM_GIRDLE_MIGHT)
 		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_KK), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) - 5);
 	/* unequip Helm CH + 1 (cursed) */
-	if (item == ITEM_HELMET)
+	if (item == ITEM_HELMET_CURSED)
 		inc_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_CH));
 	/* unequip Silberschmuck TA + 1 */
-	if (item == ITEM_JEWELRY_SILVER)
+	if (item == ITEM_SILVER_JEWELRY_MAGIC)
 		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) + 2);
 	/* unequip Stirnreif or Ring MR - 2 */
 	if (item == ITEM_CORONET_BLUE || item == ITEM_RING_RED)
 		host_writeb(hero + HERO_MR, host_readb(hero + HERO_MR) - 2);
 	/* unequip Totenkopfguertel TA + 4 */
-	if (item == ITEM_BELT_SKULL)
+	if (item == ITEM_SKULL_BELT)
 		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) + 4);
 	/* unequip Kristallkugel Gefahrensinn - 2 */
-	if (item == ITEM_BALL_CRYSTAL)
-		host_writeb(hero + HERO_TA_INTUITION, host_readb(hero + HERO_TA_INTUITION) - 2);
+	if (item == ITEM_CRYSTAL_BALL)
+		host_writeb(hero + (HERO_TALENTS + TA_GEFAHRENSINN), host_readb(hero + (HERO_TALENTS + TA_GEFAHRENSINN)) - 2);
 }
 
 
@@ -134,13 +134,13 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		}
 
 		/* Helmet / Helm */
-		if (item == ITEM_HELMET) {
+		if (item == ITEM_HELMET_CURSED) {
 			/* dec CH */
 			dec_ptr_bs(equipper + (HERO_ATTRIB + 3 * ATTRIB_CH));
 		}
 
-		/* Silver Jewelry / Silberschmuckstueck (magisch) */
-		if (item == ITEM_JEWELRY_SILVER) {
+		/* Silver Jewelry / Silberschmuck (magisch) */
+		if (item == ITEM_SILVER_JEWELRY_MAGIC) {
 			/* TA - 2 */
 			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA),
 				host_readbs(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA)) - 2);
@@ -154,7 +154,7 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		}
 
 		/* Skull belt / Totenkopfguertel */
-		if (item == ITEM_BELT_SKULL) {
+		if (item == ITEM_SKULL_BELT) {
 
 			/* TA - 4 */
 			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA),
@@ -166,11 +166,11 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		}
 
 		/* Crystal ball / Kristalkugel */
-		if (item == ITEM_BALL_CRYSTAL) {
+		if (item == ITEM_CRYSTAL_BALL) {
 
-			/* Sinnesschaerfe + 2 */
-			host_writeb(equipper + HERO_TA_INTUITION,
-				host_readb(equipper + HERO_TA_INTUITION) + 2);
+			/* Gefahrensinn + 2 */
+			host_writeb(equipper + (HERO_TALENTS + TA_GEFAHRENSINN),
+				host_readb(equipper + (HERO_TALENTS + TA_GEFAHRENSINN)) + 2);
 		}
 	}
 }
@@ -233,7 +233,7 @@ unsigned short can_item_at_pos(unsigned short item, unsigned short pos)
 		}
 	} else {
 
-		/* Stirnreif (3 types) can be weared at the head */
+		/* coronet (Stirnreif) (3 types) can be weared at the head */
 		if ((item == ITEM_CORONET_BLUE || item == ITEM_CORONET_SILVER || item == ITEM_CORONET_GREEN)
 			&& (pos == 0))
 		{
@@ -430,8 +430,8 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 								done = 1;
 
 							/* special items */
-							if (item == ITEM_SICKLE) {
-								host_writeb(hero + (HERO_TA_NATURE+3), host_readb(hero + (HERO_TA_NATURE+3)) + 3);
+							if (item == ITEM_SICKLE_MAGIC) {
+								host_writeb(hero + (HERO_TALENTS + TA_PFLANZENKUNDE), host_readb(hero + (HERO_TALENTS + TA_PFLANZENKUNDE)) + 3);
 							}
 							if (item == ITEM_AMULET_BLUE) {
 								host_writeb(hero + HERO_MR, host_readb(hero + HERO_MR) + 5);
@@ -559,9 +559,9 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short no)
 
 					/* check special items */
 					/* item: SICHEL Pflanzenkunde -3 */
-					if (item == ITEM_SICKLE) {
-						host_writeb(hero + (HERO_TA_NATURE+3),
-							host_readbs(hero + (HERO_TA_NATURE+3)) - 3);
+					if (item == ITEM_SICKLE_MAGIC) {
+						host_writeb(hero + (HERO_TALENTS + TA_PFLANZENKUNDE),
+							host_readbs(hero + (HERO_TALENTS + TA_PFLANZENKUNDE)) - 3);
 					}
 
 					/* item:  AMULETT MR -5 */

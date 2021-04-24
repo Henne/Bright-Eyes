@@ -648,7 +648,7 @@ void tevent_075(void)
 	}
 }
 
-/* dungeon entrance: a cave */
+/* Felsteyn <-> Orkanger: entrance to the dungeon "goblin cave" */
 void tevent_076(void)
 {
 	signed short answer;

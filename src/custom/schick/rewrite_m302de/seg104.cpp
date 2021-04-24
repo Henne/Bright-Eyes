@@ -158,9 +158,9 @@ signed short plan_alchemy(Bit8u *hero)
 
 	retval = 1;
 	recipes = 0;
-	item_pos = get_item_pos(hero, 47);
+	item_pos = get_item_pos(hero, ITEM_ALCHEMY_KIT);
 	if (item_pos == -1) {
-		/* no alchemy set */
+		/* no alchemy kit */
 		GUI_output(get_tx(42));
 		retval = 0;
 	} else {
@@ -170,7 +170,7 @@ signed short plan_alchemy(Bit8u *hero)
 			if (get_item_pos(hero, ds_readws(ALCHEMY_RECIPES + i * RECIPE_SIZE)) != -1) {
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)) + recipes * 50,
-					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws((ALCHEMY_RECIPES+22) + i * RECIPE_SIZE)))));
+					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws((ALCHEMY_RECIPES + RECIPE_OUTCOME) + i * RECIPE_SIZE)))));
 
 				ds_writed(RADIO_NAME_LIST + recipes * 4, (Bit32u)((RealPt)ds_readd(DTP2) + recipes * 50));
 				array[recipes] = (signed char)i;
@@ -458,9 +458,9 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 			/* set timer */
 			host_writed(patient + HERO_HEAL_TIMER, 0x5460);
 
-			if ((flag != 0) || (test_skill(healer, TA_HEILEN_KRANKH, (signed char)handycap) > 0)) {
+			if ((flag != 0) || (test_skill(healer, TA_HEILEN_KRANKHEITEN, (signed char)handycap) > 0)) {
 
-				if (((retval = test_skill(healer, TA_HEILEN_KRANKH, ds_readbs(DISEASE_PRICES + 2 * disease) + handycap)) > 0) &&
+				if (((retval = test_skill(healer, TA_HEILEN_KRANKHEITEN, ds_readbs(DISEASE_PRICES + 2 * disease) + handycap)) > 0) &&
 					(disease != 1) && (disease != 3))
 				{
 
@@ -583,7 +583,7 @@ signed short get_skilled_hero_pos(signed short skill)
 				host_readbs(hero + HERO_ATTRIB_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
 				host_readbs(hero + HERO_ATTRIB + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
 				host_readbs(hero + HERO_ATTRIB_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
-				host_readbs(hero + HERO_TA_FIGHT + skill);
+				host_readbs(hero + HERO_TALENTS + skill);
 
 			if (cur > max) {
 				max = cur;

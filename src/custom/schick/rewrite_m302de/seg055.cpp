@@ -181,7 +181,7 @@ void do_merchant(void)
 
 		if (ds_readws(REQUEST_REFRESH) != 0) {
 
-			draw_loc_icons(4, 22, 24, 21, 8);
+			draw_loc_icons(4, MENU_ICON_BUY, MENU_ICON_SELL, MENU_ICON_TALK, MENU_ICON_LEAVE);
 
 			draw_main_screen();
 

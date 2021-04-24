@@ -357,7 +357,7 @@ signed short get_spell_cost(signed short spell, signed short half_cost)
  */
 signed short use_magic(RealPt hero)
 {
-	signed short le;
+	signed short ae;
 	signed short retval;
 	signed short answer;
 	signed short thonny_pos;
@@ -376,7 +376,7 @@ signed short use_magic(RealPt hero)
 				/* not a mage, need thonnys */
 
 
-				if ((thonny_pos = get_item_pos(Real2Host(hero), 131)) == -1) {
+				if ((thonny_pos = get_item_pos(Real2Host(hero), ITEM_THONNYS)) == -1) {
 					GUI_output(get_ttx(790));
 					return 0;
 				}
@@ -385,10 +385,10 @@ signed short use_magic(RealPt hero)
 				thonny_pos = -1;
 			}
 
-			/* Asks how many LE should be used */
-			le = GUI_input(get_ttx(333), 2);
+			/* Asks how many AE should be generated */
+			ae = GUI_input(get_ttx(333), 2);
 
-			if (le != -1) {
+			if (ae != -1) {
 				retval = 2;
 
 				if (thonny_pos != -1) {
@@ -396,23 +396,27 @@ signed short use_magic(RealPt hero)
 					drop_item(Real2Host(hero), thonny_pos, 1);
 				}
 
-				/* adjust LE */
-				if (host_readws(Real2Host(hero) + HERO_AE_ORIG) - host_readws(Real2Host(hero) + HERO_AE)  < le) {
-					le = host_readws(Real2Host(hero) + HERO_AE_ORIG) - host_readws(Real2Host(hero) + HERO_AE);
+				/* cap the converted AE such that the hero has at most HERO_AE_ORIG in the end. */
+				if (host_readws(Real2Host(hero) + HERO_AE_ORIG) - host_readws(Real2Host(hero) + HERO_AE)  < ae) {
+					ae = host_readws(Real2Host(hero) + HERO_AE_ORIG) - host_readws(Real2Host(hero) + HERO_AE);
 				}
 
 				/* spend one AE point */
 				sub_ae_splash(Real2Host(hero), 1);
 
+#if !defined(__BORLANDC__)
+				D1_INFO("%s Meditationsprobe +0 ",(char*)(hero + HERO_NAME2));
+#endif
 				if (test_attrib3(Real2Host(hero), ATTRIB_MU, ATTRIB_CH, ATTRIB_KK, 0) > 0) {
 					/* Success */
 
-					if (host_readws(Real2Host(hero) + HERO_LE) <= le + 8) {
-						le = host_readws(Real2Host(hero) + HERO_LE) - 8;
+					/* cap the converted AE such that at least 5 LE remain .*/
+					if (host_readws(Real2Host(hero) + HERO_LE) <= ae + 8) {
+						ae = host_readws(Real2Host(hero) + HERO_LE) - 8;
 					}
 
-					sub_hero_le(Real2Host(hero), le + 3);
-					add_hero_ae(Real2Host(hero), le);
+					sub_hero_le(Real2Host(hero), ae + 3);
+					add_hero_ae(Real2Host(hero), ae);
 				} else {
 					/* Failed, print only a message */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -443,10 +447,20 @@ signed short use_magic(RealPt hero)
 					retval = 1;
 
 					/* Original-Bug: the second attribute is used twice here */
+
+#if !defined(__BORLANDC__)
+					D1_INFO("%s Probe fuer Stabzauber Nr. %d (%+d)",(char*)(Real2Host(hero) + HERO_NAME2), host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL), ds_readbs((STAFFSPELL_DESCRIPTIONS + 3) + 6 * host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL)));
+#endif
 					if (test_attrib3(Real2Host(hero),
+
 						ds_readbs((STAFFSPELL_DESCRIPTIONS + 0) + 6 * host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL)),
 						ds_readbs((STAFFSPELL_DESCRIPTIONS + 1) + 6 * host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL)),
+#ifndef M302de_ORIGINAL_BUGFIX
+						/* Original-Bug 17: the first attribute is tested twice, the second one is left out */
 						ds_readbs((STAFFSPELL_DESCRIPTIONS + 1) + 6 * host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL)),
+#else
+						ds_readbs((STAFFSPELL_DESCRIPTIONS + 2) + 6 * host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL)),
+#endif
 						ds_readbs((STAFFSPELL_DESCRIPTIONS + 3) + 6 * host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL))) > 0)
 					{
 						/* Success */
@@ -545,7 +559,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 	struct dummy8 col_str_val = *(struct dummy8*)(p_datseg + SPELL_SELECT_STR_KEYVAL_COLOR);
 	struct dummy12 ones = *(struct dummy12*)(p_datseg + SPELL_SELECT_ONES);
 
-	if ((show_vals == 0) && (ds_readws(GAME_MODE) == 2)) {
+	if ((show_vals == 0) && (ds_readws(GAME_MODE) == GAME_MODE_ADVANCED)) {
 		show_vals = 2;
 	}
 
@@ -723,7 +737,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 /**
  * \brief   makes a spell test
  */
-signed short test_spell(Bit8u *hero, signed short spell_no, signed char bonus)
+signed short test_spell(Bit8u *hero, signed short spell_no, signed char difficulty)
 {
 	signed short retval;
 	Bit8u *spell_desc;
@@ -745,26 +759,26 @@ signed short test_spell(Bit8u *hero, signed short spell_no, signed char bonus)
 
 		if (host_readbs(hero + HERO_ENEMY_ID) >= 10) {
 
-			bonus += ds_readbs(host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 25));
+			difficulty += ds_readbs(host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 25));
 
 			if (test_bit6(p_datseg + host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 49))) {
 				return 0;
 			}
 		} else {
-			bonus += host_readbs(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1) + 0x66);
+			difficulty += host_readbs(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1) + 0x66);
 		}
 	}
 
 	if ((spell_no >= 1) && (spell_no <= 85)) {
 
 #if !defined(__BORLANDC__)
-		D1_INFO("Zauberprobe : %s %+d ", names_spell[spell_no], bonus);
+		D1_INFO("%s Zauberprobe %s %+d (TaW %d)",(char*)(hero + HERO_NAME2), names_spell[spell_no], difficulty, host_readbs(hero + spell_no + HERO_SPELLS));
 #endif
 
-		bonus -= host_readbs(hero + spell_no + HERO_SPELLS);
+		difficulty -= host_readbs(hero + spell_no + HERO_SPELLS);
 
 		retval = test_attrib3(hero, host_readbs(spell_desc+1),
-			host_readbs(spell_desc+2), host_readbs(spell_desc+3), bonus);
+			host_readbs(spell_desc+2), host_readbs(spell_desc+3), difficulty);
 
 		if (retval == -99) {
 			retval = -1;

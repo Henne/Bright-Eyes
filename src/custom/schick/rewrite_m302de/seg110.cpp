@@ -135,7 +135,7 @@ void TRV_swim2(signed char mod, signed short percent)
 
 }
 
-/* Path east from the route Rovamund-Peilinen. */
+/* Path east from the route Rovamund <-> Peilinen. */
 /* should be static */
 void TRV_a_path(void)
 {
@@ -235,7 +235,7 @@ void tevent_017(void)
 	}
 }
 
-/* Path west from the route Kravik-Skelellen. */
+/* Path west from the route Kravik <-> Skelellen. */
 void tevent_020(void)
 {
 	signed short answer;
@@ -391,7 +391,7 @@ void tevent_029(void)
 			{
 				sub_hero_le(hero, 2);
 
-				item_pos = get_item_pos(hero, 45);
+				item_pos = get_item_pos(hero, ITEM_FOOD_PACKAGE);
 
 				if (item_pos != -1)
 				{
@@ -404,7 +404,7 @@ void tevent_029(void)
 				if (item_pos)
 				{
 					/* hero looses the first WATERSKIN */
-					drop_item(hero, get_item_pos(hero, 30), item_pos - 1);
+					drop_item(hero, get_item_pos(hero, ITEM_WATERSKIN), item_pos - 1);
 				}
 			}
 		}
@@ -662,12 +662,12 @@ void tevent_044(void)
 	}
 }
 
-/* a farmer */
+/* Ottarje -> Daspota: a farmer */
 void tevent_045(void)
 {
 	signed short answer;
 
-	if (ds_readw(TRV_DESTINATION) == 40)
+	if (ds_readw(TRV_DESTINATION) == TOWNS_DASPOTA)
 	{
 		load_in_head(11);
 
@@ -688,7 +688,7 @@ void tevent_045(void)
 	}
 }
 
-/* abandoned inn */
+/* Daspota <-> Ottarje: entrance to the dungeon "abandoned inn" */
 void tevent_046(void)
 {
 	signed short answer;
@@ -803,6 +803,7 @@ void tevent_048(void)
 	}
 }
 
+/* Ottarje <-> Skjal */
 void tevent_049(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT049_FLAG)) ||
@@ -813,6 +814,7 @@ void tevent_049(void)
 	}
 }
 
+/* Ottarje <-> Skjal */
 void tevent_050(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(TEVENT050_FLAG)) ||

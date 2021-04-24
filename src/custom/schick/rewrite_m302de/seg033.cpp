@@ -93,7 +93,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 
-			if (((ds_readws(CURRENT_FIG_NO) != 192) || (ds_readbs(FINALFIGHT_TUMULT) != 0)) &&
+			if (((ds_readws(CURRENT_FIG_NO) != FIGHTS_F144) || (ds_readbs(FINALFIGHT_TUMULT) != 0)) &&
 				(host_readbs(hero + HERO_BP_LEFT) >= 3))
 			{
 				KI_hero(hero, hero_pos, x, y);
@@ -522,7 +522,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								(char*)hero + HERO_NAME2);
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
-							if (host_readws(hero + HERO_ITEM_LEFT) == 0) {
+							if (host_readws(hero + HERO_ITEM_LEFT) == ITEM_BARE_HAND) {
 								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 									(char*)get_tx(60),
 									(char*)hero + HERO_NAME2);
@@ -737,7 +737,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						(Bit8u*)&damage_lo, (Bit8u*)&damage_hi);
 
 					/* "THE SWORD GRIMRING" gets a damage bonus + 5 in the final fight */
-					if ((host_readws(hero + HERO_ITEM_RIGHT) == 181) && (ds_readws(CURRENT_FIG_NO) == 192)) {
+					if ((host_readws(hero + HERO_ITEM_RIGHT) == ITEM_GRIMRING) && (ds_readws(CURRENT_FIG_NO) == FIGHTS_F144)) {
 						damage_lo += 5;
 						damage_hi += 5;
 					}
@@ -800,7 +800,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 			} else if (selected == FIG_ACTION_COMPUTER_FIGHT) {
 				/* COMPUTER FIGHT / COMPUTERKAMPF */
 
-				if (ds_readws(CURRENT_FIG_NO) != 192) {
+				if (ds_readws(CURRENT_FIG_NO) != FIGHTS_F144) {
 
 					refresh_screen_size();
 
@@ -949,7 +949,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 		}
 	}
 
-	if ((ds_readws(CURRENT_FIG_NO) == 192) && /* final fight vs. Orkchampion */
+	if ((ds_readws(CURRENT_FIG_NO) == FIGHTS_F144) && /* final fight vs. Orkchampion */
 		(get_hero_index(Real2Host(ds_readd(MAIN_ACTING_HERO))) != hero_pos) &&
 		((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_ATTACK) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) ||
 		(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM)))

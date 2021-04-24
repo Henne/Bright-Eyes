@@ -372,8 +372,8 @@ signed short DNG14_handler(void)
 
 		if (GUI_bool(get_tx(21))) {
 
-			l_di = group_count_item(121);
-			l_di += group_count_item(32);
+			l_di = group_count_item(ITEM_ROPE);
+			l_di += group_count_item(ITEM_ROPE_LADDER);
 
 			hero = get_hero(0);
 			for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += SIZEOF_HERO) {
@@ -455,7 +455,7 @@ signed short DNG14_handler(void)
 
 			ds_writeb(DNG14_TORCHES_FLAG, 1);
 
-			get_item(65, 1, 4);
+			get_item(ITEM_TORCH_OFF, 1, 4);
 		}
 
 	} else if (pos == 0x2301 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG14_SPOOKY_FLAG)) {
@@ -484,7 +484,7 @@ signed short DNG14_handler(void)
 
 			ds_writeb(DNG14_SPEAR_FLAG, 1);
 
-			get_item(5, 1, 1);
+			get_item(ITEM_SPEAR, 1, 1);
 		}
 
 
@@ -560,7 +560,7 @@ signed short DNG14_handler(void)
 	{
 		if (GUI_bool(get_tx(38))) {
 
-			if (get_first_hero_with_item(121) != - 1 || get_first_hero_with_item(32) != -1)
+			if (get_first_hero_with_item(ITEM_ROPE) != - 1 || get_first_hero_with_item(ITEM_ROPE_LADDER) != -1) /* TODO: why not staffspell >= 3 ? */
 			{
 
 				if ((hero_pos = select_hero_ok(get_tx(39))) != -1) {
@@ -626,7 +626,7 @@ signed short DNG14_handler(void)
 
 			ds_writeb(DNG14_HATCHET_FLAG, 1);
 
-			get_item(93, 1, 1);
+			get_item(ITEM_PICKAXE, 1, 1);
 		}
 
 	} else if (pos == 0x3b0d && pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 1) {
@@ -651,7 +651,7 @@ signed short DNG14_handler(void)
 
 			ds_writeb(DNG14_RING_FLAG, 1);
 
-			get_item(207, 1, 1);
+			get_item(ITEM_RING_BLUE, 1, 1);
 		}
 
 	} else if (pos == 0x3b01 && pos != ds_readws(DNG_HANDLED_POS)) {
@@ -684,7 +684,7 @@ signed short DNG14_handler(void)
 
 			ds_writeb(DNG14_ORKNASE_FLAG, 1);
 
-			get_item(136, 1, 1);
+			get_item(ITEM_ORKNASE, 1, 1);
 		}
 
 	} else if (pos == 0x4c09 && pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 2) {

@@ -470,7 +470,7 @@ void status_menu(signed short hero_pos)
 			case 1: {
 				/* from start-page */
 
-				if (ds_readws(GAME_MODE) == 2) {
+				if (ds_readws(GAME_MODE) == GAME_MODE_ADVANCED) {
 					ds_writed(RADIO_NAME_LIST + 0x0, host_readd(Real2Host(ds_readd(TX2_INDEX)) + 0x4c));
 					ds_writed((RADIO_NAME_LIST + 0x4), host_readd(Real2Host(ds_readd(TX2_INDEX)) + 0x50));
 					ds_writed((RADIO_NAME_LIST + 0x8), host_readd(Real2Host(ds_readd(TX2_INDEX)) + 0x54));

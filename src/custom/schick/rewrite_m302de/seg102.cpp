@@ -164,40 +164,145 @@ signed short MON_get_spell_cost(signed short mspell_no, signed short flag)
  * \param   t3          no of 3rd attribute
  * \param   bonus       modificator
  */
-signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, signed short t3, signed char bonus)
+signed short MON_test_attrib3(Bit8u *monster, signed short attrib1, signed short attrib2, signed short attrib3, signed char difficulty)
+/* called only from a single position, in MON_test_skill(..) */
 {
+#ifndef M302de_FEATURE_MOD
+	/* Feature mod 6: The implementation of the skill test logic differs from the original DSA2/3 rules.
+	 * It is sometimes called the 'pool' variant, where '3W20 + difficulty' is compared to the sum of the attributes.
+	 * It is significantly easier than the original rule, where each individuall roll must be at most the corresponding attribute,
+	 * where positive difficulty must be used up during the process, and negative difficulty may be used for compensation. */
+
 	signed short randval;
 	signed short attr_sum;
 
-	randval = dice_roll(3, 20, bonus);
+	randval = dice_roll(3, 20, difficulty);
 
-	attr_sum = host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * t1)
-		+ host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * t2)
-		+ host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * t3);
+	attr_sum = host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * attrib1)
+		+ host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * attrib2)
+		+ host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * attrib3);
 
 	return attr_sum - randval + 1;
+#else
+	/* Here, the original DSA2/3 skill test logic is implemented.
+	 * WARNING: This makes skill tests and spell casting (on both sides), and thus the game, significantly harder!
+	 * Note that we are not implementing the DSA4 rules, where tests with a positive difficulty are yet harder. */
+	signed short i;
+	signed short tmp;
+	signed short nr_rolls_1 = 0;
+	signed short nr_rolls_20 = 0;
+	signed short fail = 0;
+	signed char attrib [3];
+
+	attrib[0] = host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * attrib1);
+	attrib[1] = host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * attrib2);
+	attrib[2] = host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * attrib3);
+
+#if !defined(__BORLANDC__)
+	D1_INFO(" (%s %d/%s %d/%s %d) ->",
+		names_attrib[attrib1],
+		attrib[0],
+		names_attrib[attrib2],
+		attrib[1],
+		names_attrib[attrib3],
+		attrib[2]
+	);
+#endif
+
+	for (i = 0; i < 3; i++) {
+
+		tmp = random_schick(20);
+
+#if !defined(__BORLANDC__)
+		D1_INFO(" W20 = %d;", tmp);
+#endif
+
+		if (tmp == 20) {
+			if (++nr_rolls_20 == 2) {
+#if !defined(__BORLANDC__)
+				D1_INFO(" -> UNGLUECKLICH nicht bestanden\n");
+#endif
+				return -99;
+			}
+		}
+
+		if (tmp == 1) {
+			if (++nr_rolls_1 == 2) {
+#if !defined(__BORLANDC__)
+				D1_INFO(" -> GLUECKLICH bestanden\n");
+#endif
+				return 99;
+			}
+		}
+
+		if (!fail) {
+			tmp -= attrib[i];
+			if (difficulty <= 0) {
+				if (tmp > 0) {
+					if (tmp > -difficulty) {
+						fail = 1;
+#if !defined(__BORLANDC__)
+						D1_INFO(" zu hoch!");
+#endif
+					} else  {
+						difficulty += tmp;
+					}
+				}
+			}
+			if (difficulty > 0) {
+				if (tmp > 0) {
+					fail = 1;
+#if !defined(__BORLANDC__)
+					D1_INFO(" zu hoch!");
+#endif
+				} else {
+					difficulty += tmp;
+					if (difficulty < 0) {
+						difficulty = 0;
+					}
+				}
+			}
+		}
+	}
+	if (fail || (difficulty > 0)) {
+#if !defined(__BORLANDC__)
+		D1_INFO(" -> nicht bestanden.\n");
+#endif
+		return 0;
+	} else {
+#if !defined(__BORLANDC__)
+		D1_INFO(" -> bestanden mit %d.\n",-difficulty);
+#endif
+		return 1 - difficulty;
+	}
+#endif
 }
 
-signed short MON_test_skill(Bit8u *monster, signed short mspell_no, signed char bonus)
+signed short MON_test_skill(Bit8u *monster, signed short mspell_no, signed char difficulty)
+/* called only from a single position, in MON_cast_spell(..) */
 {
 	Bit8u *desc;
 
 	desc = p_datseg + MON_SPELL_DESCRIPTIONS + 8 * mspell_no;
 
 	/* depends on MR */
-	if (host_readbs(desc + 6) != 0) {
+	if (host_readbs(desc + MON_SPELL_DESCRIPTIONS_VS_MR) != 0) {
 
 		/* add MR */
-		bonus += (host_readbs(monster + ENEMY_SHEET_ENEMY_ID) >= 10) ?
+		difficulty += (host_readbs(monster + ENEMY_SHEET_ENEMY_ID) >= 10) ?
 			ds_readbs(((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_MR) + SIZEOF_ENEMY_SHEET * host_readbs(monster + ENEMY_SHEET_ENEMY_ID)) :
-			host_readbs(get_hero(host_readbs(monster + ENEMY_SHEET_ENEMY_ID) - 1) + 0x66);
+			host_readbs(get_hero(host_readbs(monster + ENEMY_SHEET_ENEMY_ID) - 1) + HERO_MR);
 	}
 
 	/* check if the monster spell has a valid ID */
 	if ((mspell_no >= 1) && (mspell_no <= 14)) {
-		return MON_test_attrib3(monster, host_readbs(desc + 3),
-			host_readbs(desc + 4), host_readbs(desc + 5),
-			bonus);
+#if !defined(__BORLANDC__)
+		D1_INFO("Gegnerischer Zauber %s Probe %+d",names_mspell[mspell_no], difficulty);
+#endif
+		/* TODO: balancing problem: enemy spells are always cast with skill value 0 */
+		return MON_test_attrib3(monster, host_readbs(desc + MON_SPELL_DESCRIPTIONS_ATTRIB1),
+			host_readbs(desc + MON_SPELL_DESCRIPTIONS_ATTRIB2), host_readbs(desc + MON_SPELL_DESCRIPTIONS_ATTRIB3),
+			difficulty);
 	}
 
 	return 0;
@@ -214,7 +319,7 @@ void MON_sub_ae(Bit8u *monster, signed short ae)
 	}
 }
 
-signed short MON_cast_spell(RealPt monster, signed char bonus)
+signed short MON_cast_spell(RealPt monster, signed char difficulty)
 {
 	signed short l_si;
 	signed short l_di;
@@ -233,7 +338,7 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 			return -1;
 		}
 
-		ds_writew(SPELLTEST_RESULT, MON_test_skill(Real2Host(monster), l_si, bonus));
+		ds_writew(SPELLTEST_RESULT, MON_test_skill(Real2Host(monster), l_si, difficulty));
 
 		if ((ds_readws(SPELLTEST_RESULT) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
 

@@ -266,7 +266,7 @@ void tevent_098(void)
 	signed short hero_pos;
 	Bit8u *hero;
 
-	i = get_first_hero_with_item(121) != -1 || get_first_hero_with_item(32) != -1 ? 3 : 2;
+	i = get_first_hero_with_item(ITEM_ROPE) != -1 || get_first_hero_with_item(ITEM_ROPE_LADDER) != -1 ? 3 : 2; /* TODO: STAFFSPELL? */
 
 	do {
 		answer = GUI_radio(get_tx2(27), (signed char)i,
@@ -816,7 +816,7 @@ void tevent_107(void)
 				test_skill(hero, TA_KLETTERN, 1) <= 0)
 			{
 
-				if (get_first_hero_with_item(121) != -1) {
+				if (get_first_hero_with_item(ITEM_ROPE) != -1) { /* TODO: ROPE_LADDER? STAFFSPELL? */
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx2(70),
@@ -860,6 +860,7 @@ void tevent_107(void)
 	ds_writew(REQUEST_REFRESH, 1);
 }
 
+/* Phexcaer <-> Skelellen: entrance to the dungeon 'orc cave' */
 void tevent_108(void)
 {
 	signed short answer;

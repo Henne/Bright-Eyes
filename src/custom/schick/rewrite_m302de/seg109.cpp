@@ -645,12 +645,13 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 	return 1;
 }
 
+/* Vaermhag <-> Varnheim: inn "Golfblick" */
 void tevent_001(void)
 {
 	TRV_found_inn(40, 65);
 }
 
-/* The hunter Varnheim <-> Daspota */
+/* Varnheim <-> Daspota: hunter */
 void tevent_002(void)
 {
 	signed short answer;
@@ -776,7 +777,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 				timewarp(HOURS(1));
 
-				get_item(45, 1, foods1);
+				get_item(ITEM_FOOD_PACKAGE, 1, foods1);
 
 				answer = 0;
 			} else {
@@ -799,7 +800,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 		add_hero_ap_all(ap_all2);
 
 		if (foods2 != 0) {
-			get_item(45, 1, foods2);
+			get_item(ITEM_FOOD_PACKAGE, 1, foods2);
 		}
 
 	} else if (answer == 1) {
@@ -870,24 +871,26 @@ void TRV_barrier(signed short text_start)
 			done = 1;
 		} else {
 
+			/* count ropes and rope ladders in the active group */
 			hero = get_hero(0);
 			for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
-					l_di+=hero_count_item(hero, 121);
-					l_di+=hero_count_item(hero, 32);
+					l_di+=hero_count_item(hero, ITEM_ROPE);
+					l_di+=hero_count_item(hero, ITEM_ROPE_LADDER);
 				}
 			}
 
 			if (l_di >= 2) {
-				/* enough */
+				/* at least 2 ropes or rope ladders: enough */
 
 				i = 0;
 				l_di = 1;
 
 				do {
+					/* look for a suitable axe */
 					if (get_first_hero_with_item(ds_readb(TRAVEL_EVENT_AXES + i)) != -1)
 					{
 						l_di = 0;
@@ -897,7 +900,7 @@ void TRV_barrier(signed short text_start)
 
 				} while (l_di && ds_readbs(TRAVEL_EVENT_AXES + i) != -1);
 
-				if (l_di || get_first_hero_with_item(27) == -1) {
+				if (l_di || get_first_hero_with_item(ITEM_HAMMER) == -1) {
 
 					GUI_dialog_na(0, get_tx2(text_start + 4));
 
@@ -911,15 +914,15 @@ void TRV_barrier(signed short text_start)
 
 					add_hero_ap_all(10);
 
-					i = get_item_pos(hero = get_hero(get_first_hero_with_item(121)), 121);
+					i = get_item_pos(hero = get_hero(get_first_hero_with_item(ITEM_ROPE)), ITEM_ROPE);
 					if (i == -1) {
-						i = get_item_pos(hero = get_hero(get_first_hero_with_item(32)), 32);
+						i = get_item_pos(hero = get_hero(get_first_hero_with_item(ITEM_ROPE_LADDER)), ITEM_ROPE_LADDER);
 					}
 					drop_item(hero, i, 1);
 
-					i = get_item_pos(hero = get_hero(get_first_hero_with_item(121)), 121);
+					i = get_item_pos(hero = get_hero(get_first_hero_with_item(ITEM_ROPE)), ITEM_ROPE);
 					if (i == -1) {
-						i = get_item_pos(hero = get_hero(get_first_hero_with_item(32)), 32);
+						i = get_item_pos(hero = get_hero(get_first_hero_with_item(ITEM_ROPE_LADDER)), ITEM_ROPE_LADDER);
 					}
 					drop_item(hero, i, 1);
 

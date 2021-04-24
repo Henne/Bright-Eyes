@@ -282,7 +282,7 @@ void tevent_078(void)
 			/* try to clean the path */
 
 			/* with SHOVEL/SCHAUFEL 5 Hours, without 8 Hours */
-			if (get_first_hero_with_item(73) != -1) {
+			if (get_first_hero_with_item(ITEM_SHOVEL) != -1) {
 				tmp = 5;
 			} else {
 				tmp = 8;
@@ -388,6 +388,7 @@ void tevent_079(void)
 	}
 }
 
+/* Ottarje <-> Skal: entrance to spider cave */
 void tevent_051(void)
 {
 	signed short answer;
@@ -433,6 +434,7 @@ void tevent_051(void)
 	}
 }
 
+/* Ottarje <-> Skjal: narrow pass blocked by a tree */
 void tevent_052(void)
 {
 	signed short done;
@@ -619,10 +621,10 @@ void tevent_145(void)
 		if (answer == 1)
 		{
 			ds_writew(TRV_DESTINATION, TOWNS_KRAVIK);
-			ds_writeb(CURRENT_TOWN, TOWNS_SKELELLE);
+			ds_writeb(CURRENT_TOWN, TOWNS_SKELELLEN);
 
 		} else {
-			ds_writew(TRV_DESTINATION, TOWNS_SKELELLE);
+			ds_writew(TRV_DESTINATION, TOWNS_SKELELLEN);
 			ds_writeb(CURRENT_TOWN, TOWNS_KRAVIK);
 		}
 

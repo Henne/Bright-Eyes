@@ -183,12 +183,16 @@ void sub_group_le(signed short);
 RealPt get_first_hero_available_in_group(void);
 RealPt get_second_hero_available_in_group(void);
 signed short count_heroes_available(void);
+#ifdef M302de_ORIGINAL_BUGFIX
+/* this function allows cleaner fixes for Original-Bug 15 */
+signed short count_heroes_available_ignore_npc(void);
+#endif
 signed short count_heroes_available_in_group(void);
 #ifdef M302de_ORIGINAL_BUGFIX
-/* this function allows cleaner fixes for Original-Bug 12, 13 and 14 */
+/* this function allows cleaner fixes for Original-Bug 12, 13, 14 and 15 */
 signed short count_heroes_available_in_group_ignore_npc(void);
 #endif
-void seg002_57f1(void);
+void check_group(void);
 int schick_main(int, char **);
 RealPt schick_alloc_emu(Bit32u);
 signed short copy_protection(void);

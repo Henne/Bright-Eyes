@@ -43,7 +43,7 @@ void spell_eigenschaften(void)
 	damage_range_template(host_readws(get_spelltarget_e() + ENEMY_SHEET_DAM1),
 		(Bit8u*)&min, (Bit8u*)&max);
 
-	min = min * 8 / 10;
+	min = min * 8 / 10; /* TODO: What is happening here */
 	max = max * 8 / 10;
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -797,11 +797,11 @@ void spell_scharfes_auge(void)
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + TA_WURFWAFFEN), 3, (signed char)target); /* TA_WURFWAFFEN */
+	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TALENTS + TA_WURFWAFFEN), 3, (signed char)target); /* TA_WURFWAFFEN */
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + TA_SCHUSSWAFFEN), 3, (signed char)target); /* TA_SCHUSSWAFFEN */
+	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TALENTS + TA_SCHUSSWAFFEN), 3, (signed char)target); /* TA_SCHUSSWAFFEN */
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_tx(97),

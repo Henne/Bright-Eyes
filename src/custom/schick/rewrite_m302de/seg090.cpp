@@ -314,39 +314,53 @@ signed short DNG12_handler(void)
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
 				} else {
 					/* the hero falls again into the pit */
-					/* Original-Bug: this text is not in OBER.DTX in SCHICK,
-							but it is in the english version.
-							It's a copy of get_dpt(0x64) plus an additional line.
-					*/
-					/* TODO: This fix works only for the german version and has to be
+#ifndef M302de_FEATURE_MOD
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_tx(31),
+						(char*)hero + HERO_NAME2,
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
+#else
+					/* Feature Mod 7: The following is a translation of a text block in OBER.DTX
+					 * of the English version, which has not been present in the German one.
+					 * It's a copy of get_dpt(0x64) plus an additional line.
+					 */
+					/* TODO: This mod works only for the German version and has to be
 							reworked, when BLADE.DAT should also be supported.
 					*/
-#ifdef M302de_ORIGINAL_BUGFIX
 					if (strlen((char*)get_tx(25)) == 219)
-					{
-						/* generate a new format string */
-						const unsigned char add_line[110] = {	0x40, 0x3c,'I','C','H',' ',
-								'G','L','A','U','B','E',',',' ',
-								'I','C','H',' ',
-								'M','U','S','S',' ',
-								'E','S',' ' ,'N','U','R',' ',
-								'N','O','C','H',' ','E','I','N',' ',
-								'E','I','N','Z','I','G','E','S',' ',
-								'M','A','L',' ','V','E','R','S','U','C','H','E','N','!', 0x3e,' ',
-								'M','U','R','M','E','L','T',' ',
-								'%', 's',' ',
-								'A','L','S',' ',
-								'%', 's',' ',
-								'W','I','E','D','E','R',' ',
-								'A','U','F',' ',
-								'%','s','E',' ',
-								'F', 0x9a, 'S','S','E',' ',
-								'K','O','M','M','T','.',
-								'\0'
-								};
+					/* TODO: test if this block can really be replaced by the two lines below
+					const unsigned char add_line[110] = {	0x40, 0x3c,'I','C','H',' ',
+							'G','L','A','U','B','E',',',' ',
+							'I','C','H',' ',
+							'M','U','S','S',' ',
+							'E','S',' ' ,'N','U','R',' ',
+							'N','O','C','H',' ','E','I','N',' ',
+							'E','I','N','Z','I','G','E','S',' ',
+							'M','A','L',' ','V','E','R','S','U','C','H','E','N','!', 0x3e,' ',
+							'M','U','R','M','E','L','T',' ',
+							'%', 's',' ',
+							'A','L','S',' ',
+							'%', 's',' ',
+							'W','I','E','D','E','R',' ',
+							'A','U','F',' ',
+							'%','s','E',' ',
+							'F', 0x9a, 'S','S','E',' ',
+							'K','O','M','M','T','.',
+							'\0'
+							};
 
 					strcpy((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)), (char*)get_tx(25));
 					strcat((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)), (const char*)add_line);
+					*/
+
+					strcpy((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)), (char*)get_tx(25));
+					strcat((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
+						"\x40\x3cICH GLAUBE, ICH MUSS ES NUR NOCH "
+						"EIN EINZIGES MAL VERSUCHEN!\x3e MURMELT %s "
+						"ALS %s WIEDER AUF %sE F\x9aSSE KOMMT.");
 
 					sprintf((char*)Real2Host(ds_readfp(DTP2)),
 						(char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
@@ -356,15 +370,6 @@ signed short DNG12_handler(void)
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 1)));
-					}
-#else
-					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_tx(31),
-						(char*)hero + HERO_NAME2,
-						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
-						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)),
-						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
-						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
 #endif
 				}
 
@@ -376,40 +381,48 @@ signed short DNG12_handler(void)
 					/* obstacle broken */
 					ds_writebs(DNG12_OBSTACLE_ACTIVE, 0);
 
-					/* Original-Bug: this text is not in the german version of OBER.DTX,
-								but in the english version, so a translation
-								can be added.
-					*/
-#ifdef M302de_ORIGINAL_BUGFIX
-					{
-						unsigned char str[] = {	'A','L','S',' ','%','s',' ',
-									'M','I','T',' ','D','E','R',' ',
-									'B','A','R','R','I','E','R','E',' ',
-									'K','O','L','L','I','D','I','E','R','T',' ',
-									'B','R','I','C','H','T',' ',
-									'S','I','E',' ','I','N',' ',
-									'S','T', 0x9a,'C','K','E','.',0x40,
-
-									'D','A','S',' ',
-									'G','A','N','Z','E',' ',
-									'W','A','R',' ','N','U','R',' ',
-									'E','I','N',' ','B','I','L','D','!',0x40,
-
-									'S','C','H','A','D','E',',',' ',
-									'D','A','S','S',' ','I','H','R',' ',
-									'D','A','S',' ','N','I','C','H','T',' ',
-									'F','R', 0x9a,'H','E','R',' ',
-									'B','E','M','E','R','K','T',' ',
-									'H','A','B','T','.',
-									'\0'};
-
-						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)str,
-							(char*)hero + HERO_NAME2);
-					}
-#else
+#ifndef M302de_FEATURE_MOD
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx(32),
+						(char*)hero + HERO_NAME2);
+#else
+					/* Feature Mod 7: The following is a translation of a text block in OBER.DTX
+					 * of the English version, which has not been present in the German one.
+					 */
+					/* TODO: This mod works only for the German version and has to be
+							reworked, when BLADE.DAT should also be supported.
+					*/
+					/* TODO: Test if this block cann really be replaced by the single line below.
+					unsigned char str[] = {	'A','L','S',' ','%','s',' ',
+								'M','I','T',' ','D','E','R',' ',
+								'B','A','R','R','I','E','R','E',' ',
+								'K','O','L','L','I','D','I','E','R','T',' ',
+								'B','R','I','C','H','T',' ',
+								'S','I','E',' ','I','N',' ',
+								'S','T', 0x9a,'C','K','E','.',0x40,
+
+								'D','A','S',' ',
+								'G','A','N','Z','E',' ',
+								'W','A','R',' ','N','U','R',' ',
+								'E','I','N',' ','B','I','L','D','!',0x40,
+
+								'S','C','H','A','D','E',',',' ',
+								'D','A','S','S',' ','I','H','R',' ',
+								'D','A','S',' ','N','I','C','H','T',' ',
+								'F','R', 0x9a,'H','E','R',' ',
+								'B','E','M','E','R','K','T',' ',
+								'H','A','B','T','.',
+								'\0'};
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)str,
+						(char*)hero + HERO_NAME2);
+					*/
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						"ALS %s MIT DER BARRIERE KOLLIDIERT, BRICHT SIE IN ST\x9aCKE.\x40"
+						"DAS GANZE WAR NUR EIN BILD!\x40"
+						"SCHADE DASS IHR DAS NICHT FR\x9aHER BEMERKT HABT.\0",
 						(char*)hero + HERO_NAME2);
 #endif
 				}

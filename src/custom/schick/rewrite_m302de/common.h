@@ -52,37 +52,37 @@ enum {
 };
 
 enum {
-    ANI_AREA_NAME       = 0x00, /* String of length 5 (zero-terminated) */
-    ANI_AREA_X          = 0x05,
-    ANI_AREA_Y          = 0x07,
-    ANI_AREA_HEIGHT     = 0x08,
-    ANI_AREA_WIDTH      = 0x09,
-    ANI_AREA_CYCLIC     = 0x0b,
-    ANI_AREA_PICS       = 0x0c,
-    ANI_AREA_PICS_TAB   = 0x0d, /* RealPt[20] */
-    ANI_AREA_CHANGES    = 0x5d,
-    ANI_AREA_CHANGES_TB = 0x5f, /* struct{ short pic, duration; }[42] */
+	ANI_AREA_NAME		 = 0x00, /* String of length 5 (zero-terminated) */
+	ANI_AREA_X		 = 0x05,
+	ANI_AREA_Y		 = 0x07,
+	ANI_AREA_HEIGHT		 = 0x08,
+	ANI_AREA_WIDTH		 = 0x09,
+	ANI_AREA_CYCLIC		 = 0x0b,
+	ANI_AREA_PICS		 = 0x0c,
+	ANI_AREA_PICS_TAB	 = 0x0d, /* RealPt[20] */
+	ANI_AREA_CHANGES	 = 0x5d,
+	ANI_AREA_CHANGES_TB	 = 0x5f, /* struct{ short pic, duration; }[42] */
 };
 
 #define SIZEOF_ANI_AREA (0x107)
 
 /**
  *	struct hero_status - status of the hero
- *	@dead:		1 = dead				/ 0 = not dead
- *	@asleep:	1 = asleep				/ 0 = awake
- *	@petrified:	1 = petrified				/ 0 = not petrified
+ *	@dead:		1 = dead / 0 = not dead
+ *	@asleep:	1 = asleep / 0 = awake
+ *	@petrified:	1 = petrified / 0 = not petrified
  *	@brewing:	1 = brewing an alchemical recipe in an inn / 0 = not brewing
- *	@chamaelioni:	1 = 'Chamaelioni' spell active		/ 0 = spell not active (effect of active 'Chamaelioni': AT-5 for attacker)
- *	@renegade:	1 = renegade (from 'Boeser Blick' spell)	/ 0 = normal
- *	@unconscious:	1 = unconscious				/ 0 = conscious
- *	@tied:		1 = hero tied                           / 0 = not tied (from hero 'Band und Fessel' spell)
+ *	@chamaelioni:	1 = 'Chamaelioni' spell active / 0 = spell not active (effect of active 'Chamaelioni': AT-5 for attacker)
+ *	@renegade:	1 = renegade (from 'Boeser Blick' spell) / 0 = normal
+ *	@unconscious:	1 = unconscious / 0 = conscious
+ *	@tied:		1 = hero tied / 0 = not tied (from hero 'Band und Fessel' spell)
  *
- *	@scared:	1 = scared and wants to flee (from 'Horriphobus' spell or Angstgift)	/ 0 = not scared
+ *	@scared:	1 = scared and wants to flee (from 'Horriphobus' spell or Angstgift) / 0 = not scared
  *	@dummy2:	probably unused
- *	@duplicatus:	1 = 'Duplicatus' spell active	/ spell not active (effect: AT/2 for attacker, applied after the 'Chamaelioni' effect)
- *	@tame:		1 = tame (from enemy 'Bannbaladin' spell)	/ 0 = normal
+ *	@duplicatus:	1 = 'Duplicatus' spell active / spell not active (effect: AT/2 for attacker, applied after the 'Chamaelioni' effect)
+ *	@tame:		1 = tame (from enemy 'Bannbaladin' spell) / 0 = normal
  *	@seen_phantom:	1 = hero has seen the horrible phantom in the 'Verlassene Herberge' dungeon which gave MU -3 for 5 hours (same position where the Sphaerenriss can happen).
- *	@gods_pissed:	1 = gods pissed (no more miracles)	/ 0 = gods normal	(activated by praising the nameless god, deactivated by destroying the statue of the nameless god)
+ *	@gods_pissed:	1 = gods pissed (no more miracles) / 0 = gods normal (activated by praising the nameless god, deactivated by destroying the statue of the nameless god)
  *	@transformed:	1 = hero is transformed (all positive attributes -1, from the cursed chest on the Totenschiff) / 0 not transformed (can be cured by 'Verwandlung beenden' spell or Praios/Hesinde miracle)
  *	@encouraged:	1 = MU increased by 3 (seg082.cpp, probably a dungeon event) / 0 = attibute back to normal.
  */
@@ -108,186 +108,193 @@ struct hero_status {
 };
 
 enum {
-    HERO_NAME               = 0x000,
-    HERO_NAME2              = 0x010,
-    HERO_KS_TAKEN           = 0x020, /* number of occupied "regular" item slots */
-    HERO_TYPE               = 0x021, /* See enum HERO_TYPE_* below. */
-    HERO_SEX                = 0x022,
-    HERO_HEIGHT             = 0x023, /* height in cm */
-    HERO_WEIGHT             = 0x024, /* weight in ounces */
-    HERO_GOD                = 0x026,
-    HERO_LEVEL              = 0x027,
-    HERO_AP                 = 0x028,
-    HERO_MONEY              = 0x02C, /* Heller */
-    HERO_RS_BONUS1          = 0x030, /* RS-Bonus = RS-Bonus1 + RS-Bonus2 */
-    HERO_RS_BONUS2          = 0x031,
-    HERO_RS_BE              = 0x032, /* Ruestungsschutzbehinderung */
-    HERO_BP_LEFT            = 0x033,
-    HERO_ATTRIB_ORIG        = 0x034, /* See enum ATTRIB_* below. */
-    HERO_ATTRIB             = 0x035, /* See enum ATTRIB_* below. */
-    HERO_ATTRIB_MOD         = 0x036, /* See enum ATTRIB_* below. */
-    HERO_LE_ORIG            = 0x05E,
-    HERO_LE                 = 0x060,
-    HERO_AE_ORIG            = 0x062,
-    HERO_AE                 = 0x064,
-    HERO_MR                 = 0x066,
-    HERO_ATPA_BASIS         = 0x067,
-    HERO_AT                 = 0x068,
-    HERO_PA                 = 0x06F,
-    HERO_AT_MOD             = 0x076,
-    HERO_PA_MOD             = 0x077,
-    HERO_WP_CLASS           = 0x078,
-    HERO_ATTACK_TYPE        = 0x079, /* 0x00 = normal; 0x02 = aggressiv; 0xFE = vorsichtig */
-    HERO_LE_MOD             = 0x07A, /* permanent LE mod */
-    HERO_TIMER_ID           = 0x07B,
-    HERO_START_GEAR         = 0x07C, /* has got initial gear set: 1 = true, 0 = false */
-    HERO_HERBS              = 0x07D, /* keine = 0, Belmart = 1, Menchalkaktus = 2 */
-    HERO_HUNGER_TIMER       = 0x07E, /* timer for no-hunger-miracle */
-    HERO_HUNGER             = 0x07F, /* percentage */
-    HERO_THIRST             = 0x080, /* percentage */
-    HERO_FIGHTER_ID         = 0x081,
-    HERO_VIEWDIR            = 0x082,
-    HERO_ACTIONS            = 0x083, /* corresponds to ENEMY_SHEET_ATTACKS */
-    HERO_ACTION_ID          = 0x084, /* last fight action */
-    HERO_SPELL_ID           = 0x085, /* last spell in fight */
-    HERO_ENEMY_ID           = 0x086, /* last enemy in fight */
-    HERO_GROUP_NO           = 0x087,
-    HERO_TEMPLE_ID          = 0x088,
-    HERO_NPC_ID             = 0x089, /* See enum NPC_* below. */
-    HERO_GROUP_POS          = 0x08A, /* 0x01 bis 0x06, 0x00 = not in group */
-    HERO_HEAL_TIMER         = 0x08B,
-    HERO_STAFFSPELL_TIMER   = 0x08F,
-    HERO_RECIPE_ID          = 0x093, /* alchemy */
-    HERO_RECIPE_TIMER       = 0x094, /* timer till completion of alchemical brewing process, in days */
-    HERO_RUHE_KOERPER       = 0x095, /* 1 = Ruhe Koerper spell is active */
-    HERO_BLIND              = 0x096, /* blind rounds remaining from 'Blitz' spell */
-    HERO_ECLIPTIFACTUS      = 0x097, /* shadow rounds remaining */
-    HERO_SAFTKRAFT          = 0x098, /* stores extra damage of spell 'Saft, Kraft, Monstermacht' */
-    HERO_FIREBAN            = 0x099, /* 1 = active, 0 = inactive */
-    HERO_INVISIBLE          = 0x09A, /* 1 = active, 0 = inactive */
-    HERO_SPRITE_NO          = 0x09B, /* fight gfx of char, depending on type and sex */
-    HERO_HOSTEL_ID          = 0x09C, /* alchemy */
-    HERO_ESCAPE_POSITION    = 0x09D, /* the dungeon square the hero escaped to in a fight. read from FIG_FLEE_POSITION */
-    HERO_JAIL               = 0x09F, /* 1 = true, 0 = false */
-    HERO_AXXELERATUS        = 0x0A0, /* 1 = active, 0 = inactive */
-    HERO_DRUNK              = 0x0A1,
-    HERO_UNKNOWN10          = 0x0A2, /* never used? */
-    HERO_STATUS1            = 0x0AA, /* Bit0 = dead, Bit1 = asleep, Bit2 = petrified, Bit3 = brewing, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious, Bit7 = tied */
-    HERO_STATUS2            = 0x0AB, /* Bit0 = scared, Bit1 = unused?, Bit2 = duplicatus, Bit3 = tame, Bit4 = seen_phantom, Bit5 = gods_pissed, Bit6 = transformed, Bit7 = encouraged */
-    HERO_UNKNOWN11          = 0x0AC, /* never used? */
-    HERO_ILLNESS_EMPTY      = 0x0AE,
-    HERO_ILLNESS            = 0x0B3,
-    HERO_POISON_EMPTY       = 0x0D6,
-    HERO_POISON             = 0x0DB,
-    HERO_TA_FIGHT           = 0x108, /* 9 x 1 Byte, see enum TA_* below */
-    HERO_TA_BODY            = 0x111, /* 10 x 1 Byte */
-    HERO_TA_SOCIAL          = 0x11B, /* 7 x 1 Byte */
-    HERO_TA_NATURE          = 0x122, /* 6 x 1 Byte */
-    HERO_TA_KNOWLEDGE       = 0x128, /* 9 x 1 Byte */
-    HERO_TA_CRAFT           = 0x131, /* 9 x 1 Byte */
-    HERO_TA_INTUITION       = 0x13A, /* 2 x 1 Byte */
-    HERO_TA_RISE            = 0x13C, /* saved from last levelup */
-    HERO_SPELLS             = 0x13D, /* empty Byte */
-    HERO_SP_ANTI            = 0x13E,
-    HERO_SP_CONTROL         = 0x143,
-    HERO_SP_DEMON           = 0x14F,
-    HERO_SP_ELEMENT         = 0x155,
-    HERO_SP_MOTION          = 0x158,
-    HERO_SP_HEAL            = 0x15E,
-    HERO_SP_VISION          = 0x163,
-    HERO_SP_ILLUSION        = 0x16A,
-    HERO_SP_FIGHT           = 0x16E,
-    HERO_SP_INTERACT        = 0x177,
-    HERO_SP_TRANSFORM       = 0x179,
-    HERO_SP_CHANGE          = 0x189,
-    HERO_SP_RISE            = 0x193, /* saved from last levelup */
-    HERO_MAGIC_SCHOOL       = 0x194,
-    HERO_STAFFSPELL_LVL     = 0x195,
-    HERO_ITEM_HEAD          = 0x196,
-    HERO_ITEM_ARM           = 0x1A4,
-    HERO_ITEM_BODY          = 0x1B2,
-    HERO_ITEM_RIGHT         = 0x1C0, /* right hand */
-    HERO_ITEM_LEFT          = 0x1CE, /* left hand */
-    HERO_ITEM_LEGS          = 0x1DC,
-    HERO_ITEM_FEET          = 0x1EA,
-    HERO_ITEM_KS1           = 0x1F8,
-    HERO_ITEM_KS2           = 0x206,
-    HERO_ITEM_KS3           = 0x214,
-    HERO_ITEM_KS4           = 0x222,
-    HERO_ITEM_KS5           = 0x230,
-    HERO_ITEM_KS6           = 0x23E,
-    HERO_ITEM_KS7           = 0x24C,
-    HERO_ITEM_KS8           = 0x25A,
-    HERO_ITEM_KS9           = 0x268,
-    HERO_ITEM_KS10          = 0x276,
-    HERO_ITEM_KS11          = 0x284,
-    HERO_ITEM_KS12          = 0x292,
-    HERO_ITEM_KS13          = 0x2A0,
-    HERO_ITEM_KS14          = 0x2AE,
-    HERO_ITEM_KS15          = 0x2BC,
-    HERO_ITEM_KS16          = 0x2CA,
-    HERO_LOAD               = 0x2D8,
-    HERO_PORTRAIT           = 0x2DA /* 32 x 32 pixels, 8 bpp */
+    /* see https://github.com/shihan42/BrightEyesWiki/wiki/CHR-NPC */
+	HERO_NAME		= 0x000, /* 16 bytes */
+	HERO_NAME2		= 0x010, /* 16 bytes */
+	HERO_KS_TAKEN		= 0x020, /* 1 byte */ /* number of occupied item slots in the (KS = ) knapsack. (equipped items are not included) */
+	HERO_TYPE		= 0x021, /* 1 byte */ /* See enum HERO_TYPE_* below. */
+	HERO_SEX		= 0x022, /* 1 byte */
+	HERO_HEIGHT		= 0x023, /* 1 byte */ /* unit: cm */
+	HERO_WEIGHT		= 0x024, /* 2 bytes */ /* unit: ounces */
+	HERO_GOD		= 0x026, /* 1 byte */
+	HERO_LEVEL		= 0x027, /* 1 byte */
+	HERO_AP 		= 0x028, /* 4 bytes */
+	HERO_MONEY		= 0x02C, /* 4 bytes */ /* unit: Heller */
+	HERO_RS_BONUS1		= 0x030, /* 1 byte */ /* RS-Bonusu= RS-Bonus1 + RS-Bonus2 */
+	HERO_RS_BONUS2		= 0x031 /* 1 byte */ ,
+	HERO_RS_BE		= 0x032, /* 1 byte */ /* Ruestungsschutzbehinderung */
+	HERO_BP_LEFT		= 0x033, /* 1 byte */
+	HERO_ATTRIB_ORIG	= 0x034, /* 42 = 14 * 3 bytes. array of 14 entries of structs of 3 bytes of the form <HERO_ATTRIB_ORIG (1 byte), HERO_ATTRIB (1 byte), HERO_ATTRIB_MOD (1 byte)> See enum ATTRIB_* below. */
+	HERO_ATTRIB		= 0x035, /* See enum ATTRIB_* below. */
+	HERO_ATTRIB_MOD		= 0x036, /* See enum ATTRIB_* below. */
+	HERO_LE_ORIG		= 0x05E, /* 2 bytes */
+	HERO_LE 		= 0x060, /* 2 bytes */
+	HERO_AE_ORIG		= 0x062, /* 2 bytes */
+	HERO_AE 		= 0x064, /* 2 bytes */
+	HERO_MR 		= 0x066, /* 1 byte */
+	HERO_ATPA_BASIS		= 0x067, /* 1 byte */
+	HERO_AT 		= 0x068, /* 7 = 7 * 1 bytes */ /* array with 7 entries each of size 1 byte containing the AT values of TA_WAFFENLOS, TA_HIEBWAFFEN, TA_STICHWAFFEN, TA_SCHWERTER, TA_AEXTE, TA_SPEERE, TA_ZWEIHAENDER */
+	HERO_PA 		= 0x06F, /* 7 = 7 * 1 bytes */ /* array with 7 entries each of size 1 byte containing the PA values of TA_WAFFENLOS, TA_HIEBWAFFEN, TA_STICHWAFFEN, TA_SCHWERTER, TA_AEXTE, TA_SPEERE, TA_ZWEIHAENDER */
+	HERO_AT_MOD		= 0x076, /* 1 byte */
+	HERO_PA_MOD		= 0x077, /* 1 byte */
+	HERO_WP_CLASS		= 0x078, /* 1 byte */ /* weapon class? */
+	HERO_ATTACK_TYPE	= 0x079, /* 1 byte */ /* 0x00 = normal; 0x02 = aggressiv; 0xFE = vorsichtig */
+	HERO_LE_MOD		= 0x07A, /* 1 byte */ /* permanent LE mod */
+	HERO_TIMER_ID		= 0x07B, /* 1 byte */
+	HERO_START_GEAR		= 0x07C, /* 1 byte */ /* has got initial gear set: 1 = true, 0 = false */
+	HERO_HERBS		= 0x07D, /* 1 byte */ /* keine = 0, Belmart = 1, Menchalkaktus = 2 */
+	HERO_HUNGER_TIMER	= 0x07E, /* 1 byte */ /* timer for no-hunger-miracle */
+	HERO_HUNGER		= 0x07F, /* 1 byte */ /* percentage */
+	HERO_THIRST		= 0x080, /* 1 byte */ /* percentage */
+	HERO_FIGHTER_ID		= 0x081, /* 1 byte */
+	HERO_VIEWDIR		= 0x082, /* 1 byte */
+	HERO_ACTIONS		= 0x083, /* 1 byte */ /* corresponds to ENEMY_SHEET_ATTACKS */
+	HERO_ACTION_ID		= 0x084, /* 1 byte */ /* last fight action */
+	HERO_SPELL_ID		= 0x085, /* 1 byte */ /* last spell in fight */
+	HERO_ENEMY_ID		= 0x086, /* 1 byte */ /* last enemy in fight */
+	HERO_GROUP_NO		= 0x087, /* 1 byte */
+	HERO_TEMPLE_ID		= 0x088, /* 1 byte */
+	HERO_NPC_ID		= 0x089, /* 1 byte */ /* See enum NPC_* below. */
+	HERO_GROUP_POS		= 0x08A, /* 1 byte */ /* 0x01 bis 0x06, 0x00 = not in group */
+	HERO_HEAL_TIMER		= 0x08B, /* 4 bytes */
+	HERO_STAFFSPELL_TIMER	= 0x08F, /* 4 bytes */
+	HERO_RECIPE_ID		= 0x093, /* 1 byte */ /* id of the alchemic recipe the hero is brewing */
+	HERO_RECIPE_TIMER	= 0x094, /* 1 byte */ /* timer till completion of alchemical brewing process, in days */
+	HERO_RUHE_KOERPER	= 0x095, /* 1 byte */ /* 1 = Ruhe Koerper spell is active */
+	HERO_BLIND		= 0x096, /* 1 byte */ /* remaining fight rounds the hero is blinded from 'Blitz' spell */
+	HERO_ECLIPTIFACTUS	= 0x097, /* 1 byte */ /* remaining fight rounds the hero is shadowed from 'Ecliptifactus' spell */
+	HERO_SAFTKRAFT		= 0x098, /* 1 byte */ /* stores extra damage of spell 'Saft, Kraft, Monstermacht' */
+	HERO_FIREBAN		= 0x099, /* 1 byte */ /* 1 = 'Feuerbann' spell is active, 0 = inactive */
+	HERO_INVISIBLE		= 0x09A, /* 1 byte */ /* 1 = 'Visibili' spell is active, 0 = inactive */
+	HERO_SPRITE_NO		= 0x09B, /* 1 byte */ /* fight gfx of hero, depending on type and sex */
+	HERO_HOSTEL_ID		= 0x09C, /* 1 byte */ /* the id of the inn where the hero is doing alchemy */
+	HERO_ESCAPE_POSITION	= 0x09D, /* 2 bytes */ /* the dungeon square the hero escaped to in a fight. read from FIG_FLEE_POSITION */
+	HERO_JAIL		= 0x09F, /* 1 byte */ /* 1 = true, i.e. hero is in prison (from breaking into a house), 0 = false */
+	HERO_AXXELERATUS	= 0x0A0, /* 1 byte */ /* 1 = 'Axxeleratus' spell is active, 0 = inactive */
+	HERO_DRUNK		= 0x0A1, /* 1 byte */ /* 1 = true (hero drunk), 0 = false */
+	HERO_UNKNOWN10		= 0x0A2, /* 8 bytes */ /* never used? */
+	HERO_STATUS1		= 0x0AA, /* 1 byte = 8 bits */ /* Bit0 = dead, Bit1 = asleep, Bit2 = petrified, Bit3 = brewing, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious, Bit7 = tied */
+	HERO_STATUS2		= 0x0AB, /* 1 byte = 8 bits */ /* Bit0 = scared, Bit1 = unused?, Bit2 = duplicatus, Bit3 = tame, Bit4 = seen_phantom, Bit5 = gods_pissed, Bit6 = transformed, Bit7 = encouraged */
+	HERO_UNKNOWN11		= 0x0AC, /* 2 bytes */ /* never used? */
+	HERO_ILLNESS_EMPTY	= 0x0AE, /* 5 bytes */ /* unused? */
+	HERO_ILLNESS		= 0x0B3, /* 35 = 7 * 5 bytes */ /* 5 bytes for each of the following illnesses: 1-Wundfieber, 2-Dumpfschädel, 3-Blaue Keuche, 4-Paralyse, 5-Schlachtenfieber, 6-Frostschäden, 7-Tollwut */
+	HERO_POISON_EMPTY	= 0x0D6, /* 5 bytes */ /* unused? */
+	HERO_POISON		= 0x0DB, /* 45 = 9 * 5 bytes */ /* 5 bytes for each of the following poisonings: 1-Shurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemel, 7-Lotusgift, 8-Kukris, 9-Bannstaubvergiftung */
+	HERO_TALENTS		= 0x108, /* 52 = 52 * 1 bytes, see enum TA_* below */
+	HERO_TA_RISE		= 0x13C, /* saved skill increases from last levelups */
+	HERO_SPELLS		= 0x13D, /* empty Byte */
+	HERO_SP_ANTI		= 0x13E, /* 5 = 5 * 1 bytes */
+	HERO_SP_CONTROL		= 0x143, /* 12 = 12 * 1 bytes */
+	HERO_SP_DEMON		= 0x14F, /* 6 = 6 * 1 bytes */
+	HERO_SP_ELEMENT		= 0x155, /* 3 = 3 * 1 bytes */
+	HERO_SP_MOTION		= 0x158, /* 6 = 6 * 1 bytes */
+	HERO_SP_HEAL		= 0x15E, /* 5 = 5 * 1 bytes */
+	HERO_SP_VISION		= 0x163, /* 7 = 7 * 1 bytes */
+	HERO_SP_ILLUSION	= 0x16A, /* 4 = 4 * 1 bytes */
+	HERO_SP_FIGHT		= 0x16E, /* 9 = 9 * 1 bytes */
+	HERO_SP_INTERACT	= 0x177, /* 2 = 2 * 1 bytes */
+	HERO_SP_TRANSFORM	= 0x179, /* 16 = 16 * 1 bytes */
+	HERO_SP_CHANGE		= 0x189, /* 10 = 10 * 1 bytes */
+	HERO_SP_RISE		= 0x193, /* 1 bytes */ /* saved spell increases from last levelups */
+	HERO_MAGIC_SCHOOL	= 0x194, /* 1 byte */
+	HERO_STAFFSPELL_LVL	= 0x195, /* 1 byte */
+	HERO_ITEM_HEAD		= 0x196, /* 14 bytes */
+	HERO_ITEM_ARM		= 0x1A4, /* 14 bytes */
+	HERO_ITEM_BODY		= 0x1B2, /* 14 bytes */
+	HERO_ITEM_RIGHT		= 0x1C0, /* 14 bytes */ /* right hand */
+	HERO_ITEM_LEFT		= 0x1CE, /* 14 bytes */ /* left hand */
+	HERO_ITEM_LEGS		= 0x1DC, /* 14 bytes */
+	HERO_ITEM_FEET		= 0x1EA, /* 14 bytes */
+	HERO_ITEM_KS1		= 0x1F8, /* 14 bytes */ /* KS = knapsack */
+	HERO_ITEM_KS2		= 0x206, /* 14 bytes */
+	HERO_ITEM_KS3		= 0x214, /* 14 bytes */
+	HERO_ITEM_KS4		= 0x222, /* 14 bytes */
+	HERO_ITEM_KS5		= 0x230, /* 14 bytes */
+	HERO_ITEM_KS6		= 0x23E, /* 14 bytes */
+	HERO_ITEM_KS7		= 0x24C, /* 14 bytes */
+	HERO_ITEM_KS8		= 0x25A, /* 14 bytes */
+	HERO_ITEM_KS9		= 0x268, /* 14 bytes */
+	HERO_ITEM_KS10		= 0x276, /* 14 bytes */
+	HERO_ITEM_KS11		= 0x284, /* 14 bytes */
+	HERO_ITEM_KS12		= 0x292, /* 14 bytes */
+	HERO_ITEM_KS13		= 0x2A0, /* 14 bytes */
+	HERO_ITEM_KS14		= 0x2AE, /* 14 bytes */
+	HERO_ITEM_KS15		= 0x2BC, /* 14 bytes */
+	HERO_ITEM_KS16		= 0x2CA, /* 14 bytes */
+	HERO_LOAD		= 0x2D8, /* 2 bytes */
+	HERO_PORTRAIT		= 0x2DA /* 1024 = 32 * 32 bytes */ /* 32 x 32 pixels, 8 bpp */
 };
 
 #define SIZEOF_HERO (0x6da)
 
 enum {
-    NPC_NONE = 0,
-    NPC_NARIELL = 1,
-    NPC_HARIKA = 2,
-    NPC_CURIAN = 3,
-    NPC_ARDORA = 4,
-    NPC_GARSVIK = 5,
-    NPC_ERWO = 6
+	NPC_NONE = 0,
+	NPC_NARIELL = 1,
+	NPC_HARIKA = 2,
+	NPC_CURIAN = 3,
+	NPC_ARDORA = 4,
+	NPC_GARSVIK = 5,
+	NPC_ERWO = 6
 };
 
 enum {
-    HERO_TYPE_NONE = 0,
-    HERO_TYPE_JUGGLER = 1,	/* Gaukler */
-    HERO_TYPE_HUNTER = 2,	/* Jaeger */
-    HERO_TYPE_WARRIOR = 3,	/* Krieger */
-    HERO_TYPE_ESTRAY = 4,	/* Streuner */
-    HERO_TYPE_THORWALIAN = 5,	/* Thorwaler */
-    HERO_TYPE_DWARF = 6,	/* Zwerg */
-    /* Magic users > 6 */
-    HERO_TYPE_WITCH = 7,	/* Hexe */
-    HERO_TYPE_DRUID = 8,	/* Druide */
-    HERO_TYPE_MAGE = 9,		/* Magier */
-    HERO_TYPE_GREEN_ELF = 10,	/* Auelf */
-    HERO_TYPE_ICE_ELF = 11,	/* Firnelf */
-    HERO_TYPE_SYLVAN_ELF = 12,	/* Waldelf */
+	HERO_TYPE_NONE = 0,
+	HERO_TYPE_JUGGLER = 1,		/* Gaukler */
+	HERO_TYPE_HUNTER = 2,		/* Jaeger */
+	HERO_TYPE_WARRIOR = 3,		/* Krieger */
+	HERO_TYPE_ESTRAY = 4,		/* Streuner */
+	HERO_TYPE_THORWALIAN = 5,	/* Thorwaler */
+	HERO_TYPE_DWARF = 6,		/* Zwerg */
+	/* Magic users > 6 */
+	HERO_TYPE_WITCH = 7,		/* Hexe */
+	HERO_TYPE_DRUID = 8,		/* Druide */
+	HERO_TYPE_MAGE = 9,		/* Magier */
+	HERO_TYPE_GREEN_ELF = 10,	/* Auelf */
+	HERO_TYPE_ICE_ELF = 11,		/* Firnelf */
+	HERO_TYPE_SYLVAN_ELF = 12,	/* Waldelf */
 };
 
 enum {
-    FIG_ACTION_MOVE = 1,
-    FIG_ACTION_ATTACK = 2,
-    FIG_ACTION_GUARD = 3,
-    FIG_ACTION_SPELL = 4,
-    FIG_ACTION_USE_ITEM = 5,
-    FIG_ACTION_DROP_ITEM = 6,
-    FIG_ACTION_EXCHANGE_WEAPON = 7,
-    FIG_ACTION_EXCHANGE_ITEM = 8,
-    FIG_ACTION_CHECK_VALUES = 9,
-    FIG_ACTION_WAIT = 10,
-    FIG_ACTION_COMPUTER_FIGHT = 11,
-    FIG_ACTION_QUIT_AND_LOAD = 12,
-    FIG_ACTION_REPEAT_OPTION = 13,
-    FIG_ACTION_RANGE_ATTACK = 15,
-    FIG_ACTION_FLEE = 16,
-    FIG_ACTION_UNKNOWN2 = 100
+	FIG_ACTION_MOVE = 1,
+	FIG_ACTION_ATTACK = 2,
+	FIG_ACTION_GUARD = 3,
+	FIG_ACTION_SPELL = 4,
+	FIG_ACTION_USE_ITEM = 5,
+	FIG_ACTION_DROP_ITEM = 6,
+	FIG_ACTION_EXCHANGE_WEAPON = 7,
+	FIG_ACTION_EXCHANGE_ITEM = 8,
+	FIG_ACTION_CHECK_VALUES = 9,
+	FIG_ACTION_WAIT = 10,
+	FIG_ACTION_COMPUTER_FIGHT = 11,
+	FIG_ACTION_QUIT_AND_LOAD = 12,
+	FIG_ACTION_REPEAT_OPTION = 13,
+	FIG_ACTION_RANGE_ATTACK = 15,
+	FIG_ACTION_FLEE = 16,
+	FIG_ACTION_UNKNOWN2 = 100,
+	FIG_ACTION_UNKNOWN3 = 102, /* drink potion? */
+	FIG_ACTION_UNKNOWN4 = 103  /* cast spell? */
 };
 
 enum {
-    ILLNESS_WUNDFIEBER = 0, ILLNESS_DUMPFSCHAEDEL, ILLNESS_BLAUE_KEUCHE,
-    ILLNESS_PARALYSE, ILLNESS_SCHLACHTENFIEBER, ILLNESS_FROSTSCHAEDEN,
-    ILLNESS_TOLLWUT
+	ILLNESS_WUNDFIEBER = 0,
+	ILLNESS_DUMPFSCHAEDEL = 1,
+	ILLNESS_BLAUE_KEUCHE = 2,
+	ILLNESS_PARALYSE = 3,
+	ILLNESS_SCHLACHTENFIEBER = 4,
+	ILLNESS_FROSTSCHAEDEN = 5,
+	ILLNESS_TOLLWUT = 6
 };
 
 enum {
-    POISON_SHURINKNOLLENGIFT = 0, POISON_ARAX, POISON_ANGSTGIFT,
-    POISON_SCHLAFGIFT, POISON_GOLDLEIM, POISON_KROETENSCHEMEL, POISON_LOTUSGIFT,
-    POISON_KUKRIS, POISON_BANNSTAUB
+    POISON_SHURINKNOLLENGIFT = 0,
+    POISON_ARAX = 1,
+    POISON_ANGSTGIFT = 2,
+    POISON_SCHLAFGIFT = 3,
+    POISON_GOLDLEIM = 4,
+    POISON_KROETENSCHEMEL = 5,
+    POISON_LOTUSGIFT = 6,
+    POISON_KUKRIS = 7,
+    POISON_BANNSTAUB = 8
 };
 
 struct enemy_status1 {
@@ -365,16 +372,16 @@ struct knapsack_item {
 struct passages {
 	RealPt p1;
 	RealPt p2;
-	signed char flag;		/* 0 or 1, write only */
-	signed char v2;			/* 0, read only */
-	unsigned char town;		/* */
-	signed char v4;			/*  write only */
+	signed char flag;	/* 0 or 1, write only */
+	signed char v2;		/* 0, read only */
+	unsigned char town;	/* */
+	signed char v4;		/* write only */
 };
 
 struct informer {
-	signed short name;		/* in TEXT.LTX */
-	signed char  city;		/* -1 = no city, else city id */
-	signed char unknown;		/* {0, 1} */
+	signed short name;	/* in TEXT.LTX */
+	signed char city;	/* -1 = no city, else city id */
+	signed char unknown;	/* {0, 1} */
 };
 
 /* dummy */
@@ -407,178 +414,260 @@ struct enemy_sheets {
 };
 
 enum {
-    ENEMY_SHEET_MON_ID          = 0x00,
-    ENEMY_SHEET_GFX_ID          = 0x01,
-    ENEMY_SHEET_RS              = 0x02,
-    ENEMY_SHEET_ATTRIB_ORIG     = 0x03, /* Only main 7 attributes */
-    ENEMY_SHEET_ATTRIB          = 0x04,
-    ENEMY_SHEET_LE_ORIG         = 0x11,
-    ENEMY_SHEET_LE              = 0x13,
-    ENEMY_SHEET_AE_ORIG         = 0x15,
-    ENEMY_SHEET_AE              = 0x17,
-    ENEMY_SHEET_MR              = 0x19,
-    ENEMY_SHEET_FIRSTAP         = 0x1a,
-    ENEMY_SHEET_ATTACKS         = 0x1b,
-    ENEMY_SHEET_AT              = 0x1c,
-    ENEMY_SHEET_PA              = 0x1d,
-    ENEMY_SHEET_DAM1            = 0x1e,
-    ENEMY_SHEET_DAM2            = 0x20,
-    ENEMY_SHEET_BP_ORIG         = 0x22,
-    ENEMY_SHEET_BP              = 0x23,
-    ENEMY_SHEET_MAGIC           = 0x24,
-    ENEMY_SHEET_MAG_ID          = 0x25,
-    ENEMY_SHEET_FIGHTER_ID      = 0x26,
-    ENEMY_SHEET_VIEWDIR         = 0x27,
-    ENEMY_SHEET_ATTACKS_LEFT    = 0x28, /* number attacks left in the current turn of a battle */
-    ENEMY_SHEET_LEVEL           = 0x29,
-    ENEMY_SHEET_DUMMY3          = 0x2a,
-    ENEMY_SHEET_ACTION_ID       = 0x2b,
-    ENEMY_SHEET_CUR_SPELL       = 0x2c,
-    ENEMY_SHEET_ENEMY_ID        = 0x2d,
-    ENEMY_SHEET_SAFTKRAFT       = 0x2e, /* stores extra damage of spell 'Saft, Kraft, Monstermacht' */
-    ENEMY_SHEET_BLIND           = 0x2f, /* blind rounds remaining from 'Blitz' spell */
-    ENEMY_SHEET_BROKEN          = 0x30, /* weapon broken? 0 = no, 1 = yes */
-    ENEMY_SHEET_STATUS1         = 0x31,
-    ENEMY_SHEET_STATUS2         = 0x32,
-    ENEMY_SHEET_UNUSED8         = 0x33,
-    ENEMY_SHEET_SIZE            = 0x34,
-    ENEMY_SHEET_ROUND_APPEAR    = 0x35,
-    ENEMY_SHEET_IS_ANIMAL       = 0x36, /* is the enemy an animal? */
-    ENEMY_SHEET_SHOTS           = 0x37,
-    ENEMY_SHEET_SHOT_DAM        = 0x38,
-    ENEMY_SHEET_THROWS          = 0x3a,
-    ENEMY_SHEET_THROW_DAM       = 0x3b,
-    ENEMY_SHEET_LE_FLEE         = 0x3d
+	ENEMY_SHEET_MON_ID		= 0x00,
+	ENEMY_SHEET_GFX_ID		= 0x01,
+	ENEMY_SHEET_RS			= 0x02,
+	ENEMY_SHEET_ATTRIB_ORIG		= 0x03, /* Only main 7 attributes */
+	ENEMY_SHEET_ATTRIB		= 0x04,
+	ENEMY_SHEET_LE_ORIG		= 0x11,
+	ENEMY_SHEET_LE			= 0x13,
+	ENEMY_SHEET_AE_ORIG		= 0x15,
+	ENEMY_SHEET_AE			= 0x17,
+	ENEMY_SHEET_MR			= 0x19,
+	ENEMY_SHEET_FIRSTAP		= 0x1a,
+	ENEMY_SHEET_ATTACKS		= 0x1b,
+	ENEMY_SHEET_AT			= 0x1c,
+	ENEMY_SHEET_PA			= 0x1d,
+	ENEMY_SHEET_DAM1		= 0x1e,
+	ENEMY_SHEET_DAM2		= 0x20,
+	ENEMY_SHEET_BP_ORIG		= 0x22,
+	ENEMY_SHEET_BP			= 0x23,
+	ENEMY_SHEET_MAGIC		= 0x24,
+	ENEMY_SHEET_MAG_ID		= 0x25,
+	ENEMY_SHEET_FIGHTER_ID		= 0x26,
+	ENEMY_SHEET_VIEWDIR		= 0x27,
+	ENEMY_SHEET_ATTACKS_LEFT	= 0x28, /* number attacks left in the current turn of a battle */
+	ENEMY_SHEET_LEVEL		= 0x29,
+	ENEMY_SHEET_DUMMY3		= 0x2a,
+	ENEMY_SHEET_ACTION_ID		= 0x2b,
+	ENEMY_SHEET_CUR_SPELL		= 0x2c,
+	ENEMY_SHEET_ENEMY_ID		= 0x2d,
+	ENEMY_SHEET_SAFTKRAFT		= 0x2e, /* stores extra damage of spell 'Saft, Kraft, Monstermacht' */
+	ENEMY_SHEET_BLIND		= 0x2f, /* blind rounds remaining from 'Blitz' spell */
+	ENEMY_SHEET_BROKEN		= 0x30, /* weapon broken? 0	= no, 1	= yes */
+	ENEMY_SHEET_STATUS1		= 0x31,
+	ENEMY_SHEET_STATUS2		= 0x32,
+	ENEMY_SHEET_UNUSED8		= 0x33,
+	ENEMY_SHEET_SIZE		= 0x34,
+	ENEMY_SHEET_ROUND_APPEAR	= 0x35,
+	ENEMY_SHEET_IS_ANIMAL		= 0x36, /* is the enemy an animal? */
+	ENEMY_SHEET_SHOTS		= 0x37,
+	ENEMY_SHEET_SHOT_DAM		= 0x38,
+	ENEMY_SHEET_THROWS		= 0x3a,
+	ENEMY_SHEET_THROW_DAM		= 0x3b,
+	ENEMY_SHEET_LE_FLEE		= 0x3d
 };
 
 #define SIZEOF_ENEMY_SHEET (62)
 
 enum {
-    MONSTER_MON_ID      = 0x00,
-    MONSTER_GFX_ID      = 0x01,
-    MONSTER_RS          = 0x02,
-    MONSTER_ATTRIB      = 0x03, /* Only main 7 attributes */
-    MONSTER_LE          = 0x11,
-    MONSTER_AE          = 0x13,
-    MONSTER_MR          = 0x15,
-    MONSTER_FIRSTAP     = 0x17,
-    MONSTER_ATTACKS     = 0x18,
-    MONSTER_AT          = 0x19,
-    MONSTER_PA          = 0x1a,
-    MONSTER_DAM1        = 0x1b,
-    MONSTER_DAM2        = 0x1d,
-    MONSTER_BP          = 0x1f,
-    MONSTER_MAGIC       = 0x20,
-    MONSTER_MAG_ID      = 0x21,
-    MONSTER_LEVEL       = 0x22,
-    MONSTER_SIZE        = 0x23,
-    MONSTER_IS_ANIMAL   = 0x24,
-    MONSTER_SHOTS       = 0x25,
-    MONSTER_SHOT_DAM    = 0x26,
-    MONSTER_THROWS      = 0x28,
-    MONSTER_THROW_DAM   = 0x29,
-    MONSTER_LE_FLEE     = 0x2b
+	MONSTER_MON_ID		= 0x00,
+	MONSTER_GFX_ID		= 0x01,
+	MONSTER_RS		= 0x02,
+	MONSTER_ATTRIB		= 0x03, /* Only main 7 attributes */
+	MONSTER_LE		= 0x11,
+	MONSTER_AE		= 0x13,
+	MONSTER_MR		= 0x15,
+	MONSTER_FIRSTAP		= 0x17,
+	MONSTER_ATTACKS		= 0x18,
+	MONSTER_AT		= 0x19,
+	MONSTER_PA		= 0x1a,
+	MONSTER_DAM1		= 0x1b,
+	MONSTER_DAM2		= 0x1d,
+	MONSTER_BP		= 0x1f,
+	MONSTER_MAGIC		= 0x20,
+	MONSTER_MAG_ID		= 0x21,
+	MONSTER_LEVEL		= 0x22,
+	MONSTER_SIZE		= 0x23,
+	MONSTER_IS_ANIMAL	= 0x24,
+	MONSTER_SHOTS		= 0x25,
+	MONSTER_SHOT_DAM	= 0x26,
+	MONSTER_THROWS		= 0x28,
+	MONSTER_THROW_DAM	= 0x29,
+	MONSTER_LE_FLEE		= 0x2b
 };
 
 #define SIZEOF_MONSTER (44)
 
 enum {
-    FIGHTER_FIGURE      = 0x00,
-    FIGHTER_NVF_NO      = 0x02,
-    FIGHTER_CBX         = 0x03,
-    FIGHTER_CBY         = 0x04,
-    FIGHTER_OFFSETX     = 0x05,
-    FIGHTER_OFFSETY     = 0x06,
-    FIGHTER_HEIGHT      = 0x07,
-    FIGHTER_WIDTH       = 0x08,
-    FIGHTER_X1          = 0x09,
-    FIGHTER_Y1          = 0x0a,
-    FIGHTER_X2          = 0x0b,
-    FIGHTER_Y2          = 0x0c,
-    FIGHTER_RELOAD      = 0x0d, /* {0, -1 = update gfx data } */
-    FIGHTER_SHEET       = 0x0e, /* 0xe274, 0xe2a8, 0xd8ce */
-    FIGHTER_WSHEET      = 0x0f, /* 0xe274 */
-    FIGHTER_ID          = 0x10, /* position in FIG_LIST_ARRAY */
-    FIGHTER_Z           = 0x11,
-    FIGHTER_VISIBLE     = 0x12, /* {0,1,2} */
-    FIGHTER_TWOFIELDED  = 0x13, /* -1 if fighter is not twofielded. for twofielded fighter: head part: FIGHTER_TWOFIELDED can be used as index for FIG_TWOFIELDED_TABLE which contains the FIGHTER_ID); tail part: entry is FIGHTER_TWOFIELDED+20 of the head part. */
-    FIGHTER_OBJ_ID      = 0x14, /* stores the id of the cb_entry of the square before the fighter entered it */
-    FIGHTER_IS_ENEMY    = 0x15, /* {0 = hero, 1 = enemy, 2 = hero} */ /* strangly, at one position in seg039.cpp the value 2 is written */
-    FIGHTER_SPRITE_NO   = 0x16, /* 0x12c0, 0x1531, 0x1210 */
-    FIGHTER_GFXBUF      = 0x17, /* RealPt */
-    FIGHTER_NEXT        = 0x1b, /* RealPt */
-    FIGHTER_PREV        = 0x1f, /* RealPt */
+	FIGHTER_FIGURE		= 0x00,
+	FIGHTER_NVF_NO		= 0x02,
+	FIGHTER_CBX		= 0x03,
+	FIGHTER_CBY		= 0x04,
+	FIGHTER_OFFSETX		= 0x05,
+	FIGHTER_OFFSETY		= 0x06,
+	FIGHTER_HEIGHT		= 0x07,
+	FIGHTER_WIDTH		= 0x08,
+	FIGHTER_X1		= 0x09,
+	FIGHTER_Y1		= 0x0a,
+	FIGHTER_X2		= 0x0b,
+	FIGHTER_Y2		= 0x0c,
+	FIGHTER_RELOAD		= 0x0d, /* {0, -1	= update gfx data } */
+	FIGHTER_SHEET		= 0x0e, /* 0xe274, 0xe2a8, 0xd8ce */
+	FIGHTER_WSHEET		= 0x0f, /* 0xe274 */
+	FIGHTER_ID		= 0x10, /* position in FIG_LIST_ARRAY */
+	FIGHTER_Z		= 0x11,
+	FIGHTER_VISIBLE		= 0x12, /* {0,1,2} */
+	FIGHTER_TWOFIELDED	= 0x13, /* -1 if fighter is not twofielded. for twofielded fighter: head part: FIGHTER_TWOFIELDED can be used as index for FIG_TWOFIELDED_TABLE which contains the FIGHTER_ID); tail part: entry is FIGHTER_TWOFIELDED+20 of the head part. */
+	FIGHTER_OBJ_ID		= 0x14, /* stores the id of the cb_entry of the square before the fighter entered it */
+	FIGHTER_IS_ENEMY	= 0x15, /* {0	= hero, 1	= enemy, 2	= hero} */ /* strangly, at one position in seg039.cpp the value 2 is written */
+	FIGHTER_SPRITE_NO	= 0x16, /* 0x12c0, 0x1531, 0x1210 */
+	FIGHTER_GFXBUF		= 0x17, /* RealPt */
+	FIGHTER_NEXT		= 0x1b, /* RealPt */
+	FIGHTER_PREV		= 0x1f, /* RealPt */
 };
 
 #define SIZEOF_FIGHTER (0x23)
 
 
 enum {
-    ATTRIB_MU = 0, ATTRIB_KL, ATTRIB_CH, ATTRIB_FF, ATTRIB_GE, ATTRIB_IN,
-    ATTRIB_KK, ATTRIB_AG, ATTRIB_HA, ATTRIB_RA, ATTRIB_GG, ATTRIB_TA, ATTRIB_NG,
-    ATTRIB_JZ
+	ATTRIB_MU = 0,
+	ATTRIB_KL,
+	ATTRIB_CH,
+	ATTRIB_FF,
+	ATTRIB_GE,
+	ATTRIB_IN,
+	ATTRIB_KK,
+	ATTRIB_AG,
+	ATTRIB_HA,
+	ATTRIB_RA,
+	ATTRIB_GG,
+	ATTRIB_TA,
+	ATTRIB_NG,
+	ATTRIB_JZ
 };
 
 enum {
-    TA_WAFFENLOS = 0, TA_HIEBWAFFEN, TA_STICHWAFFEN, TA_SCHWERTER, TA_AEXTE,
-    TA_SPEERE, TA_ZWEIHAENDER, TA_SCHUSSWAFFEN, TA_WURFWAFFEN, TA_AKROBATIK = 9,
-    TA_KLETTERN, TA_KOERPERBEH, TA_REITEN, TA_SCHLEICHEN, TA_SCHWIMMEN,
-    TA_SELBSTBEH, TA_TANZEN, TA_VERSTECKEN, TA_ZECHEN, TA_BEKEHREN = 19,
-    TA_BETOEREN, TA_FEILSCHEN, TA_GASSENWISSEN, TA_LUEGEN, TA_MENSCHENKENT,
-    TA_SCHAETZEN, TA_FAEHRTENSUCHEN = 26, TA_FESSELN, TA_ORIENTIERUNG,
-    TA_PFLANZENKUNDE, TA_TIERKUNDE, TA_WILDNISLEBEN, TA_ALCHIMIE = 32,
-    TA_ALTE_SPRACHEN, TA_GEOGRAPHIE, TA_GESCHICHTE, TA_GOETTER_KULTE,
-    TA_KRIEGSKUNST, TA_LESEN, TA_MAGIEKUNDE, TA_SPRACHEN, TA_ABRICHTEN = 41,
-    TA_FAHRZEUGE, TA_FALSCHSPIEL, TA_HEILEN_GIFT, TA_HEILEN_KRANKH,
-    TA_HEILEN_WUNDEN, TA_MUSIZIEREN, TA_SCHLOESSER, TA_TASCHENDIEB,
-    TA_GEFAHRENSINN = 50, TA_SINNESSCHAERFE
+	/* Kampf */
+	TA_WAFFENLOS = 0,
+	TA_HIEBWAFFEN = 1,
+	TA_STICHWAFFEN = 2,
+	TA_SCHWERTER = 3,
+	TA_AEXTE = 4,
+	TA_SPEERE = 5,
+	TA_ZWEIHAENDER = 6,
+	TA_SCHUSSWAFFEN = 7,
+	TA_WURFWAFFEN = 8,
+	/* Körper */
+	TA_AKROBATIK = 9,
+	TA_KLETTERN = 10,
+	TA_KOERPERBEHERRSCHUNG = 11,
+	TA_REITEN = 12,
+	TA_SCHLEICHEN = 13,
+	TA_SCHWIMMEN = 14,
+	TA_SELBSTBEHERRSCHUNG = 15,
+	TA_TANZEN = 16,
+	TA_VERSTECKEN = 17,
+	TA_ZECHEN = 18,
+	/* Gesellschaft */
+	TA_BEKEHREN = 19,
+	TA_BETOEREN = 20,
+	TA_FEILSCHEN = 21,
+	TA_GASSENWISSEN = 22,
+	TA_LUEGEN = 23,
+	TA_MENSCHENKENT = 24,
+	TA_SCHAETZEN = 25,
+	/* Natur */
+	TA_FAEHRTENSUCHEN = 26,
+	TA_FESSELN = 27,
+	TA_ORIENTIERUNG = 28,
+	TA_PFLANZENKUNDE = 29,
+	TA_TIERKUNDE = 30,
+	TA_WILDNISLEBEN = 31,
+	/* Wissen */
+	TA_ALCHIMIE = 32,
+	TA_ALTE_SPRACHEN = 33,
+	TA_GEOGRAPHIE = 34,
+	TA_GESCHICHTE = 35,
+	TA_GOETTER_KULTE = 36,
+	TA_KRIEGSKUNST = 37,
+	TA_LESEN = 38,
+	TA_MAGIEKUNDE = 39,
+	TA_SPRACHEN = 40,
+	/* Handwerk */
+	TA_ABRICHTEN = 41,
+	TA_FAHRZEUGE = 42,
+	TA_FALSCHSPIEL = 43,
+	TA_HEILEN_GIFT = 44,
+	TA_HEILEN_KRANKHEITEN = 45,
+	TA_HEILEN_WUNDEN = 46,
+	TA_MUSIZIEREN = 47,
+	TA_SCHLOESSER = 48,
+	TA_TASCHENDIEBSTAHL = 49,
+	/* Intuition */
+	TA_GEFAHRENSINN = 50,
+	TA_SINNESSCHAERFE = 51
 };
 
 enum {
-    LOCATION_UNKN1 = 1, LOCATION_TEMPLE, LOCATION_TAVERN, LOCATION_HEALER,
-    LOCATION_MERCHANT, LOCATION_WILDCAMP, LOCATION_INN, LOCATION_SMITH,
-    LOCATION_MARKET, LOCATION_CITIZEN, LOCATION_HARBOUR, LOCATION_MAP,
-    LOCATION_INFORMER, LOCATION_DNGENTRY, LOCATION_UNKN2, LOCATION_HOUSE,
-    LOCATION_SPECIAL, LOCATION_CITYCAMP
+	LOCATION_UNKN1 = 1,
+	LOCATION_TEMPLE = 2,
+	LOCATION_TAVERN = 3,
+	LOCATION_HEALER = 4,
+	LOCATION_MERCHANT = 5,
+	LOCATION_WILDCAMP = 6,
+	LOCATION_INN = 7,
+	LOCATION_SMITH = 8,
+	LOCATION_MARKET = 9,
+	LOCATION_CITIZEN = 10,
+	LOCATION_HARBOUR = 11,
+	LOCATION_MAP = 12,
+	LOCATION_INFORMER = 13,
+	LOCATION_DNGENTRY = 14,
+	LOCATION_UNKN2 = 15,
+	LOCATION_HOUSE = 16,
+	LOCATION_SPECIAL = 17,
+	LOCATION_CITYCAMP = 18
 };
 
 enum {
-    GAME_STATE_MAIN = 0,
-    GAME_STATE_DEAD = 1, /* all heroes dead */
-    GAME_STATE_UNKNOWN = 2,
-    GAME_STATE_QUIT = 3, /* ordinary quit */
-    GAME_STATE_TIMEUP = 4, /* max. game time is up */
-    GAME_STATE_OUTRO = 5, /* after (successfull) outro */
-    GAME_STATE_FIGQUIT = 7, /* quit game during fight */
-    GAME_STATE_VICTORY = 99 /* final fight won (before outro) */
+	GAME_STATE_MAIN = 0,
+	GAME_STATE_DEAD = 1, /* all heroes dead */
+	GAME_STATE_UNKNOWN = 2,
+	GAME_STATE_QUIT = 3, /* ordinary quit */
+	GAME_STATE_TIMEUP = 4, /* max. game time is up */
+	GAME_STATE_OUTRO = 5, /* after (successfull) outro */
+	GAME_STATE_FIGQUIT = 7, /* quit game during fight */
+	GAME_STATE_VICTORY = 99 /* final fight won (before outro) */
 };
 
 enum {
-    INFORMER_JURGE = 0, INFORMER_HJORE, INFORMER_YASMA, INFORMER_UMBRIK,
-    INFORMER_ISLEIF, INFORMER_RAGNA, INFORMER_BEORN, INFORMER_ASGRIMM,
-    INFORMER_ELIANE, INFORMER_OLVIR, INFORMER_SWAFNILD, INFORMER_TREBORN,
-    INFORMER_UNICORN, INFORMER_ALGRID, INFORMER_TIOMAR
+	INFORMER_JURGE = 0,
+	INFORMER_HJORE = 1,
+	INFORMER_YASMA = 2,
+	INFORMER_UMBRIK = 3,
+	INFORMER_ISLEIF = 4,
+	INFORMER_RAGNA = 5,
+	INFORMER_BEORN = 6,
+	INFORMER_ASGRIMM = 7,
+	INFORMER_ELIANE = 8,
+	INFORMER_OLVIR = 9,
+	INFORMER_SWAFNILD = 10,
+	INFORMER_TREBORN = 11,
+	INFORMER_UNICORN = 12,
+	INFORMER_ALGRID = 13,
+	INFORMER_TIOMAR = 14
 };
 
 /* FIGHT.LST */
 
 enum {
-    FIGHT_NAME                  = 0x00,
-    FIGHT_INTRO_SEEN            = 0x13,
-    FIGHT_SCENARIO              = 0x14,
-    FIGHT_MONSTERS_ID           = 0x16, /* List of 20 monsters */
-    FIGHT_MONSTERS_X            = 0x17 ,/*                     */
-    FIGHT_MONSTERS_Y            = 0x18, /*                     */
-    FIGHT_MONSTERS_VIEWDIR      = 0x19, /*                     */
-    FIGHT_MONSTERS_ROUND_APPEAR = 0x1A, /* 5 bytes each        */
-    FIGHT_PLAYERS_X             = 0x7A, /* List of 7 players  */
-    FIGHT_PLAYERS_Y             = 0x7B, /*                  */
-    FIGHT_PLAYERS_VIEWDIR       = 0x7C, /*                  */
-    FIGHT_PLAYERS_ROUND_APPEAR  = 0x7D, /* 4 bytes each     */
-    FIGHT_LOOT                  = 0x96, /* 2 bytes each: ID and 0x00 */
-    FIGHT_DUCATS                = 0xD2,
-    FIGHT_SILVER                = 0xD4,
-    FIGHT_HELLER                = 0xD6
+	FIGHT_NAME = 0x00,
+	FIGHT_INTRO_SEEN = 0x13,
+	FIGHT_SCENARIO = 0x14,
+	FIGHT_MONSTERS_ID = 0x16,		/* List of 20 monsters */
+	FIGHT_MONSTERS_X = 0x17 ,		/* */
+	FIGHT_MONSTERS_Y = 0x18,		/* */
+	FIGHT_MONSTERS_VIEWDIR = 0x19,		/* */
+	FIGHT_MONSTERS_ROUND_APPEAR = 0x1A,	/* 5 bytes each */
+	FIGHT_PLAYERS_X = 0x7A,			/* List of 7 players */
+	FIGHT_PLAYERS_Y = 0x7B,			/* */
+	FIGHT_PLAYERS_VIEWDIR = 0x7C,		/* */
+	FIGHT_PLAYERS_ROUND_APPEAR = 0x7D,	/* 4 bytes each */
+	FIGHT_LOOT = 0x96,			/* 2 bytes each: ID and 0x00 */
+	FIGHT_DUCATS = 0xD2,
+	FIGHT_SILVER = 0xD4,
+	FIGHT_HELLER = 0xD6
 };
 
 #define SIZEOF_FIGHT (216)
@@ -586,373 +675,857 @@ enum {
 #define SIZEOF_FIGHT_PLAYER (4)
 
 enum {
-    FIGHTS_ZUFALL1_LAND = 0, FIGHTS_LAND_FIGHT1_1, FIGHTS_ZUFALL2_LAND, FIGHTS_ZUFALL3_LAND,
-    FIGHTS_ZUFALL4_LAND, FIGHTS_SHIP3, FIGHTS_SHIP4, FIGHTS_SHIP5, FIGHTS_SHIP6,
-    FIGHTS_SHIP8, FIGHTS_SHIP9, FIGHTS_SHIP12, FIGHTS_SHIP14, FIGHTS_SHIP15, FIGHTS_SHIP17,
-    FIGHTS_SHIP18, FIGHTS_SHIP19, FIGHTS_SHIP21, FIGHTS_SHIP22, FIGHTS_SHIP23A,
-    FIGHTS_SHIP23B, FIGHTS_SHIP24, FIGHTS_SHIP10, FIGHTS_F061_2, FIGHTS_F061_3,
-    FIGHTS_F061_4B, FIGHTS_F061_4A, FIGHTS_F061_5, FIGHTS_F061_6A, FIGHTS_F108_1,
-    FIGHTS_F108_2, FIGHTS_F108_3A, FIGHTS_F108_3B, FIGHTS_F108_3C, FIGHTS_F108_4,
-    FIGHTS_F108_6, FIGHTS_F108_9, FIGHTS_F108_7, FIGHTS_F051_05_4, FIGHTS_F051_05_3,
-    FIGHTS_F051_05_2, FIGHTS_F051_05_1, FIGHTS_F051_07, FIGHTS_F051_09, FIGHTS_F051_13,
-    FIGHTS_F108_15, FIGHTS_F051_15, FIGHTS_F051_16, FIGHTS_F051_16_1, FIGHTS_F051_03,
-    FIGHTS_F051_04, FIGHTS_F051_17, FIGHTS_F051_18, FIGHTS_F051_19, FIGHTS_F051_20_2,
-    FIGHTS_F051_18_3, FIGHTS_F046_01, FIGHTS_F046_04, FIGHTS_F046_06, FIGHTS_F046_07,
-    FIGHTS_F046_10, FIGHTS_F046_12, FIGHTS_F046_13, FIGHTS_F046_15, FIGHTS_F046_16,
-    FIGHTS_F046_18, FIGHTS_F046_22, FIGHTS_F046_24, FIGHTS_F046_25, FIGHTS_F046_26,
-    FIGHTS_F046_26_5, FIGHTS_F046_27, FIGHTS_F046_28, FIGHTS_F046_31, FIGHTS_F076_04,
-    FIGHTS_F076_06, FIGHTS_F076_07, FIGHTS_F076_10, FIGHTS_F076_11, FIGHTS_F076_13,
-    FIGHTS_F094_02, FIGHTS_F094_05, FIGHTS_F094_10, FIGHTS_F094_13, FIGHTS_F094_17,
-    FIGHTS_F094_19, FIGHTS_F094_22, FIGHTS_F100_01, FIGHTS_F100_03, FIGHTS_F100_05,
-    FIGHTS_F100_12, FIGHTS_F100_13, FIGHTS_F126_03, FIGHTS_F126_07, FIGHTS_F126_08,
-    FIGHTS_F126_09, FIGHTS_F126_11, FIGHTS_F126_12, FIGHTS_F126_13, FIGHTS_F126_17,
-    FIGHTS_F126_18, FIGHTS_F126_20, FIGHTS_F126_22, FIGHTS_F126_23, FIGHTS_F126_25,
-    FIGHTS_F126_27, FIGHTS_F126_28, FIGHTS_F129_05, FIGHTS_F129_08, FIGHTS_F129_09,
-    FIGHTS_F129_18, FIGHTS_F129_21, FIGHTS_F129_23, FIGHTS_F129_24, FIGHTS_F129_25,
-    FIGHTS_F129_27, FIGHTS_F129_28, FIGHTS_F129_29, FIGHTS_F129_30, FIGHTS_F131_01A,
-    FIGHTS_F131_01B, FIGHTS_F131_04, FIGHTS_F131_05, FIGHTS_F131_06, FIGHTS_F131_07,
-    FIGHTS_F131_08, FIGHTS_F131_10, FIGHTS_F131_11_1, FIGHTS_F131_14A, FIGHTS_F131_14B,
-    FIGHTS_F131_16, FIGHTS_DFIN12, FIGHTS_DFIN16, FIGHTS_DFIN18A, FIGHTS_DFIN18B,
-    FIGHTS_DFIN26, FIGHTS_DFIN27A, FIGHTS_DFIN27B, FIGHTS_DFIN28, FIGHTS_DFIN30,
-    FIGHTS_DPRE10_1, FIGHTS_DOBE07, FIGHTS_DOBE09, FIGHTS_DOBE11, FIGHTS_DOBE20,
-    FIGHTS_DOBE19, FIGHTS_DOBE22, FIGHTS_DTHO03, FIGHTS_DTHO05, FIGHTS_DTHO06,
-    FIGHTS_DTHO09, FIGHTS_DTHO10, FIGHTS_DTHO13, FIGHTS_DTHO15, FIGHTS_DTHO16,
-    FIGHTS_DTHO18, FIGHTS_DTHO19, FIGHTS_DTHO20, FIGHTS_DTHO20_1, FIGHTS_DTHO21A,
-    FIGHTS_DTHO21B, FIGHTS_DTHO23, FIGHTS_DTHO25, FIGHTS_DTHO27, FIGHTS_DTHO43,
-    FIGHTS_DTHO48_1, FIGHTS_DTHO49, FIGHTS_DTHO50, FIGHTS_DTHO53, FIGHTS_DTHO55,
-    FIGHTS_DTHO56, FIGHTS_DTHO57, FIGHTS_DTHO57_1, FIGHTS_DTHO58, FIGHTS_DTHO59,
-    FIGHTS_DTHO60, FIGHTS_DTHO61, FIGHTS_F031, FIGHTS_F035, FIGHTS_F046, FIGHTS_F064,
-    FIGHTS_F066, FIGHTS_F074, FIGHTS_F075_A, FIGHTS_F075_B, FIGHTS_F075_C, FIGHTS_F077,
-    FIGHTS_F080, FIGHTS_F084, FIGHTS_F099, FIGHTS_F101, FIGHTS_F122, FIGHTS_F144,
-    FIGHTS_DASP1A, FIGHTS_DASP1B, FIGHTS_DASP2, FIGHTS_DASP3, FIGHTS_DASP4, FIGHTS_DASP5,
-    FIGHTS_DASP6A, FIGHTS_DASP6B, FIGHTS_DASP7, FIGHTS_DASP8, FIGHTS_DASP9, FIGHTS_DASP10,
-    FIGHTS_DASP11, FIGHTS_DASP12A, FIGHTS_DASP12B, FIGHTS_DASP13, FIGHTS_DASP14,
-    FIGHTS_DASP16, FIGHTS_DASP17, FIGHTS_DASP18, FIGHTS_THOR8, FIGHTS_CITYFIGHT1,
-    FIGHTS_CITYFIGHT2, FIGHTS_CITYFIGHT3, FIGHTS_CAMPFIGHT1, FIGHTS_CAMPFIGHT2,
-    FIGHTS_CAMPFIGHT3, FIGHTS_SHIP10_1, FIGHTS_F061_6B, FIGHTS_F051_16A, FIGHTS_F051_16B,
-    FIGHTS_F051_14A, FIGHTS_F051_14B, FIGHTS_F051_117, FIGHTS_F129_124, FIGHTS_F131_08A,
-    FIGHTS_F131_08B, FIGHTS_F031_14A, FIGHTS_DTH021A, FIGHTS_CAMPFIGHT4, FIGHTS_SHIP10_2,
-    FIGHTS_F051_02, FIGHTS_F051_5, FIGHTS_PHEX3, FIGHTS_PHEX22, FIGHTS_PHEX23,
-    FIGHTS_PHEX24, FIGHTS_F131_01, FIGHTS_F129_08A, FIGHTS_DTHO14, FIGHTS_WILD1,
-    FIGHTS_WILD2, FIGHTS_WILD3, FIGHTS_WILD4, FIGHTS_WILD5, FIGHTS_WILD6, FIGHTS_WILD7,
-    FIGHTS_WILD8, FIGHTS_S001, FIGHTS_F051_14C, FIGHTS_F129_17, FIGHTS_DCAMPFIGHT1,
-    FIGHTS_DCAMPFIGHT2, FIGHTS_DCAMPFIGHT3, FIGHTS_DCAMPFIGHT4
+	FIGHTS_ZUFALL1_LAND = 0,
+	FIGHTS_LAND_FIGHT1_1 = 1,
+	FIGHTS_ZUFALL2_LAND = 2,
+	FIGHTS_ZUFALL3_LAND = 3,
+	FIGHTS_ZUFALL4_LAND = 4,
+	FIGHTS_SHIP3 = 5,
+	FIGHTS_SHIP4 = 6,
+	FIGHTS_SHIP5 = 7,
+	FIGHTS_SHIP6 = 8,
+	FIGHTS_SHIP8 = 9,
+	FIGHTS_SHIP9 = 10,
+	FIGHTS_SHIP12 = 11,
+	FIGHTS_SHIP14 = 12,
+	FIGHTS_SHIP15 = 13,
+	FIGHTS_SHIP17 = 14,
+	FIGHTS_SHIP18 = 15,
+	FIGHTS_SHIP19 = 16,
+	FIGHTS_SHIP21 = 17,
+	FIGHTS_SHIP22 = 18,
+	FIGHTS_SHIP23A = 19,
+	FIGHTS_SHIP23B = 20,
+	FIGHTS_SHIP24 = 21,
+	FIGHTS_SHIP10 = 22,
+	FIGHTS_F061_2 = 23,
+	FIGHTS_F061_3 = 24,
+	FIGHTS_F061_4B = 25,
+	FIGHTS_F061_4A = 26,
+	FIGHTS_F061_5 = 27,
+	FIGHTS_F061_6A = 28,
+	FIGHTS_F108_1 = 29,
+	FIGHTS_F108_2 = 30,
+	FIGHTS_F108_3A = 31,
+	FIGHTS_F108_3B = 32,
+	FIGHTS_F108_3C = 33,
+	FIGHTS_F108_4 = 34,
+	FIGHTS_F108_6 = 35,
+	FIGHTS_F108_9 = 36,
+	FIGHTS_F108_7 = 37,
+	FIGHTS_F051_05_4 = 38,
+	FIGHTS_F051_05_3 = 39,
+	FIGHTS_F051_05_2 = 40,
+	FIGHTS_F051_05_1 = 41,
+	FIGHTS_F051_07 = 42,
+	FIGHTS_F051_09 = 43,
+	FIGHTS_F051_13 = 44,
+	FIGHTS_F108_15 = 45,
+	FIGHTS_F051_15 = 46,
+	FIGHTS_F051_16 = 47,
+	FIGHTS_F051_16_1 = 48,
+	FIGHTS_F051_03 = 49,
+	FIGHTS_F051_04 = 50,
+	FIGHTS_F051_17 = 51,
+	FIGHTS_F051_18 = 52,
+	FIGHTS_F051_19 = 53,
+	FIGHTS_F051_20_2 = 54,
+	FIGHTS_F051_18_3 = 55,
+	FIGHTS_F046_01 = 56,
+	FIGHTS_F046_04 = 57,
+	FIGHTS_F046_06 = 58,
+	FIGHTS_F046_07 = 59,
+	FIGHTS_F046_10 = 60,
+	FIGHTS_F046_12 = 61,
+	FIGHTS_F046_13 = 62,
+	FIGHTS_F046_15 = 63,
+	FIGHTS_F046_16 = 64,
+	FIGHTS_F046_18 = 65,
+	FIGHTS_F046_22 = 66,
+	FIGHTS_F046_24 = 67,
+	FIGHTS_F046_25 = 68,
+	FIGHTS_F046_26 = 69,
+	FIGHTS_F046_26_5 = 70,
+	FIGHTS_F046_27 = 71,
+	FIGHTS_F046_28 = 72,
+	FIGHTS_F046_31 = 73,
+	FIGHTS_F076_04 = 74,
+	FIGHTS_F076_06 = 75,
+	FIGHTS_F076_07 = 76,
+	FIGHTS_F076_10 = 77,
+	FIGHTS_F076_11 = 78,
+	FIGHTS_F076_13 = 79,
+	FIGHTS_F094_02 = 80,
+	FIGHTS_F094_05 = 81,
+	FIGHTS_F094_10 = 82,
+	FIGHTS_F094_13 = 83,
+	FIGHTS_F094_17 = 84,
+	FIGHTS_F094_19 = 85,
+	FIGHTS_F094_22 = 86,
+	FIGHTS_F100_01 = 87,
+	FIGHTS_F100_03 = 88,
+	FIGHTS_F100_05 = 89,
+	FIGHTS_F100_12 = 90,
+	FIGHTS_F100_13 = 91,
+	FIGHTS_F126_03 = 92,
+	FIGHTS_F126_07 = 93,
+	FIGHTS_F126_08 = 94, /* fleeing cultist */
+	FIGHTS_F126_09 = 95,
+	FIGHTS_F126_11 = 96,
+	FIGHTS_F126_12 = 97,
+	FIGHTS_F126_13 = 98,
+	FIGHTS_F126_17 = 99,
+	FIGHTS_F126_18 = 100,
+	FIGHTS_F126_20 = 101,
+	FIGHTS_F126_22 = 102,
+	FIGHTS_F126_23 = 103,
+	FIGHTS_F126_25 = 104,
+	FIGHTS_F126_27 = 105,
+	FIGHTS_F126_28 = 106,
+	FIGHTS_F129_05 = 107,
+	FIGHTS_F129_08 = 108,
+	FIGHTS_F129_09 = 109,
+	FIGHTS_F129_18 = 110,
+	FIGHTS_F129_21 = 111,
+	FIGHTS_F129_23 = 112,
+	FIGHTS_F129_24 = 113,
+	FIGHTS_F129_25 = 114,
+	FIGHTS_F129_27 = 115,
+	FIGHTS_F129_28 = 116,
+	FIGHTS_F129_29 = 117,
+	FIGHTS_F129_30 = 118,
+	FIGHTS_F131_01A = 119,
+	FIGHTS_F131_01B = 120,
+	FIGHTS_F131_04 = 121,
+	FIGHTS_F131_05 = 122,
+	FIGHTS_F131_06 = 123,
+	FIGHTS_F131_07 = 124,
+	FIGHTS_F131_08 = 125,
+	FIGHTS_F131_10 = 126,
+	FIGHTS_F131_11_1 = 127,
+	FIGHTS_F131_14A = 128,
+	FIGHTS_F131_14B = 129,
+	FIGHTS_F131_16 = 130,
+	FIGHTS_DFIN12 = 131,
+	FIGHTS_DFIN16 = 132,
+	FIGHTS_DFIN18A = 133,
+	FIGHTS_DFIN18B = 134,
+	FIGHTS_DFIN26 = 135,
+	FIGHTS_DFIN27A = 136,
+	FIGHTS_DFIN27B = 137,
+	FIGHTS_DFIN28 = 138,
+	FIGHTS_DFIN30 = 139,
+	FIGHTS_DPRE10_1 = 140,
+	FIGHTS_DOBE07 = 141,
+	FIGHTS_DOBE09 = 142,
+	FIGHTS_DOBE11 = 143,
+	FIGHTS_DOBE20 = 144,
+	FIGHTS_DOBE19 = 145,
+	FIGHTS_DOBE22 = 146,
+	FIGHTS_DTHO03 = 147,
+	FIGHTS_DTHO05 = 148,
+	FIGHTS_DTHO06 = 149,
+	FIGHTS_DTHO09 = 150,
+	FIGHTS_DTHO10 = 151,
+	FIGHTS_DTHO13 = 152,
+	FIGHTS_DTHO15 = 153,
+	FIGHTS_DTHO16 = 154,
+	FIGHTS_DTHO18 = 155,
+	FIGHTS_DTHO19 = 156,
+	FIGHTS_DTHO20 = 157,
+	FIGHTS_DTHO20_1 = 158,
+	FIGHTS_DTHO21A = 159,
+	FIGHTS_DTHO21B = 160,
+	FIGHTS_DTHO23 = 161,
+	FIGHTS_DTHO25 = 162,
+	FIGHTS_DTHO27 = 163,
+	FIGHTS_DTHO43 = 164,
+	FIGHTS_DTHO48_1 = 165,
+	FIGHTS_DTHO49 = 166,
+	FIGHTS_DTHO50 = 167,
+	FIGHTS_DTHO53 = 168,
+	FIGHTS_DTHO55 = 169,
+	FIGHTS_DTHO56 = 170,
+	FIGHTS_DTHO57 = 171,
+	FIGHTS_DTHO57_1 = 172,
+	FIGHTS_DTHO58 = 173,
+	FIGHTS_DTHO59 = 174,
+	FIGHTS_DTHO60 = 175,
+	FIGHTS_DTHO61 = 176,
+	FIGHTS_F031 = 177,
+	FIGHTS_F035 = 178,
+	FIGHTS_F046 = 179,
+	FIGHTS_F064 = 180, /* Gorah */
+	FIGHTS_F066 = 181,
+	FIGHTS_F074 = 182,
+	FIGHTS_F075_A = 183,
+	FIGHTS_F075_B = 184,
+	FIGHTS_F075_C = 185,
+	FIGHTS_F077 = 186,
+	FIGHTS_F080 = 187,
+	FIGHTS_F084 = 188, /* travel event 84 */
+	FIGHTS_F099 = 189, /* 4 harpies */
+	FIGHTS_F101 = 190,
+	FIGHTS_F122 = 191,
+	FIGHTS_F144 = 192, /* travel event 144: final fight */
+	FIGHTS_DASP1A = 193,
+	FIGHTS_DASP1B = 194,
+	FIGHTS_DASP2 = 195,
+	FIGHTS_DASP3 = 196,
+	FIGHTS_DASP4 = 197,
+	FIGHTS_DASP5 = 198,
+	FIGHTS_DASP6A = 199,
+	FIGHTS_DASP6B = 200,
+	FIGHTS_DASP7 = 201,
+	FIGHTS_DASP8 = 202,
+	FIGHTS_DASP9 = 203,
+	FIGHTS_DASP10 = 204,
+	FIGHTS_DASP11 = 205,
+	FIGHTS_DASP12A = 206,
+	FIGHTS_DASP12B = 207,
+	FIGHTS_DASP13 = 208,
+	FIGHTS_DASP14 = 209,
+	FIGHTS_DASP16 = 210,
+	FIGHTS_DASP17 = 211,
+	FIGHTS_DASP18 = 212,
+	FIGHTS_THOR8 = 213,
+	FIGHTS_CITYFIGHT1 = 214,
+	FIGHTS_CITYFIGHT2 = 215,
+	FIGHTS_CITYFIGHT3 = 216,
+	FIGHTS_CAMPFIGHT1 = 217,
+	FIGHTS_CAMPFIGHT2 = 218,
+	FIGHTS_CAMPFIGHT3 = 219,
+	FIGHTS_SHIP10_1 = 220,
+	FIGHTS_F061_6B = 221,
+	FIGHTS_F051_16A = 222,
+	FIGHTS_F051_16B = 223,
+	FIGHTS_F051_14A = 224,
+	FIGHTS_F051_14B = 225,
+	FIGHTS_F051_117 = 226,
+	FIGHTS_F129_124 = 227,
+	FIGHTS_F131_08A = 228,
+	FIGHTS_F131_08B = 229,
+	FIGHTS_F031_14A = 230,
+	FIGHTS_DTH021A = 231,
+	FIGHTS_CAMPFIGHT4 = 232,
+	FIGHTS_SHIP10_2 = 233,
+	FIGHTS_F051_02 = 234,
+	FIGHTS_F051_5 = 235,
+	FIGHTS_PHEX3 = 236,
+	FIGHTS_PHEX22 = 237,
+	FIGHTS_PHEX23 = 238,
+	FIGHTS_PHEX24 = 239,
+	FIGHTS_F131_01 = 240,
+	FIGHTS_F129_08A = 241,
+	FIGHTS_DTHO14 = 242,
+	FIGHTS_WILD1 = 243,
+	FIGHTS_WILD2 = 244,
+	FIGHTS_WILD3 = 245,
+	FIGHTS_WILD4 = 246,
+	FIGHTS_WILD5 = 247,
+	FIGHTS_WILD6 = 248,
+	FIGHTS_WILD7 = 249,
+	FIGHTS_WILD8 = 250,
+	FIGHTS_S001 = 251,
+	FIGHTS_F051_14C = 252,
+	FIGHTS_F129_17 = 253,
+	FIGHTS_DCAMPFIGHT1 = 254,
+	FIGHTS_DCAMPFIGHT2 = 255,
+	FIGHTS_DCAMPFIGHT3 = 256,
+	FIGHTS_DCAMPFIGHT4 = 257
 };
 
 enum {
-    TOWNS_THORWAL = 1, TOWNS_SERSKE, TOWNS_BREIDA, TOWNS_PEILINEN,
-    TOWNS_ROVAMUND = 5, TOWNS_NORDVEST, TOWNS_KRAVIK, TOWNS_SKELELLE, TOWNS_MERSKE,
-    TOWNS_EFFERDUN = 10, TOWNS_TJOILA, TOWNS_RUKIAN, TOWNS_ANGBODIRTAL, TOWNS_AUPLOG,
-    TOWNS_VILNHEIM = 15, TOWNS_BODON, TOWNS_OBERORKEN, TOWNS_PHEXCAER, TOWNS_GROENVEL,
-    TOWNS_FELSTEYN = 20, TOWNS_EINSIEDL, TOWNS_ORKANGER, TOWNS_CLANEGH, TOWNS_LISKOR,
-    TOWNS_THOSS = 25, TOWNS_TJANSET, TOWNS_ALA, TOWNS_ORVIL, TOWNS_OVERTHORN,
-    TOWNS_ROVIK = 30, TOWNS_HJALSING, TOWNS_GUDDASUN, TOWNS_KORD, TOWNS_TREBAN,
-    TOWNS_ARYN = 35, TOWNS_RUNINSHA, TOWNS_OTTARJE, TOWNS_SKJAL, TOWNS_PREM,
-    TOWNS_DASPOTA = 40, TOWNS_RYBON, TOWNS_LJASDAHL, TOWNS_VARNHEIM, TOWNS_VAERMHAG,
-    TOWNS_TYLDON = 45, TOWNS_VIDSAND, TOWNS_BRENDHIL, TOWNS_MANRIN, TOWNS_FTJOILA,
-    TOWNS_FANGBODI = 50, TOWNS_HJALLAND, TOWNS_RUNIN
+	TOWNS_THORWAL = 1,
+	TOWNS_SERSKE = 2,
+	TOWNS_BREIDA = 3,
+	TOWNS_PEILINEN = 4,
+	TOWNS_ROVAMUND = 5,
+	TOWNS_NORDVEST = 6,
+	TOWNS_KRAVIK = 7,
+	TOWNS_SKELELLEN = 8,
+	TOWNS_MERSKE = 9,
+	TOWNS_EFFERDUN = 10,
+	TOWNS_TJOILA = 11,
+	TOWNS_RUKIAN = 12,
+	TOWNS_ANGBODIRTAL = 13,
+	TOWNS_AUPLOG = 14,
+	TOWNS_VILNHEIM = 15,
+	TOWNS_BODON = 16,
+	TOWNS_OBERORKEN = 17,
+	TOWNS_PHEXCAER = 18,
+	TOWNS_GROENVELDEN = 19,
+	TOWNS_FELSTEYN = 20,
+	TOWNS_EINSIEDLERSEE = 21,
+	TOWNS_ORKANGER = 22,
+	TOWNS_CLANEGH = 23,
+	TOWNS_LISKOR = 24,
+	TOWNS_THOSS = 25,
+	TOWNS_TJANSET = 26,
+	TOWNS_ALA = 27,
+	TOWNS_ORVIL = 28,
+	TOWNS_OVERTHORN = 29,
+	TOWNS_ROVIK = 30,
+	TOWNS_HJALSINGOR = 31,
+	TOWNS_GUDDASUNDEN = 32,
+	TOWNS_KORD = 33,
+	TOWNS_TREBAN = 34,
+	TOWNS_ARYN = 35,
+	TOWNS_RUNINSHAVEN = 36,
+	TOWNS_OTTARJE = 37,
+	TOWNS_SKJAL = 38,
+	TOWNS_PREM = 39,
+	TOWNS_DASPOTA = 40,
+	TOWNS_RYBON = 41,
+	TOWNS_LJASDAHL = 42,
+	TOWNS_VARNHEIM = 43,
+	TOWNS_VAERMHAG = 44,
+	TOWNS_TYLDON = 45,
+	TOWNS_VIDSAND = 46,
+	TOWNS_BRENDHIL = 47,
+	TOWNS_MANRIN = 48,
+	TOWNS_FAEHRSTATION_TJOILA = 49,
+	TOWNS_FAEHRE_ANGBODIRTAL = 50,
+	TOWNS_HJALLANDER_HOF = 51,
+	TOWNS_LEUCHTTURM_RUNIN = 52
 };
 
 enum {
-    ARCHIVE_FILE_PLAYM_UK       = 0x00,
-    ARCHIVE_FILE_KDBACK_DAT     = 0x01,
-    ARCHIVE_FILE_KCBACK_DAT     = 0x02,
-    ARCHIVE_FILE_KLBACK_DAT     = 0x03,
-    ARCHIVE_FILE_KSBACK_DAT     = 0x04,
-    ARCHIVE_FILE_KARTE_DAT      = 0x05,
-    ARCHIVE_FILE_BICONS         = 0x06,
-    ARCHIVE_FILE_OBJECTS_NVF    = 0x07,
-    ARCHIVE_FILE_LROUT_DAT      = 0x08,
-    ARCHIVE_FILE_SROUT_DAT      = 0x09,
-    ARCHIVE_FILE_HSROUT_DAT     = 0x0a,
-    ARCHIVE_FILE_FONT6          = 0x0b,
-    ARCHIVE_FILE_FONT8          = 0x0c,
-    ARCHIVE_FILE_GGSTS_NVF      = 0x0d,
-    ARCHIVE_FILE_TEXT_LTX       = 0x0e,
-    ARCHIVE_FILE_ICONS          = 0x0f,
-    ARCHIVE_FILE_MONSTER        = 0x10,
-    ARCHIVE_FILE_MONSTER_TAB    = 0x11,
-    ARCHIVE_FILE_COMPASS        = 0x12,
-    ARCHIVE_FILE_MAPTEXT_LTX    = 0x13,
-    ARCHIVE_FILE_ZUSTA_UK       = 0x14,
-    ARCHIVE_FILE_FIGHTTXT_LTX   = 0x15,
-    ARCHIVE_FILE_ANIS           = 0x16,
-    ARCHIVE_FILE_ANIS_TAB       = 0x17,
-    ARCHIVE_FILE_MFIGS          = 0x18,
-    ARCHIVE_FILE_MFIGS_TAB      = 0x19,
-    ARCHIVE_FILE_CITY_DAT       = 0x1a,
-    /*
-        THORWAL.DAT, SERSKE.DAT, BREIDA.DAT, PEILINEN.DAT, ROVAMUND.DAT, NORDVEST.DAT,
-        KRAVIK.DAT, SKELELLE.DAT, MERSKE.DAT, EFFERDUN.DAT, TJOILA.DAT, RUKIAN.DAT,
-        ANGBODIRTAL.DAT, AUPLOG.DAT, VILNHEIM.DAT, BODON.DAT, OBERORKEN.DAT,
-        PHEXCAER.DAT, GROENVEL.DAT, FELSTEYN.DAT, EINSIEDL.DAT, ORKANGER.DAT,
-        CLANEGH.DAT, LISKOR.DAT, THOSS.DAT, TJANSET.DAT, ALA.DAT, ORVIL.DAT,
-        OVERTHORN.DAT, ROVIK.DAT, HJALSING.DAT, GUDDASUN.DAT, KORD.DAT, TREBAN.DAT,
-        ARYN.DAT, RUNINSHA.DAT, OTTARJE.DAT, SKJAL.DAT, PREM.DAT, DASPOTA.DAT,
-        RYBON.DAT, LJASDAHL.DAT, VARNHEIM.DAT, VAERMHAG.DAT, TYLDON.DAT, VIDSAND.DAT,
-        BRENDHIL.DAT, MANRIN.DAT, FTJOILA.DAT, FANGBODI.DAT, HJALLAND.DAT, RUNIN.DAT
-    */
-    ARCHIVE_FILE_CITY_LTX       = 0x4d,
-    /*
-        THORWAL_LTX, SERSKE_LTX, BREIDA_LTX, PEILINEN_LTX, ROVAMUND_LTX, NORDVEST_LTX,
-        KRAVIK_LTX, SKELELLE_LTX, MERSKE_LTX, EFFERDUN_LTX, TJOILA_LTX, RUKIAN_LTX,
-        ANGBODIR_LTX, AUPLOG_LTX, VILNHEIM_LTX, BODON_LTX, OBERORKE_LTX, PHEXCAER_LTX,
-        GROENVEL_LTX, FELSTEYN_LTX, EINSIEDL_LTX, ORKANGER_LTX, CLANEGH_LTX, LISKOR_LTX,
-        THOSS_LTX, TJANSET_LTX, ALA_LTX, ORVIL_LTX, OVERTHOR_LTX, ROVIK_LTX,
-        HJALSING_LTX, GUDDASUN_LTX, KORD_LTX, TREBAN_LTX, ARYN_LTX, RUNINSHA_LTX,
-        OTTARJE_LTX, SKJAL_LTX, PREM_LTX, DASPOTA_LTX, RYBON_LTX, LJASDAHL_LTX,
-        VARNHEIM_LTX, VAERMHAG_LTX, TYLDON_LTX, VIDSAND_LTX, BRENDHIL_LTX, MANRIN_LTX,
-        F_TJOILA_LTX, F_ANGBOD_LTX, HJALLAND_LTX, L_RUNIN_LTX
-    */
-    ARCHIVE_FILE_TAVERN_TLK     = 0x82,
-    ARCHIVE_FILE_SPSTAR_NVF     = 0x83,
-    ARCHIVE_FILE_GUERTEL_NVF    = 0x84,
-    ARCHIVE_FILE_HAFEN_LTX      = 0x85,
-    ARCHIVE_FILE_FACE_NVF       = 0x86,
-    ARCHIVE_FILE_HYGBACK_NVF    = 0x87,
-    ARCHIVE_FILE_HYGGELIK_NVF   = 0x88,
-    ARCHIVE_FILE_SKULL_NVF      = 0x89,
-    ARCHIVE_FILE_OUTRO1_NVF     = 0x8a,
-    ARCHIVE_FILE_OUTRO2_NVF     = 0x8b,
-    ARCHIVE_FILE_OUTRO3_NVF     = 0x8c,
-    ARCHIVE_FILE_TOWNPAL_DAT    = 0x8d,
-    ARCHIVE_FILE_THORWAL_XMI    = 0x8e,
-    ARCHIVE_FILE_SUMMARY_XMI    = 0x8f,
-    ARCHIVE_FILE_TEMPLE_XMI     = 0x90,
-    ARCHIVE_FILE_TERMS_XMI      = 0x91,
-    ARCHIVE_FILE_SMITH_XMI      = 0x92,
-    ARCHIVE_FILE_INN_XMI        = 0x93,
-    ARCHIVE_FILE_HEALER_XMI     = 0x94,
-    ARCHIVE_FILE_CAMP_XMI       = 0x95,
-    ARCHIVE_FILE_VICTORY_XMI    = 0x96,
-    ARCHIVE_FILE_SAMPLE_AD      = 0x97,
-    ARCHIVE_FILE_ATTIC          = 0x98,
-    ARCHIVE_FILE_POPUP_DAT      = 0x99,
-    ARCHIVE_FILE_154            = 0x9a,
-    ARCHIVE_FILE_155            = 0x9b,
-    ARCHIVE_FILE_DIALOGS_TLK    = 0x9c,
-    /*
-        F092.TLK, HERBERG.TLK, 158, DASPOTA1.TLK, DASPOTA2.TLK, DASPOTA3.TLK,
-        INFO1.TLK, INFO2.TLK, INFO3.TLK, INFO4.TLK, INFO5.TLK, INFO6.TLK,
-        INFO7.TLK, SCHMIED.TLK, GHANDEL.TLK, KHANDEL.TLK, WHANDEL.TLK, F115.TLK,
-        EREMIT.TLK, HYGGELIK.TLK
-    */
-    ARCHIVE_FILE_WEAPONS_NVF    = 0xb0,
-    ARCHIVE_FILE_BUCH_DAT       = 0xb1,
-    ARCHIVE_FILE_SPELLOBJ_NVF   = 0xb2,
-    ARCHIVE_FILE_IN_HEADS_NVF   = 0xb3,
-    ARCHIVE_FILE_TEMPICON       = 0xb4,
-    ARCHIVE_FILE_SHIPSL_NVF     = 0xb5,
-    ARCHIVE_FILE_STONESL_NVF    = 0xb6,
-    ARCHIVE_FILE_MARBLESL_NVF   = 0xb7,
-    ARCHIVE_FILE_TFLOOR1_NVF    = 0xb8,
-    ARCHIVE_FILE_TDIVERSE_NVF   = 0xb9,
-    ARCHIVE_FILE_HOUSE1_NVF     = 0xba,
-    ARCHIVE_FILE_HOUSE2_NVF     = 0xbb,
-    ARCHIVE_FILE_HOUSE3_NVF     = 0xbc,
-    ARCHIVE_FILE_HOUSE4_NVF     = 0xbd,
-    ARCHIVE_FILE_FEATURE_LTX    = 0xbe,
-    ARCHIVE_FILE_FEATURE1_LTX   = 0xbf,
-    ARCHIVE_FILE_FEATURE2_LTX   = 0xc0,
-    ARCHIVE_FILE_FEATURE3_LTX   = 0xc1,
-    ARCHIVE_FILE_FEATURE4_LTX   = 0xc2,
-    ARCHIVE_FILE_FEATURE5_LTX   = 0xc3,
-    ARCHIVE_FILE_FEATURE6_LTX   = 0xc4,
-    ARCHIVE_FILE_FEATURE7_LTX   = 0xc5,
-    ARCHIVE_FILE_FEATURE8_LTX   = 0xc6,
-    ARCHIVE_FILE_FIGHTOBJ_NVF   = 0xc7,
-    ARCHIVE_FILE_SCENARIO_LST   = 0xc8,
-    ARCHIVE_FILE_KDLBACK_DAT    = 0xc9,
-    ARCHIVE_FILE_KCLBACK_DAT    = 0xca,
-    ARCHIVE_FILE_KLLBACK_DAT    = 0xcb,
-    ARCHIVE_FILE_KSLBACK_DAT    = 0xcc,
-    ARCHIVE_FILE_FIGHT_LST      = 0xcd,
-    ARCHIVE_FILE_SKARTE_NVF     = 0xce,
-    ARCHIVE_FILE_GAMES_NAM      = 0xcf,
-    ARCHIVE_FILE_ITEMNAME       = 0xd0,
-    ARCHIVE_FILE_MONNAMES       = 0xd1,
-    ARCHIVE_FILE_THORWAL1_LTX   = 0xd2,
-    ARCHIVE_FILE_THORWAL2_LTX   = 0xd3,
-    ARCHIVE_FILE_DUNGEON_XMI    = 0xd4,
-    ARCHIVE_FILE_COMBAT_XMI     = 0xd5,
-    ARCHIVE_FILE_PLAYM_US       = 0xd6,
-    ARCHIVE_FILE_ZUSTA_US       = 0xd7,
-    ARCHIVE_FILE_ANI_DAT        = 0xd8,
-    ARCHIVE_FILE_WEAPANI_DAT    = 0xd9,
-    ARCHIVE_FILE_MONSTER_DAT    = 0xda,
-    ARCHIVE_FILE_BSKILLS_DAT    = 0xdb,
-    ARCHIVE_FILE_ITEMS_DAT      = 0xdc,
-    ARCHIVE_FILE_CHARTEXT_LTX   = 0xdd,
-    ARCHIVE_FILE_SPELLTXT_LTX   = 0xde,
-    ARCHIVE_FILE_WONDER_LTX     = 0xdf,
-    ARCHIVE_FILE_STRASSE_LTX    = 0xe0,
-    ARCHIVE_FILE_NSC_LTX        = 0xe1,
-    ARCHIVE_FILE_NPCS           = 0xe2,
-    /*
-        NARIELL.NPC, HARIKA.NPC, CURIAN.NPC, ARDORA.NPC, GARSVIK.NPC, ERWO.NPC
-    */
-    ARCHIVE_FILE_FINGER_NVF     = 0xe8,
-    ARCHIVE_FILE_LTURM_NVF      = 0xe9,
-    ARCHIVE_FILE_WFIGS          = 0xea,
-    ARCHIVE_FILE_WFIGS_TAB      = 0xeb,
-    ARCHIVE_FILE_SPLASHES_DAT   = 0xec,
-    ARCHIVE_FILE_FEATURE9_LTX   = 0xed,
-    ARCHIVE_FILE_PHEX1_LTX      = 0xee,
-    ARCHIVE_FILE_PHEX2_LTX      = 0xef,
-    ARCHIVE_FILE_WILD_LTX       = 0xf0,
-    ARCHIVE_FILE_WAFFINFO_LTX   = 0xf1,
-    ARCHIVE_FILE_DNGS           = 0xf2,
-    /*
-        SHIP.DNG, F046.DNG, F051.DNG, F061.DNG, F076.DNG, F094.DNG, F100.DNG, F108.DNG,
-        F126.DNG, F129.DNG, F131.DNG, OBER.DNG, PREM.DNG, THORWAL.DNG, FINAL.DNG
-    */
-    ARCHIVE_FILE_DNGS_DDT       = 0x100,
-    /*
-        SHIP.DDT, F046.DDT, F051.DDT, F061.DDT, F076.DDT, F094.DDT, F100.DDT, F108.DDT,
-        F126.DDT, F129.DDT, F131.DDT, OBER.DDT, PREM.DDT, THORWAL.DDT, FINAL.DDT
-    */
-    ARCHIVE_FILE_DNGS_DTX       = 0x10f,
-    /*
-        SHIP.DTX, F046.DTX, F051.DTX, F061.DTX, F076.DTX, F094.DTX, F100.DTX, F108.DTX,
-        F126.DTX, F129.DTX, F131.DTX, OBER.DTX, PREM.DTX, THORWAL.DTX, FINAL.DTX
-    */
-    ARCHIVE_FILE_TFLOOR2_NVF    = 0x11f,
-    ARCHIVE_FILE_STORY_LTX      = 0x120,
-    ARCHIVE_FILE_FX1_VOC        = 0x121,
-    ARCHIVE_FILE_FX2_VOC        = 0x122,
-    ARCHIVE_FILE_FX3_VOC        = 0x123,
-    ARCHIVE_FILE_FX4_VOC        = 0x124,
-    ARCHIVE_FILE_FX5_VOC        = 0x125,
-    ARCHIVE_FILE_FX6_VOC        = 0x126,
-    ARCHIVE_FILE_FX7_VOC        = 0x127,
-    ARCHIVE_FILE_FX8_VOC        = 0x128,
-    ARCHIVE_FILE_FX9_VOC        = 0x129,
-    ARCHIVE_FILE_FX10_VOC       = 0x12a,
-    ARCHIVE_FILE_FX11_VOC       = 0x12b,
-    ARCHIVE_FILE_FX12_VOC       = 0x12c,
-    ARCHIVE_FILE_FX13_VOC       = 0x12d,
-    ARCHIVE_FILE_FX14_VOC       = 0x12e,
-    ARCHIVE_FILE_FX15_VOC       = 0x12f,
-    ARCHIVE_FILE_FX16_VOC       = 0x130,
-    ARCHIVE_FILE_FX17_VOC       = 0x131,
-    ARCHIVE_FILE_FX18_VOC       = 0x132,
-    ARCHIVE_FILE_OUTRO_XMI      = 0x133
+	ARCHIVE_FILE_PLAYM_UK		= 0x00,
+	ARCHIVE_FILE_KDBACK_DAT		= 0x01,
+	ARCHIVE_FILE_KCBACK_DAT		= 0x02,
+	ARCHIVE_FILE_KLBACK_DAT		= 0x03,
+	ARCHIVE_FILE_KSBACK_DAT		= 0x04,
+	ARCHIVE_FILE_KARTE_DAT		= 0x05,
+	ARCHIVE_FILE_BICONS 		= 0x06,
+	ARCHIVE_FILE_OBJECTS_NVF	= 0x07,
+	ARCHIVE_FILE_LROUT_DAT		= 0x08,
+	ARCHIVE_FILE_SROUT_DAT		= 0x09,
+	ARCHIVE_FILE_HSROUT_DAT		= 0x0a,
+	ARCHIVE_FILE_FONT6 		= 0x0b,
+	ARCHIVE_FILE_FONT8 		= 0x0c,
+	ARCHIVE_FILE_GGSTS_NVF		= 0x0d,
+	ARCHIVE_FILE_TEXT_LTX		= 0x0e,
+	ARCHIVE_FILE_ICONS 		= 0x0f,
+	ARCHIVE_FILE_MONSTER		= 0x10,
+	ARCHIVE_FILE_MONSTER_TAB	= 0x11,
+	ARCHIVE_FILE_COMPASS		= 0x12,
+	ARCHIVE_FILE_MAPTEXT_LTX	= 0x13,
+	ARCHIVE_FILE_ZUSTA_UK		= 0x14,
+	ARCHIVE_FILE_FIGHTTXT_LTX	= 0x15,
+	ARCHIVE_FILE_ANIS 		= 0x16,
+	ARCHIVE_FILE_ANIS_TAB		= 0x17,
+	ARCHIVE_FILE_MFIGS 		= 0x18,
+	ARCHIVE_FILE_MFIGS_TAB		= 0x19,
+	ARCHIVE_FILE_CITY_DAT		= 0x1a,
+	/*
+		THORWAL.DAT, SERSKE.DAT, BREIDA.DAT, PEILINEN.DAT, ROVAMUND.DAT, NORDVEST.DAT,
+		KRAVIK.DAT, SKELELLE.DAT, MERSKE.DAT, EFFERDUN.DAT, TJOILA.DAT, RUKIAN.DAT,
+		ANGBODIRTAL.DAT, AUPLOG.DAT, VILNHEIM.DAT, BODON.DAT, OBERORKEN.DAT,
+		PHEXCAER.DAT, GROENVEL.DAT, FELSTEYN.DAT, EINSIEDL.DAT, ORKANGER.DAT,
+		CLANEGH.DAT, LISKOR.DAT, THOSS.DAT, TJANSET.DAT, ALA.DAT, ORVIL.DAT,
+		OVERTHORN.DAT, ROVIK.DAT, HJALSING.DAT, GUDDASUN.DAT, KORD.DAT, TREBAN.DAT,
+		ARYN.DAT, RUNINSHA.DAT, OTTARJE.DAT, SKJAL.DAT, PREM.DAT, DASPOTA.DAT,
+		RYBON.DAT, LJASDAHL.DAT, VARNHEIM.DAT, VAERMHAG.DAT, TYLDON.DAT, VIDSAND.DAT,
+		BRENDHIL.DAT, MANRIN.DAT, FTJOILA.DAT, FANGBODI.DAT, HJALLAND.DAT, RUNIN.DAT
+	*/
+	ARCHIVE_FILE_CITY_LTX		= 0x4d,
+	/*
+		THORWAL_LTX, SERSKE_LTX, BREIDA_LTX, PEILINEN_LTX, ROVAMUND_LTX, NORDVEST_LTX,
+		KRAVIK_LTX, SKELELLE_LTX, MERSKE_LTX, EFFERDUN_LTX, TJOILA_LTX, RUKIAN_LTX,
+		ANGBODIR_LTX, AUPLOG_LTX, VILNHEIM_LTX, BODON_LTX, OBERORKE_LTX, PHEXCAER_LTX,
+		GROENVEL_LTX, FELSTEYN_LTX, EINSIEDL_LTX, ORKANGER_LTX, CLANEGH_LTX, LISKOR_LTX,
+		THOSS_LTX, TJANSET_LTX, ALA_LTX, ORVIL_LTX, OVERTHOR_LTX, ROVIK_LTX,
+		HJALSING_LTX, GUDDASUN_LTX, KORD_LTX, TREBAN_LTX, ARYN_LTX, RUNINSHA_LTX,
+		OTTARJE_LTX, SKJAL_LTX, PREM_LTX, DASPOTA_LTX, RYBON_LTX, LJASDAHL_LTX,
+		VARNHEIM_LTX, VAERMHAG_LTX, TYLDON_LTX, VIDSAND_LTX, BRENDHIL_LTX, MANRIN_LTX,
+		F_TJOILA_LTX, F_ANGBOD_LTX, HJALLAND_LTX, L_RUNIN_LTX
+	*/
+	ARCHIVE_FILE_TAVERN_TLK		= 0x82,
+	ARCHIVE_FILE_SPSTAR_NVF		= 0x83,
+	ARCHIVE_FILE_GUERTEL_NVF	= 0x84,
+	ARCHIVE_FILE_HAFEN_LTX		= 0x85,
+	ARCHIVE_FILE_FACE_NVF		= 0x86,
+	ARCHIVE_FILE_HYGBACK_NVF	= 0x87,
+	ARCHIVE_FILE_HYGGELIK_NVF	= 0x88,
+	ARCHIVE_FILE_SKULL_NVF		= 0x89,
+	ARCHIVE_FILE_OUTRO1_NVF		= 0x8a,
+	ARCHIVE_FILE_OUTRO2_NVF		= 0x8b,
+	ARCHIVE_FILE_OUTRO3_NVF		= 0x8c,
+	ARCHIVE_FILE_TOWNPAL_DAT	= 0x8d,
+	ARCHIVE_FILE_THORWAL_XMI	= 0x8e,
+	ARCHIVE_FILE_SUMMARY_XMI	= 0x8f,
+	ARCHIVE_FILE_TEMPLE_XMI		= 0x90,
+	ARCHIVE_FILE_TERMS_XMI		= 0x91,
+	ARCHIVE_FILE_SMITH_XMI		= 0x92,
+	ARCHIVE_FILE_INN_XMI		= 0x93,
+	ARCHIVE_FILE_HEALER_XMI		= 0x94,
+	ARCHIVE_FILE_CAMP_XMI		= 0x95,
+	ARCHIVE_FILE_VICTORY_XMI	= 0x96,
+	ARCHIVE_FILE_SAMPLE_AD		= 0x97,
+	ARCHIVE_FILE_ATTIC		= 0x98,
+	ARCHIVE_FILE_POPUP_DAT		= 0x99,
+	ARCHIVE_FILE_154		= 0x9a,
+	ARCHIVE_FILE_155		= 0x9b,
+	ARCHIVE_FILE_DIALOGS_TLK	= 0x9c,
+	/*
+		F092.TLK, HERBERG.TLK, 158, DASPOTA1.TLK, DASPOTA2.TLK, DASPOTA3.TLK,
+		INFO1.TLK, INFO2.TLK, INFO3.TLK, INFO4.TLK, INFO5.TLK, INFO6.TLK,
+		INFO7.TLK, SCHMIED.TLK, GHANDEL.TLK, KHANDEL.TLK, WHANDEL.TLK, F115.TLK,
+		EREMIT.TLK, HYGGELIK.TLK
+	*/
+	ARCHIVE_FILE_WEAPONS_NVF	= 0xb0,
+	ARCHIVE_FILE_BUCH_DAT		= 0xb1,
+	ARCHIVE_FILE_SPELLOBJ_NVF	= 0xb2,
+	ARCHIVE_FILE_IN_HEADS_NVF	= 0xb3,
+	ARCHIVE_FILE_TEMPICON		= 0xb4,
+	ARCHIVE_FILE_SHIPSL_NVF		= 0xb5,
+	ARCHIVE_FILE_STONESL_NVF	= 0xb6,
+	ARCHIVE_FILE_MARBLESL_NVF	= 0xb7,
+	ARCHIVE_FILE_TFLOOR1_NVF	= 0xb8,
+	ARCHIVE_FILE_TDIVERSE_NVF	= 0xb9,
+	ARCHIVE_FILE_HOUSE1_NVF		= 0xba,
+	ARCHIVE_FILE_HOUSE2_NVF		= 0xbb,
+	ARCHIVE_FILE_HOUSE3_NVF		= 0xbc,
+	ARCHIVE_FILE_HOUSE4_NVF		= 0xbd,
+	ARCHIVE_FILE_FEATURE_LTX	= 0xbe,
+	ARCHIVE_FILE_FEATURE1_LTX	= 0xbf,
+	ARCHIVE_FILE_FEATURE2_LTX	= 0xc0,
+	ARCHIVE_FILE_FEATURE3_LTX	= 0xc1,
+	ARCHIVE_FILE_FEATURE4_LTX	= 0xc2,
+	ARCHIVE_FILE_FEATURE5_LTX	= 0xc3,
+	ARCHIVE_FILE_FEATURE6_LTX	= 0xc4,
+	ARCHIVE_FILE_FEATURE7_LTX	= 0xc5,
+	ARCHIVE_FILE_FEATURE8_LTX	= 0xc6,
+	ARCHIVE_FILE_FIGHTOBJ_NVF	= 0xc7,
+	ARCHIVE_FILE_SCENARIO_LST	= 0xc8,
+	ARCHIVE_FILE_KDLBACK_DAT	= 0xc9,
+	ARCHIVE_FILE_KCLBACK_DAT	= 0xca,
+	ARCHIVE_FILE_KLLBACK_DAT	= 0xcb,
+	ARCHIVE_FILE_KSLBACK_DAT	= 0xcc,
+	ARCHIVE_FILE_FIGHT_LST		= 0xcd,
+	ARCHIVE_FILE_SKARTE_NVF		= 0xce,
+	ARCHIVE_FILE_GAMES_NAM		= 0xcf,
+	ARCHIVE_FILE_ITEMNAME		= 0xd0,
+	ARCHIVE_FILE_MONNAMES		= 0xd1,
+	ARCHIVE_FILE_THORWAL1_LTX	= 0xd2,
+	ARCHIVE_FILE_THORWAL2_LTX	= 0xd3,
+	ARCHIVE_FILE_DUNGEON_XMI	= 0xd4,
+	ARCHIVE_FILE_COMBAT_XMI		= 0xd5,
+	ARCHIVE_FILE_PLAYM_US		= 0xd6,
+	ARCHIVE_FILE_ZUSTA_US		= 0xd7,
+	ARCHIVE_FILE_ANI_DAT		= 0xd8,
+	ARCHIVE_FILE_WEAPANI_DAT	= 0xd9,
+	ARCHIVE_FILE_MONSTER_DAT	= 0xda,
+	ARCHIVE_FILE_BSKILLS_DAT	= 0xdb,
+	ARCHIVE_FILE_ITEMS_DAT		= 0xdc,
+	ARCHIVE_FILE_CHARTEXT_LTX	= 0xdd,
+	ARCHIVE_FILE_SPELLTXT_LTX	= 0xde,
+	ARCHIVE_FILE_WONDER_LTX		= 0xdf,
+	ARCHIVE_FILE_STRASSE_LTX	= 0xe0,
+	ARCHIVE_FILE_NSC_LTX		= 0xe1,
+	ARCHIVE_FILE_NPCS		= 0xe2,
+	/*
+		NARIELL.NPC, HARIKA.NPC, CURIAN.NPC, ARDORA.NPC, GARSVIK.NPC, ERWO.NPC
+	*/
+	ARCHIVE_FILE_FINGER_NVF		= 0xe8,
+	ARCHIVE_FILE_LTURM_NVF		= 0xe9,
+	ARCHIVE_FILE_WFIGS		= 0xea,
+	ARCHIVE_FILE_WFIGS_TAB		= 0xeb,
+	ARCHIVE_FILE_SPLASHES_DAT	= 0xec,
+	ARCHIVE_FILE_FEATURE9_LTX	= 0xed,
+	ARCHIVE_FILE_PHEX1_LTX		= 0xee,
+	ARCHIVE_FILE_PHEX2_LTX		= 0xef,
+	ARCHIVE_FILE_WILD_LTX		= 0xf0,
+	ARCHIVE_FILE_WAFFINFO_LTX	= 0xf1,
+	ARCHIVE_FILE_DNGS		= 0xf2,
+	/*
+		SHIP.DNG, F046.DNG, F051.DNG, F061.DNG, F076.DNG, F094.DNG, F100.DNG, F108.DNG,
+		F126.DNG, F129.DNG, F131.DNG, OBER.DNG, PREM.DNG, THORWAL.DNG, FINAL.DNG
+	*/
+	ARCHIVE_FILE_DNGS_DDT		= 0x100,
+	/*
+		SHIP.DDT, F046.DDT, F051.DDT, F061.DDT, F076.DDT, F094.DDT, F100.DDT, F108.DDT,
+		F126.DDT, F129.DDT, F131.DDT, OBER.DDT, PREM.DDT, THORWAL.DDT, FINAL.DDT
+	*/
+	ARCHIVE_FILE_DNGS_DTX		= 0x10f,
+	/*
+		SHIP.DTX, F046.DTX, F051.DTX, F061.DTX, F076.DTX, F094.DTX, F100.DTX, F108.DTX,
+		F126.DTX, F129.DTX, F131.DTX, OBER.DTX, PREM.DTX, THORWAL.DTX, FINAL.DTX
+	*/
+	ARCHIVE_FILE_TFLOOR2_NVF	= 0x11f,
+	ARCHIVE_FILE_STORY_LTX		= 0x120,
+	ARCHIVE_FILE_FX1_VOC		= 0x121,
+	ARCHIVE_FILE_FX2_VOC		= 0x122,
+	ARCHIVE_FILE_FX3_VOC		= 0x123,
+	ARCHIVE_FILE_FX4_VOC		= 0x124,
+	ARCHIVE_FILE_FX5_VOC		= 0x125,
+	ARCHIVE_FILE_FX6_VOC		= 0x126,
+	ARCHIVE_FILE_FX7_VOC		= 0x127,
+	ARCHIVE_FILE_FX8_VOC		= 0x128,
+	ARCHIVE_FILE_FX9_VOC		= 0x129,
+	ARCHIVE_FILE_FX10_VOC		= 0x12a,
+	ARCHIVE_FILE_FX11_VOC		= 0x12b,
+	ARCHIVE_FILE_FX12_VOC		= 0x12c,
+	ARCHIVE_FILE_FX13_VOC		= 0x12d,
+	ARCHIVE_FILE_FX14_VOC		= 0x12e,
+	ARCHIVE_FILE_FX15_VOC		= 0x12f,
+	ARCHIVE_FILE_FX16_VOC		= 0x130,
+	ARCHIVE_FILE_FX17_VOC		= 0x131,
+	ARCHIVE_FILE_FX18_VOC		= 0x132,
+	ARCHIVE_FILE_OUTRO_XMI		= 0x133
 };
 
 enum {
-  ITEM_ARROWS         = 0x0a,
-  ITEM_BOLTS          = 0x0d,
-  ITEM_DAGGER         = 0x0e,
-  ITEM_LONGBOW        = 0x13,
-  ITEM_TORCH_ON       = 0x16,
-  ITEM_BEER           = 0x17,
-  ITEM_LANTERN_OFF    = 0x19,
-  ITEM_FLASK_GLASS    = 0x1f,
-  ITEM_PICKLOCKS      = 0x23,
-  ITEM_CLIMBING_HOOKS = 0x28,
-  ITEM_OIL            = 0x29,
-  ITEM_FLASK_BRONZE   = 0x2a,
-  ITEM_FOOD_PACKAGES  = 0x2d,
-  ITEM_SHIRT          = 0x30,
-  ITEM_SHOES          = 0x32,
-  ITEM_BOOTS          = 0x33,
-  ITEM_LACEUP_SHOE    = 0x34,
-  ITEM_ARMOR_LEATHER  = 0x35,
-  ITEM_SHURIN_POISON  = 0x37,
-  ITEM_ARAX_POISON    = 0x38,
-  ITEM_ANGST_POISON   = 0x39,
-  ITEM_SLEEP_POISON   = 0x3a,
-  ITEM_GOLDLEIM       = 0x3b,
-  ITEM_EINBEERE       = 0x3c, /* two bytes */
-  ITEM_WHIRLWEED      = 0x3d, /* two bytes */
-  ITEM_KROTENSCHEMEL  = 0x3e,
-  ITEM_GULMOND_LEAF   = 0x3f, /* two bytes */
-  ITEM_TARNELE        = 0x40, /* two bytes */
-  ITEM_TORCH_OFF      = 0x41,
-  ITEM_QUARTERSTAFF   = 0x45,
-  ITEM_BALL_CRYSTAL   = 0x46,
-  ITEM_ROBE_GREEN     = 0x4b,
-  ITEM_PLATTENZEUG    = 0x52,
-  ITEM_KETTENZEUG     = 0x53,
-  ITEM_LEDERZEUG      = 0x54,
-  ITEM_TINDERBOX      = 0x55,
-  ITEM_LICORICE       = 0x59,
-  ITEM_BONBONS        = 0x5a,
-  ITEM_WINE           = 0x5b, /* two bytes */
-  ITEM_BRANDY         = 0x5c, /* two bytes */
-  ITEM_NET            = 0x61,
-  ITEM_TRIDENT        = 0x66,
-  ITEM_MENGBILAR      = 0x6d,
-  ITEM_SHURIN         = 0x7a, /* two bytes */
-  ITEM_BELMART        = 0x7b, /* two bytes */
-  ITEM_DONF_SPRING    = 0x7c, /* two bytes */
-  ITEM_MENCHAL        = 0x7d, /* two bytes */
-  ITEM_ALRAUNE        = 0x7e,
-  ITEM_ILMENBLATT     = 0x80,
-  ITEM_FINAGE_TREE    = 0x81, /* two bytes */
-  ITEM_JORUGA_ROOT    = 0x82, /* two bytes */
-  ITEM_LOTUS          = 0x84,
-  ITEM_MAGIC_WAND     = 0x85,
-  ITEM_LOTUS_POISON   = 0x8d,
-  ITEM_KUKRIS         = 0x8e,
-  ITEM_BANNSTAUB      = 0x8f,
-  ITEM_KROETEN_POISON = 0x90,
-  ITEM_MU_ELIXIR      = 0x93,
-  ITEM_KL_ELIXIR      = 0x94,
-  ITEM_CH_ELIXIR      = 0x95,
-  ITEM_FF_ELIXIR      = 0x96,
-  ITEM_GE_ELIXIR      = 0x97,
-  ITEM_IN_ELIXIR      = 0x98,
-  ITEM_KK_ELIXIR      = 0x99,
-  ITEM_OLGIN_ROOT     = 0x9c, /* two bytes */
-  ITEM_KAIRANHALM     = 0x9d,
-  ITEM_SICKLE         = 0xa1,
-  ITEM_AMULET_BLUE    = 0xa3,
-  ITEM_RING_RED       = 0xa5, /* four bytes */
-  ITEM_EXPURGICUM     = 0xa6,
-  ITEM_VOMICUM        = 0xa8,
-  ITEM_CORONET_SILVER = 0xab,
-  ITEM_ANTIVENOM      = 0xb4,
-  ITEM_GRIMRING       = 0xb5,
-  ITEM_BELT_SKULL     = 0xb6, /* two bytes */
-  ITEM_GIRDLE_MIGHT   = 0xb7,
-  ITEM_LOBPREISUNGEN  = 0xbd,
-  ITEM_KUKRIS_DAGGER  = 0xc1,
-  ITEM_HELMET         = 0xc4,
-  ITEM_KUKRIS_MENGBILAR = 0xc8,
-  ITEM_SILVER_MACE    = 0xd6,
-  ITEM_JEWELRY_SILVER = 0xd7,
-  ITEM_CORONET_BLUE   = 0xd9, /* two bytes */
-  ITEM_BAG            = 0xdd,
-  ITEM_MU_ELIXIR_BAD  = 0xe2,
-  ITEM_KL_ELIXIR_BAD  = 0xe3,
-  ITEM_CH_ELIXIR_BAD  = 0xe4,
-  ITEM_FF_ELIXIR_BAD  = 0xe5,
-  ITEM_GE_ELIXIR_BAD  = 0xe6,
-  ITEM_IN_ELIXIR_BAD  = 0xe7,
-  ITEM_KK_ELIXIR_BAD  = 0xe8,
-  ITEM_MIASTHMATICUM  = 0xee,
-  ITEM_HYLAILIC_FIRE  = 0xef,
-  ITEM_CORONET_GREEN  = 0xf5,
-  ITEM_LANTERN_ON     = 0xf9,
-  ITEM_200_ARROWS     = 0xfb,
-  ITEM_50_BOLTS       = 0xfc,
-  ITEM_20_CLIMBING_HOOKS = 0xfd
+	ITEM_BARE_HAND			= 0x00, /* Bloße Hand */
+	ITEM_SWORD			= 0x01, /* Schwert */
+	ITEM_CLUB			= 0x02, /* Knüppel */
+	ITEM_SABER			= 0x03, /* Säbel */
+	ITEM_KNIFE			= 0x04, /* Messer */
+	ITEM_SPEAR			= 0x05, /* Speer */
+	ITEM_SHORT_SWORD		= 0x06, /* Kurzschwert */
+	ITEM_SHORT_SHIELD		= 0x07, /* Schild */
+	ITEM_KRIEGSBEIL_1		= 0x08, /* Kriegsbeil [1st variant] */
+	ITEM_SHORTBOW			= 0x09, /* Kurzbogen */
+	ITEM_ARROWS			= 0x0a, /* Pfeil */
+	ITEM_STREITAXT			= 0x0b, /* Streitaxt */
+	ITEM_CROSSBOW			= 0x0c, /* Armbrust */
+	ITEM_BOLTS			= 0x0d, /* Bolzen */
+	ITEM_DAGGER			= 0x0e, /* Dolch */
+	ITEM_IRON_SHIELD		= 0x0f, /* Eisenschild */
+	ITEM_FRANCESCA			= 0x10, /* Wurfbeil */
+	ITEM_THROWING_STAR		= 0x11, /* Wurfstern */
+	ITEM_TWO_HANDED_SWORD		= 0x12, /* Zweihänder */
+	ITEM_LONGBOW			= 0x13, /* Langbogen */
+	ITEM_MORNING_STAR		= 0x14, /* Morgenstern */
+	ITEM_VOLCANIC_GLASS_DAGGER	= 0x15, /* Vulkanglasdolch */
+	ITEM_TORCH_ON			= 0x16, /* Fackel [on] */
+	ITEM_BEER			= 0x17, /* Bier */
+	ITEM_GRAPPLE			= 0x18, /* Wurfhaken */
+	ITEM_LANTERN_OFF		= 0x19, /* Laterne [off] */
+	ITEM_CROWBAR			= 0x1a, /* Brecheisen */
+	ITEM_HAMMER			= 0x1b, /* Hammer */
+	ITEM_FISHHOOK			= 0x1c, /* Angelhaken */
+	ITEM_SCROLL			= 0x1d, /* Schriftrolle */
+	ITEM_WATERSKIN			= 0x1e, /* Wasserschlauch */
+	ITEM_FLASK_GLASS		= 0x1f, /* Glasflasche */
+	ITEM_ROPE_LADDER		= 0x20, /* Strickleiter */
+	ITEM_THROWING_AXE		= 0x21, /* Wurfaxt */
+	ITEM_BRASS_MIRROR		= 0x22, /* Messingspiegel */
+	ITEM_PICKLOCKS			= 0x23, /* Dietriche */
+	ITEM_SCHREIBZEUG		= 0x24, /* Schreibzeug */
+	ITEM_HARP			= 0x25, /* Harfe */
+	ITEM_DRINKING_HORN		= 0x26, /* Trinkhorn */
+	ITEM_SILVER_JEWELRY		= 0x27, /* Silberschmuck */
+	ITEM_CLIMBING_HOOKS		= 0x28, /* Kletterhaken */
+	ITEM_OIL			= 0x29, /* Öl */
+	ITEM_FLASK_BRONZE		= 0x2a, /* Bronzeflasche */
+	ITEM_IRON_HELMET		= 0x2b, /* Eisenhelm */
+	ITEM_PIKE			= 0x2c, /* Pike */
+	ITEM_FOOD_PACKAGE		= 0x2d, /* Proviantpaket */
+	ITEM_FLUTE			= 0x2e, /* Flöte */
+	ITEM_ALCHEMY_KIT		= 0x2f, /* Alchemieset */
+	ITEM_SHIRT			= 0x30, /* Hemd */
+	ITEM_TROUSERS			= 0x31, /* Hose */
+	ITEM_SHOES			= 0x32, /* Schuhe */
+	ITEM_BOOTS			= 0x33, /* Stiefel */
+	ITEM_LACEUP_SHOE		= 0x34, /* Schneeshuhe */
+	ITEM_LEATHER_ARMOR		= 0x35, /* Lederharnisch */
+	ITEM_SCALE_ARMOR		= 0x36, /* Schuppenrüstung */
+	ITEM_SHURIN_POISON		= 0x37, /* Shurinknollengift */
+	ITEM_ARAX_POISON		= 0x38, /* Araxgift */
+	ITEM_ANGST_POISON		= 0x39, /* Angstgift */
+	ITEM_SLEEP_POISON		= 0x3a, /* Schlafgift */
+	ITEM_GOLDLEIM			= 0x3b, /* Goldleim */
+	ITEM_EINBEERE			= 0x3c, /* Einbeere */
+	ITEM_WHIRLWEED			= 0x3d, /* Wirselkraut */
+	ITEM_KROTENSCHEMEL		= 0x3e, /* Eitriger Krötenschemel */
+	ITEM_GULMOND_LEAF		= 0x3f, /* Gulmond Blatt */
+	ITEM_TARNELE			= 0x40, /* Tarnele */
+	ITEM_TORCH_OFF			= 0x41, /* Fackel [off] */
+	ITEM_MACE			= 0x42, /* Streitkolben */
+	ITEM_FENCING_SWORD		= 0x43, /* Degen */
+	ITEM_FLORET			= 0x44, /* Florett */
+	ITEM_QUARTERSTAFF		= 0x45, /* Kampfstab */
+	ITEM_CRYSTAL_BALL		= 0x46, /* Kristallkugel */
+	ITEM_WHIP			= 0x47, /* Peitsche */
+	ITEM_BLANKET			= 0x48, /* Decke */
+	ITEM_SHOVEL			= 0x49, /* Schaufel */
+	ITEM_GOLD_JEWELRY		= 0x4a, /* Goldschmuck */
+	ITEM_ROBE_GREEN			= 0x4b, /* Robe [green] */
+	ITEM_ROBE_RED			= 0x4c, /* Robe [red] */
+	ITEM_POT_HELMET			= 0x4d, /* Topfhelm */
+	ITEM_LEATHER_HELMET		= 0x4e, /* Lederhelm */
+	ITEM_SURCOAT			= 0x4f, /* Waffenrock */
+	ITEM_CHAIN_MAIL			= 0x50, /* Kettenhemd */
+	ITEM_KROETENHAUT		= 0x51, /* Kroetenhaut */
+	ITEM_PLATTENZEUG		= 0x52, /* Plattenzeug */
+	ITEM_KETTENZEUG			= 0x53, /* Kettenzeug */
+	ITEM_LEDERZEUG			= 0x54, /* Lederzeug */
+	ITEM_TINDERBOX			= 0x55, /* Zunderkästchen */
+	ITEM_GRINDSTONE			= 0x56, /* Schleifstein */
+	ITEM_CUTLERY			= 0x57, /* Essbesteck */
+	ITEM_DISHES			= 0x58, /* Essgeschirr */
+	ITEM_LICORICE			= 0x59, /* Lakritze */
+	ITEM_BONBONS			= 0x5a, /* Bonbons */
+	ITEM_WINE			= 0x5b, /* Weinflasche */
+	ITEM_BRANDY			= 0x5c, /* Schnapsflasche */
+	ITEM_PICKAXE			= 0x5d, /* Hacke */
+	ITEM_PRAIOS_AMULET		= 0x5e, /* Praios Amulett [magic; found in spider cave] */
+	ITEM_LUTE			= 0x5f, /* Laute */
+	ITEM_WINTER_COAT		= 0x60, /* Wintermantel */
+	ITEM_NET			= 0x61, /* Netz */
+	ITEM_THROWING_KNIFE		= 0x62, /* Wurfmesser */
+	ITEM_SICKLE			= 0x63, /* Sichel */
+	ITEM_SCYTHE			= 0x64, /* Sense */
+	ITEM_WAR_HAMMER			= 0x65, /* Kriegshammer */
+	ITEM_TRIDENT			= 0x66, /* Dreizack */
+	ITEM_HALBERD			= 0x67, /* Hellebarde */
+	ITEM_FLAIL			= 0x68, /* Dreschflegel */
+	ITEM_ZWEILILIEN			= 0x69, /* Zweililien */
+	ITEM_OCHSENHERDE		= 0x6a, /* Ochsenherde */
+	ITEM_BASILISKENZUNGE		= 0x6b, /* Basiliskenzunge */
+	ITEM_OGERFAENGER		= 0x6c, /* Ogerfänger */
+	ITEM_MENGBILAR			= 0x6d, /* Mengbilar */
+	ITEM_HEAVY_DAGGER		= 0x6e, /* schwerer Dolch */
+	ITEM_RONDRAKAMM			= 0x6f, /* Rondrakamm */
+	ITEM_CUTLASS			= 0x70, /* Entermesser */
+	ITEM_BASTARD_SWORD		= 0x71, /* Bastardschwert */
+	ITEM_TUZAK_KNIFE		= 0x72, /* Tuzakmesser */
+	ITEM_RABENSCHNABEL		= 0x73, /* Rabenschnabel */
+	ITEM_BRABAKBENGEL		= 0x74, /* Brabakbengel */
+	ITEM_RAPIER			= 0x75, /* Rapier */
+	ITEM_KHUNCHOMER			= 0x76, /* Khunchomer */
+	ITEM_DOPPELKHUNCHOMER		= 0x77, /* Doppelkhunchomer */
+	ITEM_SLING			= 0x78, /* Schleuder */
+	ITEM_ROPE			= 0x79, /* Seil */
+	ITEM_SHURIN			= 0x7a, /* Shurinknolle */
+	ITEM_BELMART			= 0x7b, /* Belmart Blatt */
+	ITEM_DONF_SPRING		= 0x7c, /* Donfstengel */
+	ITEM_MENCHAL			= 0x7d, /* Menchalkaktus */
+	ITEM_ALRAUNE			= 0x7e, /* Alraune */
+	ITEM_ATMONBLUETE		= 0x7f, /* Atmonblüte */
+	ITEM_ILMENBLATT			= 0x80, /* Ilmenblatt */
+	ITEM_FINAGE_TREE		= 0x81, /* Finagebäumchen */
+	ITEM_JORUGA_ROOT		= 0x82, /* Jorugawurzel */
+	ITEM_THONNYS			= 0x83, /* Thonnysblüte */
+	ITEM_LOTUS			= 0x84, /* Lotusblüte */
+	ITEM_MAGIC_WAND			= 0x85, /* Zauberstab */
+	ITEM_SKRAJA			= 0x86, /* Skraja */
+	ITEM_KRIEGSBEIL_2		= 0x87, /* Kriegsbeil [2nd variant] */
+	ITEM_ORKNASE			= 0x88, /* Orknase */
+	ITEM_SCHNEIDZAHN		= 0x89, /* Schneidzahn */
+	ITEM_ROBBENTOETER		= 0x8a, /* Robbentöter */
+	ITEM_WOLFSMESSER		= 0x8b, /* Wolfsmesser */
+	ITEM_WITCHES_BROOM		= 0x8c, /* Hexenbesen */
+	ITEM_LOTUS_POISON		= 0x8d, /* Lotusgift */
+	ITEM_KUKRIS			= 0x8e, /* Kukris */
+	ITEM_BANNSTAUB			= 0x8f, /* Bannstaub */
+	ITEM_KROETEN_POISON		= 0x90, /* Krötenschemelgift */
+	ITEM_LE_POTION			= 0x91, /* Heiltrank */
+	ITEM_STRONG_LE_POTION		= 0x92, /* starker Heiltrank */
+	ITEM_MU_ELIXIR			= 0x93, /* MU Elixier */
+	ITEM_KL_ELIXIR			= 0x94, /* KL Elixier */
+	ITEM_CH_ELIXIR			= 0x95, /* CH Elixier */
+	ITEM_FF_ELIXIR			= 0x96, /* FF Elixier */
+	ITEM_GE_ELIXIR			= 0x97, /* GE Elixier */
+	ITEM_IN_ELIXIR			= 0x98, /* IN Elixier */
+	ITEM_KK_ELIXIR			= 0x99, /* KK Elixier */
+	ITEM_AE_POTION			= 0x9a, /* Zaubertrank */
+	ITEM_STRONG_AE_POTION		= 0x9b, /* Zaubertrank (stark) */
+	ITEM_OLGIN_ROOT			= 0x9c, /* Olginwurzel */
+	ITEM_KAIRANHALM			= 0x9d, /* Kairanhalm */
+	ITEM_BASTARD_SWORD_MAGIC	= 0x9e, /* Bastardschwert [magic: lower BF; found in Daspota] */
+	ITEM_ORKNASE_MAGIC		= 0x9f, /* Orknase [magic: damage +5, AT-1, PA-5; found in Daspota] */
+	ITEM_SHORT_SWORD_MAGIC		= 0xa0, /* Kurzschwert [magic: AT + 2, unbreakable; found in Daspota ] */
+	ITEM_SICKLE_MAGIC		= 0xa1, /* Sichel [magic, Pflanzenkunde + 3; found in Daspota] */
+	ITEM_AMULET_UNKNOWN_1		= 0xa2, /* Amulett [TODO: which one?? it might be yellow, magic: protects from fire; found at Totenschiff] */
+	ITEM_AMULET_BLUE		= 0xa3, /* Amulett [blue, magic: MR + 5; found in ruin of the black wizard and at a fight vs. orcs at the track Phexcaer <-> Einsiedlersee] */
+	ITEM_BONE_WITH_RUNE		= 0xa4, /* Knochen mit Rune */
+	ITEM_RING_RED			= 0xa5, /* Ring [red, magic, MR + 2, additionally 5 charges of Arcano Psychostabilis (additionally MR + 2) when used; found at Gorah ] */
+	ITEM_EXPURGICUM			= 0xa6, /* Expurgicum */
+	ITEM_RECIPE_EXPURGICUM		= 0xa7, /* Rezept für Expurgicum */
+	ITEM_VOMICUM			= 0xa8, /* Vomicum */
+	ITEM_RECIPE_VOMICUM		= 0xa9, /* Rezept für Vomicum */
+	ITEM_DOCUMENT_1			= 0xaa, /* Dokument [1, Depotschein?] */
+	ITEM_CORONET_SILVER		= 0xab, /* Silberner Stirnreif [magic, use -> Armatrutz +5, i.e. RS + 5] */
+	ITEM_SABER_MAGIC		= 0xac, /* Säbel [magic] */
+	ITEM_AMULET_RED			= 0xad, /* Amulett [red, magic, protection from fire; found at corpse between Rovamund and Nordvest ] */
+	ITEM_AMULET_GREEN		= 0xae, /* Amulett [green, magic: use -> Flim Flam; found in Totenschiff] */
+	ITEM_TRAVIA_AMULET		= 0xaf, /* Amulett [golden cross, magic: no hunger or thirst; found in wolf cave ] */
+	ITEM_SCHULDBUCH			= 0xb0, /* Schuldbuch */
+	ITEM_RED_MOON_DISK		= 0xb1, /* rote Mondscheibe [found in orc cave] */
+	ITEM_TWO_HANDED_SWORD_MAGIC	= 0xb2, /* Zweihänder [magic: unbreakable; found in orc cave] */
+	ITEM_ORC_DOCUMENT		= 0xb3, /* Orkdokument */
+	ITEM_ANTIVENOM			= 0xb4, /* Gegengift */
+	ITEM_GRIMRING			= 0xb5, /* Grimring [found at Hyggelik's ruin] */
+	ITEM_SKULL_BELT			= 0xb6, /* Totenkopfgürtel [magic: TA - 4; found in Verfallene Herberge ] */
+	ITEM_GIRDLE_MIGHT		= 0xb7, /* Kraftgürtel [magic: KK + 5; found in dragon cave] */
+	ITEM_MAGIC_BREADBAG		= 0xb8, /* magischer Brotbeutel */
+	ITEM_MAGIC_WATERSKIN		= 0xb9, /* magischer Wasserschlauch */
+	ITEM_RECIPE_LE_POTION		= 0xba, /* Rezept für Heiltrank */
+	ITEM_WRITING_OF_JARDA		= 0xbb, /* Schreiben von Jarda */
+	ITEM_AMULET_UNKNOWN_2		= 0xbc, /* Amulett [TODO: which one?? it might be yellow, magic: protects from fire; found at Totenschiff] */
+	ITEM_LOBPREISUNGEN		= 0xbd, /* Lobpreisungen */
+	ITEM_MITGLIEDERLISTE		= 0xbe, /* Mitgliederliste */
+	ITEM_DOCUMENT_2			= 0xbf, /* Dokument [2] */
+	ITEM_SEA_CHART			= 0xc0, /* Seekarte */
+	ITEM_KUKRIS_DAGGER		= 0xc1, /* Kukrisdolch */
+	ITEM_KEY_1			= 0xc2, /* Schlüssel [1] */ /* TODO: Farbe? umbenennen! */
+	ITEM_KEY_GOLDEN_1		= 0xc3, /* Goldener Schlüssel [found in the dungeon of the Daspota treasure] */
+	ITEM_HELMET_CURSED		= 0xc4, /* Helm [cursed: CH - 1; found in goblin cave and at NPC Ardora von Greifenfurt ] */
+	ITEM_CHAIN_MAIL_CURSED		= 0xc5, /* Kettenhemd [magic, cursed, protection +1 vs. skeletons and zombies, but protection -2 vs. everything else, additionally drains LE; found in dragon cave] */
+	ITEM_CHAIN_MAIL_MAGIC		= 0xc6, /* Kettenhemd [magic, AT+1, BE-1, RS+1; found in the dungeon of the Daspota treasure (Rybon-Thoss)] */
+	ITEM_SWORD_MAGIC		= 0xc7, /* Schwert [magic: AT + 2; found in dragon cave] */
+	ITEM_KUKRIS_MENGBILAR		= 0xc8, /* Kukrismengbilar */
+	ITEM_KEY_PLATIN			= 0xc9, /* Platinschlüssel */
+	ITEM_RECIPE_ANTIVENOM		= 0xca, /* Rezept für Gegengift */
+	ITEM_RECIPE_HYLAILIC_FIRE	= 0xcb, /* Rezept für Hylailer Feuer */
+	ITEM_RECIPE_KK_ELIXIR		= 0xcc, /* Rezept für Kraftelixier */
+	ITEM_RECIPE_MU_ELIXIR		= 0xcd, /* Repezt für Mutelixier */
+	ITEM_RECIPE_AE_POTION		= 0xce, /* Rezept für Zaubertrank */
+	ITEM_RING_BLUE			= 0xcf, /* Ring [blue, not magic, found in Zwingfeste] */
+	ITEM_KEY_2			= 0xd0, /* Schlüssel [2] */ /* TODO: Farbe? */
+	ITEM_KEY_IRON_1			= 0xd1, /* Eisenschlüssel [1] */ /* TODO: Farbe? */
+	ITEM_KEY_IRON_2			= 0xd2, /* Eisenschlüssel [2] */ /* TODO: Farbe? */
+	ITEM_KEY_RED			= 0xd3, /* Roter Schlüssel */
+	ITEM_KEY_BRONZE			= 0xd4, /* Bronzeschlüssel */
+	ITEM_SILVER_HELMET		= 0xd5, /* Silberhelm [magic: can be worn by all hero classes; found in wolf cave] */
+	ITEM_SILVER_MACE		= 0xd6, /* Silberstreitkolben [magic; found in Verfallene Herberge] */
+	ITEM_SILVER_JEWELRY_MAGIC	= 0xd7, /* silver jewelry [magic: TA - 2; found in Verfallene Herberge] */
+	ITEM_SPEAR_MAGIC		= 0xd8, /* Speer [magic; found in spider cave] */
+	ITEM_CORONET_BLUE		= 0xd9, /* Stirnreif [blau, magic: MR + 2; found in Tempel des Namenlosen] */
+	ITEM_THROWING_DAGGER		= 0xda, /* Wurfdolch [magic; found in dragon cave] */
+	ITEM_KEY_GOLDEN_2		= 0xdb, /* Goldschlüssel */
+	ITEM_RING_GREEN			= 0xdc, /* Ring [green, magic: protection from magic fire; found in dragon cave] */
+	ITEM_BAG			= 0xdd, /* Beutel [found and used in the first level of the ruin of the black wizard to open a passage] */
+	ITEM_BOOK_1			= 0xde, /* Buch [1] */
+	ITEM_ANTI_SICKNESS_ELIXIR	= 0xdf, /* Antikrankheitselixier */
+	ITEM_BOOK_2			= 0xe0, /* Buch [2; found in the dungeon of the Daspota treasure (Rybon-Thoss)] */
+	ITEM_CRYSTAL			= 0xe1, /* Kristall */
+	ITEM_MU_ELIXIR_BAD		= 0xe2, /* MU Elixier [bad] */
+	ITEM_KL_ELIXIR_BAD		= 0xe3, /* KL Elixier [bad] */
+	ITEM_CH_ELIXIR_BAD		= 0xe4, /* CH Elixier [bad] */
+	ITEM_FF_ELIXIR_BAD		= 0xe5, /* FF Elixier [bad] */
+	ITEM_GE_ELIXIR_BAD		= 0xe6, /* GE Elixier [bad] */
+	ITEM_IN_ELIXIR_BAD		= 0xe7, /* IN Elixier [bad] */
+	ITEM_KK_ELIXIR_BAD		= 0xe8, /* KK Elixier [bad] */
+	ITEM_ROBE_3			= 0xe9, /* Robe */
+	ITEM_GOLDEN_SHIELD		= 0xea, /* goldener Schild [magic: can be equiped by all hero classes; found in Tempel des Namenlosen */
+	ITEM_WRITING_OF_HETMAN		= 0xeb, /* Empfehlungsschreiben [Hetman] */
+	ITEM_WUNDERKUR			= 0xec, /* Wunderkur */
+	ITEM_SLEEPING_POTION		= 0xed, /* Schlaftrunk */
+	ITEM_MIASTHMATICUM		= 0xee, /* Miasthmaticum */
+	ITEM_HYLAILIC_FIRE		= 0xef, /* Hylailer Feuer */
+	ITEM_RECIPE_STRONG_LE_POTION	= 0xf0, /* Rezept für starken Heiltrank [given by Olimone, tevent_114 Phexcaer <-> Skelellen: a swamp]*/
+	ITEM_RECIPE_WUNDERKUR		= 0xf1, /* Rezept für Wunderkur */
+	ITEM_RECIPE_SLEEPING_POTION	= 0xf2, /* Rezept für Schlaftrunk */
+	ITEM_RECIPE_STRONG_AE_POTION	= 0xf3, /* Rezept für starker Zaubertrank */
+	ITEM_RECIPE_MIASTHMATICUM	= 0xf4, /* Rezept für Miasthmaticum */
+	ITEM_CORONET_GREEN		= 0xf5, /* Stirnreif [green, magic: use -> Armatrutz +5, i.e. RS + 5; found 2x in spider cave] */
+	ITEM_BOOK_HEPTAGON		= 0xf6, /* Buch [read -> 'Heptagon' spell +3; found in spider cave] */
+	ITEM_WRITING_OF_SIEBENSTEIN	= 0xf7, /* Empfehlungsschreiben [Umbrik Siebenstein] */
+	ITEM_BLACK_FIGURINE		= 0xf8, /* schwarze Statuette, found in Tempel des Namenlosen and used as evidence to Eliane Windenbeck */
+	ITEM_LANTERN_ON			= 0xf9, /* Laterne [on] */
+	ITEM_DUCATS			= 0xfa, /* Dukaten */
+	ITEM_200_ARROWS			= 0xfb, /* 200 Pfeile */
+	ITEM_50_BOLTS			= 0xfc, /* 50 Bolzen */
+	ITEM_20_CLIMBING_HOOKS		= 0xfd /* 20 Kletterhaken */
 };
 
 enum {
-  IS_DARK    = 0,
-  IS_TORCH   = 1,
-  IS_LANTERN = 2
+	LIGHTING_DARK    = 0,
+	LIGHTING_TORCH   = 1,
+	LIGHTING_LANTERN = 2
 };
 
 enum {
-  RECIPE_ITEM_ID = 0, /* two bytes */ /* item id of the recipe */
-  RECIPE_INGREDIENTS = 2, /* two bytes [10] */ /* list of ingredients, two bytes each (item ids), terminated by -1 entry */
-  RECIPE_OUTCOME = 22, /* two bytes */ /* item id of the outcome of the recipe */
-  RECIPE_AE = 24, /* AE needed */
-  RECIPE_DIFFICULTY = 26, /* Erschwernis fuer die Alchemie-Talentprobe */
-  RECIPE_DURATION = 27, /* time needed to brew the recipe, in hours */
-  RECIPE_SIZE = 28
+	RECIPE_ITEM_ID = 0, /* two bytes */ /* item id of the recipe */
+	RECIPE_INGREDIENTS = 2, /* two bytes [10] */ /* list of ingredients, two bytes each (item ids), terminated by -1 entry */
+	RECIPE_OUTCOME = 22, /* two bytes */ /* item id of the outcome of the recipe */
+	RECIPE_AE = 24, /* AE needed */
+	RECIPE_DIFFICULTY = 26, /* Erschwernis fuer die Alchemie-Talentprobe */
+	RECIPE_DURATION = 27, /* time needed to brew the recipe, in hours */
+	RECIPE_SIZE = 28
+};
+
+enum {
+	GAME_MODE_UNSPECIFIED = -1,
+	GAME_MODE_BEGINNER = 1,
+	GAME_MODE_ADVANCED = 2
+};
+
+enum {
+	MON_SPELL_DESCRIPTIONS_COST = 0,
+	MON_SPELL_DESCRIPTIONS_MODE = 1,
+	MON_SPELL_DESCRIPTIONS_UNKN1 = 2,
+	MON_SPELL_DESCRIPTIONS_ATTRIB1 = 3,
+	MON_SPELL_DESCRIPTIONS_ATTRIB2 = 4,
+	MON_SPELL_DESCRIPTIONS_ATTRIB3 = 5,
+	MON_SPELL_DESCRIPTIONS_VS_MR = 6,
+	MON_SPELL_DESCRIPTIONS_ANI_ID = 7,
+	MON_SPELL_DESCRIPTIONS_SIZE = 8 /* size of entry at MON_SPELL_DESCRIPTIONS in bytes */
+};
+
+enum {
+	MENU_ICON_NONE = -1,
+	MENU_ICON_HIRE_HERO = 0,
+	MENU_ICON_DISMISS_HERO = 1,
+	MENU_ICON_DELETE_HERO = 2,
+	MENU_ICON_LOAD_GAME = 3,
+	MENU_ICON_SAVE_GAME = 4,
+	MENU_ICON_QUIT_GAME = 5,
+	MENU_ICON_PRAY = 6,
+	MENU_ICON_SACRIFICE = 7,
+	MENU_ICON_LEAVE = 8,
+	MENU_ICON_GUARDS = 9,
+	MENU_ICON_GIVE_GOLD = 10, /* unused? */
+	MENU_ICON_MAGIC = 11,
+	MENU_ICON_SPLIT_GROUP = 12,
+	MENU_ICON_ORDER_FOOD = 13,
+	MENU_ICON_TAKE_GOLD = 14, /* unused? */
+	MENU_ICON_MERGE_GROUP = 15,
+	MENU_ICON_REPLENISH_SUPPLIES = 16,
+	MENU_ICON_SLEEP = 17,
+	MENU_ICON_REPAIR = 18,
+	MENU_ICON_BOOK_BED = 19,
+	MENU_ICON_COLLECT_HERBS = 20,
+	MENU_ICON_TALK = 21,
+	MENU_ICON_BUY = 22,
+	MENU_ICON_BARGAIN = 23,
+	MENU_ICON_SELL = 24,
+	MENU_ICON_APPLY_SKILL = 25,
+	MENU_ICON_SCROLL_RIGHT = 26,
+	MENU_ICON_SCROLL_LEFT = 27,
+	MENU_ICON_HERO = 28,
+	MENU_ICON_SWITCH_GROUP = 29,
+	MENU_ICON_HEAL_WOUNDS = 30,
+	MENU_ICON_HEAL_DISEASE = 31,
+	MENU_ICON_HEAL_POISON = 32,
+	MENU_ICON_OPEN_CLOSE_DOOR = 33,
+	MENU_ICON_SMASH_DOOR = 34,
+	MENU_ICON_PICK_LOCK = 35,
+	MENU_ICON_WIZARD_FLOOR = 36, /* unused? */
+	MENU_ICON_INFO = 37,
+	MENU_ICON_OPEN_CHEST = 38,
+	MENU_ICON_MAP = 39,
+	MENU_ICON_BOOK_SHIP_PASSAGE = 40,
+	MENU_ICON_BOARD_SHIP = 41,
+	MENU_ICON_HARBOR_MASTER = 42,
+	MENU_ICON_MARKET = 43,
+	MENU_ICON_HYGELLIK_MAP = 44,
+	MENU_ICON_MERGE_GROUP_GRAYED = 45,
+	MENU_ICON_MOVE_LEVER = 46,
+	MENU_ICON_ATTACK = 47, /* unused? */
+	MENU_ICON_QUIT_CAMP = 48,
+	MENU_ICON_INN = 49,
+	MENU_ICON_TAVERN = 50,
+	MENU_ICON_BATTLE_FRAME_RATE = 51,
+	MENU_ICON_DIARY = 52,
+	MENU_ICON_SOUND = 53,
+	MENU_ICON_CAMP = 54
+};
+
+enum {
 };
 #endif

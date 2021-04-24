@@ -439,7 +439,7 @@ void DNG08_search_bed(void)
 			(char*)Real2Host(GUI_names_grammar(2, 92, 0)));
 
 		/* a BRANDY BOTTLE */
-		get_item(92, 1, 1);
+		get_item(ITEM_BRANDY, 1, 1);
 
 		GUI_output(Real2Host(ds_readfp(DTP2)));
 
@@ -454,7 +454,7 @@ void DNG08_search_bed(void)
 			(char*)Real2Host(GUI_names_grammar(2, 14, 0)));
 
 		/* a DAGGER */
-		get_item(14, 1, 1);
+		get_item(ITEM_DAGGER, 1, 1);
 
 		GUI_output(Real2Host(ds_readfp(DTP2)));
 
@@ -513,7 +513,7 @@ void DNG08_chest0_func3(RealPt)
 		GUI_output(get_tx(32));
 
 		/* get 40 FOOD PACKAGES */
-		get_item(45, 1, 40);
+		get_item(ITEM_FOOD_PACKAGE, 1, 40);
 	}
 }
 
@@ -571,7 +571,7 @@ void DNG08_chest3_func1(RealPt chest)
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	if (get_first_hero_with_item(212) != -1 ||
+	if (get_first_hero_with_item(ITEM_KEY_BRONZE) != -1 ||
 		test_skill(hero, TA_SCHLOESSER, 5) > 0)
 	{
 		if (!(ds_readb(DNG08_CHEST35_LOOTED) & 1))
@@ -598,7 +598,7 @@ void DNG08_chest4_func1(RealPt chest)
 	Bit8u *hero;
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	if (get_first_hero_with_item(212) != -1 ||
+	if (get_first_hero_with_item(ITEM_KEY_BRONZE) != -1 ||
 		test_skill(hero, TA_SCHLOESSER, 5) > 0)
 	{
 #if defined(__BORLANDC__)
@@ -621,7 +621,7 @@ void DNG08_chest5_func1(RealPt chest)
 	Bit8u *hero;
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	if (get_first_hero_with_item(212) != -1 ||
+	if (get_first_hero_with_item(ITEM_KEY_BRONZE) != -1 ||
 		test_skill(hero, TA_SCHLOESSER, 5) > 0)
 	{
 #if defined(__BORLANDC__)

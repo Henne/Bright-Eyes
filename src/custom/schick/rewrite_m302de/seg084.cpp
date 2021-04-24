@@ -389,7 +389,7 @@ signed short DNG09_handler(void)
 
 			if (i == 1)
 			{
-				get_item(248, 1, 1);
+				get_item(ITEM_BLACK_FIGURINE, 1, 1);
 
 			} else {
 				GUI_output(get_tx(50));

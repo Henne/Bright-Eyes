@@ -198,7 +198,7 @@ void tevent_093(void)
 	}
 }
 
-/* entrance daspota-dungeon */
+/* Rybon <-> Thoss: entrance to the Daspota treasure dungeon */
 void tevent_094(void)
 {
 	if (ds_readb(TEVENT094_FLAG) != 0)
@@ -216,7 +216,7 @@ void tevent_094(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			/* enter daspota dungeon */
+			/* enter Daspota dungeon */
 			ds_writeb(TRAVEL_DETOUR, 6);
 		}
 	}
@@ -444,7 +444,7 @@ void tevent_096(void)
 	}
 }
 
-/* entrance dungeon: temple of the nameless */
+/* Hjalland: entrance to the dungeon "temple of the one without name" */
 void tevent_126(void)
 {
 	signed short answer;
@@ -510,7 +510,7 @@ void tevent_128(void)
 	}
 }
 
-/* entrance dungeon: dragon cave */
+/* Runin: entrance to the dungeon "dragon cave" */
 void tevent_129(void)
 {
 	signed short answer;
@@ -678,7 +678,7 @@ void tevent_047(void)
 	}
 }
 
-/* entrance dungeon: a ruin */
+/* Rybon <-> Thoss: entrance to the dungeon "ruin of the black wizard" */
 void tevent_100(void)
 {
 	signed short answer;

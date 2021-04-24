@@ -68,7 +68,7 @@
 #define MAGIC_SCHOOLS_9                 (0x0d87)    /* short[8]; array terminated by -1 */
 #define MAGIC_SCHOOLS_INDEX             (0x0d97)    /* RealPt[9] */
 #define SPELL_HANDLERS                  (0x0dbb)    /* long[86]; function pointer[86] */
-#define MON_SPELL_DESCRIPTIONS          (0x0f13)    /* struct(8)[15]; struct{char cost, mode, unkn1, attrib1, attrib2, attrib3, unkn2, ani_id;} */
+#define MON_SPELL_DESCRIPTIONS          (0x0f13)    /* struct(8)[15]; struct{char cost, mode, unkn1, attrib1, attrib2, attrib3, vs_mr, ani_id;} */
 #define MON_SPELL_REPERTOIRE            (0x0f8b)    /* struct(5)[11]; struct{char spells[5];} */
 #define MON_SPELL_HANDLERS              (0x0fc2)    /* long[15]; function pointer[15] */
 #define SKILL_DESCRIPTIONS              (0x0ffe)    /* struct(4)[52]; struct{signed char attrib1, attrib2, attrib3, max_inc;} */
@@ -1359,7 +1359,7 @@
 #define TEXTBOX_WIDTH                   (0xbffd)    /* signed short */
 #define TEXTBOX_POS_X                   (0xbfff)    /* signed short; coordinate of upper left corner */
 #define TEXTBOX_POS_Y                   (0xc001)    /* signed short; coordinate of upper left corner */
-#define GAME_MODE                       (0xc003)    /* signed short; {-1 = Input error, 1 = Beginner, 2 = Advanced } */
+#define GAME_MODE                       (0xc003)    /* signed short; {-1 = unspecified, 1 = beginner, 2 = advanced } */
 #define SELLITEMS                       (0xc005)    /* RealPt; also used for repair items */
 #define BUYITEMS                        (0xc009)    /* RealPt; merchant's assortment */
 #define PIC_COPY_DST                    (0xc00d)    /* RealPt */

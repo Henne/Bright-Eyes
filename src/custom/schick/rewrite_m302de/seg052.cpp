@@ -58,7 +58,7 @@ void do_citycamp(void)
 		ds_writeb(CITYCAMP_GUARDS + l_si, -1);
 	}
 
-	draw_loc_icons(5, 9, 25, 11, 17, 8);
+	draw_loc_icons(5, MENU_ICON_GUARDS, MENU_ICON_APPLY_SKILL, MENU_ICON_MAGIC, MENU_ICON_SLEEP, MENU_ICON_LEAVE);
 
 	while (done == 0) {
 

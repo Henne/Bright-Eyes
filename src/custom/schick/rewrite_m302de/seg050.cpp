@@ -174,7 +174,7 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 		dec_ptr_bs(hero + HERO_TA_RISE);
 
 #ifndef M302de_FEATURE_MOD
-		if (host_readbs(hero + HERO_TA_FIGHT + skill) >= 11) {
+		if (host_readbs(hero + HERO_TALENTS + skill) >= 11) {
 			randval = random_interval(3, 18);
 		} else {
 			randval = random_interval(2, 12);
@@ -182,21 +182,21 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 #else
 		/* Feature mod 2:
 		 * use the exact spell/skill increase mechanism as in DSA 2/3 */
-		if (host_readbs(hero + HERO_TA_FIGHT + skill) >= 10) {
+		if (host_readbs(hero + HERO_TALENTS + skill) >= 10) {
 			randval = dice_roll(3,6,0);
 		} else {
 			randval = dice_roll(2,6,0);
 		}
 #endif
 
-		if (host_readbs(hero + HERO_TA_FIGHT + skill) < randval) {
+		if (host_readbs(hero + HERO_TALENTS + skill) < randval) {
 
 			/* success */
 
 			GUI_output(get_tx2(37));
 
 			/* increment spell value */
-			inc_ptr_bs(hero + skill + HERO_TA_FIGHT);
+			inc_ptr_bs(hero + skill + HERO_TALENTS);
 
 			/* set the try counter to 0 */
 			host_writebs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill, 0);
@@ -263,7 +263,7 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 
 		/* leave the loop if 3 incs failes or the skill value is 18 */
 		if ((host_readbs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + skill * 2) == 3) ||
-			(host_readbs(hero + HERO_TA_FIGHT + skill) == 18)) {
+			(host_readbs(hero + HERO_TALENTS + skill) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
 			D1_INFO("%s hat alle Versuche aufgebraucht\n", hero + HERO_NAME2);
@@ -278,17 +278,17 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 				done = 1;
 
 			/* on a  skill value < 11 use 2W6 else 3W6 */
-			if (host_readbs(hero + HERO_TA_FIGHT + skill) >= 11) {
+			if (host_readbs(hero + HERO_TALENTS + skill) >= 11) {
 				randval = random_interval(3, 18);
 			} else {
 				randval = random_interval(2, 12);
 			}
 
 			/* check if increase success */
-			if (host_readbs(hero + HERO_TA_FIGHT + skill) < randval) {
+			if (host_readbs(hero + HERO_TALENTS + skill) < randval) {
 
 				/* inc skill value */
-				inc_ptr_bs(hero + HERO_TA_FIGHT + skill);
+				inc_ptr_bs(hero + HERO_TALENTS + skill);
 
 				/* reset failed counter */
 				host_writeb(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill, 0);
@@ -551,16 +551,16 @@ void level_up(signed short hero_pos)
 		/* set new basic MR */
 		host_writebs(hero + HERO_MR, mr);
 
-		/* check for STIRNREIF / CORONET equipped => MR+2 */
-		if (host_readws(hero + HERO_ITEM_HEAD) == 217) {
+		/* check for STIRNREIF [blau] / CORONET [blue] equipped => MR + 2 */
+		if (host_readws(hero + HERO_ITEM_HEAD) == ITEM_CORONET_BLUE) {
 			add_ptr_bs(hero + HERO_MR, 2);
 		}
-		/* check for RING / RING equipped => MR+2 */
-		if (host_readws(hero + HERO_ITEM_HEAD + 4 * SIZEOF_KS_ITEM) == 165) {
+		/* check for RING / RING equipped => MR + 2 */
+		if (host_readws(hero + HERO_ITEM_HEAD + 4 * SIZEOF_KS_ITEM) == ITEM_RING_RED) {
 			add_ptr_bs(hero + HERO_MR, 2);
 		}
-		/* check for AMULETT / in inventory => MR+5 */
-		if (get_item_pos(hero, 163) != -1) {
+		/* check for AMULETT / in inventory => MR + 5 */
+		if (get_item_pos(hero, ITEM_AMULET_BLUE) != -1) {
 			add_ptr_bs(hero + HERO_MR, 5);
 		}
 
@@ -617,7 +617,7 @@ void level_up(signed short hero_pos)
 		add_hero_ae(hero, i - l_si);
 
 		/* change skill increasements into AE */
-		if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE && ds_readws(GAME_MODE) == 2) {
+		if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE && ds_readws(GAME_MODE) == GAME_MODE_ADVANCED) {
 
 			if (GUI_bool(get_tx2(40))) {
 				/* trade 10 skill increasements into 1W6+2 AE */
@@ -652,7 +652,7 @@ void level_up(signed short hero_pos)
 
 	update_atpa(hero);
 
-	if (ds_readws(GAME_MODE) == 1) {
+	if (ds_readws(GAME_MODE) == GAME_MODE_BEGINNER) {
 
 		i = v2 = 0;
 
@@ -660,7 +660,7 @@ void level_up(signed short hero_pos)
 
 			l_si = host_readws(Real2Host(ds_readd(SKILLS_BUFFER)) + 100 * host_readbs(hero + HERO_TYPE) + 4 * i);
 
-			if (host_readbs(hero + HERO_TA_FIGHT + l_si) < host_readws(Real2Host(ds_readd(SKILLS_BUFFER)) + 100 * host_readbs(hero + HERO_TYPE) + 4 * i + 2))
+			if (host_readbs(hero + HERO_TALENTS + l_si) < host_readws(Real2Host(ds_readd(SKILLS_BUFFER)) + 100 * host_readbs(hero + HERO_TYPE) + 4 * i + 2))
 			{
 				inc_skill_novice(hero, l_si);
 			}

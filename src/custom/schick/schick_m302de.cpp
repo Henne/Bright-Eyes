@@ -5761,8 +5761,8 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x57f1: {
-		D1_LOG("seg002_57f1()\n");
-		seg002_57f1();
+		D1_LOG("check_group()\n");
+		check_group();
 		return 1;
 	}
 	case 0x5816: {

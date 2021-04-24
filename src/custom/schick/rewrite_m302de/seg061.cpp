@@ -43,9 +43,7 @@ void do_temple(void)
 	ds_writew(INTEMPLE, ds_writew(INTEMPLE2, 0));
 	ds_writew(REQUEST_REFRESH, 1);
 
-	draw_loc_icons(9,	0, 1, 2,
-				3, 4, 5,
-				6, 7, 8);
+	draw_loc_icons(9, MENU_ICON_HIRE_HERO, MENU_ICON_DISMISS_HERO, MENU_ICON_DELETE_HERO, MENU_ICON_LOAD_GAME, MENU_ICON_SAVE_GAME, MENU_ICON_QUIT_GAME, MENU_ICON_PRAY, MENU_ICON_SACRIFICE, MENU_ICON_LEAVE);
 
 	while (!done) {
 

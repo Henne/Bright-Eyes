@@ -5664,7 +5664,7 @@ signed short g_txt_tabpos5; // ds:0xd31b
 signed short g_txt_tabpos6; // ds:0xd31d
 signed short g_txt_tabpos7; // ds:0xd31f
 void *g_townpal_buf; // ds:0xd321
-signed short g_fig_flee_position[4]; // ds:0xd325, see HERO_UNKNOWN9
+signed short g_fig_flee_position[4]; // ds:0xd325, see HERO_ESCAPE_POSITION
 signed short g_wildcamp_sleep_quality; // ds:0xd32d
 signed short g_gather_herbs_mod; // ds:0xd32f
 signed short g_replenish_stocks_mod; // ds:0xd331

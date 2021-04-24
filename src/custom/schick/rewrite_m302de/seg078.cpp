@@ -349,7 +349,7 @@ signed short DNG02_handler(void)
 			}
 		}
 
-		seg002_57f1();
+		check_group();
 
 	} else if (target_pos == 0x1d0b && target_pos != ds_readws(DNG_HANDLED_POS))
 	{

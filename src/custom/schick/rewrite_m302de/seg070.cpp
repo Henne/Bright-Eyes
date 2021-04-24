@@ -350,7 +350,7 @@ void PHX_apotheke(void)
 
 			set_party_money(money);
 
-			get_item(61, 1, 1);
+			get_item(ITEM_WHIRLWEED, 1, 1);
 		} else {
 			GUI_input(get_tx2(69), 0);
 		}
@@ -453,7 +453,7 @@ void PHX_apotheke(void)
 
 				set_party_money(money);
 
-				get_item(61, 1, 1);
+				get_item(ITEM_WHIRLWEED, 1, 1);
 			} else {
 				GUI_input(get_tx2(69), 0);
 			}

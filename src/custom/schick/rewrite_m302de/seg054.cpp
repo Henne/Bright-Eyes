@@ -146,8 +146,10 @@ void do_inn(void)
 	else if ((hero = get_first_brewing_hero())) {
 		/* Original-Bug 9:
 		 * If a group of heroes enters an inn where more then one hero is brewing (each of them forms his own group),
-		 * you get asked if the brewing process of the first hero should be aborted.
-		 * If you answer 'no', you are not asked for the second brewing hero. */
+		 * and the first brewing hero has not spent enough time for the brewing process yet,
+		 * you get asked if his brewing process should be aborted.
+		 * If you answer 'no', you are not asked for the second brewing hero. Similarly, the other brewing heroes are
+		 * not checked for having spent enough time to finalize the brewing. */
 
 		draw_status_line();
 
@@ -173,19 +175,43 @@ void do_inn(void)
 			if (answer == 1) {
 				/* abort brewing */
 				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 1);
-				/* Original-Bug 10 */
+
+				/* Original-Bug 10:
+				 * If a group of heroes enters an inn where more then one hero is brewing
+				 * (each of them forms his own group), you get asked if the brewing process of the first hero
+				 * should be aborted. If you answer yes, all groups in the inn are merged, which may include
+				 * other size-one-groups containing a brewing hero. The brewing process of these other brewing
+				 * heroes won't be finalized, no matter if they have spent enough time in the inn or not,
+				 * so these heroes are still considered to be brewing. If such an interrupted hero is the
+				 * group leader of a group, and that group is selected, strange effects occur. */
 				GRP_merge();
 			}
 		} else {
 			/* hero brewing, HERO_RECIPE_TIMER == 0. STAFFSPELL_TIMER not checked */
 			do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 0);
+
+			/* Original-Bug 20:
+			 * If a group of heroes enters an inn where more then one hero is brewing
+			 * (each of them forms his own group), and one of the brewing heroes has spent enough time in the in
+			 * to finish the brewing, his brewing process is finalized. Subsequently, all groups in the inn are
+			 * merged, which may include other size-one-groups containing a brewing hero. The brewing process of
+			 * these other brewing heroes won't be finalized, no matter if they have spent enough time in the inn
+			 * or not, so these heroes are still considered to be brewing. If such an interrupted hero is the
+			 * group leader of a group, and that group is selected, strange effects occur. */
 			GRP_merge();
 		}
 	}
 #else
-	/* fix Original-Bug 8, 9, 10 */
+	/* fix Original-Bug 8, 9, 10, 20 */
 	hero = get_first_hero_available_in_group();
 	if (hero_brewing(Real2Host(hero))) {
+		/* situation: 'switch groups' just switched to a group consisting of a single hero which has been separated for brewing a long recipe in an inn */
+		/* ASSERT */
+		/*
+		if ((host_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) != 1) {
+			D1_INFO("FEHLER: Gruppengroesse eines brauenden Helden ist nicht 1.");
+		}
+		*/
 		draw_status_line();
 
 		if (host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) != 0) {
@@ -295,7 +321,7 @@ void do_inn(void)
 
 		refresh = ds_writews(REQUEST_REFRESH, 1);
 
-		draw_loc_icons(ds_readws(COMBO_MODE) == 0 ? 7 : 8, 21, 13, 19, 25, 11, 17, 8, 50);
+		draw_loc_icons(ds_readws(COMBO_MODE) == 0 ? 7 : 8, MENU_ICON_TALK, MENU_ICON_ORDER_FOOD, MENU_ICON_BOOK_BED, MENU_ICON_APPLY_SKILL, MENU_ICON_MAGIC, MENU_ICON_SLEEP, MENU_ICON_LEAVE, MENU_ICON_TAVERN);
 
 # ifndef M302de_ORIGINAL_BUGFIX
 	/* Original-Bug 7: NPC Curian cannot do magic actions in an inn. */

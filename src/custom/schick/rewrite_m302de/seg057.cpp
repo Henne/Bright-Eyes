@@ -110,7 +110,7 @@ void sell_screen(Bit8u *shop_ptr)
 			}
 
 			price = 0;
-			draw_loc_icons(5, 23, 26, 27, 28, 8);
+			draw_loc_icons(5, MENU_ICON_BARGAIN, MENU_ICON_SCROLL_RIGHT, MENU_ICON_SCROLL_LEFT, MENU_ICON_HERO, MENU_ICON_LEAVE);
 			draw_main_screen();
 
 			/* ICONS */

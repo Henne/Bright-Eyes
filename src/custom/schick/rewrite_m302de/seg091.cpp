@@ -62,7 +62,7 @@ signed short DNG13_handler(void)
 		{
 			ds_writeb(DNG13_LANTERN_FLAG, 1);
 
-			get_item(25, 1, 1);
+			get_item(ITEM_LANTERN_OFF, 1, 1);
 		}
 
 	} else if ((pos == 0x10c || pos == 0xe06 || pos == 0xe0d || pos == 0x301) &&
@@ -151,7 +151,8 @@ signed short DNG13_handler(void)
 
 	} else if (pos == 0x70f && pos != ds_readws(DNG_HANDLED_POS))
 	{
-        /* AP depending on number of collapsed ceilings and lost heroes */
+		/* leave dungeon */
+		/* AP bonus for each collapsed ceiling tile, 8 AP if no hero lost, 5 AP otherwise */
 		add_hero_ap_all(ds_readb(DNG13_COLLAPSECOUNT) * (ds_readb(DNG13_HEROCOUNT) == count_heroes_in_group() ? 8 : 5));
 
 		leave_dungeon();
@@ -184,16 +185,15 @@ void DNG13_unblock_passage(Bit8u* text, Bit8u* flag)
 		if (GUI_bool(text))
 		{
 			/* check if the group has ALL of these items:
-				SHOVEL, HOE, CROWBAR, FRANCESCA
-				SCHAUFEL, HACKE, BRECKEISEN, WURFBEIL
-			*/
+			 * 	Schaufel, Hacke, Brecheisen, Wurfbeil
+			 * 	(= shovel, pickaxe, crowbar, francesca) */
 
 			has_items = 0;
 
-			if (get_first_hero_with_item(73) != -1 &&
-				get_first_hero_with_item(93) != -1 &&
-				get_first_hero_with_item(26) != -1 &&
-				get_first_hero_with_item(16) != -1)
+			if (get_first_hero_with_item(ITEM_SHOVEL) != -1 &&
+				get_first_hero_with_item(ITEM_PICKAXE) != -1 &&
+				get_first_hero_with_item(ITEM_CROWBAR) != -1 &&
+				get_first_hero_with_item(ITEM_FRANCESCA) != -1)
 			{
 				has_items = 1;
 			}
@@ -287,21 +287,20 @@ void DNG13_collapsing_ceiling(void)
 		/* at least two heroes failed in the skill test */
 		GUI_output(get_tx(19));
 
-		sub_group_le(dice_roll(1, 6, 4));
+		sub_group_le(dice_roll(1, 6, 4)); /* 1D6 + 4 */
 
 		GUI_output(get_tx(20));
 
 		/* check if the group has ALL of these items:
-			SHOVEL, HOE, CROWBAR, FRANCESCA
-			SCHAUFEL, HACKE, BRECKEISEN, WURFBEIL
-		*/
+		 * 	Schaufel, Hacke, Brecheisen, Wurfbeil
+		 * 	(= shovel, pickaxe, crowbar, francesca) */
 
 		has_items = 0;
 
-		if (get_first_hero_with_item(73) != -1 &&
-			get_first_hero_with_item(93) != -1 &&
-			get_first_hero_with_item(26) != -1 &&
-			get_first_hero_with_item(16) != -1)
+		if (get_first_hero_with_item(ITEM_SHOVEL) != -1 &&
+			get_first_hero_with_item(ITEM_PICKAXE) != -1 &&
+			get_first_hero_with_item(ITEM_CROWBAR) != -1 &&
+			get_first_hero_with_item(ITEM_FRANCESCA) != -1)
 		{
 			has_items = 1;
 		}
@@ -337,27 +336,33 @@ void DNG13_collapsing_ceiling_easy(void)
 		/* at least two heroes failed in the skill test */
 		GUI_output(get_tx(19));
 
-		sub_group_le(dice_roll(1, 6, 5));
+		sub_group_le(dice_roll(1, 6, 5)); /* 1D6 + 5 */
 
 		GUI_output(get_tx(20));
 
 		/* check if the group has ALL of these items:
-			SHOVEL, HOE, CROWBAR, FRANCESCA
-			SCHAUFEL, HACKE, BRECKEISEN, WURFBEIL
-		*/
+		 * 	Schaufel, Hacke, Brecheisen, Wurfbeil
+		 * 	(= shovel, pickaxe, crowbar, francesca) */
 
 		has_items = 0;
 
-		if (get_first_hero_with_item(73) != -1 &&
-			get_first_hero_with_item(93) != -1 &&
-			get_first_hero_with_item(26) != -1 &&
-			get_first_hero_with_item(16) != -1)
+		if (get_first_hero_with_item(ITEM_SHOVEL) != -1 &&
+			get_first_hero_with_item(ITEM_PICKAXE) != -1 &&
+			get_first_hero_with_item(ITEM_CROWBAR) != -1 &&
+			get_first_hero_with_item(ITEM_FRANCESCA) != -1)
 		{
 			has_items = 1;
 		}
 
-		/* if all items are available, it takes 18 hours instead of 12 */
+#ifndef M302de_ORIGINAL_BUGFIX
+		/* Original-Bug 18 */
+		/* if all items are available, it takes 18 hours instead of 12.
+		 * So in the presence of tools, it takes longer to clear the way. This doesn't make sense at all. */
 		timewarp(has_items == 0 ? HOURS(18) : HOURS(12));
+#else
+		/* Fix: Reverse the two cases */
+		timewarp(has_items == 0 ? HOURS(12) : HOURS(18));
+#endif
 	}
 }
 
