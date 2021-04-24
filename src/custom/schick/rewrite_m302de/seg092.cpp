@@ -465,7 +465,7 @@ void seg092_06b4(signed short a1)
 
 		if (host_readws(Real2Host(chest_ptr) + 19) != 0) {
 			/* There are FOOD PACKAGES in the chest */
-			get_item(45, 1, host_readws(Real2Host(chest_ptr) + 19));
+			get_item(ITEM_FOOD_PACKAGE, 1, host_readws(Real2Host(chest_ptr) + 19));
 		}
 	}
 }

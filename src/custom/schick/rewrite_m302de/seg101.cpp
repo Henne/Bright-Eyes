@@ -656,10 +656,10 @@ void spell_brenne(void)
 
 	ds_writew(SPELL_SPECIAL_AECOST, 0);
 
-	if (ds_readw(LIGHT_TYPE) == IS_TORCH) {
+	if (ds_readw(LIGHT_TYPE) == LIGHTING_TORCH) {
 		torch_pos = get_item_pos(get_spelluser(), ITEM_TORCH_OFF);
 	} else {
-		if (ds_readw(LIGHT_TYPE) == IS_LANTERN) {
+		if (ds_readw(LIGHT_TYPE) == LIGHTING_LANTERN) {
 		} else {
 			torch_pos = get_item_pos(get_spelluser(), ITEM_TORCH_OFF);
 		}
@@ -817,7 +817,7 @@ void spell_silentium(void)
 			/* get a free mod_slot */
 			slot = get_free_mod_slot();
 			/* skill stealth + 10 for 5 minutes */
-			set_mod_slot(slot, MINUTES(5), hero + (HERO_TA_BODY+4), 10, (signed char)i);
+			set_mod_slot(slot, MINUTES(5), hero + (HERO_TALENTS + TA_SCHLEICHEN), 10, (signed char)i);
 		}
 	}
 

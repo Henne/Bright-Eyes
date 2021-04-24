@@ -714,7 +714,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 #endif
 
 	/* check if we are in a special fight */
-	if (ds_readws(CURRENT_FIG_NO) == 180) {
+	if (ds_readws(CURRENT_FIG_NO) == FIGHTS_F064) {
 		/* F064: fight against GORAH */
 
 		if (host_readbs(enemy) == 0x46) {
@@ -725,21 +725,21 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 			}
 		}
 
-	} else if ((ds_readws(CURRENT_FIG_NO) == 189) &&
+	} else if ((ds_readws(CURRENT_FIG_NO) == FIGHTS_F099) &&
 		/* F099: fight against four HARPIES */
 			(random_interval(8, 12) <= ds_readws(FIGHT_ROUND))) {
 
 			/* after 8-12 rounds, the enemies flee */
 			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4); /* set 'scared' status bit */
 
-	} else if ((ds_readws(CURRENT_FIG_NO) == 191) &&
+	} else if ((ds_readws(CURRENT_FIG_NO) == FIGHTS_F122) && /* 13 wolves */
 		/* F122: fight against 13 WOLVES */
 			(FIG_count_active_enemies() <= 3)) {
 
 			/* if at most 3 wolves are left, the enemies flee */
 			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4); /* set 'scared' status bit */
 
-	} else if (ds_readws(CURRENT_FIG_NO) == 192) {
+	} else if (ds_readws(CURRENT_FIG_NO) == FIGHTS_F144) {
 		/* F144: final fight */
 
 		if (enemy_tied(enemy)) {

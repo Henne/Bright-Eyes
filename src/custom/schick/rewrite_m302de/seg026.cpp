@@ -412,7 +412,7 @@ signed short load_game_state(void)
 		ds_writeb(FADING_STATE, 3);
 
 		if (ds_readbs(LOCATION) != LOCATION_TEMPLE) {
-			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), -1)));
+			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 		}
 
 		load_area_description(2);

@@ -897,8 +897,8 @@ signed short DNG_check_climb_tools(void)
 	}
 
 	/* check for ladder or rope */
-	return ((get_first_hero_with_item(0x79) != -1) ||
-			(get_first_hero_with_item(0x20) != -1)) ? 0 : -1;
+	return ((get_first_hero_with_item(ITEM_ROPE) != -1) ||
+			(get_first_hero_with_item(ITEM_ROPE_LADDER) != -1)) ? 0 : -1;
 }
 
 signed short DNG_fallpit(signed short max_damage)

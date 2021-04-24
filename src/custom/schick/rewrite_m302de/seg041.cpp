@@ -53,13 +53,13 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 	left_hand = host_readws(hero + HERO_ITEM_LEFT);
 
 	switch (right_hand) {
-		case 0x5:	/* SPEER	/ spear */
-		case 0x10:	/* WURFBEIL	/ francesca */
-		case 0x11:	/* WURFSTERN	/ throwing star */
-		case 0x21:	/* WURFAXT	/ throwing axe */
-		case 0x62:	/* WURFMESSER	/ throwing dagger */
-		case 0x89:	/* SCHNEIDEZAHN	/ cutting tooth */
-		case 0xda:
+		case ITEM_SPEAR:		/* Speer */
+		case ITEM_FRANCESCA:		/* Wurfbeil */
+		case ITEM_THROWING_STAR:	/* Wurfstern */
+		case ITEM_THROWING_AXE:		/* Wurfaxt */
+		case ITEM_THROWING_KNIFE:	/* Wurfmesser */
+		case ITEM_SCHNEIDZAHN:		/* Schneidzahn */
+		case ITEM_THROWING_DAGGER: 	/* Wurfdolch */
 			{
 				if (!arg) {
 
@@ -78,11 +78,10 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 				retval = 1;
 				break;
 			}
-		case 0x9:	/* KURZBOGEN	/ SHORT BOW */
-		case 0x13:	/* LANGBOGEN	/ LONG BOW */
+		case ITEM_SHORTBOW: 		/* Kurzbogen */
+		case ITEM_LONGBOW:		/* Langbogen */
 			{
-				/* PFEIL / ARROWS */
-				if (left_hand != 10) {
+				if (left_hand != ITEM_ARROWS) { /* Pfeil */
 					if (arg != 2) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -100,10 +99,9 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 				}
 				break;
 			}
-		case 0xc:	/* ARMBRUST	/ CROSSBOW */
+		case ITEM_CROSSBOW:		/* Armbrust */
 			{
-				/* BOLZEN / BOLT */
-				if (left_hand != 13) {
+				if (left_hand != ITEM_BOLTS) { /* Bolzen */
 					if (arg != 2) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -120,7 +118,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 				}
 				break;
 			}
-		case 0x78:	/* SCHLEUDER	/ SLING */
+		case ITEM_SLING:	/* SCHLEUDER	/ SLING */
 			{
 #ifndef M302de_FEATURE_MOD
 				/* sling does not work in the original game.
@@ -199,19 +197,19 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short preserve_renegad
 		or_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 1); /* set 'dead' status bit */
 		host_writew(enemy + ENEMY_SHEET_LE, 0); /* set LE to 0 */
 
-		if ((ds_readw(CURRENT_FIG_NO) == 94) && (host_readb(enemy) == 0x38)) {
+		if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F126_08) && (host_readb(enemy) == 0x38)) {
 			/* slaying a special cultist */
 			/* set a flag in the status area */
 			ds_writeb(DNG09_CULTIST_FLAG, 0);
 
-		} else if ((ds_readw(CURRENT_FIG_NO) == 192) &&
+		} else if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F144) &&
 				(host_readb(enemy) == 0x48) &&
 				!ds_readbs(FINALFIGHT_TUMULT))
 		{
 			/* slaying the orc champion, ends the fight */
 				ds_writew(IN_FIGHT, 0);
 
-		} else if ((ds_readw(CURRENT_FIG_NO) == 180) && (host_readb(enemy) == 0x46)) {
+		} else if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F064) && (host_readb(enemy) == 0x46)) {
 
 			/* slaying Gorah makes everyone flee except Heshthot */
 			for (i = 0; i < 20; i++) {
@@ -485,7 +483,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		damage -= host_readbs(hero + HERO_RS_BONUS1);
 
 		/* armour bonus against skeletons and zombies */
-		if (host_readw(hero + HERO_ITEM_BODY) == 0xc5 && (
+		if (host_readw(hero + HERO_ITEM_BODY) == ITEM_CHAIN_MAIL_CURSED && (
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
 				damage -= 3;
@@ -493,7 +491,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 
 		/* get position of Totenkopfguertel/Skullbelt */
 
-		if ( (pos = get_item_pos(hero, ITEM_BELT_SKULL)) != -1 &&
+		if ( (pos = get_item_pos(hero, ITEM_SKULL_BELT)) != -1 &&
 			(host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
 

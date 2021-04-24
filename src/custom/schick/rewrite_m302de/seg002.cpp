@@ -486,8 +486,8 @@ void start_midi_playback_IRQ(void)
 	}
 }
 
-/* These function is never called */
 void cruft_1(void)
+/* This function is never called */
 {
 	if ((ds_readw(LOAD_SOUND_DRIVER) == 0) &&
 		(host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3))
@@ -496,8 +496,8 @@ void cruft_1(void)
 	}
 }
 
-/* These function is never called */
 void cruft_2(signed short volume)
+/* This function is never called */
 {
 	if (ds_readw(LOAD_SOUND_DRIVER) == 0) {
 
@@ -2863,10 +2863,10 @@ void magical_chainmail_damage(void)
 			hero_i = get_hero(i);
 
 			if (!hero_dead(hero_i) &&
-				/* unknown */
+				/* check if not in chail */
 				!host_readbs(hero_i + HERO_JAIL) &&
-				/* check magical chainmail is equipped */
-				(host_readw(hero_i + HERO_ITEM_BODY) == 0xc5))
+				/* check if cursed chainmail is equipped */
+				(host_readw(hero_i + HERO_ITEM_BODY) == ITEM_CHAIN_MAIL_CURSED))
 			{
 				sub_hero_le(hero_i, 1);
 			}
@@ -2901,15 +2901,15 @@ void herokeeping(void)
 			/* Do the eating */
 
 			/* check for magic bread bag */
-			if (get_first_hero_with_item_in_group(0xb8, host_readbs(hero + HERO_GROUP_NO)) == -1) {
+			if (get_first_hero_with_item_in_group(ITEM_MAGIC_BREADBAG, host_readbs(hero + HERO_GROUP_NO)) == -1) {
 				/* check if the hero has the food amulet */
-				if (get_item_pos(hero, 0xaf) == -1) {
+				if (get_item_pos(hero, ITEM_TRAVIA_AMULET) == -1) {
 
 					/* eat if hunger > 90 % */
 					if (host_readbs(hero + HERO_HUNGER) > 90) {
 
 						/* search for Lunchpack */
-						pos = get_item_pos(hero, ITEM_FOOD_PACKAGES);
+						pos = get_item_pos(hero, ITEM_FOOD_PACKAGE);
 
 						if (pos != -1) {
 							/* Lunchpack found, consume quiet */
@@ -2922,7 +2922,7 @@ void herokeeping(void)
 
 							/* search for another Lunchpack */
 							/* print last ration message */
-							if (get_item_pos(hero, ITEM_FOOD_PACKAGES) == -1) {
+							if (get_item_pos(hero, ITEM_FOOD_PACKAGE) == -1) {
 								ds_writeb(FOOD_MESSAGE + i, 6);
 							}
 						} else {
@@ -2967,14 +2967,14 @@ void herokeeping(void)
 			/* Do the drinking */
 
 			/* check for magic waterskin in group */
-			if ((get_first_hero_with_item_in_group(0xb9, host_readbs(hero + HERO_GROUP_NO)) == -1) &&
+			if ((get_first_hero_with_item_in_group(ITEM_MAGIC_WATERSKIN, host_readbs(hero + HERO_GROUP_NO)) == -1) &&
 				((host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				(!ds_readbs(CURRENT_TOWN) || (ds_readbs(CURRENT_TOWN) != 0 && ds_readb(SHOW_TRAVEL_MAP) != 0))) ||
 				((host_readbs(hero + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
 				!ds_readbs(GROUPS_TOWN + host_readbs(hero + HERO_GROUP_NO)))))) {
 
 					/* check for food amulett */
-					if (get_item_pos(hero, 0xaf) == -1) {
+					if (get_item_pos(hero, ITEM_TRAVIA_AMULET) == -1) {
 
 						/* hero should drink something */
 						if (host_readbs(hero + HERO_THIRST) > 90) {
@@ -3827,7 +3827,7 @@ void set_to_ff(void)
 	signed short i;
 
 	for (i = 0; i < 9; i++) {
-		ds_writeb(NEW_MENU_ICONS + i, -1);
+		ds_writeb(NEW_MENU_ICONS + i, MENU_ICON_NONE);
 	}
 }
 
@@ -3848,7 +3848,7 @@ void draw_loc_icons(signed short icons, ...)
 	/* save icon ids in local variable */
 	for (i = 0; i < 9; i++) {
 		icons_bak[i] = ds_readbs(NEW_MENU_ICONS + i);
-		ds_writeb(NEW_MENU_ICONS + i, -1);
+		ds_writeb(NEW_MENU_ICONS + i, MENU_ICON_NONE);
 	}
 
 	va_start(arguments, icons);
@@ -3963,8 +3963,8 @@ unsigned short div16(unsigned short val)
 	return ((unsigned char)val) >> 4;
 }
 
-/* This function is called in shops at sell/buy screens */
 void select_with_mouse(Bit8u *p1, Bit8u *p2)
+/* This function is called in shops at sell/buy screens */
 {
 	signed short i;
 
@@ -4354,7 +4354,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			}
 
 			/* FINAL FIGHT */
-			if (ds_readw(CURRENT_FIG_NO) == 192) {
+			if (ds_readw(CURRENT_FIG_NO) == FIGHTS_F144) {
 				if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 					ds_writew(GAME_STATE, GAME_STATE_DEAD);
 					ds_writew(IN_FIGHT, 0);
@@ -4410,7 +4410,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 					FIG_add_msg(7, 0);
 
 					/* FINAL FIGHT */
-					if (ds_readw(CURRENT_FIG_NO) == 192) {
+					if (ds_readw(CURRENT_FIG_NO) == FIGHTS_F144) {
 						if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 							ds_writew(GAME_STATE, GAME_STATE_DEAD);
 							ds_writew(IN_FIGHT, 0);
@@ -4607,21 +4607,25 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
  * \param   bonus       handycap
  * \return              a test is positive if the return value is greater than zero
  */
-signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib2, signed short attrib3, signed char bonus)
+
+signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib2, signed short attrib3, signed char difficulty)
 {
-
+#ifndef M302de_FEATURE_MOD
+	/* Feature mod 6: The implementation of the skill test logic differs from the original DSA2/3 rules.
+	 * It is sometimes called the 'pool' variant, where '3W20 + difficulty' is compared to the sum of the attributes.
+	 * It is significantly easier than the original rule, where each individuall roll must be at most the corresponding attribute,
+	 * where positive difficulty must be used up during the process, and negative difficulty may be used for compensation. */
 	signed short i;
-	signed short si;
+	signed short rolls_sum;
 	signed short tmp;
-	signed short zw;
+	signed short nr_rolls_20;
 
-	zw = 0;
-	si = 0;
+	nr_rolls_20 = 0;
+	rolls_sum = 0;
 
 #if !defined(__BORLANDC__)
-	D1_INFO("%s -> (%s/%s/%s) %+d: ",
-		(char*)(hero + HERO_NAME2), names_attrib[attrib1],
-		names_attrib[attrib2], names_attrib[attrib3], bonus);
+	D1_INFO(" (%s/%s/%s) %+d -> ",
+		names_attrib[attrib1], names_attrib[attrib2], names_attrib[attrib3], difficulty);
 #endif
 
 	for (i = 0; i < 3; i++) {
@@ -4633,18 +4637,18 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 #endif
 
 		if (tmp == 20) {
-			if (++zw == 2) {
+			if (++nr_rolls_20 == 2) {
 #if !defined(__BORLANDC__)
-				D1_INFO(" -> UNGLUECKLICH! nicht bestanden\n");
+				D1_INFO(" -> UNGLUECKLICH! nicht bestanden.\n");
 #endif
 				return -99;
 			}
 		}
 
-		si += tmp;
+		rolls_sum += tmp;
 	}
 
-	si += bonus;
+	rolls_sum += difficulty;
 
 	tmp = host_readbs(hero + 3 * attrib1 + HERO_ATTRIB) +
 		host_readbs(hero + 3 * attrib1 + HERO_ATTRIB_MOD) +
@@ -4655,9 +4659,103 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 
 #if !defined(__BORLANDC__)
 	D1_INFO(" -> %s mit %d\n",
-		(tmp - si + 1) > 0 ? "bestanden" : "nicht bestanden", (tmp - si + 1));
+		(tmp - rolls_sum + 1) > 0 ? "bestanden" : "nicht bestanden", (tmp - rolls_sum + 1));
 #endif
-	return tmp - si + 1;
+	return tmp - rolls_sum + 1;
+
+#else
+	/* Here, the original DSA2/3 skill test logic is implemented.
+	 * WARNING: This makes skill tests, and thus the game, significantly harder!
+	 * Note that we are not implementing the DSA4 rules, where tests with a positive difficulty are yet harder. */
+	signed short i;
+	signed short tmp;
+	signed short nr_rolls_1 = 0;
+	signed short nr_rolls_20 = 0;
+	signed short fail = 0;
+	signed char attrib [3];
+
+	attrib[0] = host_readbs(hero + 3 * attrib1 + HERO_ATTRIB) + host_readbs(hero + 3 * attrib1 + HERO_ATTRIB_MOD);
+	attrib[1] = host_readbs(hero + 3 * attrib2 + HERO_ATTRIB) + host_readbs(hero + 3 * attrib2 + HERO_ATTRIB_MOD);
+	attrib[2] = host_readbs(hero + 3 * attrib3 + HERO_ATTRIB) + host_readbs(hero + 3 * attrib3 + HERO_ATTRIB_MOD);
+
+#if !defined(__BORLANDC__)
+	D1_INFO(" (%s %d/%s %d/%s %d) ->",
+		names_attrib[attrib1],
+		attrib[0],
+		names_attrib[attrib2],
+		attrib[1],
+		names_attrib[attrib3],
+		attrib[2]
+	);
+#endif
+
+	for (i = 0; i < 3; i++) {
+
+		tmp = random_schick(20);
+
+#if !defined(__BORLANDC__)
+		D1_INFO(" W20 = %d;", tmp);
+#endif
+
+		if (tmp == 20) {
+			if (++nr_rolls_20 == 2) {
+#if !defined(__BORLANDC__)
+				D1_INFO(" -> UNGLUECKLICH nicht bestanden\n");
+#endif
+				return -99;
+			}
+		}
+
+		if (tmp == 1) {
+			if (++nr_rolls_1 == 2) {
+#if !defined(__BORLANDC__)
+				D1_INFO(" -> GLUECKLICH bestanden\n");
+#endif
+				return 99;
+			}
+		}
+
+		if (!fail) {
+			tmp -= attrib[i];
+			if (difficulty <= 0) {
+				if (tmp > 0) {
+					if (tmp > -difficulty) {
+						fail = 1;
+#if !defined(__BORLANDC__)
+						D1_INFO(" zu hoch!");
+#endif
+					} else  {
+						difficulty += tmp;
+					}
+				}
+			}
+			if (difficulty > 0) {
+				if (tmp > 0) {
+					fail = 1;
+#if !defined(__BORLANDC__)
+					D1_INFO(" zu hoch!");
+#endif
+				} else {
+					difficulty += tmp;
+					if (difficulty < 0) {
+						difficulty = 0;
+					}
+				}
+			}
+		}
+	}
+	if (fail || (difficulty > 0)) {
+#if !defined(__BORLANDC__)
+		D1_INFO(" -> nicht bestanden\n");
+#endif
+		return 0;
+	} else {
+#if !defined(__BORLANDC__)
+		D1_INFO(" -> bestanden mit %d.\n",-difficulty);
+#endif
+		return 1 - difficulty;
+	}
+#endif
 }
 
 signed short unused_cruft(void)
@@ -5123,6 +5221,30 @@ signed short count_heroes_available(void)
 	return retval;
 }
 
+#ifdef M302de_ORIGINAL_BUGFIX
+/* this function allows cleaner fixe for Original-Bug 15 */
+signed short count_heroes_available_ignore_npc(void)
+{
+	signed short i;
+	signed short retval;
+	Bit8u *hero_i;
+
+	retval = 0;
+	hero_i = get_hero(0);
+
+	for (i = 0; i < 6; i++, hero_i += SIZEOF_HERO) {
+		/* Check if hero is available */
+		if (host_readbs(hero_i + HERO_TYPE) &&
+			(check_hero(hero_i) || check_hero_no2(hero_i)))
+		{
+			retval++;
+		}
+	}
+
+	return retval;
+}
+#endif
+
 /**
  * \brief   count available (= not dead, petrified, unconscious, renegade) heroes in current group
  *
@@ -5147,7 +5269,7 @@ signed short count_heroes_available_in_group(void)
 }
 
 #ifdef M302de_ORIGINAL_BUGFIX
-/* this function allows cleaner fixes for Original-Bug 12, 13 and 14 */
+/* this function allows cleaner fixes for Original-Bug 12, 13, 14 and 15 */
 signed short count_heroes_available_in_group_ignore_npc(void)
 {
 	signed short heroes = 0;
@@ -5167,21 +5289,32 @@ signed short count_heroes_available_in_group_ignore_npc(void)
 }
 #endif
 
-void seg002_57f1(void)
+void check_group(void)
+/* called from only a single position, namely the petrification trap in 'Verfallene Herberge' in DNG02_handler in seg078.cpp */
 {
-	/* called from only a single position, namely the petrification trap in 'Verfallene Herberge' in DNG02_handler in seg078.cpp */
-
 	/* Original-Bug 15:
 	 * If the group steps into the petrification trap in "Verfallene Herberge" and all but the NPC get petrified
 	 * (for example, Curian (MR 6) equipped with the red ring (MR +2) of Gorah's chest), the group is still active
 	 * with the NPC as the only active member (which is impossible in other circumstances). If this is the only group,
 	 * a click on "switch group" results in an infinite loop with the window "In dieser Gruppe ist niemand in der Lage etwas zu tun!". */
 
-	if (!count_heroes_available()) {
+	if
+#ifndef M302de_ORIGINAL_BUGFIX
+		(!count_heroes_available())
+#else
+		(!count_heroes_available_ignore_npc())
+#endif
+	{
 		/* game over */
 		ds_writew(GAME_STATE, GAME_STATE_DEAD);
 
-	} else if (!count_heroes_available_in_group()) {
+	} else if
+#ifndef M302de_ORIGINAL_BUGFIX
+		(!count_heroes_available_in_group())
+#else
+		(!count_heroes_available_in_group_ignore_npc())
+#endif
+	{
 
 		GRP_switch_to_next(2);
 
@@ -5270,9 +5403,9 @@ int schick_main(int argc, char** argv)
 
 
 		/* select game mode */
-		ds_writew(GAME_MODE, -1);
+		ds_writew(GAME_MODE, GAME_MODE_UNSPECIFIED);
 
-		while (ds_readws(GAME_MODE) == -1) {
+		while (ds_readws(GAME_MODE) == GAME_MODE_UNSPECIFIED) {
 			ds_writew(GAME_MODE, GUI_radio(get_ttx(5), 2, get_ttx(6), get_ttx(7)));
 		}
 

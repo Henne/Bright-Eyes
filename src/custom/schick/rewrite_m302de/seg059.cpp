@@ -65,7 +65,7 @@ void do_tavern(void)
 			return;
 	}
 
-	draw_loc_icons(ds_readws(COMBO_MODE) == 0 ? 4 : 5, 21, 13, 25, 8, 49);
+	draw_loc_icons(ds_readws(COMBO_MODE) == 0 ? 4 : 5, MENU_ICON_TALK, MENU_ICON_ORDER_FOOD, MENU_ICON_APPLY_SKILL, MENU_ICON_LEAVE, MENU_ICON_INN);
 
 	while (!done) {
 

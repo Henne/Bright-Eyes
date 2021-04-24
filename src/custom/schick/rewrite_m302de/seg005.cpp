@@ -984,7 +984,7 @@ void draw_fight_screen(Bit16u val)
 
 		while (ds_readw(FIG_CONTINUE_PRINT) == 1) {
 
-/* We get in an endless loop hero,
+/* We get in an endless loop here,
 when the Timer IRQ cannot set ds:FIG_CONTINUE_PRINT to 0.
 So this call to wait_for_vsync() passes control
 to the DOSBox-CPU and may run the timer.

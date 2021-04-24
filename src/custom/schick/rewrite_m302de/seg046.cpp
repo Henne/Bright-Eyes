@@ -48,7 +48,7 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 	GUI_print_string(get_ttx(spell + 0x6a), x1, gy + group * 7);
 
 	/* convert value to string */
-	my_itoa(host_readbs(hero + HERO_SPELLS + spell) , str, 10);
+	my_itoa(host_readbs(hero + HERO_SPELLS + spell), str, 10);
 
 	/* print value */
 	GUI_print_string((Bit8u*)str, x2 - GUI_get_space_for_string((Bit8u*)str, 0), gy + group * 7);
@@ -76,7 +76,7 @@ void status_show_skill(Bit8u *hero, unsigned short skill, unsigned short ftig,
 	GUI_print_string(get_ttx(skill + 0x30), x1, gy + group * 7);
 
 	/* convert value to string */
-	my_itoa(host_readbs(hero + HERO_TA_FIGHT + skill) , str, 10);
+	my_itoa(host_readbs(hero + HERO_TALENTS + skill) , str, 10);
 
 	/* print value */
 	GUI_print_string((Bit8u*)str, x2 - GUI_get_space_for_string((Bit8u*)str, 0), gy + group * 7);
@@ -425,7 +425,7 @@ void status_show(Bit16u index)
 			}
 #endif
 
-			if (ds_readw(GAME_MODE) == 2) {
+			if (ds_readw(GAME_MODE) == GAME_MODE_ADVANCED) {
 				/* advanded mode */
 
 #ifdef M302de_ORIGINAL_BUGFIX
@@ -622,10 +622,10 @@ void status_show(Bit16u index)
 				pa,
 
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xdc)),
-				host_readbs(Real2Host(hero) + (HERO_TA_FIGHT + TA_SCHUSSWAFFEN)) + j,
+				host_readbs(Real2Host(hero) + (HERO_TALENTS + TA_SCHUSSWAFFEN)) + j,
 
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xe0)),
-				host_readbs(Real2Host(hero) + (HERO_TA_FIGHT + TA_WURFWAFFEN)) + j);
+				host_readbs(Real2Host(hero) + (HERO_TALENTS + TA_WURFWAFFEN)) + j);
 
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 60);
 			break;

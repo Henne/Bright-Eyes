@@ -260,14 +260,14 @@ void print_item_description(Bit8u *hero, signed short pos)
 	}
 
 	/* poisoned */
-	if (host_readw(item_p) == 0xc1 || host_readw(item_p) == 0xc8 ||
+	if (host_readw(item_p) == ITEM_KUKRIS_DAGGER || host_readw(item_p) == ITEM_KUKRIS_MENGBILAR ||
 		ks_poison1(item_p) || ks_poison2(item_p) ||
 		host_readb(hero + HERO_ITEM_HEAD + 9 + pos * 14) != 0) {
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(548));
 	}
 
-	/* staff */
-	if (host_readw(item_p) == 0x85) {
+	/* magic wand */
+	if (host_readw(item_p) == ITEM_MAGIC_WAND) {
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)get_tx2(53),
 			host_readbs(hero + HERO_STAFFSPELL_LVL));
@@ -528,19 +528,19 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 				inc_ptr_bs(hero2 + HERO_KS_TAKEN);
 
 				/* special items */
-				if (item2 == ITEM_SICKLE) {
-					host_writeb(hero1 + (HERO_TA_NATURE+3), host_readbs(hero1 + (HERO_TA_NATURE+3)) + 3);
-					host_writeb(hero2 + (HERO_TA_NATURE+3), host_readbs(hero2 + (HERO_TA_NATURE+3)) + -3);
+				if (item2 == ITEM_SICKLE_MAGIC) {
+					host_writeb(hero1 + (HERO_TALENTS + TA_PFLANZENKUNDE), host_readbs(hero1 + (HERO_TALENTS + TA_PFLANZENKUNDE)) + 3);
+					host_writeb(hero2 + (HERO_TALENTS + TA_PFLANZENKUNDE), host_readbs(hero2 + (HERO_TALENTS + TA_PFLANZENKUNDE)) + -3);
 				}
-				if (item2 == 0xa3) {
+				if (item2 == ITEM_AMULET_BLUE) {
 					host_writeb(hero1 + HERO_MR, host_readbs(hero1 + HERO_MR) + 5);
 					host_writeb(hero2 + HERO_MR, host_readbs(hero2 + HERO_MR) + -5);
 				}
-				if (item1 == ITEM_SICKLE) {
-					host_writeb(hero1 + (HERO_TA_NATURE+3), host_readbs(hero1 + (HERO_TA_NATURE+3)) + -3);
-					host_writeb(hero2 + (HERO_TA_NATURE+3), host_readbs(hero2 + (HERO_TA_NATURE+3)) + 3);
+				if (item1 == ITEM_SICKLE_MAGIC) {
+					host_writeb(hero1 + (HERO_TALENTS + TA_PFLANZENKUNDE), host_readbs(hero1 + (HERO_TALENTS + TA_PFLANZENKUNDE)) + -3);
+					host_writeb(hero2 + (HERO_TALENTS + TA_PFLANZENKUNDE), host_readbs(hero2 + (HERO_TALENTS + TA_PFLANZENKUNDE)) + 3);
 				}
-				if (item1 == 0xa3) {
+				if (item1 == ITEM_AMULET_BLUE) {
 					host_writeb(hero1 + HERO_MR, host_readbs(hero1 + HERO_MR) + -5);
 					host_writeb(hero2 + HERO_MR, host_readbs(hero2 + HERO_MR) + 5);
 				}
@@ -624,11 +624,11 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		memset(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM, 0, SIZEOF_KS_ITEM);
 
 		/* special items */
-		if (item1 == ITEM_SICKLE) {
-			host_writeb(hero1 + (HERO_TA_NATURE+3), host_readbs(hero1 + (HERO_TA_NATURE+3)) + -3);
-			host_writeb(hero2 + (HERO_TA_NATURE+3), host_readbs(hero2 + (HERO_TA_NATURE+3)) + 3);
+		if (item1 == ITEM_SICKLE_MAGIC) {
+			host_writeb(hero1 + (HERO_TALENTS + TA_PFLANZENKUNDE), host_readbs(hero1 + (HERO_TALENTS + TA_PFLANZENKUNDE)) + -3);
+			host_writeb(hero2 + (HERO_TALENTS + TA_PFLANZENKUNDE), host_readbs(hero2 + (HERO_TALENTS + TA_PFLANZENKUNDE)) + 3);
 		}
-		if (item1 == 0xa3) {
+		if (item1 == ITEM_AMULET_BLUE) {
 			host_writeb(hero1 + HERO_MR, host_readbs(hero1 + HERO_MR) + -5);
 			host_writeb(hero2 + HERO_MR, host_readbs(hero2 + HERO_MR) + 5);
 		}
@@ -675,7 +675,7 @@ void startup_equipment(Bit8u *hero)
 	}
 
 	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_WARRIOR) {
-		move_item(2, get_item_pos(hero, ITEM_ARMOR_LEATHER), hero);
+		move_item(2, get_item_pos(hero, ITEM_LEATHER_ARMOR), hero);
 	}
 
 	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) {
@@ -856,7 +856,7 @@ signed short get_full_waterskin_pos(Bit8u *hero)
 	for (i = 7; i < 23; i++) {
 
 		/* look for a non-empty waterskin */
-		if ((host_readw(hero + HERO_ITEM_HEAD + i * 14) == 30) &&
+		if ((host_readw(hero + HERO_ITEM_HEAD + i * 14) == ITEM_WATERSKIN) &&
 			!ks_empty(hero + HERO_ITEM_HEAD + i * 14))
 		{
 			pos = i;

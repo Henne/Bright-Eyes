@@ -135,7 +135,7 @@ Bit8s get_seq_header(Bit16s ani)
  * \param   a1          [0, 1]
  * \param   hero        pointer to hero
  * \param   weapon_type the type of weapon for the animation [-1, 5], 3,4,5 are range weapons
- * \param   action_type {2, 15, 100, 102, 103}
+ * \param   action_type {FIG_ACTION_ATTACK = 2, FIG_ACTION_RANGE_ATTACK = 15, FIG_ACTION_UNKNOWN2 = 100, FIG_ACTION_UNKNOWN3 = 102, FIG_ACTION_UNKNOWN4 = 103}
  */
 /* Borlandified and identical */
 void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapon_type, signed short f_action, signed short fid_attacker, signed short fid_target, signed short a7)
@@ -186,17 +186,17 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		dir = host_readbs(hero + HERO_VIEWDIR);
 	}
 
-	if ((weapon_type == -1) || ((host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) && (weapon == 0x85))) {
+	if ((weapon_type == -1) || ((host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) && (weapon == ITEM_MAGIC_WAND))) {
 
 		l1 = (f_action == FIG_ACTION_ATTACK) ? 45 :			/* melee attack */
-			(f_action == 102) ? 41 :		/* drink potion */
-			(f_action == 103) ? 53 :		/* cast spell */
+			(f_action == FIG_ACTION_UNKNOWN3) ? 41 :		/* drink potion */
+			(f_action == FIG_ACTION_UNKNOWN4) ? 53 :		/* cast spell */
 			49;
 
 	} else {
 		l1 = (f_action == FIG_ACTION_ATTACK) ?  21:			/* melee attack */
-			(f_action == 102) ? 41 :		/* drink potion */
-			(f_action == 103) ? 53 :		/* cast spell */
+			(f_action == FIG_ACTION_UNKNOWN3) ? 41 :		/* drink potion */
+			(f_action == FIG_ACTION_UNKNOWN4) ? 53 :		/* cast spell */
 			(f_action != FIG_ACTION_RANGE_ATTACK) ? 25 :
 			(weapon_type == 3) ? 33 :
 			(weapon_type == 4) ? 57 :
@@ -212,7 +212,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 
 	if (check_hero(hero) && (host_readbs(hero + HERO_VIEWDIR) != dir) &&
 
-		((f_action == FIG_ACTION_ATTACK) || (f_action == FIG_ACTION_RANGE_ATTACK) || (f_action == 103) ||
+		((f_action == FIG_ACTION_ATTACK) || (f_action == FIG_ACTION_RANGE_ATTACK) || (f_action == FIG_ACTION_UNKNOWN4) ||
 			((f_action == FIG_ACTION_UNKNOWN2) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker)) ||
 			((ds_readws(ATTACKER_ATTACKS_AGAIN) != 0) && (a7 == 0)) ||
 			((ds_readws(DEFENDER_ATTACKS) != 0) && (a7 == 1))))
@@ -269,7 +269,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	}
 
 	if ((check_hero(hero) && (f_action == FIG_ACTION_ATTACK)) ||
-		((f_action == FIG_ACTION_RANGE_ATTACK) || (f_action == 102) || (f_action == 103) ||
+		((f_action == FIG_ACTION_RANGE_ATTACK) || (f_action == FIG_ACTION_UNKNOWN3) || (f_action == FIG_ACTION_UNKNOWN4) ||
 			((f_action == FIG_ACTION_UNKNOWN2) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker))))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p3 + l1 *2), 2);

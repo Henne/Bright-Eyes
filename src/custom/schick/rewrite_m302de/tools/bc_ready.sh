@@ -76,7 +76,7 @@ else
 	# copy c_ready.bat as compile.bat
 	cp bc_ready.bat ${DRIVE_C}/src/compile.bat
 
-	# run compile.bat in a DOSBox environment, needs an installes BCC.EXE there
+	# run compile.bat in a DOSBox environment, needs an installed BCC.EXE there
 	pushd ${DRIVE_C}
 	dosbox -conf compile.conf
 	popd

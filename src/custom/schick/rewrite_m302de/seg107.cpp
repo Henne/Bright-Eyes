@@ -189,14 +189,13 @@ void item_read_document(void)
 /* Borlandified and identical */
 void item_armatrutz(void)
 {
-	/*	SILVER CORONET
-		ID 171, 245 */
+	/* ID 171 = ITEM_CORONET_SILVER, 245 = ITEM_CORONET_GREEN */
 	signed short b1_index;
 
 	/* save index off buffer1 */
 	b1_index = ds_readws(TX_FILE_INDEX);
 
-	/* load SPELLTXT*/
+	/* load SPELLTXT */
 	load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
 	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
@@ -223,7 +222,7 @@ void item_armatrutz(void)
 /* Borlandified and identical */
 void item_flimflam(void)
 {
-	/* AMULET, ID 174 */
+	/* ID 174 = ITEM_AMULET_GREEN */
 	signed short b1_index;
 
 	/* save index off buffer1 */
@@ -273,7 +272,7 @@ void item_orcdocument(void)
 	/* ORCDOCUMENT, ID 179 */
 
 	/* Languages + 4, or already read successful */
-	if ((test_skill(get_itemuser(), 0x28, 4) > 0) || (ds_readb(ORCDOCUMENT_READ_FLAG) != 0)) {
+	if ((test_skill(get_itemuser(), TA_SPRACHEN, 4) > 0) || (ds_readb(ORCDOCUMENT_READ_FLAG) != 0)) {
 
 		if (!ds_readbs(ORCDOCUMENT_READ_FLAG)) {
 			add_group_ap(20);
@@ -294,10 +293,11 @@ void item_weapon_poison(void)
 
 	signed short bottle;
 
-	if ((host_readws(get_itemuser() + HERO_ITEM_RIGHT) != 0) &&
-		(host_readws(get_itemuser() + HERO_ITEM_RIGHT) != 9) &&
-		(host_readws(get_itemuser() + HERO_ITEM_RIGHT) != 19) &&
-		(host_readws(get_itemuser() + HERO_ITEM_RIGHT) != 12))
+	if ((host_readws(get_itemuser() + HERO_ITEM_RIGHT) != ITEM_BARE_HAND) &&
+		(host_readws(get_itemuser() + HERO_ITEM_RIGHT) != ITEM_SHORTBOW) &&
+		(host_readws(get_itemuser() + HERO_ITEM_RIGHT) != ITEM_LONGBOW) &&
+		(host_readws(get_itemuser() + HERO_ITEM_RIGHT) != ITEM_CROSSBOW))
+		/* TODO: potential Original-Bug: What about sling? */
 	{
 
 		switch (ds_readws(USED_ITEM_ID)) {
@@ -305,7 +305,7 @@ void item_weapon_poison(void)
 			/* VOMICUM */
 			or_ptr_bs(get_itemuser() + (HERO_ITEM_RIGHT + 4), 0x40);
 
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 168), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_VOMICUM), 1);
 
 			bottle = ITEM_FLASK_BRONZE;
 			break;
@@ -314,7 +314,7 @@ void item_weapon_poison(void)
 			/* EXPURGICUM */
 			or_ptr_bs(get_itemuser() + (HERO_ITEM_RIGHT + 4), 0x20);
 
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 166), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_EXPURGICUM), 1);
 
 			bottle = ITEM_FLASK_BRONZE;
 			break;
@@ -323,7 +323,7 @@ void item_weapon_poison(void)
 			/* SHURIN-BULB POISON / KROETENSCHEMELGIFT */
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 1);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 55), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_SHURIN_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
@@ -331,7 +331,7 @@ void item_weapon_poison(void)
 			/* ARAX POISON / ARAXGIFT */
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 2);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 56), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_ARAX_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
@@ -339,7 +339,7 @@ void item_weapon_poison(void)
 			/* FEAR POISON / ANGSTGIFT */
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 3);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 57), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_ANGST_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
@@ -347,7 +347,7 @@ void item_weapon_poison(void)
 			/* SLEPPING POISON / SCHALFGIFT */
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 4);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 58), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_SLEEP_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
@@ -355,7 +355,7 @@ void item_weapon_poison(void)
 			/* GOLDEN GLUE / GOLDLEIM */
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 5);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 59), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_GOLDLEIM), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
@@ -363,7 +363,7 @@ void item_weapon_poison(void)
 			/* LOTUS POISON / LOTUSGIFT */
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 7);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 141), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_LOTUS_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
@@ -371,7 +371,7 @@ void item_weapon_poison(void)
 			/* KUKRIS */
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 8);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 142), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_KUKRIS), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
@@ -379,14 +379,14 @@ void item_weapon_poison(void)
 			/* BANE DUST / BANNSTAUB */
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 9);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 143), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_BANNSTAUB), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
 		case 144: {
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 6);
 			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
-			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 144), 1);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_KROETEN_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
@@ -435,7 +435,7 @@ void item_magic_book(void)
 	add_ptr_bs(get_itemuser() + (HERO_SP_DEMON + 3), 2);
 
 	/* drop the book */
-	drop_item(get_itemuser(), get_item_pos(get_itemuser(), 246), 1);
+	drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_BOOK_HEPTAGON), 1);
 }
 
 /* Borlandified and identical */

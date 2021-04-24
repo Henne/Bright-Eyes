@@ -733,7 +733,7 @@ void spell_foramen(void)
 
 	add_hero_ap(get_spelluser(), 1);
 
-	ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), -1)));
+	ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 	ds_writew(REDRAW_MENUICONS, 1);
 }
 
@@ -989,7 +989,7 @@ void spell_adleraug(void)
 	slot = get_free_mod_slot();
 
 	/* Perception / Sinnesschaerfe + 7 */
-	set_mod_slot(slot, MINUTES(6), get_spelluser() + (HERO_TA_INTUITION + 1), 7, (signed char)hero_pos);
+	set_mod_slot(slot, MINUTES(6), get_spelluser() + (HERO_TALENTS + TA_SINNESSCHAERFE), 7, (signed char)hero_pos);
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),

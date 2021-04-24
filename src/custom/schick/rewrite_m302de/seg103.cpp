@@ -77,7 +77,7 @@ signed short LVL_select_skill(Bit8u *hero, signed short show_values)
 				sprintf((char*)Real2Host(ds_readd(DTP2)) + 50 * i,
 					format_str.a,
 					get_ttx(l1 + i + 48),
-					host_readbs(hero + l1 + i + HERO_TA_FIGHT));
+					host_readbs(hero + l1 + i + HERO_TALENTS));
 
 				ds_writed(RADIO_NAME_LIST + 4 * i, (Bit32u)((RealPt)ds_readd(DTP2) + 50 * i));
 			}
@@ -122,6 +122,7 @@ signed short LVL_select_skill(Bit8u *hero, signed short show_values)
  * \param   skill       skill
  */
 RealPt get_proper_hero(signed short skill)
+/* called from only a single position, namely test_skill(..), and only if game is in 'easy' mode and the tested skill is TA_SINNESSCHAERFE */
 {
 	signed short i;
 	signed short cur;
@@ -141,6 +142,7 @@ RealPt get_proper_hero(signed short skill)
 			/* Check if in current group */
 			(host_readb(Real2Host(hero_i) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			/* Check hero is not dead */
+			/* TODO: potential Original-Bug: What if petrified / unconscious etc.? */
 			!hero_dead(Real2Host(hero_i))) {
 
 			/* add current and maximum attibute values */
@@ -150,7 +152,7 @@ RealPt get_proper_hero(signed short skill)
 				host_readbs(Real2Host(hero_i) + HERO_ATTRIB_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill)) +
 				host_readbs(Real2Host(hero_i) + HERO_ATTRIB + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
 				host_readbs(Real2Host(hero_i) + HERO_ATTRIB_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_TA_FIGHT + skill);
+				host_readbs(Real2Host(hero_i) + HERO_TALENTS + skill);
 
 			if (cur > max) {
 
@@ -178,20 +180,20 @@ RealPt get_proper_hero(signed short skill)
  * \param   skill       the skill to test
  * \param   bonus       the modification
  */
-signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
+signed short test_skill(Bit8u *hero, signed short skill, signed char difficulty)
 {
 	signed short randval;
 	signed short e_skillval;
 
 	/* dont test for weapon skills */
-	if ((skill >= 7) && (skill <= 51)) {
+	if ((skill >= TA_SCHUSSWAFFEN) && (skill <= TA_SINNESSCHAERFE)) {
 
 #if !defined(__BORLANDC__)
-		D1_INFO("Talentprobe %s %+d: ", names_skill[skill], bonus);
+		D1_INFO("%s Talentprobe %s %+d (TaW %d)",(char*)(hero + HERO_NAME2), names_skill[skill], difficulty, host_readbs(hero + HERO_TALENTS + skill));
 #endif
 
 		/* special test if skill is a range weapon skill */
-		if ((skill == 7) || (skill == 8)) {
+		if ((skill == TA_SCHUSSWAFFEN) || (skill == TA_WURFWAFFEN)) {
 
 			/* calculate range weapon base value */
 			e_skillval = (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KL)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KL)) +
@@ -199,9 +201,9 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 				host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))) / 4;
 
 			/* add skill value */
-			e_skillval += host_readbs(hero + HERO_TA_FIGHT + skill);
+			e_skillval += host_readbs(hero + HERO_TALENTS + skill);
 			/* sub handycap */
-			e_skillval -= bonus;
+			e_skillval -= difficulty;
 
 			randval = random_schick(20);
 
@@ -235,8 +237,8 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 		}
 
 		/* automatically get hero with best senses in beginner mode */
-		if ((skill == 51) && (ds_readws(GAME_MODE) == 1)) {
-			hero = Real2Host(get_proper_hero(51));
+		if ((skill == TA_SINNESSCHAERFE) && (ds_readws(GAME_MODE) == GAME_MODE_BEGINNER)) {
+			hero = Real2Host(get_proper_hero(TA_SINNESSCHAERFE));
 
 #if defined(__BORLANDC__)
 			/* seems to have been debug stuff with conditional compilation */
@@ -245,9 +247,9 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 		}
 
 		/* do the test */
-		bonus -= host_readbs(hero + HERO_TA_FIGHT + skill);
+		difficulty -= host_readbs(hero + HERO_TALENTS + skill);
 
-		return test_attrib3(hero, ds_readbs(SKILL_DESCRIPTIONS + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 1) + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 2) + skill * 4), bonus);
+		return test_attrib3(hero, ds_readbs(SKILL_DESCRIPTIONS + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 1) + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 2) + skill * 4), difficulty);
 
 	}
 
@@ -283,10 +285,10 @@ signed short select_skill(void)
 	} else if (ds_readbs(LOCATION) == LOCATION_MARKET) {
 		a.a[nr_skills] = TA_AKROBATIK;
 		nr_skills++;
-		a.a[nr_skills] = TA_TASCHENDIEB;
+		a.a[nr_skills] = TA_TASCHENDIEBSTAHL;
 		nr_skills++;
 	} else if (ds_readbs(LOCATION) == LOCATION_MERCHANT) {
-		a.a[nr_skills] = TA_TASCHENDIEB;
+		a.a[nr_skills] = TA_TASCHENDIEBSTAHL;
 		nr_skills++;
 	}
 
@@ -479,7 +481,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 						if (test_skill(hero, TA_HEILEN_WUNDEN, bonus) > 0) {
 							if (test_skill(hero, TA_HEILEN_WUNDEN, bonus) > 0) {
 
-								l_si = (host_readbs(hero + (HERO_TA_CRAFT+5)) > 1) ? host_readbs(hero + (HERO_TA_CRAFT+5)) : 1;
+								l_si = (host_readbs(hero + (HERO_TALENTS + TA_HEILEN_WUNDEN)) > 1) ? host_readbs(hero + (HERO_TALENTS + TA_HEILEN_WUNDEN)) : 1;
 
 								add_hero_le(patient, l_si);
 
@@ -634,7 +636,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 		}
 		case 49 : {
 
-			if (test_skill(hero, TA_TASCHENDIEB, bonus) > 0) {
+			if (test_skill(hero, TA_TASCHENDIEBSTAHL, bonus) > 0) {
 
 				money = random_interval(500, 1000);
 

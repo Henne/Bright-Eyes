@@ -81,7 +81,7 @@ signed short DNG01_handler(void)
 			(char*)Real2Host(GUI_2f2(2, 3, 0)));
 
 		/* ITEM: get a SABRE */
-		if (GUI_bool(Real2Host(ds_readfp(TEXT_OUTPUT_BUF))) && get_item(3, 1, 1))
+		if (GUI_bool(Real2Host(ds_readfp(TEXT_OUTPUT_BUF))) && get_item(ITEM_SABER, 1, 1))
 		{
 			ds_writeb(DNG01_SABRE_TAKEN, 1);
 		}
@@ -94,7 +94,7 @@ signed short DNG01_handler(void)
 			(char*)Real2Host(GUI_2f2(2, 12, 0)));
 
 		/* ITEM: get a CROSSBOW */
-		if (GUI_bool(Real2Host(ds_readfp(TEXT_OUTPUT_BUF))) && get_item(12, 1, 1))
+		if (GUI_bool(Real2Host(ds_readfp(TEXT_OUTPUT_BUF))) && get_item(ITEM_CROSSBOW, 1, 1))
 		{
 			ds_writeb(DNG01_CROSSBOW_TAKEN, 1);
 		}
@@ -102,7 +102,7 @@ signed short DNG01_handler(void)
 	} else if (target_pos == 0x4209 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_AMULET_TAKEN))
 	{
 		/* ITEM: a magic AMULET */
-		if (GUI_bool(get_tx(7)) && get_item(174, 1, 1))
+		if (GUI_bool(get_tx(7)) && get_item(ITEM_AMULET_GREEN, 1, 1))
 		{
 			ds_writeb(DNG01_AMULET_TAKEN, 1);
 			sub_ds_ds(GODS_ESTIMATION + 4 * 5, 100L);
@@ -174,8 +174,8 @@ signed short DNG01_handler(void)
 		{
 			/* check if a ROPE LADDER or a ROPE is available */
 			/* Original-Bug: Why not check for a mage with staffspell level >= 3? */
-			if (get_first_hero_with_item(121) != -1 ||
-				get_first_hero_with_item(32) != -1)
+			if (get_first_hero_with_item(ITEM_ROPE) != -1 ||
+				get_first_hero_with_item(ITEM_ROPE_LADDER) != -1)
 			{
 				/* Original-Bug: better get_first_hero_available_in_group() */
 				if (test_skill(get_hero(0), TA_KLETTERN, 0) > 0)
@@ -288,7 +288,7 @@ void DNG01_chest6_x3(RealPt chest)
 	{
 #endif
 	/* ITEM: the GOLDEN KEY */
-	get_item(219, 1, 1);
+	get_item(ITEM_KEY_GOLDEN_2, 1, 1);
 
 	/* Original-Bug: The string 14 from SHIP.DTX needs a pointer to the name of the hero, not an integer.
 	 */

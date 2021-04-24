@@ -297,7 +297,7 @@ void draw_icons(void)
 		ds_writew(PIC_COPY_Y2, ds_readw(GUI_BUTTONS_POS + i * 4 + 2) + 23);
 		ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(BUF_ICON) + i * 576));
 
-		if (ds_readbs(NEW_MENU_ICONS + i) != -1) {
+		if (ds_readbs(NEW_MENU_ICONS + i) != MENU_ICON_NONE) {
 			if (ds_readbs(LOADED_MENU_ICONS + i) != ds_readbs(NEW_MENU_ICONS + i))
 				load_icon(ARCHIVE_FILE_ICONS, ds_readbs(NEW_MENU_ICONS + i), i);
 		} else {

@@ -83,7 +83,7 @@ void INF_jurge_hjore(signed short informer, signed short state)
 		if (!state) {
 			ds_writew(DIALOG_NEXT_STATE, !ds_readb(INFORMER_FLAGS + INFORMER_HJORE) ? 16 : (ds_readb(INFORMER_FLAGS + INFORMER_HJORE) == 2 ? 1 : 5));
 		} else if (state == 5) {
-			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(176) != -1 ? 6 : 7);
+			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(ITEM_SCHULDBUCH) != -1 ? 6 : 7);
 		} else if (state == 8 || state == 9 || state == 12) {
 			ds_writeb(INFORMER_FLAGS + INFORMER_HJORE, 2);
 		} else if (state == 10) {
@@ -149,17 +149,17 @@ void INF_yasma_umbrik_isleif(signed short informer, signed short state)
 			ds_writeb(UMBRIK_QUEST_GORAH, 1);
 		} else if (state == 15) {
 			/* check if the heroes have the RUNENKNOCHEN / BONE WITH RUNE */
-			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(164) != -1 ? 16 : 17);
+			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(ITEM_BONE_WITH_RUNE) != -1 ? 16 : 17);
 		} else if (state == 19) {
 			/* give the RUNENKNOCHEN / BONE WITH RUNE to UMBRIK */
-			hero = get_hero(get_first_hero_with_item(164));
-			drop_item(hero, get_item_pos(hero, 164), 1);
+			hero = get_hero(get_first_hero_with_item(ITEM_BONE_WITH_RUNE));
+			drop_item(hero, get_item_pos(hero, ITEM_BONE_WITH_RUNE), 1);
 		} else if (state == 23) {
 			/* mark UMBRIK SIEBENSTEIN as done */
 			ds_writeb(INFORMER_FLAGS + INFORMER_UMBRIK, 2);
 
 			/* get EMPFEHLUNGSSCHREIBEN / LETTER OF INTRODUCTION */
-			get_item(247, 1, 1);
+			get_item(ITEM_WRITING_OF_SIEBENSTEIN, 1, 1);
 
 			/* make BEORN HJALLASSON known */
 			if (!ds_readb(INFORMER_FLAGS + INFORMER_BEORN)) ds_writeb(INFORMER_FLAGS + INFORMER_BEORN, 1);
@@ -423,7 +423,7 @@ void INF_eliane_tiomar(signed short informer, signed short state)
 			if (!ds_readb(INFORMER_FLAGS + INFORMER_ASGRIMM)) ds_writeb(INFORMER_FLAGS + INFORMER_ASGRIMM, 1);
 		} else if (state == 24) {
 			/* the group has the SCHWARZE STATUETTE/BLACK FIGURINE */
-			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(248) != -1 ? 27 : 28);
+			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(ITEM_BLACK_FIGURINE) != -1 ? 27 : 28);
 		}
 	} else if (informer == 1) {
 		/* TIOMAR SWAFNILDSSON */
@@ -436,7 +436,7 @@ void INF_eliane_tiomar(signed short informer, signed short state)
 		} else if (state == 1) {
 			ds_writew(DIALOG_NEXT_STATE, ds_readb(TIOMAR_AWAITS_LETTER) != 0 ? 36 : 3);
 		} else if (state == 4) {
-			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(247) != -1 ? 6 : 7);
+			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(ITEM_WRITING_OF_SIEBENSTEIN) != -1 ? 6 : 7);
 		} else if (state == 12 || state == 42) {
 				/* check if the party already has this map piece */
 				if (ds_readb(TREASURE_MAPS + 8) == 2) ds_writeb(TMAP_DOUBLE2, 1);
@@ -473,7 +473,7 @@ void INF_eliane_tiomar(signed short informer, signed short state)
 		} else if (state == 34) {
 			ds_writeb(TIOMAR_AWAITS_LETTER, 1);
 		} else if (state == 36) {
-			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(247) != -1 ? 37 : 2);
+			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(ITEM_WRITING_OF_SIEBENSTEIN) != -1 ? 37 : 2);
 		} else if (state == 45) {
 			ds_writew(DIALOG_NEXT_STATE, ds_readb(INFORMER_FLAGS + INFORMER_UMBRIK) == 2 ? 46 : 47);
 		}
@@ -754,8 +754,8 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
 			} else {
 				ds_writeb(SWAFNILD_TP1, TOWNS_KORD);
 				ds_writeb(SWAFNILD_TP2, TOWNS_TREBAN);
-				ds_writeb(SWAFNILD_TP3, TOWNS_RUNINSHA);
-				ds_writeb(SWAFNILD_TP4, TOWNS_GUDDASUN);
+				ds_writeb(SWAFNILD_TP3, TOWNS_RUNINSHAVEN);
+				ds_writeb(SWAFNILD_TP4, TOWNS_GUDDASUNDEN);
 			}
 		} else if (state == 17) {
 			/* mark RAGNA FIRUNJASDOTTER as known */
@@ -867,7 +867,7 @@ signed short count_map_parts(void)
 signed short has_intro_letter(void)
 {
 	/* check for the introduction letter / Empfehlungsschreiben */
-	return (get_first_hero_with_item(0xeb) != -1) ? 1 : 0;
+	return (get_first_hero_with_item(ITEM_WRITING_OF_HETMAN) != -1) ? 1 : 0;
 }
 
 #if !defined(__BORLANDC__)

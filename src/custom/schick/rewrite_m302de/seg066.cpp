@@ -272,7 +272,7 @@ void do_special_buildings(void)
 		}
 
 
-	} else if (ds_readb(CURRENT_TOWN) == TOWNS_EINSIEDL) {
+	} else if (ds_readb(CURRENT_TOWN) == TOWNS_EINSIEDLERSEE) {
 		/*  HERMITS LAKE / EINSIEDLERSEE */
 
 		if (type == 1) {
@@ -863,19 +863,19 @@ signed short city_step(void)
 	signed short options;
 	signed short l4;
 
-	ds_writebs((NEW_MENU_ICONS + 0), 12);
+	ds_writebs((NEW_MENU_ICONS + 0), MENU_ICON_SPLIT_GROUP);
 	l4 = ds_readbs((NEW_MENU_ICONS + 1));
-	ds_writebs((NEW_MENU_ICONS + 1), ds_readbs(CAN_MERGE_GROUP) == -1 ? 45 : 15);
+	ds_writebs((NEW_MENU_ICONS + 1), ds_readbs(CAN_MERGE_GROUP) == -1 ? MENU_ICON_MERGE_GROUP_GRAYED : MENU_ICON_MERGE_GROUP);
 
 	if (ds_readbs((NEW_MENU_ICONS + 1)) != l4) {
 		ds_writew(REDRAW_MENUICONS, 1);
 	}
 
-	ds_writebs((NEW_MENU_ICONS + 2), 29);
-	ds_writebs((NEW_MENU_ICONS + 3), 37);
-	ds_writebs((NEW_MENU_ICONS + 4), 39);
-	ds_writebs((NEW_MENU_ICONS + 5), 11);
-	ds_writebs((NEW_MENU_ICONS + 6), 54);
+	ds_writebs((NEW_MENU_ICONS + 2), MENU_ICON_SWITCH_GROUP);
+	ds_writebs((NEW_MENU_ICONS + 3), MENU_ICON_INFO);
+	ds_writebs((NEW_MENU_ICONS + 4), MENU_ICON_MAP);
+	ds_writebs((NEW_MENU_ICONS + 5), MENU_ICON_MAGIC);
+	ds_writebs((NEW_MENU_ICONS + 6), MENU_ICON_CAMP);
 
 	if (ds_readws(REQUEST_REFRESH) != 0) {
 
@@ -914,7 +914,7 @@ signed short city_step(void)
 	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 		for (i = options = 0; i < 9; i++) {
-			if (ds_readbs(NEW_MENU_ICONS + i) != -1) {
+			if (ds_readbs(NEW_MENU_ICONS + i) != MENU_ICON_NONE) {
 				options++;
 			}
 		}
@@ -964,7 +964,7 @@ signed short city_step(void)
 		ds_writeb(CITYCAMP_CITY, 1);
 		i = 1;
 
-	} else if (ds_readws(ACTION) == 136 && ds_readbs((NEW_MENU_ICONS + 7)) != -1) {
+	} else if (ds_readws(ACTION) == 136 && ds_readbs((NEW_MENU_ICONS + 7)) != MENU_ICON_NONE) {
 
 		ds_writebs(LOCATION, LOCATION_MARKET);
 		i = 1;
@@ -1023,20 +1023,20 @@ signed short city_step(void)
 			}
 		}
 
-		if (ds_readb(LOCATION_MARKET_FLAG) != 0 && ds_readb((NEW_MENU_ICONS + 7)) != 43) {
+		if (ds_readb(LOCATION_MARKET_FLAG) != 0 && ds_readb((NEW_MENU_ICONS + 7)) != MENU_ICON_MARKET) {
 
 			if (((i = ds_readws((MARKET_DESCR_TABLE + 4) + 8 * ds_readws(TYPEINDEX))) == -1 ||
 				ds_readbs(DAY_OF_WEEK) == i) &&
 				ds_readds(DAY_TIMER) >= HOURS(6) &&
 				ds_readds(DAY_TIMER) <= HOURS(16))
 			{
-				ds_writebs((NEW_MENU_ICONS + 7), 43);
+				ds_writebs((NEW_MENU_ICONS + 7), MENU_ICON_MARKET);
 				draw_icons();
 			}
 
-		} else if (!ds_readbs(LOCATION_MARKET_FLAG) && ds_readbs((NEW_MENU_ICONS + 7)) == 43) {
+		} else if (!ds_readbs(LOCATION_MARKET_FLAG) && ds_readbs((NEW_MENU_ICONS + 7)) == MENU_ICON_MARKET) {
 
-			ds_writebs((NEW_MENU_ICONS + 7), -1);
+			ds_writebs((NEW_MENU_ICONS + 7), MENU_ICON_NONE);
 			draw_icons();
 		}
 	}

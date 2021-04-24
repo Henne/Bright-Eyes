@@ -56,7 +56,7 @@ void tevent_110(void)
 			{
 				/* skill test failed */
 
-				if (get_first_hero_with_item(121) != -1)
+				if (get_first_hero_with_item(ITEM_ROPE) != -1)
 				{
 					/* one hero in the group has a rope */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -207,7 +207,7 @@ void tevent_111(void)
 
 					timewarp(HOURS(3));
 
-					get_item(45, 1, 200);
+					get_item(ITEM_FOOD_PACKAGE, 1, 200);
 
 					ds_writeb(TEVENT111_FLAG, 2);
 
@@ -250,7 +250,7 @@ void tevent_111(void)
 							}
 						}
 
-						get_item(45, 1, 180);
+						get_item(ITEM_FOOD_PACKAGE, 1, 180);
 						ds_writeb(TEVENT111_FLAG, 2);
 					}
 
@@ -353,7 +353,7 @@ void tevent_113(void)
 	}
 }
 
-/* Phexcaer - Skelellen: a swamp */
+/* Phexcaer <-> Skelellen: a swamp */
 void tevent_114(void)
 {
 	signed short i;
@@ -438,10 +438,10 @@ void tevent_114(void)
 				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(52), get_tx2(26), 0);
 
 				/* get RECIPE FOR POTENT HEALING POTION */
-				get_item(240, 1, 1);
+				get_item(ITEM_RECIPE_STRONG_LE_POTION, 1, 1);
 
-				/* ORIGINAL-BUG: this item could have been not taken => get_hero(-1) => SEGFAULT */
-				hero = get_hero(get_first_hero_with_item(240));
+				/* TODO: ORIGINAL-BUG: this item could have been not taken => get_hero(-1) => SEGFAULT */
+				hero = get_hero(get_first_hero_with_item(ITEM_RECIPE_STRONG_LE_POTION));
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_tx2(27),

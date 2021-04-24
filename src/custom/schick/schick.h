@@ -95,6 +95,7 @@ static inline void struct_copy(Bit8u *dst, Bit8u *src, int len)
 extern const char* names_attrib[];
 extern const char* names_skill[];
 extern const char* names_spell[];
+extern const char* names_mspell[];
 
 extern unsigned short datseg;
 extern Bit8u *p_datseg;

@@ -737,7 +737,7 @@ void call_gen(void)
 			(char*)RealMake(datseg, STR_GEN_EXE), (char*)RealMake(datseg, STR_GEN_EXE2),
 #endif
 			RealMake(datseg, STR_GEN_B),
-			ds_readws(GAME_MODE) == 2 ? RealMake(datseg, STR_GEN_A) : RealMake(datseg, STR_GEN_N),
+			ds_readws(GAME_MODE) == GAME_MODE_ADVANCED ? RealMake(datseg, STR_GEN_A) : RealMake(datseg, STR_GEN_N),
 			RealMake(datseg, STR_GEN_1), (RealPt)NULL);
 
 	refresh_screen_size();

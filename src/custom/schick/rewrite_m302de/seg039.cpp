@@ -61,7 +61,7 @@ signed short FIG_get_range_weapon_type(Bit8u *hero)
 	if (item_weapon(ptr)) {
 
 		/* MagicStaffs or Fightstaffs are spears, but no range weapons */
-		if (host_readb(ptr + 3) == 5 && weapon != 0x85 && weapon != 0x45) {
+		if (host_readb(ptr + 3) == 5 && weapon != ITEM_MAGIC_WAND && weapon != ITEM_QUARTERSTAFF) {
 
 			retval = 5;
 
@@ -133,13 +133,13 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 		(signed char)dice_template(host_readw(monster + MONSTER_MR)));
 
 	/* Terrible hack:
-		if the current fight is 188, set MR to 5 (Travel-Event 84),
-		if the current fight is 192, and the enemy is no "Orkchampion" then set the 'tied' status bit */
-	if (ds_readw(CURRENT_FIG_NO) == 188) {
+		if the current fight is FIGHTS_F084, set MR to 5 (Travel-Event 84),
+		if the current fight is FIGHTS_F144 (final fight), and the enemy is no "Orkchampion" then set the 'tied' status bit */
+	if (ds_readw(CURRENT_FIG_NO) == FIGHTS_F084) {
 
 		host_writeb(sheet + ENEMY_SHEET_MR, 5);
 
-	} else if ((ds_readw(CURRENT_FIG_NO) == 192) && (host_readb(sheet + ENEMY_SHEET_MON_ID) != 0x48)) {
+	} else if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F144) && (host_readb(sheet + ENEMY_SHEET_MON_ID) != 0x48)) {
 		or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20); /* set 'tied' status bit */
 
 	}
@@ -178,8 +178,8 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 	host_writeb(sheet + ENEMY_SHEET_LE_FLEE, host_readb(monster + MONSTER_LE_FLEE));
 
 	/* Another hack:
-		If the current fight == 94 and the enemy is "Kultist", set the 'scared' status bit */
-	if ((ds_readw(CURRENT_FIG_NO) == 94) && (host_readb(sheet + ENEMY_SHEET_MON_ID) == 0x38)) {
+		If the current fight == FIGHTS_F126_08 (fleeing cultist) and the enemy is "Kultist", set the 'scared' status bit */
+	if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F126_08) && (host_readb(sheet + ENEMY_SHEET_MON_ID) == 0x38)) {
 		/* Kultist will flee */
 		or_ptr_bs(sheet + ENEMY_SHEET_STATUS2, 0x4); /* set 'scared' status bit */
 
@@ -435,7 +435,7 @@ void FIG_init_heroes(void)
 		host_writeb(hero + HERO_ENEMY_ID, 0);
 
 		/* FINAL FIGHT */
-		if (ds_readw(CURRENT_FIG_NO) == 192) {
+		if (ds_readw(CURRENT_FIG_NO) == FIGHTS_F144) {
 			if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 				cb_x = host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_PLAYERS_X);
 				cb_y = host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_PLAYERS_Y);

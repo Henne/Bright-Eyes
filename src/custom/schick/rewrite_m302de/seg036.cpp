@@ -948,7 +948,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 			if ((host_readbs(hero + HERO_TYPE) >= 7) &&		/* magic user */
 				(host_readws(hero + HERO_AE) > 10) &&	/* AE > 10 */
 				(l5 != 0) &&
-				(ds_readws(CURRENT_FIG_NO) != 192) &&	/* not in the final fight */
+				(ds_readws(CURRENT_FIG_NO) != FIGHTS_F144) &&	/* not in the final fight */
 				(ds_readbs(AUTOFIGHT_MAGIC) != 0)) /* magic activated in auto fight */
 			{
 				if (seg036_8cf(hero, hero_pos, hero_renegade(hero), x, y)) {

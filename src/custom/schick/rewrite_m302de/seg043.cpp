@@ -833,7 +833,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 
 	host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
-	if (host_readws(hero + HERO_ITEM_LEFT) == 238) {
+	if (host_readws(hero + HERO_ITEM_LEFT) == ITEM_MIASTHMATICUM) {
 		/* MIASTHMATIC */
 
 		/* 1W6 + 4 */
@@ -869,7 +869,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 		/* drop the item in the left hand */
 		drop_item(hero, 4, 1);
 
-	} else if (host_readws(hero + HERO_ITEM_LEFT) == 239) {
+	} else if (host_readws(hero + HERO_ITEM_LEFT) == ITEM_HYLAILIC_FIRE) {
 
 		/* HYLAILIC FIRE */
 
@@ -914,7 +914,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 
 		seg041_8c8();
 
-		FIG_prepare_hero_fight_ani(0, hero, -1, usecase == 1 ? 102 : 103, hero_pos + 1, host_readbs(hero + HERO_ENEMY_ID), 0);
+		FIG_prepare_hero_fight_ani(0, hero, -1, usecase == 1 ? FIG_ACTION_UNKNOWN3 : FIG_ACTION_UNKNOWN4, hero_pos + 1, host_readbs(hero + HERO_ENEMY_ID), 0);
 
 		l3 = 0;
 

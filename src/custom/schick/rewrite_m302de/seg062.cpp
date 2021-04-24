@@ -151,7 +151,7 @@ void ask_miracle(void)
 					/* RONDRA */
 					if (l_si <= 5) {
 						if (!ds_readd(INGAME_TIMERS + 0x30)) {
-							miracle_modify(get_hero(0) + (HERO_TA_FIGHT + TA_SCHWERTER) - get_hero(0), 3 * HOURS(24), 1); /* for 3 days: skill 'Schwerter' + 1 */
+							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_SCHWERTER) - get_hero(0), 3 * HOURS(24), 1); /* for 3 days: skill 'Schwerter' + 1 */
 							miracle_modify(get_hero(0) + (HERO_AT + 3) - get_hero(0), 3 * HOURS(24), 1); /* for 3 days: AT + 1 */
 							ds_writed(INGAME_TIMERS + 0x30, 3 * HOURS(24));
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(4));
@@ -177,7 +177,8 @@ void ask_miracle(void)
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(8));
 					} else if (l_si <= 9) {
 						if (!ds_readd(INGAME_TIMERS + 0x38)) {
-							miracle_modify(get_hero(0) + (HERO_TA_BODY + 5) - get_hero(0), 4 * HOURS(24), 2);
+							/* Schwimmen + 2 for 4 days */
+							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_SCHWIMMEN) - get_hero(0), 4 * HOURS(24), 2);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(9));
 							ds_writed(INGAME_TIMERS + 0x38, 4 * HOURS(24));
 						}
@@ -333,19 +334,23 @@ void ask_miracle(void)
 
 						if (l_si <= 5) {
 							if (!ds_readd(INGAME_TIMERS + 0x4c)) {
-								miracle_modify(get_hero(0) + (HERO_TA_CRAFT + 8) - get_hero(0), 3 * HOURS(24), 1);
-								miracle_modify(get_hero(0) + (HERO_TA_CRAFT + 7) - get_hero(0), 3 * HOURS(24), 1);
+								/* Taschendiebstahl +1 for 3 days */
+								miracle_modify(get_hero(0) + (HERO_TALENTS + TA_TASCHENDIEBSTAHL) - get_hero(0), 3 * HOURS(24), 1);
+								/* Schloesser knacken +1 for 3 days */
+								miracle_modify(get_hero(0) + (HERO_TALENTS + TA_SCHLOESSER) - get_hero(0), 3 * HOURS(24), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(24));
 								ds_writed(INGAME_TIMERS + 0x4c, 3 * HOURS(24));
 							}
 						} else if (l_si <= 8) {
 							if (!ds_readd(INGAME_TIMERS + 0x50)) {
-								miracle_modify(get_hero(0) + (HERO_TA_SOCIAL + 2) - get_hero(0), 3 * HOURS(24), 1);
+								/* Feilschen +1 for 3 days */
+								miracle_modify(get_hero(0) + (HERO_TALENTS + TA_FEILSCHEN) - get_hero(0), 3 * HOURS(24), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(25));
 								ds_writed(INGAME_TIMERS + 0x50, 3 * HOURS(24));
 							}
 						} else if (l_si <= 9) {
 							if (!ds_readd(INGAME_TIMERS + 0x54)) {
+								/* FF +1 for 3 days */
 								miracle_modify(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_FF) - get_hero(0), 3 * HOURS(24), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(26));
 								ds_writed(INGAME_TIMERS + 0x54, 3 * HOURS(24));
@@ -427,13 +432,16 @@ void ask_miracle(void)
 					/* RAHJA */
 					if (l_si <= 8) {
 						if (!ds_readd(INGAME_TIMERS + 0x5c)) {
-							miracle_modify(get_hero(0) + (HERO_TA_SOCIAL + 1) - get_hero(0), 7 * HOURS(24), 2);
-							miracle_modify(get_hero(0) + (HERO_TA_BODY + 7) - get_hero(0), 7 * HOURS(24), 2);
+							/* Betören +2 for 7 days */
+							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_BETOEREN) - get_hero(0), 7 * HOURS(24), 2);
+							/* Tanzen +2 for 7 days */
+							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_TANZEN) - get_hero(0), 7 * HOURS(24), 2);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(32));
 							ds_writed(INGAME_TIMERS + 0x5c, 7 * HOURS(24));
 						}
 					} else if (l_si <= 13) {
 						if (!ds_readd(INGAME_TIMERS + 0x60)) {
+							/* CH +1 for 3 days */
 							miracle_modify(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_CH) - get_hero(0), 3 * HOURS(24), 1);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(33));
 							ds_writed(INGAME_TIMERS + 0x60, 3 * HOURS(24));
@@ -450,8 +458,10 @@ void ask_miracle(void)
 									!hero_dead(hero) &&
 									!hero_gods_pissed(hero))
 								{
-									inc_ptr_bs(hero + (HERO_TA_SOCIAL+1));
-									inc_ptr_bs(hero + (HERO_TA_BODY+7));
+									/* permanent Betören +1 */
+									inc_ptr_bs(hero + (HERO_TALENTS + TA_BETOEREN));
+									/* permanent Tanzen +1 */
+									inc_ptr_bs(hero + (HERO_TALENTS + TA_TANZEN));
 								}
 							}
 
@@ -473,8 +483,8 @@ void ask_miracle(void)
 
 	/* restore text file except for WONDER.LTX, TAVERN.TLK and except for dialogs */
 	if (fi_bak != -1 && fi_bak != ARCHIVE_FILE_WONDER_LTX
-	    && fi_bak != ARCHIVE_FILE_TAVERN_TLK
-	    && (fi_bak < 156 || fi_bak > 176)) {
+		&& fi_bak != ARCHIVE_FILE_TAVERN_TLK
+		&& (fi_bak < 156 || fi_bak > 176)) {
 		load_tx2(fi_bak);
 	}
 }

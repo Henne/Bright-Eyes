@@ -150,7 +150,7 @@ void buy_screen(void)
 			set_var_to_zero();
 
 			ds_writeb(PP20_INDEX, 0xff);
-			draw_loc_icons(4, 23, 26, 27, 8);
+			draw_loc_icons(4, MENU_ICON_BARGAIN, MENU_ICON_SCROLL_RIGHT, MENU_ICON_SCROLL_LEFT, MENU_ICON_LEAVE);
 			draw_main_screen();
 
 			/* ICONS */

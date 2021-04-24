@@ -306,7 +306,7 @@ signed short DNG03_handler(void)
 	{
 
 		/* check if a hero in this group has crystals */
-		i = get_first_hero_with_item(225) != -1 ? 0 : 1;
+		i = get_first_hero_with_item(ITEM_CRYSTAL) != -1 ? 0 : 1;
 
 		do {
 			j = GUI_radio(get_tx(14), 2,
@@ -329,14 +329,14 @@ signed short DNG03_handler(void)
 				ds_writews((FIG_FLEE_POSITION + 6), 0x150d))));
 
 			/* drop all crystals from the heroes of that group */
-			i = get_first_hero_with_item(225);
+			i = get_first_hero_with_item(ITEM_CRYSTAL);
 
 			do {
 				hero = get_hero(i);
 
-				drop_item(hero, get_item_pos(hero, 225), 1);
+				drop_item(hero, get_item_pos(hero, ITEM_CRYSTAL), 1);
 
-				i = get_first_hero_with_item(225);
+				i = get_first_hero_with_item(ITEM_CRYSTAL);
 
 			} while (i != -1);
 
@@ -540,7 +540,7 @@ void DNG03_chest12_func3(RealPt chest)
 	/* count the crystals in the inventory of the leader */
 	for (i = 7; i < 23; i++)
 	{
-		if (host_readws(hero + HERO_ITEM_HEAD + SIZEOF_KS_ITEM * i) == 225)
+		if (host_readws(hero + HERO_ITEM_HEAD + SIZEOF_KS_ITEM * i) == ITEM_CRYSTAL)
 		{
 			crystals++;
 		}
