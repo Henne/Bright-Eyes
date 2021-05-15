@@ -34,7 +34,7 @@ namespace M302de {
 unsigned short is_hero_healable(Bit8u *hero)
 {
 
-	if (hero_dead(hero) || hero_stoned(hero)) {
+	if (hero_dead(hero) || hero_petrified(hero)) {
 		/* this hero can not be helped */
 		GUI_output(get_ttx(778));
 		return 0;
@@ -72,7 +72,7 @@ void do_healer(void)
 
 	v6 = ds_writew(REQUEST_REFRESH, 1);
 	info = p_datseg + HEALER_DESCR_TABLE + ds_readw(TYPEINDEX) * 2;
-	draw_loc_icons(4, 0x1e, 0x1f, 0x20, 8);
+	draw_loc_icons(4, MENU_ICON_HEAL_WOUNDS, MENU_ICON_HEAL_DISEASE, MENU_ICON_HEAL_POISON, MENU_ICON_LEAVE);
 
 	while (leave_healer == 0) {
 

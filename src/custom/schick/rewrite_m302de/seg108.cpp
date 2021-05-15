@@ -245,7 +245,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					for (l_si = 9; l_si < 19; l_si++) {
 						/* All body skills + 2 for 5h */
 						l_di = get_free_mod_slot();
-						set_mod_slot(l_di, HOURS(5), consumer + HERO_TA_FIGHT + l_si, 2, (signed char)consumer_idx);
+						set_mod_slot(l_di, HOURS(5), consumer + HERO_TALENTS + l_si, 2, (signed char)consumer_idx);
 					}
 
 					/* prepare output */

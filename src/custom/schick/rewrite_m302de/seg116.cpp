@@ -85,9 +85,9 @@ void tevent_130(void)
 	}
 }
 
+/* Manrek: entrance to the dungeon "pirate cave" */
 void tevent_131(void)
 {
-	/* entrance to the pirate cave */
 	signed short answer;
 
 	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 8) > 0 && !ds_readb(TEVENT131_FLAG)) {
@@ -378,10 +378,10 @@ void tevent_137(void)
 					!hero_dead(hero))
 				{
 					/* each hero gets five FOODPACKAGES */
-					give_hero_new_item(hero, ITEM_FOOD_PACKAGES, 1, 5);
+					give_hero_new_item(hero, ITEM_FOOD_PACKAGE, 1, 5);
 
 					/* search for the WATERSKIN */
-					if ((item_pos = get_item_pos(hero, 30)) != -1)
+					if ((item_pos = get_item_pos(hero, ITEM_WATERSKIN)) != -1)
 					{
 						/* reset empty and half_empty bits of the knapsack item status */
 #if !defined(__BORLANDC__)
@@ -574,7 +574,7 @@ void tevent_144(void)
 
 	right_time_flag = 0;
 
-	if ((grimring_hero_pos = get_first_hero_with_item(181)) != -1) {
+	if ((grimring_hero_pos = get_first_hero_with_item(ITEM_GRIMRING)) != -1) {
 
 		if (ds_readbs(YEAR) == 17 && ds_readbs(MONTH) == 10 && ds_readbs(DAY_OF_MONTH) >= 10) {
 			right_time_flag = 1;
@@ -628,7 +628,7 @@ void tevent_144(void)
 			do {
 				status_menu(grimring_hero_pos);
 
-				grimring_hero_pos = get_first_hero_with_item(181);
+				grimring_hero_pos = get_first_hero_with_item(ITEM_GRIMRING);
 
 				if (grimring_hero_pos == -1) {
 					grimring_hero_pos = 0;
@@ -640,14 +640,14 @@ void tevent_144(void)
 						(char*)get_tx2(38),
 						(char*)get_hero(6) + HERO_NAME2);
 
-					GUI_dialogbox((RealPt)ds_readd(HEROS) + SIZEOF_HERO * 6 + HERO_PORTRAIT,
-							Real2Host(ds_readd(HEROS)) + SIZEOF_HERO * 6  + HERO_NAME2,
+					GUI_dialogbox((RealPt)ds_readd(HEROES) + SIZEOF_HERO * 6 + HERO_PORTRAIT,
+							Real2Host(ds_readd(HEROES)) + SIZEOF_HERO * 6  + HERO_NAME2,
 							Real2Host(ds_readd(DTP2)), 0);
 				}
 
 			} while (grimring_hero_pos == 6);
 
-			ds_writed(MAIN_ACTING_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * grimring_hero_pos));
+			ds_writed(MAIN_ACTING_HERO, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * grimring_hero_pos));
 
 			final_intro();
 			if (!TRV_fight_event(FIGHTS_F144, 144)) {
@@ -711,7 +711,7 @@ void TLK_old_woman(signed short state)
 			}
 		}
 
-		ds_writed(RANDOM_TLK_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
+		ds_writed(RANDOM_TLK_HERO, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * get_random_hero()));
 
 		ds_writew(DIALOG_NEXT_STATE, count_heroes_in_group() == counter ? 24 : 25);
 

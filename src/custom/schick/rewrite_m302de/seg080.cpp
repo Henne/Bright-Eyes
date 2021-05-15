@@ -73,7 +73,7 @@ signed short DNG04_handler(void)
 			sub_hero_le(hero, 2);
 
 			/* get a magic AMULET */
-			get_item(175, 1, 1);
+			get_item(ITEM_TRAVIA_AMULET, 1, 1);
 
 			ds_writeb(DNG04_GAP_FLAG, 1);
 		}
@@ -84,7 +84,7 @@ signed short DNG04_handler(void)
 		if (GUI_bool(get_tx(7)))
 		{
 			/* get a SILVER HELMET */
-			if (get_item(213, 1, 1))
+			if (get_item(ITEM_SILVER_HELMET, 1, 1))
 			{
 				/* mark SILVER HELMET as taken */
 				ds_writeb(DNG04_HELMET_FLAG, 1);
@@ -174,7 +174,7 @@ signed short DNG04_handler(void)
 		if (GUI_bool(get_tx(16)))
 		{
 			/* get a LANTERN */
-			if (get_item(25, 1, 1))
+			if (get_item(ITEM_LANTERN_OFF, 1, 1))
 			{
 				/* mark LANTERN as taken */
 				ds_writeb(DNG04_LANTERN_FLAG, 1);
@@ -390,7 +390,7 @@ signed short DNG05_handler(void)
 		{
 			GUI_output(get_tx(3));
 
-			get_item(45, 1, 10);
+			get_item(ITEM_FOOD_PACKAGE, 1, 10);
 
 			ds_writeb(DNG05_PROVIANT_FLAG, 1);
 		}

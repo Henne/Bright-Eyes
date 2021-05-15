@@ -68,7 +68,7 @@
 #define MAGIC_SCHOOLS_9                 (0x0d87)    /* short[8]; array terminated by -1 */
 #define MAGIC_SCHOOLS_INDEX             (0x0d97)    /* RealPt[9] */
 #define SPELL_HANDLERS                  (0x0dbb)    /* long[86]; function pointer[86] */
-#define MON_SPELL_DESCRIPTIONS          (0x0f13)    /* struct(8)[15]; struct{char cost, mode, unkn1, attrib1, attrib2, attrib3, unkn2, ani_id;} */
+#define MON_SPELL_DESCRIPTIONS          (0x0f13)    /* struct(8)[15]; struct{char cost, mode, unkn1, attrib1, attrib2, attrib3, vs_mr, ani_id;} */
 #define MON_SPELL_REPERTOIRE            (0x0f8b)    /* struct(5)[11]; struct{char spells[5];} */
 #define MON_SPELL_HANDLERS              (0x0fc2)    /* long[15]; function pointer[15] */
 #define SKILL_DESCRIPTIONS              (0x0ffe)    /* struct(4)[52]; struct{signed char attrib1, attrib2, attrib3, max_inc;} */
@@ -926,7 +926,7 @@
 // ?1
 #define INFORMER_TAB                    (0x5ed6)    /* struct(4)[15]; struct{short name_id; char town, unkn;} */
 #define FIG_DROPPED_COUNTER             (0x5f12)    /* signed short */
-#define FIG_ALL_HEROES_WITHDRAWN        (0x5f14)    /* unsigned short; {0,1} */
+#define FIG_ALL_HEROES_ESCAPED          (0x5f14)    /* unsigned short; {0,1} */
 #define MAX_ENEMIES                     (0x5f16)    /* signed short; an upper bound for the number of enemies */
 #define STR_ERROR_ON_OBJ_MALLOC         (0x5f18)    /* char[23]; "ERROR ON OBJECT MALLOC" */
 // ?1
@@ -1338,7 +1338,7 @@
 #define CURRENT_FIGHT                   (0xbd28)    /* RealPt */
 #define SCENARIO_BUF                    (0xbd2c)    /* long */
 #define FIGHTOBJ_BUF                    (0xbd30)    /* RealPt */
-#define HEROS                           (0xbd34)    /* long */
+#define HEROES                          (0xbd34)    /* long */
 #define NEW_MENU_ICONS                  (0xbd38)    /* signed char[9] */
 // ?12
 #define STEPTARGET_FRONT                (0xbd4d)    /* unsigned char */
@@ -1359,7 +1359,7 @@
 #define TEXTBOX_WIDTH                   (0xbffd)    /* signed short */
 #define TEXTBOX_POS_X                   (0xbfff)    /* signed short; coordinate of upper left corner */
 #define TEXTBOX_POS_Y                   (0xc001)    /* signed short; coordinate of upper left corner */
-#define GAME_MODE                       (0xc003)    /* signed short; {-1 = Input error, 1 = Beginner, 2 = Advanced } */
+#define GAME_MODE                       (0xc003)    /* signed short; {-1 = unspecified, 1 = beginner, 2 = advanced } */
 #define SELLITEMS                       (0xc005)    /* RealPt; also used for repair items */
 #define BUYITEMS                        (0xc009)    /* RealPt; merchant's assortment */
 #define PIC_COPY_DST                    (0xc00d)    /* RealPt */
@@ -1468,14 +1468,14 @@
 #define TXT_TABPOS6                     (0xd31d)    /* signed short */
 #define TXT_TABPOS7                     (0xd31f)    /* signed short */
 #define TOWNPAL_BUF                     (0xd321)    /* RealPt */
-#define FIG_FLEE_POSITION               (0xd325)    /* signed short[4]; see HERO_UNKNOWN9 */
+#define FIG_FLEE_POSITION               (0xd325)    /* signed short[4]; the goal square in the dungeon if a hero escapes, depending on the direction the fight board is exited. the direction is stored at HERO_ESCAPE_POSITION */
 #define WILDCAMP_SLEEP_QUALITY          (0xd32d)    /* signed short */
 #define GATHER_HERBS_MOD                (0xd32f)    /* signed short */
 #define REPLENISH_STOCKS_MOD            (0xd331)    /* signed short */
 #define FIG_MSG_DATA                    (0xd333)    /* struct(4)[6]; struct{signed short type, damage;} */
 #define ENEMY_SHEETS                    (0xd34b)    /* struct(62)[20]; struct enemy[20] */
 #define FIG_MOVE_PATHDIR                (0xd823)    /* signed char[10] */
-#define FIG_MONSTERS_UNKN               (0xd82d)    /* signed char[30]; see FIG_ACTION_UNKNOWN2 */
+#define FIG_ACTORS_UNKN                 (0xd82d)    /* signed char[30]; see FIG_ACTION_UNKNOWN2 */
 #define HERO_IS_TARGET                  (0xd84b)    /* signed char[7] */
 #define CHESSBOARD                      (0xd852)    /* RealPt */
 #define FIG_SPELLGFX_BUF                (0xd856)    /* RealPt */
@@ -1489,7 +1489,7 @@
 #define FIGHTOBJ_LIST                   (0xd874)    /* unsigned char[90] */
 #define FIG_ANISHEETS                   (0xd8ce)    /* struct(243)[8] */
 #define FIG_LIST_ELEM                   (0xe066)    /* struct(35) */
-#define FIG_LIST_ARRAY                  (0xe089)    /* unsigned char[127] */
+#define FIG_LIST_ARRAY                  (0xe089)    /* unsigned char[127]; list of flags (0 or 1) indicating if the corresponding FIGHTER_ID is in use. more precisely: FIG_LIST_ARRAY[i] is 1 (otherwise 0) if the index i is the FIGHTER_ID of a fighter object. */
 #define FIG_LIST_HEAD                   (0xe108)    /* RealPt; to a list */
 #define LOCATION_MARKET_FLAG            (0xe10c)    /* unsigned char; {0,1} */
 #define WALLCLOCK_REDRAW                (0xe10d)    /* unsigned short; {0,1} */
@@ -1541,12 +1541,12 @@
 #define AUTOFIGHT                       (0xe318)    /* signed short */
 #define FIG_DROPPED_WEAPONS             (0xe31a)    /* signed short[30] */
 #define CHESSBOARD_CPY                  (0xe356)    /* RealPt */
-#define FIG_TWOFIELDED_TABLE            (0xe35a)    /* signed char[21] */
+#define FIG_TWOFIELDED_TABLE            (0xe35a)    /* signed char[21]; table containing the fighter-ids of the head parts of the twofielded enemies */
 #define FIG_TWOFIELDED_COUNT            (0xe36f)    /* signed char */
 #define FIGHTOBJ_BUF_FREESPACE          (0xe370)    /* signed long */
 #define BUFFER_WEAPANIDAT               (0xe374)    /* RealPt; pointer to WEAPANI.DAT */
 #define BUFFER_ANIDAT                   (0xe378)    /* RealPt; pointer to ANI.DAT buffer */
-#define FIG_LIST_BUFFER                 (0xe37c)    /* RealPt; to buffer of size 4445, initial value of FIG_LIST_HEAD */
+#define FIG_LIST_BUFFER                 (0xe37c)    /* RealPt; to buffer of size 4445, initial value of FIG_LIST_HEAD. A figther entry is of size 35, so the list can store up to 127 entries */
 #define FIGOBJ_GFXHEIGHT_TABLE          (0xe380)    /* RealPt; to signed short[63] */
 #define FIGOBJ_GFXWIDTH_TABLE           (0xe384)    /* RealPt; to signed short[63] */
 #define FIGOBJ_GFXBUF_TABLE             (0xe388)    /* RealPt; to RealPt[63] */

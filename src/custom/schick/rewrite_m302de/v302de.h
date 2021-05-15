@@ -113,7 +113,7 @@ static inline Bit8u *get_hero(signed short index) {
 	if (index < 0 || index > 6) {
 		D1_ERR("ERROR: Versuch auf Held an Position %d zuzugreifen\n", index);
 	}
-	return Real2Host(ds_readd(HEROS)) + index * SIZEOF_HERO;
+	return Real2Host(ds_readd(HEROES)) + index * SIZEOF_HERO;
 }
 
 static inline void add_ds_ws(Bit16u off, Bit16s val)
@@ -410,12 +410,12 @@ static inline unsigned short hero_dead(Bit8u *hero) {
 }
 
 /**
- * hero_sleeps() -	check if hero is sleeping
+ * hero_asleep() -	check if hero is sleeping
  * @hero:	ptr to hero
  *
- * 0 = awake / 1 = sleeps
+ * 0 = awake / 1 = asleep
  */
-static inline unsigned short hero_sleeps(Bit8u *hero) {
+static inline unsigned short hero_asleep(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 1) & 1) == 0)
 		return 0;
 	else
@@ -423,12 +423,12 @@ static inline unsigned short hero_sleeps(Bit8u *hero) {
 }
 
 /**
- * hero_stoned() -	check if hero is stoned
+ * hero_petrified() -	check if hero is petrified
  * @hero:	ptr to hero
  *
- * 0 = non-stoned / 1 = stoned
+ * 0 = non-petrified / 1 = petrified
  */
-static inline unsigned short hero_stoned(Bit8u *hero) {
+static inline unsigned short hero_petrified(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 2) & 1) == 0)
 		return 0;
 	else
@@ -436,12 +436,12 @@ static inline unsigned short hero_stoned(Bit8u *hero) {
 }
 
 /**
- * hero_busy() -	check if hero is busy
+ * hero_brewing() -	check if hero is brewing
  * @hero:	ptr to hero
  *
- * 0 = not busy / 1 = busy
+ * 0 = not brewing / 1 = brewing
  */
-static inline unsigned short hero_busy(Bit8u *hero) {
+static inline unsigned short hero_brewing(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 3) & 1) == 0)
 		return 0;
 	else
@@ -454,19 +454,19 @@ static inline unsigned short hero_busy(Bit8u *hero) {
  *
  * \return 0 = no / 1 = yes
  */
-static inline unsigned short hero_cham(Bit8u *hero) {
+static inline unsigned short hero_chamaelioni(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 4) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 /**
- * hero_cursed() -	check if hero is cursed
+ * hero_renegade() -	check if hero is renegade
  * @hero:	ptr to hero
  *
- * 0 = not cursed / 1 = cursed
+ * 0 = no / 1 = yes
  */
-static inline unsigned short hero_cursed(Bit8u *hero) {
+static inline unsigned short hero_renegade(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 5) & 1) == 0)
 		return 0;
 	else
@@ -474,19 +474,19 @@ static inline unsigned short hero_cursed(Bit8u *hero) {
 }
 
 /**
- * hero_unc() -	check if hero is unconscious
+ * hero_unconscious() -	check if hero is unconscious
  * @hero:	ptr to hero
  *
  * 0 = awake / 1 = unconscious
  */
-static inline unsigned short hero_unc(Bit8u *hero) {
+static inline unsigned short hero_unconscious(Bit8u *hero) {
 	if (((host_readb(hero + 0xaa) >> 6) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
-static inline unsigned short hero_unkn2(Bit8u *hero) {
+static inline unsigned short hero_tied(Bit8u *hero) {
 
 	if (((host_readb(hero + 0xaa) >> 7) & 1) == 0)
 		return 0;
@@ -494,7 +494,7 @@ static inline unsigned short hero_unkn2(Bit8u *hero) {
 		return 1;
 }
 
-static inline unsigned short hero_unkn3(Bit8u *hero) {
+static inline unsigned short hero_scared(Bit8u *hero) {
 
 	if (((host_readb(hero + 0xab) >> 0) & 1) == 0)
 		return 0;
@@ -502,31 +502,15 @@ static inline unsigned short hero_unkn3(Bit8u *hero) {
 		return 1;
 }
 
-static inline unsigned short hero_dummy3(Bit8u *hero) {
+static inline unsigned short hero_dummy2(Bit8u *hero) {
 
-	if (((host_readb(hero + 0xab) >> 4) & 1) == 0)
+	if (((host_readb(hero + 0xab) >> 1) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
-static inline unsigned short hero_dummy4(Bit8u *hero) {
-
-	if (((host_readb(hero + 0xab) >> 5) & 1) == 0)
-		return 0;
-	else
-		return 1;
-}
-
-static inline unsigned short hero_dummy6(Bit8u *hero) {
-
-	if (((host_readb(hero + 0xab) >> 7) & 1) == 0)
-		return 0;
-	else
-		return 1;
-}
-
-static inline unsigned short hero_dummy1(Bit8u *hero) {
+static inline unsigned short hero_duplicatus(Bit8u *hero) {
 
 	if (((host_readb(hero + 0xab) >> 2) & 1) == 0)
 		return 0;
@@ -534,12 +518,28 @@ static inline unsigned short hero_dummy1(Bit8u *hero) {
 		return 1;
 }
 
-static inline unsigned short hero_dummy3_set(Bit8u *hero, unsigned short val)
-{
-	/* unset this bit */
-	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) & 0xef);
-	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) | ((val & 1) << 4));
-	return (val & 1);
+static inline unsigned short hero_tame(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 3) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short hero_seen_phantom(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 4) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short hero_gods_pissed(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 5) & 1) == 0)
+		return 0;
+	else
+		return 1;
 }
 
 /**
@@ -556,6 +556,22 @@ static inline unsigned short hero_transformed(Bit8u *hero) {
 		return 1;
 }
 
+static inline unsigned short hero_encouraged(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 7) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short hero_seen_phantom_set(Bit8u *hero, unsigned short val)
+{
+	/* unset this bit */
+	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) & 0xef);
+	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) | ((val & 1) << 4));
+	return (val & 1);
+}
+
 /**
  * enemy_dead() -	check if enemy is dead
  * @enemy:	ptr to enemy
@@ -569,7 +585,7 @@ static inline unsigned short enemy_dead(Bit8u *enemy) {
 		return 1;
 }
 
-static inline unsigned short enemy_sleeps(Bit8u *enemy) {
+static inline unsigned short enemy_asleep(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 1) & 1) == 0)
 		return 0;
 	else
@@ -577,12 +593,12 @@ static inline unsigned short enemy_sleeps(Bit8u *enemy) {
 }
 
 /**
- * enemy_stoned() -	check if enemy is stoned
+ * enemy_petrified() -	check if enemy is petrified
  * @enemy:	ptr to enemy
  *
- * 0 = not stoned / 1 = stoned
+ * 0 = not petrified / 1 = petrified
  */
-static inline unsigned short enemy_stoned(Bit8u *enemy) {
+static inline unsigned short enemy_petrified(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 2) & 1) == 0)
 		return 0;
 	else
@@ -596,14 +612,14 @@ static inline unsigned short enemy_busy(Bit8u *enemy) {
 		return 1;
 }
 
-static inline unsigned short enemy_cursed(Bit8u *enemy) {
+static inline unsigned short enemy_tied(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 5) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
-static inline unsigned short enemy_uncon(Bit8u *enemy) {
+static inline unsigned short enemy_mushroom(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 6) & 1) == 0)
 		return 0;
 	else
@@ -623,7 +639,7 @@ static inline unsigned short enemy_illusion(Bit8u *enemy) {
 		return 1;
 }
 
-static inline unsigned short enemy_bit8(Bit8u *enemy) {
+static inline unsigned short enemy_tame(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x32) >> 0) & 1) == 0)
 		return 0;
 	else
@@ -631,26 +647,26 @@ static inline unsigned short enemy_bit8(Bit8u *enemy) {
 }
 
 /**
- * enemy_bb() -	check if enemy is under boeser blick spell
+ * enemy_renegade() -	check if enemy is under boeser blick spell
  * @enemy:	ptr to enemy
  *
  * 0 = no / 1 = casted
  */
-static inline unsigned short enemy_bb(Bit8u *enemy) {
+static inline unsigned short enemy_renegade(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x32) >> 1) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
-static inline unsigned short enemy_bit10(Bit8u *enemy) {
+static inline unsigned short enemy_scared(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x32) >> 2) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
-static inline unsigned short enemy_bit11(Bit8u *enemy) {
+static inline unsigned short enemy_dancing(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x32) >> 3) & 1) == 0)
 		return 0;
 	else
@@ -931,6 +947,7 @@ static inline char* get_itemname(unsigned short item)
 
 #define DUMMY_WARNING() D1_ERR("Error: %s is not implemented\n", __func__)
 
+// end #if !defined(__BORLANDC__)
 #else
 
 #define DUMMY_WARNING()
@@ -942,17 +959,6 @@ static inline char* get_itemname(unsigned short item)
 #else
 #define INTCAST void interrupt (*)()
 #endif
-
-typedef unsigned char Bit8u;
-typedef signed char Bit8s;
-typedef unsigned short Bit16u;
-typedef signed short Bit16s;
-typedef unsigned long Bit32u;
-typedef signed long Bit32s;
-
-typedef Bit8u* RealPt;
-typedef Bit8u* PhysPt;
-typedef Bit8u huge * HugePt;
 
 #include <DOS.H>
 
@@ -1059,7 +1065,7 @@ struct hero_struct {
 #define mem_writew(p, d) (*(Bit16u*)(p) = (d))
 #define mem_writed(p, d) (*(Bit32u*)(p) = (d))
 
-#define get_hero(no) ((Bit8u*)ds_readfp(HEROS) + SIZEOF_HERO * (no))
+#define get_hero(no) ((Bit8u*)ds_readfp(HEROES) + SIZEOF_HERO * (no))
 
 #ifdef M302de_ORIGINAL_BUGFIX
 #define ds_writeb_z(addr, val) (if (ds_readb(addr) == 0) ds_writeb(addr, val))
@@ -1117,37 +1123,37 @@ struct bittest {
 #define test_bit6(a)		((*(struct bittest*)(a)).bit6)
 
 #define hero_dead(hero)		((*(struct hero_status*)(hero + 0xaa)).dead)
-#define hero_sleeps(hero)	((*(struct hero_status*)(hero + 0xaa)).sleeps)
-#define hero_stoned(hero)	((*(struct hero_status*)(hero + 0xaa)).stoned)
-#define hero_busy(hero)		((*(struct hero_status*)(hero + 0xaa)).busy)
-#define hero_cham(hero)		((*(struct hero_status*)(hero + 0xaa)).cham)
-#define hero_cursed(hero)	((*(struct hero_status*)(hero + 0xaa)).cursed)
-#define hero_unc(hero)		((*(struct hero_status*)(hero + 0xaa)).uncon)
-#define hero_unkn2(hero)	((*(struct hero_status*)(hero + 0xaa)).unkn2)
+#define hero_asleep(hero)	((*(struct hero_status*)(hero + 0xaa)).asleep)
+#define hero_petrified(hero)	((*(struct hero_status*)(hero + 0xaa)).petrified)
+#define hero_brewing(hero)	((*(struct hero_status*)(hero + 0xaa)).brewing)
+#define hero_chamaelioni(hero)	((*(struct hero_status*)(hero + 0xaa)).chamaelioni)
+#define hero_renegade(hero)	((*(struct hero_status*)(hero + 0xaa)).renegade)
+#define hero_unconscious(hero)	((*(struct hero_status*)(hero + 0xaa)).unconscious)
+#define hero_tied(hero)		((*(struct hero_status*)(hero + 0xaa)).tied)
 
-#define hero_unkn3(hero)	((*(struct hero_status*)(hero + 0xaa)).unkn3)
-#define hero_dummy1(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy1)
-#define hero_dummy3(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy3)
-#define hero_dummy4(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy4)
-#define hero_dup(hero)		((*(struct hero_status*)(hero + 0xaa)).dup)
+#define hero_scared(hero)	((*(struct hero_status*)(hero + 0xaa)).scared)
+#define hero_dummy2(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy2)
+#define hero_duplicatus(hero)	((*(struct hero_status*)(hero + 0xaa)).duplicatus)
+#define hero_tame(hero)		((*(struct hero_status*)(hero + 0xaa)).tame)
+#define hero_seen_phantom(hero)	((*(struct hero_status*)(hero + 0xaa)).seen_phantom)
+#define hero_gods_pissed(hero)	((*(struct hero_status*)(hero + 0xaa)).gods_pissed)
+#define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transformed)
+#define hero_encouraged(hero)	((*(struct hero_status*)(hero + 0xaa)).encouraged)
 
-#define hero_dummy3_set(hero, v) ((*(struct hero_status*)(hero + 0xaa)).dummy3 = v)
-
-#define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
-#define hero_dummy6(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy6)
+#define hero_seen_phantom_set(hero, v) ((*(struct hero_status*)(hero + 0xaa)).seen_phantom = v)
 
 #define enemy_dead(enemy)	(((struct enemy_sheets*)(enemy))->status1.dead)
-#define enemy_sleeps(enemy)	(((struct enemy_sheets*)(enemy))->status1.sleeps)
-#define enemy_stoned(enemy)	(((struct enemy_sheets*)(enemy))->status1.stoned)
+#define enemy_asleep(enemy)	(((struct enemy_sheets*)(enemy))->status1.asleep)
+#define enemy_petrified(enemy)	(((struct enemy_sheets*)(enemy))->status1.petrified)
 #define enemy_busy(enemy)	(((struct enemy_sheets*)(enemy))->status1.busy)
-#define enemy_cursed(enemy)	(((struct enemy_sheets*)(enemy))->status1.cursed)
-#define enemy_uncon(enemy)	(((struct enemy_sheets*)(enemy))->status1.uncon)
+#define enemy_tied(enemy)	(((struct enemy_sheets*)(enemy))->status1.tied)
+#define enemy_mushroom(enemy)	(((struct enemy_sheets*)(enemy))->status1.mushroom)
 #define enemy_illusion(enemy)	(((struct enemy_sheets*)(enemy))->status1.illusion)
 
-#define enemy_bit8(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit8)
-#define enemy_bb(enemy)		(((struct enemy_sheets*)(enemy))->status2.bb)
-#define enemy_bit10(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit10)
-#define enemy_bit11(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit11)
+#define enemy_tame(enemy)	(((struct enemy_sheets*)(enemy))->status2.tame)
+#define enemy_renegade(enemy)	(((struct enemy_sheets*)(enemy))->status2.renegade)
+#define enemy_scared(enemy)	(((struct enemy_sheets*)(enemy))->status2.scared)
+#define enemy_dancing(enemy)	(((struct enemy_sheets*)(enemy))->status2.dancing)
 
 #define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + 0x196))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)
 

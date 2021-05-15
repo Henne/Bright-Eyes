@@ -65,7 +65,7 @@ void do_wildcamp(void)
 	}
 
 	i = !ds_readb(GOOD_CAMP_PLACE) ? 6 : 7;
-	draw_loc_icons(i, 9, 16, 25, 11, 20, 17, 48);
+	draw_loc_icons(i, MENU_ICON_GUARDS, MENU_ICON_REPLENISH_SUPPLIES, MENU_ICON_APPLY_SKILL, MENU_ICON_MAGIC, MENU_ICON_COLLECT_HERBS, MENU_ICON_SLEEP, MENU_ICON_QUIT_CAMP);
 
 	while (done == 0) {
 
@@ -136,7 +136,7 @@ void do_wildcamp(void)
 						}
 
 						if (answer != -1) {
-							if (hero_busy(get_hero(answer))) {
+							if (hero_brewing(get_hero(answer))) {
 								GUI_output(get_ttx(730));
 								answer = -1;
 							}
@@ -170,7 +170,7 @@ void do_wildcamp(void)
 			answer = select_hero_ok(get_ttx(317));
 
 			if (answer != -1) {
-				if (hero_busy(get_hero(answer))) {
+				if (hero_brewing(get_hero(answer))) {
 					GUI_output(get_ttx(730));
 					answer = -1;
 				}
@@ -178,7 +178,7 @@ void do_wildcamp(void)
 
 			if (answer != -1) {
 
-				hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
+				hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer;
 
 
 				if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
@@ -209,7 +209,7 @@ void do_wildcamp(void)
 
 			answer = select_hero_ok(get_ttx(326));
 
-			if (answer != -1 && hero_busy(get_hero(answer))) {
+			if (answer != -1 && hero_brewing(get_hero(answer))) {
 				GUI_output(get_ttx(730));
 				answer = -1;
 			}
@@ -235,7 +235,7 @@ void do_wildcamp(void)
 
 					if (herb_tries < 1)
 					{
-						hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
+						hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer;
 
 						herb_hours = (signed char)GUI_input(get_ttx(327), 1);
 
@@ -321,7 +321,7 @@ void do_wildcamp(void)
 
 				if (done == 0) {
 
-					hero = (RealPt)ds_readd(HEROS);
+					hero = (RealPt)ds_readd(HEROES);
 
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 						if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -479,7 +479,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 	ds_writews(SKILLED_HERO_POS, get_skilled_hero_pos(TA_WILDNISLEBEN));
 	hero_pos = select_hero_ok(get_ttx(322));
 
-	if (hero_pos != -1 && hero_busy(get_hero(hero_pos))) {
+	if (hero_pos != -1 && hero_brewing(get_hero(hero_pos))) {
 		GUI_output(get_ttx(730));
 		hero_pos = -1;
 	}
@@ -507,7 +507,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 				if (tries < 2) {
 
 					timewarp(HOURS(1));
-					ds_writed(MAIN_ACTING_HERO, (Bit32u)(hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
+					ds_writed(MAIN_ACTING_HERO, (Bit32u)(hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 					ds_writeb(WILDCAMP_REPLSTATUS + hero_pos, 1);
 					retval = 1;
 
@@ -519,7 +519,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 							(char*)get_ttx(324),
 							(char*)Real2Host(hero) + HERO_NAME2);
 
-						/* fill up all waterskins and remove thirst of all living heros in the current group */
+						/* fill up all waterskins and remove thirst of all living heroes in the current group */
 						hero2 = get_hero(0);
 						for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 							if (host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -529,7 +529,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 								host_writebs(hero2 + HERO_THIRST, 0);
 
 								for (j = 0; j < 23; j++) {
-									if (host_readws(hero2 + 14 * j + HERO_ITEM_HEAD) == 30) {
+									if (host_readws(hero2 + 14 * j + HERO_ITEM_HEAD) == ITEM_WATERSKIN) {
 										and_ptr_bs(hero2 + 14 * j + HERO_ITEM_HEAD + 4, 0xfb);
 										and_ptr_bs(hero2 + 14 * j + HERO_ITEM_HEAD + 4, 0xfd);
 									}
@@ -549,7 +549,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 					/* search for food */
 					if (test_skill(Real2Host(hero), TA_FAEHRTENSUCHEN, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 0xc)) {
 
-						/* remove hunger of all living heros in the current group */
+						/* remove hunger of all living heroes in the current group */
 						hero2 = get_hero(0);
 						for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 							if (host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -561,7 +561,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 						}
 
 						/* the group may get three food packages */
-						if (!get_item(45, 1, 3)) {
+						if (!get_item(ITEM_FOOD_PACKAGE, 1, 3)) {
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(306));
 							ds_writew(REQUEST_REFRESH, 1);
 						} else {

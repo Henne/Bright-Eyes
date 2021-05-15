@@ -350,9 +350,9 @@ signed short DNG10_handler(void)
 					GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(35), 0);
 
 					/* 2x HEALING POTION, MAGIC POTION, THROWING DAGGER and ...*/
-					get_item(145, 1, 2);
-					get_item(154, 1, 1);
-					get_item(218, 1, 1);
+					get_item(ITEM_LE_POTION, 1, 2);
+					get_item(ITEM_AE_POTION, 1, 1);
+					get_item(ITEM_THROWING_DAGGER, 1, 1);
 
 					/* 200 Ducats */
 					p_money = get_party_money();
@@ -379,20 +379,20 @@ signed short DNG10_handler(void)
 
 			ds_writew(X_TARGET, ds_writew(Y_TARGET, 12));
 
-			if ((answer = get_first_hero_with_item(201)) != -1)
+			if ((answer = get_first_hero_with_item(ITEM_KEY_PLATIN)) != -1)
 			{
 				hero = get_hero(answer);
-				result = get_item_pos(hero, 201);
+				result = get_item_pos(hero, ITEM_KEY_PLATIN);
 				drop_item(hero, result, 1);
 
 				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(36), 0);
 				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(28), get_tx(37), 0);
 
 				/* 2x HEALING POTION, MAGIC POTION, THROWING DAGGER, CRYSTAL BALL and ...*/
-				get_item(145, 1, 2);
-				get_item(154, 1, 1);
-				get_item(218, 1, 1);
-				get_item(70, 1, 1);
+				get_item(ITEM_LE_POTION, 1, 2);
+				get_item(ITEM_AE_POTION, 1, 1);
+				get_item(ITEM_THROWING_DAGGER, 1, 1);
+				get_item(ITEM_CRYSTAL_BALL, 1, 1);
 
 				/* ... 200 Ducats and ... */
 				p_money = get_party_money();

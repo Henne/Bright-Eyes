@@ -64,7 +64,7 @@ void THO_hetmann(void)
 				get_tx(86), 0);
 
 		ds_writeb(GOT_LETTER_HET, 1);
-		get_item(235, 1, 1);
+		get_item(ITEM_WRITING_OF_HETMAN, 1, 1);
 
 	} else if (ds_readw(HEARD_ANNOUNCE) == 0 || ds_readw(GOT_MAIN_QUEST) != 0) {
 		GUI_output(get_tx2(0));
@@ -137,7 +137,7 @@ void THO_hetmann(void)
 			ds_writew(GOT_MAIN_QUEST, 1);
 			ds_writew(QUESTED_MONTHS, 0);
 			ds_writeb(GOT_LETTER_HET, 1);
-			get_item(235, 1, 1);
+			get_item(ITEM_WRITING_OF_HETMAN, 1, 1);
 
 		} else if (answer == 3) {
 

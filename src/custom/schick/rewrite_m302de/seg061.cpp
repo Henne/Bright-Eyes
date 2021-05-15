@@ -43,9 +43,7 @@ void do_temple(void)
 	ds_writew(INTEMPLE, ds_writew(INTEMPLE2, 0));
 	ds_writew(REQUEST_REFRESH, 1);
 
-	draw_loc_icons(9,	0, 1, 2,
-				3, 4, 5,
-				6, 7, 8);
+	draw_loc_icons(9, MENU_ICON_HIRE_HERO, MENU_ICON_DISMISS_HERO, MENU_ICON_DELETE_HERO, MENU_ICON_LOAD_GAME, MENU_ICON_SAVE_GAME, MENU_ICON_QUIT_GAME, MENU_ICON_PRAY, MENU_ICON_SACRIFICE, MENU_ICON_LEAVE);
 
 	while (!done) {
 
@@ -424,7 +422,7 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			!hero_dummy4(hero) &&
+			!hero_gods_pissed(hero) &&
 			!hero_dead(hero) &&
 			((le_diff = host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE)) > le))
 		{
@@ -467,11 +465,11 @@ void miracle_resurrect(Bit8u *str)
 
 		if (hero_dead(hero) &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-			!hero_dummy4(hero))
+			!hero_gods_pissed(hero))
 		{
 
 			/* resurrect from the dead */
-			and_ptr_bs(hero + HERO_STATUS1, 0xfe);
+			and_ptr_bs(hero + HERO_STATUS1, 0xfe); /* unset 'dead' status bit */
 
 			/* add 7 LE */
 			add_hero_le(hero, 7);
@@ -501,14 +499,14 @@ void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 	signed short i;
 	signed short slot;
 	HugePt ptr;
-	RealPt hero = (RealPt)ds_readd(HEROS);
+	RealPt hero = (RealPt)ds_readd(HEROES);
 
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(Real2Host(hero)) &&
-			!hero_dummy4(Real2Host(hero)))
+			!hero_gods_pissed(Real2Host(hero)))
 		{
 			slot = get_free_mod_slot();
 			ptr = hero;
@@ -542,7 +540,7 @@ void miracle_weapon(Bit8u *str, signed short mode)
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			!hero_dummy4(hero))
+			!hero_gods_pissed(hero))
 		{
 			for (i = 0; i < 23; i++)
 			{

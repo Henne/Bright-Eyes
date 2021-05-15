@@ -76,7 +76,7 @@ else
 	# copy c_ready.bat as compile.bat
 	cp bc_ready.bat ${DRIVE_C}/src/compile.bat
 
-	# run compile.bat in a DOSBox environment, needs an installes BCC.EXE there
+	# run compile.bat in a DOSBox environment, needs an installed BCC.EXE there
 	pushd ${DRIVE_C}
 	dosbox -conf compile.conf
 	popd
@@ -95,6 +95,18 @@ else
 	# move all OBJ-files to OBJDIR
 	mv ${DRIVE_C}/src/*.EXE $DIR 2>/dev/null
 	mv ${DRIVE_C}/src/*.MAP $DIR 2>/dev/null
+fi
+
+ls ${OBJDIR}/*.OBJ | grep -o -E "SEG[0-9]+" >${OBJDIR}/summary
+grep -o -P "SEG[0-9]+(?=\.(OBJ|CPP))" bc_ready.bat >bc_ready.summary
+if cmp --silent ${OBJDIR}/summary bc_ready.summary; then
+    echo "BCC hat alle OBJ-Dateien erzeugt."
+    rm ${OBJDIR}/summary bc_ready.summary
+else
+    echo "Kompilieren der folgenden Segmente fehlgeschlagen:"
+    comm -13 ${OBJDIR}/summary bc_ready.summary
+    rm ${OBJDIR}/summary bc_ready.summary
+    exit 1
 fi
 
 N=0
@@ -117,13 +129,16 @@ for i in ${OBJDIR}/*.OBJ; do
 	ndisasm -b16 ${BINDIR}/${PREFIX}.BIN >${DISDIR}/${PREFIX}.dis
 #	ndisasm -b16 -e4 ${PREFIX}.BIN >${PREFIX}.dis
 
-	# count lines of the original disassembly
-	LINES=$(wc -l ${DISORIG}/${PREFIX}.dis |cut -d " " -f 1);
+    if [ -f "${DISORIG}/${PREFIX}.dis" ]; then
+        # count lines of the original disassembly
+        LINES=$(wc -l ${DISORIG}/${PREFIX}.dis |cut -d " " -f 1);
 
-	# make the fresh file have the same length
-	head -n $LINES ${DISDIR}/${PREFIX}.dis >${DISDIR}/${PREFIX}.tmp
-	mv ${DISDIR}/${PREFIX}.tmp ${DISDIR}/${PREFIX}.dis
-
+        # make the fresh file have the same length
+        head -n $LINES ${DISDIR}/${PREFIX}.dis >${DISDIR}/${PREFIX}.tmp
+        mv ${DISDIR}/${PREFIX}.tmp ${DISDIR}/${PREFIX}.dis
+    else
+        echo "Warnung: ${PREFIX} is nicht im Disassembly der Original-EXE."
+    fi
 
 	RETVAL=0
 	# count the lines containing '|' => difference

@@ -19,7 +19,7 @@ signed short FIG_is_enemy_active(Bit8u*);
 //0x43
 signed short FIG_get_first_active_hero(void);
 //0x48
-unsigned short seg032_02db(void);
+unsigned short FIG_all_heroes_escaped(void);
 //0x4d
 unsigned short FIG_fight_continues(void);
 //0x52

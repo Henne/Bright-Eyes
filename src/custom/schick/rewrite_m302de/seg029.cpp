@@ -155,7 +155,7 @@ void draw_status_line(void)
 
 			set_textcolor(0xff, 0);
 
-			/* Gray the names of heros in another group */
+			/* Gray the names of heroes in another group */
 			if (host_readb(get_hero(i) + HERO_GROUP_NO) != ds_readb(CURRENT_GROUP))
 				set_textcolor(0x6f, 0);
 
@@ -186,7 +186,7 @@ void draw_status_line(void)
 
 				/* set the src pointer of the head */
 				ds_writed(PIC_COPY_SRC, (hero_dead(get_hero(i)) ? ds_readd(DTP2) :
-					(Bit32u)((RealPt)ds_readd(HEROS) + i * SIZEOF_HERO + HERO_PORTRAIT)));
+					(Bit32u)((RealPt)ds_readd(HEROES) + i * SIZEOF_HERO + HERO_PORTRAIT)));
 
 				do_pic_copy(0);
 
@@ -297,7 +297,7 @@ void draw_icons(void)
 		ds_writew(PIC_COPY_Y2, ds_readw(GUI_BUTTONS_POS + i * 4 + 2) + 23);
 		ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(BUF_ICON) + i * 576));
 
-		if (ds_readbs(NEW_MENU_ICONS + i) != -1) {
+		if (ds_readbs(NEW_MENU_ICONS + i) != MENU_ICON_NONE) {
 			if (ds_readbs(LOADED_MENU_ICONS + i) != ds_readbs(NEW_MENU_ICONS + i))
 				load_icon(ARCHIVE_FILE_ICONS, ds_readbs(NEW_MENU_ICONS + i), i);
 		} else {
@@ -346,7 +346,7 @@ void clear_loc_line(void)
 }
 
 /**
- * \brief   marks a heros icon in the playmask
+ * \brief   marks a heroes icon in the playmask
  *
  *          This function is only used from sell- and repair screens.
  *
@@ -369,7 +369,7 @@ void select_hero_icon(unsigned short pos) {
 	/* save the textcolors */
 	get_textcolor(&fg_bak, &bg_bak);
 
-	/* copy the heros forename */
+	/* copy the heroes forename */
 	copy_forename(Real2Host(ds_readd(DTP2)), get_hero(pos) + HERO_NAME2);
 
 	/* set the textcolors */
@@ -386,7 +386,7 @@ void select_hero_icon(unsigned short pos) {
 }
 
 /**
- * \brief   deselect a heros icon in the playmask
+ * \brief   deselect a heroes icon in the playmask
  *
  *          This function is only used from sell- and repair screens.
  *
@@ -410,7 +410,7 @@ void deselect_hero_icon(unsigned short pos) {
 	/* save the textcolors */
 	get_textcolor(&fg_bak, &bg_bak);
 
-	/* copy the heros forename */
+	/* copy the heroes forename */
 	copy_forename(Real2Host(ds_readd(DTP2)), get_hero(pos) + HERO_NAME2);
 
 	/* set the textcolors */

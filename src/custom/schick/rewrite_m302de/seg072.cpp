@@ -83,7 +83,7 @@ void INF_jurge_hjore(signed short informer, signed short state)
 		if (!state) {
 			ds_writew(DIALOG_NEXT_STATE, !ds_readb(INFORMER_FLAGS + INFORMER_HJORE) ? 16 : (ds_readb(INFORMER_FLAGS + INFORMER_HJORE) == 2 ? 1 : 5));
 		} else if (state == 5) {
-			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(176) != -1 ? 6 : 7);
+			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(ITEM_SCHULDBUCH) != -1 ? 6 : 7);
 		} else if (state == 8 || state == 9 || state == 12) {
 			ds_writeb(INFORMER_FLAGS + INFORMER_HJORE, 2);
 		} else if (state == 10) {
@@ -145,21 +145,21 @@ void INF_yasma_umbrik_isleif(signed short informer, signed short state)
 			/* mark UMBRIK SIEBENSTEIN as done */
 			ds_writeb(INFORMER_FLAGS + INFORMER_UMBRIK, 2);
 		} else if (state == 14) {
-			/* the heros now know of GORAH */
+			/* the heroes now know of GORAH */
 			ds_writeb(UMBRIK_QUEST_GORAH, 1);
 		} else if (state == 15) {
-			/* check if the heros have the RUNENKNOCHEN / BONE WITH RUNE */
-			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(164) != -1 ? 16 : 17);
+			/* check if the heroes have the RUNENKNOCHEN / BONE WITH RUNE */
+			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(ITEM_BONE_WITH_RUNE) != -1 ? 16 : 17);
 		} else if (state == 19) {
 			/* give the RUNENKNOCHEN / BONE WITH RUNE to UMBRIK */
-			hero = get_hero(get_first_hero_with_item(164));
-			drop_item(hero, get_item_pos(hero, 164), 1);
+			hero = get_hero(get_first_hero_with_item(ITEM_BONE_WITH_RUNE));
+			drop_item(hero, get_item_pos(hero, ITEM_BONE_WITH_RUNE), 1);
 		} else if (state == 23) {
 			/* mark UMBRIK SIEBENSTEIN as done */
 			ds_writeb(INFORMER_FLAGS + INFORMER_UMBRIK, 2);
 
 			/* get EMPFEHLUNGSSCHREIBEN / LETTER OF INTRODUCTION */
-			get_item(247, 1, 1);
+			get_item(ITEM_WRITING_OF_SIEBENSTEIN, 1, 1);
 
 			/* make BEORN HJALLASSON known */
 			if (!ds_readb(INFORMER_FLAGS + INFORMER_BEORN)) ds_writeb(INFORMER_FLAGS + INFORMER_BEORN, 1);
@@ -186,13 +186,13 @@ void INF_yasma_umbrik_isleif(signed short informer, signed short state)
 			/* TODO: check what happens here */
 		} else if (state == 17 || state == 26) {
 
-			/* check if the heros already have the map */
+			/* check if the heroes already have the map */
 			if (ds_readb(TREASURE_MAPS + 2) == 2) ds_writeb(TMAP_DOUBLE2, 1);
 
-			/* the heros get the map */
+			/* the heroes get the map */
 			ds_writeb(TREASURE_MAPS + 2, 1);
 
-			/* each of the heros gets 10 AP */
+			/* each of the heroes gets 10 AP */
 			add_hero_ap_all(10);
 
 			show_treasure_map();
@@ -250,7 +250,7 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 			if (ds_readb(TREASURE_MAPS + 3) == 2) ds_writeb(TMAP_DOUBLE2, 1);
 			/* get the map piece */
 			ds_writeb(TREASURE_MAPS + 3, 1);
-			/* each of the heros gets 10 AP */
+			/* each of the heroes gets 10 AP */
 			add_hero_ap_all(10);
 		} else if (state == 22) {
 			/* test the group leader on KL+5, to get the map */
@@ -259,7 +259,7 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 				if (ds_readb(TREASURE_MAPS + 3) == 2) ds_writeb(TMAP_DOUBLE2, 1);
 				/* get the map piece */
 				ds_writeb(TREASURE_MAPS + 3, 1);
-				/* each of the heros gets 10 AP */
+				/* each of the heroes gets 10 AP */
 				add_hero_ap_all(10);
 			}
 		} else if (state == 23) {
@@ -307,7 +307,7 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 				if (ds_readb(TREASURE_MAPS + 4) == 2) ds_writeb(TMAP_DOUBLE2, 1);
 				/* get the map piece */
 				ds_writeb(TREASURE_MAPS + 4, 1);
-				/* each of the heros gets 10 AP */
+				/* each of the heroes gets 10 AP */
 				add_hero_ap_all(10);
 
 				show_treasure_map();
@@ -404,7 +404,7 @@ void INF_eliane_tiomar(signed short informer, signed short state)
 				if (ds_readb(TREASURE_MAPS + 5) == 2) ds_writeb(TMAP_DOUBLE2, 1);
 				/* get the map piece */
 				ds_writeb(TREASURE_MAPS + 5, 1);
-				/* each of the heros gets 10 AP */
+				/* each of the heroes gets 10 AP */
 				add_hero_ap_all(10);
 
 				show_treasure_map();
@@ -423,7 +423,7 @@ void INF_eliane_tiomar(signed short informer, signed short state)
 			if (!ds_readb(INFORMER_FLAGS + INFORMER_ASGRIMM)) ds_writeb(INFORMER_FLAGS + INFORMER_ASGRIMM, 1);
 		} else if (state == 24) {
 			/* the group has the SCHWARZE STATUETTE/BLACK FIGURINE */
-			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(248) != -1 ? 27 : 28);
+			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(ITEM_BLACK_FIGURINE) != -1 ? 27 : 28);
 		}
 	} else if (informer == 1) {
 		/* TIOMAR SWAFNILDSSON */
@@ -436,13 +436,13 @@ void INF_eliane_tiomar(signed short informer, signed short state)
 		} else if (state == 1) {
 			ds_writew(DIALOG_NEXT_STATE, ds_readb(TIOMAR_AWAITS_LETTER) != 0 ? 36 : 3);
 		} else if (state == 4) {
-			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(247) != -1 ? 6 : 7);
+			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(ITEM_WRITING_OF_SIEBENSTEIN) != -1 ? 6 : 7);
 		} else if (state == 12 || state == 42) {
 				/* check if the party already has this map piece */
 				if (ds_readb(TREASURE_MAPS + 8) == 2) ds_writeb(TMAP_DOUBLE2, 1);
 				/* get the map piece */
 				ds_writeb(TREASURE_MAPS + 8, 1);
-				/* each of the heros gets 10 AP */
+				/* each of the heroes gets 10 AP */
 				add_hero_ap_all(10);
 
 				show_treasure_map();
@@ -473,7 +473,7 @@ void INF_eliane_tiomar(signed short informer, signed short state)
 		} else if (state == 34) {
 			ds_writeb(TIOMAR_AWAITS_LETTER, 1);
 		} else if (state == 36) {
-			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(247) != -1 ? 37 : 2);
+			ds_writew(DIALOG_NEXT_STATE, get_first_hero_with_item(ITEM_WRITING_OF_SIEBENSTEIN) != -1 ? 37 : 2);
 		} else if (state == 45) {
 			ds_writew(DIALOG_NEXT_STATE, ds_readb(INFORMER_FLAGS + INFORMER_UMBRIK) == 2 ? 46 : 47);
 		}
@@ -556,7 +556,7 @@ void INF_olvir_asgrimm(signed short informer, signed short state)
 			ds_writeb(INFORMER_FLAGS + INFORMER_ASGRIMM, 2);
 		} else if (state == 7) {
 			signed short i;
-			/* ASGRIMM takes a meal with the heros */
+			/* ASGRIMM takes a meal with the heroes */
 			hero = get_hero(0);
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
@@ -612,7 +612,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			if (ds_readb(TREASURE_MAPS + 7) == 2) ds_writeb(TMAP_DOUBLE2, 1);
 			/* get the map piece */
 			ds_writeb(TREASURE_MAPS + 7, 1);
-			/* each of the heros gets 10 AP */
+			/* each of the heroes gets 10 AP */
 			add_hero_ap_all(10);
 
 			/* mark ALGRID TRONDESDOTTER as known */
@@ -656,7 +656,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			if (ds_readb(TREASURE_MAPS + 7) == 2) ds_writeb(TMAP_DOUBLE2, 1);
 			/* get the map piece */
 			ds_writeb(TREASURE_MAPS + 7, 1);
-			/* each of the heros gets 10 AP */
+			/* each of the heroes gets 10 AP */
 			add_hero_ap_all(10);
 
 			/* mark ALGRID TRONDESDOTTER as known */
@@ -678,8 +678,8 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			/* select the hero with the highest CH value */
 			/* REMARK: what if the NPC is choosen ? */
 			/* REMARK: what if the positions are changed ? */
-			/* REMARK: what if the game is saved and the heros are at another mem location ? */
-			ds_writed(UNICORN_HERO_PTR, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * ds_writeb(UNICORN_HERO_POS, (unsigned char)get_hero_CH_best())));
+			/* REMARK: what if the game is saved and the heroes are at another mem location ? */
+			ds_writed(UNICORN_HERO_PTR, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * ds_writeb(UNICORN_HERO_POS, (unsigned char)get_hero_CH_best())));
 		} else if (state == 7) {
 			timewarp(HOURS(1));
 		} else if (state == 8) {
@@ -754,8 +754,8 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
 			} else {
 				ds_writeb(SWAFNILD_TP1, TOWNS_KORD);
 				ds_writeb(SWAFNILD_TP2, TOWNS_TREBAN);
-				ds_writeb(SWAFNILD_TP3, TOWNS_RUNINSHA);
-				ds_writeb(SWAFNILD_TP4, TOWNS_GUDDASUN);
+				ds_writeb(SWAFNILD_TP3, TOWNS_RUNINSHAVEN);
+				ds_writeb(SWAFNILD_TP4, TOWNS_GUDDASUNDEN);
 			}
 		} else if (state == 17) {
 			/* mark RAGNA FIRUNJASDOTTER as known */
@@ -782,7 +782,7 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
 				if (ds_readb(TREASURE_MAPS + 6) == 2) ds_writeb(TMAP_DOUBLE2, 1);
 				/* get the map piece */
 				ds_writeb(TREASURE_MAPS + 6, 1);
-				/* each of the heros gets 10 AP */
+				/* each of the heroes gets 10 AP */
 				add_hero_ap_all(10);
 
 				show_treasure_map();
@@ -867,7 +867,7 @@ signed short count_map_parts(void)
 signed short has_intro_letter(void)
 {
 	/* check for the introduction letter / Empfehlungsschreiben */
-	return (get_first_hero_with_item(0xeb) != -1) ? 1 : 0;
+	return (get_first_hero_with_item(ITEM_WRITING_OF_HETMAN) != -1) ? 1 : 0;
 }
 
 #if !defined(__BORLANDC__)

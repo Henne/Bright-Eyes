@@ -470,7 +470,7 @@ void status_menu(signed short hero_pos)
 			case 1: {
 				/* from start-page */
 
-				if (ds_readws(GAME_MODE) == 2) {
+				if (ds_readws(GAME_MODE) == GAME_MODE_ADVANCED) {
 					ds_writed(RADIO_NAME_LIST + 0x0, host_readd(Real2Host(ds_readd(TX2_INDEX)) + 0x4c));
 					ds_writed((RADIO_NAME_LIST + 0x4), host_readd(Real2Host(ds_readd(TX2_INDEX)) + 0x50));
 					ds_writed((RADIO_NAME_LIST + 0x8), host_readd(Real2Host(ds_readd(TX2_INDEX)) + 0x54));
@@ -775,12 +775,12 @@ void status_menu(signed short hero_pos)
 			case 5:{
 				/* from spells-page */
 				l_di = GUI_radio((Bit8u*)0, 6,
-						get_ttx(213),
-						get_tx2(24),
-						get_tx2(19),
-						get_tx2(20),
-						get_ttx(214),
-						get_tx2(15));
+						get_ttx(213),    // Zauber sprechen
+						get_tx2(24),     // Grundwerte
+						get_tx2(19),     // AT PA Werte
+						get_tx2(20),     // Talente
+						get_ttx(214),    // Mehr Zauber
+						get_tx2(15));    // Zurueck
 
 				if (l_di != -1) {
 					switch (l_di) {

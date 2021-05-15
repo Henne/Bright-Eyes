@@ -94,11 +94,11 @@ void hunt_karen(void)
 	} while (answer == -1);
 
 	if (answer == 1) {
-		/* check for a hunting weapon, BOWS, CROSSBOWS or SPEAR */
-		if ((get_first_hero_with_item(9) != -1) ||
-			(get_first_hero_with_item(19) != -1) ||
-			(get_first_hero_with_item(12) != -1) ||
-			(get_first_hero_with_item(5) != -1))
+		/* check for a hunting weapon, BOWS, CROSSBOWS or SPEAR */ /* TODO 2021-04-18: Original-Bug: What about magic spear? sling? (maybe not) */
+		if ((get_first_hero_with_item(ITEM_SHORTBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_LONGBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_CROSSBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_SPEAR) != -1))
 		{
 
 			hero = get_hero(0);
@@ -115,11 +115,11 @@ void hunt_karen(void)
 			}
 
 			if (count_heroes_in_group() <= passed) {
-				/* all heros passed STEALTH */
+				/* all heroes passed STEALTH */
 
 				GUI_output(get_tx2(5));
 
-				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */
+				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */ /* TODO 2021-04-18: Original-Bug: Why TA_SCHUSSWAFFEN for spears? */
 				hero = get_hero(0);
 				for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
@@ -137,14 +137,14 @@ void hunt_karen(void)
 
 					GUI_output(get_tx2(8));
 					/* get 80 FOOD PACKAGES */
-					get_item(45, 1, 80);
+					get_item(ITEM_FOOD_PACKAGE, 1, 80);
 
 				} else if (passed) {
 					/* at least one of the group passed MISSLE WEAPON+0 */
 
 					GUI_output(get_tx2(7));
 					/* get 40 FOOD PACKAGES */
-					get_item(45, 1, 40);
+					get_item(ITEM_FOOD_PACKAGE, 1, 40);
 				} else {
 					/* everybody failed MISSLE WEAPON+0 */
 					GUI_output(get_tx2(6));
@@ -176,11 +176,11 @@ void hunt_wildboar(void)
 	} while (answer == -1);
 
 	if (answer == 1) {
-		/* check for a hunting weapon, BOWS, CROSSBOWS or SPEAR */
-		if ((get_first_hero_with_item(9) != -1) ||
-			(get_first_hero_with_item(19) != -1) ||
-			(get_first_hero_with_item(12) != -1) ||
-			(get_first_hero_with_item(5) != -1))
+		/* check for a hunting weapon, BOWS, CROSSBOWS or SPEAR */ /* TODO 2021-04-18: Original-Bug: What about magic spear? sling? (maybe not) */
+		if ((get_first_hero_with_item(ITEM_SHORTBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_LONGBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_CROSSBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_SPEAR) != -1))
 		{
 
 			hero = get_hero(0);
@@ -197,11 +197,11 @@ void hunt_wildboar(void)
 			}
 
 			if (count_heroes_in_group() <= passed) {
-				/* all heros passed STEALTH */
+				/* all heroes passed STEALTH */
 
 				GUI_output(get_tx2(15));
 
-				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */
+				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */ /* TODO 2021-04-18: Original-Bug: Why TA_SCHUSSWAFFEN for spears? */
 				hero = get_hero(0);
 				for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
@@ -219,7 +219,7 @@ void hunt_wildboar(void)
 
 					GUI_output(get_tx2(17));
 					/* get 30 FOOD PACKAGES */
-					get_item(45, 1, 30);
+					get_item(ITEM_FOOD_PACKAGE, 1, 30);
 
 				} else {
 					/* everybody failed MISSLE WEAPON+0 */
@@ -699,7 +699,7 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 4 || state == 7) {
 		timewarp(HOURS(1));
 	} else if (state == 6) {
-		hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero();
+		hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * get_random_hero();
 		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(hero), TA_WILDNISLEBEN, 6) > 0 ? 8 : 7);
 	} else if (state == 8) {
 		timewarp(HOURS(1));
@@ -707,7 +707,7 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 9) {
 
 		do {
-			hero = (RealPt)ds_readds(HEROS) + SIZEOF_HERO * ds_readws(TLK_RUIN_HERO_COUNTER);
+			hero = (RealPt)ds_readds(HEROES) + SIZEOF_HERO * ds_readws(TLK_RUIN_HERO_COUNTER);
 			inc_ds_ws(TLK_RUIN_HERO_COUNTER);
 
 			if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -742,7 +742,7 @@ void TLK_way_to_ruin(signed short state)
 		ds_writew(DIALOG_NEXT_STATE, test_skill(hero2, TA_ORIENTIERUNG, 5) > 0 ? 18 : 19);
 	} else if (state == 19) {
 		timewarp(MINUTES(20));
-		ds_writed(RUIN_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
+		ds_writed(RUIN_HERO, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * get_random_hero()));
 		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(ds_readd(RUIN_HERO)), TA_AEXTE, 2) > 0 ? 20 : 21);
 	} else if (state == 20) {
 		loose_random_item(get_hero(get_random_hero()), 5, get_ttx(506));
@@ -760,7 +760,7 @@ void TLK_way_to_ruin(signed short state)
 		timewarp(HOURS(5));
 	} else if (state == 28) {
 
-		hero = (RealPt)ds_readds(HEROS);
+		hero = (RealPt)ds_readds(HEROES);
 
 		for (i = ds_writews(TLK_RUIN_HERO_COUNTER, 0); i <= 6; i++, hero += SIZEOF_HERO) {
 
@@ -789,7 +789,7 @@ void TLK_way_to_ruin(signed short state)
 
 	} else if (state == 48) {
 
-		hero = (RealPt)ds_readds(HEROS);
+		hero = (RealPt)ds_readds(HEROES);
 
 		for (i = ds_writews(TLK_RUIN_HERO_COUNTER, 0); i <= 6; i++, hero += SIZEOF_HERO) {
 

@@ -58,7 +58,7 @@ void do_citycamp(void)
 		ds_writeb(CITYCAMP_GUARDS + l_si, -1);
 	}
 
-	draw_loc_icons(5, 9, 25, 11, 17, 8);
+	draw_loc_icons(5, MENU_ICON_GUARDS, MENU_ICON_APPLY_SKILL, MENU_ICON_MAGIC, MENU_ICON_SLEEP, MENU_ICON_LEAVE);
 
 	while (done == 0) {
 
@@ -126,7 +126,7 @@ void do_citycamp(void)
 							answer = -1;
 						}
 
-						if (answer != -1 && hero_busy(get_hero(answer))) {
+						if (answer != -1 && hero_brewing(get_hero(answer))) {
 							GUI_output(get_ttx(730));
 							answer = -1;
 						}
@@ -146,14 +146,14 @@ void do_citycamp(void)
 
 			answer = select_hero_ok(get_ttx(317));
 
-			if (answer != -1 && hero_busy(get_hero(answer))) {
+			if (answer != -1 && hero_brewing(get_hero(answer))) {
 				GUI_output(get_ttx(730));
 				answer = -1;
 			}
 
 			if (answer != -1) {
 
-				hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
+				hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer;
 
 				if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
 
@@ -266,7 +266,7 @@ void do_citycamp(void)
 
 					if (done == 0) {
 
-						hero = (RealPt)ds_readd(HEROS);
+						hero = (RealPt)ds_readd(HEROES);
 						for (l_si = 0; l_si <= 6; l_si++, hero += SIZEOF_HERO) {
 
 							if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&

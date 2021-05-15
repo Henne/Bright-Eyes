@@ -71,9 +71,9 @@ void show_automap(void)
 				ds_writeb(LOCATION, (signed char)loc_bak);
 
 				if (ds_readb(DNG_MAP_SIZE) == 16) {
-					draw_loc_icons(1, 8);
+					draw_loc_icons(1, MENU_ICON_LEAVE);
 				} else {
-					draw_loc_icons(3, 27, 26, 8);
+					draw_loc_icons(3, MENU_ICON_SCROLL_LEFT, MENU_ICON_SCROLL_RIGHT, MENU_ICON_LEAVE);
 				}
 
 				render_automap(l_si);
@@ -518,9 +518,9 @@ signed short select_teleport_dest(void)
 	set_ani_pal(p_datseg + PALETTE_FIGHT2);
 
 	if (ds_readb(DNG_MAP_SIZE) == 16) {
-		draw_loc_icons(1, 11);
+		draw_loc_icons(1, MENU_ICON_MAGIC);
 	} else {
-		draw_loc_icons(3, 27, 26, 11);
+		draw_loc_icons(3, MENU_ICON_SCROLL_LEFT, MENU_ICON_SCROLL_RIGHT, MENU_ICON_MAGIC);
 	}
 
 	done = 0;
@@ -663,7 +663,7 @@ signed short get_maploc(signed short x, signed short y)
 		if (pos_xy == (28 << 8) + 9) {
 			return 9;
 		}
-	} else if (ds_readbs(CURRENT_TOWN) == TOWNS_GUDDASUN) {
+	} else if (ds_readbs(CURRENT_TOWN) == TOWNS_GUDDASUNDEN) {
 		if (pos_xy == (1 << 8) + 14) {
 			return 8;
 		}

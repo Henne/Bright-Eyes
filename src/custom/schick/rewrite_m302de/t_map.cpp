@@ -274,7 +274,7 @@ treasure_type t_map(RealPt ptr, const int off)
 		case 0x61:	return (treasure_type)chest_poisoned2;
 		case 0x66:	return (treasure_type)chest_poisoned3;
 		case 0x6b:	return (treasure_type)chest_protected_brutal;
-		case 0x70:	return (treasure_type)chest_stoned;
+		case 0x70:	return (treasure_type)chest_petrified;
 		case 0x75:	return (treasure_type)chest_ignifax_normal;
 		case 0x7a:	return (treasure_type)chest_ignifax_brutal;
 		case 0x7f:	return (treasure_type)chest_ignifax_heavy;

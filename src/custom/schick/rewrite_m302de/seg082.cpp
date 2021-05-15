@@ -175,7 +175,7 @@ signed short DNG07_handler(void)
 
 			if (GUI_bool(get_tx(3)))
 			{
-				get_item(147, 1, 1);
+				get_item(ITEM_MU_ELIXIR, 1, 1);
 
 				ds_writeb(DNG07_MUELIXIER_FLAG, 2);
 			}
@@ -187,14 +187,14 @@ signed short DNG07_handler(void)
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
-					add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3);
-					or_ptr_bs(hero + HERO_STATUS2, 0x80);
+					add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3); /* MU + 3 */
+					or_ptr_bs(hero + HERO_STATUS2, 0x80); /* set 'encouraged' status bit */
 				}
 			}
 		} else {
 			if (GUI_bool(get_tx(5)))
 			{
-				get_item(147, 1, 1);
+				get_item(ITEM_MU_ELIXIR, 1, 1);
 
 				ds_writeb(DNG07_MUELIXIER_FLAG, 2);
 			}
@@ -210,7 +210,7 @@ signed short DNG07_handler(void)
 	{
 		if (GUI_bool(get_tx(5)))
 		{
-			get_item(226, 1, 1);
+			get_item(ITEM_MU_ELIXIR_BAD, 1, 1);
 
 			ds_writeb(DNG07_ANTIMUELIXIER_FLAG, 1);
 		}
@@ -265,10 +265,10 @@ signed short DNG07_handler(void)
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
 				if (host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE &&
-					hero_dummy6(hero))
+					hero_encouraged(hero))
 				{
-					sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3);
-					and_ptr_bs(hero + HERO_STATUS2, 0x7f);
+					sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3); /* MU - 3 */
+					and_ptr_bs(hero + HERO_STATUS2, 0x7f); /* unset 'encouraged' status bit */
 				}
 			}
 
@@ -328,7 +328,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 			if (random_schick(100) <= prob)
 			{
 				if (random_schick(100) < 50 &&
-					!hero_dummy4(hero) &&
+					!hero_gods_pissed(hero) &&
 					!ds_readb(NAMELESS_DESTROYED))
 				{
 					/* increase one attribute of the leader permanently */
@@ -337,8 +337,8 @@ void DNG09_statues(signed short prob, signed short bonus)
 					inc_ptr_bs(hero + HERO_ATTRIB_ORIG + 3 * randval);
 					inc_ptr_bs(hero + HERO_ATTRIB + 3 * randval);
 
-					/* ... but the twelfe won't grand miracles */
-					or_ptr_bs(hero + 0xab, 0x20);
+					/* ... but the twelve won't grant miracles any more */
+					or_ptr_bs(hero + HERO_STATUS2, 0x20); /* set 'gods_pissed' status bit */
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx(8),
@@ -379,8 +379,8 @@ void DNG09_statues(signed short prob, signed short bonus)
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
-					/* the twelfe will grant miracles again */
-					and_ptr_bs(hero + HERO_STATUS2, 0xdf);
+					/* the twelve will grant miracles again */
+					and_ptr_bs(hero + HERO_STATUS2, 0xdf); /* unset 'gods_pissed' status bit */
 				}
 			}
 

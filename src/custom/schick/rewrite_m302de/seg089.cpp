@@ -266,7 +266,7 @@ signed short DNG15_handler(void)
 		{
 			GUI_output(get_tx(51));
 
-			if (get_item(93, 1, 1) != -1)
+			if (get_item(ITEM_PICKAXE, 1, 1) != -1)
 			{
 				ds_writeb(DNG15_TOOK_HOE, 1);
 			}
@@ -360,7 +360,7 @@ signed short DNG15_handler(void)
 	} else if (target_pos == 0x3b02 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* FIGHT: */
-		if (random_schick(100) < 10)
+		if (random_schick(100) < 10) /* 9% chance */
 		{
 			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 6), 0x3932)));
 			ds_writew((FIG_FLEE_POSITION + 4), 0x3d25);
@@ -438,7 +438,7 @@ signed short DNG15_handler(void)
 				if (1) { } else { }
 
 				/* group gets GRIMRING */
-				do { ; } while (!get_item(181, 1, 1));
+				do { ; } while (!get_item(ITEM_GRIMRING, 1, 1));
 
 				ds_writeb(GOT_GRIMRING, 1);
 
@@ -489,7 +489,7 @@ signed short DNG15_handler(void)
 }
 
 /**
- * \brief   heros may get small wounds
+ * \brief   heroes may get small wounds
  *
  *          Each alive hero in the group makes a GE-3 test.
  *          If it fails he looses 1 LE.
@@ -605,7 +605,7 @@ void DNG15_cursed_money_chest(RealPt chest)
 		set_party_money(p_money);
 
 		/* ... 50 GOLD JEWELRY. */
-		get_item(74, 1, 50);
+		get_item(ITEM_GOLD_JEWELRY, 1, 50);
 	}
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
@@ -705,10 +705,10 @@ void DNG15_clear_way(Bit8u* ptr)
 	i = 0;
 
 	/* With all of the following items SHOVEL, HOE, CROWBAR, FRANCESCA ...*/
-	if ((get_first_hero_with_item(73) != -1) &&
-		(get_first_hero_with_item(93) != -1) &&
-		(get_first_hero_with_item(26) != -1) &&
-		(get_first_hero_with_item(16) != -1))
+	if ((get_first_hero_with_item(ITEM_SHOVEL) != -1) &&
+		(get_first_hero_with_item(ITEM_PICKAXE) != -1) &&
+		(get_first_hero_with_item(ITEM_CROWBAR) != -1) &&
+		(get_first_hero_with_item(ITEM_FRANCESCA) != -1))
 	{
 		i = 1;
 	}

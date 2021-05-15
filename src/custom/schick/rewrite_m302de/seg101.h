@@ -27,7 +27,7 @@ void spell_inc_mu(void);
 /* 0x57 */
 void spell_mutabili(void);
 /* 0x5c */
-void spell_paral(void);
+void spell_paralue(void);
 /* 0x61 */
 void spell_salander(void);
 /* 0x66 */

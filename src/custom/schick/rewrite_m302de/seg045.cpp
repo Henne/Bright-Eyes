@@ -55,7 +55,7 @@ void seg045_0000(signed short fighter_id, signed short type, signed short a3)
 
 	ds_writebs((FIG_LIST_ELEM+FIGHTER_X2), ds_readbs(GFXTAB_SHOTBOLT_WIDTH + type * 2) - 1);
 	ds_writebs((FIG_LIST_ELEM+FIGHTER_Y2), ds_readbs(GFXTAB_SHOTBOLT_HEIGHT + type * 2) - 1);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
@@ -201,7 +201,7 @@ void seg045_0273(signed short x, signed short y, signed short spell_ani_id)
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y1), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_X2), (unsigned char)(width - 1));
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), (unsigned char)(height - 1));
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);

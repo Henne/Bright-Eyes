@@ -51,7 +51,7 @@ void chest_poisoned3(void);
 void chest_protected_brutal(void);
 
 /* 0x70 */
-void chest_stoned(void);
+void chest_petrified(void);
 
 /* 0x75 */
 void chest_ignifax_normal(void);

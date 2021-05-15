@@ -106,7 +106,10 @@ void THO_botschaft(void)
 {
 	int closed = 0;
 
-	/* At the 6th month in year 17 Hal another message is shown */
+	/* At the 6th month in year 17 Hal the embassy is closed and another message is shown */
+	/* Reason:
+	 * Diplomatische Probleme infolge des Bruchs des Garether Vertrags? (Die Thorwaler besetzen im Hesinde Salzerhaven) *
+	 * https://www.crystals-dsa-foren.de/showthread.php?tid=700&pid=99706#pid99706 */
 	if (ds_readbs(YEAR) > 17 ||
 		(ds_readbs(YEAR) == 17 && ds_readbs(MONTH) > 5)) {
 
@@ -274,7 +277,7 @@ void THO_arsenal(void)
 		load_in_head(13);
 
 		/* only show two options when the group has "LETTER FROM JADRA" or "LETTER OF INTRODUCTION" */
-		options = get_first_hero_with_item(187) != -1 || get_first_hero_with_item(235) != -1 ? 2 : 1;
+		options = get_first_hero_with_item(ITEM_WRITING_OF_JARDA) != -1 || get_first_hero_with_item(ITEM_WRITING_OF_HETMAN) != -1 ? 2 : 1;
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (RealPt)0,
@@ -353,7 +356,7 @@ void THO_magistracy(void)
 				GUI_output(get_tx2(14));
 
 				/* get "LETTER FROM JADRA" */
-				get_item(187, 1, 1);
+				get_item(ITEM_WRITING_OF_JARDA, 1, 1);
 
 			} else {
 				GUI_output(get_tx2(15));
@@ -459,7 +462,7 @@ void THO_ugdalf(void)
 		if (ds_readw(QUEST_UGDALF) == 1) {
 			add_party_money(2000L);
 
-		/* Original-Bug:	Everytime the heros enter the dungeon the get 20D.
+		/* Original-Bug:	Everytime the heroes enter the dungeon the get 20D.
 					Why this fix works is not seen that easy.
 					As long as ds_readb(DNG14_UGDALF_DONE) is 0 this block is executed.
 		 */
@@ -513,7 +516,7 @@ void academy_analues(void)
 
 	if (hero_pos != -1) {
 
-		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
+		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 
 		buffer1_bak = ds_readws(TX_FILE_INDEX);
 
@@ -546,13 +549,13 @@ void THO_academy(void)
 	Bit32s p_money;
 	Bit8u *hero;
 
-	/* find the position of the first cursed hero */
+	/* find the position of the first cursed (=renegade) hero */
 	hero = get_hero(0);
 	for (item_pos = cursed_hero_pos = 0; item_pos <= 6; item_pos++, hero += SIZEOF_HERO) {
 
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-			hero_cursed(hero))
+			hero_renegade(hero))
 		{
 			cursed_hero_pos = item_pos;
 			break;
@@ -624,7 +627,7 @@ void THO_academy(void)
 
 							ds_writew(ACADEMY_DAILY_CURSE, 1);
 
-							and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf);
+							and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf); /* unset renegate status bit */
 
 						} else {
 							GUI_input(get_tx2(70), 0);
@@ -641,7 +644,7 @@ void THO_academy(void)
 
 					ds_writew(ACADEMY_DAILY_CURSE, 1);
 
-					and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf);
+					and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf); /* unset renegate status bit */
 
 				} else {
 					GUI_input(get_ttx(401), 0);

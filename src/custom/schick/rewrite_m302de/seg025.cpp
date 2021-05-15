@@ -487,15 +487,15 @@ signed short game_options(void)
 	}
 
 	/* draw the icons */
-	draw_icon(3, 5, 30);
-	draw_icon(4, 5, 60);
-	draw_icon(2, 5, 90);
+	draw_icon(MENU_ICON_LOAD_GAME, 5, 30);
+	draw_icon(MENU_ICON_SAVE_GAME, 5, 60);
+	draw_icon(MENU_ICON_DELETE_HERO, 5, 90);
 
-	draw_icon(44, 70, 170);
-	draw_icon(52, 110, 170);
-	draw_icon(51, 150, 170);
-	draw_icon(53, 190, 170);
-	draw_icon(5, 236, 170);
+	draw_icon(MENU_ICON_HYGELLIK_MAP, 70, 170);
+	draw_icon(MENU_ICON_DIARY, 110, 170);
+	draw_icon(MENU_ICON_BATTLE_FRAME_RATE, 150, 170);
+	draw_icon(MENU_ICON_SOUND, 190, 170);
+	draw_icon(MENU_ICON_QUIT_GAME, 236, 170);
 
 	ds_writew(PIC_COPY_X1, 0);
 	ds_writew(PIC_COPY_Y1, 0);

@@ -51,7 +51,7 @@ signed short DNG06_handler(void)
 
 	if (target_pos == 0xe05 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_BOOK_FLAG))
 	{
-		if (GUI_bool(get_tx(1)) && get_item(224, 1, 1))
+		if (GUI_bool(get_tx(1)) && get_item(ITEM_BOOK_2, 1, 1))
 		{
 			ds_writeb(DNG06_BOOK_FLAG, 1);
 		}
@@ -93,7 +93,7 @@ signed short DNG06_handler(void)
 	{
 		if (GUI_bool(get_tx(5)))
 		{
-			get_item(45, 1, 40);
+			get_item(ITEM_FOOD_PACKAGE, 1, 40);
 			ds_writeb(DNG06_PROVIANT_FLAG, 1);
 		}
 
@@ -211,7 +211,7 @@ signed short DNG06_handler(void)
 			{
 				ds_writeb(DNG06_GOLDKEY_FLAG, 2);
 
-				get_item(195, 1, 1);
+				get_item(ITEM_KEY_GOLDEN_1, 1, 1);
 
 				/* TODO: This is not neccessary */
 				hero = Real2Host(get_first_hero_available_in_group());
@@ -273,7 +273,7 @@ signed short DNG06_handler(void)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					test_skill(hero, TA_KOERPERBEH, host_readbs(hero + HERO_RS_BONUS1)) <= 0)
+					test_skill(hero, TA_KOERPERBEHERRSCHUNG, host_readbs(hero + HERO_RS_BONUS1)) <= 0)
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx(20),
@@ -314,7 +314,7 @@ signed short DNG06_handler(void)
 
 			if (l3 != 0)
 			{
-				/* some heros are in the right position: hear gentle click */
+				/* some heroes are in the right position: hear gentle click */
 				GUI_output(get_tx(24));
 
 				ds_writeb(DNG06_LEVER_FLAG, 1);
@@ -358,7 +358,7 @@ signed short DNG06_handler(void)
 
 			if (l3 != 0)
 			{
-				/* some heros are in the right position: hear gentle click */
+				/* some heroes are in the right position: hear gentle click */
 				GUI_output(get_tx(24));
 
 				ds_writeb(DNG06_LEVER_FLAG, 1);
@@ -387,7 +387,7 @@ signed short DNG06_handler(void)
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
-		if (test_skill(hero, TA_KOERPERBEH, 0) > 0 && test_skill(hero, TA_GEFAHRENSINN, 0) > 0)
+		if (test_skill(hero, TA_KOERPERBEHERRSCHUNG, 0) > 0 && test_skill(hero, TA_GEFAHRENSINN, 0) > 0)
 		{
 			/* evasion succeeds */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -531,6 +531,14 @@ void DNG06_chest2(RealPt chest)
 	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
+/**
+ * \brief   handles the pit in Kultstaette des Namenlosen, level 2, square (3,12)
+ *
+ * 	heroes in the pit are separated into a new group.
+ * 	This group will have an entry GROUPS_DNG_LEVEL = 2,
+ * 	which indicates that it is in the pit.
+ */
+
 void DNG09_pitfall(void)
 {
 	signed short i;
@@ -549,6 +557,7 @@ void DNG09_pitfall(void)
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_skill(hero, TA_GEFAHRENSINN, 4) > 0)
+				/* TODO: potential Original-Bug: Why should 'petrified' or 'uncouscious' (or maybe other properties ) be o.k. here?? */
 			{
 				l3 = 1;
 			}
@@ -564,7 +573,7 @@ void DNG09_pitfall(void)
 
 			if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) >= 2)
 			{
-				/* the current group has at least two heros */
+				/* the current group has at least two heroes */
 
 				/* print message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -574,7 +583,7 @@ void DNG09_pitfall(void)
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
-				/* each of these two heros looses 3W6+3 LE */
+				/* each of these two heroes looses 3W6+3 LE */
 				sub_hero_le(hero_first, dice_roll(3, 6, 3));
 				sub_hero_le(hero_second, dice_roll(3, 6, 3));
 
@@ -582,7 +591,7 @@ void DNG09_pitfall(void)
 				l3 = 0;
 				while (ds_readb(GROUP_MEMBER_COUNTS + l3) != 0) l3++;
 
-				/* put these heros in empty group */
+				/* put these heroes in empty group */
 				host_writeb(hero_first + HERO_GROUP_NO, (signed char)l3);
 				host_writeb(hero_second + HERO_GROUP_NO, (signed char)l3);
 				add_ds_bs(GROUP_MEMBER_COUNTS + l3, 2);
@@ -628,8 +637,8 @@ void DNG09_pitfall(void)
 
 		if ((i = DNG_check_climb_tools()) != -1)
 		{
-			l3 = group_count_item(121);
-			l3 += group_count_item(32);
+			l3 = group_count_item(ITEM_ROPE);
+			l3 += group_count_item(ITEM_ROPE_LADDER);
 
 			if (l3 >= 2 || (l3 == 1 && i))
 			{

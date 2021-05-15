@@ -61,7 +61,7 @@ signed short FIG_get_range_weapon_type(Bit8u *hero)
 	if (item_weapon(ptr)) {
 
 		/* MagicStaffs or Fightstaffs are spears, but no range weapons */
-		if (host_readb(ptr + 3) == 5 && weapon != 0x85 && weapon != 0x45) {
+		if (host_readb(ptr + 3) == 5 && weapon != ITEM_MAGIC_WAND && weapon != ITEM_QUARTERSTAFF) {
 
 			retval = 5;
 
@@ -115,8 +115,13 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 
 	/* roll out LE and save it to the sheet */
 	host_writew(sheet + ENEMY_SHEET_LE_ORIG, dice_template(host_readw(monster + MONSTER_LE)));
+
+	/* Feature mod 1: avoid the a posteriori weakening of the enemies (5/6 LE) of the original game. */
+#ifndef M302de_FEATURE_MOD
 	/* recalculate LE = LE / 6 * 5; */
 	host_writew(sheet + ENEMY_SHEET_LE_ORIG, host_readws(sheet + ENEMY_SHEET_LE_ORIG) / 6 * 5);
+#endif
+
 	/* copy LE*/
 	host_writew(sheet + ENEMY_SHEET_LE, host_readw(sheet + ENEMY_SHEET_LE_ORIG));
 
@@ -128,16 +133,14 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 		(signed char)dice_template(host_readw(monster + MONSTER_MR)));
 
 	/* Terrible hack:
-		if the current fight is 188, set MR to 5 (Travel-Event 84),
-		if the current fight is 192, and the enemy
-		is no "Orkchampion" then set a flag */
-	if (ds_readw(CURRENT_FIG_NO) == 188) {
+		if the current fight is FIGHTS_F084, set MR to 5 (Travel-Event 84),
+		if the current fight is FIGHTS_F144 (final fight), and the enemy is no "Orkchampion" then set the 'tied' status bit */
+	if (ds_readw(CURRENT_FIG_NO) == FIGHTS_F084) {
 
 		host_writeb(sheet + ENEMY_SHEET_MR, 5);
 
-	} else if ((ds_readw(CURRENT_FIG_NO) == 192) && (host_readb(sheet + ENEMY_SHEET_MON_ID) != 0x48)) {
-	        // 0x20 = 0010 0000
-			or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20);
+	} else if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F144) && (host_readb(sheet + ENEMY_SHEET_MON_ID) != 0x48)) {
+		or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20); /* set 'tied' status bit */
 
 	}
 
@@ -157,13 +160,12 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 	host_writeb(sheet + ENEMY_SHEET_MAG_ID, host_readb(monster + MONSTER_MAG_ID));
 
 	/* bogus this value is 0x00 or 0x20 */
-	/* sets the STATUS1 byte's lsb to 0 */
-	and_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0xfe);
+	and_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0xfe); /* unset 'dead' status bit */
 
 	host_writeb(sheet + ENEMY_SHEET_FIGHTER_ID, 0xff);
 	host_writeb(sheet + ENEMY_SHEET_LEVEL, host_readb(monster + MONSTER_LEVEL));
 	host_writeb(sheet + ENEMY_SHEET_SIZE, host_readb(monster + MONSTER_SIZE));
-	host_writeb(sheet + ENEMY_SHEET_FLAGS, host_readb(monster + MONSTER_FLAGS));
+	host_writeb(sheet + ENEMY_SHEET_IS_ANIMAL, host_readb(monster + MONSTER_IS_ANIMAL));
 	host_writeb(sheet + ENEMY_SHEET_ROUND_APPEAR, round);
 
 	host_writeb(sheet + ENEMY_SHEET_VIEWDIR,
@@ -176,11 +178,10 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 	host_writeb(sheet + ENEMY_SHEET_LE_FLEE, host_readb(monster + MONSTER_LE_FLEE));
 
 	/* Another hack:
-		If the current fight == 94 and the enemy is "Kultist",
-		set a flag */
-	if ((ds_readw(CURRENT_FIG_NO) == 94) && (host_readb(sheet + ENEMY_SHEET_MON_ID) == 0x38)) {
-
-		or_ptr_bs(sheet + ENEMY_SHEET_STATUS2, 0x4);
+		If the current fight == FIGHTS_F126_08 (fleeing cultist) and the enemy is "Kultist", set the 'scared' status bit */
+	if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F126_08) && (host_readb(sheet + ENEMY_SHEET_MON_ID) == 0x38)) {
+		/* Kultist will flee */
+		or_ptr_bs(sheet + ENEMY_SHEET_STATUS2, 0x4); /* set 'scared' status bit */
 
 	}
 }
@@ -191,7 +192,7 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
  * \param   x           X-Coordinate
  * \param   y           Y-Coordinate
  * \param   object      object ID
- * \param   type        typus for heros, monster_id for enemies
+ * \param   type        typus for heroes, monster_id for enemies
  * \param   dir         looking direction
  * \return              1 if the placement was successful or 0 if not.
  */
@@ -229,7 +230,7 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 				FIG_set_cb_field(y, x + i, object);
 		}
 	} else {
-		/* if object is an enemy an needs 2 fields */
+		/* if object is an enemy and needs 2 fields */
 		if (object >= 10 &&
 			is_in_byte_array(type, p_datseg + TWO_FIELDED_SPRITE_ID))
 		{
@@ -246,7 +247,7 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 
 			FIG_set_cb_field(y + ds_readws((GFXTAB_TWOFIELDED_EXTRA_CB + 2) + dir * 4),
 				x + ds_readws(GFXTAB_TWOFIELDED_EXTRA_CB + dir * 4),
-					object + 20);
+				object + 20);
 		}
 	}
 
@@ -298,7 +299,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 0x27);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_HEIGHT), 0x28);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WIDTH), 0x20);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 1);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SPRITE_NO), host_readbs(ptr + ENEMY_SHEET_GFX_ID)); /* gfx_set_id */
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
@@ -328,6 +329,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 	host_writeb(ptr + ENEMY_SHEET_FIGHTER_ID, FIG_add_to_list(-1));
 
 	if (is_in_byte_array(host_readb(ptr + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+		/* create fighter entry for the tail of a two-fielded enemy */
 
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_CBX), x + ds_readbs(GFXTAB_TWOFIELDED_EXTRA_CB + host_readbs(ptr + ENEMY_SHEET_VIEWDIR) * 4));
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_CBY), y + ds_readbs((GFXTAB_TWOFIELDED_EXTRA_CB + 2) + host_readbs(ptr + ENEMY_SHEET_VIEWDIR) * 4));
@@ -338,7 +340,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_X2), ds_readb(GFXTAB_TWOFIELDED_EXTRA_X2 + host_readbs(ptr + ENEMY_SHEET_VIEWDIR)));
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_Y1), 0);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 0x27);
-		ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 1);
+		ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 1);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_Z), 10);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_TWOFIELDED), ds_readb(FIG_TWOFIELDED_COUNT) + 20);
 		ds_writeb(FIG_TWOFIELDED_TABLE + ds_readbs(FIG_TWOFIELDED_COUNT), FIG_add_to_list(-1));
@@ -360,8 +362,7 @@ void FIG_init_enemies(void)
 
 			ds_writeb(ENEMY_SHEETS + ENEMY_SHEET_FIGHTER_ID + i * SIZEOF_ENEMY_SHEET, -1);
 		}
-		// Sets the STATUS1 byte's lsb to 1.
-		or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + i * SIZEOF_ENEMY_SHEET, 1);
+		or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + i * SIZEOF_ENEMY_SHEET, 1); /* set 'dead' status bit */
 	}
 
 	ds_writew(NR_OF_ENEMIES, 0);
@@ -434,7 +435,7 @@ void FIG_init_heroes(void)
 		host_writeb(hero + HERO_ENEMY_ID, 0);
 
 		/* FINAL FIGHT */
-		if (ds_readw(CURRENT_FIG_NO) == 192) {
+		if (ds_readw(CURRENT_FIG_NO) == FIGHTS_F144) {
 			if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 				cb_x = host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_PLAYERS_X);
 				cb_y = host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_PLAYERS_Y);
@@ -457,10 +458,10 @@ void FIG_init_heroes(void)
 			host_writeb(hero + HERO_VIEWDIR, host_readb(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_PLAYERS_VIEWDIR + SIZEOF_FIGHT_PLAYER * l_si));
 		}
 
-		/* heros sleep until they appear */
+		/* heroes sleep until they appear */
 		if (host_readb(Real2Host(ds_readd(CURRENT_FIGHT)) + l_si * SIZEOF_FIGHT_PLAYER + FIGHT_PLAYERS_ROUND_APPEAR) != 0) {
 			if (!hero_dead(hero))
-				or_ptr_bs(hero + HERO_STATUS1, 2);
+				or_ptr_bs(hero + HERO_STATUS1, 2); /* set 'sleep' status bit */
 		}
 
 		place_obj_on_cb(cb_x, cb_y, l_si + 1,
@@ -482,15 +483,15 @@ void FIG_init_heroes(void)
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETY), 0);
 
 		if (hero_dead(hero)) {
-			/* if hero is dead */
+			/* hero is dead */
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_NVF_NO),
 				ds_readb(NVFTAB_FIGURES_DEAD + host_readbs(hero + HERO_SPRITE_NO) * 2));
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETX),
 				ds_readb((GFXTAB_OFFSETS_MAIN + 8) + host_readbs(hero + HERO_SPRITE_NO) * 10));
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_OFFSETY),
 				ds_readb((GFXTAB_OFFSETS_MAIN + 9) + host_readbs(hero + HERO_SPRITE_NO) * 10));
-		} else if (hero_sleeps(hero) || hero_unc(hero)) {
-			/* sleeps or is unconscious */
+		} else if (hero_asleep(hero) || hero_unconscious(hero)) {
+			/* hero is asleep or unconscious */
 			ds_writeb((FIG_LIST_ELEM+FIGHTER_NVF_NO),
 				ds_readb(NVFTAB_FIGURES_UNCONSCIOUS + host_readbs(hero + HERO_SPRITE_NO) * 2) + host_readbs(hero + HERO_VIEWDIR));
 
@@ -507,7 +508,11 @@ void FIG_init_heroes(void)
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_Y1), 0);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_X2), 31);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 39);
-		ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 2);
+
+		/* in the next line, value 0 (hero) would make better sense.
+		 * however, the apparently only read operation checks for ==1, so the value 2 does not make a difference */
+		ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 2);
+
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_SPRITE_NO), host_readb(hero + HERO_SPRITE_NO));
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0xff);
 		ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), 0xff);

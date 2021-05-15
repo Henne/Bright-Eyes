@@ -150,7 +150,7 @@ void buy_screen(void)
 			set_var_to_zero();
 
 			ds_writeb(PP20_INDEX, 0xff);
-			draw_loc_icons(4, 23, 26, 27, 8);
+			draw_loc_icons(4, MENU_ICON_BARGAIN, MENU_ICON_SCROLL_RIGHT, MENU_ICON_SCROLL_LEFT, MENU_ICON_LEAVE);
 			draw_main_screen();
 
 			/* ICONS */
@@ -626,7 +626,7 @@ void buy_screen(void)
  *
  * \param   shop_ptr    pointer to the shop description
  * \param   hero        pointer to the hero
- * \param   item_pos    position of the item in the heros inventory
+ * \param   item_pos    position of the item in the heroes inventory
  * \param   shop_pos    position if the item in the sales array
  */
 void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, signed short shop_pos)

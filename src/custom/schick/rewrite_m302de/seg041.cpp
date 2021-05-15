@@ -53,92 +53,101 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 	left_hand = host_readws(hero + HERO_ITEM_LEFT);
 
 	switch (right_hand) {
-	case 0x5:	/* SPEER	/ spear */
-	case 0x10:	/* WURFBEIL	/ francesca */
-	case 0x11:	/* WURFSTERN	/ throwing star */
-	case 0x21:	/* WURFAXT	/ throwing axe */
-	case 0x62:	/* WURFMESSER	/ throwing dagger */
-	case 0x89:	/* SCHNEIDEZAHN	/ cutting tooth */
-	case 0xda:
-	{
-		if (!arg) {
+		case ITEM_SPEAR:		/* Speer */
+		case ITEM_FRANCESCA:		/* Wurfbeil */
+		case ITEM_THROWING_STAR:	/* Wurfstern */
+		case ITEM_THROWING_AXE:		/* Wurfaxt */
+		case ITEM_THROWING_KNIFE:	/* Wurfmesser */
+		case ITEM_SCHNEIDZAHN:		/* Schneidzahn */
+		case ITEM_THROWING_DAGGER: 	/* Wurfdolch */
+			{
+				if (!arg) {
 
-			if (ds_readws(FIG_DROPPED_COUNTER) < 30) {
-				ds_writew(FIG_DROPPED_WEAPONS + ds_readw(FIG_DROPPED_COUNTER) * 2, right_hand);
-				inc_ds_ws(FIG_DROPPED_COUNTER);
+					if (ds_readws(FIG_DROPPED_COUNTER) < 30) {
+						ds_writew(FIG_DROPPED_WEAPONS + ds_readw(FIG_DROPPED_COUNTER) * 2, right_hand);
+						inc_ds_ws(FIG_DROPPED_COUNTER);
+					}
+
+					drop_item(hero, 3, 1);
+
+					if (left_hand == right_hand) {
+						move_item(3, 4, hero);
+					}
+
+				}
+				retval = 1;
+				break;
 			}
+		case ITEM_SHORTBOW: 		/* Kurzbogen */
+		case ITEM_LONGBOW:		/* Langbogen */
+			{
+				if (left_hand != ITEM_ARROWS) { /* Pfeil */
+					if (arg != 2) {
 
-			drop_item(hero, 3, 1);
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_tx(8),
+								(char*)hero + HERO_NAME2);
 
-			if (left_hand == right_hand) {
-				move_item(3, 4, hero);
+						GUI_output(Real2Host(ds_readd(DTP2)));
+					}
+
+				} else {
+					if (!arg) {
+						drop_item(hero, 4, 1);
+					}
+					retval = 1;
+				}
+				break;
 			}
+		case ITEM_CROSSBOW:		/* Armbrust */
+			{
+				if (left_hand != ITEM_BOLTS) { /* Bolzen */
+					if (arg != 2) {
 
-		}
-		retval = 1;
-		break;
-	}
-	case 0x9:	/* KURZBOGEN	/ SHORT BOW */
-	case 0x13:	/* LANGBOGEN	/ LONG BOW */
-	{
-		/* PFEIL / ARROWS */
-		if (left_hand != 10) {
-			if (arg != 2) {
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_tx(9),
+								(char*)hero + HERO_NAME2);
 
-				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(8),
-					(char*)hero + HERO_NAME2);
-
-				GUI_output(Real2Host(ds_readd(DTP2)));
+						GUI_output(Real2Host(ds_readd(DTP2)));
+					}
+				} else {
+					if (!arg) {
+						drop_item(hero, 4, 1);
+					}
+					retval = 1;
+				}
+				break;
 			}
+		case ITEM_SLING:	/* SCHLEUDER	/ SLING */
+			{
+#ifndef M302de_FEATURE_MOD
+				/* sling does not work in the original game.
+				 * there is no object with the id 999 */
+				if (left_hand != 999) {
+					if (arg != 2) {
 
-		} else {
-			if (!arg) {
-				drop_item(hero, 4, 1);
-			}
-			retval = 1;
-		}
-		break;
-	}
-	case 0xc:	/* ARMBRUST	/ CROSSBOW */
-	{
-		/* BOLZEN / BOLT */
-		if (left_hand != 13) {
-			if (arg != 2) {
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_tx(10),
+								(char*)hero + HERO_NAME2);
 
-				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(9),
-					(char*)hero + HERO_NAME2);
-
-				GUI_output(Real2Host(ds_readd(DTP2)));
+						GUI_output(Real2Host(ds_readd(DTP2)));
+					}
+				} else {
+					if (!arg) {
+						drop_item(hero, 4, 1);
+					}
+					retval = 1;
+				}
+#else
+				/* Feature mod 3:
+				 * Make the sling item usable, based on the following decisions:
+				 * * No ammunition is needed (rationale: stones don't exist in the original game and are ubiquitos)
+				 * * left hand may hold an item (like a shield) (rationale: https://de.wikipedia.org/wiki/Datei:Liber.jpg)
+				 */
+				retval = 1;
+#endif
+				break;
 			}
-		} else {
-			if (!arg) {
-				drop_item(hero, 4, 1);
-			}
-			retval = 1;
-		}
-		break;
-	}
-	case 0x78:	/* SCHLEUDER	/ SLING */
-	{
-		if (left_hand != 999) {
-			if (arg != 2) {
-
-				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_tx(10),
-					(char*)hero + HERO_NAME2);
-
-				GUI_output(Real2Host(ds_readd(DTP2)));
-			}
-		} else {
-			if (!arg) {
-				drop_item(hero, 4, 1);
-			}
-			retval = 1;
-		}
-		break;
-	}
 	}
 	return retval;
 }
@@ -174,9 +183,9 @@ void FIG_add_msg(unsigned short f_action, unsigned short damage)
  *
  * \param   enemy       pointer to the enemy
  * \param   damage      the damage
- * \param   flag        unknown
+ * \param   flag        impact on 'renegade' status bit. 0: not affacted. 1: reset 'renegade' to 0 (monster will be hostile again)
  */
-void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
+void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short preserve_renegade)
 {
 	signed short i;
 
@@ -185,40 +194,38 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 
 	/* are the enemies LE lower than 0 */
 	if (host_readws(enemy + ENEMY_SHEET_LE) <= 0) {
-		/* set a flag, maybe dead */
-		or_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 1);
-		/* set LE to 0 */
-		host_writew(enemy + ENEMY_SHEET_LE, 0);
+		or_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 1); /* set 'dead' status bit */
+		host_writew(enemy + ENEMY_SHEET_LE, 0); /* set LE to 0 */
 
-		if ((ds_readw(CURRENT_FIG_NO) == 94) && (host_readb(enemy) == 0x38)) {
+		if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F126_08) && (host_readb(enemy) == 0x38)) {
 			/* slaying a special cultist */
 			/* set a flag in the status area */
 			ds_writeb(DNG09_CULTIST_FLAG, 0);
 
-		} else if ((ds_readw(CURRENT_FIG_NO) == 192) &&
+		} else if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F144) &&
 				(host_readb(enemy) == 0x48) &&
 				!ds_readbs(FINALFIGHT_TUMULT))
 		{
 			/* slaying the orc champion, ends the fight */
 				ds_writew(IN_FIGHT, 0);
 
-		} else if ((ds_readw(CURRENT_FIG_NO) == 180) && (host_readb(enemy) == 0x46)) {
+		} else if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F064) && (host_readb(enemy) == 0x46)) {
 
-			/* slaying Gorah make everything flee than Heshtot*/
+			/* slaying Gorah makes everyone flee except Heshthot */
 			for (i = 0; i < 20; i++) {
 #if !defined(__BORLANDC__)
 				if (ds_readb(ENEMY_SHEETS + ENEMY_SHEET_GFX_ID + i * SIZEOF_ENEMY_SHEET) != 26)
-					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS2) + i * SIZEOF_ENEMY_SHEET, 4);
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS2) + i * SIZEOF_ENEMY_SHEET, 4); /* set 'scared' status bit */
 #else
 				if ( ((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].gfx_id != 0x1a)
-					((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].status2.bit10 = 1;
+					((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].status2.scared = 1;
 #endif
 			}
 		}
 	}
 
-	if (!flag)
-		and_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 0xfd);
+	if (!preserve_renegade)
+		and_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 0xfd); /* unset 'renegade' status bit */
 }
 
 signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed short attack_hero)
@@ -418,7 +425,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	if (attack_hero == 0) {
 		damage -= host_readbs(enemy_p + 2);
 
-		if (enemy_stoned(enemy_p)) {
+		if (enemy_petrified(enemy_p)) {
 			damage = 0;
 		}
 
@@ -432,7 +439,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	} else {
 		damage -= host_readbs(target + HERO_RS_BONUS1);
 
-		if (hero_stoned(target)) {
+		if (hero_petrified(target)) {
 			damage = 0;
 		}
 
@@ -475,8 +482,8 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		/* subtract RS */
 		damage -= host_readbs(hero + HERO_RS_BONUS1);
 
-		/* armour bonus against skelettons an zombies */
-		if (host_readw(hero + HERO_ITEM_BODY) == 0xc5 && (
+		/* armour bonus against skeletons and zombies */
+		if (host_readw(hero + HERO_ITEM_BODY) == ITEM_CHAIN_MAIL_CURSED && (
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
 				damage -= 3;
@@ -484,7 +491,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 
 		/* get position of Totenkopfguertel/Skullbelt */
 
-		if ( (pos = get_item_pos(hero, ITEM_BELT_SKULL)) != -1 &&
+		if ( (pos = get_item_pos(hero, ITEM_SKULL_BELT)) != -1 &&
 			(host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
 
@@ -498,8 +505,8 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 			}
 		}
 
-		/* no damage if the hero is stoned */
-		if (hero_stoned(hero))
+		/* no damage if the hero is petrified */
+		if (hero_petrified(hero))
 			damage = 0;
 	} else {
 		/* the attacked is an enemy */
@@ -507,8 +514,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		/* subtract RS */
 		damage -= host_readbs(attacked + ENEMY_SHEET_RS);
 
-		/* check unknown flag, maybe stoned */
-		if (enemy_stoned(attacked))
+		if (enemy_petrified(attacked))
 			damage = 0;
 
 		/* check if the attacked is immune
@@ -518,7 +524,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 	}
 
 	/* damage bonus */
-	damage += host_readbs(attacker + ENEMY_SHEET_DUMMY5);
+	damage += host_readbs(attacker + ENEMY_SHEET_SAFTKRAFT);
 
 	/* half damage */
 	if (host_readb(attacker + ENEMY_SHEET_BROKEN) != 0)

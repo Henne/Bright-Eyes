@@ -100,7 +100,7 @@ void chest_protected_brutal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
 }
 
-void chest_stoned(void)
+void chest_petrified(void)
 {
 	/* a protected chest */
 	print_msg_with_first_hero(get_ttx(776));
@@ -108,7 +108,7 @@ void chest_stoned(void)
 	/* save pointer of the first hero */
 	ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group());
 
-	/* and make him stoned */
+	/* and make him petrified */
 	or_ptr_bs(Real2Host(ds_readd(MAIN_ACTING_HERO)) + 0xaa, 0x04);
 }
 
@@ -150,6 +150,8 @@ void chest_crossbow_bolts(void)
 
 void chest_cursed(void)
 {
+	/* cursed chest on the Totenschiff. 50D, but each good attribute of the group leader is decreased by 1.
+	 * can be cured by 'Verwandlung beenden' spell or a Praios/Hesinde miracle */
 	signed short i;
 	Bit8u *hero;
 
@@ -158,8 +160,7 @@ void chest_cursed(void)
 
 	if (!hero_transformed(hero)) {
 
-		/* set transformed flag */
-		or_ptr_bs(hero + HERO_STATUS2, 0x40);
+		or_ptr_bs(hero + HERO_STATUS2, 0x40); /* set 'transformed' status bit */
 
 		/* decrement each good attribute */
 		for (i = 0; i <= 6; i++) {
@@ -464,7 +465,7 @@ void seg092_06b4(signed short a1)
 
 		if (host_readws(Real2Host(chest_ptr) + 19) != 0) {
 			/* There are FOOD PACKAGES in the chest */
-			get_item(45, 1, host_readws(Real2Host(chest_ptr) + 19));
+			get_item(ITEM_FOOD_PACKAGE, 1, host_readws(Real2Host(chest_ptr) + 19));
 		}
 	}
 }

@@ -43,7 +43,7 @@ void spell_eigenschaften(void)
 	damage_range_template(host_readws(get_spelltarget_e() + ENEMY_SHEET_DAM1),
 		(Bit8u*)&min, (Bit8u*)&max);
 
-	min = min * 8 / 10;
+	min = min * 8 / 10; /* TODO: What is happening here */
 	max = max * 8 / 10;
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -212,8 +212,7 @@ void spell_sensibar(void)
 /* Illusion */
 void spell_chamaelioni(void)
 {
-	/* set the flag for this spell */
-	or_ptr_bs(get_spelluser() + HERO_STATUS1, 0x10);
+	or_ptr_bs(get_spelluser() + HERO_STATUS1, 0x10); /* set 'chamaelioni' status bit */
 
 	/* prepare the message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -226,7 +225,7 @@ void spell_chamaelioni(void)
 void spell_duplicatus(void)
 {
 	/* set the flag for this spell */
-	or_ptr_bs(get_spelluser() + HERO_STATUS2, 0x04);
+	or_ptr_bs(get_spelluser() + HERO_STATUS2, 0x04); /* set 'duplicatus' status bit
 
 	/* prepare the message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -346,7 +345,7 @@ void spell_blitz(void)
 
 		/* set the spell target */
 		ds_writed(SPELLTARGET,
-	                (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+	                (Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 		if (get_spelltarget() == get_spelluser()) {
 
@@ -422,11 +421,11 @@ void spell_eisenrost(void)
 	signed short id;
 
 	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) < 10) {
-		/* cast a hero */
+		/* target is a hero */
 
 		/* set the spell target */
 		ds_writed(SPELLTARGET,
-	                (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+	                (Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 		if (get_spelltarget() == get_spelluser()) {
 
@@ -464,12 +463,12 @@ void spell_eisenrost(void)
 			}
 		}
 	} else {
-		/* set a pointer to the enemy */
+		/* target is an enemy */
 		ds_writed(SPELLTARGET_E,
 			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* check if target is an animal */
-		if (host_readbs(get_spelltarget_e() + ENEMY_SHEET_FLAGS) != 0)
+		if (host_readbs(get_spelltarget_e() + ENEMY_SHEET_IS_ANIMAL) != 0)
 		{
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(89));
@@ -575,6 +574,7 @@ void spell_ignifaxius(void)
 
 	} else {
 		/* ... autofight mode */
+		/* always cast at maximum possible spell level */
 		level = host_readbs(get_spelluser() + HERO_LEVEL) + 1;
 	}
 
@@ -607,7 +607,7 @@ void spell_ignifaxius(void)
 
 		/* set the spell target */
 		ds_writed(SPELLTARGET,
-	                (Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * SIZEOF_HERO));
+	                (Bit32u)((RealPt)ds_readd(HEROES) + hero_pos * SIZEOF_HERO));
 
 		/* get a pointer to the armour */
 		p_armour = get_spelltarget() + HERO_ITEM_BODY;
@@ -639,7 +639,7 @@ void spell_ignifaxius(void)
 			-level / 2, (signed char)hero_pos);
 
 	} else {
-		/* target is a enemy */
+		/* target is an enemy */
 
 		/* set a pointer to the enemy */
 		ds_writed(SPELLTARGET_E,
@@ -656,6 +656,7 @@ void spell_ignifaxius(void)
 	host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
 	if (mummy != 0) {
+		/* halve damage to get the correct AE costs */
 		damage /= 2;
 	}
 
@@ -676,7 +677,7 @@ void spell_plumbumbarum(void)
 
 		/* set the spell target */
 		ds_writed(SPELLTARGET,
-	                (Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * SIZEOF_HERO));
+	                (Bit32u)((RealPt)ds_readd(HEROES) + hero_pos * SIZEOF_HERO));
 
 		if (get_spelltarget() == get_spelluser()) {
 
@@ -688,7 +689,7 @@ void spell_plumbumbarum(void)
 
 		} else {
 
-			/* give a short AT-malus of -3 to the targets current weapon */
+			/* give a short AT-malus of -3 to the current weapon of the target */
 			slot = get_free_mod_slot();
 			set_mod_slot(slot, 0x2d,
 				get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS),
@@ -704,7 +705,7 @@ void spell_plumbumbarum(void)
 
 	}
 
-	/* target is a enemy */
+	/* target is an enemy */
 
 	/* set a pointer to the enemy */
 	ds_writed(SPELLTARGET_E,
@@ -737,7 +738,7 @@ void spell_saft_kraft(void)
 
 	/* set a pointer to the target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * target));
+		(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * target));
 
 
 	/* +5 on AT of the current weapon */
@@ -754,7 +755,7 @@ void spell_saft_kraft(void)
 		get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WP_CLASS),
 		-5, (signed char)target);
 
-	/* TODO: this position is unknown */
+	/* +5 extra damage */
 	slot = get_free_mod_slot();
 
 	set_mod_slot(slot, rounds * 9L,
@@ -790,17 +791,17 @@ void spell_scharfes_auge(void)
 
 	/* set a pointer to the target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * target));
+		(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * target));
 
 	/* all range skills are boosted + 3 */
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + 8), 3, (signed char)target);
+	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TALENTS + TA_WURFWAFFEN), 3, (signed char)target); /* TA_WURFWAFFEN */
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + 7), 3, (signed char)target);
+	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TALENTS + TA_SCHUSSWAFFEN), 3, (signed char)target); /* TA_SCHUSSWAFFEN */
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_tx(97),

@@ -179,11 +179,11 @@ RealPt FIG_get_hero_ptr(signed short v1)
 	signed short i;
 
 	for (i = 0; i <= 6; i++) {
-		if (host_readbs(Real2Host(ds_readd(HEROS)) + i * SIZEOF_HERO + HERO_FIGHTER_ID) == v1)
-			return (RealPt)ds_readd(HEROS) + i * SIZEOF_HERO;
+		if (host_readbs(Real2Host(ds_readd(HEROES)) + i * SIZEOF_HERO + HERO_FIGHTER_ID) == v1)
+			return (RealPt)ds_readd(HEROES) + i * SIZEOF_HERO;
 	}
 
-	return (RealPt)ds_readd(HEROS);
+	return (RealPt)ds_readd(HEROES);
 }
 
 RealPt FIG_get_enemy_sheet(signed short fighter_id)
@@ -315,7 +315,7 @@ struct dummy {
 /**
  * \brief   removes an element from the FIG_LIST
  *
- * \param   fighter_id  identificates the element to remove
+ * \param   fighter_id  the element to remove
  * \param   keep_in_memory whether to save the removed element in FIG_LIST_ELEM, useful for moving element to end of list
  */
 void FIG_remove_from_list(signed char fighter_id, signed char keep_in_memory)
@@ -491,7 +491,7 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 	RealPt hero;
 	signed short fg_bak, bg_bak;
 
-	hero = (RealPt)ds_readd(HEROS) + (hero_pos - 1)  * SIZEOF_HERO;
+	hero = (RealPt)ds_readd(HEROES) + (hero_pos - 1)  * SIZEOF_HERO;
 	ds_writed(PIC_COPY_SRC, (Bit32u)(hero + HERO_PORTRAIT));
 
 	get_textcolor(&fg_bak, &bg_bak);

@@ -11,6 +11,10 @@
 /* comment this out to have the original, but buggy behaviour */
 #define M302de_ORIGINAL_BUGFIX
 
+/* BrightEyes implements a few (moderate) feature extensions/mods.
+ * comment this out to avoid the new features */
+#define M302de_FEATURE_MOD
+
 /* slow down when too fast */
 #define M302de_SPEEDFIX
 
@@ -91,6 +95,7 @@ static inline void struct_copy(Bit8u *dst, Bit8u *src, int len)
 extern const char* names_attrib[];
 extern const char* names_skill[];
 extern const char* names_spell[];
+extern const char* names_mspell[];
 
 extern unsigned short datseg;
 extern Bit8u *p_datseg;
