@@ -4343,14 +4343,14 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 			/* reset sickness */
 			for (i = 1; i <= 7; i++) {
-				host_writeb(hero + (HERO_ILLNESS-5) + i * 5, 0);
-				host_writeb(hero + (HERO_ILLNESS-4) + i * 5, 0);
+				host_writeb(hero + HERO_ILLNESS + i * SIZEOF_HERO_ILLNESS, 0);
+				host_writeb(hero + (HERO_ILLNESS + 1) + i * SIZEOF_HERO_ILLNESS, 0);
 			}
 
 			/* reset poison */
 			for (i = 1; i <= 9; i++) {
-				host_writeb(hero + (HERO_POISON-5) + i * 5, 0);
-				host_writeb(hero + (HERO_POISON-4) + i * 5, 0);
+				host_writeb(hero + HERO_POISON + i * SIZEOF_HERO_POISON, 0);
+				host_writeb(hero + (HERO_POISON + 1) + i * SIZEOF_HERO_POISON, 0);
 			}
 
 			/* FINAL FIGHT */

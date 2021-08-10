@@ -34,7 +34,7 @@ void poison_effect(void)
 
 		if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) && !hero_dead(hero)) {
 
-			poison_ptr = hero + HERO_POISON + POISON_SHURINKNOLLENGIFT * 5;
+			poison_ptr = hero + HERO_POISON + POISON_TYPE_SHURINKNOLLENGIFT * SIZEOF_HERO_POISON;
 
 			/* SHURINKNOLLENGIFT: hero is poisoned */
 			if (host_readbs(poison_ptr) == -1) {
@@ -111,7 +111,7 @@ void poison_effect(void)
 			}
 
 
-			poison_ptr = hero + (HERO_POISON + POISON_ARAX * 5);
+			poison_ptr = hero + (HERO_POISON + POISON_TYPE_ARAX * SIZEOF_HERO_POISON);
 
 			/* ARAXGIFT: hero is poisoned */
 			if (host_readbs(poison_ptr) == -1) {
@@ -173,7 +173,7 @@ void poison_effect(void)
 			}
 
 
-			poison_ptr = hero + (HERO_POISON + POISON_ANGSTGIFT * 5);
+			poison_ptr = hero + (HERO_POISON + POISON_TYPE_ANGSTGIFT * SIZEOF_HERO_POISON);
 
 			/* ANGSTGIFT: hero is poisoned */
 			if (host_readbs(poison_ptr) == -1) {
@@ -231,7 +231,7 @@ void poison_effect(void)
 			}
 
 
-			poison_ptr = hero + (HERO_POISON + POISON_SCHLAFGIFT * 5);
+			poison_ptr = hero + (HERO_POISON + POISON_TYPE_SCHLAFGIFT * SIZEOF_HERO_POISON);
 
 			/* SCHLAFGIFT: hero is poisoned */
 			if (host_readbs(poison_ptr) == -1) {
@@ -270,7 +270,7 @@ void poison_effect(void)
 			}
 
 
-			poison_ptr = hero + (HERO_POISON + POISON_GOLDLEIM * 5);
+			poison_ptr = hero + (HERO_POISON + POISON_TYPE_GOLDLEIM * SIZEOF_HERO_POISON);
 
 			/* GOLDLEIM: hero gets poisoned */
 			if (host_readbs(poison_ptr) == -1) {
@@ -289,7 +289,7 @@ void poison_effect(void)
 			}
 
 
-			poison_ptr = hero + (HERO_POISON + POISON_KROETENSCHEMEL * 5);
+			poison_ptr = hero + (HERO_POISON + POISON_TYPE_KROETENSCHEMEL * SIZEOF_HERO_POISON);
 
 			/* KROETENSCHEMEL: hero gets poisoned */
 			if (host_readbs(poison_ptr) == -1) {
@@ -308,7 +308,7 @@ void poison_effect(void)
 			}
 
 
-			poison_ptr = hero + (HERO_POISON + POISON_LOTUSGIFT * 5);
+			poison_ptr = hero + (HERO_POISON + POISON_TYPE_LOTUSGIFT * SIZEOF_HERO_POISON);
 
 			/* LOTUSGIFT: hero gets poisoned */
 			if (host_readbs(poison_ptr) == -1) {
@@ -325,7 +325,7 @@ void poison_effect(void)
 			}
 
 
-			poison_ptr = hero + (HERO_POISON + POISON_KUKRIS * 5);
+			poison_ptr = hero + (HERO_POISON + POISON_TYPE_KUKRIS * SIZEOF_HERO_POISON);
 
 			/* KUKRIS: hero gets poisoned */
 			if (host_readbs(poison_ptr) == -1) {
@@ -342,7 +342,7 @@ void poison_effect(void)
 			}
 
 
-			poison_ptr = hero + (HERO_POISON + POISON_BANNSTAUB * 5);
+			poison_ptr = hero + (HERO_POISON + POISON_TYPE_BANNSTAUB * SIZEOF_HERO_POISON);
 
 			/* BANNSTAUB: hero gets poisoned */
 			if (host_readbs(poison_ptr) == -1) {
@@ -390,8 +390,8 @@ void poison_effect(void)
 
 
 			for (j = 1; j <= 9; j++) {
-				if (host_readbs(hero + (HERO_POISON-5) + j * 5) != 0) {
-					inc_ptr_bs(hero + (HERO_POISON-4) + j * 5);
+				if (host_readbs(hero + HERO_POISON + j * SIZEOF_HERO_POISON) != 0) {
+					inc_ptr_bs(hero + (HERO_POISON+1) + j * SIZEOF_HERO_POISON);
 				}
 			}
 

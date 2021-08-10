@@ -53,7 +53,7 @@ void disease_effect(void)
 
 			hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * i;
 
-			disease_ptr = Real2Host(hero) + HERO_ILLNESS;
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_WUNDFIEBER * SIZEOF_HERO_ILLNESS);
 
 			/* TETANUS / WUNDFIEBER: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -109,7 +109,7 @@ void disease_effect(void)
 			}
 
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 5);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_DUMPFSCHAEDEL * SIZEOF_HERO_ILLNESS);
 
 			/* NUMBSKULL / DUMPFSCHAEDEL: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -209,7 +209,7 @@ void disease_effect(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 10);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_BLAUE_KEUCHE * SIZEOF_HERO_ILLNESS);
 
 			/* BLUE COUGH / BLAUE KEUCHE: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -293,7 +293,7 @@ void disease_effect(void)
 			}
 
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 15);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_PARALYSE * SIZEOF_HERO_ILLNESS);
 
 			/* PARALYSIS / PARALYSE: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -351,7 +351,7 @@ void disease_effect(void)
 			}
 
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 20);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_SCHLACHTENFIEBER * SIZEOF_HERO_ILLNESS);
 
 			/* BATTLEFIELD FEVER / SCHLACHTFELDFIEBER: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -428,7 +428,7 @@ void disease_effect(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 25);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_FROSTSCHAEDEN * SIZEOF_HERO_ILLNESS);
 
 			/* FROSTBITE / FROSTSCHAEDEN: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -504,7 +504,7 @@ void disease_effect(void)
 				}
 			}
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 30);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_TOLLWUT * SIZEOF_HERO_ILLNESS);
 
 			/* RABIES / TOLLWUT: get worser */
 			if (host_readbs(disease_ptr) == -1) {
