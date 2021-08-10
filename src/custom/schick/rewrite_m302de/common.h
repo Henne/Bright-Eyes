@@ -176,10 +176,8 @@ enum {
 	HERO_STATUS1		= 0x0AA, /* 1 byte = 8 bits */ /* Bit0 = dead, Bit1 = asleep, Bit2 = petrified, Bit3 = brewing, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious, Bit7 = tied */
 	HERO_STATUS2		= 0x0AB, /* 1 byte = 8 bits */ /* Bit0 = scared, Bit1 = unused?, Bit2 = duplicatus, Bit3 = tame, Bit4 = seen_phantom, Bit5 = gods_pissed, Bit6 = transformed, Bit7 = encouraged */
 	HERO_UNKNOWN11		= 0x0AC, /* 2 bytes */ /* never used? */
-	HERO_ILLNESS_EMPTY	= 0x0AE, /* 5 bytes */ /* unused? */
-	HERO_ILLNESS		= 0x0B3, /* 35 = 7 * 5 bytes */ /* 5 bytes for each of the following illnesses: 1-Wundfieber, 2-Dumpfschädel, 3-Blaue Keuche, 4-Paralyse, 5-Schlachtenfieber, 6-Frostschäden, 7-Tollwut */
-	HERO_POISON_EMPTY	= 0x0D6, /* 5 bytes */ /* unused? */
-	HERO_POISON		= 0x0DB, /* 45 = 9 * 5 bytes */ /* 5 bytes for each of the following poisonings: 1-Shurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemel, 7-Lotusgift, 8-Kukris, 9-Bannstaubvergiftung */
+	HERO_ILLNESS		= 0x0AE, /* 40 = 8 * 5 bytes */ /* 5 bytes for each of the following illnesses: 0-none (these 5 bytes appear to be unused!) 1-Wundfieber, 2-Dumpfschädel, 3-Blaue Keuche, 4-Paralyse, 5-Schlachtenfieber, 6-Frostschäden, 7-Tollwut */
+	HERO_POISON		= 0x0D6, /* 50 = 10 * 5 bytes */ /* 5 bytes for each of the following poisonings: 0-none (these 5 bytes appear to be unused!) 1-Shurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemel, 7-Lotusgift, 8-Kukris, 9-Bannstaubvergiftung */
 	HERO_TALENTS		= 0x108, /* 52 = 52 * 1 bytes, see enum TA_* below */
 	HERO_TA_RISE		= 0x13C, /* saved skill increases from last levelups */
 	HERO_SPELLS		= 0x13D, /* empty Byte */
@@ -276,26 +274,32 @@ enum {
 };
 
 enum {
-	ILLNESS_WUNDFIEBER = 0,
-	ILLNESS_DUMPFSCHAEDEL = 1,
-	ILLNESS_BLAUE_KEUCHE = 2,
-	ILLNESS_PARALYSE = 3,
-	ILLNESS_SCHLACHTENFIEBER = 4,
-	ILLNESS_FROSTSCHAEDEN = 5,
-	ILLNESS_TOLLWUT = 6
+	ILLNESS_TYPE_NONE = 0,
+	ILLNESS_TYPE_WUNDFIEBER = 1,
+	ILLNESS_TYPE_DUMPFSCHAEDEL = 2,
+	ILLNESS_TYPE_BLAUE_KEUCHE = 3,
+	ILLNESS_TYPE_PARALYSE = 4,
+	ILLNESS_TYPE_SCHLACHTENFIEBER = 5,
+	ILLNESS_TYPE_FROSTSCHAEDEN = 6,
+	ILLNESS_TYPE_TOLLWUT = 7
 };
 
+#define SIZEOF_HERO_ILLNESS (5)
+
 enum {
-	POISON_SHURINKNOLLENGIFT = 0,
-	POISON_ARAX = 1,
-	POISON_ANGSTGIFT = 2,
-	POISON_SCHLAFGIFT = 3,
-	POISON_GOLDLEIM = 4,
-	POISON_KROETENSCHEMEL = 5,
-	POISON_LOTUSGIFT = 6,
-	POISON_KUKRIS = 7,
-	POISON_BANNSTAUB = 8
+	POISON_TYPE_NONE = 0,
+	POISON_TYPE_SHURINKNOLLENGIFT = 1,
+	POISON_TYPE_ARAX = 2,
+	POISON_TYPE_ANGSTGIFT = 3,
+	POISON_TYPE_SCHLAFGIFT = 4,
+	POISON_TYPE_GOLDLEIM = 5,
+	POISON_TYPE_KROETENSCHEMEL = 6,
+	POISON_TYPE_LOTUSGIFT = 7,
+	POISON_TYPE_KUKRIS = 8,
+	POISON_TYPE_BANNSTAUB = 9
 };
+
+#define SIZEOF_HERO_POISON (5)
 
 struct enemy_status1 {
 	/* enemy + 0x31 */

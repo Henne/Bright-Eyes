@@ -102,7 +102,7 @@ unsigned short hero_is_diseased(Bit8u *hero)
 	signed short i;
 
 	for (i = 1; i <= 7; i++)
-		if (host_readbs(hero + (HERO_ILLNESS-5) + i * 5) == -1)
+		if (host_readbs(hero + HERO_ILLNESS + i * SIZEOF_HERO_ILLNESS) == -1)
 			return i;
 
 	return 0;
@@ -122,7 +122,7 @@ unsigned short hero_is_poisoned(Bit8u *hero)
 	signed short i;
 
 	for (i = 1; i <= 9; i++)
-		if (host_readbs(hero + (HERO_POISON-5) + i * 5) == -1)
+		if (host_readbs(hero + HERO_POISON + i * SIZEOF_HERO_POISON) == -1)
 			return i;
 
 	return 0;
