@@ -185,7 +185,7 @@ signed short KI_change_hero_weapon(Bit8u *hero)
 
 	for (pos = 7; pos < 23; pos++) {
 
-		item_id = host_readws(hero + HERO_ITEM_HEAD + pos * 14);
+		item_id = host_readws(hero + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY);
 		item_p = get_itemsdat(item_id);
 
 		/* grab the first melee weapon on top of the knapsack,
@@ -205,7 +205,7 @@ signed short KI_change_hero_weapon(Bit8u *hero)
 
 		/* find a free slot, to get rid of the broken weapon */
 		for (pos = 7; pos < 23; pos++) {
-			if (host_readws(hero + HERO_ITEM_HEAD + pos * 14) == 0) {
+			if (host_readws(hero + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY) == 0) {
 				move_item(3, pos, hero);
 				has_new_weapon = 2;
 				break;
@@ -803,13 +803,13 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 			/* equip LONGBOW and ARROWS in the first round,
 			 * if the hero has them in the inventory */
 			if ((ds_readws(FIGHT_ROUND) == 0) &&
-				(host_readws(hero + HERO_ITEM_RIGHT) != ITEM_LONGBOW) &&
+				(host_readws(hero + HERO_INVENTORY_RIGHT) != ITEM_LONGBOW) &&
 				(get_item_pos(hero, ITEM_ARROWS) != -1) &&
 				(get_item_pos(hero, ITEM_LONGBOW) != -1))
 			{
 				move_item(3, get_item_pos(hero, ITEM_LONGBOW), hero);
 
-				if (host_readws(hero + HERO_ITEM_LEFT) != ITEM_ARROWS) {
+				if (host_readws(hero + HERO_INVENTORY_LEFT) != ITEM_ARROWS) {
 					move_item(4, get_item_pos(hero, ITEM_ARROWS), hero);
 				}
 			}
@@ -821,13 +821,13 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				/* equip LONGBOW and ARROWS in the first round,
 				 * if the hero has them in the inventory */
 				if ((ds_readws(FIGHT_ROUND) == 0) &&
-					(host_readws(hero + HERO_ITEM_RIGHT) != ITEM_LONGBOW) &&
+					(host_readws(hero + HERO_INVENTORY_RIGHT) != ITEM_LONGBOW) &&
 					(get_item_pos(hero, ITEM_ARROWS) != -1) &&
 					(get_item_pos(hero, ITEM_LONGBOW) != -1))
 				{
 					move_item(3, get_item_pos(hero, ITEM_LONGBOW), hero);
 
-					if (host_readws(hero + HERO_ITEM_LEFT) != ITEM_ARROWS) {
+					if (host_readws(hero + HERO_INVENTORY_LEFT) != ITEM_ARROWS) {
 						move_item(4, get_item_pos(hero, ITEM_ARROWS), hero);
 					}
 				} else if (FIG_get_range_weapon_type(hero) == -1)
@@ -1010,7 +1010,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 					if (host_readbs(hero + HERO_ENEMY_ID) != 0) {
 
-						host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_ATTACK);
+						host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MELEE_ATTACK);
 						host_writeb(hero + HERO_BP_LEFT, 0);
 
 					} else {

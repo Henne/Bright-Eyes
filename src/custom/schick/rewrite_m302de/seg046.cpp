@@ -238,12 +238,12 @@ void status_show(Bit16u index)
 
 		for (i = 0; i < 23; i++) {
 
-			if (host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD) == 0)
+			if (host_readw(Real2Host(hero) + i * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD) == 0)
 				continue;
 
 			nvf.dst = Real2Host(ds_readd(ICON));
 			/* set no */
-			nvf.no = host_readw(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD)));
+			nvf.no = host_readw(get_itemsdat(host_readw(Real2Host(hero) + i * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD)));
 
 			process_nvf(&nvf);
 
@@ -259,10 +259,10 @@ void status_show(Bit16u index)
 			ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 			/* check if stackable */
-			if (item_stackable(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD)))) {
+			if (item_stackable(get_itemsdat(host_readw(Real2Host(hero) + i * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD)))) {
 
 				set_textcolor(0xff, 0);
-				my_itoa(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD + 2),
+				my_itoa(host_readw(Real2Host(hero) + i * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD + 2),
 					(char*)Real2Host(ds_readd(DTP2)), 10);
 
 				GUI_print_string(Real2Host(ds_readd(DTP2)),
@@ -480,9 +480,9 @@ void status_show(Bit16u index)
 					l1 = 0;
 				}
 
-				at = (host_readbs(Real2Host(hero) + HERO_WP_CLASS) < 7) ?
+				at = (host_readbs(Real2Host(hero) + HERO_WEAPON_TYPE) < 7) ?
 					/* melee weapons */
-					(host_readbs(Real2Host(hero) + HERO_AT + host_readbs(Real2Host(hero) + HERO_WP_CLASS)) +
+					(host_readbs(Real2Host(hero) + HERO_AT + host_readbs(Real2Host(hero) + HERO_WEAPON_TYPE)) +
 						host_readbs(Real2Host(hero) + HERO_AT_MOD) -
 						(host_readbs(Real2Host(hero) + HERO_RS_BE) / 2)) :
 					/* range weapons */
@@ -491,9 +491,9 @@ void status_show(Bit16u index)
 				at += l1;
 
 				/* calculate PA base value */
-				pa = (host_readbs(Real2Host(hero) + HERO_WP_CLASS) < 7) ?
+				pa = (host_readbs(Real2Host(hero) + HERO_WEAPON_TYPE) < 7) ?
 					/* melee weapons */
-					(host_readbs(Real2Host(hero) + HERO_PA + host_readbs(Real2Host(hero) + HERO_WP_CLASS)) +
+					(host_readbs(Real2Host(hero) + HERO_PA + host_readbs(Real2Host(hero) + HERO_WEAPON_TYPE)) +
 						host_readbs(Real2Host(hero) + HERO_PA_MOD) -
 						(host_readbs(Real2Host(hero) + HERO_RS_BE) / 2)) :
 					/* range weapons */
@@ -567,16 +567,16 @@ void status_show(Bit16u index)
 			else
 				l1 = 0;
 
-			at = (host_readbs(Real2Host(hero) + HERO_WP_CLASS) < 7) ?
-				(host_readbs(Real2Host(hero) + HERO_AT + host_readbs(Real2Host(hero) + HERO_WP_CLASS)) +
+			at = (host_readbs(Real2Host(hero) + HERO_WEAPON_TYPE) < 7) ?
+				(host_readbs(Real2Host(hero) + HERO_AT + host_readbs(Real2Host(hero) + HERO_WEAPON_TYPE)) +
 					host_readbs(Real2Host(hero) + HERO_AT_MOD) -
 					host_readbs(Real2Host(hero) + HERO_RS_BE) / 2) :
 				host_readbs(Real2Host(hero) + HERO_AT) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
 
 			at += l1;
 
-			pa =  (host_readbs(Real2Host(hero) + HERO_WP_CLASS) < 7) ?
-				host_readbs(Real2Host(hero) + HERO_PA + host_readbs(Real2Host(hero) + HERO_WP_CLASS)) +
+			pa =  (host_readbs(Real2Host(hero) + HERO_WEAPON_TYPE) < 7) ?
+				host_readbs(Real2Host(hero) + HERO_PA + host_readbs(Real2Host(hero) + HERO_WEAPON_TYPE)) +
 					host_readbs(Real2Host(hero) + HERO_PA_MOD) -
 					host_readbs(Real2Host(hero) + HERO_RS_BE) / 2 :
 				host_readbs(Real2Host(hero) + HERO_PA) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;

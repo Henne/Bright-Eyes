@@ -2806,13 +2806,13 @@ void sub_light_timers(Bit32s quarter)
 
 			for (j = 0; j < 23; j++) {
 
-				if (host_readw(hero_i + HERO_ITEM_HEAD + 14 * j) == ITEM_TORCH_ON) {
+				if (host_readw(hero_i + (HERO_INVENTORY_HEAD + HERO_INVENTORY_ITEM_ID) + SIZEOF_HERO_INVENTORY * j) == ITEM_TORCH_ON) {
 
 					/* Torch, burning */
 
-					sub_ptr_bs(hero_i + HERO_ITEM_HEAD + 8 + 14 * j, tmp);
+					sub_ptr_bs(hero_i + HERO_INVENTORY_HEAD + HERO_INVENTORY_LIGHTING_TIMER + SIZEOF_HERO_INVENTORY * j, tmp);
 
-					if (host_readbs(hero_i + HERO_ITEM_HEAD + 8 + 14 * j) <= 0)
+					if (host_readbs(hero_i + HERO_INVENTORY_HEAD + HERO_INVENTORY_LIGHTING_TIMER + SIZEOF_HERO_INVENTORY * j) <= 0)
 					{
 						/* decrement item counter */
 						dec_ptr_bs(hero_i + HERO_KS_TAKEN);
@@ -2822,19 +2822,19 @@ void sub_light_timers(Bit32s quarter)
 							host_readws(Real2Host(ds_readd(ITEMSDAT)) + (12*ITEM_TORCH_ON + 5)));
 
 						/* Remove Torch from inventory */
-						memset(hero_i + HERO_ITEM_HEAD + 14 * j, 0, 14);
+						memset(hero_i + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * j, 0, SIZEOF_HERO_INVENTORY);
 					}
 
-				} else if (host_readw(hero_i + HERO_ITEM_HEAD + 14 * j) == ITEM_LANTERN_ON) {
+				} else if (host_readw(hero_i + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * j) == ITEM_LANTERN_ON) {
 
 					/* Lantern, burning */
-					sub_ptr_bs(hero_i + HERO_ITEM_HEAD + 8 + 14 * j, tmp);
+					sub_ptr_bs(hero_i + HERO_INVENTORY_HEAD + 8 + SIZEOF_HERO_INVENTORY * j, tmp);
 
-					if (host_readbs(hero_i + HERO_ITEM_HEAD + 8 + 14 * j) <= 0) {
+					if (host_readbs(hero_i + HERO_INVENTORY_HEAD + 8 + SIZEOF_HERO_INVENTORY * j) <= 0) {
 						/* Set timer to 0 */
-						host_writeb(hero_i + HERO_ITEM_HEAD + 8 + 14 * j, 0);
+						host_writeb(hero_i + HERO_INVENTORY_HEAD + 8 + SIZEOF_HERO_INVENTORY * j, 0);
 						/* Set burning lantern to a not burning lantern */
-						host_writew(hero_i + HERO_ITEM_HEAD + 14 * j, ITEM_LANTERN_OFF);
+						host_writew(hero_i + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * j, ITEM_LANTERN_OFF);
 					}
 				}
 			}
@@ -2866,7 +2866,7 @@ void magical_chainmail_damage(void)
 				/* check if not in chail */
 				!host_readbs(hero_i + HERO_JAIL) &&
 				/* check if cursed chainmail is equipped */
-				(host_readw(hero_i + HERO_ITEM_BODY) == ITEM_CHAIN_MAIL_CURSED))
+				(host_readw(hero_i + HERO_INVENTORY_BODY) == ITEM_CHAIN_MAIL_CURSED))
 			{
 				sub_hero_le(hero_i, 1);
 			}
@@ -5050,7 +5050,7 @@ signed short get_item_pos(Bit8u *hero, signed short item)
 	signed short i;
 
 	for (i = 0; i < 23; i++) {
-		if (item == host_readws(hero + i * 14 + HERO_ITEM_HEAD)) {
+		if (item == host_readws(hero + i * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD)) {
 			return i;
 		}
 	}
@@ -5075,9 +5075,9 @@ signed short get_first_hero_with_item(signed short item)
 		if (host_readbs(hero_i + HERO_TYPE) &&
 			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
-			/* Search inventar */
+			/* Search inventory */
 			for (j = 0; j < 23; j++) {
-				if (host_readw(hero_i + j * 14 + HERO_ITEM_HEAD) == item) {
+				if (host_readw(hero_i + j * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD) == item) {
 					return i;
 				}
 			}
@@ -5105,9 +5105,9 @@ signed short get_first_hero_with_item_in_group(signed short item, signed short g
 		if (host_readbs(hero_i + HERO_TYPE) &&
 			(host_readbs(hero_i + HERO_GROUP_NO) == (signed char)group))
 		{
-			/* Search inventar */
+			/* Search inventory */
 			for (j = 0; j < 23; j++) {
-				if (host_readws(hero_i + j * 14 + HERO_ITEM_HEAD) == item) {
+				if (host_readws(hero_i + j * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD) == item) {
 					return i;
 				}
 			}
@@ -5222,7 +5222,7 @@ signed short count_heroes_available(void)
 }
 
 #ifdef M302de_ORIGINAL_BUGFIX
-/* this function allows cleaner fixe for Original-Bug 15 */
+/* this function allows a cleaner fix for Original-Bug 15 */
 signed short count_heroes_available_ignore_npc(void)
 {
 	signed short i;

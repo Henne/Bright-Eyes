@@ -133,20 +133,20 @@ void status_menu(signed short hero_pos)
 						9);
 				}
 
-				if (host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO)) != 0) {
+				if (host_readws(hero1 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO)) != 0) {
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						/* "%s %s " */
 						(char*)(p_datseg + EXTRASPACE_SEPARATED_STRINGS),
-						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))))),
+						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero1 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO))))),
 						!is_in_word_array(
-						    host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO)),
+						    host_readws(hero1 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO)),
 						    (signed short*)Real2Host(ds_readd((WEARABLE_ITEMS_INDEX - 4) + 4 * host_readbs(hero2 + HERO_TYPE)))
                         ) ? p_datseg + EMPTY_STRING8 : get_tx2(66));
 
-					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))))) {
+					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO))))) {
 						strcat((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(48 + host_readbs(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))) + 3)));
+							(char*)get_ttx(48 + host_readbs(get_itemsdat(host_readws(hero1 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO))) + 3)));
 					}
 
 					GUI_print_string(Real2Host(ds_readd(DTP2)), 16, 192);
@@ -319,19 +319,19 @@ void status_menu(signed short hero_pos)
 				host_writeb(Real2Host(ds_readd(DTP2)) + 60, 0);
 				GUI_print_string(Real2Host(ds_readd(DTP2)), 16, 192);
 
-				if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))) {
+				if (host_readws(hero2 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO))) {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						/* "%s %s " */
 						(char*)(p_datseg + EXTRASPACE_SEPARATED_STRINGS2),
-						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))))),
+						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero2 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO))))),
 						!is_in_word_array(
-						    host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO)),
+						    host_readws(hero2 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO)),
 						    (signed short*)Real2Host(ds_readd((WEARABLE_ITEMS_INDEX - 4) + 4 * host_readbs(hero2 + HERO_TYPE)))
                         ) ? p_datseg + EMPTY_STRING9 : get_tx2(66));
 
-					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))))) {
+					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO))))) {
 						strcat((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ttx(48 + host_readbs(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))) + 3)));
+							(char*)get_ttx(48 + host_readbs(get_itemsdat(host_readws(hero1 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO))) + 3)));
 					}
 
 					GUI_print_string(Real2Host(ds_readd(DTP2)), 16, 192);
@@ -429,14 +429,14 @@ void status_menu(signed short hero_pos)
 						ds_readws(INVSLOT_BORDERXY_TABLE + 2 + 4 * ds_readbs(STATUSPAGE_SELITEM4_NO)) + 17,
 						8);
 
-					if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))) {
+					if (host_readws(hero2 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO))) {
 
 						nvf.dst = Real2Host(ds_readd(ICON));
 						nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 						nvf.type = 0;
 						nvf.width = (Bit8u*)&width;
 						nvf.height = (Bit8u*)&height;
-						nvf.no = host_readws(get_itemsdat(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(STATUSPAGE_SELITEM3_NO))));
+						nvf.no = host_readws(get_itemsdat(host_readws(hero2 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * ds_readbs(STATUSPAGE_SELITEM3_NO))));
 						process_nvf(&nvf);
 
 						make_ggst_cursor(Real2Host(ds_readd(ICON)));

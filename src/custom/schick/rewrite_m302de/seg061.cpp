@@ -545,19 +545,19 @@ void miracle_weapon(Bit8u *str, signed short mode)
 			for (i = 0; i < 23; i++)
 			{
 
-				if ((item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * i)) &&
+				if ((item_id = host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i)) &&
 					item_weapon(get_itemsdat(item_id)))
 				{
 
 					if (mode == 0) {
 						/* make a non-broken, non-magic weapon magic */
 
-						if (!ks_broken(hero + HERO_ITEM_HEAD + 14 * i) &&
-							!ks_magic_hidden(hero + HERO_ITEM_HEAD + 14 * i))
+						if (!ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i) &&
+							!ks_magic_hidden(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i))
 						{
 							/* weapon is magic and known */
-							or_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * i, 0x08);
-							or_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * i, 0x80);
+							or_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * i, 0x08);
+							or_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * i, 0x80);
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)str,
@@ -569,9 +569,9 @@ void miracle_weapon(Bit8u *str, signed short mode)
 						}
 					} else {
 						/* repair a broken weapon */
-						if (ks_broken(hero + HERO_ITEM_HEAD + 14 * i))
+						if (ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i))
 						{
-							and_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * i, 0xfe);
+							and_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * i, 0xfe);
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)str,

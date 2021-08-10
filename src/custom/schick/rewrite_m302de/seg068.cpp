@@ -760,14 +760,14 @@ signed short academy_get_equal_item(signed short price)
 			{
 				for (item_pos = 0; item_pos < 23; item_pos++) {
 
-					if (host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos) != 0 &&
-						!ks_broken(hero + HERO_ITEM_HEAD + 14 * item_pos))
+					if (host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos) != 0 &&
+						!ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos))
 					{
-						p_item = get_itemsdat(host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos));
+						p_item = get_itemsdat(host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos));
 
 						if (host_readws(p_item + 8) * host_readbs(p_item + 7) >= price)
 						{
-							retval = host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos);
+							retval = host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos);
 							break;
 						}
 					}

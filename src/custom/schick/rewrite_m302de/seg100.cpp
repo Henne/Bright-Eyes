@@ -165,18 +165,18 @@ void spell_odem_arcanum(void)
 
 #endif
 
-	id = host_readws(get_spelluser() + pos * 14 + HERO_ITEM_HEAD);
+	id = host_readws(get_spelluser() + pos * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD);
 
 	if (id) {
 
-		if (ks_magic_hidden(get_spelluser() + pos * 14 + HERO_ITEM_HEAD)) {
+		if (ks_magic_hidden(get_spelluser() + pos * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD)) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(81),
 				(char*)Real2Host(GUI_names_grammar((signed short)0x8000, id, 0)));
 
 			/* set known flag */
-			or_ptr_bs(get_spelluser() + pos * 14 + (HERO_ITEM_HEAD + 4), 0x80);
+			or_ptr_bs(get_spelluser() + pos * SIZEOF_HERO_INVENTORY + (HERO_INVENTORY_HEAD + 4), 0x80);
 
 		} else {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -435,23 +435,23 @@ void spell_eisenrost(void)
 				(char*)get_tx(112));
 		} else {
 			/* get weapon id of the target */
-			id = host_readws(get_spelltarget() + HERO_ITEM_RIGHT);
+			id = host_readws(get_spelltarget() + HERO_INVENTORY_RIGHT);
 
 			if (!id) {
 				/* no weapon in hand */
 				ds_writew(SPELL_SPECIAL_AECOST, -2);
 			} else {
 				/* check if weapon is already broken */
-				if (ks_broken(get_spelltarget() + HERO_ITEM_RIGHT)) {
+				if (ks_broken(get_spelltarget() + HERO_INVENTORY_RIGHT)) {
 
 					strcpy((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx(90));
 
 				} else {
 
-					if (host_readbs(get_spelltarget() + (HERO_ITEM_RIGHT + 6)) > 0) {
+					if (host_readbs(get_spelltarget() + (HERO_INVENTORY_RIGHT + 6)) > 0) {
 						/* set broken flag */
-						or_ptr_bs(get_spelltarget() + (HERO_ITEM_RIGHT + 4), 0x01);
+						or_ptr_bs(get_spelltarget() + (HERO_INVENTORY_RIGHT + 4), 0x01);
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_tx(92),
 							(char*)Real2Host(GUI_names_grammar((signed short)0x8000, id, 0)),
@@ -610,7 +610,7 @@ void spell_ignifaxius(void)
 	                (Bit32u)((RealPt)ds_readd(HEROES) + hero_pos * SIZEOF_HERO));
 
 		/* get a pointer to the armour */
-		p_armour = get_spelltarget() + HERO_ITEM_BODY;
+		p_armour = get_spelltarget() + HERO_INVENTORY_BODY;
 
 		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
 
@@ -630,12 +630,12 @@ void spell_ignifaxius(void)
 		/* get an AT/PA-Malus of -level / 2 for the current weapon and one hour */
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, HOURS(1),
-			get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS),
+			get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WEAPON_TYPE),
 			-level / 2, (signed char)hero_pos);
 
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, HOURS(1),
-			get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WP_CLASS),
+			get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WEAPON_TYPE),
 			-level / 2, (signed char)hero_pos);
 
 	} else {
@@ -692,7 +692,7 @@ void spell_plumbumbarum(void)
 			/* give a short AT-malus of -3 to the current weapon of the target */
 			slot = get_free_mod_slot();
 			set_mod_slot(slot, 0x2d,
-				get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS),
+				get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WEAPON_TYPE),
 				-3, (signed char)hero_pos);
 
 			/* prepare the message */
@@ -745,14 +745,14 @@ void spell_saft_kraft(void)
 	slot = get_free_mod_slot();
 
 	set_mod_slot(slot, rounds * 9L,
-		get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS),
+		get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WEAPON_TYPE),
 		5, (signed char)target);
 
 	/* -5 on PA of the current weapon */
 	slot = get_free_mod_slot();
 
 	set_mod_slot(slot, rounds * 9L,
-		get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WP_CLASS),
+		get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WEAPON_TYPE),
 		-5, (signed char)target);
 
 	/* +5 extra damage */

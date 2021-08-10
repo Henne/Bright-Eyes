@@ -49,8 +49,8 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 	retval = 0;
 
 	/* read the item ids from the hands */
-	right_hand = host_readws(hero + HERO_ITEM_RIGHT);
-	left_hand = host_readws(hero + HERO_ITEM_LEFT);
+	right_hand = host_readws(hero + HERO_INVENTORY_RIGHT);
+	left_hand = host_readws(hero + HERO_INVENTORY_LEFT);
 
 	switch (right_hand) {
 		case ITEM_SPEAR:		/* Speer */
@@ -254,7 +254,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		enemy_p = target;
 	}
 
-	right_hand = host_readw(hero + HERO_ITEM_RIGHT);
+	right_hand = host_readw(hero + HERO_INVENTORY_RIGHT);
 
 	item_p_rh = get_itemsdat(right_hand);
 
@@ -382,30 +382,30 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 	if (damage > 0) {
 
-		if (ks_poison1(hero + HERO_ITEM_RIGHT)) {
+		if (ks_poison1(hero + HERO_INVENTORY_RIGHT)) {
 			damage += dice_roll(1, 6, 2);
-			and_ptr_bs(hero + (HERO_ITEM_RIGHT+4), 0xdf);
+			and_ptr_bs(hero + (HERO_INVENTORY_RIGHT+4), 0xdf);
 		}
 
-		if (ks_poison2(hero + HERO_ITEM_RIGHT)) {
+		if (ks_poison2(hero + HERO_INVENTORY_RIGHT)) {
 			damage += dice_roll(1, 20, 5);
-			and_ptr_bs(hero + (HERO_ITEM_RIGHT+4), 0xbf);
+			and_ptr_bs(hero + (HERO_INVENTORY_RIGHT+4), 0xbf);
 		}
 
-		if (host_readbs(hero + HERO_ITEM_RIGHT + 9) != 0) {
+		if (host_readbs(hero + HERO_INVENTORY_RIGHT + 9) != 0) {
 
-			if (host_readbs(hero + HERO_ITEM_RIGHT + 9) == 3) {
+			if (host_readbs(hero + HERO_INVENTORY_RIGHT + 9) == 3) {
 				or_ptr_bs(enemy_p + ENEMY_SHEET_STATUS2, 0x04);
 				and_ptr_bs(enemy_p + ENEMY_SHEET_STATUS2, 0xfd);
 			} else {
 
-				damage += 10 * ds_readws(POISON_PRICES + 2 * host_readbs(hero + HERO_ITEM_RIGHT + 9));
+				damage += 10 * ds_readws(POISON_PRICES + 2 * host_readbs(hero + HERO_INVENTORY_RIGHT + 9));
 			}
 
-			dec_ptr_bs(hero + HERO_ITEM_RIGHT + 10);
+			dec_ptr_bs(hero + HERO_INVENTORY_RIGHT + 10);
 
-			if (!host_readbs(hero + HERO_ITEM_RIGHT + 10)) {
-				host_writebs(hero + HERO_ITEM_RIGHT + 9, 0);
+			if (!host_readbs(hero + HERO_INVENTORY_RIGHT + 10)) {
+				host_writebs(hero + HERO_INVENTORY_RIGHT + 9, 0);
 			}
 		}
 	}
@@ -429,7 +429,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			damage = 0;
 		}
 
-		if ((host_readbs(enemy_p + ENEMY_SHEET_MAGIC) != 0) && !ks_magic_hidden(hero + HERO_ITEM_RIGHT)) {
+		if ((host_readbs(enemy_p + ENEMY_SHEET_MAGIC) != 0) && !ks_magic_hidden(hero + HERO_INVENTORY_RIGHT)) {
 			damage = 0;
 		}
 
@@ -483,7 +483,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		damage -= host_readbs(hero + HERO_RS_BONUS1);
 
 		/* armour bonus against skeletons and zombies */
-		if (host_readw(hero + HERO_ITEM_BODY) == ITEM_CHAIN_MAIL_CURSED && (
+		if (host_readw(hero + HERO_INVENTORY_BODY) == ITEM_CHAIN_MAIL_CURSED && (
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
 				damage -= 3;
@@ -498,7 +498,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 			/* no damage for the hero who has it */
 			damage = 0;
 
-			/* 5% chance to loose this item */
+			/* 4% chance to loose this item */
 			if (random_schick(100) < 5) {
 				drop_item(hero, pos, 1);
 				GUI_output(get_tx(11));
@@ -559,12 +559,12 @@ signed short weapon_check(Bit8u *hero)
 	signed short l_di;
 
 	/* get the ID of the equipped weapon */
-	item = host_readw(hero + HERO_ITEM_RIGHT);
+	item = host_readw(hero + HERO_INVENTORY_RIGHT);
 
 	item_p = get_itemsdat(item);
 
 	if (!item_weapon(item_p) ||	/* check if its a weapon */
-		ks_broken(hero + HERO_ITEM_RIGHT) ||
+		ks_broken(hero + HERO_INVENTORY_RIGHT) ||
 		(item_weapon(item_p) &&
 			((host_readbs(item_p + 3) == 7) ||
 			(host_readbs(item_p + 3) == 8) ||

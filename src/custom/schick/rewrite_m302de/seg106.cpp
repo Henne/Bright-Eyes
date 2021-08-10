@@ -50,7 +50,7 @@ signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos
 		}
 
 		/* get the item in the other hand */
-		in_hand = host_readw(hero + other_pos * 0x0e + HERO_ITEM_HEAD);
+		in_hand = host_readw(hero + other_pos * 0x0e + HERO_INVENTORY_HEAD);
 		if (in_hand) {
 
 			/* check if one hand has a two-handed weapon */
@@ -79,11 +79,11 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 		if ((pos2 > 6) && (pos1 > 6)) {
 			/* Both items are in knapsacks */
 			v3 = 1;
-			item1 = host_readws(hero + HERO_ITEM_HEAD + pos1  * SIZEOF_KS_ITEM);
-			item2 = host_readws(hero + HERO_ITEM_HEAD + pos2  * SIZEOF_KS_ITEM);
+			item1 = host_readws(hero + HERO_INVENTORY_HEAD + pos1  * SIZEOF_HERO_INVENTORY);
+			item2 = host_readws(hero + HERO_INVENTORY_HEAD + pos2  * SIZEOF_HERO_INVENTORY);
 		} else {
-			item1 = host_readws(hero + HERO_ITEM_HEAD + pos1  * SIZEOF_KS_ITEM);
-			item2 = host_readws(hero + HERO_ITEM_HEAD + pos2  * SIZEOF_KS_ITEM);
+			item1 = host_readws(hero + HERO_INVENTORY_HEAD + pos1  * SIZEOF_HERO_INVENTORY);
+			item2 = host_readws(hero + HERO_INVENTORY_HEAD + pos2  * SIZEOF_HERO_INVENTORY);
 
 			if ((pos2 < pos1) || ((pos1 < 7) && (pos2 < 7))) {
 				if (pos1 < 7) {
@@ -120,8 +120,8 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 						add_ks_counter(pos1, pos2, hero);
 
 						/* delete item at pos2 */
-						memset(hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM,
-							0, SIZEOF_KS_ITEM);
+						memset(hero + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY,
+							0, SIZEOF_HERO_INVENTORY);
 #ifdef M302de_ORIGINAL_BUGFIX
 						/* Decrement the item counter */
 						dec_ptr_bs(hero + HERO_KS_TAKEN);
@@ -185,8 +185,8 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 				add_ks_counter(pos1, pos2, hero);
 
 				/* delete item at pos2 */
-				memset(hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM,
-							0, SIZEOF_KS_ITEM);
+				memset(hero + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY,
+							0, SIZEOF_HERO_INVENTORY);
 #ifdef M302de_ORIGINAL_BUGFIX
 				/* Decrement the item counter */
 				dec_ptr_bs(hero + HERO_KS_TAKEN);
@@ -194,17 +194,17 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 			} else {
 
 #if !defined(__BORLANDC__)
-				struct_copy((Bit8u*)&tmp, hero + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
-				struct_copy(hero + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM,
-					hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
-				struct_copy(hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM, (Bit8u*)&tmp, SIZEOF_KS_ITEM);
+				struct_copy((Bit8u*)&tmp, hero + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY, SIZEOF_HERO_INVENTORY);
+				struct_copy(hero + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY,
+					hero + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY, SIZEOF_HERO_INVENTORY);
+				struct_copy(hero + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY, (Bit8u*)&tmp, SIZEOF_HERO_INVENTORY);
 #else
 				/* exchange the items */
-				tmp = *(struct knapsack_item*)(hero + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
+				tmp = *(struct knapsack_item*)(hero + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY);
 
-				*(struct knapsack_item*)(hero + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM) =
-					*(struct knapsack_item*)(hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM);
-				*(struct knapsack_item*)(hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM) = tmp;
+				*(struct knapsack_item*)(hero + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY) =
+					*(struct knapsack_item*)(hero + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY);
+				*(struct knapsack_item*)(hero + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY) = tmp;
 #endif
 			}
 		}
@@ -217,7 +217,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 	Bit8u *item_p;
 
 	/* create pointer to the item in the inventory */
-	item_p = hero + HERO_ITEM_HEAD + pos * 14;
+	item_p = hero + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY;
 
 	if (host_readw(item_p) != 0) {
 		/* normal item */
@@ -262,7 +262,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 	/* poisoned */
 	if (host_readw(item_p) == ITEM_KUKRIS_DAGGER || host_readw(item_p) == ITEM_KUKRIS_MENGBILAR ||
 		ks_poison1(item_p) || ks_poison2(item_p) ||
-		host_readb(hero + HERO_ITEM_HEAD + 9 + pos * 14) != 0) {
+		host_readb(hero + HERO_INVENTORY_HEAD + 9 + pos * SIZEOF_HERO_INVENTORY) != 0) {
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(548));
 	}
 
@@ -294,7 +294,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 	struct knapsack_item tmp;
 
 
-	item1 = host_readws(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
+	item1 = host_readws(hero1 + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY);
 
 	/* check if item1 is an item */
 	if (item1 == 0) {
@@ -302,7 +302,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		return;
 	}
 
-	item2 = host_readws(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM);
+	item2 = host_readws(hero2 + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY);
 
 	item1_desc = get_itemsdat(item1);
 	item2_desc = get_itemsdat(item2);
@@ -425,11 +425,11 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			flag = 0;
 			l_di = 1;
 
-			if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) > 1) {
+			if (host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + pos1 * SIZEOF_HERO_INVENTORY) > 1) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ttx(210),
-					host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM),
+					host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + pos1 * SIZEOF_HERO_INVENTORY),
 					(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
 					(char*)hero2 + HERO_NAME2);
 
@@ -437,14 +437,14 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 				l_di = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 			}
 
-			if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) < l_di) {
-				l_di = host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM);
+			if (host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + pos1 * SIZEOF_HERO_INVENTORY) < l_di) {
+				l_di = host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + pos1 * SIZEOF_HERO_INVENTORY);
 			}
 
-			if ((l_di > 0) && (host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM) < 99)) {
+			if ((l_di > 0) && (host_readws(hero2 + (HERO_INVENTORY_HEAD+2) + pos2 * SIZEOF_HERO_INVENTORY) < 99)) {
 
-				if (host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM) + l_di > 99) {
-					l_di = 99 - host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM);
+				if (host_readws(hero2 + (HERO_INVENTORY_HEAD+2) + pos2 * SIZEOF_HERO_INVENTORY) + l_di > 99) {
+					l_di = 99 - host_readws(hero2 + (HERO_INVENTORY_HEAD+2) + pos2 * SIZEOF_HERO_INVENTORY);
 				}
 
 				while ((host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
@@ -453,7 +453,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 				if (l_di > 0) {
 					add_ptr_ws(hero2 + HERO_LOAD, host_readws(item1_desc + 5) * l_di);
-					add_ptr_ws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM, l_di);
+					add_ptr_ws(hero2 + (HERO_INVENTORY_HEAD+2) + pos2 * SIZEOF_HERO_INVENTORY, l_di);
 					drop_item(hero1, pos1, l_di);
 				} else {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -467,11 +467,11 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		if (flag != 0) {
 
 			desc1_5 = (item_stackable(item1_desc)) ?
-				host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) * host_readw(item1_desc + 5) :
+				host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + pos1 * SIZEOF_HERO_INVENTORY) * host_readw(item1_desc + 5) :
 				host_readws(item1_desc + 5);
 
 			desc2_5 = (item_stackable(item2_desc)) ?
-				host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM) * host_readw(item2_desc + 5) :
+				host_readws(hero2 + (HERO_INVENTORY_HEAD+2) + pos2 * SIZEOF_HERO_INVENTORY) * host_readw(item2_desc + 5) :
 				host_readws(item2_desc + 5);
 
 			if (host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + desc1_5 - desc2_5) {
@@ -494,31 +494,31 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 				/* exchange two items */
 #if !defined(__BORLANDC__)
-				struct_copy((Bit8u*)&tmp, hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+				struct_copy((Bit8u*)&tmp, hero2 + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY, SIZEOF_HERO_INVENTORY);
 #else
-				tmp = *(struct knapsack_item*)(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM);
+				tmp = *(struct knapsack_item*)(hero2 + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY);
 #endif
 
 				sub_ptr_ws(hero2 + HERO_LOAD, desc2_5);
 
 #if !defined(__BORLANDC__)
-				struct_copy(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM,
-						hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM,
-						SIZEOF_KS_ITEM);
+				struct_copy(hero2 + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY,
+						hero1 + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY,
+						SIZEOF_HERO_INVENTORY);
 #else
-				*(struct knapsack_item*)(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM) =
-					*(struct knapsack_item*)(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
+				*(struct knapsack_item*)(hero2 + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY) =
+					*(struct knapsack_item*)(hero1 + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY);
 #endif
 
 				add_ptr_ws(hero2 + HERO_LOAD, desc1_5);
 				sub_ptr_ws(hero1 + HERO_LOAD, desc1_5);
 
 #if !defined(__BORLANDC__)
-				struct_copy(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM,
+				struct_copy(hero1 + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY,
 						(Bit8u*)&tmp,
-						SIZEOF_KS_ITEM);
+						SIZEOF_HERO_INVENTORY);
 #else
-				*(struct knapsack_item*)(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM) = tmp;
+				*(struct knapsack_item*)(hero1 + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY) = tmp;
 #endif
 
 				add_ptr_ws(hero1 + HERO_LOAD, desc2_5);
@@ -550,11 +550,11 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 		l_di = 1;
 
-		if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) > 1) {
+		if (host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + pos1 * SIZEOF_HERO_INVENTORY) > 1) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ttx(210),
-				host_readws(hero1+ (HERO_ITEM_HEAD + 2) + pos1 * SIZEOF_KS_ITEM),
+				host_readws(hero1+ (HERO_INVENTORY_HEAD + 2) + pos1 * SIZEOF_HERO_INVENTORY),
 				(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
 				(char*)hero2 + HERO_NAME2);
 
@@ -562,8 +562,8 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			l_di = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 		}
 
-		if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) < l_di) {
-			l_di = host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM);
+		if (host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + pos1 * SIZEOF_HERO_INVENTORY) < l_di) {
+			l_di = host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + pos1 * SIZEOF_HERO_INVENTORY);
 		}
 
 		while ((host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
@@ -572,14 +572,14 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 		if (l_di > 0) {
 #if !defined(__BORLANDC__)
-			struct_copy(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM,
-				hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+			struct_copy(hero2 + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY,
+				hero1 + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY, SIZEOF_HERO_INVENTORY);
 #else
-			*(struct knapsack_item*)(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM) =
-					*(struct knapsack_item*)(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
+			*(struct knapsack_item*)(hero2 + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY) =
+					*(struct knapsack_item*)(hero1 + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY);
 #endif
 			add_ptr_ws(hero2 + HERO_LOAD, host_readws(item1_desc + 5) * l_di);
-			host_writews(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM, l_di);
+			host_writews(hero2 + (HERO_INVENTORY_HEAD+2) + pos2 * SIZEOF_HERO_INVENTORY, l_di);
 			drop_item(hero1, pos1, l_di);
 
 		} else {
@@ -606,11 +606,11 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		}
 
 #if !defined(__BORLANDC__)
-		struct_copy(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM,
-			hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+		struct_copy(hero2 + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY,
+			hero1 + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY, SIZEOF_HERO_INVENTORY);
 #else
-		*(struct knapsack_item*)(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM) =
-			*(struct knapsack_item*)(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
+		*(struct knapsack_item*)(hero2 + HERO_INVENTORY_HEAD + pos2 * SIZEOF_HERO_INVENTORY) =
+			*(struct knapsack_item*)(hero1 + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY);
 #endif
 		/* adjust weight */
 		add_ptr_ws(hero2 + HERO_LOAD, host_readws(item1_desc + 5));
@@ -621,7 +621,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		inc_ptr_bs(hero2 + HERO_KS_TAKEN);
 
 		/* clear slot */
-		memset(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM, 0, SIZEOF_KS_ITEM);
+		memset(hero1 + HERO_INVENTORY_HEAD + pos1 * SIZEOF_HERO_INVENTORY, 0, SIZEOF_HERO_INVENTORY);
 
 		/* special items */
 		if (item1 == ITEM_SICKLE_MAGIC) {
@@ -715,16 +715,16 @@ signed short get_max_light_time(void)
 		for (j = 0; j < 23; j++) {
 
 			/* search for a burning torch */
-			if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == ITEM_TORCH_ON) {
+			if (host_readw(hero + HERO_INVENTORY_HEAD + j * SIZEOF_HERO_INVENTORY) == ITEM_TORCH_ON) {
 
-				if (host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) > retval) {
-					retval = host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8);
+				if (host_readbs(hero + j * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD + 8) > retval) {
+					retval = host_readbs(hero + j * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD + 8);
 				}
-			} else if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == ITEM_LANTERN_ON) {
+			} else if (host_readw(hero + HERO_INVENTORY_HEAD + j * SIZEOF_HERO_INVENTORY) == ITEM_LANTERN_ON) {
 				/* search for a burning lantern */
 
-				if (host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) / 10 > retval) {
-					retval = host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) / 10;
+				if (host_readbs(hero + j * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD + 8) / 10 > retval) {
+					retval = host_readbs(hero + j * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD + 8) / 10;
 				}
 			}
 		}
@@ -856,8 +856,8 @@ signed short get_full_waterskin_pos(Bit8u *hero)
 	for (i = 7; i < 23; i++) {
 
 		/* look for a non-empty waterskin */
-		if ((host_readw(hero + HERO_ITEM_HEAD + i * 14) == ITEM_WATERSKIN) &&
-			!ks_empty(hero + HERO_ITEM_HEAD + i * 14))
+		if ((host_readw(hero + HERO_INVENTORY_HEAD + i * SIZEOF_HERO_INVENTORY) == ITEM_WATERSKIN) &&
+			!ks_empty(hero + HERO_INVENTORY_HEAD + i * SIZEOF_HERO_INVENTORY))
 		{
 			pos = i;
 			break;

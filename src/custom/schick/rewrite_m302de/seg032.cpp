@@ -584,7 +584,7 @@ void FIG_do_round(void)
 					/* select a fight action */
 					FIG_menu(Real2Host(hero), actor_id, x_coord, y_coord);
 
-					if ((host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_ATTACK) ||
+					if ((host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_MELEE_ATTACK) ||
 						(host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_SPELL) ||
 						(host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM) ||
 						(host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK))
@@ -681,7 +681,7 @@ void FIG_do_round(void)
 
 					enemy_turn(Real2Host(enemy), actor_id, x_coord, y_coord);
 
-					if ((host_readbs(Real2Host(enemy) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_ATTACK) ||
+					if ((host_readbs(Real2Host(enemy) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_MELEE_ATTACK) ||
 						(host_readbs(Real2Host(enemy) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_SPELL) ||
 						(host_readbs(Real2Host(enemy) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_USE_ITEM) ||
 						(host_readbs(Real2Host(enemy) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_RANGE_ATTACK))
@@ -1098,8 +1098,8 @@ signed short do_fight(signed short fight_id)
 				and_ptr_bs(hero + HERO_STATUS2, 0xfb); /* unset 'duplicatus' status bit */
 				and_ptr_bs(hero + HERO_STATUS2, 0xfe); /* unset 'scared' status bit */
 
-				host_writebs(hero + HERO_BLIND, 0);
-				host_writebs(hero + HERO_ECLIPTIFACTUS, 0);
+				host_writebs(hero + HERO_BLIND, 0); /* unset blindness (set counter to 0) */
+				host_writebs(hero + HERO_ECLIPTIFACTUS, 0); /* unset 'Ecliptifactus' (set counter to 0) */
 				host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 			}
 		}

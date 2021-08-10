@@ -164,13 +164,13 @@ void FIG_do_enemy_action(RealPt monster, signed short monster_pos)
 			}
 		}
 
-		if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_ATTACK) {
+		if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_MELEE_ATTACK) {
 
 			if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) < 10) {
 
 				/* attack a hero */
 
-				p_weapon = hero + HERO_ITEM_RIGHT;
+				p_weapon = hero + HERO_INVENTORY_RIGHT;
 
 				weapon_type = weapon_check(hero);
 
@@ -179,8 +179,8 @@ void FIG_do_enemy_action(RealPt monster, signed short monster_pos)
 					defender_at = host_readbs(hero + HERO_AT) + host_readbs(hero + HERO_ATTACK_TYPE);
 					defender_pa = host_readbs(hero + HERO_PA) - host_readbs(hero + HERO_ATTACK_TYPE);
 				} else {
-					defender_at = host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS)) + host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_AT_MOD);
-					defender_pa = host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WP_CLASS)) - host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_PA_MOD);
+					defender_at = host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WEAPON_TYPE)) + host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_AT_MOD);
+					defender_pa = host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WEAPON_TYPE)) - host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_PA_MOD);
 				}
 
 				/* guarding heroes get a PA-bonus of 3 */
@@ -820,12 +820,12 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 	signed short l3;
 	signed short hylailic = 0;
 	signed short usecase;
-	signed short item_id = host_readws(hero + HERO_ITEM_LEFT);
+	signed short item_id = host_readws(hero + HERO_INVENTORY_LEFT);
 	Bit8u *p_item = get_itemsdat(item_id);
 
 	if (item_herb_potion(p_item)) {
 		usecase = 1;
-	} else if (!item_useable(p_item) || (host_readws(hero + (HERO_ITEM_LEFT+2)) == 0)) {
+	} else if (!item_useable(p_item) || (host_readws(hero + (HERO_INVENTORY_LEFT+2)) == 0)) {
 		usecase = 0;
 	} else {
 		usecase = 2;
@@ -833,7 +833,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 
 	host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
-	if (host_readws(hero + HERO_ITEM_LEFT) == ITEM_MIASTHMATICUM) {
+	if (host_readws(hero + HERO_INVENTORY_LEFT) == ITEM_MIASTHMATICUM) {
 		/* MIASTHMATIC */
 
 		/* 1W6 + 4 */
@@ -869,7 +869,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 		/* drop the item in the left hand */
 		drop_item(hero, 4, 1);
 
-	} else if (host_readws(hero + HERO_ITEM_LEFT) == ITEM_HYLAILIC_FIRE) {
+	} else if (host_readws(hero + HERO_INVENTORY_LEFT) == ITEM_HYLAILIC_FIRE) {
 
 		/* HYLAILIC FIRE */
 

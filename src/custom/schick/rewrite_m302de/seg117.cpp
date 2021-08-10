@@ -270,7 +270,7 @@ void hunt_cavebear(void)
 			{
 
 				/* AT of the current weapon - (RS-BE / 2) <= 1W20 */
-				if ((host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS)) - (host_readbs(hero + HERO_RS_BE) / 2)) <= random_schick(20))
+				if ((host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WEAPON_TYPE)) - (host_readbs(hero + HERO_RS_BE) / 2)) <= random_schick(20))
 				{
 #if !defined(__BORLANDC__)
 					D1_INFO("%-16s erhaelt 5 AP fuer eine gelungene Attacke.\n",
@@ -280,7 +280,7 @@ void hunt_cavebear(void)
 				}
 
 				/* PA of the current weapon - (RS-BE / 2) <= 1W20 */
-				if ((host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WP_CLASS)) - (host_readbs(hero + HERO_RS_BE) / 2)) > random_schick(20))
+				if ((host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WEAPON_TYPE)) - (host_readbs(hero + HERO_RS_BE) / 2)) > random_schick(20))
 				{
 #if !defined(__BORLANDC__)
 					D1_INFO("%-16s erhaelt 3 AP fuer eine misslungene Parade.\n",
@@ -418,7 +418,7 @@ void octopus_attack(void)
 				} else {
 					/* chance to hit the beast */
 
-					if (host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS)) <= random_schick(20)) {
+					if (host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WEAPON_TYPE)) <= random_schick(20)) {
 						hits++;
 					}
 				}

@@ -385,11 +385,11 @@ void tevent_137(void)
 					{
 						/* reset empty and half_empty bits of the knapsack item status */
 #if !defined(__BORLANDC__)
-						and_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos, 0xfb);
-						and_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos, 0xfd);
+						and_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * item_pos, 0xfb);
+						and_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * item_pos, 0xfd);
 #else
-						(*(struct knapsack_status*)(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos)).half_empty =
-							(*(struct knapsack_status*)(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos)).empty = 0;
+						(*(struct knapsack_status*)(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * item_pos)).half_empty =
+							(*(struct knapsack_status*)(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * item_pos)).empty = 0;
 #endif
 					}
 

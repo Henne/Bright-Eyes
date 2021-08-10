@@ -53,7 +53,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 	consumer_idx = get_hero_index(consumer);
 
 	/* get item id */
-	item = host_readw(owner + HERO_ITEM_HEAD + pos * 14);
+	item = host_readw(owner + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY);
 
 	/* get pointer to ITEMS.DAT */
 	item_p = get_itemsdat(item);
@@ -93,7 +93,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 			/* drinking */
 
 			/* check if item is not empty */
-			if (!ks_empty(owner + HERO_ITEM_HEAD + pos * 14)) {
+			if (!ks_empty(owner + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY)) {
 
 #if !defined(__BORLANDC__)
 				int diff = host_readbs(consumer + HERO_THIRST) - host_readbs(item_p + 4);
@@ -122,12 +122,12 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				if (item == 0x1e) {
 					/* water */
 
-					if (ks_half_empty(owner + HERO_ITEM_HEAD + pos * 14)) {
+					if (ks_half_empty(owner + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY)) {
 						/* empty */
-						or_ptr_bs(owner + HERO_ITEM_HEAD + 4 + pos * 14, 4);
+						or_ptr_bs(owner + HERO_INVENTORY_HEAD + 4 + pos * SIZEOF_HERO_INVENTORY, 4);
 					} else {
 						/* half empty */
-						or_ptr_bs(owner + HERO_ITEM_HEAD + 4 + pos * 14, 2);
+						or_ptr_bs(owner + HERO_INVENTORY_HEAD + 4 + pos * SIZEOF_HERO_INVENTORY, 2);
 					}
 
 				} else if (item == 0x5c || item == 0x5b) {
