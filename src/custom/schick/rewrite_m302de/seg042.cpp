@@ -203,16 +203,16 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 			}
 		}
 
-		if (host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_ATTACK) {
+		if (host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_MELEE_ATTACK) {
 
 			/* attack a hero */
 
-			p_weapon = Real2Host(hero) + HERO_ITEM_RIGHT;
+			p_weapon = Real2Host(hero) + HERO_INVENTORY_RIGHT;
 
 			weapon_type = weapon_check(Real2Host(hero));
 
 			if (target_is_hero != 0) {
-				p_weapon_target = target_hero + HERO_ITEM_RIGHT;
+				p_weapon_target = target_hero + HERO_INVENTORY_RIGHT;
 
 				weapon_type_target = weapon_check(target_hero);
 			}
@@ -221,7 +221,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				/* no valid weapon == bare hands */
 				atpa = host_readbs(Real2Host(hero) + HERO_AT) + host_readbs(Real2Host(hero) + HERO_ATTACK_TYPE) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
 			} else {
-				atpa = host_readbs(Real2Host(hero) + HERO_AT + host_readbs(Real2Host(hero) + HERO_WP_CLASS)) + host_readbs(Real2Host(hero) + HERO_ATTACK_TYPE) + host_readbs(Real2Host(hero) + HERO_AT_MOD) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
+				atpa = host_readbs(Real2Host(hero) + HERO_AT + host_readbs(Real2Host(hero) + HERO_WEAPON_TYPE)) + host_readbs(Real2Host(hero) + HERO_ATTACK_TYPE) + host_readbs(Real2Host(hero) + HERO_AT_MOD) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
 			}
 
 			if (host_readbs(Real2Host(hero) + HERO_RS_BE) & 1) {
@@ -247,7 +247,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				if (weapon_type_target == -1) {
 					l11 = host_readbs(target_hero + HERO_AT) + host_readbs(target_hero + HERO_ATTACK_TYPE) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
 				} else {
-					l11 = host_readbs(target_hero + HERO_AT + host_readbs(target_hero + HERO_WP_CLASS)) + host_readbs(target_hero + HERO_ATTACK_TYPE) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
+					l11 = host_readbs(target_hero + HERO_AT + host_readbs(target_hero + HERO_WEAPON_TYPE)) + host_readbs(target_hero + HERO_ATTACK_TYPE) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
 				}
 
 				if (host_readbs(Real2Host(hero) + HERO_RS_BE) & 1) {
@@ -349,7 +349,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						if (weapon_type_target == -1) {
 							l10 = host_readbs(target_hero + HERO_PA) - host_readbs(target_hero + HERO_ATTACK_TYPE) - host_readbs(target_hero + HERO_RS_BE) / 2;
 						} else {
-							l10 = host_readbs(target_hero + HERO_PA + host_readbs(target_hero + HERO_WP_CLASS)) -host_readbs(target_hero + HERO_ATTACK_TYPE) - host_readbs(target_hero + HERO_RS_BE) / 2 + host_readbs(target_hero + HERO_AT_MOD);
+							l10 = host_readbs(target_hero + HERO_PA + host_readbs(target_hero + HERO_WEAPON_TYPE)) -host_readbs(target_hero + HERO_ATTACK_TYPE) - host_readbs(target_hero + HERO_RS_BE) / 2 + host_readbs(target_hero + HERO_AT_MOD);
 						}
 
 						if (host_readbs(target_hero + HERO_ACTION_ID) == FIG_ACTION_GUARD) {

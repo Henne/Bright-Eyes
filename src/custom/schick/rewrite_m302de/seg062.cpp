@@ -401,15 +401,15 @@ void ask_miracle(void)
 							{
 
 								for (j = 0; j < 23; j++) {
-									if ((item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * j)) &&
+									if ((item_id = host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * j)) &&
 										item_weapon(get_itemsdat(item_id)))
 									{
-										if (host_readbs(hero + (HERO_ITEM_HEAD+6) + 14 * j) > 0) {
-											dec_ptr_bs(hero + (HERO_ITEM_HEAD+6) + 14 * j);
+										if (host_readbs(hero + (HERO_INVENTORY_HEAD+6) + SIZEOF_HERO_INVENTORY * j) > 0) {
+											dec_ptr_bs(hero + (HERO_INVENTORY_HEAD+6) + SIZEOF_HERO_INVENTORY * j);
 										}
 
-										if (host_readbs(hero + (HERO_ITEM_HEAD+6) + 14 * j) > 0) {
-											dec_ptr_bs(hero + (HERO_ITEM_HEAD+6) + 14 * j);
+										if (host_readbs(hero + (HERO_INVENTORY_HEAD+6) + SIZEOF_HERO_INVENTORY * j) > 0) {
+											dec_ptr_bs(hero + (HERO_INVENTORY_HEAD+6) + SIZEOF_HERO_INVENTORY * j);
 										}
 									}
 								}

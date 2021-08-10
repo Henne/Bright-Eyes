@@ -775,7 +775,7 @@ static inline void add_ks_counter(signed short i1, signed short i2, Bit8u *hero)
  * 0 = non armor / 1 = armor
  */
 static inline unsigned short item_armor(Bit8u *item) {
-	if (((host_readb(item + 0x02) >> 0) & 1) == 0)
+	if (((host_readb(item + ITEM_STATS_FLAGS) >> 0) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -788,7 +788,7 @@ static inline unsigned short item_armor(Bit8u *item) {
  * 0 = non weapon / 1 = weapon
  */
 static inline unsigned short item_weapon(Bit8u *item) {
-	if (((host_readb(item + 0x02) >> 1) & 1) == 0)
+	if (((host_readb(item + ITEM_STATS_FLAGS) >> 1) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -801,7 +801,7 @@ static inline unsigned short item_weapon(Bit8u *item) {
  * 0 = no / 1 = yes
  */
 static inline unsigned short item_useable(Bit8u *item) {
-	if (((host_readb(item + 0x02) >> 2) & 1) == 0)
+	if (((host_readb(item + ITEM_STATS_FLAGS) >> 2) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -814,7 +814,7 @@ static inline unsigned short item_useable(Bit8u *item) {
  * 0 = non food / 1 = food
  */
 static inline unsigned short item_food(Bit8u *item) {
-	if (((host_readb(item + 0x02) >> 3) & 1) == 0)
+	if (((host_readb(item + ITEM_STATS_FLAGS) >> 3) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -827,7 +827,7 @@ static inline unsigned short item_food(Bit8u *item) {
  * 0 = non stackable / 1 = stackable
  */
 static inline unsigned short item_stackable(Bit8u *item) {
-	if (((host_readb(item + 0x02) >> 4) & 1) == 0)
+	if (((host_readb(item + ITEM_STATS_FLAGS) >> 4) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -840,7 +840,7 @@ static inline unsigned short item_stackable(Bit8u *item) {
  * 0 = non / 1 = herb or potion
  */
 static inline unsigned short item_herb_potion(Bit8u *item) {
-	if (((host_readb(item + 0x02) >> 5) & 1) == 0)
+	if (((host_readb(item + ITEM_STATS_FLAGS) >> 5) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -853,7 +853,7 @@ static inline unsigned short item_herb_potion(Bit8u *item) {
  * 0 = dropable / 1 = undropable
  */
 static inline unsigned short item_undropable(Bit8u *item) {
-	if (((host_readb(item + 0x02) >> 6) & 1) == 0)
+	if (((host_readb(item + ITEM_STATS_FLAGS) >> 6) & 1) == 0)
 		return 0;
 	else
 		return 1;

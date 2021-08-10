@@ -140,7 +140,7 @@ void buy_screen(void)
 					host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					for (j = 7; j < 23; j++) {
-						if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * j) == 0) {
+						if (host_readws(hero2 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * j) == 0) {
 							free_slots++;
 						}
 					}
@@ -634,7 +634,7 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 	signed short item_id;
 	signed short sellable = 0;
 
-	item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos);
+	item_id = host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos);
 	host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos, item_id);
 
 	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
@@ -659,8 +659,8 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 0);
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4, 1);
 
-	} else if (ks_broken(hero + HERO_ITEM_HEAD + 14 * item_pos) ||
-			 host_readbs(hero + (HERO_ITEM_HEAD+7) + 14 * item_pos) != 0)
+	} else if (ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos) ||
+			 host_readbs(hero + (HERO_INVENTORY_HEAD+7) + SIZEOF_HERO_INVENTORY * item_pos) != 0)
 	{
 		/* this item is broken or empty */
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 1);

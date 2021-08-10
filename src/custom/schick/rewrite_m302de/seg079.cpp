@@ -231,14 +231,14 @@ signed short DNG03_handler(void)
 
 			timewarp(MINUTES(20));
 
-			if (host_readws(hero + HERO_ITEM_BODY) != 0)
+			if (host_readws(hero + HERO_INVENTORY_BODY) != 0)
 			{
-				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4))
-				    - host_readbs(hero + HERO_ITEM_BODY + 7);
+				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY_BODY)) + 4))
+				    - host_readbs(hero + HERO_INVENTORY_BODY + 7);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
-				add_ptr_bs(hero + HERO_ITEM_BODY + 7, (unsigned char)l4);
+				add_ptr_bs(hero + HERO_INVENTORY_BODY + 7, (unsigned char)l4);
 				sub_ptr_bs(hero + HERO_RS_BONUS1, (unsigned char)l4);
 			}
 		}
@@ -262,14 +262,14 @@ signed short DNG03_handler(void)
 
 			timewarp(MINUTES(20));
 
-			if (host_readws(hero + HERO_ITEM_BODY) != 0)
+			if (host_readws(hero + HERO_INVENTORY_BODY) != 0)
 			{
-				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4))
-				    - host_readbs(hero + HERO_ITEM_BODY + 7);
+				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY_BODY)) + 4))
+				    - host_readbs(hero + HERO_INVENTORY_BODY + 7);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
-				add_ptr_bs(hero + HERO_ITEM_BODY + 7, (unsigned char)l4);
+				add_ptr_bs(hero + HERO_INVENTORY_BODY + 7, (unsigned char)l4);
 				sub_ptr_bs(hero + HERO_RS_BONUS1, (unsigned char)l4);
 			}
 		}
@@ -540,7 +540,7 @@ void DNG03_chest12_func3(RealPt chest)
 	/* count the crystals in the inventory of the leader */
 	for (i = 7; i < 23; i++)
 	{
-		if (host_readws(hero + HERO_ITEM_HEAD + SIZEOF_KS_ITEM * i) == ITEM_CRYSTAL)
+		if (host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i) == ITEM_CRYSTAL)
 		{
 			crystals++;
 		}

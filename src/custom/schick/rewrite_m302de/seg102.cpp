@@ -100,7 +100,7 @@ signed short MON_get_target_PA(void)
 			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
 		/* calc and return PA-value */
-		return host_readbs(get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WP_CLASS))
+		return host_readbs(get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WEAPON_TYPE))
 			- host_readbs(get_spelltarget() + HERO_ATTACK_TYPE);
 
 	} else {
@@ -596,17 +596,17 @@ void mspell_eisenrost(void)
 		ds_writed(SPELLTARGET,
 			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
-		id = host_readws(get_spelltarget() + HERO_ITEM_RIGHT);
+		id = host_readws(get_spelltarget() + HERO_INVENTORY_RIGHT);
 
 		if (!id) {
 			/* target hero has no weapon */
 			ds_writew(MONSTER_SPELL_COST, 2);
-		} else if (!ks_broken(get_spelltarget() + HERO_ITEM_RIGHT)) {
+		} else if (!ks_broken(get_spelltarget() + HERO_INVENTORY_RIGHT)) {
 
-			if (host_readbs(get_spelltarget() + (HERO_ITEM_RIGHT + 6)) > 0) {
+			if (host_readbs(get_spelltarget() + (HERO_INVENTORY_RIGHT + 6)) > 0) {
 
 				/* set the broken flag */
-				or_ptr_bs(get_spelltarget() + (HERO_ITEM_RIGHT + 4), 1);
+				or_ptr_bs(get_spelltarget() + (HERO_INVENTORY_RIGHT + 4), 1);
 
 				/* prepare message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -698,7 +698,7 @@ void mspell_ignifaxius(void)
 			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 
 		/* pointer to the armour of the target hero */
-		p_armour = get_spelltarget() + HERO_ITEM_BODY;
+		p_armour = get_spelltarget() + HERO_INVENTORY_BODY;
 
 		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
 
@@ -715,11 +715,11 @@ void mspell_ignifaxius(void)
 
 		/* AT - level / 2 */
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, HOURS(1), get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS), -level / 2, (signed char)hero_pos);
+		set_mod_slot(slot, HOURS(1), get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WEAPON_TYPE), -level / 2, (signed char)hero_pos);
 
 		/* PA - level / 2 */
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, HOURS(1), get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WP_CLASS), -level / 2, (signed char)hero_pos);
+		set_mod_slot(slot, HOURS(1), get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WEAPON_TYPE), -level / 2, (signed char)hero_pos);
 
 	} else {
 		/* target is a monster */
@@ -763,7 +763,7 @@ void mspell_plumbumbarum(void)
 
 		/* AT - 3 */
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, HOURS(1), get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS), -3, (signed char)hero_pos);
+		set_mod_slot(slot, HOURS(1), get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WEAPON_TYPE), -3, (signed char)hero_pos);
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),

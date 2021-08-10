@@ -108,7 +108,7 @@ struct hero_status {
 };
 
 enum {
-    /* see https://github.com/shihan42/BrightEyesWiki/wiki/CHR-NPC */
+	/* see https://github.com/shihan42/BrightEyesWiki/wiki/CHR-NPC */
 	HERO_NAME		= 0x000, /* 16 bytes */
 	HERO_NAME2		= 0x010, /* 16 bytes */
 	HERO_KS_TAKEN		= 0x020, /* 1 byte */ /* number of occupied item slots in the (KS = ) knapsack. (equipped items are not included) */
@@ -137,7 +137,7 @@ enum {
 	HERO_PA 		= 0x06F, /* 7 = 7 * 1 bytes */ /* array with 7 entries each of size 1 byte containing the PA values of TA_WAFFENLOS, TA_HIEBWAFFEN, TA_STICHWAFFEN, TA_SCHWERTER, TA_AEXTE, TA_SPEERE, TA_ZWEIHAENDER */
 	HERO_AT_MOD		= 0x076, /* 1 byte */
 	HERO_PA_MOD		= 0x077, /* 1 byte */
-	HERO_WP_CLASS		= 0x078, /* 1 byte */ /* weapon class? */
+	HERO_WEAPON_TYPE	= 0x078, /* 1 byte */ /* type of the equipped weapon */
 	HERO_ATTACK_TYPE	= 0x079, /* 1 byte */ /* 0x00 = normal; 0x02 = aggressiv; 0xFE = vorsichtig */
 	HERO_LE_MOD		= 0x07A, /* 1 byte */ /* permanent LE mod */
 	HERO_TIMER_ID		= 0x07B, /* 1 byte */
@@ -198,29 +198,29 @@ enum {
 	HERO_SP_RISE		= 0x193, /* 1 bytes */ /* saved spell increases from last levelups */
 	HERO_MAGIC_SCHOOL	= 0x194, /* 1 byte */
 	HERO_STAFFSPELL_LVL	= 0x195, /* 1 byte */
-	HERO_ITEM_HEAD		= 0x196, /* 14 bytes */
-	HERO_ITEM_ARM		= 0x1A4, /* 14 bytes */
-	HERO_ITEM_BODY		= 0x1B2, /* 14 bytes */
-	HERO_ITEM_RIGHT		= 0x1C0, /* 14 bytes */ /* right hand */
-	HERO_ITEM_LEFT		= 0x1CE, /* 14 bytes */ /* left hand */
-	HERO_ITEM_LEGS		= 0x1DC, /* 14 bytes */
-	HERO_ITEM_FEET		= 0x1EA, /* 14 bytes */
-	HERO_ITEM_KS1		= 0x1F8, /* 14 bytes */ /* KS = knapsack */
-	HERO_ITEM_KS2		= 0x206, /* 14 bytes */
-	HERO_ITEM_KS3		= 0x214, /* 14 bytes */
-	HERO_ITEM_KS4		= 0x222, /* 14 bytes */
-	HERO_ITEM_KS5		= 0x230, /* 14 bytes */
-	HERO_ITEM_KS6		= 0x23E, /* 14 bytes */
-	HERO_ITEM_KS7		= 0x24C, /* 14 bytes */
-	HERO_ITEM_KS8		= 0x25A, /* 14 bytes */
-	HERO_ITEM_KS9		= 0x268, /* 14 bytes */
-	HERO_ITEM_KS10		= 0x276, /* 14 bytes */
-	HERO_ITEM_KS11		= 0x284, /* 14 bytes */
-	HERO_ITEM_KS12		= 0x292, /* 14 bytes */
-	HERO_ITEM_KS13		= 0x2A0, /* 14 bytes */
-	HERO_ITEM_KS14		= 0x2AE, /* 14 bytes */
-	HERO_ITEM_KS15		= 0x2BC, /* 14 bytes */
-	HERO_ITEM_KS16		= 0x2CA, /* 14 bytes */
+	HERO_INVENTORY_HEAD	= 0x196, /* 14 bytes */
+	HERO_INVENTORY_ARM	= 0x1A4, /* 14 bytes */
+	HERO_INVENTORY_BODY	= 0x1B2, /* 14 bytes */
+	HERO_INVENTORY_RIGHT	= 0x1C0, /* 14 bytes */ /* right hand */
+	HERO_INVENTORY_LEFT	= 0x1CE, /* 14 bytes */ /* left hand */
+	HERO_INVENTORY_LEGS	= 0x1DC, /* 14 bytes */
+	HERO_INVENTORY_FEET	= 0x1EA, /* 14 bytes */
+	HERO_INVENTORY_KS1	= 0x1F8, /* 14 bytes */ /* KS = knapsack */
+	HERO_INVENTORY_KS2	= 0x206, /* 14 bytes */
+	HERO_INVENTORY_KS3	= 0x214, /* 14 bytes */
+	HERO_INVENTORY_KS4	= 0x222, /* 14 bytes */
+	HERO_INVENTORY_KS5	= 0x230, /* 14 bytes */
+	HERO_INVENTORY_KS6	= 0x23E, /* 14 bytes */
+	HERO_INVENTORY_KS7	= 0x24C, /* 14 bytes */
+	HERO_INVENTORY_KS8	= 0x25A, /* 14 bytes */
+	HERO_INVENTORY_KS9	= 0x268, /* 14 bytes */
+	HERO_INVENTORY_KS10	= 0x276, /* 14 bytes */
+	HERO_INVENTORY_KS11	= 0x284, /* 14 bytes */
+	HERO_INVENTORY_KS12	= 0x292, /* 14 bytes */
+	HERO_INVENTORY_KS13	= 0x2A0, /* 14 bytes */
+	HERO_INVENTORY_KS14	= 0x2AE, /* 14 bytes */
+	HERO_INVENTORY_KS15	= 0x2BC, /* 14 bytes */
+	HERO_INVENTORY_KS16	= 0x2CA, /* 14 bytes */
 	HERO_LOAD		= 0x2D8, /* 2 bytes */
 	HERO_PORTRAIT		= 0x2DA /* 1024 = 32 * 32 bytes */ /* 32 x 32 pixels, 8 bpp */
 };
@@ -256,7 +256,7 @@ enum {
 
 enum {
 	FIG_ACTION_MOVE = 1,
-	FIG_ACTION_ATTACK = 2,
+	FIG_ACTION_MELEE_ATTACK = 2,
 	FIG_ACTION_GUARD = 3,
 	FIG_ACTION_SPELL = 4,
 	FIG_ACTION_USE_ITEM = 5,
@@ -286,15 +286,15 @@ enum {
 };
 
 enum {
-    POISON_SHURINKNOLLENGIFT = 0,
-    POISON_ARAX = 1,
-    POISON_ANGSTGIFT = 2,
-    POISON_SCHLAFGIFT = 3,
-    POISON_GOLDLEIM = 4,
-    POISON_KROETENSCHEMEL = 5,
-    POISON_LOTUSGIFT = 6,
-    POISON_KUKRIS = 7,
-    POISON_BANNSTAUB = 8
+	POISON_SHURINKNOLLENGIFT = 0,
+	POISON_ARAX = 1,
+	POISON_ANGSTGIFT = 2,
+	POISON_SCHLAFGIFT = 3,
+	POISON_GOLDLEIM = 4,
+	POISON_KROETENSCHEMEL = 5,
+	POISON_LOTUSGIFT = 6,
+	POISON_KUKRIS = 7,
+	POISON_BANNSTAUB = 8
 };
 
 struct enemy_status1 {
@@ -350,23 +350,24 @@ struct knapsack_status {
 	unsigned short bit15	:1;
 };
 
-#define SIZEOF_KS_ITEM (14)
-
 struct knapsack_item {
-	signed short id;
-	signed short counter;
+	/* for future use, currently the HERO_INVENTORY enum is used. */
+	/* name knapsack_item not optimal, as it is also used for equipped items */
+	/* maybe better: hero_inventory_entry? */
+	signed short id; /* +0 */
+	signed short counter; /* +2 */
 
-	struct knapsack_status stat;
-	signed char bf;
-	signed char used;
+	struct knapsack_status stat; /* +4 */
+	signed char bf; /* +6 */
+	signed char used; /* +7 */
 
-	signed char timer;
-	signed char poison_type;
-	signed char poison_counter;
-	signed char unused1;
+	signed char timer; /* +8 */
+	signed char poison_type; /* +9 */
+	signed char poison_counter; /* +10 */
+	signed char unused1; /* +11 */
 
-	signed char unused2;
-	signed char unused3;
+	signed char unused2; /* +12 */
+	signed char unused3; /* +13 */
 };
 
 struct passages {
@@ -565,7 +566,7 @@ enum {
 	TA_FEILSCHEN = 21,
 	TA_GASSENWISSEN = 22,
 	TA_LUEGEN = 23,
-	TA_MENSCHENKENT = 24,
+	TA_MENSCHENKENNTNIS = 24,
 	TA_SCHAETZEN = 25,
 	/* Natur */
 	TA_FAEHRTENSUCHEN = 26,
@@ -597,6 +598,109 @@ enum {
 	/* Intuition */
 	TA_GEFAHRENSINN = 50,
 	TA_SINNESSCHAERFE = 51
+};
+
+enum {
+	HERO_INVENTORY_POSITION_HEAD		= 0,
+	HERO_INVENTORY_POSITION_ARMS		= 1,
+	HERO_INVENTORY_POSITION_BODY		= 2,
+	HERO_INVENTORY_POSITION_RIGHT_HAND	= 3,
+	HERO_INVENTORY_POSITION_LEFT_HAND	= 4,
+	HERO_INVENTORY_POSITION_LEGS		= 5,
+	HERO_INVENTORY_POSITION_FEET		= 6,
+	HERO_INVENTORY_POSITION_KS1		= 7,
+	HERO_INVENTORY_POSITION_KS2		= 8,
+	HERO_INVENTORY_POSITION_KS3		= 9,
+	HERO_INVENTORY_POSITION_KS4		= 10,
+	HERO_INVENTORY_POSITION_KS5		= 11,
+	HERO_INVENTORY_POSITION_KS6		= 12,
+	HERO_INVENTORY_POSITION_KS7		= 13,
+	HERO_INVENTORY_POSITION_KS8		= 14,
+	HERO_INVENTORY_POSITION_KS9		= 15,
+	HERO_INVENTORY_POSITION_KS10		= 16,
+	HERO_INVENTORY_POSITION_KS11		= 17,
+	HERO_INVENTORY_POSITION_KS12		= 18,
+	HERO_INVENTORY_POSITION_KS13		= 19,
+	HERO_INVENTORY_POSITION_KS14		= 20,
+	HERO_INVENTORY_POSITION_KS15		= 21,
+	HERO_INVENTORY_POSITION_KS16		= 22
+};
+
+enum {
+	/* describes an item in a single inventory slot of a hero */
+	/* https://github.com/shihan42/BrightEyesWiki/wiki/CHR-NPC#inventarslots */
+	HERO_INVENTORY_ITEM_ID = 0,		/* 2 bytes */
+	HERO_INVENTORY_QUANTITY = 2,		/* 2 bytes */
+	HERO_INVENTORY_FLAGS = 4, 		/* 2 bytes */ /* bitfield. bit 0: broken / bit 1: half empty / bit 2: empty / bit 3: magic hidden / bit 4: poison1 (?) / bit 5: poison2 (?) / bit 6: magic known / bit 7: unused? */
+	HERO_INVENTORY_BF = 6,			/* 1 byte */
+	HERO_INVENTORY_IS_USED = 7, 		/* 1 byte */ /* occurences so far: used for RS malus. maybe rename into HERO_INVENTORY_RS_DEFECT? */
+	HERO_INVENTORY_LIGHTING_TIMER = 8,	/* 1 byte */ /* for burning torch: number of remaining time, unit: 15 minutes */
+	HERO_INVENTORY_POISON_TYPE = 9,		/* 1 byte */ /* for poisoned weapon: poison type (0-kein Gift, 1-Schurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemelgift, 7-Lotosgift, 8-Kukris, 9-Bannstaub, 10-Expurgicum, 11-Vomicum). */
+	HERO_INVENTORY_NR_POISON_CHARGES = 10,	/* 1 byte */ /* for poisoned weapon: number of remaining poison charges (= successful attacs). */
+	/* remaining part: apparently unused */
+};
+#define SIZEOF_HERO_INVENTORY (14)
+
+enum {
+	/* https://github.com/shihan42/BrightEyesWiki/wiki/ITEMS.DAT */
+	/* structure of the entries of ITEMS.DAT */
+	ITEM_STATS_GFX = 0,
+	ITEM_STATS_FLAGS = 2, /* bitfield. bit 0: armor / bit 1: weapon / bit 2: useable / bit 3: nutrition / bit 4: stackable / bit 5: poison/herb/potion / bit 6: personal item (undropable) / bit 7: not usable by "use object"?? */
+	ITEM_STATS_SUBTYPE = 3,
+	ITEM_STATS_TABLE_INDEX = 4,
+	ITEM_STATS_WEIGHT = 5, /* weight in ounces */
+	ITEM_STATS_PRICE_UNIT = 7, /* 1: Heller / 10: Silberstücke / 100: Dukaten */
+	ITEM_STATS_PRICE = 8, /* unit is ITEM_STATS_PRICE_UNIT. So the price in Heller is ITEM_STATS_PRICE_UNIT * ITEM_STATS_PRICE */
+	ITEM_STATS_COMMONNESS = 10,
+	ITEM_STATS_MAGIC = 11 /* 0: not magic / 1: magic */
+};
+#define SIZEOF_ITEM_STATS (12)
+
+enum {
+	ARMOR_TYPE_HEAD = 0,
+	ARMOR_TYPE_ARMS = 1,
+	ARMOR_TYPE_BODY = 2,
+	ARMOR_TYPE_LEGS = 5,
+	ARMOR_TYPE_FEET = 6,
+	ARMOR_TYPE_SHIELD = 9,
+};
+
+enum {
+	WEAPON_TYPE_AMMUNITION = 0,
+	WEAPON_TYPE_HIEBWAFFE = 1,
+	WEAPON_TYPE_STICHWAFFE = 2,
+	WEAPON_TYPE_SCHWERT = 3,
+	WEAPON_TYPE_AXT = 4,
+	WEAPON_TYPE_SPEER = 5,
+	WEAPON_TYPE_ZWEIHAENDER = 6,
+	WEAPON_TYPE_SCHUSSWAFFE = 7,
+	WEAPON_TYPE_WURFWAFFE = 8
+};
+
+enum {
+	/* https://github.com/shihan42/BrightEyesWiki/wiki/SCHICKM.EXE#Waffentabelle */
+	/* structure of the entries of WEAPONS_TABLE */
+	WEAPON_STATS_DAMAGE_D6 = 0,
+	WEAPON_STATS_DAMAGE_SUMMAND = 1,
+	WEAPON_STATS_DAMAGE_KK_BONUS = 2, /* Körperkraft-Zuschlag */
+	WEAPON_STATS_BF = 3, /* Bruchfaktor */
+	WEAPON_STATS_UNKNOWN = 4,
+	WEAPON_STATS_AT_MOD = 5,
+	WEAPON_STATS_PA_MOD = 6
+};
+#define SIZEOF_WEAPON_STATS (7)
+
+enum {
+	/* https://github.com/shihan42/BrightEyesWiki/wiki/SCHICKM.EXE#R%C3%BCstungstabelle */
+	/* structure of the entries of ARMORS_TABLE */
+	ARMOR_STATS_RS = 0, /* Rüstungsschutz */
+	ARMOR_STATS_BE = 1 /* Behinderung */
+};
+#define SIZEOF_ARMOR_STATS (2)
+
+enum {
+	ITEM_SUBTYPE_NUTRITION_DRINK = 0,
+	ITEM_SUBTYPE_NUTRITION_FOOD = 1
 };
 
 enum {
@@ -1177,7 +1281,7 @@ enum {
 };
 
 enum {
-	ITEM_BARE_HAND			= 0x00, /* Bloße Hand */
+	ITEM_NONE			= 0x00, /* Bloße Hand */
 	ITEM_SWORD			= 0x01, /* Schwert */
 	ITEM_CLUB			= 0x02, /* Knüppel */
 	ITEM_SABER			= 0x03, /* Säbel */
@@ -1338,7 +1442,7 @@ enum {
 	ITEM_BASTARD_SWORD_MAGIC	= 0x9e, /* Bastardschwert [magic: lower BF; found in Daspota] */
 	ITEM_ORKNASE_MAGIC		= 0x9f, /* Orknase [magic: damage +5, AT-1, PA-5; found in Daspota] */
 	ITEM_SHORT_SWORD_MAGIC		= 0xa0, /* Kurzschwert [magic: AT + 2, unbreakable; found in Daspota ] */
-	ITEM_SICKLE_MAGIC		= 0xa1, /* Sichel [magic, Pflanzenkunde + 3; found in Daspota] */
+	ITEM_SICKLE_MAGIC		= 0xa1, /* Sichel [magic, in inventory: Pflanzenkunde + 3; found in Daspota] */
 	ITEM_AMULET_UNKNOWN_1		= 0xa2, /* Amulett [TODO: which one?? it might be yellow, magic: protects from fire; found at Totenschiff] */
 	ITEM_AMULET_BLUE		= 0xa3, /* Amulett [blue, magic: MR + 5; found in ruin of the black wizard and at a fight vs. orcs at the track Phexcaer <-> Einsiedlersee] */
 	ITEM_BONE_WITH_RUNE		= 0xa4, /* Knochen mit Rune */
@@ -1434,9 +1538,9 @@ enum {
 };
 
 enum {
-	LIGHTING_DARK    = 0,
-	LIGHTING_TORCH   = 1,
-	LIGHTING_LANTERN = 2
+	LIGHTING_DARK		= 0,
+	LIGHTING_TORCH		= 1,
+	LIGHTING_LANTERN	= 2
 };
 
 enum {
@@ -1524,8 +1628,5 @@ enum {
 	MENU_ICON_DIARY = 52,
 	MENU_ICON_SOUND = 53,
 	MENU_ICON_CAMP = 54
-};
-
-enum {
 };
 #endif

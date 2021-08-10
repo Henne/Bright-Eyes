@@ -529,9 +529,9 @@ signed short replenish_stocks(signed short mod, signed short tries)
 								host_writebs(hero2 + HERO_THIRST, 0);
 
 								for (j = 0; j < 23; j++) {
-									if (host_readws(hero2 + 14 * j + HERO_ITEM_HEAD) == ITEM_WATERSKIN) {
-										and_ptr_bs(hero2 + 14 * j + HERO_ITEM_HEAD + 4, 0xfb);
-										and_ptr_bs(hero2 + 14 * j + HERO_ITEM_HEAD + 4, 0xfd);
+									if (host_readws(hero2 + SIZEOF_HERO_INVENTORY * j + HERO_INVENTORY_HEAD) == ITEM_WATERSKIN) {
+										and_ptr_bs(hero2 + SIZEOF_HERO_INVENTORY * j + HERO_INVENTORY_HEAD + 4, 0xfb);
+										and_ptr_bs(hero2 + SIZEOF_HERO_INVENTORY * j + HERO_INVENTORY_HEAD + 4, 0xfd);
 									}
 								}
 							}
