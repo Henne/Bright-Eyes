@@ -1,5 +1,5 @@
-#if !defined(COMMON_H)
-#define COMMON_H
+#if !defined(C102de_COMMON_H)
+#define C102de_COMMON_H
 /**
 	struct nvf_desc - nvf descriptor
 	@src:	pointer to a buffer containing the nvf file
