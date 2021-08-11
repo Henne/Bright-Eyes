@@ -1,5 +1,5 @@
-#if !defined(COMMON_H)
-#define COMMON_H
+#if !defined(M302de_COMMON_H)
+#define M302de_COMMON_H
 
 #if defined(__BORLANDC__)
 typedef unsigned char Bit8u;
