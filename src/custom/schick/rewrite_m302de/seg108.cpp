@@ -93,7 +93,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 			/* drinking */
 
 			/* check if item is not empty */
-			if (!ks_empty(owner + HERO_INVENTORY + pos * SIZEOF_INVENTORY)) {
+			if (!inventory_empty(owner + HERO_INVENTORY + pos * SIZEOF_INVENTORY)) {
 
 #if !defined(__BORLANDC__)
 				int diff = host_readbs(consumer + HERO_THIRST) - host_readbs(item_p + 4);
@@ -122,7 +122,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				if (item == ITEM_WATERSKIN) {
 					/* water */
 
-					if (ks_half_empty(owner + HERO_INVENTORY + pos * SIZEOF_INVENTORY)) {
+					if (inventory_half_empty(owner + HERO_INVENTORY + pos * SIZEOF_INVENTORY)) {
 						/* empty */
 						or_ptr_bs(owner + HERO_INVENTORY + INVENTORY_FLAGS + pos * SIZEOF_INVENTORY, 4); /* set 'empty' flag */
 					} else {

@@ -715,7 +715,7 @@ void draw_fight_screen(Bit16u val)
 											/* enemy escapes */
 											p_enemy_sheet = Real2Host(FIG_get_enemy_sheet(host_readbs(list_i + FIGHTER_ID)));
 											if (NOT_NULL(p_enemy_sheet)) {
-												or_ptr_bs(p_enemy_sheet + ENEMY_SHEET_STATUS1, 1); /* set 'dead' status bit */
+												or_ptr_bs(p_enemy_sheet + ENEMY_SHEET_FLAGS1, 1); /* set 'dead' flag */
 												host_writeb(p_enemy_sheet + ENEMY_SHEET_BP, 0);
 												figlist_remove[host_readbs(list_i + FIGHTER_SHEET)] = host_readbs(p_enemy_sheet + ENEMY_SHEET_FIGHTER_ID);
 
@@ -735,7 +735,7 @@ void draw_fight_screen(Bit16u val)
 											hero = Real2Host(FIG_get_hero_ptr(host_readbs(list_i + FIGHTER_ID)));
 											if (NOT_NULL(hero)) {
 												host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
-												or_ptr_bs(hero + HERO_STATUS2, 1); /* set 'scared' status bit */
+												or_ptr_bs(hero + HERO_FLAGS2, 1); /* set 'scared' flag */
 
 												/* set the dungeon position the hero escapes to.
 												 * This depends on the direction the escape square on the battlefield has been entered.

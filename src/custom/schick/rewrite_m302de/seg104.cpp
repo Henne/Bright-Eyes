@@ -105,7 +105,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 
 	sub_ae_splash(hero, host_readws(r_ptr + RECIPE_AE));
 
-	and_ptr_bs(hero + HERO_STATUS1, 0xf7); /* unset 'brewing' status bit */
+	and_ptr_bs(hero + HERO_FLAGS1, 0xf7); /* unset 'brewing' flag */
 	host_writeb(hero + HERO_RECIPE_TIMER, 0);
 	/* set heroes receipe to 0 */
 	host_writeb(hero + HERO_RECIPE_ID, 0);
@@ -312,7 +312,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 								host_writeb(hero + HERO_RECIPE_ID, recipe_index);
 								host_writeb(hero + HERO_HOSTEL_ID, ds_readbs(TYPEINDEX));
-								or_ptr_bs(hero + HERO_STATUS1, 8); /* set 'brewing' status bit */
+								or_ptr_bs(hero + HERO_FLAGS1, 8); /* set 'brewing' flag */
 
 								GRP_save_pos(l5);
 							} else {

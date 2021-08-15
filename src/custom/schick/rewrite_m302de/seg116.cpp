@@ -390,8 +390,8 @@ void tevent_137(void)
 						and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos, 0xfb); /* unset 'empty' flag */
 						and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos, 0xfd); /* unset 'half_empty' flag */
 #else
-						(*(struct knapsack_status*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).half_empty =
-							(*(struct knapsack_status*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).empty = 0;
+						(*(struct inventory_flags*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).half_empty =
+							(*(struct inventory_flags*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).empty = 0;
 #endif
 					}
 

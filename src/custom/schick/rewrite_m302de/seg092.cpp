@@ -160,7 +160,7 @@ void chest_cursed(void)
 
 	if (!hero_transformed(hero)) {
 
-		or_ptr_bs(hero + HERO_STATUS2, 0x40); /* set 'transformed' status bit */
+		or_ptr_bs(hero + HERO_FLAGS2, 0x40); /* set 'transformed' flag */
 
 		/* decrement each good attribute */
 		for (i = 0; i <= 6; i++) {
@@ -340,14 +340,14 @@ signed short hero_has_lockpicks(Bit8u *hero)
 	signed short retval = -1;
 	signed short i;
 
-	/* in each knapsack slot... */
+	/* in each inventory slot... */
 	for (i = 0; i < NR_HERO_INVENTORY_SLOTS; i++) {
 
 		/* ... check for lockpicks ... */
 		if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * i) == ITEM_PICKLOCKS) {
 
 			/* ... which are not broken */
-			if (!ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i)) {
+			if (!inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i)) {
 				return i;
 			} else {
 				retval = -2;
@@ -563,7 +563,7 @@ void use_key_on_chest(RealPt chest_ptr)
 	if ((key_pos = get_item_pos(hero, host_readb(Real2Host(chest_ptr) + 2))) != -1)
 	{
 
-		if (!ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * key_pos))
+		if (!inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * key_pos))
 		{
 
 #if defined(__BORLANDC__)

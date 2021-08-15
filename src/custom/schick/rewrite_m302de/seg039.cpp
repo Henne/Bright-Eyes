@@ -134,13 +134,13 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 
 	/* Terrible hack:
 		if the current fight is FIGHTS_F084, set MR to 5 (Travel-Event 84),
-		if the current fight is FIGHTS_F144 (final fight), and the enemy is no "Orkchampion" then set the 'tied' status bit */
+		if the current fight is FIGHTS_F144 (final fight), and the enemy is no "Orkchampion" then set the 'tied' flag */
 	if (ds_readw(CURRENT_FIG_NO) == FIGHTS_F084) {
 
 		host_writeb(sheet + ENEMY_SHEET_MR, 5);
 
 	} else if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F144) && (host_readb(sheet + ENEMY_SHEET_MON_ID) != 0x48)) {
-		or_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0x20); /* set 'tied' status bit */
+		or_ptr_bs(sheet + ENEMY_SHEET_FLAGS1, 0x20); /* set 'tied' flag */
 
 	}
 
@@ -160,7 +160,7 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 	host_writeb(sheet + ENEMY_SHEET_MAG_ID, host_readb(monster + MONSTER_MAG_ID));
 
 	/* bogus this value is 0x00 or 0x20 */
-	and_ptr_bs(sheet + ENEMY_SHEET_STATUS1, 0xfe); /* unset 'dead' status bit */
+	and_ptr_bs(sheet + ENEMY_SHEET_FLAGS1, 0xfe); /* unset 'dead' flag */
 
 	host_writeb(sheet + ENEMY_SHEET_FIGHTER_ID, 0xff);
 	host_writeb(sheet + ENEMY_SHEET_LEVEL, host_readb(monster + MONSTER_LEVEL));
@@ -178,10 +178,10 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
 	host_writeb(sheet + ENEMY_SHEET_LE_FLEE, host_readb(monster + MONSTER_LE_FLEE));
 
 	/* Another hack:
-		If the current fight == FIGHTS_F126_08 (fleeing cultist) and the enemy is "Kultist", set the 'scared' status bit */
+		If the current fight == FIGHTS_F126_08 (fleeing cultist) and the enemy is "Kultist", set the 'scared' flag */
 	if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F126_08) && (host_readb(sheet + ENEMY_SHEET_MON_ID) == 0x38)) {
 		/* Kultist will flee */
-		or_ptr_bs(sheet + ENEMY_SHEET_STATUS2, 0x4); /* set 'scared' status bit */
+		or_ptr_bs(sheet + ENEMY_SHEET_FLAGS2, 0x4); /* set 'scared' flag */
 
 	}
 }
@@ -362,7 +362,7 @@ void FIG_init_enemies(void)
 
 			ds_writeb(ENEMY_SHEETS + ENEMY_SHEET_FIGHTER_ID + i * SIZEOF_ENEMY_SHEET, -1);
 		}
-		or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + i * SIZEOF_ENEMY_SHEET, 1); /* set 'dead' status bit */
+		or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_FLAGS1) + i * SIZEOF_ENEMY_SHEET, 1); /* set 'dead' flag */
 	}
 
 	ds_writew(NR_OF_ENEMIES, 0);
@@ -461,7 +461,7 @@ void FIG_init_heroes(void)
 		/* heroes sleep until they appear */
 		if (host_readb(Real2Host(ds_readd(CURRENT_FIGHT)) + l_si * SIZEOF_FIGHT_PLAYER + FIGHT_PLAYERS_ROUND_APPEAR) != 0) {
 			if (!hero_dead(hero))
-				or_ptr_bs(hero + HERO_STATUS1, 2); /* set 'sleep' status bit */
+				or_ptr_bs(hero + HERO_FLAGS1, 2); /* set 'sleep' flag */
 		}
 
 		place_obj_on_cb(cb_x, cb_y, l_si + 1,

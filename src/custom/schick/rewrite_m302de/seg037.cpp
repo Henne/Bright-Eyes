@@ -730,14 +730,14 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 			(random_interval(8, 12) <= ds_readws(FIGHT_ROUND))) {
 
 			/* after 8-12 rounds, the enemies flee */
-			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4); /* set 'scared' status bit */
+			or_ptr_bs(enemy + ENEMY_SHEET_FLAGS2, 4); /* set 'scared' flag */
 
 	} else if ((ds_readws(CURRENT_FIG_NO) == FIGHTS_F122) && /* 13 wolves */
 		/* F122: fight against 13 WOLVES */
 			(FIG_count_active_enemies() <= 3)) {
 
 			/* if at most 3 wolves are left, the enemies flee */
-			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4); /* set 'scared' status bit */
+			or_ptr_bs(enemy + ENEMY_SHEET_FLAGS2, 4); /* set 'scared' flag */
 
 	} else if (ds_readws(CURRENT_FIG_NO) == FIGHTS_F144) {
 		/* F144: final fight */
@@ -766,7 +766,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 #if !defined(__BORLANDC__)
 			D1_INFO("Feind %d flieht\n", enemy_no);
 #endif
-			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4); /* set 'scared' status bit */
+			or_ptr_bs(enemy + ENEMY_SHEET_FLAGS2, 4); /* set 'scared' flag */
 		}
 
 		/* chance of 4% that an illusion enemy disappears */
@@ -777,7 +777,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 			}
 #endif
 			/* Original-Bug? Why unset 'tied' and not 'illusion'?? */
-			and_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 0xdf); /* unset 'tied' status bit */
+			and_ptr_bs(enemy + ENEMY_SHEET_FLAGS1, 0xdf); /* unset 'tied' flag */
 		}
 
 		if (!enemy_scared(enemy)) {

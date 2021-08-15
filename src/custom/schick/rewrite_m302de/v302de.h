@@ -567,8 +567,8 @@ static inline unsigned short hero_encouraged(Bit8u *hero) {
 static inline unsigned short hero_seen_phantom_set(Bit8u *hero, unsigned short val)
 {
 	/* unset this bit */
-	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) & 0xef);
-	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) | ((val & 1) << 4));
+	host_writeb(hero + HERO_FLAGS2, host_readb(hero + HERO_FLAGS2) & 0xef);
+	host_writeb(hero + HERO_FLAGS2, host_readb(hero + HERO_FLAGS2) | ((val & 1) << 4));
 	return (val & 1);
 }
 
@@ -579,14 +579,14 @@ static inline unsigned short hero_seen_phantom_set(Bit8u *hero, unsigned short v
  * 0 = alive / 1 = dead
  */
 static inline unsigned short enemy_dead(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x31) >> 0) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS1) >> 0) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
 static inline unsigned short enemy_asleep(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x31) >> 1) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS1) >> 1) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -599,28 +599,28 @@ static inline unsigned short enemy_asleep(Bit8u *enemy) {
  * 0 = not petrified / 1 = petrified
  */
 static inline unsigned short enemy_petrified(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x31) >> 2) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS1) >> 2) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
 static inline unsigned short enemy_busy(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x31) >> 3) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS1) >> 3) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
 static inline unsigned short enemy_tied(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x31) >> 5) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS1) >> 5) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
 static inline unsigned short enemy_mushroom(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x31) >> 6) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS1) >> 6) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -633,14 +633,14 @@ static inline unsigned short enemy_mushroom(Bit8u *enemy) {
  * 0 = real / 1 = illusion
  */
 static inline unsigned short enemy_illusion(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x31) >> 7) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS1) >> 7) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
 static inline unsigned short enemy_tame(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x32) >> 0) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS2) >> 0) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -653,33 +653,33 @@ static inline unsigned short enemy_tame(Bit8u *enemy) {
  * 0 = no / 1 = casted
  */
 static inline unsigned short enemy_renegade(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x32) >> 1) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS2) >> 1) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
 static inline unsigned short enemy_scared(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x32) >> 2) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS2) >> 2) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
 static inline unsigned short enemy_dancing(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x32) >> 3) & 1) == 0)
+	if (((host_readb(enemy + ENEMY_SHEET_FLAGS2) >> 3) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
 /**
- * ks_broken() -	check if a item in the knapsack is broken
+ * inventory_broken() -	check if an item in the inventory is broken
  * @item:	ptr to item
  *
  * 0 = not broken / 1 = broken
  */
-static inline unsigned short ks_broken(Bit8u *ks) {
+static inline unsigned short inventory_broken(Bit8u *ks) {
 	if (((host_readb(ks + INVENTORY_FLAGS) >> 0) & 1) == 0)
 		return 0;
 	else
@@ -687,12 +687,12 @@ static inline unsigned short ks_broken(Bit8u *ks) {
 }
 
 /**
- * ks_half_empty() -	check if a item in the knapsack is half empty
+ * inventory_half_empty() -	check if an item (only used for ITEM_WATERSKIN) in the inventory is half empty
  * @item:	ptr to item
  *
  * 0 = filled / 1 = half empty
  */
-static inline unsigned short ks_half_empty(Bit8u *ks) {
+static inline unsigned short inventory_half_empty(Bit8u *ks) {
 	if (((host_readb(ks + INVENTORY_FLAGS) >> 1) & 1) == 0)
 		return 0;
 	else
@@ -700,12 +700,12 @@ static inline unsigned short ks_half_empty(Bit8u *ks) {
 }
 
 /**
- * ks_empty() -	check if a item in the knapsack is empty
+ * inventory_empty() -	check if an item (only used for ITEM_WATERSKIN) in the inventory is empty
  * @item:	ptr to item
  *
  * 0 = filled / 1 = empty
  */
-static inline unsigned short ks_empty(Bit8u *ks) {
+static inline unsigned short inventory_empty(Bit8u *ks) {
 	if (((host_readb(ks + INVENTORY_FLAGS) >> 2) & 1) == 0)
 		return 0;
 	else
@@ -713,12 +713,12 @@ static inline unsigned short ks_empty(Bit8u *ks) {
 }
 
 /**
- * ks_magic() -	check if a item in the knapsack is magic
+ * inventory_magic() -	check if an item in the inventory is magic
  * @item:	ptr to item
  *
  * 0 = not magic / 1 = magic
  */
-static inline unsigned short ks_magic(Bit8u *ks) {
+static inline unsigned short inventory_magic(Bit8u *ks) {
 	if (((host_readb(ks + INVENTORY_FLAGS) >> 3) & 1) == 0)
 		return 0;
 	else
@@ -726,12 +726,12 @@ static inline unsigned short ks_magic(Bit8u *ks) {
 }
 
 /**
- * ks_poison_expurgicum() -	check if a item in the knapsack has the poison_expurgicum flag set
+ * inventory_poison_expurgicum() -	check if an item in the inventory has the poison_expurgicum flag set
  * @item:	ptr to item
  *
  * 0 = no / 1 = yes
  */
-static inline unsigned short ks_poison_expurgicum(Bit8u *ks) {
+static inline unsigned short inventory_poison_expurgicum(Bit8u *ks) {
 	if (((host_readb(ks + INVENTORY_FLAGS) >> 5) & 1) == 0)
 		return 0;
 	else
@@ -739,12 +739,12 @@ static inline unsigned short ks_poison_expurgicum(Bit8u *ks) {
 }
 
 /**
- * ks_poison_vomicum() -	check if a item in the knapsack has the poison_vomicum flag set
+ * inventory_poison_vomicum() -	check if an item in the inventory has the poison_vomicum flag set
  * @item:	ptr to item
  *
  * 0 = no / 1 = yes
  */
-static inline unsigned short ks_poison_vomicum(Bit8u *ks) {
+static inline unsigned short inventory_poison_vomicum(Bit8u *ks) {
 	if (((host_readb(ks + INVENTORY_FLAGS) >> 6) & 1) == 0)
 		return 0;
 	else
@@ -752,24 +752,24 @@ static inline unsigned short ks_poison_vomicum(Bit8u *ks) {
 }
 
 /**
- * ks_magic_revealed() -	check if a item in the knapsack is magic and you know
+ * inventory_magic_revealed() -	check if an item in the inventory is magic and you know
  * @item:	ptr to item
  *
  * 0 = know not / 1 = you know its magic
  */
-static inline unsigned short ks_magic_revealed(Bit8u *ks) {
+static inline unsigned short inventory_magic_revealed(Bit8u *ks) {
 	if (((host_readb(ks + INVENTORY_FLAGS) >> 7) & 1) == 0)
 		return 0;
 	else
 		return 1;
 }
 
-static inline void add_ks_counter(signed short i1, signed short i2, Bit8u *hero) {
+static inline void add_inventory_quantity(signed short i1, signed short i2, Bit8u *hero) {
 	add_ptr_ws(hero + HERO_INVENTORY + i1 * SIZEOF_INVENTORY + INVENTORY_QUANTITY, host_readw(hero + HERO_INVENTORY + i2 * SIZEOF_INVENTORY + INVENTORY_QUANTITY));
 }
 
 /**
- * item_armor() -	check if a item is an armor
+ * item_armor() -	check if an item is an armor
  * @item:	ptr to item
  *
  * 0 = non armor / 1 = armor
@@ -782,7 +782,7 @@ static inline unsigned short item_armor(Bit8u *item) {
 }
 
 /**
- * item_weapon() -	check if a item is a weapon
+ * item_weapon() -	check if an item is a weapon
  * @item:	ptr to item
  *
  * 0 = non weapon / 1 = weapon
@@ -795,7 +795,7 @@ static inline unsigned short item_weapon(Bit8u *item) {
 }
 
 /**
- * item_useable() -	check if a item is useable
+ * item_useable() -	check if an item is useable
  * @item:	ptr to item
  *
  * 0 = no / 1 = yes
@@ -808,7 +808,7 @@ static inline unsigned short item_useable(Bit8u *item) {
 }
 
 /**
- * item_food() -	check if a item is food
+ * item_food() -	check if an item is food
  * @item:	ptr to item
  *
  * 0 = non food / 1 = food
@@ -821,7 +821,7 @@ static inline unsigned short item_food(Bit8u *item) {
 }
 
 /**
- * item_stackable() -	check if a item is stackable
+ * item_stackable() -	check if an item is stackable
  * @item:	ptr to item
  *
  * 0 = non stackable / 1 = stackable
@@ -834,7 +834,7 @@ static inline unsigned short item_stackable(Bit8u *item) {
 }
 
 /**
- * item_herb_potion() -	check if a item is a herb or potion
+ * item_herb_potion() -	check if an item is a herb or potion
  * @item:	ptr to item
  *
  * 0 = non / 1 = herb or potion
@@ -847,7 +847,7 @@ static inline unsigned short item_herb_potion(Bit8u *item) {
 }
 
 /**
- * item_undropable() -	check if a item is undropable
+ * item_undropable() -	check if an item is undropable
  * @item:	ptr to item
  *
  * 0 = dropable / 1 = undropable
@@ -1122,56 +1122,56 @@ struct bittest {
 #define test_bit5(a)		((*(struct bittest*)(a)).bit5)
 #define test_bit6(a)		((*(struct bittest*)(a)).bit6)
 
-#define hero_dead(hero)		((*(struct hero_status*)(hero + 0xaa)).dead)
-#define hero_asleep(hero)	((*(struct hero_status*)(hero + 0xaa)).asleep)
-#define hero_petrified(hero)	((*(struct hero_status*)(hero + 0xaa)).petrified)
-#define hero_brewing(hero)	((*(struct hero_status*)(hero + 0xaa)).brewing)
-#define hero_chamaelioni(hero)	((*(struct hero_status*)(hero + 0xaa)).chamaelioni)
-#define hero_renegade(hero)	((*(struct hero_status*)(hero + 0xaa)).renegade)
-#define hero_unconscious(hero)	((*(struct hero_status*)(hero + 0xaa)).unconscious)
-#define hero_tied(hero)		((*(struct hero_status*)(hero + 0xaa)).tied)
+#define hero_dead(hero)		((*(struct hero_flags*)(hero + HERO_FLAGS1)).dead)
+#define hero_asleep(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).asleep)
+#define hero_petrified(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).petrified)
+#define hero_brewing(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).brewing)
+#define hero_chamaelioni(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).chamaelioni)
+#define hero_renegade(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).renegade)
+#define hero_unconscious(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).unconscious)
+#define hero_tied(hero)		((*(struct hero_flags*)(hero + HERO_FLAGS1)).tied)
 
-#define hero_scared(hero)	((*(struct hero_status*)(hero + 0xaa)).scared)
-#define hero_dummy2(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy2)
-#define hero_duplicatus(hero)	((*(struct hero_status*)(hero + 0xaa)).duplicatus)
-#define hero_tame(hero)		((*(struct hero_status*)(hero + 0xaa)).tame)
-#define hero_seen_phantom(hero)	((*(struct hero_status*)(hero + 0xaa)).seen_phantom)
-#define hero_gods_pissed(hero)	((*(struct hero_status*)(hero + 0xaa)).gods_pissed)
-#define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transformed)
-#define hero_encouraged(hero)	((*(struct hero_status*)(hero + 0xaa)).encouraged)
+#define hero_scared(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).scared)
+#define hero_dummy2(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).dummy2)
+#define hero_duplicatus(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).duplicatus)
+#define hero_tame(hero)		((*(struct hero_flags*)(hero + HERO_FLAGS1)).tame)
+#define hero_seen_phantom(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).seen_phantom)
+#define hero_gods_pissed(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).gods_pissed)
+#define hero_transformed(hero)  ((*(struct hero_flags*)(hero + HERO_FLAGS1)).transformed)
+#define hero_encouraged(hero)	((*(struct hero_flags*)(hero + HERO_FLAGS1)).encouraged)
 
-#define hero_seen_phantom_set(hero, v) ((*(struct hero_status*)(hero + 0xaa)).seen_phantom = v)
+#define hero_seen_phantom_set(hero, v) ((*(struct hero_flags*)(hero + HERO_FLAGS1)).seen_phantom = v)
 
-#define enemy_dead(enemy)	(((struct enemy_sheets*)(enemy))->status1.dead)
-#define enemy_asleep(enemy)	(((struct enemy_sheets*)(enemy))->status1.asleep)
-#define enemy_petrified(enemy)	(((struct enemy_sheets*)(enemy))->status1.petrified)
-#define enemy_busy(enemy)	(((struct enemy_sheets*)(enemy))->status1.busy)
-#define enemy_tied(enemy)	(((struct enemy_sheets*)(enemy))->status1.tied)
-#define enemy_mushroom(enemy)	(((struct enemy_sheets*)(enemy))->status1.mushroom)
-#define enemy_illusion(enemy)	(((struct enemy_sheets*)(enemy))->status1.illusion)
+#define enemy_dead(enemy)	(((struct enemy_sheets*)(enemy))->flags1.dead)
+#define enemy_asleep(enemy)	(((struct enemy_sheets*)(enemy))->flags1.asleep)
+#define enemy_petrified(enemy)	(((struct enemy_sheets*)(enemy))->flags1.petrified)
+#define enemy_busy(enemy)	(((struct enemy_sheets*)(enemy))->flags1.busy)
+#define enemy_tied(enemy)	(((struct enemy_sheets*)(enemy))->flags1.tied)
+#define enemy_mushroom(enemy)	(((struct enemy_sheets*)(enemy))->flags1.mushroom)
+#define enemy_illusion(enemy)	(((struct enemy_sheets*)(enemy))->flags1.illusion)
 
-#define enemy_tame(enemy)	(((struct enemy_sheets*)(enemy))->status2.tame)
-#define enemy_renegade(enemy)	(((struct enemy_sheets*)(enemy))->status2.renegade)
-#define enemy_scared(enemy)	(((struct enemy_sheets*)(enemy))->status2.scared)
-#define enemy_dancing(enemy)	(((struct enemy_sheets*)(enemy))->status2.dancing)
+#define enemy_tame(enemy)	(((struct enemy_sheets*)(enemy))->flags2.tame)
+#define enemy_renegade(enemy)	(((struct enemy_sheets*)(enemy))->flags2.renegade)
+#define enemy_scared(enemy)	(((struct enemy_sheets*)(enemy))->flags2.scared)
+#define enemy_dancing(enemy)	(((struct enemy_sheets*)(enemy))->flags2.dancing)
 
-#define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + HERO_INVENTORY))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)
+#define add_inventory_quantity(i1, i2, hero) (    ((struct inventory*)(hero + HERO_INVENTORY))[i1].quantity+=((struct inventory*)(hero + HERO_INVENTORY))[i2].quantity)
 
-#define ks_broken(ks)			((*(struct knapsack_status*)(ks + INVENTORY_FLAGS)).broken)
-#define ks_half_empty(ks)		((*(struct knapsack_status*)(ks + INVENTORY_FLAGS)).half_empty)
-#define ks_empty(ks)			((*(struct knapsack_status*)(ks + INVENTORY_FLAGS)).empty)
-#define ks_magic(ks)			((*(struct knapsack_status*)(ks + INVENTORY_FLAGS)).magic)
-#define ks_poison_expurgicum(ks)	((*(struct knapsack_status*)(ks + INVENTORY_FLAGS)).poison_expurgicum)
-#define ks_poison_vomicum(ks)		((*(struct knapsack_status*)(ks + INVENTORY_FLAGS)).poison_vomicum)
-#define ks_magic_revealed(ks)		((*(struct knapsack_status*)(ks + INVENTORY_FLAGS)).magic_revealed)
+#define inventory_broken(ks)			((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).broken)
+#define inventory_half_empty(ks)		((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).half_empty)
+#define inventory_empty(ks)			((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).empty)
+#define inventory_magic(ks)			((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).magic)
+#define inventory_poison_expurgicum(ks)	((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).poison_expurgicum)
+#define inventory_poison_vomicum(ks)		((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).poison_vomicum)
+#define inventory_magic_revealed(ks)		((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).magic_revealed)
 
-#define item_armor(item)	((*(struct item_status*)(item + ITEM_STATS_FLAGS)).armor)
-#define item_weapon(item)	((*(struct item_status*)(item + ITEM_STATS_FLAGS)).weapon)
-#define item_useable(item)	((*(struct item_status*)(item + ITEM_STATS_FLAGS)).useable)
-#define item_food(item)		((*(struct item_status*)(item + ITEM_STATS_FLAGS)).food)
-#define item_stackable(item)	((*(struct item_status*)(item + ITEM_STATS_FLAGS)).stackable)
-#define item_herb_potion(item)	((*(struct item_status*)(item + ITEM_STATS_FLAGS)).herb_potion)
-#define item_undropable(item)	((*(struct item_status*)(item + ITEM_STATS_FLAGS)).undropable)
+#define item_armor(item)	((*(struct item_flags*)(item + ITEM_STATS_FLAGS)).armor)
+#define item_weapon(item)	((*(struct item_flags*)(item + ITEM_STATS_FLAGS)).weapon)
+#define item_useable(item)	((*(struct item_flags*)(item + ITEM_STATS_FLAGS)).useable)
+#define item_food(item)		((*(struct item_flags*)(item + ITEM_STATS_FLAGS)).food)
+#define item_stackable(item)	((*(struct item_flags*)(item + ITEM_STATS_FLAGS)).stackable)
+#define item_herb_potion(item)	((*(struct item_flags*)(item + ITEM_STATS_FLAGS)).herb_potion)
+#define item_undropable(item)	((*(struct item_flags*)(item + ITEM_STATS_FLAGS)).undropable)
 
 #define get_spelltarget_e()	((Bit8u*)ds_readfp(SPELLTARGET_E))
 #define get_spelltarget()	((Bit8u*)ds_readfp(SPELLTARGET))

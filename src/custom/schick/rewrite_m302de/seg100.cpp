@@ -169,7 +169,7 @@ void spell_odem_arcanum(void)
 
 	if (id) {
 
-		if (ks_magic(get_spelluser() + pos * SIZEOF_INVENTORY + HERO_INVENTORY + INVENTORY_ITEM_ID)) {
+		if (inventory_magic(get_spelluser() + pos * SIZEOF_INVENTORY + HERO_INVENTORY + INVENTORY_ITEM_ID)) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(81),
@@ -211,7 +211,7 @@ void spell_sensibar(void)
 /* Illusion */
 void spell_chamaelioni(void)
 {
-	or_ptr_bs(get_spelluser() + HERO_STATUS1, 0x10); /* set 'chamaelioni' status bit */
+	or_ptr_bs(get_spelluser() + HERO_FLAGS1, 0x10); /* set 'chamaelioni' flag */
 
 	/* prepare the message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -224,7 +224,7 @@ void spell_chamaelioni(void)
 void spell_duplicatus(void)
 {
 	/* set the flag for this spell */
-	or_ptr_bs(get_spelluser() + HERO_STATUS2, 0x04); /* set 'duplicatus' status bit
+	or_ptr_bs(get_spelluser() + HERO_FLAGS2, 0x04); /* set 'duplicatus' flag
 
 	/* prepare the message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -441,7 +441,7 @@ void spell_eisenrost(void)
 				ds_writew(SPELL_SPECIAL_AECOST, -2);
 			} else {
 				/* check if weapon is already broken */
-				if (ks_broken(get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
+				if (inventory_broken(get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
 
 					strcpy((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx(90));

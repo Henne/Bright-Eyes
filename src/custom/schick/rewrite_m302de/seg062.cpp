@@ -119,7 +119,7 @@ void ask_miracle(void)
 
 								if (hero_transformed(hero)) {
 
-									and_ptr_bs(hero + HERO_STATUS2, 0xbf); /* unset 'transformed' status bit */
+									and_ptr_bs(hero + HERO_FLAGS2, 0xbf); /* unset 'transformed' flag */
 
 									for (i = 0; i <= 6; i++) {
 										inc_ptr_bs(hero + HERO_ATTRIB + 3 * i);
@@ -134,7 +134,7 @@ void ask_miracle(void)
 										host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 										!hero_gods_pissed(hero))
 									{
-										and_ptr_bs(hero + HERO_STATUS1, 0xdf); /* unset 'renegade' status bit */
+										and_ptr_bs(hero + HERO_FLAGS1, 0xdf); /* unset 'renegade' flag */
 
 										sprintf((char*)Real2Host(ds_readd(DTP2)),
 											(char*)get_tx2(3),
@@ -240,7 +240,7 @@ void ask_miracle(void)
 
 							if (hero_transformed(hero)) {
 
-								and_ptr_bs(hero + HERO_STATUS2, 0xbf); /* unset 'transformed' status bit */
+								and_ptr_bs(hero + HERO_FLAGS2, 0xbf); /* unset 'transformed' flag */
 
 								for (i = 0; i <= 6; i++) {
 									inc_ptr_bs(hero + HERO_ATTRIB + 3 * i);
@@ -254,7 +254,7 @@ void ask_miracle(void)
 								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_gods_pissed(hero))
 							{
-								and_ptr_bs(hero + HERO_STATUS1, 0xdf); /* unset 'renegade' status bit */
+								and_ptr_bs(hero + HERO_FLAGS1, 0xdf); /* unset 'renegade' flag */
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_tx2(17),
