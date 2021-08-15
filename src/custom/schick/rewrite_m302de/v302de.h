@@ -679,8 +679,8 @@ static inline unsigned short enemy_dancing(Bit8u *enemy) {
  *
  * 0 = not broken / 1 = broken
  */
-static inline unsigned short inventory_broken(Bit8u *ks) {
-	if (((host_readb(ks + INVENTORY_FLAGS) >> 0) & 1) == 0)
+static inline unsigned short inventory_broken(Bit8u *inventory) {
+	if (((host_readb(inventory + INVENTORY_FLAGS) >> 0) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -692,8 +692,8 @@ static inline unsigned short inventory_broken(Bit8u *ks) {
  *
  * 0 = filled / 1 = half empty
  */
-static inline unsigned short inventory_half_empty(Bit8u *ks) {
-	if (((host_readb(ks + INVENTORY_FLAGS) >> 1) & 1) == 0)
+static inline unsigned short inventory_half_empty(Bit8u *inventory) {
+	if (((host_readb(inventory + INVENTORY_FLAGS) >> 1) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -705,8 +705,8 @@ static inline unsigned short inventory_half_empty(Bit8u *ks) {
  *
  * 0 = filled / 1 = empty
  */
-static inline unsigned short inventory_empty(Bit8u *ks) {
-	if (((host_readb(ks + INVENTORY_FLAGS) >> 2) & 1) == 0)
+static inline unsigned short inventory_empty(Bit8u *inventory) {
+	if (((host_readb(inventory + INVENTORY_FLAGS) >> 2) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -718,8 +718,8 @@ static inline unsigned short inventory_empty(Bit8u *ks) {
  *
  * 0 = not magic / 1 = magic
  */
-static inline unsigned short inventory_magic(Bit8u *ks) {
-	if (((host_readb(ks + INVENTORY_FLAGS) >> 3) & 1) == 0)
+static inline unsigned short inventory_magic(Bit8u *inventory) {
+	if (((host_readb(inventory + INVENTORY_FLAGS) >> 3) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -731,8 +731,8 @@ static inline unsigned short inventory_magic(Bit8u *ks) {
  *
  * 0 = no / 1 = yes
  */
-static inline unsigned short inventory_poison_expurgicum(Bit8u *ks) {
-	if (((host_readb(ks + INVENTORY_FLAGS) >> 5) & 1) == 0)
+static inline unsigned short inventory_poison_expurgicum(Bit8u *inventory) {
+	if (((host_readb(inventory + INVENTORY_FLAGS) >> 5) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -744,8 +744,8 @@ static inline unsigned short inventory_poison_expurgicum(Bit8u *ks) {
  *
  * 0 = no / 1 = yes
  */
-static inline unsigned short inventory_poison_vomicum(Bit8u *ks) {
-	if (((host_readb(ks + INVENTORY_FLAGS) >> 6) & 1) == 0)
+static inline unsigned short inventory_poison_vomicum(Bit8u *inventory) {
+	if (((host_readb(inventory + INVENTORY_FLAGS) >> 6) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -757,8 +757,8 @@ static inline unsigned short inventory_poison_vomicum(Bit8u *ks) {
  *
  * 0 = know not / 1 = you know its magic
  */
-static inline unsigned short inventory_magic_revealed(Bit8u *ks) {
-	if (((host_readb(ks + INVENTORY_FLAGS) >> 7) & 1) == 0)
+static inline unsigned short inventory_magic_revealed(Bit8u *inventory) {
+	if (((host_readb(inventory + INVENTORY_FLAGS) >> 7) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -1157,13 +1157,13 @@ struct bittest {
 
 #define add_inventory_quantity(i1, i2, hero) (    ((struct inventory*)(hero + HERO_INVENTORY))[i1].quantity+=((struct inventory*)(hero + HERO_INVENTORY))[i2].quantity)
 
-#define inventory_broken(ks)			((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).broken)
-#define inventory_half_empty(ks)		((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).half_empty)
-#define inventory_empty(ks)			((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).empty)
-#define inventory_magic(ks)			((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).magic)
-#define inventory_poison_expurgicum(ks)	((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).poison_expurgicum)
-#define inventory_poison_vomicum(ks)		((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).poison_vomicum)
-#define inventory_magic_revealed(ks)		((*(struct inventory_flags*)(ks + INVENTORY_FLAGS)).magic_revealed)
+#define inventory_broken(inventory)		((*(struct inventory_flags*)(inventory + INVENTORY_FLAGS)).broken)
+#define inventory_half_empty(inventory)		((*(struct inventory_flags*)(inventory + INVENTORY_FLAGS)).half_empty)
+#define inventory_empty(inventory)		((*(struct inventory_flags*)(inventory + INVENTORY_FLAGS)).empty)
+#define inventory_magic(inventory)		((*(struct inventory_flags*)(inventory + INVENTORY_FLAGS)).magic)
+#define inventory_poison_expurgicum(inventory)	((*(struct inventory_flags*)(inventory + INVENTORY_FLAGS)).poison_expurgicum)
+#define inventory_poison_vomicum(inventory)	((*(struct inventory_flags*)(inventory + INVENTORY_FLAGS)).poison_vomicum)
+#define inventory_magic_revealed(inventory)	((*(struct inventory_flags*)(inventory + INVENTORY_FLAGS)).magic_revealed)
 
 #define item_armor(item)	((*(struct item_flags*)(item + ITEM_STATS_FLAGS)).armor)
 #define item_weapon(item)	((*(struct item_flags*)(item + ITEM_STATS_FLAGS)).weapon)
