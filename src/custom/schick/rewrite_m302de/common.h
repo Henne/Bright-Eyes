@@ -67,7 +67,7 @@ enum {
 #define SIZEOF_ANI_AREA (0x107)
 
 /**
- *	struct hero_status - status of the hero
+ *	struct hero_flags - status of the hero
  *	@dead:		1 = dead / 0 = not dead
  *	@asleep:	1 = asleep / 0 = awake
  *	@petrified:	1 = petrified / 0 = not petrified
@@ -86,7 +86,7 @@ enum {
  *	@transformed:	1 = hero is transformed (all positive attributes -1, from the cursed chest on the Totenschiff) / 0 not transformed (can be cured by 'Verwandlung beenden' spell or Praios/Hesinde miracle)
  *	@encouraged:	1 = MU increased by 3 (seg082.cpp, probably a dungeon event) / 0 = attribute back to normal.
  */
-struct hero_status {
+struct hero_flags {
 	/* hero + 0xaa */
 	unsigned short dead		:1;
 	unsigned short asleep		:1;
@@ -111,7 +111,7 @@ enum {
 	/* see https://github.com/shihan42/BrightEyesWiki/wiki/CHR-NPC */
 	HERO_NAME			= 0x000, /* 16 bytes */
 	HERO_NAME2			= 0x010, /* 16 bytes */
-	HERO_NR_INVENTORY_SLOTS_FILLED	= 0x020, /* 1 byte */ /* number of occupied item slots in the (KS = ) knapsack. (equipped items are not included (really??)) */
+	HERO_NR_INVENTORY_SLOTS_FILLED	= 0x020, /* 1 byte */ /* number of occupied item slots in the inventory. (equipped items are not included (really??)) */
 	HERO_TYPE			= 0x021, /* 1 byte */ /* See enum HERO_TYPE_* below. */
 	HERO_SEX			= 0x022, /* 1 byte */
 	HERO_HEIGHT			= 0x023, /* 1 byte */ /* unit: cm */
@@ -173,8 +173,8 @@ enum {
 	HERO_AXXELERATUS		= 0x0A0, /* 1 byte */ /* 1 = 'Axxeleratus' spell is active, 0 = inactive */
 	HERO_DRUNK			= 0x0A1, /* 1 byte */ /* 1 = true (hero drunk), 0 = false */
 	HERO_UNKNOWN10			= 0x0A2, /* 8 bytes */ /* never used? */
-	HERO_STATUS1			= 0x0AA, /* 1 byte = 8 bits */ /* Bit0 = dead, Bit1 = asleep, Bit2 = petrified, Bit3 = brewing, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious, Bit7 = tied */
-	HERO_STATUS2			= 0x0AB, /* 1 byte = 8 bits */ /* Bit0 = scared, Bit1 = unused?, Bit2 = duplicatus, Bit3 = tame, Bit4 = seen_phantom, Bit5 = gods_pissed, Bit6 = transformed, Bit7 = encouraged */
+	HERO_FLAGS1			= 0x0AA, /* 1 byte = 8 bits */ /* Bit0 = dead, Bit1 = asleep, Bit2 = petrified, Bit3 = brewing, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious, Bit7 = tied */
+	HERO_FLAGS2			= 0x0AB, /* 1 byte = 8 bits */ /* Bit0 = scared, Bit1 = unused?, Bit2 = duplicatus, Bit3 = tame, Bit4 = seen_phantom, Bit5 = gods_pissed, Bit6 = transformed, Bit7 = encouraged */
 	HERO_UNKNOWN11			= 0x0AC, /* 2 bytes */ /* never used? */
 	HERO_ILLNESS			= 0x0AE, /* 40 = 8 * 5 bytes */ /* 5 bytes for each of the following illnesses: 0-none (these 5 bytes appear to be unused!) 1-Wundfieber, 2-Dumpfschädel, 3-Blaue Keuche, 4-Paralyse, 5-Schlachtenfieber, 6-Frostschäden, 7-Tollwut */
 	HERO_POISON			= 0x0D6, /* 50 = 10 * 5 bytes */ /* 5 bytes for each of the following poisonings: 0-none (these 5 bytes appear to be unused!) 1-Shurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemel, 7-Lotusgift, 8-Kukris, 9-Bannstaubvergiftung */
@@ -196,7 +196,7 @@ enum {
 	HERO_SP_RISE			= 0x193, /* 1 bytes */ /* saved spell increases from last levelups */
 	HERO_MAGIC_SCHOOL		= 0x194, /* 1 byte */
 	HERO_STAFFSPELL_LVL		= 0x195, /* 1 byte */
-	HERO_INVENTORY			= 0x196, /* 322 = 23 * 14 bytes */ /* 23 inventory slots, each entry has 14 bytes */
+	HERO_INVENTORY			= 0x196, /* 322 = 23 * 14 bytes */ /* 23 inventory slots, each entry has 14 bytes */ /* first 7 slots: equipped inventory (head, arms etc.); following 16 slots: knapsack inventory */
 	HERO_LOAD			= 0x2D8, /* 2 bytes */
 	HERO_PORTRAIT			= 0x2DA /* 1024 = 32 * 32 bytes */ /* 32 x 32 pixels, 8 bpp */
 };
@@ -279,26 +279,36 @@ enum {
 
 #define SIZEOF_HERO_POISON (5)
 
-struct enemy_status1 {
+struct enemy_flags1 {
 	/* enemy + 0x31 */
 	unsigned short dead		:1;
 	unsigned short asleep		:1;
 	unsigned short petrified	:1; /* 1: enemy is petrified (from 'Paralue' spell) */
 	unsigned short busy		:1;
-	unsigned short bit4		:1;
+	unsigned short bit4		:1; /* unused? */
 	unsigned short tied		:1; /* 1: enemy is tied (from 'Band und Fessel' spell; all enemies in the final fight except the Orkchampion) */
 	unsigned short mushroom		:1; /* 1: enemy is a mushroom (from 'Salander' spell) */
 	unsigned short illusion		:1;
 };
 
-struct enemy_status2 {
-	unsigned short tame	:1; /* from 'Bannbaladin', 'Herr der Tiere' or 'Sanftmut' spell */
-	unsigned short renegade	:1; /* from 'Boeser Blick' spell. removed by 'Horriphobus' spell or Angstgift. */
-	unsigned short scared	:1; /* from 'Horriphobus' spell or Angstgift */
-	unsigned short dancing	:1; /* from 'Zwingtanz' spell */
+struct enemy_flags2 {
+	/* enemy + 0x32 */
+	unsigned short tame		:1; /* from 'Bannbaladin', 'Herr der Tiere' or 'Sanftmut' spell */
+	unsigned short renegade		:1; /* from 'Boeser Blick' spell. removed by 'Horriphobus' spell or Angstgift. */
+	unsigned short scared		:1; /* from 'Horriphobus' spell or Angstgift */
+	unsigned short dancing		:1; /* from 'Zwingtanz' spell */
+	unsigned short bit12		:1; /* unused? */
+	unsigned short bit13		:1; /* unused? */
+	unsigned short bit14		:1; /* unused? */
+	unsigned short bit15		:1; /* unused? */
 };
 
-struct item_status {
+/* remark siebenstreich 2021-08-15:
+ * I tried to combine these two structs into a single 2-byte bitfield 'enemy_flags' (similar to 'inventory_flags' below)
+ * Subsequently, the macros enemy_dead, enemy_asleep etc. in v302de.h had to be adjusted.
+ * However, no matter what I dried, this always broke binary BCC-compatibility. */
+
+struct item_flags {
 	/* item + 0x02 */
 	unsigned short armor		:1;
 	unsigned short weapon		:1;
@@ -311,8 +321,8 @@ struct item_status {
 	unsigned short bit7		:1;
 };
 
-struct knapsack_status {
-	/* knapsack position + 0x04 */
+struct inventory_flags {
+	/* inventory position + 0x04 */
 	unsigned short broken		:1;
 	unsigned short half_empty	:1; /* only used for ITEM_WATERSKIN */
 	unsigned short empty		:1; /* only used for ITEM_WATERSKIN. for an empty waterskin, both  'empty' and 'half_empty' flags are set */
@@ -333,20 +343,18 @@ struct knapsack_status {
 	unsigned short bit15		:1; /* unused */
 };
 
-struct knapsack_item {
+struct inventory {
 	/* for future use, currently the HERO_INVENTORY enum is used. */
-	/* name knapsack_item not optimal, as it is also used for equipped items */
-	/* maybe better: hero_inventory_entry? */
-	signed short id; /* +0 */
-	signed short counter; /* +2 */
+	signed short item_id; /* +0 */
+	signed short quantity; /* +2 */
 
-	struct knapsack_status stat; /* +4 */
+	struct inventory_flags flags; /* +4 */
 	signed char bf; /* +6 */
-	signed char used; /* +7 */
+	signed char rs_lost; /* +7 */
 
-	signed char timer; /* +8 */
+	signed char lighting_timer; /* +8 */
 	signed char poison_type; /* +9 */
-	signed char poison_counter; /* +10 */
+	signed char nr_poison_charges; /* +10 */
 	signed char unused1; /* +11 */
 
 	signed char unused2; /* +12 */
@@ -375,9 +383,10 @@ struct enemy_sheets {
 	signed char v[0x2f];
 
 	/* 0x31 */
-	struct enemy_status1 status1;
+	struct enemy_flags1 flags1;
+	
 	/* 0x32 */
-	struct enemy_status2 status2;
+	struct enemy_flags2 flags2;
 
 	/* 0x33 */
 	signed char unused_8;
@@ -429,8 +438,8 @@ enum {
 	ENEMY_SHEET_SAFTKRAFT		= 0x2e, /* stores extra damage of spell 'Saft, Kraft, Monstermacht' */
 	ENEMY_SHEET_BLIND		= 0x2f, /* blind rounds remaining from 'Blitz' spell */
 	ENEMY_SHEET_BROKEN		= 0x30, /* weapon broken? 0	= no, 1	= yes */
-	ENEMY_SHEET_STATUS1		= 0x31,
-	ENEMY_SHEET_STATUS2		= 0x32,
+	ENEMY_SHEET_FLAGS1		= 0x31,
+	ENEMY_SHEET_FLAGS2		= 0x32,
 	ENEMY_SHEET_UNUSED8		= 0x33,
 	ENEMY_SHEET_SIZE		= 0x34,
 	ENEMY_SHEET_ROUND_APPEAR	= 0x35,
@@ -616,7 +625,7 @@ enum {
 	/* https://github.com/shihan42/BrightEyesWiki/wiki/CHR-NPC#inventarslots */
 	INVENTORY_ITEM_ID		= 0,	/* 2 bytes */
 	INVENTORY_QUANTITY		= 2,	/* 2 bytes */ /* for stackable items: nr of items in stack; for items with magic charges: nr of charges left */
-	INVENTORY_FLAGS			= 4, 	/* 2 bytes */ /* bitfield, see knapsack_status */
+	INVENTORY_FLAGS			= 4, 	/* 2 bytes */ /* bitfield, see inventory_flags */
 	INVENTORY_BF 			= 6,	/* 1 byte */ /* Bruchfaktor. -99 means unbreakable */
 	INVENTORY_RS_LOST		= 7, 	/* 1 byte */ /* so far only seen for body armour. (from 'Ignifaxius' spell or from traps in DNG03 (Spinnenhoehle)) */
 	INVENTORY_LIGHTING_TIMER	= 8,	/* 1 byte */ /* for burning torch: number of remaining time, unit: 15 minutes */

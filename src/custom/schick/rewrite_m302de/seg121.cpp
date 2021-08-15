@@ -193,7 +193,7 @@ void poison_effect(void)
 					host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) + 2);
 					host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_NG), host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_NG)) + 2);
 					host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_JZ), host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_JZ)) + 2);
-					or_ptr_bs(hero + HERO_STATUS2, 1); /* set 'scared' status bit */
+					or_ptr_bs(hero + HERO_FLAGS2, 1); /* set 'scared' flag */
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ttx(39),
@@ -224,7 +224,7 @@ void poison_effect(void)
 					host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) - 2);
 					host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_NG), host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_NG)) - 2);
 					host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_JZ), host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_JZ)) - 2);
-					and_ptr_bs(hero + HERO_STATUS2, 0xfe); /* unset 'scared' status bit */
+					and_ptr_bs(hero + HERO_FLAGS2, 0xfe); /* unset 'scared' flag */
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ttx(40),
@@ -242,7 +242,7 @@ void poison_effect(void)
 				if (!host_readbs(poison_ptr + 4)) {
 
 					host_writeb(poison_ptr + 4, 1);
-					or_ptr_bs(hero + HERO_STATUS1, 0x02); /* set 'asleep' status bit */
+					or_ptr_bs(hero + HERO_FLAGS1, 0x02); /* set 'asleep' flag */
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ttx(41),
@@ -263,7 +263,7 @@ void poison_effect(void)
 				host_writeb(poison_ptr, 0);
 				host_writeb(poison_ptr + 1, 0);
 				host_writeb(poison_ptr + 4, 0);
-				and_ptr_bs(hero + HERO_STATUS1, 0xfd); /* unset 'asleep' status bit */
+				and_ptr_bs(hero + HERO_FLAGS1, 0xfd); /* unset 'asleep' flag */
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ttx(42),

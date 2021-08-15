@@ -469,7 +469,7 @@ void miracle_resurrect(Bit8u *str)
 		{
 
 			/* resurrect from the dead */
-			and_ptr_bs(hero + HERO_STATUS1, 0xfe); /* unset 'dead' status bit */
+			and_ptr_bs(hero + HERO_FLAGS1, 0xfe); /* unset 'dead' flag */
 
 			/* add 7 LE */
 			add_hero_le(hero, 7);
@@ -552,8 +552,8 @@ void miracle_weapon(Bit8u *str, signed short mode)
 					if (mode == 0) {
 						/* if weapon is neither broken nor magic magic, make it magic and magic_revealed */
 
-						if (!ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i) &&
-							!ks_magic(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i))
+						if (!inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i) &&
+							!inventory_magic(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i))
 						{
 							or_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * i, 0x08); /* set 'magic' flag */
 							or_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * i, 0x80); /* set 'magic_revealed' flag */
@@ -568,7 +568,7 @@ void miracle_weapon(Bit8u *str, signed short mode)
 						}
 					} else {
 						/* repair a broken weapon */
-						if (ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i))
+						if (inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i))
 						{
 							and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * i, 0xfe); /* unset 'broken' flag */
 

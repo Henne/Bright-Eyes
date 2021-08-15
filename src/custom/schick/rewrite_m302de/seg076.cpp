@@ -926,11 +926,11 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 						{
 							units_needed = 0;
 
-							if (ks_half_empty(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
+							if (inventory_half_empty(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
 							{
 								units_needed = 1;
 
-							} else if (ks_empty(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
+							} else if (inventory_empty(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
 							{
 								units_needed = 2;
 							}
@@ -939,13 +939,13 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 							{
 								hero_refilled = 1;
 
-								/* reset empty and half_empty bits of the knapsack item status */
+								/* refill waterskin */
 #if !defined(__BORLANDC__)
 								and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos, 0xfb); /* unset 'empty' flag */
 								and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos, 0xfd); /* unset 'half_empty' flag */
 #else
-								(*(struct knapsack_status*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).half_empty =
-									(*(struct knapsack_status*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).empty = 0;
+								(*(struct inventory_flags*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).half_empty =
+									(*(struct inventory_flags*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).empty = 0;
 #endif
 
 								if (host_readb(unit_ptr) <= units_needed)

@@ -408,7 +408,7 @@ void mspell_verwandlung(void)
 			/* if not enough AE, all AE will be consumed, without further effect */
 			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		} else {
-			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0xfb); /* unset 'petrified' status bit */
+			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS1, 0xfb); /* unset 'petrified' flag */
 
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -424,7 +424,7 @@ void mspell_verwandlung(void)
 			/* if not enough AE, all AE will be consumed, without further effect */
 			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		} else {
-			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0xbf); /* unset 'mushroom' status bit */
+			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS1, 0xbf); /* unset 'mushroom' flag */
 
 			ds_writew(MSPELL_AWAKE_FLAG, 1);
 		}
@@ -440,7 +440,7 @@ void mspell_bannbaladin(void)
                         (Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
-	or_ptr_bs(get_spelltarget() + HERO_STATUS2, 0x08); /* set 'tame' status bit */
+	or_ptr_bs(get_spelltarget() + HERO_FLAGS2, 0x08); /* set 'tame' flag */
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -455,7 +455,7 @@ void mspell_boeser_blick(void)
                         (Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
-	or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x20); /* set 'renegade' status bit */
+	or_ptr_bs(get_spelltarget() + HERO_FLAGS1, 0x20); /* set 'renegade' flag */
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -470,8 +470,8 @@ void mspell_horriphobus(void)
                         (Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
-	or_ptr_bs(get_spelltarget() + HERO_STATUS2, 0x01); /* set 'scared' status bit */
-	and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xdf); /* unset 'renegade' status bit */
+	or_ptr_bs(get_spelltarget() + HERO_FLAGS2, 0x01); /* set 'scared' flag */
+	and_ptr_bs(get_spelltarget() + HERO_FLAGS1, 0xdf); /* unset 'renegade' flag */
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -601,7 +601,7 @@ void mspell_eisenrost(void)
 		if (!id) {
 			/* target hero has no weapon */
 			ds_writew(MONSTER_SPELL_COST, 2);
-		} else if (!ks_broken(get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
+		} else if (!inventory_broken(get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
 
 			if (host_readbs(get_spelltarget() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_BF)) > 0) {
 
@@ -840,7 +840,7 @@ void mspell_paralue(void)
 			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* set the flag */
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0x04); /* set 'petrified' status bit */
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS1, 0x04); /* set 'petrified' flag */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -854,7 +854,7 @@ void mspell_paralue(void)
 			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
 		/* set the flag */
-		or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x04); /* set 'petrified' status bit */
+		or_ptr_bs(get_spelltarget() + HERO_FLAGS1, 0x04); /* set 'petrified' flag */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),

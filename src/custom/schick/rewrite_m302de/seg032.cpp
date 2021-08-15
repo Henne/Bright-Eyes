@@ -550,7 +550,7 @@ void FIG_do_round(void)
 
 					/* awake him (or her) */
 
-					and_ptr_bs(Real2Host(hero) + HERO_STATUS1, 0xfd); /* unset 'sleep' status bit */
+					and_ptr_bs(Real2Host(hero) + HERO_FLAGS1, 0xfd); /* unset 'sleep' flag */
 
 					fighter_ptr = Real2Host(FIG_get_ptr(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID)));
 
@@ -601,7 +601,7 @@ void FIG_do_round(void)
 								sub_ptr_bs(Real2Host(hero) + HERO_ENEMY_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))) /* check 'dead' status bit */
+							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))) /* check 'dead' flag */
 							{
 								/* attacked enemy is dead */
 								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_GFX_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
@@ -698,7 +698,7 @@ void FIG_do_round(void)
 								sub_ptr_bs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID))) /* check 'dead' status bit */
+							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID))) /* check 'dead' flag */
 							{
 								/* attacked enemy is dead */
 								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_GFX_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(enemy) + ENEMY_SHEET_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
@@ -751,7 +751,7 @@ void FIG_do_round(void)
 						 * It cannot be treated here as the FIGHTER entry of the tail is
 						 * removed in seg005.cpp, which is needed to restore the object under the tail. */
 
-						if (enemy_dead(Real2Host(enemy))) { /* check 'dead' status bit */
+						if (enemy_dead(Real2Host(enemy))) { /* check 'dead' flag */
 							/* attacking enemy is dead because of critical attack failure */
 							if (is_in_byte_array(host_readbs(Real2Host(enemy) + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 								/* attacking dead enemy is two-squares */
@@ -1092,11 +1092,11 @@ signed short do_fight(signed short fight_id)
 				&& (host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 			{
 
-				and_ptr_bs(hero + HERO_STATUS1, 0x7f); /* unset 'unconscious' status bit */
-				and_ptr_bs(hero + HERO_STATUS1, 0xfd); /* unset 'sleeps' status bit */
-				and_ptr_bs(hero + HERO_STATUS1, 0xef); /* unset 'chamaelioni' status bit */
-				and_ptr_bs(hero + HERO_STATUS2, 0xfb); /* unset 'duplicatus' status bit */
-				and_ptr_bs(hero + HERO_STATUS2, 0xfe); /* unset 'scared' status bit */
+				and_ptr_bs(hero + HERO_FLAGS1, 0x7f); /* unset 'unconscious' flag */
+				and_ptr_bs(hero + HERO_FLAGS1, 0xfd); /* unset 'sleeps' flag */
+				and_ptr_bs(hero + HERO_FLAGS1, 0xef); /* unset 'chamaelioni' flag */
+				and_ptr_bs(hero + HERO_FLAGS2, 0xfb); /* unset 'duplicatus' flag */
+				and_ptr_bs(hero + HERO_FLAGS2, 0xfe); /* unset 'scared' flag */
 
 				host_writebs(hero + HERO_BLIND, 0); /* unset blindness (set counter to 0) */
 				host_writebs(hero + HERO_ECLIPTIFACTUS, 0); /* unset 'Ecliptifactus' (set counter to 0) */
@@ -1154,7 +1154,7 @@ signed short do_fight(signed short fight_id)
 			if ((ds_readws(MAX_ENEMIES) != 0) && (ds_readws(FIG_DISCARD) == 0)) {
 
 				for (i = 0; i < 20; i++) {
-					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * i, 1); /* set 'dead' status bit */
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * i, 1); /* set 'dead' flag */
 				}
 			}
 

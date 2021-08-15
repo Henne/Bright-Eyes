@@ -52,7 +52,7 @@ void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, sig
 
 	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
 
-		if (ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos)) {
+		if (inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos)) {
 
 			host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
 				(host_readws(get_itemsdat(item_id) + 8) +

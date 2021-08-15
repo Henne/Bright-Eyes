@@ -73,7 +73,7 @@ void FIG_tidy_monsters(void)
 
 					memset(p_datseg + ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * (j + 1), 0, SIZEOF_ENEMY_SHEET);
 
-					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1 + SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * j, 1); /* set 'dead' status bit */
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_FLAGS1 + SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * j, 1); /* set 'dead' flag */
 				}
 			}
 		} else {

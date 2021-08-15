@@ -71,7 +71,7 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 	signed short item2;
 	signed short v3 = 0;
 	signed short temp;
-	struct knapsack_item tmp;
+	struct inventory tmp;
 
 	if (!check_hero(hero) || (pos1 == pos2)) { }
 	else {
@@ -116,8 +116,8 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 					if ((item2 == item1) && item_stackable(get_itemsdat(item1))) {
 						/* merge them */
 
-						/* add counter from item at pos2 to item at pos1 */
-						add_ks_counter(pos1, pos2, hero);
+						/* add quantity of item at pos2 to item at pos1 */
+						add_inventory_quantity(pos1, pos2, hero);
 
 						/* delete item at pos2 */
 						memset(hero + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY,
@@ -181,8 +181,8 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 			if ((item2 == item1) && item_stackable(get_itemsdat(item1))) {
 				/* merge them */
 
-				/* add counter from item at pos2 to item at pos1 */
-				add_ks_counter(pos1, pos2, hero);
+				/* add quantity of item at pos2 to item at pos1 */
+				add_inventory_quantity(pos1, pos2, hero);
 
 				/* delete item at pos2 */
 				memset(hero + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY,
@@ -200,11 +200,11 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 				struct_copy(hero + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY, (Bit8u*)&tmp, SIZEOF_INVENTORY);
 #else
 				/* exchange the items */
-				tmp = *(struct knapsack_item*)(hero + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY);
+				tmp = *(struct inventory*)(hero + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY);
 
-				*(struct knapsack_item*)(hero + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY) =
-					*(struct knapsack_item*)(hero + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY);
-				*(struct knapsack_item*)(hero + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY) = tmp;
+				*(struct inventory*)(hero + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY) =
+					*(struct inventory*)(hero + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY);
+				*(struct inventory*)(hero + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY) = tmp;
 #endif
 			}
 		}
@@ -244,13 +244,13 @@ void print_item_description(Bit8u *hero, signed short pos)
 
 
 	/* broken */
-	if (ks_broken(inventory_p)) {
+	if (inventory_broken(inventory_p)) {
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(478));
 	}
 
 	/* magic */
-	if (ks_magic(inventory_p) &&	/* is magic */
-		ks_magic_revealed(inventory_p)) { /* and you know it */
+	if (inventory_magic(inventory_p) &&	/* is magic */
+		inventory_magic_revealed(inventory_p)) { /* and you know it */
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(479));
 	}
 
@@ -261,7 +261,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 
 	/* poisoned */
 	if (host_readw(inventory_p + INVENTORY_ITEM_ID) == ITEM_KUKRIS_DAGGER || host_readw(inventory_p + INVENTORY_ITEM_ID) == ITEM_KUKRIS_MENGBILAR ||
-		ks_poison_expurgicum(inventory_p) || ks_poison_vomicum(inventory_p) ||
+		inventory_poison_expurgicum(inventory_p) || inventory_poison_vomicum(inventory_p) ||
 		host_readb(hero + HERO_INVENTORY + INVENTORY_POISON_TYPE + pos * SIZEOF_INVENTORY) != POISON_TYPE_NONE) {
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(548));
 	}
@@ -291,7 +291,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 	signed short flag;
 	signed short desc1_5;
 	signed short desc2_5;
-	struct knapsack_item tmp;
+	struct inventory tmp;
 
 
 	item1 = host_readws(hero1 + HERO_INVENTORY + INVENTORY_ITEM_ID + pos1 * SIZEOF_INVENTORY);
@@ -496,7 +496,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 #if !defined(__BORLANDC__)
 				struct_copy((Bit8u*)&tmp, hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY, SIZEOF_INVENTORY);
 #else
-				tmp = *(struct knapsack_item*)(hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY);
+				tmp = *(struct inventory*)(hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY);
 #endif
 
 				sub_ptr_ws(hero2 + HERO_LOAD, desc2_5);
@@ -506,8 +506,8 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 						hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY,
 						SIZEOF_INVENTORY);
 #else
-				*(struct knapsack_item*)(hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY) =
-					*(struct knapsack_item*)(hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY);
+				*(struct inventory*)(hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY) =
+					*(struct inventory*)(hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY);
 #endif
 
 				add_ptr_ws(hero2 + HERO_LOAD, desc1_5);
@@ -518,7 +518,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 						(Bit8u*)&tmp,
 						SIZEOF_INVENTORY);
 #else
-				*(struct knapsack_item*)(hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY) = tmp;
+				*(struct inventory*)(hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY) = tmp;
 #endif
 
 				add_ptr_ws(hero1 + HERO_LOAD, desc2_5);
@@ -575,8 +575,8 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			struct_copy(hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY,
 				hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY, SIZEOF_INVENTORY);
 #else
-			*(struct knapsack_item*)(hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY) =
-					*(struct knapsack_item*)(hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY);
+			*(struct inventory*)(hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY) =
+					*(struct inventory*)(hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY);
 #endif
 			add_ptr_ws(hero2 + HERO_LOAD, host_readws(item1_desc + ITEM_STATS_WEIGHT) * l_di);
 			host_writews(hero2 + (HERO_INVENTORY + INVENTORY_QUANTITY) + pos2 * SIZEOF_INVENTORY, l_di);
@@ -609,8 +609,8 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		struct_copy(hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY,
 			hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY, SIZEOF_INVENTORY);
 #else
-		*(struct knapsack_item*)(hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY) =
-			*(struct knapsack_item*)(hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY);
+		*(struct inventory*)(hero2 + HERO_INVENTORY + pos2 * SIZEOF_INVENTORY) =
+			*(struct inventory*)(hero1 + HERO_INVENTORY + pos1 * SIZEOF_INVENTORY);
 #endif
 		/* adjust weight */
 		add_ptr_ws(hero2 + HERO_LOAD, host_readws(item1_desc + 5));
@@ -857,7 +857,7 @@ signed short get_full_waterskin_pos(Bit8u *hero)
 
 		/* look for a non-empty waterskin */
 		if ((host_readw(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + i * SIZEOF_INVENTORY) == ITEM_WATERSKIN) &&
-			!ks_empty(hero + HERO_INVENTORY + i * SIZEOF_INVENTORY))
+			!inventory_empty(hero + HERO_INVENTORY + i * SIZEOF_INVENTORY))
 		{
 			pos = i;
 			break;

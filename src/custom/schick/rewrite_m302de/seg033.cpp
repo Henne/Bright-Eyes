@@ -81,8 +81,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 		if ((hero_scared(hero)) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE)) {
 
-			and_ptr_bs(hero + HERO_STATUS1, 0x7f); /* unset 'tied' status bit (why??) */
-			and_ptr_bs(hero + HERO_STATUS1, 0xfb); /* unset 'petrified' status bit (why???) */
+			and_ptr_bs(hero + HERO_FLAGS1, 0x7f); /* unset 'tied' flag (why??) */
+			and_ptr_bs(hero + HERO_FLAGS1, 0xfb); /* unset 'petrified' flag (why???) */
 
 			if (FIG_find_path_to_target(hero, hero_pos, x, y, 5) != -1) {
 				seg036_00ae(hero, hero_pos); /* probably: execute hero movement based on path saved in 'FIG_MOVE_PATHDIR'. */
@@ -118,7 +118,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				weapon_id = host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID);
 
-				if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && test_bit0(hero + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS)))) { /* test 'broken' flag */
+				//if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && test_bit0(hero + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS)))) { /* test 'broken' flag */
+				if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && inventory_broken(hero + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)))) { /* test 'broken' flag */
 					/* no weapon or weapon broken, use red color for "change weapon" */
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)p_datseg + RED_STRING1,
@@ -170,7 +171,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					/* Probe: MU + 2 */
 					if (test_attrib(hero, ATTRIB_MU, 2) > 0) {
 						/* Success */
-						and_ptr_bs(hero + HERO_STATUS1, 0x7f); /* unset 'tied' status bit */
+						and_ptr_bs(hero + HERO_FLAGS1, 0x7f); /* unset 'tied' flag */
 
 					} else if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU)) > 4) {
 						/* Failure */
@@ -203,7 +204,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						update_mouse_cursor();
 
 						/* Moving destroys an active 'Chamaelioni' spell */
-						and_ptr_bs(hero + HERO_STATUS1, 0xef); /* unset 'chamaelioni' status bit.  (???) */
+						and_ptr_bs(hero + HERO_FLAGS1, 0xef); /* unset 'chamaelioni' flag.  (???) */
 						/* TODO: What if the target square agreed with the starting square (such that no movement has happened? */
 
 					} else {
@@ -271,12 +272,12 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						} else if (((target_id < 10) && hero_dead(get_hero(target_id - 1))) ||
 								((target_id >= 10) && (target_id < 30) &&
 										/* mushroom or dead */
-										(test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) || /* check 'dead' status bit */
-										test_bit6(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))) || /* check 'mushroom' status bit */
+										(test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * target_id) || /* check 'dead' flag */
+										test_bit6(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * target_id))) || /* check 'mushroom' flag */
 								((target_id >= 30) &&
 										/* mushroom or dead */
-										(test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) || /* check 'dead' status bit */
-										test_bit6(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id)))) /* check 'mushroom' status bit */
+										(test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * target_id) || /* check 'dead' flag */
+										test_bit6(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * target_id)))) /* check 'mushroom' flag */
 						{
 							GUI_output(get_tx(29));
 
@@ -596,7 +597,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * radio_i)),
 									(char*)p_datseg + SPACE_SEPARATED_STRINGS, /* "%s %s" */
 									(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(weapon_id))),
-									ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * slot_no) ? get_ttx(478) : p_datseg + EMPTY_STRING3);
+									inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * slot_no) ? get_ttx(478) : p_datseg + EMPTY_STRING3);
 
 								radio_i++;
 							}
@@ -917,7 +918,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					/* TODO: check fighter_id upper bound */
 					if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) || /* check 'dead' status bit */
+						&& (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) || /* check 'dead' flag */
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
 						&& (hero_dead(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{
@@ -929,7 +930,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					/* TODO: check fighter_id upper bound */
 					} else if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit2(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS2 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) || /* check 'scared' status bit */
+						&& (test_bit2(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS2 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) || /* check 'scared' flag */
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
 						&& (hero_scared(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{
@@ -958,7 +959,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 		(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM)))
 	{
 		for (slot_no = 0; slot_no < 20; slot_no++) {
-			and_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * slot_no, (signed char)0xdf); /* unset 'tied' status bit */
+			and_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * slot_no, (signed char)0xdf); /* unset 'tied' flag */
 		}
 
 		ds_writeb(FINALFIGHT_TUMULT, 1);

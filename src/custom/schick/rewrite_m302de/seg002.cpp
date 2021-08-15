@@ -4308,7 +4308,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 		if (hero_asleep(hero)) {
 
 			/* awake him/her */
-			and_ptr_bs(hero + HERO_STATUS1, 0xfd); /* unset 'asleep' status bit */
+			and_ptr_bs(hero + HERO_FLAGS1, 0xfd); /* unset 'asleep' flag */
 
 			/* in fight mode */
 			if (ds_readw(IN_FIGHT) != 0) {
@@ -4330,7 +4330,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			host_writew(hero + HERO_LE, 0);
 
 			/* mark hero as dead */
-			or_ptr_bs(hero + HERO_STATUS1, 1); /* set 'dead' status bit */
+			or_ptr_bs(hero + HERO_FLAGS1, 1); /* set 'dead' flag */
 
 			ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 0);
 
@@ -4382,7 +4382,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			if ((old_le >= 5) && (host_readws(hero + HERO_LE) < 5)) {
 
 				/* make hero unsonscious */
-				or_ptr_bs(hero + HERO_STATUS1, 0x40); /* set 'unconscious' status bit */
+				or_ptr_bs(hero + HERO_FLAGS1, 0x40); /* set 'unconscious' flag */
 
 				/* unknown yet */
 				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
@@ -4459,7 +4459,7 @@ void add_hero_le(Bit8u *hero, signed short le)
 		if ((host_readws(hero + HERO_LE) >= 5) && hero_unconscious(hero)) {
 
 			/* awake */
-			and_ptr_bs(hero + HERO_STATUS1, 0xbf); /* set conscious status bit */
+			and_ptr_bs(hero + HERO_FLAGS1, 0xbf); /* set 'conscious' flag */
 
 			/* maybe if we are in a fight */
 			if (ds_readw(IN_FIGHT)) {

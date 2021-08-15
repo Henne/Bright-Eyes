@@ -514,7 +514,7 @@ void FIG_latecomers(void)
 
 				} else {
 					/* scared enemies entering a fight are marked as dead. does this ever happen? */
-					or_ptr_bs(p_mon + ENEMY_SHEET_STATUS1, 1); /* set 'dead' status bit */
+					or_ptr_bs(p_mon + ENEMY_SHEET_FLAGS1, 1); /* set 'dead' flag */
 				}
 			}
 		}
@@ -803,7 +803,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 #ifndef M302de_ORIGINAL_BUGFIX
 					} else if (cb_entry_bak >= 10) {
 						/* target square contains a monster (including the tail of a two-squares monster) */
-						if (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * (cb_entry_bak - 10 - (cb_entry_bak >= 30 ? 20 : 0)))) /* check 'dead' status bit */
+						if (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * (cb_entry_bak - 10 - (cb_entry_bak >= 30 ? 20 : 0)))) /* check 'dead' flag */
 						{
 							/* monster is not dead */
 							problem = 3;
@@ -830,7 +830,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 #else
 						/* Bug fix:
 						 * flatten the nested if branches. */
-					} else if ((cb_entry_bak >= 10) && (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * (cb_entry_bak - 10 - (cb_entry_bak >= 30 ? 20 : 0))))) { /* check 'dead' status bit */
+					} else if ((cb_entry_bak >= 10) && (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * (cb_entry_bak - 10 - (cb_entry_bak >= 30 ? 20 : 0))))) { /* check 'dead' flag */
 						/* target square contains a non-dead monster (including the tail of a two-squares monster) */
 						problem = 3;
 					} else if ((cb_entry_bak > 0) && (cb_entry_bak < 10) && !hero_dead(get_hero(cb_entry_bak - 1)) && !hero_unconscious(get_hero(cb_entry_bak - 1)) && (cb_entry_bak != hero_pos + 1)) {

@@ -113,7 +113,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 			target_monster = p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID);
 
 			/* attacked enemy won't be renegade any more */
-			and_ptr_bs(target_monster + ENEMY_SHEET_STATUS1, 0xfd); /* unset 'renegade' status bit */
+			and_ptr_bs(target_monster + ENEMY_SHEET_FLAGS1, 0xfd); /* unset 'renegade' flag */
 
 			ds_writew(FIG_TARGET_GRAMMAR_TYPE, 1);
 			ds_writew(FIG_TARGET_GRAMMAR_ID, host_readbs(target_monster));
@@ -184,7 +184,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					/* wake up target hero */
 
-					and_ptr_bs(target_hero + HERO_STATUS1, 0xfd); /* unset 'asleep' status bit */
+					and_ptr_bs(target_hero + HERO_FLAGS1, 0xfd); /* unset 'asleep' flag */
 
 					p_fighter = Real2Host(FIG_get_ptr(host_readbs(target_hero + HERO_FIGHTER_ID)));
 
@@ -363,17 +363,17 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							l10 -= 5;
 						}
 
-						if (test_bit5(target_monster + ENEMY_SHEET_STATUS1)) { /* check 'tied' status bit */
+						if (test_bit5(target_monster + ENEMY_SHEET_FLAGS1)) { /* check 'tied' flag */
 							l10 -= 2;
-						} else if (test_bit3(target_monster + ENEMY_SHEET_STATUS2)) { /* check 'dancing' status bit */
+						} else if (test_bit3(target_monster + ENEMY_SHEET_FLAGS2)) { /* check 'dancing' flag */
 							l10 -= 3;
 						}
 
-						if (test_bit2(target_monster + ENEMY_SHEET_STATUS1) || /* check 'petrified' status bit */
-							test_bit3(target_monster + ENEMY_SHEET_STATUS1) || /* check 'busy' status bit */
-							test_bit6(target_monster + ENEMY_SHEET_STATUS1) || /* check 'mushroom' status bit */
-							test_bit0(target_monster + ENEMY_SHEET_STATUS2) || /* check 'tame' status bit */
-							test_bit1(target_monster + ENEMY_SHEET_STATUS2)) /* check 'renegade' status bit */
+						if (test_bit2(target_monster + ENEMY_SHEET_FLAGS1) || /* check 'petrified' flag */
+							test_bit3(target_monster + ENEMY_SHEET_FLAGS1) || /* check 'busy' flag */
+							test_bit6(target_monster + ENEMY_SHEET_FLAGS1) || /* check 'mushroom' flag */
+							test_bit0(target_monster + ENEMY_SHEET_FLAGS2) || /* check 'tame' flag */
+							test_bit1(target_monster + ENEMY_SHEET_FLAGS2)) /* check 'renegade' flag */
 						{
 							l10 = 0;
 						}

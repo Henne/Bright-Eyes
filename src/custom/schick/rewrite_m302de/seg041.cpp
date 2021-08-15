@@ -183,7 +183,7 @@ void FIG_add_msg(unsigned short f_action, unsigned short damage)
  *
  * \param   enemy       pointer to the enemy
  * \param   damage      the damage
- * \param   flag        impact on 'renegade' status bit. 0: not affacted. 1: reset 'renegade' to 0 (monster will be hostile again)
+ * \param   flag        impact on 'renegade' flag. 0: not affacted. 1: reset 'renegade' to 0 (monster will be hostile again)
  */
 void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short preserve_renegade)
 {
@@ -194,7 +194,7 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short preserve_renegad
 
 	/* are the enemies LE lower than 0 */
 	if (host_readws(enemy + ENEMY_SHEET_LE) <= 0) {
-		or_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 1); /* set 'dead' status bit */
+		or_ptr_bs(enemy + ENEMY_SHEET_FLAGS1, 1); /* set 'dead' flag */
 		host_writew(enemy + ENEMY_SHEET_LE, 0); /* set LE to 0 */
 
 		if ((ds_readw(CURRENT_FIG_NO) == FIGHTS_F126_08) && (host_readb(enemy) == 0x38)) {
@@ -215,17 +215,17 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short preserve_renegad
 			for (i = 0; i < 20; i++) {
 #if !defined(__BORLANDC__)
 				if (ds_readb(ENEMY_SHEETS + ENEMY_SHEET_GFX_ID + i * SIZEOF_ENEMY_SHEET) != 26)
-					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS2) + i * SIZEOF_ENEMY_SHEET, 4); /* set 'scared' status bit */
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_FLAGS2) + i * SIZEOF_ENEMY_SHEET, 4); /* set 'scared' flag */
 #else
 				if ( ((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].gfx_id != 0x1a)
-					((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].status2.scared = 1;
+					((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].flags2.scared = 1;
 #endif
 			}
 		}
 	}
 
 	if (!preserve_renegade)
-		and_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 0xfd); /* unset 'renegade' status bit */
+		and_ptr_bs(enemy + ENEMY_SHEET_FLAGS2, 0xfd); /* unset 'renegade' flag */
 }
 
 signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed short attack_hero)
@@ -382,12 +382,12 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 	if (damage > 0) {
 
-		if (ks_poison_expurgicum(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID)) {
+		if (inventory_poison_expurgicum(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID)) {
 			damage += dice_roll(1, 6, 2); /* D6 + 2 damage */
 			and_ptr_bs(hero + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS), 0xdf); /* unset 'poison_expurgicum' flag */
 		}
 
-		if (ks_poison_vomicum(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
+		if (inventory_poison_vomicum(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
 			damage += dice_roll(1, 20, 5); /* D20 + 5 damage */
 			and_ptr_bs(hero + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS), 0xbf); /* unset 'poison_vomicum' set */
 		}
@@ -395,8 +395,8 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		if (host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE) != POISON_TYPE_NONE) {
 
 			if (host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE) == POISON_TYPE_ANGSTGIFT) {
-				or_ptr_bs(enemy_p + ENEMY_SHEET_STATUS2, 0x04); /* set 'scared' flag */
-				and_ptr_bs(enemy_p + ENEMY_SHEET_STATUS2, 0xfd); /* unset 'renegade' flag */
+				or_ptr_bs(enemy_p + ENEMY_SHEET_FLAGS2, 0x04); /* set 'scared' flag */
+				and_ptr_bs(enemy_p + ENEMY_SHEET_FLAGS2, 0xfd); /* unset 'renegade' flag */
 			} else {
 				/* the following line is the source for the totally excessive and unbalanced poison damage */
 
@@ -430,7 +430,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			damage = 0;
 		}
 
-		if ((host_readbs(enemy_p + ENEMY_SHEET_MAGIC) != 0) && !ks_magic(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
+		if ((host_readbs(enemy_p + ENEMY_SHEET_MAGIC) != 0) && !inventory_magic(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
 			damage = 0;
 		}
 
@@ -565,7 +565,7 @@ signed short weapon_check(Bit8u *hero)
 	item_p = get_itemsdat(item);
 
 	if (!item_weapon(item_p) ||	/* check if its a weapon */
-		ks_broken(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY) ||
+		inventory_broken(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY) ||
 		(item_weapon(item_p) &&
 			((host_readbs(item_p + 3) == 7) ||
 			(host_readbs(item_p + 3) == 8) ||

@@ -18,7 +18,6 @@
 @REM option -Fs must be disabled	(assume ss == ds), but only 4 files are affected
 @REM option -O is not enabled
 @REM option -Od can be enabled		(disable optimization)
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG106.CPP
 @REM
 @REM --the compiling cases
 @REM
@@ -56,7 +55,7 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG038.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG039.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG040.CPP
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG041.CPP
+..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG041.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG042.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG043.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG044.CPP
@@ -120,6 +119,7 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG103.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG104.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG105.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG106.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG107.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG108.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG109.CPP

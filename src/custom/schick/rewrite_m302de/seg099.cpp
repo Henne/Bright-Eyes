@@ -49,7 +49,7 @@ void spell_beherrschung(void)
 			if (host_readws(get_spelluser() + HERO_AE) < ds_readws(SPELL_SPECIAL_AECOST)) {
 				ds_writew(SPELL_SPECIAL_AECOST, -2);
 			} else {
-				and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xdf); /* unset renegade status bit */
+				and_ptr_bs(get_spelltarget() + HERO_FLAGS1, 0xdf); /* unset 'renegade' flag */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_tx(1),
 					(char*)get_spelltarget() + HERO_NAME2);
@@ -130,7 +130,7 @@ void spell_illusionen(void)
 			/* YES: spell has effect */
 			ds_writew(SPELL_ILLUSIONEN, 1);
 			/* kill enemy */
-			or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 1); /* set 'dead' status bit */
+			or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS1, 1); /* set 'dead' flag */
 		}
 	} else {
 		/* print a failure message */
@@ -163,7 +163,7 @@ void spell_verwandlung(void)
 		} else {
 			/* YES: spell has effect */
 			/* unset petrified bit */
-			and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xfb); /* unset 'petrified' status bit */
+			and_ptr_bs(get_spelltarget() + HERO_FLAGS1, 0xfb); /* unset 'petrified' flag */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(4),
 				(char*)get_spelltarget() + HERO_NAME2);
@@ -171,7 +171,7 @@ void spell_verwandlung(void)
 	} else {
 		if (hero_transformed(get_spelltarget())) {
 
-			and_ptr_bs(get_spelltarget() + HERO_STATUS2, 0xbf); /* unset 'transformed' status bit */
+			and_ptr_bs(get_spelltarget() + HERO_FLAGS2, 0xbf); /* unset 'transformed' flag */
 
 			/* increase attributes */
 			for (i = 0; i <= 6; i++)
@@ -217,7 +217,7 @@ void spell_band(void)
 			return;
 		}
 
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 0x20); /* set 'tied' status bit */
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS1, 0x20); /* set 'tied' flag */
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(6),
@@ -240,8 +240,8 @@ void spell_band(void)
 			strcpy((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(112));
 		} else {
-			/* set status bit */
-			or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x80); /* set 'tied' status bit */
+			/* set flag */
+			or_ptr_bs(get_spelltarget() + HERO_FLAGS1, 0x80); /* set 'tied' flag */
 
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -275,7 +275,7 @@ void spell_bannbaladin(void)
 			return;
 		}
 
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 1); /* set 'tame' status bit */
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS2, 1); /* set 'tame' flag */
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(9),
@@ -294,7 +294,7 @@ void spell_boeser_blick(void)
 	if (host_readb(get_spelltarget_e() + ENEMY_SHEET_GFX_ID) == 0x1c) {
 		ds_writew(SPELL_SPECIAL_AECOST, -2);
 	} else {
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2); /* set 'renegade' status bit */
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS2, 2); /* set 'renegade' flag */
 
 		host_writeb(get_spelltarget_e() + ENEMY_SHEET_ATTACKS, 2); /* set number of attacks to 2 */
 
@@ -362,7 +362,7 @@ void spell_herrdertiere(void)
 			ds_writew(SPELL_SPECIAL_AECOST, -2);
 		} else {
 
-			or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 1); /* set 'tame' status bit */
+			or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS2, 1); /* set 'tame' flag */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(9),
@@ -383,8 +383,8 @@ void spell_horriphobus(void)
 	if (host_readb(get_spelltarget_e() + ENEMY_SHEET_GFX_ID) == 0x1c) {
 		ds_writew(SPELL_SPECIAL_AECOST, -2);
 	} else {
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 4); /* set 'scared' status bit */
-		and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 0xfd); /* unset 'renegade' status bit */
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS2, 4); /* set 'scared' flag */
+		and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS2, 0xfd); /* unset 'renegade' flag */
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_tx(12),
@@ -428,7 +428,7 @@ void spell_somnigravis(void)
 			return;
 		}
 
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 2); /* set 'asleep' status bit */
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS1, 2); /* set 'asleep' flag */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -455,7 +455,7 @@ void spell_somnigravis(void)
 			(char*)get_tx(112));
 	} else {
 		/* set the flag */
-		or_ptr_bs(get_spelltarget() + HERO_STATUS1, 2); /* set 'sleep' status bit */
+		or_ptr_bs(get_spelltarget() + HERO_FLAGS1, 2); /* set 'sleep' flag */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -476,7 +476,7 @@ void spell_zwingtanz(void)
 	} else {
 
 		/* set the flag */
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 8); /* set 'dancing' status bit */
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS2, 8); /* set 'dancing' flag */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -626,7 +626,7 @@ void spell_skelettarius(void)
 #endif
 
 		/* zombie will fight for the heroes */
-		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2); /* set 'renegade' status bit */
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS2, 2); /* set 'renegade' flag */
 		host_writebs(get_spelltarget_e() + ENEMY_SHEET_ATTACKS_LEFT, unk);
 #ifdef M302de_ORIGINAL_BUGFIX
 		/* Original-Bug 1:

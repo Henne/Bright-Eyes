@@ -627,7 +627,7 @@ void THO_academy(void)
 
 							ds_writew(ACADEMY_DAILY_CURSE, 1);
 
-							and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf); /* unset renegate status bit */
+							and_ptr_bs(get_hero(cursed_hero_pos) + HERO_FLAGS1, 0xdf); /* unset 'renegate' flag */
 
 						} else {
 							GUI_input(get_tx2(70), 0);
@@ -644,7 +644,7 @@ void THO_academy(void)
 
 					ds_writew(ACADEMY_DAILY_CURSE, 1);
 
-					and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf); /* unset renegate status bit */
+					and_ptr_bs(get_hero(cursed_hero_pos) + HERO_FLAGS1, 0xdf); /* unset 'renegate' flag */
 
 				} else {
 					GUI_input(get_ttx(401), 0);
@@ -761,7 +761,7 @@ signed short academy_get_equal_item(signed short price)
 				for (item_pos = 0; item_pos < NR_HERO_INVENTORY_SLOTS; item_pos++) {
 
 					if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos) != ITEM_NONE &&
-						!ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
+						!inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
 						/* remark: armour with degraded RS is accepted */
 					{
 						p_item = get_itemsdat(host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos));
