@@ -143,7 +143,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 				hero_pos = select_hero_ok(get_ttx(448));
 
-				if (hero_pos == -1 || host_readbs(get_hero(hero_pos) + HERO_KS_TAKEN) == 0) {
+				if (hero_pos == -1 || host_readbs(get_hero(hero_pos) + HERO_NR_INVENTORY_SLOTS_FILLED) == 0) {
 					break;
 				}
 
@@ -160,8 +160,8 @@ void sell_screen(Bit8u *shop_ptr)
 			if (l11 != 0) {
 
 				l20 = 0;
-				for (l_di = 0; l_di < 23; l_di++) {
-					if (host_readws(hero1 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * l_di) != 0) {
+				for (l_di = 0; l_di < NR_HERO_INVENTORY_SLOTS; l_di++) {
+					if (host_readws(hero1 + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * l_di) != ITEM_NONE) {
 						insert_sell_items(shop_ptr, hero1, l_di, l20++);
 					}
 				}
@@ -218,7 +218,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 						if (item_stackable(get_itemsdat(j))) {
 
-							if ((nice = host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + SIZEOF_HERO_INVENTORY * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
+							if ((nice = host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
 							{
 								my_itoa(nice, (char*)Real2Host(ds_readd(DTP2)), 10);
 
@@ -350,7 +350,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 					if (tmp[hero_pos][l15] != 0) {
 
-						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + SIZEOF_HERO_INVENTORY * l15) > 1) {
+						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15) > 1) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ttx(447),
@@ -362,8 +362,8 @@ void sell_screen(Bit8u *shop_ptr)
 								nice = 0;
 							}
 
-							if (host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + SIZEOF_HERO_INVENTORY * l15) < nice) {
-								nice = host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + SIZEOF_HERO_INVENTORY * l15);
+							if (host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15) < nice) {
+								nice = host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15);
 							}
 
 							price -= ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
@@ -383,7 +383,7 @@ void sell_screen(Bit8u *shop_ptr)
 									nice * ds_readws(PRICE_MODIFICATOR)) / 4L;
 						}
 					} else {
-						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + SIZEOF_HERO_INVENTORY * l15) > 1) {
+						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15) > 1) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ttx(447),
@@ -395,8 +395,8 @@ void sell_screen(Bit8u *shop_ptr)
 								nice = 0;
 							}
 
-							if (host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + SIZEOF_HERO_INVENTORY * l15) < nice) {
-								nice = host_readws(hero1 + (HERO_INVENTORY_HEAD+2) + SIZEOF_HERO_INVENTORY * l15);
+							if (host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15) < nice) {
+								nice = host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15);
 							}
 
 							price -= ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
@@ -465,10 +465,10 @@ void sell_screen(Bit8u *shop_ptr)
 
 					hero3 = get_hero(0);
 					for (items_x = 0; items_x <= 6; items_x++, hero3 += SIZEOF_HERO) {
-						for (l_di = 0; l_di < 23; l_di++) {
+						for (l_di = 0; l_di < NR_HERO_INVENTORY_SLOTS; l_di++) {
 
 							if (tmp[items_x][l_di] != 0) {
-								item_id = host_readws(hero3 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * l_di);
+								item_id = host_readws(hero3 + (HERO_INVENTORY + INVENTORY_ITEM_ID) + SIZEOF_INVENTORY * l_di);
 								drop_item(hero3, l_di, tmp[items_x][l_di]);
 								ds_writeb(MARKET_ITEMSALDO_TABLE + item_id, ds_readbs(MARKET_ITEMSALDO_TABLE + item_id) - tmp[items_x][l_di]);
 
@@ -546,7 +546,7 @@ void sell_screen(Bit8u *shop_ptr)
 			done = 1;
 		}
 
-		if (host_readbs(hero1 + HERO_KS_TAKEN) == 0) {
+		if (host_readbs(hero1 + HERO_NR_INVENTORY_SLOTS_FILLED) == 0) {
 			done = 1;
 		}
 	}

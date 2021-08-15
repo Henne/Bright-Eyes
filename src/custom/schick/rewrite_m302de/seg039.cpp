@@ -54,7 +54,7 @@ signed short FIG_get_range_weapon_type(Bit8u *hero)
 	signed short weapon;
 
 	/* get equipped weapon of the hero and make a pointer to the entry of ITEMS.DAT */
-	ptr = get_itemsdat((weapon = host_readw(hero + HERO_INVENTORY_RIGHT)));
+	ptr = get_itemsdat((weapon = host_readw(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID)));
 
 
 	/* not a weapon */

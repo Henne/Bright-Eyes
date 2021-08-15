@@ -396,10 +396,10 @@ void tevent_029(void)
 				if (item_pos != -1)
 				{
 					/* hero looses the first set of FOOD PACKAGES */
-					drop_item(hero, item_pos, host_readws(hero + HERO_INVENTORY_HEAD + 2 + SIZEOF_HERO_INVENTORY * item_pos));
+					drop_item(hero, item_pos, host_readws(hero + HERO_INVENTORY + INVENTORY_QUANTITY + SIZEOF_INVENTORY * item_pos));
 				}
 
-				item_pos = hero_count_item(hero, 30);
+				item_pos = hero_count_item(hero, ITEM_WATERSKIN);
 
 				if (item_pos)
 				{

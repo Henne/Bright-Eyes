@@ -552,11 +552,11 @@ void level_up(signed short hero_pos)
 		host_writebs(hero + HERO_MR, mr);
 
 		/* check for STIRNREIF [blau] / CORONET [blue] equipped => MR + 2 */
-		if (host_readws(hero + HERO_INVENTORY_HEAD) == ITEM_CORONET_BLUE) {
+		if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + HERO_INVENTORY_SLOT_HEAD * SIZEOF_INVENTORY) == ITEM_CORONET_BLUE) {
 			add_ptr_bs(hero + HERO_MR, 2);
 		}
 		/* check for RING / RING equipped => MR + 2 */
-		if (host_readws(hero + HERO_INVENTORY_HEAD + 4 * SIZEOF_HERO_INVENTORY) == ITEM_RING_RED) {
+		if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY) == ITEM_RING_RED) {
 			add_ptr_bs(hero + HERO_MR, 2);
 		}
 		/* check for AMULETT / in inventory => MR + 5 */

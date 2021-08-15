@@ -694,10 +694,10 @@ void spell_brenne(void)
 	if (torch_pos != -1) {
 
 		/* change torch to burning torch */
-		host_writew(get_spelluser() + HERO_INVENTORY_HEAD + torch_pos * SIZEOF_HERO_INVENTORY, ITEM_TORCH_ON);
+		host_writew(get_spelluser() + HERO_INVENTORY + INVENTORY_ITEM_ID + torch_pos * SIZEOF_INVENTORY, ITEM_TORCH_ON);
 
 		/* set counter to 10 */
-		host_writeb(get_spelluser() + HERO_INVENTORY_HEAD  + 8 + torch_pos * SIZEOF_HERO_INVENTORY, 10);
+		host_writeb(get_spelluser() + HERO_INVENTORY  + INVENTORY_LIGHTING_TIMER + torch_pos * SIZEOF_INVENTORY, 10);
 
 		/* set AP cost */
 		ds_writew(SPELL_SPECIAL_AECOST, random_schick(20));
@@ -715,10 +715,10 @@ void spell_brenne(void)
 		if (oil_pos != -1) {
 
 			/* change lantern to burning lantern */
-			host_writew(get_spelluser() + HERO_INVENTORY_HEAD + lantern_pos * SIZEOF_HERO_INVENTORY, ITEM_LANTERN_ON);
+			host_writew(get_spelluser() + HERO_INVENTORY + INVENTORY_ITEM_ID + lantern_pos * SIZEOF_INVENTORY, ITEM_LANTERN_ON);
 
 			/* set counter to 100 */
-			host_writeb(get_spelluser() + HERO_INVENTORY_HEAD  + 8 + lantern_pos * SIZEOF_HERO_INVENTORY, 100);
+			host_writeb(get_spelluser() + HERO_INVENTORY  + INVENTORY_LIGHTING_TIMER + lantern_pos * SIZEOF_INVENTORY, 100);
 
 			/* drop one oil flask */
 			drop_item(get_spelluser(), oil_pos, 1);

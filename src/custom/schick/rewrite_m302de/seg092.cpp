@@ -341,13 +341,13 @@ signed short hero_has_lockpicks(Bit8u *hero)
 	signed short i;
 
 	/* in each knapsack slot... */
-	for (i = 0; i < 23; i++) {
+	for (i = 0; i < NR_HERO_INVENTORY_SLOTS; i++) {
 
 		/* ... check for lockpicks ... */
-		if (host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i) == 35) {
+		if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * i) == ITEM_PICKLOCKS) {
 
 			/* ... which are not broken */
-			if (!ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i)) {
+			if (!ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i)) {
 				return i;
 			} else {
 				retval = -2;
@@ -488,7 +488,7 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 				/* unlucky, your lockpicks break... */
 
 				print_msg_with_first_hero(get_ttx(533));
-				or_ptr_bs(hero + (HERO_INVENTORY_HEAD+4) + SIZEOF_HERO_INVENTORY * l_si, 1);
+				or_ptr_bs(hero + (HERO_INVENTORY + INVENTORY_FLAGS) + SIZEOF_INVENTORY * l_si, 1); /* set 'broken' flag */
 
 				/* ... and you trigger the trap */
 #if !defined(__BORLANDC__)
@@ -563,7 +563,7 @@ void use_key_on_chest(RealPt chest_ptr)
 	if ((key_pos = get_item_pos(hero, host_readb(Real2Host(chest_ptr) + 2))) != -1)
 	{
 
-		if (!ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * key_pos))
+		if (!ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * key_pos))
 		{
 
 #if defined(__BORLANDC__)

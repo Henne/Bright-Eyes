@@ -390,6 +390,7 @@ void ask_miracle(void)
 				case 11: {
 					/* INGERIMM */
 					if (l_si <= 5) {
+						/* decrease BF of all weapons of all heroes by 2, but not below 0 */
 
 						for (i = 0; i <= 6; i++) {
 							hero = get_hero(i);
@@ -400,16 +401,16 @@ void ask_miracle(void)
 								!hero_gods_pissed(hero))
 							{
 
-								for (j = 0; j < 23; j++) {
-									if ((item_id = host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * j)) &&
+								for (j = 0; j < NR_HERO_INVENTORY_SLOTS; j++) {
+									if ((item_id = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * j)) &&
 										item_weapon(get_itemsdat(item_id)))
 									{
-										if (host_readbs(hero + (HERO_INVENTORY_HEAD+6) + SIZEOF_HERO_INVENTORY * j) > 0) {
-											dec_ptr_bs(hero + (HERO_INVENTORY_HEAD+6) + SIZEOF_HERO_INVENTORY * j);
+										if (host_readbs(hero + (HERO_INVENTORY + INVENTORY_BF) + SIZEOF_INVENTORY * j) > 0) {
+											dec_ptr_bs(hero + (HERO_INVENTORY + INVENTORY_BF) + SIZEOF_INVENTORY * j);
 										}
 
-										if (host_readbs(hero + (HERO_INVENTORY_HEAD+6) + SIZEOF_HERO_INVENTORY * j) > 0) {
-											dec_ptr_bs(hero + (HERO_INVENTORY_HEAD+6) + SIZEOF_HERO_INVENTORY * j);
+										if (host_readbs(hero + (HERO_INVENTORY + INVENTORY_BF) + SIZEOF_INVENTORY * j) > 0) {
+											dec_ptr_bs(hero + (HERO_INVENTORY + INVENTORY_BF) + SIZEOF_INVENTORY * j);
 										}
 									}
 								}

@@ -596,17 +596,16 @@ void mspell_eisenrost(void)
 		ds_writed(SPELLTARGET,
 			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
-		id = host_readws(get_spelltarget() + HERO_INVENTORY_RIGHT);
+		id = host_readws(get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID);
 
 		if (!id) {
 			/* target hero has no weapon */
 			ds_writew(MONSTER_SPELL_COST, 2);
-		} else if (!ks_broken(get_spelltarget() + HERO_INVENTORY_RIGHT)) {
+		} else if (!ks_broken(get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
 
-			if (host_readbs(get_spelltarget() + (HERO_INVENTORY_RIGHT + 6)) > 0) {
+			if (host_readbs(get_spelltarget() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_BF)) > 0) {
 
-				/* set the broken flag */
-				or_ptr_bs(get_spelltarget() + (HERO_INVENTORY_RIGHT + 4), 1);
+				or_ptr_bs(get_spelltarget() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS), 1); /* set 'broken' flag */
 
 				/* prepare message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -698,18 +697,18 @@ void mspell_ignifaxius(void)
 			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 
 		/* pointer to the armour of the target hero */
-		p_armour = get_spelltarget() + HERO_INVENTORY_BODY;
+		p_armour = get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY;
 
-		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
+		if ((host_readws(p_armour + INVENTORY_ITEM_ID) != ITEM_NONE) && (rs_malus != 0)) {
 
-			/* adjust rs_malus */
-			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(ARMORS_TABLE + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour)))))
+			/* adjust rs_malus such that the RS of the worn body armour won't be negative */
+			if ((host_readbs(p_armour + INVENTORY_RS_LOST) + rs_malus) > ds_readbs(ARMORS_TABLE + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour + INVENTORY_ITEM_ID)))))
 			{
-				rs_malus = ds_readbs(ARMORS_TABLE + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour))))
-						- host_readbs(p_armour + 7);
+				rs_malus = ds_readbs(ARMORS_TABLE + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour + INVENTORY_ITEM_ID))))
+						- host_readbs(p_armour + INVENTORY_RS_LOST);
 			}
 
-			host_writeb(p_armour + 7, host_readbs(p_armour + 7) + rs_malus);
+			host_writeb(p_armour + INVENTORY_RS_LOST, host_readbs(p_armour + INVENTORY_RS_LOST) + rs_malus);
 			host_writeb(get_spelltarget()  + HERO_RS_BONUS1, host_readbs(get_spelltarget() + HERO_RS_BONUS1) - rs_malus);
 		}
 

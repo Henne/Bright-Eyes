@@ -49,12 +49,12 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 
 		sub_ptr_bs(hero + HERO_RS_BONUS1, ds_readbs(host_readbs(item_p + ITEM_STATS_TABLE_INDEX) * SIZEOF_ARMOR_STATS + (ARMORS_TABLE + ARMOR_STATS_RS)));
 
-		add_ptr_bs(hero + HERO_RS_BONUS1, host_readbs(hero + HERO_INVENTORY_HEAD + HERO_INVENTORY_IS_USED + pos * SIZEOF_HERO_INVENTORY));
+		add_ptr_bs(hero + HERO_RS_BONUS1, host_readbs(hero + HERO_INVENTORY + INVENTORY_RS_LOST + pos * SIZEOF_INVENTORY));
 
 		sub_ptr_bs(hero + HERO_RS_BE, ds_readbs(host_readbs(item_p + ITEM_STATS_TABLE_INDEX) * SIZEOF_ARMOR_STATS + (ARMORS_TABLE + ARMOR_STATS_BE)));
 	}
 	/* if item is a weapon and in the right hand ? */
-	if (item_weapon(item_p) && pos == HERO_INVENTORY_POSITION_RIGHT_HAND) {
+	if (item_weapon(item_p) && pos == HERO_INVENTORY_SLOT_RIGHT_HAND) {
 		host_writebs(hero + HERO_WEAPON_TYPE, 0);
 		host_writebs(hero + HERO_AT_MOD, host_writebs(hero + HERO_PA_MOD, 0));
 	}
@@ -102,8 +102,8 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 			/* add RS boni */
 			add_ptr_bs(equipper + HERO_RS_BONUS1, ds_readbs(ARMORS_TABLE + ARMOR_STATS_RS + host_readbs(item_p + ITEM_STATS_TABLE_INDEX) * SIZEOF_ARMOR_STATS));
 
-			/* subtract used item value */
-			sub_ptr_bs(equipper + HERO_RS_BONUS1, host_readbs(owner + HERO_INVENTORY_HEAD + HERO_INVENTORY_IS_USED + pos_i * SIZEOF_HERO_INVENTORY));
+			/* subtract degraded RS */
+			sub_ptr_bs(equipper + HERO_RS_BONUS1, host_readbs(owner + HERO_INVENTORY + INVENTORY_RS_LOST + pos_i * SIZEOF_INVENTORY));
 
 			/* add RS-BE */
 			add_ptr_bs(equipper + HERO_RS_BE, ds_readbs(ARMORS_TABLE + ARMOR_STATS_BE + host_readbs(item_p + ITEM_STATS_TABLE_INDEX) * SIZEOF_ARMOR_STATS));
@@ -111,7 +111,7 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		}
 
 		/* weapon right hand */
-		if (item_weapon(item_p) && (pos_b == HERO_INVENTORY_POSITION_RIGHT_HAND)) {
+		if (item_weapon(item_p) && (pos_b == HERO_INVENTORY_SLOT_RIGHT_HAND)) {
 
 			/* set weapon type */
 			host_writeb(equipper + HERO_WEAPON_TYPE, host_readb(item_p + ITEM_STATS_SUBTYPE));
@@ -263,15 +263,15 @@ signed short has_hero_equipped(Bit8u *hero, unsigned short item)
 {
 	signed short i;
 
-	for (i = 0; i < 7; i++)
-		if (host_readw(hero + HERO_INVENTORY_HEAD + i * SIZEOF_HERO_INVENTORY) == item)
+	for (i = 0; i < HERO_INVENTORY_SLOT_KNAPSACK_1; i++)
+		if (host_readw(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + i * SIZEOF_INVENTORY) == item)
 			return i;
 
 	return -1;
 }
 
 /**
- * \brief   returns the posotion of a non-full item stack
+ * \brief   returns the position of a non-full item stack
  *
  * \param   hero        the hero
  * \param   item        the item
@@ -283,11 +283,11 @@ signed short has_hero_stacked(Bit8u *hero, unsigned short item)
 {
 	signed short i;
 
-	for (i = 0; i < 23; i++) {
+	for (i = 0; i < NR_HERO_INVENTORY_SLOTS; i++) {
 		/* has the hero the item */
 		/* is the number of items < 99 */
-		if ((host_readw(hero + HERO_INVENTORY_HEAD + i * SIZEOF_HERO_INVENTORY) == item) &&
-			(host_readws(hero + HERO_INVENTORY_HEAD + HERO_INVENTORY_QUANTITY + i * SIZEOF_HERO_INVENTORY) < 99))
+		if ((host_readw(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + i * SIZEOF_INVENTORY) == item) &&
+			(host_readws(hero + HERO_INVENTORY + INVENTORY_QUANTITY + i * SIZEOF_INVENTORY) < 99))
 			return i;
 	}
 
@@ -338,12 +338,12 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 
 
 			/* check for space on existing stack */
-			if (host_readws(hero + HERO_INVENTORY_HEAD + HERO_INVENTORY_QUANTITY + l1 * SIZEOF_HERO_INVENTORY) + si > 99) {
-				si = 99 - host_readw(hero + HERO_INVENTORY_HEAD + HERO_INVENTORY_QUANTITY + l1 * SIZEOF_HERO_INVENTORY);
+			if (host_readws(hero + HERO_INVENTORY + INVENTORY_QUANTITY + l1 * SIZEOF_INVENTORY) + si > 99) {
+				si = 99 - host_readw(hero + HERO_INVENTORY + INVENTORY_QUANTITY + l1 * SIZEOF_INVENTORY);
 			}
 
 			/* add items to stack */
-			add_ptr_ws(hero + HERO_INVENTORY_HEAD + HERO_INVENTORY_QUANTITY + l1 * SIZEOF_HERO_INVENTORY, si);
+			add_ptr_ws(hero + HERO_INVENTORY + INVENTORY_QUANTITY + l1 * SIZEOF_INVENTORY, si);
 
 			/* add weight */
 			add_ptr_ws(hero + HERO_LOAD, (host_readws(item_p + 5) * si));
@@ -353,50 +353,50 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 
 			/* Original-Bug: may lead to problems when the
 				item counter is broken */
-			if (host_readbs(hero + HERO_KS_TAKEN) < 23) {
+			if (host_readbs(hero + HERO_NR_INVENTORY_SLOTS_FILLED) < NR_HERO_INVENTORY_SLOTS) {
 
 				done = 0;
 
 				do {
 				/* Original-Bug: may lead to problems when the
 					item counter is broken */
-					if (host_readbs(hero + HERO_KS_TAKEN) < 23) {
+					if (host_readbs(hero + HERO_NR_INVENTORY_SLOTS_FILLED) < NR_HERO_INVENTORY_SLOTS) {
 						/* look for a free place : tricky */
-						di = 6;
-						while ((host_readw(hero + (HERO_INVENTORY_HEAD + HERO_INVENTORY_ITEM_ID) + ++di * SIZEOF_HERO_INVENTORY) != ITEM_NONE) && (di < 23));
+						di = HERO_INVENTORY_SLOT_KNAPSACK_1 - 1;
+						while ((host_readw(hero + (HERO_INVENTORY + INVENTORY_ITEM_ID) + ++di * SIZEOF_INVENTORY) != ITEM_NONE) && (di < NR_HERO_INVENTORY_SLOTS));
 
-						if (di < 23) {
+						if (di < NR_HERO_INVENTORY_SLOTS) {
 							if (si > 99)
 								si = 99;
 							/* increment item counter */
-							inc_ptr_bs(hero + HERO_KS_TAKEN);
+							inc_ptr_bs(hero + HERO_NR_INVENTORY_SLOTS_FILLED);
 
 							/* write item id */
-							host_writew(hero + (HERO_INVENTORY_HEAD + HERO_INVENTORY_ITEM_ID) + di * SIZEOF_HERO_INVENTORY, item);
+							host_writew(hero + (HERO_INVENTORY + INVENTORY_ITEM_ID) + di * SIZEOF_INVENTORY, item);
 
 
 #if 1
-							host_writew(hero + HERO_INVENTORY_HEAD + HERO_INVENTORY_QUANTITY + di * SIZEOF_HERO_INVENTORY,
+							host_writew(hero + HERO_INVENTORY + INVENTORY_QUANTITY + di * SIZEOF_INVENTORY,
 								(item_stackable(item_p)) ? si :
 									(item_useable(item_p)) ?
-										ds_readbs((SPECIALITEMS_TABLE + 1) + host_readbs(item_p + 4) * 3): 0);
+										ds_readbs((SPECIALITEMS_TABLE + 1) + host_readbs(item_p + ITEM_STATS_TABLE_INDEX) * 3): 0);
 #else
 
 							/* write item counter */
 							if (item_stackable(item_p))
 								/* write stackable items */
-								host_writew(hero + HERO_INVENTORY_HEAD + 2 + di * SIZEOF_HERO_INVENTORY, si);
+								host_writew(hero + HERO_INVENTORY + INVENTORY_QUANTITY + di * SIZEOF_INVENTORY, si);
 							else if (item_useable(item_p))
 									/* unknown */
-									host_writew(hero + HERO_INVENTORY_HEAD + 2 + di * SIZEOF_HERO_INVENTORY,
-										ds_readbs((SPECIALITEMS_TABLE + 1) + host_readbs(item_p + 4) * 3));
+									host_writew(hero + HERO_INVENTORY + INVENTORY_QUANTITY + di * SIZEOF_INVENTORY,
+										ds_readbs((SPECIALITEMS_TABLE + 1) + host_readbs(item_p + ITEM_STATS_TABLE_INDEX) * 3));
 								 else
-									host_writew(hero + HERO_INVENTORY_HEAD + 2 + di * SIZEOF_HERO_INVENTORY, 0);
+									host_writew(hero + HERO_INVENTORY + INVENTORY_QUANTITY + di * SIZEOF_INVENTORY, 0);
 #endif
 
 							/* set magical flag */
 							if (host_readb(item_p + ITEM_STATS_MAGIC) != 0) {
-								or_ptr_bs(hero + HERO_INVENTORY_HEAD + HERO_INVENTORY_FLAGS + di * SIZEOF_HERO_INVENTORY, 0x8); /* set 'magic' bit */
+								or_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + di * SIZEOF_INVENTORY, 0x8); /* set 'magic' flag */
 
 #if !defined(__BORLANDC__)
 								D1_INFO("%s hat soeben einen magischen Gegenstand erhalten: %s\n",
@@ -406,7 +406,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 
 							/* set breakfactor */
 							if (item_weapon(item_p)) {
-								host_writeb(hero + HERO_INVENTORY_HEAD + HERO_INVENTORY_BF + di * SIZEOF_HERO_INVENTORY,
+								host_writeb(hero + HERO_INVENTORY + INVENTORY_BF + di * SIZEOF_INVENTORY,
 									ds_readb(WEAPONS_TABLE + WEAPON_STATS_BF + host_readbs(item_p + ITEM_STATS_TABLE_INDEX) * SIZEOF_WEAPON_STATS));
 							}
 
@@ -491,7 +491,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short no)
 	unsigned short retval = 0;
 	signed short item;
 
-	item = host_readws(hero + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY);
+	item = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + pos * SIZEOF_INVENTORY);
 
 	/* check if that item is valid */
 	if (item != 0) {
@@ -522,24 +522,24 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short no)
 					no = answer;
 				}
 
-				if (host_readws(hero + HERO_INVENTORY_HEAD + 2 + pos * SIZEOF_HERO_INVENTORY) > no) {
+				if (host_readws(hero + HERO_INVENTORY + INVENTORY_QUANTITY + pos * SIZEOF_INVENTORY) > no) {
 					/* remove some stacked items */
 
 					/* adjust stack counter */
-					sub_ptr_ws(hero + HERO_INVENTORY_HEAD + 2 + pos * SIZEOF_HERO_INVENTORY, no);
+					sub_ptr_ws(hero + HERO_INVENTORY + INVENTORY_QUANTITY + pos * SIZEOF_INVENTORY, no);
 					/* adjust weight */
-					sub_ptr_ws(hero + HERO_LOAD, host_readws(p_item + 5) * no);
+					sub_ptr_ws(hero + HERO_LOAD, host_readws(p_item + ITEM_STATS_WEIGHT) * no);
 				} else {
 					/* remove all stacked items */
 
 					/* adjust weight */
 					sub_ptr_ws(hero + HERO_LOAD,
-						host_readws(p_item + 5) * host_readws(hero + HERO_INVENTORY_HEAD + 2 + pos * SIZEOF_HERO_INVENTORY));
+						host_readws(p_item + ITEM_STATS_WEIGHT) * host_readws(hero + HERO_INVENTORY + INVENTORY_QUANTITY + pos * SIZEOF_INVENTORY));
 					/* decrement item counter */
-					dec_ptr_bs(hero + HERO_KS_TAKEN);
+					dec_ptr_bs(hero + HERO_NR_INVENTORY_SLOTS_FILLED);
 
 					/* clear the inventory pos */
-					memset(hero + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY, 0, SIZEOF_HERO_INVENTORY);
+					memset(hero + HERO_INVENTORY + pos * SIZEOF_INVENTORY, 0, SIZEOF_INVENTORY);
 				}
 
 				retval = 1;
@@ -552,7 +552,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short no)
 						unequip(hero, item, pos);
 
 					/* decrement item counter */
-					dec_ptr_bs(hero + HERO_KS_TAKEN);
+					dec_ptr_bs(hero + HERO_NR_INVENTORY_SLOTS_FILLED);
 
 					/* subtract item weight */
 					sub_ptr_ws(hero + HERO_LOAD, host_readws(p_item + 5));
@@ -571,7 +571,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short no)
 					}
 
 					/* clear the inventory pos */
-					memset(hero + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY, 0, SIZEOF_HERO_INVENTORY);
+					memset(hero + HERO_INVENTORY + pos * SIZEOF_INVENTORY, 0, SIZEOF_INVENTORY);
 					retval = 1;
 				}
 			}
@@ -679,8 +679,8 @@ signed short hero_count_item(Bit8u *hero, unsigned short item) {
 	signed short i;
 	unsigned short ret = 0;
 
-	for (i = 0; i < 23; i++)
-		if (host_readw(hero + HERO_INVENTORY_HEAD + i * SIZEOF_HERO_INVENTORY) == item)
+	for (i = 0; i < NR_HERO_INVENTORY_SLOTS; i++)
+		if (host_readw(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + i * SIZEOF_INVENTORY) == item)
 			ret++;
 
 	return ret;
@@ -730,9 +730,9 @@ void loose_random_item(Bit8u *hero, signed short percent, Bit8u *text)
 
 	/* Original-Bug: infinite loop if the hero has no item */
 	do {
-		pos = random_schick(23) - 1;
+		pos = random_schick(NR_HERO_INVENTORY_SLOTS) - 1;
 
-		item = host_readw(hero + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY);
+		item = host_readw(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + pos * SIZEOF_INVENTORY);
 
 		p_item = get_itemsdat(item);
 
@@ -766,9 +766,9 @@ signed short select_item_to_drop(Bit8u *hero)
 	signed short di;
 
 	/* check if we drop equipped items or not */
-	i = (ds_readb(PREVENT_DROP_EQUIPPED_ITEMS) != 0) ? 7 : 0;
-	for (; i < 23; i++) {
-		if ((item = host_readws(hero + HERO_INVENTORY_HEAD + i * SIZEOF_HERO_INVENTORY))) {
+	i = (ds_readb(PREVENT_DROP_EQUIPPED_ITEMS) != 0) ? HERO_INVENTORY_SLOT_KNAPSACK_1 : 0;
+	for (; i < NR_HERO_INVENTORY_SLOTS; i++) {
+		if ((item = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + i * SIZEOF_INVENTORY))) {
 			str[v6] = i;
 			ds_writed(RADIO_NAME_LIST + v6 * 4 , (Bit32u)((RealPt)ds_readd(DTP2) + v6 * 30));
 			strcpy((char*)Real2Host(ds_readd(RADIO_NAME_LIST + v6 * 4)),

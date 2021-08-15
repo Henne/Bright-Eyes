@@ -542,22 +542,21 @@ void miracle_weapon(Bit8u *str, signed short mode)
 			!hero_dead(hero) &&
 			!hero_gods_pissed(hero))
 		{
-			for (i = 0; i < 23; i++)
+			for (i = 0; i < NR_HERO_INVENTORY_SLOTS; i++)
 			{
 
-				if ((item_id = host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i)) &&
+				if ((item_id = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * i)) &&
 					item_weapon(get_itemsdat(item_id)))
 				{
 
 					if (mode == 0) {
-						/* make a non-broken, non-magic weapon magic */
+						/* if weapon is neither broken nor magic magic, make it magic and magic_revealed */
 
-						if (!ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i) &&
-							!ks_magic_hidden(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i))
+						if (!ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i) &&
+							!ks_magic(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i))
 						{
-							/* weapon is magic and known */
-							or_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * i, 0x08);
-							or_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * i, 0x80);
+							or_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * i, 0x08); /* set 'magic' flag */
+							or_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * i, 0x80); /* set 'magic_revealed' flag */
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)str,
@@ -569,9 +568,9 @@ void miracle_weapon(Bit8u *str, signed short mode)
 						}
 					} else {
 						/* repair a broken weapon */
-						if (ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i))
+						if (ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i))
 						{
-							and_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * i, 0xfe);
+							and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * i, 0xfe); /* unset 'broken' flag */
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)str,

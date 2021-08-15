@@ -46,13 +46,13 @@ void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, sig
 {
 	signed short item_id;
 
-	item_id = host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos);
+	item_id = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos);
 
 	host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos, item_id);
 
 	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
 
-		if (ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos)) {
+		if (ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos)) {
 
 			host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
 				(host_readws(get_itemsdat(item_id) + 8) +
@@ -67,7 +67,8 @@ void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, sig
 
 		} else {
 
-			if (host_readbs(hero + HERO_INVENTORY_HEAD + 7 + SIZEOF_HERO_INVENTORY * item_pos) != 0) {
+			if (host_readbs(hero + HERO_INVENTORY + INVENTORY_RS_LOST + SIZEOF_INVENTORY * item_pos) != 0) {
+				/* armour has degraded RS */
 
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
 					(host_readws(get_itemsdat(item_id) + 8) +
@@ -224,8 +225,8 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 				if (l11 != 0) {
 
 					smith_pos = 0;
-					for (l_si = 0; l_si < 23; l_si++) {
-						if (host_readws(hero2 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * l_si) != 0) {
+					for (l_si = 0; l_si < NR_HERO_INVENTORY_SLOTS; l_si++) {
+						if (host_readws(hero2 + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * l_si) != ITEM_NONE) {
 							add_item_to_smith(smith_ptr, hero2, l_si, smith_pos++);
 						}
 					}
@@ -281,7 +282,7 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 
 							if (item_stackable(get_itemsdat(j))) {
 
-								if ((val = host_readws(hero2 + (HERO_INVENTORY_HEAD+2) + SIZEOF_HERO_INVENTORY * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
+								if ((val = host_readws(hero2 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
 								{
 									my_itoa(val, (char*)Real2Host(ds_readd(DTP2)), 10);
 

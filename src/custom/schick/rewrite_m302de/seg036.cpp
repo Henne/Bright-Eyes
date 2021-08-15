@@ -183,9 +183,9 @@ signed short KI_change_hero_weapon(Bit8u *hero)
 	signed short item_id;
 	Bit8u *ptr;
 
-	for (pos = 7; pos < 23; pos++) {
+	for (pos = HERO_INVENTORY_SLOT_KNAPSACK_1; pos < NR_HERO_INVENTORY_SLOTS; pos++) {
 
-		item_id = host_readws(hero + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY);
+		item_id = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + pos * SIZEOF_INVENTORY);
 		item_p = get_itemsdat(item_id);
 
 		/* grab the first melee weapon on top of the knapsack,
@@ -204,8 +204,8 @@ signed short KI_change_hero_weapon(Bit8u *hero)
 	if (!has_new_weapon) {
 
 		/* find a free slot, to get rid of the broken weapon */
-		for (pos = 7; pos < 23; pos++) {
-			if (host_readws(hero + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY) == 0) {
+		for (pos = HERO_INVENTORY_SLOT_KNAPSACK_1; pos < NR_HERO_INVENTORY_SLOTS; pos++) {
+			if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + pos * SIZEOF_INVENTORY) == ITEM_NONE) {
 				move_item(3, pos, hero);
 				has_new_weapon = 2;
 				break;
@@ -803,13 +803,13 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 			/* equip LONGBOW and ARROWS in the first round,
 			 * if the hero has them in the inventory */
 			if ((ds_readws(FIGHT_ROUND) == 0) &&
-				(host_readws(hero + HERO_INVENTORY_RIGHT) != ITEM_LONGBOW) &&
+				(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) != ITEM_LONGBOW) &&
 				(get_item_pos(hero, ITEM_ARROWS) != -1) &&
 				(get_item_pos(hero, ITEM_LONGBOW) != -1))
 			{
 				move_item(3, get_item_pos(hero, ITEM_LONGBOW), hero);
 
-				if (host_readws(hero + HERO_INVENTORY_LEFT) != ITEM_ARROWS) {
+				if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) != ITEM_ARROWS) {
 					move_item(4, get_item_pos(hero, ITEM_ARROWS), hero);
 				}
 			}
@@ -821,13 +821,13 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				/* equip LONGBOW and ARROWS in the first round,
 				 * if the hero has them in the inventory */
 				if ((ds_readws(FIGHT_ROUND) == 0) &&
-					(host_readws(hero + HERO_INVENTORY_RIGHT) != ITEM_LONGBOW) &&
+					(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) != ITEM_LONGBOW) &&
 					(get_item_pos(hero, ITEM_ARROWS) != -1) &&
 					(get_item_pos(hero, ITEM_LONGBOW) != -1))
 				{
 					move_item(3, get_item_pos(hero, ITEM_LONGBOW), hero);
 
-					if (host_readws(hero + HERO_INVENTORY_LEFT) != ITEM_ARROWS) {
+					if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) != ITEM_ARROWS) {
 						move_item(4, get_item_pos(hero, ITEM_ARROWS), hero);
 					}
 				} else if (FIG_get_range_weapon_type(hero) == -1)

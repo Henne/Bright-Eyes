@@ -165,18 +165,17 @@ void spell_odem_arcanum(void)
 
 #endif
 
-	id = host_readws(get_spelluser() + pos * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD);
+	id = host_readws(get_spelluser() + pos * SIZEOF_INVENTORY + HERO_INVENTORY + INVENTORY_ITEM_ID);
 
 	if (id) {
 
-		if (ks_magic_hidden(get_spelluser() + pos * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD)) {
+		if (ks_magic(get_spelluser() + pos * SIZEOF_INVENTORY + HERO_INVENTORY + INVENTORY_ITEM_ID)) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(81),
 				(char*)Real2Host(GUI_names_grammar((signed short)0x8000, id, 0)));
 
-			/* set known flag */
-			or_ptr_bs(get_spelluser() + pos * SIZEOF_HERO_INVENTORY + (HERO_INVENTORY_HEAD + 4), 0x80);
+			or_ptr_bs(get_spelluser() + pos * SIZEOF_INVENTORY + (HERO_INVENTORY + INVENTORY_FLAGS), 0x80); /* set 'magic_revealed' flag */
 
 		} else {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -435,23 +434,22 @@ void spell_eisenrost(void)
 				(char*)get_tx(112));
 		} else {
 			/* get weapon id of the target */
-			id = host_readws(get_spelltarget() + HERO_INVENTORY_RIGHT);
+			id = host_readws(get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID);
 
 			if (!id) {
 				/* no weapon in hand */
 				ds_writew(SPELL_SPECIAL_AECOST, -2);
 			} else {
 				/* check if weapon is already broken */
-				if (ks_broken(get_spelltarget() + HERO_INVENTORY_RIGHT)) {
+				if (ks_broken(get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
 
 					strcpy((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx(90));
 
 				} else {
 
-					if (host_readbs(get_spelltarget() + (HERO_INVENTORY_RIGHT + 6)) > 0) {
-						/* set broken flag */
-						or_ptr_bs(get_spelltarget() + (HERO_INVENTORY_RIGHT + 4), 0x01);
+					if (host_readbs(get_spelltarget() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_BF)) > 0) {
+						or_ptr_bs(get_spelltarget() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS), 0x01); /* set 'broken' flag */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_tx(92),
 							(char*)Real2Host(GUI_names_grammar((signed short)0x8000, id, 0)),
@@ -610,18 +608,18 @@ void spell_ignifaxius(void)
 	                (Bit32u)((RealPt)ds_readd(HEROES) + hero_pos * SIZEOF_HERO));
 
 		/* get a pointer to the armour */
-		p_armour = get_spelltarget() + HERO_INVENTORY_BODY;
+		p_armour = get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY;
 
-		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
+		if ((host_readws(p_armour + INVENTORY_ITEM_ID) != ITEM_NONE) && (rs_malus != 0)) {
 
-			/* adjust rs_malus */
-			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(ARMORS_TABLE + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2)) {
-				rs_malus = ds_readbs(ARMORS_TABLE + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2) - host_readbs(p_armour + 7);
+			/* adjust rs_malus such that the RS of the worn body armour won't be negative */
+			if ((host_readbs(p_armour + INVENTORY_RS_LOST) + rs_malus) > ds_readbs(ARMORS_TABLE + host_readbs(get_itemsdat(host_readws(p_armour + INVENTORY_ITEM_ID)) + 4) * 2)) {
+				rs_malus = ds_readbs(ARMORS_TABLE + host_readbs(get_itemsdat(host_readws(p_armour + INVENTORY_ITEM_ID)) + 4) * 2) - host_readbs(p_armour + INVENTORY_RS_LOST);
 			}
 
 			/* add rs_malus to the armour */
-			host_writebs(p_armour + 0x07,
-				host_readbs(p_armour + 7) + rs_malus);
+			host_writebs(p_armour + INVENTORY_RS_LOST,
+				host_readbs(p_armour + INVENTORY_RS_LOST) + rs_malus);
 			/* subtract rs_malus from RS1 */
 			host_writebs(get_spelltarget() + HERO_RS_BONUS1,
 				host_readbs(get_spelltarget() + HERO_RS_BONUS1) - rs_malus);

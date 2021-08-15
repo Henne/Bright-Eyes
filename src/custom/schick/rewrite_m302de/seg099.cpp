@@ -1014,9 +1014,9 @@ RealPt spell_analues(void)
 	/* If the player cancels item selection or has no items select_item_to_drop() returns -1.
 	The original uses the return value to calculate an index, whithout checking for this. */
 	if (item_pos == -1) item_id = 0;
-	else item_id = host_readws(get_spelluser() + SIZEOF_HERO_INVENTORY * item_pos + HERO_INVENTORY_HEAD);
+	else item_id = host_readws(get_spelluser() + SIZEOF_INVENTORY * item_pos + HERO_INVENTORY + INVENTORY_ITEM_ID);
 #else
-	item_id = host_readws(get_spelluser() + SIZEOF_HERO_INVENTORY * item_pos + HERO_INVENTORY_HEAD);
+	item_id = host_readws(get_spelluser() + SIZEOF_INVENTORY * item_pos + HERO_INVENTORY + INVENTORY_ITEM_ID);
 #endif
 
 	strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_tx(52));
@@ -1034,8 +1034,7 @@ RealPt spell_analues(void)
 					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_tx(ds_readbs((ANALUES_ITEMS + 4) + i * 5)));
 
-					/* set the magic flag */
-					or_ptr_bs(get_spelluser() + item_pos * SIZEOF_HERO_INVENTORY + (HERO_INVENTORY_HEAD + 4), 0x80);
+					or_ptr_bs(get_spelluser() + item_pos * SIZEOF_INVENTORY + (HERO_INVENTORY + INVENTORY_FLAGS), 0x80); /* set 'magic_revealed' flag */
 					break;
 				} else {
 					/* nothing found string */

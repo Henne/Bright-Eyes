@@ -417,6 +417,7 @@ void octopus_attack(void)
 
 				} else {
 					/* chance to hit the beast */
+					/* Original-Bug: Petrified, sleeping etc. heroes may hit the octopus (found by siebenstreich 2021-08-12) */
 
 					if (host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WEAPON_TYPE)) <= random_schick(20)) {
 						hits++;

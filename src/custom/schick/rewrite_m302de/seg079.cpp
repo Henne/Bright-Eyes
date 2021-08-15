@@ -231,14 +231,15 @@ signed short DNG03_handler(void)
 
 			timewarp(MINUTES(20));
 
-			if (host_readws(hero + HERO_INVENTORY_BODY) != 0)
+			if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) != ITEM_NONE)
 			{
-				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY_BODY)) + 4))
-				    - host_readbs(hero + HERO_INVENTORY_BODY + 7);
+				/* RS of the equipped body armour gets degraded by 3, but not below 0 */
+				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY)) + 4))
+				    - host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_RS_LOST);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
-				add_ptr_bs(hero + HERO_INVENTORY_BODY + 7, (unsigned char)l4);
+				add_ptr_bs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_RS_LOST, (unsigned char)l4);
 				sub_ptr_bs(hero + HERO_RS_BONUS1, (unsigned char)l4);
 			}
 		}
@@ -262,14 +263,15 @@ signed short DNG03_handler(void)
 
 			timewarp(MINUTES(20));
 
-			if (host_readws(hero + HERO_INVENTORY_BODY) != 0)
+			if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) != ITEM_NONE)
 			{
-				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY_BODY)) + 4))
-				    - host_readbs(hero + HERO_INVENTORY_BODY + 7);
+				/* RS of the equipped body armour gets degraded by 3, but not below 0 */
+				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY)) + 4))
+				    - host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_RS_LOST);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
-				add_ptr_bs(hero + HERO_INVENTORY_BODY + 7, (unsigned char)l4);
+				add_ptr_bs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_RS_LOST, (unsigned char)l4);
 				sub_ptr_bs(hero + HERO_RS_BONUS1, (unsigned char)l4);
 			}
 		}
@@ -537,10 +539,10 @@ void DNG03_chest12_func3(RealPt chest)
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	/* count the crystals in the inventory of the leader */
-	for (i = 7; i < 23; i++)
+	/* count the crystals in the knapsack of the leader */
+	for (i = HERO_INVENTORY_SLOT_KNAPSACK_1; i < NR_HERO_INVENTORY_SLOTS; i++)
 	{
-		if (host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * i) == ITEM_CRYSTAL)
+		if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * i) == ITEM_CRYSTAL)
 		{
 			crystals++;
 		}

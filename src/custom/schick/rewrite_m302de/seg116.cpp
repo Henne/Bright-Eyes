@@ -380,16 +380,18 @@ void tevent_137(void)
 					/* each hero gets five FOODPACKAGES */
 					give_hero_new_item(hero, ITEM_FOOD_PACKAGE, 1, 5);
 
-					/* search for the WATERSKIN */
+					/* each hero gets his first WATERSKIN filled */
+					/* potential Original-Bug: Does it make sense that the further WATERSKINs are not filled? */
+
 					if ((item_pos = get_item_pos(hero, ITEM_WATERSKIN)) != -1)
 					{
-						/* reset empty and half_empty bits of the knapsack item status */
+						/* fill waterskin */
 #if !defined(__BORLANDC__)
-						and_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * item_pos, 0xfb);
-						and_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * item_pos, 0xfd);
+						and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos, 0xfb); /* unset 'empty' flag */
+						and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos, 0xfd); /* unset 'half_empty' flag */
 #else
-						(*(struct knapsack_status*)(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * item_pos)).half_empty =
-							(*(struct knapsack_status*)(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * item_pos)).empty = 0;
+						(*(struct knapsack_status*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).half_empty =
+							(*(struct knapsack_status*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).empty = 0;
 #endif
 					}
 

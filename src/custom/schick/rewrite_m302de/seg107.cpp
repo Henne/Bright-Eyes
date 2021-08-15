@@ -58,7 +58,7 @@ void use_item(signed short item_pos, signed short hero_pos)
 
 	ds_writed(ITEMUSER, (Bit32u)((RealPt)ds_readd(HEROES) + hero_pos * SIZEOF_HERO));
 
-	ds_writew(USED_ITEM_ID, host_readws(get_itemuser() + ds_readws(USED_ITEM_POS) * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD));
+	ds_writew(USED_ITEM_ID, host_readws(get_itemuser() + ds_readws(USED_ITEM_POS) * SIZEOF_INVENTORY + HERO_INVENTORY + INVENTORY_ITEM_ID));
 
 	ds_writed(USED_ITEM_DESC, (Bit32u)((RealPt)ds_readd(ITEMSDAT) + ds_readws(USED_ITEM_ID) * 12));
 
@@ -87,7 +87,7 @@ void use_item(signed short item_pos, signed short hero_pos)
 				/* don't consume poison */
 				consume(get_itemuser(), get_itemuser(), item_pos);
 
-			} else if ((host_readws(get_itemuser() + SIZEOF_HERO_INVENTORY * ds_readws(USED_ITEM_POS) + (HERO_INVENTORY_HEAD + 2))) <= 0) {
+			} else if ((host_readws(get_itemuser() + SIZEOF_INVENTORY * ds_readws(USED_ITEM_POS) + (HERO_INVENTORY + INVENTORY_QUANTITY))) <= 0) {
 				/* magic item is used up */
 				GUI_output(get_ttx(638));
 			} else {
@@ -124,7 +124,7 @@ void item_arcano(void)
 		/* use it */
 		spell_arcano();
 		/* decrement usage counter */
-		dec_ptr_ws(get_itemuser() + (HERO_INVENTORY_HEAD + 2) + ds_readws(USED_ITEM_POS) * SIZEOF_HERO_INVENTORY);
+		dec_ptr_ws(get_itemuser() + (HERO_INVENTORY + INVENTORY_QUANTITY) + ds_readws(USED_ITEM_POS) * SIZEOF_INVENTORY);
 	}
 
 	if ((b1_index != -1) && (b1_index != 0xde)) {
@@ -208,7 +208,7 @@ void item_armatrutz(void)
 		/* use it */
 		spell_armatrutz();
 		/* decrement usage counter */
-		dec_ptr_ws(get_itemuser() + (HERO_INVENTORY_HEAD + 2) + ds_readws(USED_ITEM_POS) * SIZEOF_HERO_INVENTORY);
+		dec_ptr_ws(get_itemuser() + (HERO_INVENTORY + INVENTORY_QUANTITY) + ds_readws(USED_ITEM_POS) * SIZEOF_INVENTORY);
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 	}
@@ -236,7 +236,7 @@ void item_flimflam(void)
 	spell_flimflam();
 
 	/* decrement usage counter */
-	dec_ptr_ws(get_itemuser() + (HERO_INVENTORY_HEAD + 2) + ds_readws(USED_ITEM_POS) * SIZEOF_HERO_INVENTORY);
+	dec_ptr_ws(get_itemuser() + (HERO_INVENTORY + INVENTORY_QUANTITY) + ds_readws(USED_ITEM_POS) * SIZEOF_INVENTORY);
 
 	if ((b1_index != -1) && (b1_index != 0xde)) {
 		/* need to reload buffer1 */
@@ -293,99 +293,99 @@ void item_weapon_poison(void)
 
 	signed short bottle;
 
-	if ((host_readws(get_itemuser() + HERO_INVENTORY_RIGHT) != ITEM_NONE) &&
-		(host_readws(get_itemuser() + HERO_INVENTORY_RIGHT) != ITEM_SHORTBOW) &&
-		(host_readws(get_itemuser() + HERO_INVENTORY_RIGHT) != ITEM_LONGBOW) &&
-		(host_readws(get_itemuser() + HERO_INVENTORY_RIGHT) != ITEM_CROSSBOW))
+	if ((host_readws(get_itemuser() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY) != ITEM_NONE) &&
+		(host_readws(get_itemuser() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY) != ITEM_SHORTBOW) &&
+		(host_readws(get_itemuser() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY) != ITEM_LONGBOW) &&
+		(host_readws(get_itemuser() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY) != ITEM_CROSSBOW))
 		/* TODO: potential Original-Bug: What about sling? */
 	{
 
 		switch (ds_readws(USED_ITEM_ID)) {
-		case 168 : {
+		case ITEM_VOMICUM : {
 			/* VOMICUM */
-			or_ptr_bs(get_itemuser() + (HERO_INVENTORY_RIGHT + 4), 0x40);
+			or_ptr_bs(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS), 0x40); /* set 'poison_vomicum' flag */
 
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_VOMICUM), 1);
 
 			bottle = ITEM_FLASK_BRONZE;
 			break;
 		}
-		case 166 : {
+		case ITEM_EXPURGICUM : {
 			/* EXPURGICUM */
-			or_ptr_bs(get_itemuser() + (HERO_INVENTORY_RIGHT + 4), 0x20);
+			or_ptr_bs(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS), 0x20); /* set 'poison_expurgicum' flag */
 
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_EXPURGICUM), 1);
 
 			bottle = ITEM_FLASK_BRONZE;
 			break;
 		}
-		case 55: {
-			/* SHURIN-BULB POISON / KROETENSCHEMELGIFT */
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 9), 1);
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 10), 5);
+		case ITEM_SHURIN_POISON: {
+			/* SHURIN-BULB POISON / SHURINKNOLLENGIFT */
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE), POISON_TYPE_SHURINKNOLLENGIFT);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_SHURIN_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
-		case 56: {
+		case ITEM_ARAX_POISON: {
 			/* ARAX POISON / ARAXGIFT */
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 9), 2);
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 10), 5);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE), POISON_TYPE_ARAX);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_ARAX_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
-		case 57: {
+		case ITEM_ANGST_POISON: {
 			/* FEAR POISON / ANGSTGIFT */
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 9), 3);
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 10), 5);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE), POISON_TYPE_ANGSTGIFT);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_ANGST_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
-		case 58: {
+		case ITEM_SLEEP_POISON: {
 			/* SLEPPING POISON / SCHALFGIFT */
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 9), 4);
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 10), 5);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE), POISON_TYPE_SCHLAFGIFT);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_SLEEP_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
-		case 59: {
+		case ITEM_GOLDLEIM: {
 			/* GOLDEN GLUE / GOLDLEIM */
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 9), 5);
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 10), 5);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE), POISON_TYPE_GOLDLEIM);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_GOLDLEIM), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
-		case 141: {
+		case ITEM_LOTUS_POISON: {
 			/* LOTUS POISON / LOTUSGIFT */
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 9), 7);
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 10), 5);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE), POISON_TYPE_LOTUSGIFT);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_LOTUS_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
-		case 142: {
+		case ITEM_KUKRIS: {
 			/* KUKRIS */
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 9), 8);
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 10), 5);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE), POISON_TYPE_KUKRIS);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_KUKRIS), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
-		case 143: {
+		case ITEM_BANNSTAUB: {
 			/* BANE DUST / BANNSTAUB */
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 9), 9);
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 10), 5);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE), POISON_TYPE_BANNSTAUB);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_BANNSTAUB), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
 		}
-		case 144: {
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 9), 6);
-			host_writeb(get_itemuser() + (HERO_INVENTORY_RIGHT + 10), 5);
+		case ITEM_KROETEN_POISON: {
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE), POISON_TYPE_KROETENSCHEMEL);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_KROETEN_POISON), 1);
 			bottle = ITEM_FLASK_GLASS;
 			break;
@@ -396,7 +396,7 @@ void item_weapon_poison(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ttx(739),
-			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readws(get_itemuser() + HERO_INVENTORY_RIGHT), 0)));
+			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readws(get_itemuser() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID), 0)));
 	} else {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ttx(805),
@@ -470,7 +470,7 @@ void item_brenne(void)
 			refill_pos = get_item_pos(get_spelluser(), ITEM_LANTERN_ON);
 
 			/* reset the burning time of the lantern */
-			host_writeb(get_itemuser() + (HERO_INVENTORY_HEAD + 8) + refill_pos * SIZEOF_HERO_INVENTORY, 100);
+			host_writeb(get_itemuser() + (HERO_INVENTORY + INVENTORY_LIGHTING_TIMER) + refill_pos * SIZEOF_INVENTORY, 100);
 
 			/* drop the oil */
 			drop_item(get_itemuser(), pos, 1);
