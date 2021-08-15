@@ -214,28 +214,28 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 /* Borlandified and identical */
 void print_item_description(Bit8u *hero, signed short pos)
 {
-	Bit8u *item_p;
+	Bit8u *inventory_p;
 
 	/* create pointer to the item in the inventory */
-	item_p = hero + HERO_INVENTORY + pos * SIZEOF_INVENTORY;
+	inventory_p = hero + HERO_INVENTORY + pos * SIZEOF_INVENTORY;
 
-	if (host_readw(item_p) != 0) {
+	if (host_readw(inventory_p + INVENTORY_ITEM_ID) != ITEM_NONE) {
 		/* normal item */
 
-		if ((((signed short)host_readw(item_p + 2) > 1) &&
-			item_stackable(get_itemsdat(host_readw(item_p)))) ||
-			is_in_word_array(host_readw(item_p), (signed short*)(p_datseg + ITEMS_PLURALWORDS))) {
+		if ((((signed short)host_readw(inventory_p + INVENTORY_QUANTITY) > 1) &&
+			item_stackable(get_itemsdat(host_readw(inventory_p + INVENTORY_ITEM_ID)))) ||
+			is_in_word_array(host_readw(inventory_p + INVENTORY_ITEM_ID), (signed short*)(p_datseg + ITEMS_PLURALWORDS))) {
 			/* more than one item or special */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx2(72),
 				get_ttx(305),
-				Real2Host(GUI_names_grammar(0x4004, host_readw(item_p), 0)));
+				Real2Host(GUI_names_grammar(0x4004, host_readw(inventory_p + INVENTORY_ITEM_ID), 0)));
 		} else {
 			/* one item */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx2(11),
 				get_ttx(304),
-				Real2Host(GUI_names_grammar(0, host_readw(item_p), 0)));
+				Real2Host(GUI_names_grammar(0, host_readw(inventory_p + INVENTORY_ITEM_ID), 0)));
 		}
 	} else {
 		/* no item */
@@ -244,30 +244,30 @@ void print_item_description(Bit8u *hero, signed short pos)
 
 
 	/* broken */
-	if (ks_broken(item_p)) {
+	if (ks_broken(inventory_p)) {
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(478));
 	}
 
 	/* magic */
-	if (ks_magic(item_p) &&	/* is magic */
-		ks_magic_revealed(item_p)) { /* and you know it */
+	if (ks_magic(inventory_p) &&	/* is magic */
+		ks_magic_revealed(inventory_p)) { /* and you know it */
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(479));
 	}
 
-	/* used */
-	if (host_readb(item_p + 7) != 0) {
+	/* RS degraded */
+	if (host_readb(inventory_p + INVENTORY_RS_LOST) != 0) {
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(480));
 	}
 
 	/* poisoned */
-	if (host_readw(item_p + INVENTORY_ITEM_ID) == ITEM_KUKRIS_DAGGER || host_readw(item_p + INVENTORY_ITEM_ID) == ITEM_KUKRIS_MENGBILAR ||
-		ks_poison_expurgicum(item_p) || ks_poison_vomicum(item_p) ||
+	if (host_readw(inventory_p + INVENTORY_ITEM_ID) == ITEM_KUKRIS_DAGGER || host_readw(inventory_p + INVENTORY_ITEM_ID) == ITEM_KUKRIS_MENGBILAR ||
+		ks_poison_expurgicum(inventory_p) || ks_poison_vomicum(inventory_p) ||
 		host_readb(hero + HERO_INVENTORY + INVENTORY_POISON_TYPE + pos * SIZEOF_INVENTORY) != POISON_TYPE_NONE) {
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(548));
 	}
 
 	/* magic wand */
-	if (host_readw(item_p + INVENTORY_ITEM_ID) == ITEM_MAGIC_WAND) {
+	if (host_readw(inventory_p + INVENTORY_ITEM_ID) == ITEM_MAGIC_WAND) {
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)get_tx2(53),
 			host_readbs(hero + HERO_STAFFSPELL_LVL));
