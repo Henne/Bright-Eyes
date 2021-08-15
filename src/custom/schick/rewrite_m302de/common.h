@@ -45,10 +45,10 @@ struct screen_rect {
 };
 
 enum {
-	NORTH = 0,
-	EAST = 1,
-	SOUTH = 2,
-	WEST = 3
+	NORTH	= 0,
+	EAST	= 1,
+	SOUTH	= 2,
+	WEST	= 3
 };
 
 enum {
@@ -84,7 +84,7 @@ enum {
  *	@seen_phantom:	1 = hero has seen the horrible phantom in the 'Verlassene Herberge' dungeon which gave MU -3 for 5 hours (same position where the Sphaerenriss can happen).
  *	@gods_pissed:	1 = gods pissed (no more miracles) / 0 = gods normal (activated by praising the nameless god, deactivated by destroying the statue of the nameless god)
  *	@transformed:	1 = hero is transformed (all positive attributes -1, from the cursed chest on the Totenschiff) / 0 not transformed (can be cured by 'Verwandlung beenden' spell or Praios/Hesinde miracle)
- *	@encouraged:	1 = MU increased by 3 (seg082.cpp, probably a dungeon event) / 0 = attibute back to normal.
+ *	@encouraged:	1 = MU increased by 3 (seg082.cpp, probably a dungeon event) / 0 = attribute back to normal.
  */
 struct hero_status {
 	/* hero + 0xaa */
@@ -109,194 +109,172 @@ struct hero_status {
 
 enum {
 	/* see https://github.com/shihan42/BrightEyesWiki/wiki/CHR-NPC */
-	HERO_NAME		= 0x000, /* 16 bytes */
-	HERO_NAME2		= 0x010, /* 16 bytes */
-	HERO_KS_TAKEN		= 0x020, /* 1 byte */ /* number of occupied item slots in the (KS = ) knapsack. (equipped items are not included) */
-	HERO_TYPE		= 0x021, /* 1 byte */ /* See enum HERO_TYPE_* below. */
-	HERO_SEX		= 0x022, /* 1 byte */
-	HERO_HEIGHT		= 0x023, /* 1 byte */ /* unit: cm */
-	HERO_WEIGHT		= 0x024, /* 2 bytes */ /* unit: ounces */
-	HERO_GOD		= 0x026, /* 1 byte */
-	HERO_LEVEL		= 0x027, /* 1 byte */
-	HERO_AP 		= 0x028, /* 4 bytes */
-	HERO_MONEY		= 0x02C, /* 4 bytes */ /* unit: Heller */
-	HERO_RS_BONUS1		= 0x030, /* 1 byte */ /* RS-Bonusu= RS-Bonus1 + RS-Bonus2 */
-	HERO_RS_BONUS2		= 0x031 /* 1 byte */ ,
-	HERO_RS_BE		= 0x032, /* 1 byte */ /* Ruestungsschutzbehinderung */
-	HERO_BP_LEFT		= 0x033, /* 1 byte */
-	HERO_ATTRIB_ORIG	= 0x034, /* 42 = 14 * 3 bytes. array of 14 entries of structs of 3 bytes of the form <HERO_ATTRIB_ORIG (1 byte), HERO_ATTRIB (1 byte), HERO_ATTRIB_MOD (1 byte)> See enum ATTRIB_* below. */
-	HERO_ATTRIB		= 0x035, /* See enum ATTRIB_* below. */
-	HERO_ATTRIB_MOD		= 0x036, /* See enum ATTRIB_* below. */
-	HERO_LE_ORIG		= 0x05E, /* 2 bytes */
-	HERO_LE 		= 0x060, /* 2 bytes */
-	HERO_AE_ORIG		= 0x062, /* 2 bytes */
-	HERO_AE 		= 0x064, /* 2 bytes */
-	HERO_MR 		= 0x066, /* 1 byte */
-	HERO_ATPA_BASIS		= 0x067, /* 1 byte */
-	HERO_AT 		= 0x068, /* 7 = 7 * 1 bytes */ /* array with 7 entries each of size 1 byte containing the AT values of TA_WAFFENLOS, TA_HIEBWAFFEN, TA_STICHWAFFEN, TA_SCHWERTER, TA_AEXTE, TA_SPEERE, TA_ZWEIHAENDER */
-	HERO_PA 		= 0x06F, /* 7 = 7 * 1 bytes */ /* array with 7 entries each of size 1 byte containing the PA values of TA_WAFFENLOS, TA_HIEBWAFFEN, TA_STICHWAFFEN, TA_SCHWERTER, TA_AEXTE, TA_SPEERE, TA_ZWEIHAENDER */
-	HERO_AT_MOD		= 0x076, /* 1 byte */
-	HERO_PA_MOD		= 0x077, /* 1 byte */
-	HERO_WEAPON_TYPE	= 0x078, /* 1 byte */ /* type of the equipped weapon */
-	HERO_ATTACK_TYPE	= 0x079, /* 1 byte */ /* 0x00 = normal; 0x02 = aggressiv; 0xFE = vorsichtig */
-	HERO_LE_MOD		= 0x07A, /* 1 byte */ /* permanent LE mod */
-	HERO_TIMER_ID		= 0x07B, /* 1 byte */
-	HERO_START_GEAR		= 0x07C, /* 1 byte */ /* has got initial gear set: 1 = true, 0 = false */
-	HERO_HERBS		= 0x07D, /* 1 byte */ /* keine = 0, Belmart = 1, Menchalkaktus = 2 */
-	HERO_HUNGER_TIMER	= 0x07E, /* 1 byte */ /* timer for no-hunger-miracle */
-	HERO_HUNGER		= 0x07F, /* 1 byte */ /* percentage */
-	HERO_THIRST		= 0x080, /* 1 byte */ /* percentage */
-	HERO_FIGHTER_ID		= 0x081, /* 1 byte */
-	HERO_VIEWDIR		= 0x082, /* 1 byte */
-	HERO_ACTIONS		= 0x083, /* 1 byte */ /* corresponds to ENEMY_SHEET_ATTACKS */
-	HERO_ACTION_ID		= 0x084, /* 1 byte */ /* last fight action */
-	HERO_SPELL_ID		= 0x085, /* 1 byte */ /* last spell in fight */
-	HERO_ENEMY_ID		= 0x086, /* 1 byte */ /* last enemy in fight */
-	HERO_GROUP_NO		= 0x087, /* 1 byte */
-	HERO_TEMPLE_ID		= 0x088, /* 1 byte */
-	HERO_NPC_ID		= 0x089, /* 1 byte */ /* See enum NPC_* below. */
-	HERO_GROUP_POS		= 0x08A, /* 1 byte */ /* 0x01 bis 0x06, 0x00 = not in group */
-	HERO_HEAL_TIMER		= 0x08B, /* 4 bytes */
-	HERO_STAFFSPELL_TIMER	= 0x08F, /* 4 bytes */
-	HERO_RECIPE_ID		= 0x093, /* 1 byte */ /* id of the alchemic recipe the hero is brewing */
-	HERO_RECIPE_TIMER	= 0x094, /* 1 byte */ /* timer till completion of alchemical brewing process, in days */
-	HERO_RUHE_KOERPER	= 0x095, /* 1 byte */ /* 1 = Ruhe Koerper spell is active */
-	HERO_BLIND		= 0x096, /* 1 byte */ /* remaining fight rounds the hero is blinded from 'Blitz' spell */
-	HERO_ECLIPTIFACTUS	= 0x097, /* 1 byte */ /* remaining fight rounds the hero is shadowed from 'Ecliptifactus' spell */
-	HERO_SAFTKRAFT		= 0x098, /* 1 byte */ /* stores extra damage of spell 'Saft, Kraft, Monstermacht' */
-	HERO_FIREBAN		= 0x099, /* 1 byte */ /* 1 = 'Feuerbann' spell is active, 0 = inactive */
-	HERO_INVISIBLE		= 0x09A, /* 1 byte */ /* 1 = 'Visibili' spell is active, 0 = inactive */
-	HERO_SPRITE_NO		= 0x09B, /* 1 byte */ /* fight gfx of hero, depending on type and sex */
-	HERO_HOSTEL_ID		= 0x09C, /* 1 byte */ /* the id of the inn where the hero is doing alchemy */
-	HERO_ESCAPE_POSITION	= 0x09D, /* 2 bytes */ /* the dungeon square the hero escaped to in a fight. read from FIG_FLEE_POSITION */
-	HERO_JAIL		= 0x09F, /* 1 byte */ /* 1 = true, i.e. hero is in prison (from breaking into a house), 0 = false */
-	HERO_AXXELERATUS	= 0x0A0, /* 1 byte */ /* 1 = 'Axxeleratus' spell is active, 0 = inactive */
-	HERO_DRUNK		= 0x0A1, /* 1 byte */ /* 1 = true (hero drunk), 0 = false */
-	HERO_UNKNOWN10		= 0x0A2, /* 8 bytes */ /* never used? */
-	HERO_STATUS1		= 0x0AA, /* 1 byte = 8 bits */ /* Bit0 = dead, Bit1 = asleep, Bit2 = petrified, Bit3 = brewing, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious, Bit7 = tied */
-	HERO_STATUS2		= 0x0AB, /* 1 byte = 8 bits */ /* Bit0 = scared, Bit1 = unused?, Bit2 = duplicatus, Bit3 = tame, Bit4 = seen_phantom, Bit5 = gods_pissed, Bit6 = transformed, Bit7 = encouraged */
-	HERO_UNKNOWN11		= 0x0AC, /* 2 bytes */ /* never used? */
-	HERO_ILLNESS		= 0x0AE, /* 40 = 8 * 5 bytes */ /* 5 bytes for each of the following illnesses: 0-none (these 5 bytes appear to be unused!) 1-Wundfieber, 2-Dumpfschädel, 3-Blaue Keuche, 4-Paralyse, 5-Schlachtenfieber, 6-Frostschäden, 7-Tollwut */
-	HERO_POISON		= 0x0D6, /* 50 = 10 * 5 bytes */ /* 5 bytes for each of the following poisonings: 0-none (these 5 bytes appear to be unused!) 1-Shurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemel, 7-Lotusgift, 8-Kukris, 9-Bannstaubvergiftung */
-	HERO_TALENTS		= 0x108, /* 52 = 52 * 1 bytes, see enum TA_* below */
-	HERO_TA_RISE		= 0x13C, /* saved skill increases from last levelups */
-	HERO_SPELLS		= 0x13D, /* empty Byte */
-	HERO_SP_ANTI		= 0x13E, /* 5 = 5 * 1 bytes */
-	HERO_SP_CONTROL		= 0x143, /* 12 = 12 * 1 bytes */
-	HERO_SP_DEMON		= 0x14F, /* 6 = 6 * 1 bytes */
-	HERO_SP_ELEMENT		= 0x155, /* 3 = 3 * 1 bytes */
-	HERO_SP_MOTION		= 0x158, /* 6 = 6 * 1 bytes */
-	HERO_SP_HEAL		= 0x15E, /* 5 = 5 * 1 bytes */
-	HERO_SP_VISION		= 0x163, /* 7 = 7 * 1 bytes */
-	HERO_SP_ILLUSION	= 0x16A, /* 4 = 4 * 1 bytes */
-	HERO_SP_FIGHT		= 0x16E, /* 9 = 9 * 1 bytes */
-	HERO_SP_INTERACT	= 0x177, /* 2 = 2 * 1 bytes */
-	HERO_SP_TRANSFORM	= 0x179, /* 16 = 16 * 1 bytes */
-	HERO_SP_CHANGE		= 0x189, /* 10 = 10 * 1 bytes */
-	HERO_SP_RISE		= 0x193, /* 1 bytes */ /* saved spell increases from last levelups */
-	HERO_MAGIC_SCHOOL	= 0x194, /* 1 byte */
-	HERO_STAFFSPELL_LVL	= 0x195, /* 1 byte */
-	HERO_INVENTORY_HEAD	= 0x196, /* 14 bytes */
-	HERO_INVENTORY_ARM	= 0x1A4, /* 14 bytes */
-	HERO_INVENTORY_BODY	= 0x1B2, /* 14 bytes */
-	HERO_INVENTORY_RIGHT	= 0x1C0, /* 14 bytes */ /* right hand */
-	HERO_INVENTORY_LEFT	= 0x1CE, /* 14 bytes */ /* left hand */
-	HERO_INVENTORY_LEGS	= 0x1DC, /* 14 bytes */
-	HERO_INVENTORY_FEET	= 0x1EA, /* 14 bytes */
-	HERO_INVENTORY_KS1	= 0x1F8, /* 14 bytes */ /* KS = knapsack */
-	HERO_INVENTORY_KS2	= 0x206, /* 14 bytes */
-	HERO_INVENTORY_KS3	= 0x214, /* 14 bytes */
-	HERO_INVENTORY_KS4	= 0x222, /* 14 bytes */
-	HERO_INVENTORY_KS5	= 0x230, /* 14 bytes */
-	HERO_INVENTORY_KS6	= 0x23E, /* 14 bytes */
-	HERO_INVENTORY_KS7	= 0x24C, /* 14 bytes */
-	HERO_INVENTORY_KS8	= 0x25A, /* 14 bytes */
-	HERO_INVENTORY_KS9	= 0x268, /* 14 bytes */
-	HERO_INVENTORY_KS10	= 0x276, /* 14 bytes */
-	HERO_INVENTORY_KS11	= 0x284, /* 14 bytes */
-	HERO_INVENTORY_KS12	= 0x292, /* 14 bytes */
-	HERO_INVENTORY_KS13	= 0x2A0, /* 14 bytes */
-	HERO_INVENTORY_KS14	= 0x2AE, /* 14 bytes */
-	HERO_INVENTORY_KS15	= 0x2BC, /* 14 bytes */
-	HERO_INVENTORY_KS16	= 0x2CA, /* 14 bytes */
-	HERO_LOAD		= 0x2D8, /* 2 bytes */
-	HERO_PORTRAIT		= 0x2DA /* 1024 = 32 * 32 bytes */ /* 32 x 32 pixels, 8 bpp */
+	HERO_NAME			= 0x000, /* 16 bytes */
+	HERO_NAME2			= 0x010, /* 16 bytes */
+	HERO_NR_INVENTORY_SLOTS_FILLED	= 0x020, /* 1 byte */ /* number of occupied item slots in the (KS = ) knapsack. (equipped items are not included (really??)) */
+	HERO_TYPE			= 0x021, /* 1 byte */ /* See enum HERO_TYPE_* below. */
+	HERO_SEX			= 0x022, /* 1 byte */
+	HERO_HEIGHT			= 0x023, /* 1 byte */ /* unit: cm */
+	HERO_WEIGHT			= 0x024, /* 2 bytes */ /* unit: ounces */
+	HERO_GOD			= 0x026, /* 1 byte */
+	HERO_LEVEL			= 0x027, /* 1 byte */
+	HERO_AP 			= 0x028, /* 4 bytes */
+	HERO_MONEY			= 0x02C, /* 4 bytes */ /* unit: Heller */
+	HERO_RS_BONUS1			= 0x030, /* 1 byte */ /* RS-Bonusu= RS-Bonus1 + RS-Bonus2 */
+	HERO_RS_BONUS2			= 0x031 /* 1 byte */ ,
+	HERO_RS_BE			= 0x032, /* 1 byte */ /* Ruestungsschutzbehinderung */
+	HERO_BP_LEFT			= 0x033, /* 1 byte */
+	HERO_ATTRIB_ORIG		= 0x034, /* 42 = 14 * 3 bytes. array of 14 entries of structs of 3 bytes of the form <HERO_ATTRIB_ORIG (1 byte), HERO_ATTRIB (1 byte), HERO_ATTRIB_MOD (1 byte)> See enum ATTRIB_* below. */
+	HERO_ATTRIB			= 0x035, /* See enum ATTRIB_* below. */
+	HERO_ATTRIB_MOD			= 0x036, /* See enum ATTRIB_* below. */
+	HERO_LE_ORIG			= 0x05E, /* 2 bytes */
+	HERO_LE 			= 0x060, /* 2 bytes */
+	HERO_AE_ORIG			= 0x062, /* 2 bytes */
+	HERO_AE 			= 0x064, /* 2 bytes */
+	HERO_MR 			= 0x066, /* 1 byte */
+	HERO_ATPA_BASIS			= 0x067, /* 1 byte */
+	HERO_AT 			= 0x068, /* 7 = 7 * 1 bytes */ /* array with 7 entries each of size 1 byte containing the AT values of TA_WAFFENLOS, TA_HIEBWAFFEN, TA_STICHWAFFEN, TA_SCHWERTER, TA_AEXTE, TA_SPEERE, TA_ZWEIHAENDER */
+	HERO_PA 			= 0x06F, /* 7 = 7 * 1 bytes */ /* array with 7 entries each of size 1 byte containing the PA values of TA_WAFFENLOS, TA_HIEBWAFFEN, TA_STICHWAFFEN, TA_SCHWERTER, TA_AEXTE, TA_SPEERE, TA_ZWEIHAENDER */
+	HERO_AT_MOD			= 0x076, /* 1 byte */
+	HERO_PA_MOD			= 0x077, /* 1 byte */
+	HERO_WEAPON_TYPE		= 0x078, /* 1 byte */ /* type of the equipped weapon */
+	HERO_ATTACK_TYPE		= 0x079, /* 1 byte */ /* 0x00 = normal; 0x02 = aggressiv; 0xFE = vorsichtig */
+	HERO_LE_MOD			= 0x07A, /* 1 byte */ /* permanent LE mod */
+	HERO_TIMER_ID			= 0x07B, /* 1 byte */
+	HERO_START_GEAR			= 0x07C, /* 1 byte */ /* has got initial gear set: 1 = true, 0 = false */
+	HERO_HERBS			= 0x07D, /* 1 byte */ /* keine = 0, Belmart = 1, Menchalkaktus = 2 */
+	HERO_HUNGER_TIMER		= 0x07E, /* 1 byte */ /* timer for no-hunger-miracle */
+	HERO_HUNGER			= 0x07F, /* 1 byte */ /* percentage */
+	HERO_THIRST			= 0x080, /* 1 byte */ /* percentage */
+	HERO_FIGHTER_ID			= 0x081, /* 1 byte */
+	HERO_VIEWDIR			= 0x082, /* 1 byte */
+	HERO_ACTIONS			= 0x083, /* 1 byte */ /* corresponds to ENEMY_SHEET_ATTACKS */
+	HERO_ACTION_ID			= 0x084, /* 1 byte */ /* last fight action */
+	HERO_SPELL_ID			= 0x085, /* 1 byte */ /* last spell in fight */
+	HERO_ENEMY_ID			= 0x086, /* 1 byte */ /* last enemy in fight */
+	HERO_GROUP_NO			= 0x087, /* 1 byte */
+	HERO_TEMPLE_ID			= 0x088, /* 1 byte */
+	HERO_NPC_ID			= 0x089, /* 1 byte */ /* See enum NPC_* below. */
+	HERO_GROUP_POS			= 0x08A, /* 1 byte */ /* 0x01 bis 0x06, 0x00 = not in group */
+	HERO_HEAL_TIMER			= 0x08B, /* 4 bytes */
+	HERO_STAFFSPELL_TIMER		= 0x08F, /* 4 bytes */
+	HERO_RECIPE_ID			= 0x093, /* 1 byte */ /* id of the alchemic recipe the hero is brewing */
+	HERO_RECIPE_TIMER		= 0x094, /* 1 byte */ /* timer till completion of alchemical brewing process, in days */
+	HERO_RUHE_KOERPER		= 0x095, /* 1 byte */ /* 1 = Ruhe Koerper spell is active */
+	HERO_BLIND			= 0x096, /* 1 byte */ /* remaining fight rounds the hero is blinded from 'Blitz' spell */
+	HERO_ECLIPTIFACTUS		= 0x097, /* 1 byte */ /* remaining fight rounds the hero is shadowed from 'Ecliptifactus' spell */
+	HERO_SAFTKRAFT			= 0x098, /* 1 byte */ /* stores extra damage of spell 'Saft, Kraft, Monstermacht' */
+	HERO_FIREBAN			= 0x099, /* 1 byte */ /* 1 = 'Feuerbann' spell is active, 0 = inactive */
+	HERO_INVISIBLE			= 0x09A, /* 1 byte */ /* 1 = 'Visibili' spell is active, 0 = inactive */
+	HERO_SPRITE_NO			= 0x09B, /* 1 byte */ /* fight gfx of hero, depending on type and sex */
+	HERO_HOSTEL_ID			= 0x09C, /* 1 byte */ /* the id of the inn where the hero is doing alchemy */
+	HERO_ESCAPE_POSITION		= 0x09D, /* 2 bytes */ /* the dungeon square the hero escaped to in a fight. read from FIG_FLEE_POSITION */
+	HERO_JAIL			= 0x09F, /* 1 byte */ /* 1 = true, i.e. hero is in prison (from breaking into a house), 0 = false */
+	HERO_AXXELERATUS		= 0x0A0, /* 1 byte */ /* 1 = 'Axxeleratus' spell is active, 0 = inactive */
+	HERO_DRUNK			= 0x0A1, /* 1 byte */ /* 1 = true (hero drunk), 0 = false */
+	HERO_UNKNOWN10			= 0x0A2, /* 8 bytes */ /* never used? */
+	HERO_STATUS1			= 0x0AA, /* 1 byte = 8 bits */ /* Bit0 = dead, Bit1 = asleep, Bit2 = petrified, Bit3 = brewing, Bit4 = Chamaelioni, Bit5 = renegade, Bit6 = unconscious, Bit7 = tied */
+	HERO_STATUS2			= 0x0AB, /* 1 byte = 8 bits */ /* Bit0 = scared, Bit1 = unused?, Bit2 = duplicatus, Bit3 = tame, Bit4 = seen_phantom, Bit5 = gods_pissed, Bit6 = transformed, Bit7 = encouraged */
+	HERO_UNKNOWN11			= 0x0AC, /* 2 bytes */ /* never used? */
+	HERO_ILLNESS			= 0x0AE, /* 40 = 8 * 5 bytes */ /* 5 bytes for each of the following illnesses: 0-none (these 5 bytes appear to be unused!) 1-Wundfieber, 2-Dumpfschädel, 3-Blaue Keuche, 4-Paralyse, 5-Schlachtenfieber, 6-Frostschäden, 7-Tollwut */
+	HERO_POISON			= 0x0D6, /* 50 = 10 * 5 bytes */ /* 5 bytes for each of the following poisonings: 0-none (these 5 bytes appear to be unused!) 1-Shurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemel, 7-Lotusgift, 8-Kukris, 9-Bannstaubvergiftung */
+	HERO_TALENTS			= 0x108, /* 52 = 52 * 1 bytes, see enum TA_* below */
+	HERO_TA_RISE			= 0x13C, /* saved skill increases from last levelups */
+	HERO_SPELLS			= 0x13D, /* empty Byte */
+	HERO_SP_ANTI			= 0x13E, /* 5 = 5 * 1 bytes */
+	HERO_SP_CONTROL			= 0x143, /* 12 = 12 * 1 bytes */
+	HERO_SP_DEMON			= 0x14F, /* 6 = 6 * 1 bytes */
+	HERO_SP_ELEMENT			= 0x155, /* 3 = 3 * 1 bytes */
+	HERO_SP_MOTION			= 0x158, /* 6 = 6 * 1 bytes */
+	HERO_SP_HEAL			= 0x15E, /* 5 = 5 * 1 bytes */
+	HERO_SP_VISION			= 0x163, /* 7 = 7 * 1 bytes */
+	HERO_SP_ILLUSION		= 0x16A, /* 4 = 4 * 1 bytes */
+	HERO_SP_FIGHT			= 0x16E, /* 9 = 9 * 1 bytes */
+	HERO_SP_INTERACT		= 0x177, /* 2 = 2 * 1 bytes */
+	HERO_SP_TRANSFORM		= 0x179, /* 16 = 16 * 1 bytes */
+	HERO_SP_CHANGE			= 0x189, /* 10 = 10 * 1 bytes */
+	HERO_SP_RISE			= 0x193, /* 1 bytes */ /* saved spell increases from last levelups */
+	HERO_MAGIC_SCHOOL		= 0x194, /* 1 byte */
+	HERO_STAFFSPELL_LVL		= 0x195, /* 1 byte */
+	HERO_INVENTORY			= 0x196, /* 322 = 23 * 14 bytes */ /* 23 inventory slots, each entry has 14 bytes */
+	HERO_LOAD			= 0x2D8, /* 2 bytes */
+	HERO_PORTRAIT			= 0x2DA /* 1024 = 32 * 32 bytes */ /* 32 x 32 pixels, 8 bpp */
 };
 
 #define SIZEOF_HERO (0x6da)
 
 enum {
-	NPC_NONE = 0,
-	NPC_NARIELL = 1,
-	NPC_HARIKA = 2,
-	NPC_CURIAN = 3,
-	NPC_ARDORA = 4,
-	NPC_GARSVIK = 5,
-	NPC_ERWO = 6
+	NPC_NONE	= 0,
+	NPC_NARIELL	= 1,
+	NPC_HARIKA	= 2,
+	NPC_CURIAN	= 3,
+	NPC_ARDORA	= 4,
+	NPC_GARSVIK	= 5,
+	NPC_ERWO	= 6
 };
 
 enum {
-	HERO_TYPE_NONE = 0,
-	HERO_TYPE_JUGGLER = 1,		/* Gaukler */
-	HERO_TYPE_HUNTER = 2,		/* Jaeger */
-	HERO_TYPE_WARRIOR = 3,		/* Krieger */
-	HERO_TYPE_ESTRAY = 4,		/* Streuner */
-	HERO_TYPE_THORWALIAN = 5,	/* Thorwaler */
-	HERO_TYPE_DWARF = 6,		/* Zwerg */
+	HERO_TYPE_NONE		= 0,
+	HERO_TYPE_JUGGLER	= 1,	/* Gaukler */
+	HERO_TYPE_HUNTER	= 2,	/* Jaeger */
+	HERO_TYPE_WARRIOR	= 3,	/* Krieger */
+	HERO_TYPE_ESTRAY	= 4,	/* Streuner */
+	HERO_TYPE_THORWALIAN	= 5,	/* Thorwaler */
+	HERO_TYPE_DWARF		= 6,	/* Zwerg */
 	/* Magic users > 6 */
-	HERO_TYPE_WITCH = 7,		/* Hexe */
-	HERO_TYPE_DRUID = 8,		/* Druide */
-	HERO_TYPE_MAGE = 9,		/* Magier */
-	HERO_TYPE_GREEN_ELF = 10,	/* Auelf */
-	HERO_TYPE_ICE_ELF = 11,		/* Firnelf */
-	HERO_TYPE_SYLVAN_ELF = 12,	/* Waldelf */
+	HERO_TYPE_WITCH		= 7,	/* Hexe */
+	HERO_TYPE_DRUID		= 8,	/* Druide */
+	HERO_TYPE_MAGE		= 9,	/* Magier */
+	HERO_TYPE_GREEN_ELF	= 10,	/* Auelf */
+	HERO_TYPE_ICE_ELF	= 11,	/* Firnelf */
+	HERO_TYPE_SYLVAN_ELF	= 12,	/* Waldelf */
 };
 
 enum {
-	FIG_ACTION_MOVE = 1,
-	FIG_ACTION_MELEE_ATTACK = 2,
-	FIG_ACTION_GUARD = 3,
-	FIG_ACTION_SPELL = 4,
-	FIG_ACTION_USE_ITEM = 5,
-	FIG_ACTION_DROP_ITEM = 6,
-	FIG_ACTION_EXCHANGE_WEAPON = 7,
-	FIG_ACTION_EXCHANGE_ITEM = 8,
-	FIG_ACTION_CHECK_VALUES = 9,
-	FIG_ACTION_WAIT = 10,
-	FIG_ACTION_COMPUTER_FIGHT = 11,
-	FIG_ACTION_QUIT_AND_LOAD = 12,
-	FIG_ACTION_REPEAT_OPTION = 13,
-	FIG_ACTION_RANGE_ATTACK = 15,
-	FIG_ACTION_FLEE = 16,
-	FIG_ACTION_UNKNOWN2 = 100,
-	FIG_ACTION_UNKNOWN3 = 102, /* drink potion? */
-	FIG_ACTION_UNKNOWN4 = 103  /* cast spell? */
+	FIG_ACTION_MOVE			= 1,
+	FIG_ACTION_MELEE_ATTACK		= 2,
+	FIG_ACTION_GUARD		= 3,
+	FIG_ACTION_SPELL		= 4,
+	FIG_ACTION_USE_ITEM		= 5,
+	FIG_ACTION_DROP_ITEM		= 6,
+	FIG_ACTION_EXCHANGE_WEAPON	= 7,
+	FIG_ACTION_EXCHANGE_ITEM	= 8,
+	FIG_ACTION_CHECK_VALUES		= 9,
+	FIG_ACTION_WAIT			= 10,
+	FIG_ACTION_COMPUTER_FIGHT	= 11,
+	FIG_ACTION_QUIT_AND_LOAD	= 12,
+	FIG_ACTION_REPEAT_OPTION	= 13,
+	FIG_ACTION_RANGE_ATTACK		= 15,
+	FIG_ACTION_FLEE			= 16,
+	FIG_ACTION_UNKNOWN2		= 100,
+	FIG_ACTION_UNKNOWN3		= 102, /* drink potion? */
+	FIG_ACTION_UNKNOWN4		= 103  /* cast spell? */
 };
 
 enum {
-	ILLNESS_TYPE_NONE = 0,
-	ILLNESS_TYPE_WUNDFIEBER = 1,
-	ILLNESS_TYPE_DUMPFSCHAEDEL = 2,
-	ILLNESS_TYPE_BLAUE_KEUCHE = 3,
-	ILLNESS_TYPE_PARALYSE = 4,
-	ILLNESS_TYPE_SCHLACHTENFIEBER = 5,
-	ILLNESS_TYPE_FROSTSCHAEDEN = 6,
-	ILLNESS_TYPE_TOLLWUT = 7
+	ILLNESS_TYPE_NONE		= 0,
+	ILLNESS_TYPE_WUNDFIEBER		= 1,
+	ILLNESS_TYPE_DUMPFSCHAEDEL	= 2,
+	ILLNESS_TYPE_BLAUE_KEUCHE	= 3,
+	ILLNESS_TYPE_PARALYSE		= 4,
+	ILLNESS_TYPE_SCHLACHTENFIEBER	= 5,
+	ILLNESS_TYPE_FROSTSCHAEDEN	= 6,
+	ILLNESS_TYPE_TOLLWUT		= 7
 };
 
 #define SIZEOF_HERO_ILLNESS (5)
 
 enum {
-	POISON_TYPE_NONE = 0,
-	POISON_TYPE_SHURINKNOLLENGIFT = 1,
-	POISON_TYPE_ARAX = 2,
-	POISON_TYPE_ANGSTGIFT = 3,
-	POISON_TYPE_SCHLAFGIFT = 4,
-	POISON_TYPE_GOLDLEIM = 5,
-	POISON_TYPE_KROETENSCHEMEL = 6,
-	POISON_TYPE_LOTUSGIFT = 7,
-	POISON_TYPE_KUKRIS = 8,
-	POISON_TYPE_BANNSTAUB = 9
+	POISON_TYPE_NONE		= 0,
+	POISON_TYPE_SHURINKNOLLENGIFT	= 1,
+	POISON_TYPE_ARAX		= 2,
+	POISON_TYPE_ANGSTGIFT		= 3,
+	POISON_TYPE_SCHLAFGIFT		= 4,
+	POISON_TYPE_GOLDLEIM		= 5,
+	POISON_TYPE_KROETENSCHEMEL	= 6,
+	POISON_TYPE_LOTUSGIFT		= 7,
+	POISON_TYPE_KUKRIS		= 8,
+	POISON_TYPE_BANNSTAUB		= 9
 };
 
 #define SIZEOF_HERO_POISON (5)
@@ -315,8 +293,8 @@ struct enemy_status1 {
 
 struct enemy_status2 {
 	unsigned short tame	:1; /* from 'Bannbaladin', 'Herr der Tiere' or 'Sanftmut' spell */
-	unsigned short renegade	:1; /* from 'Boeser Blick' spell */
-	unsigned short scared	:1; /* from 'Horriphobus' spell */
+	unsigned short renegade	:1; /* from 'Boeser Blick' spell. removed by 'Horriphobus' spell or Angstgift. */
+	unsigned short scared	:1; /* from 'Horriphobus' spell or Angstgift */
 	unsigned short dancing	:1; /* from 'Zwingtanz' spell */
 };
 
@@ -336,22 +314,23 @@ struct item_status {
 struct knapsack_status {
 	/* knapsack position + 0x04 */
 	unsigned short broken		:1;
-	unsigned short half_empty	:1;
-	unsigned short empty		:1;
-	unsigned short magic_hidden	:1;
-	unsigned short bit4		:1;
-	unsigned short poison1		:1;
-	unsigned short poison2		:1;
-	unsigned short magic_known	:1;
+	unsigned short half_empty	:1; /* only used for ITEM_WATERSKIN */
+	unsigned short empty		:1; /* only used for ITEM_WATERSKIN. for an empty waterskin, both  'empty' and 'half_empty' flags are set */
+	unsigned short magic		:1;
+	unsigned short bit4		:1; /* unused */
+	unsigned short poison_expurgicum:1; /* flag set if a weapon is poisoned by Expurgicum */
+	unsigned short poison_vomicum	:1; /* flag set if a weapon is poisoned by Vomicum */
+	unsigned short magic_revealed	:1; /* flag set if it is known to the heroes that the item is magic.
+					       obtained from academy in Thorwal or from 'Odem Arcanum' or 'Analues' spell */
 
-	unsigned short bit8	:1;
-	unsigned short bit9	:1;
-	unsigned short bit10	:1;
-	unsigned short bit11	:1;
-	unsigned short bit12	:1;
-	unsigned short bit13	:1;
-	unsigned short bit14	:1;
-	unsigned short bit15	:1;
+	unsigned short bit8		:1; /* unused */
+	unsigned short bit9		:1; /* unused */
+	unsigned short bit10		:1; /* unused */
+	unsigned short bit11		:1; /* unused */
+	unsigned short bit12		:1; /* unused */
+	unsigned short bit13		:1; /* unused */
+	unsigned short bit14		:1; /* unused */
+	unsigned short bit15		:1; /* unused */
 };
 
 struct knapsack_item {
@@ -544,153 +523,155 @@ enum {
 
 enum {
 	/* Kampf */
-	TA_WAFFENLOS = 0,
-	TA_HIEBWAFFEN = 1,
-	TA_STICHWAFFEN = 2,
-	TA_SCHWERTER = 3,
-	TA_AEXTE = 4,
-	TA_SPEERE = 5,
-	TA_ZWEIHAENDER = 6,
-	TA_SCHUSSWAFFEN = 7,
-	TA_WURFWAFFEN = 8,
+	TA_WAFFENLOS		= 0,
+	TA_HIEBWAFFEN		= 1,
+	TA_STICHWAFFEN		= 2,
+	TA_SCHWERTER		= 3,
+	TA_AEXTE		= 4,
+	TA_SPEERE		= 5,
+	TA_ZWEIHAENDER		= 6,
+	TA_SCHUSSWAFFEN		= 7,
+	TA_WURFWAFFEN		= 8,
 	/* Körper */
-	TA_AKROBATIK = 9,
-	TA_KLETTERN = 10,
-	TA_KOERPERBEHERRSCHUNG = 11,
-	TA_REITEN = 12,
-	TA_SCHLEICHEN = 13,
-	TA_SCHWIMMEN = 14,
-	TA_SELBSTBEHERRSCHUNG = 15,
-	TA_TANZEN = 16,
-	TA_VERSTECKEN = 17,
-	TA_ZECHEN = 18,
+	TA_AKROBATIK		= 9,
+	TA_KLETTERN		= 10,
+	TA_KOERPERBEHERRSCHUNG	= 11,
+	TA_REITEN		= 12,
+	TA_SCHLEICHEN		= 13,
+	TA_SCHWIMMEN		= 14,
+	TA_SELBSTBEHERRSCHUNG	= 15,
+	TA_TANZEN		= 16,
+	TA_VERSTECKEN		= 17,
+	TA_ZECHEN		= 18,
 	/* Gesellschaft */
-	TA_BEKEHREN = 19,
-	TA_BETOEREN = 20,
-	TA_FEILSCHEN = 21,
-	TA_GASSENWISSEN = 22,
-	TA_LUEGEN = 23,
-	TA_MENSCHENKENNTNIS = 24,
-	TA_SCHAETZEN = 25,
+	TA_BEKEHREN		= 19,
+	TA_BETOEREN		= 20,
+	TA_FEILSCHEN		= 21,
+	TA_GASSENWISSEN		= 22,
+	TA_LUEGEN		= 23,
+	TA_MENSCHENKENNTNIS	= 24,
+	TA_SCHAETZEN		= 25,
 	/* Natur */
-	TA_FAEHRTENSUCHEN = 26,
-	TA_FESSELN = 27,
-	TA_ORIENTIERUNG = 28,
-	TA_PFLANZENKUNDE = 29,
-	TA_TIERKUNDE = 30,
-	TA_WILDNISLEBEN = 31,
+	TA_FAEHRTENSUCHEN	= 26,
+	TA_FESSELN		= 27,
+	TA_ORIENTIERUNG		= 28,
+	TA_PFLANZENKUNDE	= 29,
+	TA_TIERKUNDE		= 30,
+	TA_WILDNISLEBEN		= 31,
 	/* Wissen */
-	TA_ALCHIMIE = 32,
-	TA_ALTE_SPRACHEN = 33,
-	TA_GEOGRAPHIE = 34,
-	TA_GESCHICHTE = 35,
-	TA_GOETTER_KULTE = 36,
-	TA_KRIEGSKUNST = 37,
-	TA_LESEN = 38,
-	TA_MAGIEKUNDE = 39,
-	TA_SPRACHEN = 40,
+	TA_ALCHIMIE		= 32,
+	TA_ALTE_SPRACHEN	= 33,
+	TA_GEOGRAPHIE		= 34,
+	TA_GESCHICHTE		= 35,
+	TA_GOETTER_KULTE	= 36,
+	TA_KRIEGSKUNST		= 37,
+	TA_LESEN		= 38,
+	TA_MAGIEKUNDE		= 39,
+	TA_SPRACHEN		= 40,
 	/* Handwerk */
-	TA_ABRICHTEN = 41,
-	TA_FAHRZEUGE = 42,
-	TA_FALSCHSPIEL = 43,
-	TA_HEILEN_GIFT = 44,
-	TA_HEILEN_KRANKHEITEN = 45,
-	TA_HEILEN_WUNDEN = 46,
-	TA_MUSIZIEREN = 47,
-	TA_SCHLOESSER = 48,
-	TA_TASCHENDIEBSTAHL = 49,
+	TA_ABRICHTEN		= 41,
+	TA_FAHRZEUGE		= 42,
+	TA_FALSCHSPIEL		= 43,
+	TA_HEILEN_GIFT		= 44,
+	TA_HEILEN_KRANKHEITEN	= 45,
+	TA_HEILEN_WUNDEN	= 46,
+	TA_MUSIZIEREN		= 47,
+	TA_SCHLOESSER		= 48,
+	TA_TASCHENDIEBSTAHL	= 49,
 	/* Intuition */
-	TA_GEFAHRENSINN = 50,
-	TA_SINNESSCHAERFE = 51
+	TA_GEFAHRENSINN		= 50,
+	TA_SINNESSCHAERFE	= 51
 };
 
 enum {
-	HERO_INVENTORY_POSITION_HEAD		= 0,
-	HERO_INVENTORY_POSITION_ARMS		= 1,
-	HERO_INVENTORY_POSITION_BODY		= 2,
-	HERO_INVENTORY_POSITION_RIGHT_HAND	= 3,
-	HERO_INVENTORY_POSITION_LEFT_HAND	= 4,
-	HERO_INVENTORY_POSITION_LEGS		= 5,
-	HERO_INVENTORY_POSITION_FEET		= 6,
-	HERO_INVENTORY_POSITION_KS1		= 7,
-	HERO_INVENTORY_POSITION_KS2		= 8,
-	HERO_INVENTORY_POSITION_KS3		= 9,
-	HERO_INVENTORY_POSITION_KS4		= 10,
-	HERO_INVENTORY_POSITION_KS5		= 11,
-	HERO_INVENTORY_POSITION_KS6		= 12,
-	HERO_INVENTORY_POSITION_KS7		= 13,
-	HERO_INVENTORY_POSITION_KS8		= 14,
-	HERO_INVENTORY_POSITION_KS9		= 15,
-	HERO_INVENTORY_POSITION_KS10		= 16,
-	HERO_INVENTORY_POSITION_KS11		= 17,
-	HERO_INVENTORY_POSITION_KS12		= 18,
-	HERO_INVENTORY_POSITION_KS13		= 19,
-	HERO_INVENTORY_POSITION_KS14		= 20,
-	HERO_INVENTORY_POSITION_KS15		= 21,
-	HERO_INVENTORY_POSITION_KS16		= 22
+	HERO_INVENTORY_SLOT_HEAD	= 0,
+	HERO_INVENTORY_SLOT_ARMS	= 1,
+	HERO_INVENTORY_SLOT_BODY	= 2,
+	HERO_INVENTORY_SLOT_RIGHT_HAND	= 3,
+	HERO_INVENTORY_SLOT_LEFT_HAND	= 4,
+	HERO_INVENTORY_SLOT_LEGS	= 5,
+	HERO_INVENTORY_SLOT_FEET	= 6,
+	HERO_INVENTORY_SLOT_KNAPSACK_1	= 7,
+	HERO_INVENTORY_SLOT_KNAPSACK_2	= 8,
+	HERO_INVENTORY_SLOT_KNAPSACK_3	= 9,
+	HERO_INVENTORY_SLOT_KNAPSACK_4	= 10,
+	HERO_INVENTORY_SLOT_KNAPSACK_5	= 11,
+	HERO_INVENTORY_SLOT_KNAPSACK_6	= 12,
+	HERO_INVENTORY_SLOT_KNAPSACK_7	= 13,
+	HERO_INVENTORY_SLOT_KNAPSACK_8	= 14,
+	HERO_INVENTORY_SLOT_KNAPSACK_9	= 15,
+	HERO_INVENTORY_SLOT_KNAPSACK_10	= 16,
+	HERO_INVENTORY_SLOT_KNAPSACK_11	= 17,
+	HERO_INVENTORY_SLOT_KNAPSACK_12	= 18,
+	HERO_INVENTORY_SLOT_KNAPSACK_13	= 19,
+	HERO_INVENTORY_SLOT_KNAPSACK_14	= 20,
+	HERO_INVENTORY_SLOT_KNAPSACK_15	= 21,
+	HERO_INVENTORY_SLOT_KNAPSACK_16	= 22
 };
+
+#define NR_HERO_INVENTORY_SLOTS (23)
 
 enum {
 	/* describes an item in a single inventory slot of a hero */
 	/* https://github.com/shihan42/BrightEyesWiki/wiki/CHR-NPC#inventarslots */
-	HERO_INVENTORY_ITEM_ID = 0,		/* 2 bytes */
-	HERO_INVENTORY_QUANTITY = 2,		/* 2 bytes */
-	HERO_INVENTORY_FLAGS = 4, 		/* 2 bytes */ /* bitfield. bit 0: broken / bit 1: half empty / bit 2: empty / bit 3: magic hidden / bit 4: poison1 (?) / bit 5: poison2 (?) / bit 6: magic known / bit 7: unused? */
-	HERO_INVENTORY_BF = 6,			/* 1 byte */
-	HERO_INVENTORY_IS_USED = 7, 		/* 1 byte */ /* occurences so far: used for RS malus. maybe rename into HERO_INVENTORY_RS_DEFECT? */
-	HERO_INVENTORY_LIGHTING_TIMER = 8,	/* 1 byte */ /* for burning torch: number of remaining time, unit: 15 minutes */
-	HERO_INVENTORY_POISON_TYPE = 9,		/* 1 byte */ /* for poisoned weapon: poison type (0-kein Gift, 1-Schurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemelgift, 7-Lotosgift, 8-Kukris, 9-Bannstaub, 10-Expurgicum, 11-Vomicum). */
-	HERO_INVENTORY_NR_POISON_CHARGES = 10,	/* 1 byte */ /* for poisoned weapon: number of remaining poison charges (= successful attacs). */
+	INVENTORY_ITEM_ID		= 0,	/* 2 bytes */
+	INVENTORY_QUANTITY		= 2,	/* 2 bytes */ /* for stackable items: nr of items in stack; for items with magic charges: nr of charges left */
+	INVENTORY_FLAGS			= 4, 	/* 2 bytes */ /* bitfield, see knapsack_status */
+	INVENTORY_BF 			= 6,	/* 1 byte */ /* Bruchfaktor. -99 means unbreakable */
+	INVENTORY_RS_LOST		= 7, 	/* 1 byte */ /* so far only seen for body armour. (from 'Ignifaxius' spell or from traps in DNG03 (Spinnenhoehle)) */
+	INVENTORY_LIGHTING_TIMER	= 8,	/* 1 byte */ /* for burning torch: number of remaining time, unit: 15 minutes */
+	INVENTORY_POISON_TYPE		= 9,	/* 1 byte */ /* for poisoned weapon: poison type according to enum POISON_TYPE (0-kein Gift, 1-Schurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemelgift, 7-Lotosgift, 8-Kukris, 9-Bannstaub, 10-Expurgicum, 11-Vomicum). */
+	INVENTORY_NR_POISON_CHARGES	= 10,	/* 1 byte */ /* for poisoned weapon: number of remaining poison charges (= successful attacs). */
 	/* remaining part: apparently unused */
 };
-#define SIZEOF_HERO_INVENTORY (14)
+#define SIZEOF_INVENTORY (14)
 
 enum {
 	/* https://github.com/shihan42/BrightEyesWiki/wiki/ITEMS.DAT */
 	/* structure of the entries of ITEMS.DAT */
-	ITEM_STATS_GFX = 0,
-	ITEM_STATS_FLAGS = 2, /* bitfield. bit 0: armor / bit 1: weapon / bit 2: useable / bit 3: nutrition / bit 4: stackable / bit 5: poison/herb/potion / bit 6: personal item (undropable) / bit 7: not usable by "use object"?? */
-	ITEM_STATS_SUBTYPE = 3,
-	ITEM_STATS_TABLE_INDEX = 4,
-	ITEM_STATS_WEIGHT = 5, /* weight in ounces */
-	ITEM_STATS_PRICE_UNIT = 7, /* 1: Heller / 10: Silberstücke / 100: Dukaten */
-	ITEM_STATS_PRICE = 8, /* unit is ITEM_STATS_PRICE_UNIT. So the price in Heller is ITEM_STATS_PRICE_UNIT * ITEM_STATS_PRICE */
-	ITEM_STATS_COMMONNESS = 10,
-	ITEM_STATS_MAGIC = 11 /* 0: not magic / 1: magic */
+	ITEM_STATS_GFX		= 0,
+	ITEM_STATS_FLAGS	= 2, /* bitfield. bit 0: armor / bit 1: weapon / bit 2: useable / bit 3: nutrition / bit 4: stackable / bit 5: poison/herb/potion / bit 6: personal item (undropable) / bit 7: not usable by "use object"?? */
+	ITEM_STATS_SUBTYPE	= 3,
+	ITEM_STATS_TABLE_INDEX	= 4,
+	ITEM_STATS_WEIGHT	= 5, /* weight in ounces */
+	ITEM_STATS_PRICE_UNIT	= 7, /* 1: Heller / 10: Silberstücke / 100: Dukaten */
+	ITEM_STATS_PRICE	= 8, /* unit is ITEM_STATS_PRICE_UNIT. So the price in Heller is ITEM_STATS_PRICE_UNIT * ITEM_STATS_PRICE */
+	ITEM_STATS_COMMONNESS	= 10,
+	ITEM_STATS_MAGIC	= 11 /* 0: not magic / 1: magic */
 };
 #define SIZEOF_ITEM_STATS (12)
 
 enum {
-	ARMOR_TYPE_HEAD = 0,
-	ARMOR_TYPE_ARMS = 1,
-	ARMOR_TYPE_BODY = 2,
-	ARMOR_TYPE_LEGS = 5,
-	ARMOR_TYPE_FEET = 6,
-	ARMOR_TYPE_SHIELD = 9,
+	ARMOR_TYPE_HEAD 	= 0,
+	ARMOR_TYPE_ARMS 	= 1,
+	ARMOR_TYPE_BODY 	= 2,
+	ARMOR_TYPE_LEGS 	= 5,
+	ARMOR_TYPE_FEET 	= 6,
+	ARMOR_TYPE_SHIELD 	= 9,
 };
 
 enum {
-	WEAPON_TYPE_AMMUNITION = 0,
-	WEAPON_TYPE_HIEBWAFFE = 1,
-	WEAPON_TYPE_STICHWAFFE = 2,
-	WEAPON_TYPE_SCHWERT = 3,
-	WEAPON_TYPE_AXT = 4,
-	WEAPON_TYPE_SPEER = 5,
-	WEAPON_TYPE_ZWEIHAENDER = 6,
-	WEAPON_TYPE_SCHUSSWAFFE = 7,
-	WEAPON_TYPE_WURFWAFFE = 8
+	WEAPON_TYPE_AMMUNITION	= 0,
+	WEAPON_TYPE_HIEBWAFFE	= 1,
+	WEAPON_TYPE_STICHWAFFE	= 2,
+	WEAPON_TYPE_SCHWERT	= 3,
+	WEAPON_TYPE_AXT		= 4,
+	WEAPON_TYPE_SPEER	= 5,
+	WEAPON_TYPE_ZWEIHAENDER	= 6,
+	WEAPON_TYPE_SCHUSSWAFFE	= 7,
+	WEAPON_TYPE_WURFWAFFE	= 8
 };
 
 enum {
 	/* https://github.com/shihan42/BrightEyesWiki/wiki/SCHICKM.EXE#Waffentabelle */
 	/* structure of the entries of WEAPONS_TABLE */
-	WEAPON_STATS_DAMAGE_D6 = 0,
-	WEAPON_STATS_DAMAGE_SUMMAND = 1,
-	WEAPON_STATS_DAMAGE_KK_BONUS = 2, /* Körperkraft-Zuschlag */
-	WEAPON_STATS_BF = 3, /* Bruchfaktor */
-	WEAPON_STATS_UNKNOWN = 4,
-	WEAPON_STATS_AT_MOD = 5,
-	WEAPON_STATS_PA_MOD = 6
+	WEAPON_STATS_DAMAGE_D6		= 0,
+	WEAPON_STATS_DAMAGE_SUMMAND	= 1,
+	WEAPON_STATS_DAMAGE_KK_BONUS	= 2, /* Körperkraft-Zuschlag */
+	WEAPON_STATS_BF			= 3, /* Bruchfaktor */
+	WEAPON_STATS_UNKNOWN		= 4,
+	WEAPON_STATS_AT_MOD		= 5,
+	WEAPON_STATS_PA_MOD		= 6
 };
 #define SIZEOF_WEAPON_STATS (7)
 
@@ -703,79 +684,79 @@ enum {
 #define SIZEOF_ARMOR_STATS (2)
 
 enum {
-	ITEM_SUBTYPE_NUTRITION_DRINK = 0,
-	ITEM_SUBTYPE_NUTRITION_FOOD = 1
+	ITEM_SUBTYPE_NUTRITION_DRINK	= 0,
+	ITEM_SUBTYPE_NUTRITION_FOOD	= 1
 };
 
 enum {
-	LOCATION_UNKN1 = 1,
-	LOCATION_TEMPLE = 2,
-	LOCATION_TAVERN = 3,
-	LOCATION_HEALER = 4,
-	LOCATION_MERCHANT = 5,
-	LOCATION_WILDCAMP = 6,
-	LOCATION_INN = 7,
-	LOCATION_SMITH = 8,
-	LOCATION_MARKET = 9,
-	LOCATION_CITIZEN = 10,
-	LOCATION_HARBOUR = 11,
-	LOCATION_MAP = 12,
-	LOCATION_INFORMER = 13,
-	LOCATION_DNGENTRY = 14,
-	LOCATION_UNKN2 = 15,
-	LOCATION_HOUSE = 16,
-	LOCATION_SPECIAL = 17,
-	LOCATION_CITYCAMP = 18
+	LOCATION_UNKN1		= 1,
+	LOCATION_TEMPLE		= 2,
+	LOCATION_TAVERN		= 3,
+	LOCATION_HEALER		= 4,
+	LOCATION_MERCHANT	= 5,
+	LOCATION_WILDCAMP	= 6,
+	LOCATION_INN		= 7,
+	LOCATION_SMITH		= 8,
+	LOCATION_MARKET		= 9,
+	LOCATION_CITIZEN	= 10,
+	LOCATION_HARBOUR	= 11,
+	LOCATION_MAP		= 12,
+	LOCATION_INFORMER	= 13,
+	LOCATION_DNGENTRY	= 14,
+	LOCATION_UNKN2		= 15,
+	LOCATION_HOUSE		= 16,
+	LOCATION_SPECIAL	= 17,
+	LOCATION_CITYCAMP	= 18
 };
 
 enum {
-	GAME_STATE_MAIN = 0,
-	GAME_STATE_DEAD = 1, /* all heroes dead */
-	GAME_STATE_UNKNOWN = 2,
-	GAME_STATE_QUIT = 3, /* ordinary quit */
-	GAME_STATE_TIMEUP = 4, /* max. game time is up */
-	GAME_STATE_OUTRO = 5, /* after (successfull) outro */
-	GAME_STATE_FIGQUIT = 7, /* quit game during fight */
-	GAME_STATE_VICTORY = 99 /* final fight won (before outro) */
+	GAME_STATE_MAIN		= 0,
+	GAME_STATE_DEAD		= 1, /* all heroes dead */
+	GAME_STATE_UNKNOWN	= 2,
+	GAME_STATE_QUIT		= 3, /* ordinary quit */
+	GAME_STATE_TIMEUP	= 4, /* max. game time is up */
+	GAME_STATE_OUTRO	= 5, /* after (successfull) outro */
+	GAME_STATE_FIGQUIT	= 7, /* quit game during fight */
+	GAME_STATE_VICTORY	= 99 /* final fight won (before outro) */
 };
 
 enum {
-	INFORMER_JURGE = 0,
-	INFORMER_HJORE = 1,
-	INFORMER_YASMA = 2,
-	INFORMER_UMBRIK = 3,
-	INFORMER_ISLEIF = 4,
-	INFORMER_RAGNA = 5,
-	INFORMER_BEORN = 6,
-	INFORMER_ASGRIMM = 7,
-	INFORMER_ELIANE = 8,
-	INFORMER_OLVIR = 9,
-	INFORMER_SWAFNILD = 10,
-	INFORMER_TREBORN = 11,
-	INFORMER_UNICORN = 12,
-	INFORMER_ALGRID = 13,
-	INFORMER_TIOMAR = 14
+	INFORMER_JURGE		= 0,
+	INFORMER_HJORE		= 1,
+	INFORMER_YASMA		= 2,
+	INFORMER_UMBRIK		= 3,
+	INFORMER_ISLEIF		= 4,
+	INFORMER_RAGNA		= 5,
+	INFORMER_BEORN		= 6,
+	INFORMER_ASGRIMM	= 7,
+	INFORMER_ELIANE		= 8,
+	INFORMER_OLVIR		= 9,
+	INFORMER_SWAFNILD	= 10,
+	INFORMER_TREBORN	= 11,
+	INFORMER_UNICORN	= 12,
+	INFORMER_ALGRID		= 13,
+	INFORMER_TIOMAR		= 14
 };
 
 /* FIGHT.LST */
 
 enum {
-	FIGHT_NAME = 0x00,
-	FIGHT_INTRO_SEEN = 0x13,
-	FIGHT_SCENARIO = 0x14,
-	FIGHT_MONSTERS_ID = 0x16,		/* List of 20 monsters */
-	FIGHT_MONSTERS_X = 0x17 ,		/* */
-	FIGHT_MONSTERS_Y = 0x18,		/* */
-	FIGHT_MONSTERS_VIEWDIR = 0x19,		/* */
-	FIGHT_MONSTERS_ROUND_APPEAR = 0x1A,	/* 5 bytes each */
-	FIGHT_PLAYERS_X = 0x7A,			/* List of 7 players */
-	FIGHT_PLAYERS_Y = 0x7B,			/* */
-	FIGHT_PLAYERS_VIEWDIR = 0x7C,		/* */
-	FIGHT_PLAYERS_ROUND_APPEAR = 0x7D,	/* 4 bytes each */
-	FIGHT_LOOT = 0x96,			/* 2 bytes each: ID and 0x00 */
-	FIGHT_DUCATS = 0xD2,
-	FIGHT_SILVER = 0xD4,
-	FIGHT_HELLER = 0xD6
+	FIGHT_NAME			= 0x00,
+	FIGHT_INTRO_SEEN		= 0x13,
+	FIGHT_SCENARIO			= 0x14,
+	FIGHT_MONSTERS_ID		= 0x16,	/* List of 20 monsters */
+	FIGHT_MONSTERS_X		= 0x17,	/* */
+	FIGHT_MONSTERS_Y		= 0x18,	/* */
+	FIGHT_MONSTERS_VIEWDIR		= 0x19,	/* */
+	FIGHT_MONSTERS_ROUND_APPEAR	= 0x1A,	/* 5 bytes each */
+	FIGHT_PLAYERS_X			= 0x7A,	/* List of 7 players */
+	FIGHT_PLAYERS_Y			= 0x7B,	/* */
+	FIGHT_PLAYERS_VIEWDIR		= 0x7C,	/* */
+	FIGHT_PLAYERS_ROUND_APPEAR	= 0x7D,	/* 4 bytes each */
+	FIGHT_LOOT			= 0x96,	/* 2 bytes each: ID and 0x00 */
+	FIGHT_DUCATS			= 0xD2,
+	FIGHT_SILVER			= 0xD4,
+	FIGHT_HELLER			= 0xD6
 };
 
 #define SIZEOF_FIGHT (216)
@@ -783,319 +764,319 @@ enum {
 #define SIZEOF_FIGHT_PLAYER (4)
 
 enum {
-	FIGHTS_ZUFALL1_LAND = 0,
-	FIGHTS_LAND_FIGHT1_1 = 1,
-	FIGHTS_ZUFALL2_LAND = 2,
-	FIGHTS_ZUFALL3_LAND = 3,
-	FIGHTS_ZUFALL4_LAND = 4,
-	FIGHTS_SHIP3 = 5,
-	FIGHTS_SHIP4 = 6,
-	FIGHTS_SHIP5 = 7,
-	FIGHTS_SHIP6 = 8,
-	FIGHTS_SHIP8 = 9,
-	FIGHTS_SHIP9 = 10,
-	FIGHTS_SHIP12 = 11,
-	FIGHTS_SHIP14 = 12,
-	FIGHTS_SHIP15 = 13,
-	FIGHTS_SHIP17 = 14,
-	FIGHTS_SHIP18 = 15,
-	FIGHTS_SHIP19 = 16,
-	FIGHTS_SHIP21 = 17,
-	FIGHTS_SHIP22 = 18,
-	FIGHTS_SHIP23A = 19,
-	FIGHTS_SHIP23B = 20,
-	FIGHTS_SHIP24 = 21,
-	FIGHTS_SHIP10 = 22,
-	FIGHTS_F061_2 = 23,
-	FIGHTS_F061_3 = 24,
-	FIGHTS_F061_4B = 25,
-	FIGHTS_F061_4A = 26,
-	FIGHTS_F061_5 = 27,
-	FIGHTS_F061_6A = 28,
-	FIGHTS_F108_1 = 29,
-	FIGHTS_F108_2 = 30,
-	FIGHTS_F108_3A = 31,
-	FIGHTS_F108_3B = 32,
-	FIGHTS_F108_3C = 33,
-	FIGHTS_F108_4 = 34,
-	FIGHTS_F108_6 = 35,
-	FIGHTS_F108_9 = 36,
-	FIGHTS_F108_7 = 37,
-	FIGHTS_F051_05_4 = 38,
-	FIGHTS_F051_05_3 = 39,
-	FIGHTS_F051_05_2 = 40,
-	FIGHTS_F051_05_1 = 41,
-	FIGHTS_F051_07 = 42,
-	FIGHTS_F051_09 = 43,
-	FIGHTS_F051_13 = 44,
-	FIGHTS_F108_15 = 45,
-	FIGHTS_F051_15 = 46,
-	FIGHTS_F051_16 = 47,
-	FIGHTS_F051_16_1 = 48,
-	FIGHTS_F051_03 = 49,
-	FIGHTS_F051_04 = 50,
-	FIGHTS_F051_17 = 51,
-	FIGHTS_F051_18 = 52,
-	FIGHTS_F051_19 = 53,
-	FIGHTS_F051_20_2 = 54,
-	FIGHTS_F051_18_3 = 55,
-	FIGHTS_F046_01 = 56,
-	FIGHTS_F046_04 = 57,
-	FIGHTS_F046_06 = 58,
-	FIGHTS_F046_07 = 59,
-	FIGHTS_F046_10 = 60,
-	FIGHTS_F046_12 = 61,
-	FIGHTS_F046_13 = 62,
-	FIGHTS_F046_15 = 63,
-	FIGHTS_F046_16 = 64,
-	FIGHTS_F046_18 = 65,
-	FIGHTS_F046_22 = 66,
-	FIGHTS_F046_24 = 67,
-	FIGHTS_F046_25 = 68,
-	FIGHTS_F046_26 = 69,
-	FIGHTS_F046_26_5 = 70,
-	FIGHTS_F046_27 = 71,
-	FIGHTS_F046_28 = 72,
-	FIGHTS_F046_31 = 73,
-	FIGHTS_F076_04 = 74,
-	FIGHTS_F076_06 = 75,
-	FIGHTS_F076_07 = 76,
-	FIGHTS_F076_10 = 77,
-	FIGHTS_F076_11 = 78,
-	FIGHTS_F076_13 = 79,
-	FIGHTS_F094_02 = 80,
-	FIGHTS_F094_05 = 81,
-	FIGHTS_F094_10 = 82,
-	FIGHTS_F094_13 = 83,
-	FIGHTS_F094_17 = 84,
-	FIGHTS_F094_19 = 85,
-	FIGHTS_F094_22 = 86,
-	FIGHTS_F100_01 = 87,
-	FIGHTS_F100_03 = 88,
-	FIGHTS_F100_05 = 89,
-	FIGHTS_F100_12 = 90,
-	FIGHTS_F100_13 = 91,
-	FIGHTS_F126_03 = 92,
-	FIGHTS_F126_07 = 93,
-	FIGHTS_F126_08 = 94, /* fleeing cultist */
-	FIGHTS_F126_09 = 95,
-	FIGHTS_F126_11 = 96,
-	FIGHTS_F126_12 = 97,
-	FIGHTS_F126_13 = 98,
-	FIGHTS_F126_17 = 99,
-	FIGHTS_F126_18 = 100,
-	FIGHTS_F126_20 = 101,
-	FIGHTS_F126_22 = 102,
-	FIGHTS_F126_23 = 103,
-	FIGHTS_F126_25 = 104,
-	FIGHTS_F126_27 = 105,
-	FIGHTS_F126_28 = 106,
-	FIGHTS_F129_05 = 107,
-	FIGHTS_F129_08 = 108,
-	FIGHTS_F129_09 = 109,
-	FIGHTS_F129_18 = 110,
-	FIGHTS_F129_21 = 111,
-	FIGHTS_F129_23 = 112,
-	FIGHTS_F129_24 = 113,
-	FIGHTS_F129_25 = 114,
-	FIGHTS_F129_27 = 115,
-	FIGHTS_F129_28 = 116,
-	FIGHTS_F129_29 = 117,
-	FIGHTS_F129_30 = 118,
-	FIGHTS_F131_01A = 119,
-	FIGHTS_F131_01B = 120,
-	FIGHTS_F131_04 = 121,
-	FIGHTS_F131_05 = 122,
-	FIGHTS_F131_06 = 123,
-	FIGHTS_F131_07 = 124,
-	FIGHTS_F131_08 = 125,
-	FIGHTS_F131_10 = 126,
-	FIGHTS_F131_11_1 = 127,
-	FIGHTS_F131_14A = 128,
-	FIGHTS_F131_14B = 129,
-	FIGHTS_F131_16 = 130,
-	FIGHTS_DFIN12 = 131,
-	FIGHTS_DFIN16 = 132,
-	FIGHTS_DFIN18A = 133,
-	FIGHTS_DFIN18B = 134,
-	FIGHTS_DFIN26 = 135,
-	FIGHTS_DFIN27A = 136,
-	FIGHTS_DFIN27B = 137,
-	FIGHTS_DFIN28 = 138,
-	FIGHTS_DFIN30 = 139,
-	FIGHTS_DPRE10_1 = 140,
-	FIGHTS_DOBE07 = 141,
-	FIGHTS_DOBE09 = 142,
-	FIGHTS_DOBE11 = 143,
-	FIGHTS_DOBE20 = 144,
-	FIGHTS_DOBE19 = 145,
-	FIGHTS_DOBE22 = 146,
-	FIGHTS_DTHO03 = 147,
-	FIGHTS_DTHO05 = 148,
-	FIGHTS_DTHO06 = 149,
-	FIGHTS_DTHO09 = 150,
-	FIGHTS_DTHO10 = 151,
-	FIGHTS_DTHO13 = 152,
-	FIGHTS_DTHO15 = 153,
-	FIGHTS_DTHO16 = 154,
-	FIGHTS_DTHO18 = 155,
-	FIGHTS_DTHO19 = 156,
-	FIGHTS_DTHO20 = 157,
-	FIGHTS_DTHO20_1 = 158,
-	FIGHTS_DTHO21A = 159,
-	FIGHTS_DTHO21B = 160,
-	FIGHTS_DTHO23 = 161,
-	FIGHTS_DTHO25 = 162,
-	FIGHTS_DTHO27 = 163,
-	FIGHTS_DTHO43 = 164,
-	FIGHTS_DTHO48_1 = 165,
-	FIGHTS_DTHO49 = 166,
-	FIGHTS_DTHO50 = 167,
-	FIGHTS_DTHO53 = 168,
-	FIGHTS_DTHO55 = 169,
-	FIGHTS_DTHO56 = 170,
-	FIGHTS_DTHO57 = 171,
-	FIGHTS_DTHO57_1 = 172,
-	FIGHTS_DTHO58 = 173,
-	FIGHTS_DTHO59 = 174,
-	FIGHTS_DTHO60 = 175,
-	FIGHTS_DTHO61 = 176,
-	FIGHTS_F031 = 177,
-	FIGHTS_F035 = 178,
-	FIGHTS_F046 = 179,
-	FIGHTS_F064 = 180, /* Gorah */
-	FIGHTS_F066 = 181,
-	FIGHTS_F074 = 182,
-	FIGHTS_F075_A = 183,
-	FIGHTS_F075_B = 184,
-	FIGHTS_F075_C = 185,
-	FIGHTS_F077 = 186,
-	FIGHTS_F080 = 187,
-	FIGHTS_F084 = 188, /* travel event 84 */
-	FIGHTS_F099 = 189, /* 4 harpies */
-	FIGHTS_F101 = 190,
-	FIGHTS_F122 = 191,
-	FIGHTS_F144 = 192, /* travel event 144: final fight */
-	FIGHTS_DASP1A = 193,
-	FIGHTS_DASP1B = 194,
-	FIGHTS_DASP2 = 195,
-	FIGHTS_DASP3 = 196,
-	FIGHTS_DASP4 = 197,
-	FIGHTS_DASP5 = 198,
-	FIGHTS_DASP6A = 199,
-	FIGHTS_DASP6B = 200,
-	FIGHTS_DASP7 = 201,
-	FIGHTS_DASP8 = 202,
-	FIGHTS_DASP9 = 203,
-	FIGHTS_DASP10 = 204,
-	FIGHTS_DASP11 = 205,
-	FIGHTS_DASP12A = 206,
-	FIGHTS_DASP12B = 207,
-	FIGHTS_DASP13 = 208,
-	FIGHTS_DASP14 = 209,
-	FIGHTS_DASP16 = 210,
-	FIGHTS_DASP17 = 211,
-	FIGHTS_DASP18 = 212,
-	FIGHTS_THOR8 = 213,
-	FIGHTS_CITYFIGHT1 = 214,
-	FIGHTS_CITYFIGHT2 = 215,
-	FIGHTS_CITYFIGHT3 = 216,
-	FIGHTS_CAMPFIGHT1 = 217,
-	FIGHTS_CAMPFIGHT2 = 218,
-	FIGHTS_CAMPFIGHT3 = 219,
-	FIGHTS_SHIP10_1 = 220,
-	FIGHTS_F061_6B = 221,
-	FIGHTS_F051_16A = 222,
-	FIGHTS_F051_16B = 223,
-	FIGHTS_F051_14A = 224,
-	FIGHTS_F051_14B = 225,
-	FIGHTS_F051_117 = 226,
-	FIGHTS_F129_124 = 227,
-	FIGHTS_F131_08A = 228,
-	FIGHTS_F131_08B = 229,
-	FIGHTS_F031_14A = 230,
-	FIGHTS_DTH021A = 231,
-	FIGHTS_CAMPFIGHT4 = 232,
-	FIGHTS_SHIP10_2 = 233,
-	FIGHTS_F051_02 = 234,
-	FIGHTS_F051_5 = 235,
-	FIGHTS_PHEX3 = 236,
-	FIGHTS_PHEX22 = 237,
-	FIGHTS_PHEX23 = 238,
-	FIGHTS_PHEX24 = 239,
-	FIGHTS_F131_01 = 240,
-	FIGHTS_F129_08A = 241,
-	FIGHTS_DTHO14 = 242,
-	FIGHTS_WILD1 = 243,
-	FIGHTS_WILD2 = 244,
-	FIGHTS_WILD3 = 245,
-	FIGHTS_WILD4 = 246,
-	FIGHTS_WILD5 = 247,
-	FIGHTS_WILD6 = 248,
-	FIGHTS_WILD7 = 249,
-	FIGHTS_WILD8 = 250,
-	FIGHTS_S001 = 251,
-	FIGHTS_F051_14C = 252,
-	FIGHTS_F129_17 = 253,
-	FIGHTS_DCAMPFIGHT1 = 254,
-	FIGHTS_DCAMPFIGHT2 = 255,
-	FIGHTS_DCAMPFIGHT3 = 256,
-	FIGHTS_DCAMPFIGHT4 = 257
+	FIGHTS_ZUFALL1_LAND	= 0,
+	FIGHTS_LAND_FIGHT1_1	= 1,
+	FIGHTS_ZUFALL2_LAND	= 2,
+	FIGHTS_ZUFALL3_LAND	= 3,
+	FIGHTS_ZUFALL4_LAND	= 4,
+	FIGHTS_SHIP3		= 5,
+	FIGHTS_SHIP4		= 6,
+	FIGHTS_SHIP5		= 7,
+	FIGHTS_SHIP6		= 8,
+	FIGHTS_SHIP8		= 9,
+	FIGHTS_SHIP9		= 10,
+	FIGHTS_SHIP12		= 11,
+	FIGHTS_SHIP14		= 12,
+	FIGHTS_SHIP15		= 13,
+	FIGHTS_SHIP17		= 14,
+	FIGHTS_SHIP18		= 15,
+	FIGHTS_SHIP19		= 16,
+	FIGHTS_SHIP21		= 17,
+	FIGHTS_SHIP22		= 18,
+	FIGHTS_SHIP23A		= 19,
+	FIGHTS_SHIP23B		= 20,
+	FIGHTS_SHIP24		= 21,
+	FIGHTS_SHIP10		= 22,
+	FIGHTS_F061_2		= 23,
+	FIGHTS_F061_3		= 24,
+	FIGHTS_F061_4B		= 25,
+	FIGHTS_F061_4A		= 26,
+	FIGHTS_F061_5		= 27,
+	FIGHTS_F061_6A		= 28,
+	FIGHTS_F108_1		= 29,
+	FIGHTS_F108_2		= 30,
+	FIGHTS_F108_3A		= 31,
+	FIGHTS_F108_3B		= 32,
+	FIGHTS_F108_3C		= 33,
+	FIGHTS_F108_4		= 34,
+	FIGHTS_F108_6		= 35,
+	FIGHTS_F108_9		= 36,
+	FIGHTS_F108_7		= 37,
+	FIGHTS_F051_05_4	= 38,
+	FIGHTS_F051_05_3	= 39,
+	FIGHTS_F051_05_2	= 40,
+	FIGHTS_F051_05_1	= 41,
+	FIGHTS_F051_07		= 42,
+	FIGHTS_F051_09		= 43,
+	FIGHTS_F051_13		= 44,
+	FIGHTS_F108_15		= 45,
+	FIGHTS_F051_15		= 46,
+	FIGHTS_F051_16		= 47,
+	FIGHTS_F051_16_1	= 48,
+	FIGHTS_F051_03		= 49,
+	FIGHTS_F051_04		= 50,
+	FIGHTS_F051_17		= 51,
+	FIGHTS_F051_18		= 52,
+	FIGHTS_F051_19		= 53,
+	FIGHTS_F051_20_2	= 54,
+	FIGHTS_F051_18_3	= 55,
+	FIGHTS_F046_01		= 56,
+	FIGHTS_F046_04		= 57,
+	FIGHTS_F046_06		= 58,
+	FIGHTS_F046_07		= 59,
+	FIGHTS_F046_10		= 60,
+	FIGHTS_F046_12		= 61,
+	FIGHTS_F046_13		= 62,
+	FIGHTS_F046_15		= 63,
+	FIGHTS_F046_16		= 64,
+	FIGHTS_F046_18		= 65,
+	FIGHTS_F046_22		= 66,
+	FIGHTS_F046_24		= 67,
+	FIGHTS_F046_25		= 68,
+	FIGHTS_F046_26		= 69,
+	FIGHTS_F046_26_5	= 70,
+	FIGHTS_F046_27		= 71,
+	FIGHTS_F046_28		= 72,
+	FIGHTS_F046_31		= 73,
+	FIGHTS_F076_04		= 74,
+	FIGHTS_F076_06		= 75,
+	FIGHTS_F076_07		= 76,
+	FIGHTS_F076_10		= 77,
+	FIGHTS_F076_11		= 78,
+	FIGHTS_F076_13		= 79,
+	FIGHTS_F094_02		= 80,
+	FIGHTS_F094_05		= 81,
+	FIGHTS_F094_10		= 82,
+	FIGHTS_F094_13		= 83,
+	FIGHTS_F094_17		= 84,
+	FIGHTS_F094_19		= 85,
+	FIGHTS_F094_22		= 86,
+	FIGHTS_F100_01		= 87,
+	FIGHTS_F100_03		= 88,
+	FIGHTS_F100_05		= 89,
+	FIGHTS_F100_12		= 90,
+	FIGHTS_F100_13		= 91,
+	FIGHTS_F126_03		= 92,
+	FIGHTS_F126_07		= 93,
+	FIGHTS_F126_08		= 94, /* fleeing cultist */
+	FIGHTS_F126_09		= 95,
+	FIGHTS_F126_11		= 96,
+	FIGHTS_F126_12		= 97,
+	FIGHTS_F126_13		= 98,
+	FIGHTS_F126_17		= 99,
+	FIGHTS_F126_18		= 100,
+	FIGHTS_F126_20		= 101,
+	FIGHTS_F126_22		= 102,
+	FIGHTS_F126_23		= 103,
+	FIGHTS_F126_25		= 104,
+	FIGHTS_F126_27		= 105,
+	FIGHTS_F126_28		= 106,
+	FIGHTS_F129_05		= 107,
+	FIGHTS_F129_08		= 108,
+	FIGHTS_F129_09		= 109,
+	FIGHTS_F129_18		= 110,
+	FIGHTS_F129_21		= 111,
+	FIGHTS_F129_23		= 112,
+	FIGHTS_F129_24		= 113,
+	FIGHTS_F129_25		= 114,
+	FIGHTS_F129_27		= 115,
+	FIGHTS_F129_28		= 116,
+	FIGHTS_F129_29		= 117,
+	FIGHTS_F129_30		= 118,
+	FIGHTS_F131_01A		= 119,
+	FIGHTS_F131_01B		= 120,
+	FIGHTS_F131_04		= 121,
+	FIGHTS_F131_05		= 122,
+	FIGHTS_F131_06		= 123,
+	FIGHTS_F131_07		= 124,
+	FIGHTS_F131_08		= 125,
+	FIGHTS_F131_10		= 126,
+	FIGHTS_F131_11_1	= 127,
+	FIGHTS_F131_14A		= 128,
+	FIGHTS_F131_14B		= 129,
+	FIGHTS_F131_16		= 130,
+	FIGHTS_DFIN12		= 131,
+	FIGHTS_DFIN16		= 132,
+	FIGHTS_DFIN18A		= 133,
+	FIGHTS_DFIN18B		= 134,
+	FIGHTS_DFIN26		= 135,
+	FIGHTS_DFIN27A		= 136,
+	FIGHTS_DFIN27B		= 137,
+	FIGHTS_DFIN28		= 138,
+	FIGHTS_DFIN30		= 139,
+	FIGHTS_DPRE10_1		= 140,
+	FIGHTS_DOBE07		= 141,
+	FIGHTS_DOBE09		= 142,
+	FIGHTS_DOBE11		= 143,
+	FIGHTS_DOBE20		= 144,
+	FIGHTS_DOBE19		= 145,
+	FIGHTS_DOBE22		= 146,
+	FIGHTS_DTHO03		= 147,
+	FIGHTS_DTHO05		= 148,
+	FIGHTS_DTHO06		= 149,
+	FIGHTS_DTHO09		= 150,
+	FIGHTS_DTHO10		= 151,
+	FIGHTS_DTHO13		= 152,
+	FIGHTS_DTHO15		= 153,
+	FIGHTS_DTHO16		= 154,
+	FIGHTS_DTHO18		= 155,
+	FIGHTS_DTHO19		= 156,
+	FIGHTS_DTHO20		= 157,
+	FIGHTS_DTHO20_1		= 158,
+	FIGHTS_DTHO21A		= 159,
+	FIGHTS_DTHO21B		= 160,
+	FIGHTS_DTHO23		= 161,
+	FIGHTS_DTHO25		= 162,
+	FIGHTS_DTHO27		= 163,
+	FIGHTS_DTHO43		= 164,
+	FIGHTS_DTHO48_1		= 165,
+	FIGHTS_DTHO49		= 166,
+	FIGHTS_DTHO50		= 167,
+	FIGHTS_DTHO53		= 168,
+	FIGHTS_DTHO55		= 169,
+	FIGHTS_DTHO56		= 170,
+	FIGHTS_DTHO57		= 171,
+	FIGHTS_DTHO57_1		= 172,
+	FIGHTS_DTHO58		= 173,
+	FIGHTS_DTHO59		= 174,
+	FIGHTS_DTHO60		= 175,
+	FIGHTS_DTHO61		= 176,
+	FIGHTS_F031		= 177,
+	FIGHTS_F035		= 178,
+	FIGHTS_F046		= 179,
+	FIGHTS_F064		= 180, /* Gorah */
+	FIGHTS_F066		= 181,
+	FIGHTS_F074		= 182,
+	FIGHTS_F075_A		= 183,
+	FIGHTS_F075_B		= 184,
+	FIGHTS_F075_C		= 185,
+	FIGHTS_F077		= 186,
+	FIGHTS_F080		= 187,
+	FIGHTS_F084		= 188, /* travel event 84 */
+	FIGHTS_F099		= 189, /* 4 harpies */
+	FIGHTS_F101		= 190,
+	FIGHTS_F122		= 191,
+	FIGHTS_F144		= 192, /* travel event 144: final fight */
+	FIGHTS_DASP1A		= 193,
+	FIGHTS_DASP1B		= 194,
+	FIGHTS_DASP2		= 195,
+	FIGHTS_DASP3		= 196,
+	FIGHTS_DASP4		= 197,
+	FIGHTS_DASP5		= 198,
+	FIGHTS_DASP6A		= 199,
+	FIGHTS_DASP6B		= 200,
+	FIGHTS_DASP7		= 201,
+	FIGHTS_DASP8		= 202,
+	FIGHTS_DASP9		= 203,
+	FIGHTS_DASP10		= 204,
+	FIGHTS_DASP11		= 205,
+	FIGHTS_DASP12A		= 206,
+	FIGHTS_DASP12B		= 207,
+	FIGHTS_DASP13		= 208,
+	FIGHTS_DASP14		= 209,
+	FIGHTS_DASP16		= 210,
+	FIGHTS_DASP17		= 211,
+	FIGHTS_DASP18		= 212,
+	FIGHTS_THOR8		= 213,
+	FIGHTS_CITYFIGHT1	= 214,
+	FIGHTS_CITYFIGHT2	= 215,
+	FIGHTS_CITYFIGHT3	= 216,
+	FIGHTS_CAMPFIGHT1	= 217,
+	FIGHTS_CAMPFIGHT2	= 218,
+	FIGHTS_CAMPFIGHT3	= 219,
+	FIGHTS_SHIP10_1		= 220,
+	FIGHTS_F061_6B		= 221,
+	FIGHTS_F051_16A		= 222,
+	FIGHTS_F051_16B		= 223,
+	FIGHTS_F051_14A		= 224,
+	FIGHTS_F051_14B		= 225,
+	FIGHTS_F051_117		= 226,
+	FIGHTS_F129_124		= 227,
+	FIGHTS_F131_08A		= 228,
+	FIGHTS_F131_08B		= 229,
+	FIGHTS_F031_14A		= 230,
+	FIGHTS_DTH021A		= 231,
+	FIGHTS_CAMPFIGHT4	= 232,
+	FIGHTS_SHIP10_2		= 233,
+	FIGHTS_F051_02		= 234,
+	FIGHTS_F051_5		= 235,
+	FIGHTS_PHEX3		= 236,
+	FIGHTS_PHEX22		= 237,
+	FIGHTS_PHEX23		= 238,
+	FIGHTS_PHEX24		= 239,
+	FIGHTS_F131_01		= 240,
+	FIGHTS_F129_08A		= 241,
+	FIGHTS_DTHO14		= 242,
+	FIGHTS_WILD1		= 243,
+	FIGHTS_WILD2		= 244,
+	FIGHTS_WILD3		= 245,
+	FIGHTS_WILD4		= 246,
+	FIGHTS_WILD5		= 247,
+	FIGHTS_WILD6		= 248,
+	FIGHTS_WILD7		= 249,
+	FIGHTS_WILD8		= 250,
+	FIGHTS_S001		= 251,
+	FIGHTS_F051_14C		= 252,
+	FIGHTS_F129_17		= 253,
+	FIGHTS_DCAMPFIGHT1	= 254,
+	FIGHTS_DCAMPFIGHT2	= 255,
+	FIGHTS_DCAMPFIGHT3	= 256,
+	FIGHTS_DCAMPFIGHT4	= 257
 };
 
 enum {
-	TOWNS_THORWAL = 1,
-	TOWNS_SERSKE = 2,
-	TOWNS_BREIDA = 3,
-	TOWNS_PEILINEN = 4,
-	TOWNS_ROVAMUND = 5,
-	TOWNS_NORDVEST = 6,
-	TOWNS_KRAVIK = 7,
-	TOWNS_SKELELLEN = 8,
-	TOWNS_MERSKE = 9,
-	TOWNS_EFFERDUN = 10,
-	TOWNS_TJOILA = 11,
-	TOWNS_RUKIAN = 12,
-	TOWNS_ANGBODIRTAL = 13,
-	TOWNS_AUPLOG = 14,
-	TOWNS_VILNHEIM = 15,
-	TOWNS_BODON = 16,
-	TOWNS_OBERORKEN = 17,
-	TOWNS_PHEXCAER = 18,
-	TOWNS_GROENVELDEN = 19,
-	TOWNS_FELSTEYN = 20,
-	TOWNS_EINSIEDLERSEE = 21,
-	TOWNS_ORKANGER = 22,
-	TOWNS_CLANEGH = 23,
-	TOWNS_LISKOR = 24,
-	TOWNS_THOSS = 25,
-	TOWNS_TJANSET = 26,
-	TOWNS_ALA = 27,
-	TOWNS_ORVIL = 28,
-	TOWNS_OVERTHORN = 29,
-	TOWNS_ROVIK = 30,
-	TOWNS_HJALSINGOR = 31,
-	TOWNS_GUDDASUNDEN = 32,
-	TOWNS_KORD = 33,
-	TOWNS_TREBAN = 34,
-	TOWNS_ARYN = 35,
-	TOWNS_RUNINSHAVEN = 36,
-	TOWNS_OTTARJE = 37,
-	TOWNS_SKJAL = 38,
-	TOWNS_PREM = 39,
-	TOWNS_DASPOTA = 40,
-	TOWNS_RYBON = 41,
-	TOWNS_LJASDAHL = 42,
-	TOWNS_VARNHEIM = 43,
-	TOWNS_VAERMHAG = 44,
-	TOWNS_TYLDON = 45,
-	TOWNS_VIDSAND = 46,
-	TOWNS_BRENDHIL = 47,
-	TOWNS_MANRIN = 48,
-	TOWNS_FAEHRSTATION_TJOILA = 49,
-	TOWNS_FAEHRE_ANGBODIRTAL = 50,
-	TOWNS_HJALLANDER_HOF = 51,
-	TOWNS_LEUCHTTURM_RUNIN = 52
+	TOWNS_THORWAL			= 1,
+	TOWNS_SERSKE			= 2,
+	TOWNS_BREIDA			= 3,
+	TOWNS_PEILINEN			= 4,
+	TOWNS_ROVAMUND			= 5,
+	TOWNS_NORDVEST			= 6,
+	TOWNS_KRAVIK			= 7,
+	TOWNS_SKELELLEN			= 8,
+	TOWNS_MERSKE			= 9,
+	TOWNS_EFFERDUN			= 10,
+	TOWNS_TJOILA			= 11,
+	TOWNS_RUKIAN			= 12,
+	TOWNS_ANGBODIRTAL		= 13,
+	TOWNS_AUPLOG			= 14,
+	TOWNS_VILNHEIM			= 15,
+	TOWNS_BODON			= 16,
+	TOWNS_OBERORKEN			= 17,
+	TOWNS_PHEXCAER			= 18,
+	TOWNS_GROENVELDEN		= 19,
+	TOWNS_FELSTEYN			= 20,
+	TOWNS_EINSIEDLERSEE		= 21,
+	TOWNS_ORKANGER			= 22,
+	TOWNS_CLANEGH			= 23,
+	TOWNS_LISKOR			= 24,
+	TOWNS_THOSS			= 25,
+	TOWNS_TJANSET			= 26,
+	TOWNS_ALA			= 27,
+	TOWNS_ORVIL			= 28,
+	TOWNS_OVERTHORN			= 29,
+	TOWNS_ROVIK			= 30,
+	TOWNS_HJALSINGOR		= 31,
+	TOWNS_GUDDASUNDEN		= 32,
+	TOWNS_KORD			= 33,
+	TOWNS_TREBAN			= 34,
+	TOWNS_ARYN			= 35,
+	TOWNS_RUNINSHAVEN		= 36,
+	TOWNS_OTTARJE			= 37,
+	TOWNS_SKJAL			= 38,
+	TOWNS_PREM			= 39,
+	TOWNS_DASPOTA			= 40,
+	TOWNS_RYBON			= 41,
+	TOWNS_LJASDAHL			= 42,
+	TOWNS_VARNHEIM			= 43,
+	TOWNS_VAERMHAG			= 44,
+	TOWNS_TYLDON			= 45,
+	TOWNS_VIDSAND			= 46,
+	TOWNS_BRENDHIL			= 47,
+	TOWNS_MANRIN			= 48,
+	TOWNS_FAEHRSTATION_TJOILA	= 49,
+	TOWNS_FAEHRE_ANGBODIRTAL	= 50,
+	TOWNS_HJALLANDER_HOF		= 51,
+	TOWNS_LEUCHTTURM_RUNIN		= 52
 };
 
 enum {
@@ -1548,89 +1529,89 @@ enum {
 };
 
 enum {
-	RECIPE_ITEM_ID = 0, /* two bytes */ /* item id of the recipe */
-	RECIPE_INGREDIENTS = 2, /* two bytes [10] */ /* list of ingredients, two bytes each (item ids), terminated by -1 entry */
-	RECIPE_OUTCOME = 22, /* two bytes */ /* item id of the outcome of the recipe */
-	RECIPE_AE = 24, /* AE needed */
-	RECIPE_DIFFICULTY = 26, /* Erschwernis fuer die Alchemie-Talentprobe */
-	RECIPE_DURATION = 27, /* time needed to brew the recipe, in hours */
-	RECIPE_SIZE = 28
+	RECIPE_ITEM_ID		= 0, /* two bytes */ /* item id of the recipe */
+	RECIPE_INGREDIENTS	= 2, /* two bytes [10] */ /* list of ingredients, two bytes each (item ids), terminated by -1 entry */
+	RECIPE_OUTCOME		= 22, /* two bytes */ /* item id of the outcome of the recipe */
+	RECIPE_AE		= 24, /* AE needed */
+	RECIPE_DIFFICULTY	= 26, /* Erschwernis fuer die Alchemie-Talentprobe */
+	RECIPE_DURATION		= 27, /* time needed to brew the recipe, in hours */
+	RECIPE_SIZE		= 28
 };
 
 enum {
-	GAME_MODE_UNSPECIFIED = -1,
-	GAME_MODE_BEGINNER = 1,
-	GAME_MODE_ADVANCED = 2
+	GAME_MODE_UNSPECIFIED	= -1,
+	GAME_MODE_BEGINNER	= 1,
+	GAME_MODE_ADVANCED	= 2
 };
 
 enum {
-	MON_SPELL_DESCRIPTIONS_COST = 0,
-	MON_SPELL_DESCRIPTIONS_MODE = 1,
-	MON_SPELL_DESCRIPTIONS_UNKN1 = 2,
-	MON_SPELL_DESCRIPTIONS_ATTRIB1 = 3,
-	MON_SPELL_DESCRIPTIONS_ATTRIB2 = 4,
-	MON_SPELL_DESCRIPTIONS_ATTRIB3 = 5,
-	MON_SPELL_DESCRIPTIONS_VS_MR = 6,
-	MON_SPELL_DESCRIPTIONS_ANI_ID = 7,
-	MON_SPELL_DESCRIPTIONS_SIZE = 8 /* size of entry at MON_SPELL_DESCRIPTIONS in bytes */
+	MON_SPELL_DESCRIPTIONS_COST	= 0,
+	MON_SPELL_DESCRIPTIONS_MODE	= 1,
+	MON_SPELL_DESCRIPTIONS_UNKN1	= 2,
+	MON_SPELL_DESCRIPTIONS_ATTRIB1	= 3,
+	MON_SPELL_DESCRIPTIONS_ATTRIB2	= 4,
+	MON_SPELL_DESCRIPTIONS_ATTRIB3	= 5,
+	MON_SPELL_DESCRIPTIONS_VS_MR	= 6,
+	MON_SPELL_DESCRIPTIONS_ANI_ID	= 7,
+	MON_SPELL_DESCRIPTIONS_SIZE	= 8 /* size of entry at MON_SPELL_DESCRIPTIONS in bytes */
 };
 
 enum {
-	MENU_ICON_NONE = -1,
-	MENU_ICON_HIRE_HERO = 0,
-	MENU_ICON_DISMISS_HERO = 1,
-	MENU_ICON_DELETE_HERO = 2,
-	MENU_ICON_LOAD_GAME = 3,
-	MENU_ICON_SAVE_GAME = 4,
-	MENU_ICON_QUIT_GAME = 5,
-	MENU_ICON_PRAY = 6,
-	MENU_ICON_SACRIFICE = 7,
-	MENU_ICON_LEAVE = 8,
-	MENU_ICON_GUARDS = 9,
-	MENU_ICON_GIVE_GOLD = 10, /* unused? */
-	MENU_ICON_MAGIC = 11,
-	MENU_ICON_SPLIT_GROUP = 12,
-	MENU_ICON_ORDER_FOOD = 13,
-	MENU_ICON_TAKE_GOLD = 14, /* unused? */
-	MENU_ICON_MERGE_GROUP = 15,
-	MENU_ICON_REPLENISH_SUPPLIES = 16,
-	MENU_ICON_SLEEP = 17,
-	MENU_ICON_REPAIR = 18,
-	MENU_ICON_BOOK_BED = 19,
-	MENU_ICON_COLLECT_HERBS = 20,
-	MENU_ICON_TALK = 21,
-	MENU_ICON_BUY = 22,
-	MENU_ICON_BARGAIN = 23,
-	MENU_ICON_SELL = 24,
-	MENU_ICON_APPLY_SKILL = 25,
-	MENU_ICON_SCROLL_RIGHT = 26,
-	MENU_ICON_SCROLL_LEFT = 27,
-	MENU_ICON_HERO = 28,
-	MENU_ICON_SWITCH_GROUP = 29,
-	MENU_ICON_HEAL_WOUNDS = 30,
-	MENU_ICON_HEAL_DISEASE = 31,
-	MENU_ICON_HEAL_POISON = 32,
-	MENU_ICON_OPEN_CLOSE_DOOR = 33,
-	MENU_ICON_SMASH_DOOR = 34,
-	MENU_ICON_PICK_LOCK = 35,
-	MENU_ICON_WIZARD_FLOOR = 36, /* unused? */
-	MENU_ICON_INFO = 37,
-	MENU_ICON_OPEN_CHEST = 38,
-	MENU_ICON_MAP = 39,
-	MENU_ICON_BOOK_SHIP_PASSAGE = 40,
-	MENU_ICON_BOARD_SHIP = 41,
-	MENU_ICON_HARBOR_MASTER = 42,
-	MENU_ICON_MARKET = 43,
-	MENU_ICON_HYGELLIK_MAP = 44,
-	MENU_ICON_MERGE_GROUP_GRAYED = 45,
-	MENU_ICON_MOVE_LEVER = 46,
-	MENU_ICON_ATTACK = 47, /* unused? */
-	MENU_ICON_QUIT_CAMP = 48,
-	MENU_ICON_INN = 49,
-	MENU_ICON_TAVERN = 50,
-	MENU_ICON_BATTLE_FRAME_RATE = 51,
-	MENU_ICON_DIARY = 52,
-	MENU_ICON_SOUND = 53,
-	MENU_ICON_CAMP = 54
+	MENU_ICON_NONE			= -1,
+	MENU_ICON_HIRE_HERO		= 0,
+	MENU_ICON_DISMISS_HERO		= 1,
+	MENU_ICON_DELETE_HERO		= 2,
+	MENU_ICON_LOAD_GAME		= 3,
+	MENU_ICON_SAVE_GAME		= 4,
+	MENU_ICON_QUIT_GAME		= 5,
+	MENU_ICON_PRAY			= 6,
+	MENU_ICON_SACRIFICE		= 7,
+	MENU_ICON_LEAVE			= 8,
+	MENU_ICON_GUARDS		= 9,
+	MENU_ICON_GIVE_GOLD		= 10, /* unused? */
+	MENU_ICON_MAGIC			= 11,
+	MENU_ICON_SPLIT_GROUP		= 12,
+	MENU_ICON_ORDER_FOOD		= 13,
+	MENU_ICON_TAKE_GOLD		= 14, /* unused? */
+	MENU_ICON_MERGE_GROUP		= 15,
+	MENU_ICON_REPLENISH_SUPPLIES	= 16,
+	MENU_ICON_SLEEP			= 17,
+	MENU_ICON_REPAIR		= 18,
+	MENU_ICON_BOOK_BED		= 19,
+	MENU_ICON_COLLECT_HERBS		= 20,
+	MENU_ICON_TALK			= 21,
+	MENU_ICON_BUY			= 22,
+	MENU_ICON_BARGAIN		= 23,
+	MENU_ICON_SELL			= 24,
+	MENU_ICON_APPLY_SKILL		= 25,
+	MENU_ICON_SCROLL_RIGHT		= 26,
+	MENU_ICON_SCROLL_LEFT		= 27,
+	MENU_ICON_HERO			= 28,
+	MENU_ICON_SWITCH_GROUP		= 29,
+	MENU_ICON_HEAL_WOUNDS		= 30,
+	MENU_ICON_HEAL_DISEASE		= 31,
+	MENU_ICON_HEAL_POISON		= 32,
+	MENU_ICON_OPEN_CLOSE_DOOR	= 33,
+	MENU_ICON_SMASH_DOOR		= 34,
+	MENU_ICON_PICK_LOCK		= 35,
+	MENU_ICON_WIZARD_FLOOR		= 36, /* unused? */
+	MENU_ICON_INFO			= 37,
+	MENU_ICON_OPEN_CHEST		= 38,
+	MENU_ICON_MAP			= 39,
+	MENU_ICON_BOOK_SHIP_PASSAGE	= 40,
+	MENU_ICON_BOARD_SHIP		= 41,
+	MENU_ICON_HARBOR_MASTER		= 42,
+	MENU_ICON_MARKET		= 43,
+	MENU_ICON_HYGELLIK_MAP		= 44,
+	MENU_ICON_MERGE_GROUP_GRAYED	= 45,
+	MENU_ICON_MOVE_LEVER		= 46,
+	MENU_ICON_ATTACK		= 47, /* unused? */
+	MENU_ICON_QUIT_CAMP		= 48,
+	MENU_ICON_INN			= 49,
+	MENU_ICON_TAVERN		= 50,
+	MENU_ICON_BATTLE_FRAME_RATE	= 51,
+	MENU_ICON_DIARY			= 52,
+	MENU_ICON_SOUND			= 53,
+	MENU_ICON_CAMP			= 54
 };
 #endif

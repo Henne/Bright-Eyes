@@ -156,7 +156,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	Bit8u *p3;
 
 	p3 = Real2Host(ds_readd(GFX_ANI_INDEX + host_readbs(hero + HERO_SPRITE_NO) * 4));
-	weapon = host_readws(hero + HERO_INVENTORY_RIGHT);
+	weapon = host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY);
 
 	if ((signed char)fid_target != 0) {
 		FIG_search_obj_on_cb((signed char)fid_target, &target_x, &target_y);

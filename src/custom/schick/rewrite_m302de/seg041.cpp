@@ -49,8 +49,8 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 	retval = 0;
 
 	/* read the item ids from the hands */
-	right_hand = host_readws(hero + HERO_INVENTORY_RIGHT);
-	left_hand = host_readws(hero + HERO_INVENTORY_LEFT);
+	right_hand = host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID);
+	left_hand = host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID);
 
 	switch (right_hand) {
 		case ITEM_SPEAR:		/* Speer */
@@ -254,7 +254,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		enemy_p = target;
 	}
 
-	right_hand = host_readw(hero + HERO_INVENTORY_RIGHT);
+	right_hand = host_readw(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID);
 
 	item_p_rh = get_itemsdat(right_hand);
 
@@ -382,30 +382,31 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 	if (damage > 0) {
 
-		if (ks_poison1(hero + HERO_INVENTORY_RIGHT)) {
-			damage += dice_roll(1, 6, 2);
-			and_ptr_bs(hero + (HERO_INVENTORY_RIGHT+4), 0xdf);
+		if (ks_poison_expurgicum(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID)) {
+			damage += dice_roll(1, 6, 2); /* D6 + 2 damage */
+			and_ptr_bs(hero + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS), 0xdf); /* unset 'poison_expurgicum' flag */
 		}
 
-		if (ks_poison2(hero + HERO_INVENTORY_RIGHT)) {
-			damage += dice_roll(1, 20, 5);
-			and_ptr_bs(hero + (HERO_INVENTORY_RIGHT+4), 0xbf);
+		if (ks_poison_vomicum(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
+			damage += dice_roll(1, 20, 5); /* D20 + 5 damage */
+			and_ptr_bs(hero + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS), 0xbf); /* unset 'poison_vomicum' set */
 		}
 
-		if (host_readbs(hero + HERO_INVENTORY_RIGHT + 9) != 0) {
+		if (host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE) != POISON_TYPE_NONE) {
 
-			if (host_readbs(hero + HERO_INVENTORY_RIGHT + 9) == 3) {
-				or_ptr_bs(enemy_p + ENEMY_SHEET_STATUS2, 0x04);
-				and_ptr_bs(enemy_p + ENEMY_SHEET_STATUS2, 0xfd);
+			if (host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE) == POISON_TYPE_ANGSTGIFT) {
+				or_ptr_bs(enemy_p + ENEMY_SHEET_STATUS2, 0x04); /* set 'scared' flag */
+				and_ptr_bs(enemy_p + ENEMY_SHEET_STATUS2, 0xfd); /* unset 'renegade' flag */
 			} else {
+				/* the following line is the source for the totally excessive and unbalanced poison damage */
 
-				damage += 10 * ds_readws(POISON_PRICES + 2 * host_readbs(hero + HERO_INVENTORY_RIGHT + 9));
+				damage += 10 * ds_readws(POISON_PRICES + 2 * host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE));
 			}
 
-			dec_ptr_bs(hero + HERO_INVENTORY_RIGHT + 10);
+			dec_ptr_bs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES);
 
-			if (!host_readbs(hero + HERO_INVENTORY_RIGHT + 10)) {
-				host_writebs(hero + HERO_INVENTORY_RIGHT + 9, 0);
+			if (!host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_NR_POISON_CHARGES)) {
+				host_writebs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_POISON_TYPE, POISON_TYPE_NONE);
 			}
 		}
 	}
@@ -429,7 +430,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			damage = 0;
 		}
 
-		if ((host_readbs(enemy_p + ENEMY_SHEET_MAGIC) != 0) && !ks_magic_hidden(hero + HERO_INVENTORY_RIGHT)) {
+		if ((host_readbs(enemy_p + ENEMY_SHEET_MAGIC) != 0) && !ks_magic(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
 			damage = 0;
 		}
 
@@ -483,7 +484,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		damage -= host_readbs(hero + HERO_RS_BONUS1);
 
 		/* armour bonus against skeletons and zombies */
-		if (host_readw(hero + HERO_INVENTORY_BODY) == ITEM_CHAIN_MAIL_CURSED && (
+		if (host_readw(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) == ITEM_CHAIN_MAIL_CURSED && (
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
 				damage -= 3;
@@ -559,12 +560,12 @@ signed short weapon_check(Bit8u *hero)
 	signed short l_di;
 
 	/* get the ID of the equipped weapon */
-	item = host_readw(hero + HERO_INVENTORY_RIGHT);
+	item = host_readw(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID);
 
 	item_p = get_itemsdat(item);
 
 	if (!item_weapon(item_p) ||	/* check if its a weapon */
-		ks_broken(hero + HERO_INVENTORY_RIGHT) ||
+		ks_broken(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY) ||
 		(item_weapon(item_p) &&
 			((host_readbs(item_p + 3) == 7) ||
 			(host_readbs(item_p + 3) == 8) ||

@@ -170,7 +170,7 @@ void FIG_do_enemy_action(RealPt monster, signed short monster_pos)
 
 				/* attack a hero */
 
-				p_weapon = hero + HERO_INVENTORY_RIGHT;
+				p_weapon = hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY;
 
 				weapon_type = weapon_check(hero);
 
@@ -427,34 +427,34 @@ void FIG_do_enemy_action(RealPt monster, signed short monster_pos)
 
 								FIG_add_msg(5, 0);
 
-								if ((randval2 == randval) && (target_is_hero != 0) && (host_readbs(p_weapon + 6) != -99)) {
-									/* if both random values agree and hero got attacked and his weapon is not unbreakable (?) (note that ITEM+6 is BF (Bruchfaktor)) */
+								if ((randval2 == randval) && (target_is_hero != 0) && (host_readbs(p_weapon + INVENTORY_BF) != -99)) {
+									/* if both random values agree and hero got attacked and his weapon is not unbreakable */
 									/* now if 1W12 + BF is >= 16, weapon is broken. Otherwise, BF is increased by 1. */
 #if !defined(__BORLANDC__)
 									D1_INFO("weapon of defender gets damaged...");
 #endif
 
-									if (host_readbs(p_weapon + 6) > 3) {
+									if (host_readbs(p_weapon + INVENTORY_BF) > 3) {
 
-										if (random_schick(12) + host_readbs(p_weapon + 6) > 15) {
+										if (random_schick(12) + host_readbs(p_weapon + INVENTORY_BF) > 15) {
 #if !defined(__BORLANDC__)
 											D1_INFO("broken.\n");
 #endif
 
-											or_ptr_bs(p_weapon + 4, 1);
+											or_ptr_bs(p_weapon + INVENTORY_FLAGS, 1); /* set 'broken' flag */
 
 											FIG_add_msg(6, 0);
 										} else {
 #if !defined(__BORLANDC__)
-											D1_INFO("BF increased from %d -> %d.\n",host_readbs(p_weapon + 6),host_readbs(p_weapon + 6) + 1);
+											D1_INFO("BF increased from %d -> %d.\n",host_readbs(p_weapon + INVENTORY_BF),host_readbs(p_weapon + INVENTORY_BF) + 1);
 #endif
-											inc_ptr_bs(p_weapon + 6);
+											inc_ptr_bs(p_weapon + INVENTORY_BF);
 										}
 									} else {
 #if !defined(__BORLANDC__)
-										D1_INFO("BF increased %d -> %d.\n",host_readbs(p_weapon + 6),host_readbs(p_weapon + 6) + 1);
+										D1_INFO("BF increased %d -> %d.\n",host_readbs(p_weapon + INVENTORY_BF),host_readbs(p_weapon + INVENTORY_BF) + 1);
 #endif
-										inc_ptr_bs(p_weapon + 6);
+										inc_ptr_bs(p_weapon + INVENTORY_BF);
 									}
 								}
 							}
@@ -820,12 +820,12 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 	signed short l3;
 	signed short hylailic = 0;
 	signed short usecase;
-	signed short item_id = host_readws(hero + HERO_INVENTORY_LEFT);
+	signed short item_id = host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID);
 	Bit8u *p_item = get_itemsdat(item_id);
 
 	if (item_herb_potion(p_item)) {
 		usecase = 1;
-	} else if (!item_useable(p_item) || (host_readws(hero + (HERO_INVENTORY_LEFT+2)) == 0)) {
+	} else if (!item_useable(p_item) || (host_readws(hero + (HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_QUANTITY)) == 0)) {
 		usecase = 0;
 	} else {
 		usecase = 2;
@@ -833,7 +833,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 
 	host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
-	if (host_readws(hero + HERO_INVENTORY_LEFT) == ITEM_MIASTHMATICUM) {
+	if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) == ITEM_MIASTHMATICUM) {
 		/* MIASTHMATIC */
 
 		/* 1W6 + 4 */
@@ -869,7 +869,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 		/* drop the item in the left hand */
 		drop_item(hero, 4, 1);
 
-	} else if (host_readws(hero + HERO_INVENTORY_LEFT) == ITEM_HYLAILIC_FIRE) {
+	} else if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) == ITEM_HYLAILIC_FIRE) {
 
 		/* HYLAILIC FIRE */
 

@@ -69,7 +69,7 @@ signed short DNG07_handler(void)
 						if (skill_result == -99) {
 
 							print_msg_with_first_hero(get_ttx(533));
-							or_ptr_bs(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * lockpick_pos, 0x01);
+							or_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * lockpick_pos, 0x01); /* set 'broken' flag */
 							ds_writew((FIG_FLEE_POSITION + 0),
 								ds_writew((FIG_FLEE_POSITION + 2),
 								ds_writew((FIG_FLEE_POSITION + 4),

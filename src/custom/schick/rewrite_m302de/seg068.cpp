@@ -758,16 +758,17 @@ signed short academy_get_equal_item(signed short price)
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{
-				for (item_pos = 0; item_pos < 23; item_pos++) {
+				for (item_pos = 0; item_pos < NR_HERO_INVENTORY_SLOTS; item_pos++) {
 
-					if (host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos) != 0 &&
-						!ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos))
+					if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos) != ITEM_NONE &&
+						!ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
+						/* remark: armour with degraded RS is accepted */
 					{
-						p_item = get_itemsdat(host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos));
+						p_item = get_itemsdat(host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos));
 
-						if (host_readws(p_item + 8) * host_readbs(p_item + 7) >= price)
+						if (host_readws(p_item + ITEM_STATS_PRICE) * host_readbs(p_item + ITEM_STATS_PRICE_UNIT) >= price)
 						{
-							retval = host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos);
+							retval = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos);
 							break;
 						}
 					}

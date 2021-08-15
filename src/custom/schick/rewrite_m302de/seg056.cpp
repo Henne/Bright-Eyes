@@ -139,8 +139,8 @@ void buy_screen(void)
 				if (host_readbs(hero2 + HERO_TYPE) &&
 					host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
-					for (j = 7; j < 23; j++) {
-						if (host_readws(hero2 + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * j) == 0) {
+					for (j = HERO_INVENTORY_SLOT_KNAPSACK_1; j < NR_HERO_INVENTORY_SLOTS; j++) {
+						if (host_readws(hero2 + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * j) == ITEM_NONE) {
 							free_slots++;
 						}
 					}
@@ -634,7 +634,7 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 	signed short item_id;
 	signed short sellable = 0;
 
-	item_id = host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos);
+	item_id = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos);
 	host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos, item_id);
 
 	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
@@ -659,10 +659,10 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 0);
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4, 1);
 
-	} else if (ks_broken(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos) ||
-			 host_readbs(hero + (HERO_INVENTORY_HEAD+7) + SIZEOF_HERO_INVENTORY * item_pos) != 0)
+	} else if (ks_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos) ||
+			 host_readbs(hero + (HERO_INVENTORY + INVENTORY_RS_LOST) + SIZEOF_INVENTORY * item_pos) != 0)
 	{
-		/* this item is broken or empty */
+		/* this item is broken or RS of an armour got degraded */
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 1);
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4, 1);
 

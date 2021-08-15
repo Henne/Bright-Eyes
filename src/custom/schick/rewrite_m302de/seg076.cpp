@@ -231,7 +231,7 @@ void DNG_door(signed short action)
 								or when tried three times without moving */
 							print_msg_with_first_hero(get_ttx(533));
 
-							or_ptr_bs(hero + SIZEOF_HERO_INVENTORY * lockpick_pos + (HERO_INVENTORY_HEAD + 4), 1);
+							or_ptr_bs(hero + SIZEOF_INVENTORY * lockpick_pos + (HERO_INVENTORY + INVENTORY_FLAGS), 1); /* set 'broken' flag */
 
 							ds_writew(LOCKPICK_TRY_COUNTER, 0);
 
@@ -920,17 +920,17 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
-					for (item_pos = hero_refilled = 0; item_pos < 23; item_pos++)
+					for (item_pos = hero_refilled = 0; item_pos < NR_HERO_INVENTORY_SLOTS; item_pos++)
 					{
-						if (host_readws(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos) == ITEM_WATERSKIN)
+						if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos) == ITEM_WATERSKIN)
 						{
 							units_needed = 0;
 
-							if (ks_half_empty(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos))
+							if (ks_half_empty(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
 							{
 								units_needed = 1;
 
-							} else if (ks_empty(hero + HERO_INVENTORY_HEAD + SIZEOF_HERO_INVENTORY * item_pos))
+							} else if (ks_empty(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
 							{
 								units_needed = 2;
 							}
@@ -941,11 +941,11 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 
 								/* reset empty and half_empty bits of the knapsack item status */
 #if !defined(__BORLANDC__)
-								and_ptr_bs(hero + HERO_INVENTORY_HEAD + 0x04 + SIZEOF_HERO_INVENTORY * item_pos, 0xfb);
-								and_ptr_bs(hero + HERO_INVENTORY_HEAD + 0x04 + SIZEOF_HERO_INVENTORY * item_pos, 0xfd);
+								and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos, 0xfb); /* unset 'empty' flag */
+								and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos, 0xfd); /* unset 'half_empty' flag */
 #else
-								(*(struct knapsack_status*)(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * item_pos)).half_empty =
-									(*(struct knapsack_status*)(hero + HERO_INVENTORY_HEAD + 4 + SIZEOF_HERO_INVENTORY * item_pos)).empty = 0;
+								(*(struct knapsack_status*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).half_empty =
+									(*(struct knapsack_status*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).empty = 0;
 #endif
 
 								if (host_readb(unit_ptr) <= units_needed)

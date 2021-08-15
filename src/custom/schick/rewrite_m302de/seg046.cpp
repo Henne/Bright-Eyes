@@ -227,7 +227,7 @@ void status_show(Bit16u index)
 
 	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
-	/* print invetory and silouette values */
+	/* print inventory and silouette values */
 	if (ds_readws(STATUS_PAGE_MODE) < 3) {
 
 		nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
@@ -236,14 +236,14 @@ void status_show(Bit16u index)
 		nvf.width = (Bit8u*)&width;
 		nvf.height = (Bit8u*)&height;
 
-		for (i = 0; i < 23; i++) {
+		for (i = 0; i < NR_HERO_INVENTORY_SLOTS; i++) {
 
-			if (host_readw(Real2Host(hero) + i * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD) == 0)
+			if (host_readw(Real2Host(hero) + i * SIZEOF_INVENTORY + HERO_INVENTORY + INVENTORY_ITEM_ID) == ITEM_NONE)
 				continue;
 
 			nvf.dst = Real2Host(ds_readd(ICON));
 			/* set no */
-			nvf.no = host_readw(get_itemsdat(host_readw(Real2Host(hero) + i * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD)));
+			nvf.no = host_readw(get_itemsdat(host_readw(Real2Host(hero) + i * SIZEOF_INVENTORY + HERO_INVENTORY + INVENTORY_ITEM_ID)));
 
 			process_nvf(&nvf);
 
@@ -259,10 +259,10 @@ void status_show(Bit16u index)
 			ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 			/* check if stackable */
-			if (item_stackable(get_itemsdat(host_readw(Real2Host(hero) + i * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD)))) {
+			if (item_stackable(get_itemsdat(host_readw(Real2Host(hero) + i * SIZEOF_INVENTORY + HERO_INVENTORY)))) {
 
 				set_textcolor(0xff, 0);
-				my_itoa(host_readw(Real2Host(hero) + i * SIZEOF_HERO_INVENTORY + HERO_INVENTORY_HEAD + 2),
+				my_itoa(host_readw(Real2Host(hero) + i * SIZEOF_INVENTORY + HERO_INVENTORY + INVENTORY_QUANTITY),
 					(char*)Real2Host(ds_readd(DTP2)), 10);
 
 				GUI_print_string(Real2Host(ds_readd(DTP2)),

@@ -207,12 +207,12 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 			/* attack a hero */
 
-			p_weapon = Real2Host(hero) + HERO_INVENTORY_RIGHT;
+			p_weapon = Real2Host(hero) + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY;
 
 			weapon_type = weapon_check(Real2Host(hero));
 
 			if (target_is_hero != 0) {
-				p_weapon_target = target_hero + HERO_INVENTORY_RIGHT;
+				p_weapon_target = target_hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY;
 
 				weapon_type_target = weapon_check(target_hero);
 			}
@@ -280,10 +280,10 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				two_w_6 = random_interval(2, 12);
 
 				if ((two_w_6 == 2) && (weapon_type != -1) &&
-					(host_readbs(p_weapon + 0x06) != (signed char)0x9d))
+					host_readbs(p_weapon + INVENTORY_BF) != -99)
 				{
 					/* weapon broken */
-					or_ptr_bs(p_weapon + 0x4 , 1);
+					or_ptr_bs(p_weapon + INVENTORY_FLAGS, 1); /* set 'broken' flag */
 					FIG_add_msg(6, 0);
 
 				} else if ((two_w_6 >= 3) && (two_w_6 <= 8) && (l16 == 0)) {
@@ -465,27 +465,27 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						} else {
 							FIG_add_msg(5, 0);
 
-							if ((randval2 == randval1) && (host_readbs(p_weapon + 0x06) != (signed char)0x9d)) {
+							if ((randval2 == randval1) && (host_readbs(p_weapon + INVENTORY_BF) != -99)) {
 
-								if (host_readbs(p_weapon + 0x06) > 3) {
+								if (host_readbs(p_weapon + INVENTORY_BF) > 3) {
 
-									if (random_schick(12) + host_readbs(p_weapon + 0x06) > 15) {
+									if (random_schick(12) + host_readbs(p_weapon + INVENTORY_BF) > 15) {
 
-										if ((target_is_hero != 0) && (host_readbs(p_weapon_target + 0x06) != (signed char)0x9d))
+										if ((target_is_hero != 0) && (host_readbs(p_weapon_target + INVENTORY_BF) != -99))
 										{
 											or_ptr_bs(p_weapon_target + 0x04, 1);
 										}
 
-										or_ptr_bs(p_weapon + 0x04, 1);
+										or_ptr_bs(p_weapon + INVENTORY_FLAGS, 1); /* set 'broken' flag */
 
 										FIG_add_msg(6, 0);
 
 									} else {
 										if (target_is_hero != 0) {
-											inc_ptr_bs(p_weapon_target + 0x06);
+											inc_ptr_bs(p_weapon_target + 6);
 										}
 
-										inc_ptr_bs(p_weapon + 0x06);
+										inc_ptr_bs(p_weapon + INVENTORY_BF);
 									}
 								} else {
 
@@ -493,7 +493,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 										inc_ptr_bs(p_weapon_target + 0x06);
 									}
 
-									inc_ptr_bs(p_weapon + 0x06);
+									inc_ptr_bs(p_weapon + INVENTORY_BF);
 								}
 							}
 						}

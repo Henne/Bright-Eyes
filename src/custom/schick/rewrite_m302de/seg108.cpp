@@ -53,7 +53,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 	consumer_idx = get_hero_index(consumer);
 
 	/* get item id */
-	item = host_readw(owner + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY);
+	item = host_readw(owner + HERO_INVENTORY + INVENTORY_ITEM_ID + pos * SIZEOF_INVENTORY);
 
 	/* get pointer to ITEMS.DAT */
 	item_p = get_itemsdat(item);
@@ -93,7 +93,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 			/* drinking */
 
 			/* check if item is not empty */
-			if (!ks_empty(owner + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY)) {
+			if (!ks_empty(owner + HERO_INVENTORY + pos * SIZEOF_INVENTORY)) {
 
 #if !defined(__BORLANDC__)
 				int diff = host_readbs(consumer + HERO_THIRST) - host_readbs(item_p + 4);
@@ -119,18 +119,18 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				}
 
 
-				if (item == 0x1e) {
+				if (item == ITEM_WATERSKIN) {
 					/* water */
 
-					if (ks_half_empty(owner + HERO_INVENTORY_HEAD + pos * SIZEOF_HERO_INVENTORY)) {
+					if (ks_half_empty(owner + HERO_INVENTORY + pos * SIZEOF_INVENTORY)) {
 						/* empty */
-						or_ptr_bs(owner + HERO_INVENTORY_HEAD + 4 + pos * SIZEOF_HERO_INVENTORY, 4);
+						or_ptr_bs(owner + HERO_INVENTORY + INVENTORY_FLAGS + pos * SIZEOF_INVENTORY, 4); /* set 'empty' flag */
 					} else {
 						/* half empty */
-						or_ptr_bs(owner + HERO_INVENTORY_HEAD + 4 + pos * SIZEOF_HERO_INVENTORY, 2);
+						or_ptr_bs(owner + HERO_INVENTORY + INVENTORY_FLAGS + pos * SIZEOF_INVENTORY, 2); /* set 'half empty' flag */
 					}
 
-				} else if (item == 0x5c || item == 0x5b) {
+				} else if (item == ITEM_BRANDY || item == ITEM_WINE) {
 					/* wine or snaps */
 					hero_get_drunken(consumer);
 					drop_item(owner, pos, 1);
@@ -139,7 +139,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					drop_item(owner, pos, 1);
 
 					/* That does not happen */
-					if (item != 0x17) {
+					if (item != ITEM_BEER) {
 						/* get an empty glass bottle */
 						give_hero_new_item(owner, ITEM_FLASK_GLASS, 2, 1);
 					}
@@ -172,7 +172,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
 				switch (item) {
-				case 0x3f: {
+				case ITEM_GULMOND_LEAF: {
 					/* Gulmond Blatt */
 
 					/* KK+2 for 12h */
@@ -186,7 +186,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(501));
 					break;
 				}
-				case 0x3c: {
+				case ITEM_EINBEERE: {
 					/* Vierblaettrige Einbeere */
 
 					l_di = random_schick(6);
@@ -201,7 +201,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					break;
 				}
-				case 0x7b: {
+				case ITEM_BELMART: {
 					/* Belmart */
 					poison = hero_is_poisoned(consumer);
 
@@ -221,7 +221,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 						(char*)consumer + HERO_NAME2);
 					break;
 				}
-				case 0x7d: {
+				case ITEM_MENCHAL: {
 					/* Menchalkaktus */
 					poison = hero_is_poisoned(consumer);
 
@@ -240,7 +240,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 						(char*)consumer + HERO_NAME2);
 					break;
 				}
-				case 0x7f: {
+				case ITEM_ATMONBLUETE: {
 					/* Atmon */
 					for (l_si = 9; l_si < 19; l_si++) {
 						/* All body skills + 2 for 5h */
@@ -254,7 +254,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 						(char*)consumer + HERO_NAME2);
 					break;
 				}
-				case 0x3d: {
+				case ITEM_WHIRLWEED: {
 					/* Wirselkraut */
 					l_di = 10;
 					le_diff = host_readw(consumer + HERO_LE_ORIG) - host_readw(consumer + HERO_LE);
@@ -267,7 +267,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(505), l_di);
 					break;
 				}
-				case 0x40: {
+				case ITEM_TARNELE: {
 					/* Tarnelle */
 					host_writeb(consumer + HERO_RUHE_KOERPER, 1);
 					break;
