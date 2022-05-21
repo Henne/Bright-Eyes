@@ -29,7 +29,7 @@ signed short hero_has_ingrendients(Bit8u *hero, signed short recipe_index)
 {
 	signed short i = 0;
 	signed short retval = 1;
-	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * RECIPE_SIZE;
+	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * SIZEOF_RECIPE;
 	signed short item_pos;
 
 	/* loop over ingrendients */
@@ -67,7 +67,7 @@ signed short hero_has_ingrendients(Bit8u *hero, signed short recipe_index)
 void hero_use_ingrendients(Bit8u *hero, signed short recipe_index)
 {
 	signed short i = 0;
-	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * RECIPE_SIZE;
+	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * SIZEOF_RECIPE;
 	signed short item_pos;
 
 	/* loop over ingrendients */
@@ -99,7 +99,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 	/* flag_abort = 0: finalize running brewing process
 	 * flag_abort = 1: abort running brewing process */
 {
-	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * RECIPE_SIZE;
+	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * SIZEOF_RECIPE;
 
 	hero_use_ingrendients(hero, recipe_index);
 
@@ -167,10 +167,10 @@ signed short plan_alchemy(Bit8u *hero)
 
 		/* count all recipes and prepare the menu */
 		for (i = 0; i <= 12; i++) {
-			if (get_item_pos(hero, ds_readws(ALCHEMY_RECIPES + i * RECIPE_SIZE)) != -1) {
+			if (get_item_pos(hero, ds_readws(ALCHEMY_RECIPES + i * SIZEOF_RECIPE)) != -1) {
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)) + recipes * 50,
-					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws((ALCHEMY_RECIPES + RECIPE_OUTCOME) + i * RECIPE_SIZE)))));
+					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws((ALCHEMY_RECIPES + RECIPE_OUTCOME) + i * SIZEOF_RECIPE)))));
 
 				ds_writed(RADIO_NAME_LIST + recipes * 4, (Bit32u)((RealPt)ds_readd(DTP2) + recipes * 50));
 				array[recipes] = (signed char)i;
@@ -207,7 +207,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 				if (hero_has_ingrendients(hero, recipe_index)) {
 
-					if (ds_readws((ALCHEMY_RECIPES + RECIPE_AE) + recipe_index * RECIPE_SIZE) > host_readws(hero + HERO_AE)) {
+					if (ds_readws((ALCHEMY_RECIPES + RECIPE_AE) + recipe_index * SIZEOF_RECIPE) > host_readws(hero + HERO_AE)) {
 						/* AE not sufficient => brewing not possible */
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -228,11 +228,11 @@ signed short plan_alchemy(Bit8u *hero)
 							return 0;
 						}
 
-						if ((ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) > 8) && (ds_readbs(LOCATION) != LOCATION_INN)) {
+						if ((ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE) > 8) && (ds_readbs(LOCATION) != LOCATION_INN)) {
 							/* recipes with durations > 8 hours have to be done in a inn. */
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_tx(44),
-								ds_readbs((ALCHEMY_RECIPES+RECIPE_DURATION) + recipe_index * RECIPE_SIZE));
+								ds_readbs((ALCHEMY_RECIPES+RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE));
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -248,12 +248,12 @@ signed short plan_alchemy(Bit8u *hero)
 								((hero == get_hero(6)) || (count_heroes_available_in_group_ignore_npc() > 1)) && /* still allow to single out the NPC if he is the brewing hero */
 #endif
 								(ds_readbs(LOCATION) != LOCATION_WILDCAMP) &&
-								(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) > 8)
+								(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE) > 8)
 							) {
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_tx(45),
-									ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE));
+									ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE));
 
 								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 									(char*)get_tx(47),
@@ -276,7 +276,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 							if (decision == 1) {
 								/* rest of group waits */
-								timewarp(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) * 0x1518L);
+								timewarp(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE) * 0x1518L);
 
 								if (ds_readbs(LOCATION) != LOCATION_WILDCAMP) {
 									hero_p = get_hero(0);
@@ -307,7 +307,7 @@ signed short plan_alchemy(Bit8u *hero)
 								dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
 								host_writeb(hero + HERO_RECIPE_TIMER,
-									ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * RECIPE_SIZE) / 24);
+									ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE) / 24);
 									/* time in days, rounded down */
 
 								host_writeb(hero + HERO_RECIPE_ID, recipe_index);

@@ -2478,6 +2478,7 @@ void do_timers(void)
 
 	/* at 9 o'clock */
 	if (ds_readd(DAY_TIMER) == 0xbdd8) {
+		/* ships leave the harbour at 9 o'clock */
 		passages_reset();
 	}
 }
@@ -3307,30 +3308,41 @@ void set_and_spin_lock(void)
 	}
 }
 
+/**
+ * \brief   called once every day at midnight
+ */
 void passages_recalc(void)
 {
 	signed short i;
 	signed short di;
-	signed short locvar;
+	signed short frequency_modifier; /* passages are rarer in summer and still rarer in winter */
 	Bit8u *p;
 
-	p = p_datseg + SEA_TRAVEL_PASSAGES;
+	p = p_datseg + SEA_ROUTES;
 
 	i = get_current_season();
 
-	locvar = (i == 2) ? 2 : ((i == 0) ? 4 : 0);
+	frequency_modifier = (i == 2) ? 2 : ((i == 0) ? 4 : 0);
+		/* winter -> 4
+		 * summer -> 2
+		 * spring, autumn -> 0 */
 
-	for (i = 0; i < 45; p += 8, i++) {
+	for (i = 0; i < 45; p += SIZEOF_SEA_ROUTE, i++) {
 
-		if (dec_ptr_bs(p + 4) == -1) {
+		if (dec_ptr_bs(p + SEA_ROUTE_PASSAGE_TIMER) == -1) {
+			/* ship of a sea passage has left yesterday -> set up a new ship of this passage */
 
-			host_writeb(p + 7, (unsigned char)random_interval(70, 130));
-			host_writeb(p + 4, random_interval(0, host_readbs(p + 3) * 10 + host_readbs(p + 3) * locvar) / 10);
+			host_writeb(p + SEA_ROUTE_PASSAGE_PRICE_MOD, (unsigned char)random_interval(70, 130));
+			/* random price modifier in the range 70% -- 130% */
+
+			host_writeb(p + SEA_ROUTE_PASSAGE_TIMER, random_interval(0, host_readbs(p + SEA_ROUTE_FREQUENCY) * 10 + host_readbs(p + SEA_ROUTE_FREQUENCY) * frequency_modifier) / 10);
+			/* setup timer: In how many days will a ship of this passage be available? */
+			/* Up to rounding effects, this is essentially a random number of days in [ 0..(1 + frequency_modifier/10) * SEA_ROUTE_FREQUENCY ] */
 
 			di = random_schick(100);
 
-			host_writeb(p + 6,
-				(!host_readbs(p + 5)) ?
+			host_writeb(p + SEA_ROUTE_PASSAGE_TYPE,
+				(!host_readbs(p + SEA_ROUTE_COSTAL_ROUTE)) ?
 					((di <= 50) ? 0 : ((di <= 80) ? 1 : (di <= 95) ? 2 : 3)) :
 					((di <= 10) ? 4 : ((di <= 40) ? 5 : (di <= 80) ? 6 : 7)));
 		}
@@ -3342,25 +3354,29 @@ void passages_recalc(void)
 	}
 }
 
+/**
+ * \brief   called once every day at 9 o'clock when the ships leave the harbours
+ */
 void passages_reset(void)
 {
 	signed short i;
-	Bit8u *p = p_datseg + SEA_TRAVEL_PASSAGES;
+	Bit8u *p = p_datseg + SEA_ROUTES;
 
 #ifdef M302de_ORIGINAL_BUGFIX
-	for (i = 0; i < 45; p += 8, i++)
+	for (i = 0; i < 45; p += SIZEOF_SEA_ROUTE, i++)
 #else
 	/* Orig-BUG: the loop operates only on the first element
 		sizeof(element) == 8 */
 	for (i = 0; i < 45; i++)
 #endif
 	{
-		if (!host_readbs(p + 4)) {
-			host_writeb(p + 4, -1);
+		if (!host_readbs(p + SEA_ROUTE_PASSAGE_TIMER)) {
+			host_writeb(p + SEA_ROUTE_PASSAGE_TIMER, -1);
 		}
 	}
 
-	/* If a passage is hired and the timer is zero, reset the passage */
+	/* If a passage is booked and the timer is zero, the ship leaves the harbor.
+	 * Therefore, reset the flag for the passage (i.e., unbook the passage) */
 	if ((ds_readb(SEA_TRAVEL_PSGBOOKED_FLAG) == 0xaa) && !ds_readb(SEA_TRAVEL_PSGBOOKED_TIMER)) {
 		ds_writeb(SEA_TRAVEL_PSGBOOKED_FLAG, 0);
 	}
@@ -4565,7 +4581,7 @@ signed short compare_name(Bit8u *name)
  * \param   hero        pointer to the hero
  * \param   attrib      number of the attribute
  * \param   bonus       handicap
- * \return              the result of the test, successful if greater than zero.
+ * \return              the result of the test. > 0: success; <= 0: failure; -99: critical failure
  */
 signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
 {
@@ -5198,7 +5214,7 @@ RealPt get_second_hero_available_in_group(void)
 /**
  * \brief   count available heroes
  *
- * \return              number of available heroes in all groups
+ * \return              number of available heroes in all groups, including NPC
  */
 signed short count_heroes_available(void)
 {
@@ -5246,9 +5262,9 @@ signed short count_heroes_available_ignore_npc(void)
 #endif
 
 /**
- * \brief   count available (= not dead, petrified, unconscious, renegade) heroes in current group
+ * \brief   count available (= not dead, petrified, unconscious, renegade) heroes in current group, including NPC
  *
- * \return   number of available (= not dead, petrified, unconscious, renegade) heroes in current group
+ * \return   number of available (= not dead, petrified, unconscious, renegade) heroes in current group, including NPC
  */
 signed short count_heroes_available_in_group(void)
 {

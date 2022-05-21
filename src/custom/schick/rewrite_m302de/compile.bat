@@ -26,7 +26,7 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG048.CPP
 @REM
 @REM -- here start the complete
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG001.CPP
+..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG001.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -IAIL SEG002.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG003.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG004.CPP
