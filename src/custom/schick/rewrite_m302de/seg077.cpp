@@ -37,6 +37,9 @@
 namespace M302de {
 #endif
 
+/**
+ * \brief   dungeon handler of the death ship
+ */
 signed short DNG01_handler(void)
 {
 	signed short target_pos;
@@ -203,6 +206,9 @@ signed short DNG01_handler(void)
 
 			GUI_output(get_tx(15));
 
+			/* Original-Bug
+			 * See https://www.crystals-dsa-foren.de/showthread.php?tid=4589&pid=145465#pid145465
+			 */
 			if (ds_readws(DEATHTRAP) == 1 && ds_readws(DEATHTRAP_STEPS) != 0)
 			{
 				load_ani(18);

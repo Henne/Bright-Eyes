@@ -782,10 +782,14 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 			}
 		}
 
+		/* In the following line it would be more consistent to check only bit 0.
+		 * bit 1 is a flag which is set if the hero got the IN attribute bonus at the black eye at the Monolith (Einsiedlersee <-> Einsiedlersee, tevent135).
+		 * However, this should still be ok, as it should never happen that bit 0 is unset and bit 1 is set. */
+
 		if (!host_readbs(hero + HERO_START_GEAR)) {
 
 			startup_equipment(hero);
-			host_writeb(get_hero(hero_pos) + HERO_START_GEAR, 1);
+			host_writeb(get_hero(hero_pos) + HERO_START_GEAR, 1); /* it would be more consistent to set only bit 0 and leave the others untouched, see above. */
 
 			write_chr_temp(hero_pos);
 		}

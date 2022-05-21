@@ -141,7 +141,7 @@ enum {
 	HERO_ATTACK_TYPE		= 0x079, /* 1 byte */ /* 0x00 = normal; 0x02 = aggressiv; 0xFE = vorsichtig */
 	HERO_LE_MOD			= 0x07A, /* 1 byte */ /* permanent LE mod */
 	HERO_TIMER_ID			= 0x07B, /* 1 byte */
-	HERO_START_GEAR			= 0x07C, /* 1 byte */ /* has got initial gear set: 1 = true, 0 = false */
+	HERO_START_GEAR			= 0x07C, /* 1 byte */ /* has been picked up at a temple and therefore got the initial gear set: 1 = true, 0 = false. Bit1 is used as a flag if the hero got the IN attribute bonus at the black eye at the Monolith (Einsiedlersee <-> Einsiedlersee, tevent135). Bits2--7 appear to be unused. */ /* TODO: Better name? */
 	HERO_HERBS			= 0x07D, /* 1 byte */ /* keine = 0, Belmart = 1, Menchalkaktus = 2 */
 	HERO_HUNGER_TIMER		= 0x07E, /* 1 byte */ /* timer for no-hunger-miracle */
 	HERO_HUNGER			= 0x07F, /* 1 byte */ /* percentage */
@@ -708,7 +708,7 @@ enum {
 	LOCATION_SMITH		= 8,
 	LOCATION_MARKET		= 9,
 	LOCATION_CITIZEN	= 10,
-	LOCATION_HARBOUR	= 11,
+	LOCATION_HARBOR 	= 11,
 	LOCATION_MAP		= 12,
 	LOCATION_INFORMER	= 13,
 	LOCATION_DNGENTRY	= 14,
@@ -1544,7 +1544,45 @@ enum {
 	RECIPE_AE		= 24, /* AE needed */
 	RECIPE_DIFFICULTY	= 26, /* Erschwernis fuer die Alchemie-Talentprobe */
 	RECIPE_DURATION		= 27, /* time needed to brew the recipe, in hours */
-	RECIPE_SIZE		= 28
+	SIZEOF_RECIPE		= 28
+};
+
+enum {
+	SEA_ROUTE_TOWN_1 = 0, /* one byte readonly */ /* ID of the first town of the connection. Note that the routes are undirected; i.e. both endpoint towns are treated equal. */
+	SEA_ROUTE_TOWN_2 = 1, /* one byte readonly */ /* ID of the second town of the connection */
+	SEA_ROUTE_DISTANCE = 2, /* one byte readonly */
+	SEA_ROUTE_FREQUENCY = 3, /* one byte readonly */ /* the higher this value, the rarer a passage on the route is offered */
+	SEA_ROUTE_PASSAGE_TIMER = 4, /* one byte rw */ /* after how many days will a ship do a passage on this route? */
+	SEA_ROUTE_COSTAL_ROUTE = 5, /* one byte readonly */ /* 0 = offshore route (= Hochseeroute), 1 = costal route */
+	SEA_ROUTE_PASSAGE_TYPE = 6, /* one byte rw */ /* passage type of the next passage on this route */
+	SEA_ROUTE_PASSAGE_PRICE_MOD = 7, /* one byte rw */ /* a number between 70 and 130 which serves as a percentage modifier to the price of the next ship on this route */
+	SIZEOF_SEA_ROUTE = 8
+};
+
+enum {
+	SHIP_TABLE_PASSAGE_TYPE = 0, /* one byte */ /*
+	       0 = Heuer (Regen. -2);
+	       1 = Begleitschutzfahrt (Regen. 0);
+	       2 = Luxuspassage (Regen. +5);
+	       3 = komfortable Passage (Regen. +4);
+	       4 = Kabinenpassage (Regen. +3);
+	       5 = Deckpassage (Regen. +1);
+	       6 = Mitfahrgelegenheit (Regen. 0)
+	*/
+	SHIP_TABLE_UNKN = 1, /* one byte */ /* is this byte ever read? */
+	SHIP_TABLE_BASE_PRICE_PER_DISTANCE = 2, /* one byte */
+	SHIP_TABLE_BASE_SPEED = 3, /* one byte */
+	SIZEOF_SHIP_TABLE_ENTRY = 4
+};
+
+enum {
+	HARBOR_OPTION_SHIP_NAME_PTR = 0, /* four bytes */ /* pointer to the ship name */
+	HARBOR_OPTION_ROUTE_PTR = 4, /* four bytes */ /* pointer to the route */
+	HARBOR_OPTION_SHIP_TIMER = 8, /* one byte. 0 = ship leaves today; 1 = ship leaves tomorrow */
+	HARBOR_OPTION_SHIP_TYPE = 9, /* one byte */
+	HARBOR_OPTION_DESTINATION = 10, /* one byte */ /* ID of the destination town */
+	HARBOR_OPTION_ROUTE_ID = 11, /* one byte */ /* ID of the passage */
+	SIZEOF_HARBOR_OPTION = 12
 };
 
 enum {

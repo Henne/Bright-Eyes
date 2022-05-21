@@ -757,13 +757,13 @@
 #define TEVENTS_TAB_PTR                 (0x426a)    /* unsigned long */
 #define TRAVEL_ROUTE_PTR                (0x426e)    /* unsigned long */
 #define ROUTE_TEVENTS                   (0x4272)    /* struct(4)[15]; struct{short place, event_id;} */
-#define SEA_TRAVEL_PSGBOOKED_FLAG       (0x42ae)    /* signed char */
-#define SEA_TRAVEL_PSGBOOKED_TIMER      (0x42af)    /* signed char */
-#define SEA_TRAVEL_PASSAGE_UNKN1        (0x42b0)    /* signed char */
+#define SEA_TRAVEL_PSGBOOKED_FLAG       (0x42ae)    /* signed char */ /* 0 = passage is not booked; 0xaa = passage is booked */ /* why 0xaa instead of simply 1 ?? */
+#define SEA_TRAVEL_PSGBOOKED_TIMER      (0x42af)    /* signed char */ /* 0 = ship leaves today at 9 o'clock; 1 = ship leaves tomorrow at 9 o'clock */
+#define SEA_TRAVEL_PASSAGE_SPEED1       (0x42b0)    /* signed char */
 #define SEA_TRAVEL_PASSAGE_ID           (0x42b1)    /* signed char */
-#define SEA_TRAVEL_MENU_PASSAGES        (0x42b2)    /* struct(12)[10] */
+#define HARBOR_OPTIONS                  (0x42b2)    /* struct(12)[10] */ /* buffering passage data for building the menu in a harbour where a sea passage can be selected */
 #define SEA_TRAVEL_PASSAGE_PRICE        (0x432a)    /* signed short */
-#define SEA_TRAVEL_PASSAGE_UNKN2        (0x432c)    /* signed short */
+#define SEA_TRAVEL_PASSAGE_SPEED2       (0x432c)    /* signed short */ /* basically, the same purpose as SEA_TRAVEL_PASSAGE_SPEED1. The variables could be merged. */
 #define TRAVEL_MAP_PTR                  (0x432e)    /* RealPt */
 #define FORCEDMARCH_TIMER               (0x4332)    /* unsigned char */
 #define TRAVEL_DETOUR                   (0x4333)    /* unsigned char */
@@ -1065,12 +1065,12 @@
 // ?1
 #define TEMPLE_MIRACLE_BONUS            (0x6ea4)    /* signed char[15]; {0, 2, 15, 10, 20, 5, 10, 1, 15, 3, 15, 5, 10, 0} */
 #define TEMPLE_MIRACLE_DICE             (0x6eb3)    /* signed char[15]; {0, 9, 9, 10, 17, 6, 10, 10, 18, 10, 19, 8, 15, 0, 10} */
-#define SEA_TRAVEL_TX_CLASS             (0x6ec2)    /* signed short[7] */
-#define SEA_TRAVEL_QUALITY_TABLE        (0x6ed0)    /* struct(4)[8]; struct{unsigned char cls,unkn,price,speed;} */
-#define SEA_TRAVEL_TX_SHIP              (0x6ef0)    /* signed short[8] */
-#define SEA_TRAVEL_PASSAGES             (0x6f00)    /* struct(8)[46] */
+#define SEA_TRAVEL_TX_CLASS             (0x6ec2)    /* signed short[7]; {0x001d, 0x001e, 0x001f, 0x0020, 0x0021, 0x0022, 0x0023} */ /* maps entry PASSAGE_TYPE in SHIP_TABLE -> ptr to name of type of passage (Begleitschutzfahrt, Deckpassage etc.) */
+#define SHIP_TABLE                      (0x6ed0)    /* struct(4)[8]; struct{unsigned char passage_type,unkn2,base_price_per_distance,base_speed;}; { { 0, 1, 0, 120 }, { 3, 1, 35, 100 }, { 1, 1, 0, 150 }, { 2, 1, 45, 150 }, { 0, 1, 0, 90 }, { 4, 1, 20, 80 }, { 5, 0, 10, 60 }, { 6, 0, 0, 40 } } */
+#define SEA_TRAVEL_TX_SHIP              (0x6ef0)    /* signed short[8]; { 0x0024, 0x0025, 0x0026, 0x0026, 0x0024, 0x0027, 0x0028, 0x0029 }*/ /* maps ship_type -> ptr to ship name (Langschiff, Kutter, etc.) */
+#define SEA_ROUTES                      (0x6f00)    /* struct(8)[46] */
 #define TRAVEL_BY_SHIP                  (0x7070)    /* unsigned char; 0 = on land, 1 = at the ship */
-#define SEA_TRAVEL_SLEEPBONUS_TABLE1    (0x7071)    /* signed short[7]; { -2, 0, 5, 4, 3, 1, 0 } */
+#define SEA_TRAVEL_SLEEPBONUS_TABLE1    (0x7071)    /* signed short[7]; { -2, 0, 5, 4, 3, 1, 0 } */ /* maps entry PASSAGE_TYPE in SHIP_TABLE -> regeneration modifier (aka 'sleep quality') */
 #define SEA_TRAVEL_SLEEPBONUS_TABLE2    (0x707f)    /* signed short[7]; { -2, 0, 5, 4, 3, 1, 0 } */
 #define SEA_TRAVEL_STR_T                (0x708d)    /* char[2]; "T" */
 #define SEA_TRAVEL_STR_EN               (0x708f)    /* char[3]; "EN" */

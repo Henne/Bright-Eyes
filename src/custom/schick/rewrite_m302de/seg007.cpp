@@ -25,7 +25,7 @@ unsigned short _rotl(unsigned short op, unsigned char count) {
 #endif
 
 /**
- * \brief   generates a random number between lo and hi
+ * \brief   generates a random number in the range [lo .. hi]
  */
 int random_interval(const int lo, const int hi)
 {
@@ -34,7 +34,7 @@ int random_interval(const int lo, const int hi)
 }
 
 /**
- * \brief   generates a u16 random number in the range [1..val]
+ * \brief   generates a u16 random number in the range [1 .. val]
  */
 int random_schick(const int val)
 {
