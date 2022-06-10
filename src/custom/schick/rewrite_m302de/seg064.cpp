@@ -82,14 +82,14 @@ unsigned short prepare_passages(void)
 #ifndef M302de_ORIGINAL_BUGFIX
 			/* Original-Bug 23:
 			 * In the function get_ship_name(..), the ship names are created randomly every time the party checks the available ships at a harbour.
-			 * In this way, the names of the ships can (and usually do) change. */
+			 * In this way, the names of the ships can (and usually do) change when repeatedly checking the available ships. */
 			ds_writed(HARBOR_OPTIONS + prepared * SIZEOF_HARBOR_OPTION + HARBOR_OPTION_SHIP_NAME_PTR,
 				(Bit32u)get_ship_name(host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_TYPE), prepared));
 #else
 			/* As a fix, we derive the name from the PASSAGE_PRICE_MOD entry of the SEA_ROUTE, which is created
 			 * randomly once the new passage of the route is set up, and is kept fixed over the lifetime of the passage.
 			 *
-			 * In this way, it may however happen that two ships of the same name are loceted in a harbour
+			 * In this way, it may however happen that two ships of the same name are located in a harbour
 			 * (which has been avoided in the original random assignment code). But this is a rare event and not be a big issue anyway.
 			 */
 			ds_writed(HARBOR_OPTIONS + prepared * SIZEOF_HARBOR_OPTION + HARBOR_OPTION_SHIP_NAME_PTR,

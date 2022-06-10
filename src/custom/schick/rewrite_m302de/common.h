@@ -306,7 +306,7 @@ struct enemy_flags2 {
 /* remark siebenstreich 2021-08-15:
  * I tried to combine these two structs into a single 2-byte bitfield 'enemy_flags' (similar to 'inventory_flags' below)
  * Subsequently, the macros enemy_dead, enemy_asleep etc. in v302de.h had to be adjusted.
- * However, no matter what I dried, this always broke binary BCC-compatibility. */
+ * However, no matter what I tried, this always broke binary BCC-compatibility. */
 
 struct item_flags {
 	/* item + 0x02 */
@@ -1034,6 +1034,7 @@ enum {
 };
 
 enum {
+	TOWNS_NONE                      = 0,
 	TOWNS_THORWAL			= 1,
 	TOWNS_SERSKE			= 2,
 	TOWNS_BREIDA			= 3,

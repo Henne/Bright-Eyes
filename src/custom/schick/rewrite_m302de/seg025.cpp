@@ -259,7 +259,7 @@ void enter_map(void)
 
 	ds_writew(TYPEINDEX, ds_readbs(CURRENT_TOWN));
 
-	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
+	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, TOWNS_NONE));
 	ds_writeb(SHOW_TRAVEL_MAP, 1);
 }
 
@@ -469,7 +469,7 @@ signed short game_options(void)
 
 	memset(Real2Host(ds_readd(BUFFER9_PTR)), 0, 28000);
 
-	if (ds_readbs(CURRENT_TOWN) != 0) {
+	if (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) {
 		/* if the party is in a town */
 		load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 
@@ -612,7 +612,7 @@ signed short game_options(void)
 	ds_writew(REQUEST_REFRESH, 1);
 	ds_writeb(SPECIAL_SCREEN, 0);
 
-	if (ds_readbs(CURRENT_TOWN) != 0) {
+	if (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) {
 		ds_writeb(FADING_STATE, 3);
 	}
 

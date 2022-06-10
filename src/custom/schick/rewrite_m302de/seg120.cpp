@@ -421,7 +421,7 @@ void init_game_state(void)
 	ds_writeb(DIRECTION, 0);
 	ds_writeb(DUNGEON_INDEX, 0);
 
-	ds_writeb(CURRENT_TOWN_BAK, ds_writeb(CURRENT_TOWN, 1));
+	ds_writeb(CURRENT_TOWN_BAK, ds_writeb(CURRENT_TOWN, TOWNS_THORWAL));
 
 	ds_writew(TEXTBOX_WIDTH, 3);
 

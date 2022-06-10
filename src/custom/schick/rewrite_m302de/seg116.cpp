@@ -728,7 +728,7 @@ void TLK_old_woman(signed short state)
 		} while (1);
 
 	} else if (state == 34) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(CURRENT_TOWN) == 20 ? 35 : 39);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(CURRENT_TOWN) == TOWNS_FELSTEYN ? 35 : 39);
 	} else if (state == 37) {
 		ds_writeb(TEVENT093_FLAG, ds_writeb(TEVENT088_FLAG, 1));
 	} else if (state == 38) {

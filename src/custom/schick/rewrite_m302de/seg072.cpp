@@ -796,12 +796,12 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
                 : ds_readb(SWAFNILD_TP3));
 
 			switch (ds_readbs(CURRENT_TOWN)) {
-				case 39: ds_writew(X_TARGET_BAK, 22); ds_writew(Y_TARGET_BAK,  8); break;
-				case 33: ds_writew(X_TARGET_BAK,  4); ds_writew(Y_TARGET_BAK,  3); break;
-				case 37: ds_writew(X_TARGET_BAK,  9); ds_writew(Y_TARGET_BAK, 10); break;
-				case 38: ds_writew(X_TARGET_BAK, 11); ds_writew(Y_TARGET_BAK, 11); break;
-				case 34: ds_writew(X_TARGET_BAK,  4); ds_writew(Y_TARGET_BAK, 12); break;
-				case 36: ds_writew(X_TARGET_BAK,  6); ds_writew(Y_TARGET_BAK,  6); break;
+				case TOWNS_PREM: ds_writew(X_TARGET_BAK, 22); ds_writew(Y_TARGET_BAK,  8); break;
+				case TOWNS_KORD: ds_writew(X_TARGET_BAK,  4); ds_writew(Y_TARGET_BAK,  3); break;
+				case TOWNS_OTTARJE: ds_writew(X_TARGET_BAK,  9); ds_writew(Y_TARGET_BAK, 10); break;
+				case TOWNS_SKJAL: ds_writew(X_TARGET_BAK, 11); ds_writew(Y_TARGET_BAK, 11); break;
+				case TOWNS_TREBAN: ds_writew(X_TARGET_BAK,  4); ds_writew(Y_TARGET_BAK, 12); break;
+				case TOWNS_RUNINSHAVEN: ds_writew(X_TARGET_BAK,  6); ds_writew(Y_TARGET_BAK,  6); break;
 			}
 
 			ds_writeb(LOCATION_BAK, 0);

@@ -555,6 +555,7 @@ void status_show(Bit16u index)
 			ds_writew(TXT_TABPOS1, 275);
 			ds_writew(TXT_TABPOS2, 295);
 
+			/* Fernkampfwaffen-Basiswert: (KL + GE + KK)/4 */
 			j = (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KL)) +
 				host_readbs(Real2Host(hero) + (HERO_ATTRIB_MOD + 3 * ATTRIB_KL)) +
 				host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_GE)) +

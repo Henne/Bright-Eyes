@@ -842,7 +842,7 @@ void status_menu(signed short hero_pos)
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 	dec_ds_ws(TIMERS_DISABLED);
 
-	if (ds_readbs(CURRENT_TOWN) != 0) {
+	if (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) {
 		ds_writeb(FADING_STATE, 3);
 	}
 }

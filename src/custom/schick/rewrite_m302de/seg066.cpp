@@ -1000,23 +1000,24 @@ signed short city_step(void)
 		}
 	}
 
-	if (ds_readb(CURRENT_TOWN) != 0 && ds_readbs(CITY_AREA_LOADED) != -1) {
+	if (ds_readb(CURRENT_TOWN) != TOWNS_NONE && ds_readbs(CITY_AREA_LOADED) != -1) {
 
 		if (!i) {
 			options = enter_location(ds_readbs(CURRENT_TOWN));
 		}
 
-		/* check move and a big city */
+		/* random city event? */
+		/* check if the party has moved to another square */
 		if ((ds_readws(Y_TARGET) != ds_readws(Y_TARGET_BAK) ||
 			(ds_readws(X_TARGET) != ds_readws(X_TARGET_BAK))) &&
 
+			/* only in big town */
 			(ds_readb(CURRENT_TOWN) == TOWNS_THORWAL || ds_readb(CURRENT_TOWN) == TOWNS_PREM ||
 			ds_readb(CURRENT_TOWN) == TOWNS_PHEXCAER || ds_readb(CURRENT_TOWN) == TOWNS_OBERORKEN))
 		{
 
-			/* roll a dice */
-			if (random_schick(100) <= 1 &&
-				ds_readds(DAY_TIMER) > HOURS(8) &&
+			if (random_schick(100) <= 1 && /* 1% chance */
+				ds_readds(DAY_TIMER) > HOURS(8) && /* only between 8:00 and 20:00 o'clock */
 				ds_readds(DAY_TIMER) < HOURS(20))
 			{
 				city_event_switch();

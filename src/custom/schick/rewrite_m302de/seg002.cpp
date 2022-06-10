@@ -1203,7 +1203,7 @@ void interrupt mouse_isr(void)
 			ds_writew(MOUSE2_EVENT, 1);
 		}
 
-		if (((ds_readb(DUNGEON_INDEX) != 0) || (ds_readb(CURRENT_TOWN) != 0)) &&
+		if (((ds_readb(DUNGEON_INDEX) != 0) || (ds_readb(CURRENT_TOWN) != TOWNS_NONE)) &&
 				!ds_readbs(LOCATION) &&
 				!ds_readbs(DIALOGBOX_LOCK) &&
 				(ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK))
@@ -1806,7 +1806,7 @@ void game_loop(void)
 
 		if (ds_readbs(LOCATION) != 0) {
 			do_location();
-		} else if (ds_readbs(CURRENT_TOWN) != 0) {
+		} else if (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) {
 			do_town();
 		} else if (ds_readbs(DUNGEON_INDEX) != 0) {
 			do_dungeon();
@@ -1844,7 +1844,7 @@ void game_loop(void)
 		}
 
 		if ((host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE) &&
-			((ds_readbs(CURRENT_TOWN) != 0) || (ds_readws(GAME_STATE) == GAME_STATE_VICTORY)) &&
+			((ds_readbs(CURRENT_TOWN) != TOWNS_NONE) || (ds_readws(GAME_STATE) == GAME_STATE_VICTORY)) &&
 			(ds_readws(NPC_MONTHS) >= 1) &&
 			(ds_readbs(NPC_LAST_FAREWELLCHECK) != ds_readws(NPC_MONTHS)))
 		{
@@ -2970,7 +2970,7 @@ void herokeeping(void)
 			/* check for magic waterskin in group */
 			if ((get_first_hero_with_item_in_group(ITEM_MAGIC_WATERSKIN, host_readbs(hero + HERO_GROUP_NO)) == -1) &&
 				((host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-				(!ds_readbs(CURRENT_TOWN) || (ds_readbs(CURRENT_TOWN) != 0 && ds_readb(SHOW_TRAVEL_MAP) != 0))) ||
+				(!ds_readbs(CURRENT_TOWN) || (ds_readbs(CURRENT_TOWN) != TOWNS_NONE && ds_readb(SHOW_TRAVEL_MAP) != 0))) ||
 				((host_readbs(hero + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
 				!ds_readbs(GROUPS_TOWN + host_readbs(hero + HERO_GROUP_NO)))))) {
 
@@ -3903,7 +3903,7 @@ void draw_compass(void)
 		/* Has something to do with traveling */
 		!ds_readbs(TRAVEL_EVENT_ACTIVE) &&
 		/* Not in town or dungeon */
-		((ds_readbs(DUNGEON_INDEX) != 0) || (ds_readbs(CURRENT_TOWN) != 0)) &&
+		((ds_readbs(DUNGEON_INDEX) != 0) || (ds_readbs(CURRENT_TOWN) != TOWNS_NONE)) &&
 		/* I have no clue */
 		(ds_readb(FADING_STATE) != 2))
 	{
