@@ -1040,7 +1040,7 @@ mark2:			   goto mark1;
 	ds_writeb(DUNGEON_INDEX, (signed char)dungeon_id);
 	ds_writebs(LOCATION_BAK, ds_readbs(LOCATION));
 	ds_writeb(CURRENT_TOWN_BAK, ds_readb(CURRENT_TOWN));
-	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
+	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, TOWNS_NONE));
 	ds_writeb(DNG_AREA_LOADED, ds_writeb(CITY_AREA_LOADED, -1));
 
 	if (dungeon_id == 14) {

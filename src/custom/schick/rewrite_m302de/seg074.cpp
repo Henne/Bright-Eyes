@@ -603,7 +603,7 @@ signed short select_teleport_dest(void)
 		get_mapval_small(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY)) :
 		get_mapval_large(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY));
 
-	if (ds_readbs(CURRENT_TOWN) != 0) {
+	if (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) {
 		l_di = get_border_index(l_di);
 	} else {
 		l_di = div16(l_di);
@@ -618,7 +618,7 @@ signed short select_teleport_dest(void)
 		host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
 	} else if (((ds_readbs(DUNGEON_INDEX) != 0) && (l_di == 15)) ||
-			((ds_readbs(CURRENT_TOWN) != 0) && (((l_di >= 2) && (l_di <= 5)) ||
+			((ds_readbs(CURRENT_TOWN) != TOWNS_NONE) && (((l_di >= 2) && (l_di <= 5)) ||
 			(l_di == 6))))
 	{
 		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(611));

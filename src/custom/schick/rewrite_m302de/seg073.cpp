@@ -40,7 +40,7 @@ unsigned short get_tavern_gossip(void)
 
 	switch (ds_readbs(CURRENT_TOWN) - 1) {
 	/* Thorwal */
-	case 0x00: {
+	case (TOWNS_THORWAL - 1): {
 		if (r_si == 6)
 			ds_writeb_z(INFORMER_FLAGS + INFORMER_ELIANE, 1);	/* Eliane Windenbeck */
 		else if (r_si == 7)
@@ -49,7 +49,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Serske */
-	case 0x01: {
+	case (TOWNS_SERSKE - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT005_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2)
@@ -62,7 +62,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Breida */
-	case 0x02: {
+	case (TOWNS_BREIDA - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT005_FLAG, 1);	/* Restplaces */
 		else if (r_si == 3)
@@ -75,7 +75,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Peilinen */
-	case 0x03: {
+	case (TOWNS_PEILINEN - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT009_FLAG, 1);	/* Restplaces */
 		else if (r_si == 3)
@@ -84,7 +84,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Rovamund */
-	case 0x04: {
+	case (TOWNS_ROVAMUND - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT013_FLAG, 1);	/* Restplaces */
 		else if (r_si == 3)
@@ -97,7 +97,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Nordvest */
-	case 0x05: {
+	case (TOWNS_NORDVEST - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT013_FLAG, 1);	/* Restplaces */
 		else if (r_si == 3)
@@ -106,7 +106,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Kravik */
-	case 0x06: {
+	case (TOWNS_KRAVIK - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT017_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2)
@@ -117,7 +117,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Skelellen */
-	case 0x07: {
+	case (TOWNS_SKELELLEN - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT021_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2)
@@ -131,7 +131,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Merske (has no tavern) */
-	case 0x08: {
+	case (TOWNS_MERSKE - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT118_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2)
@@ -146,7 +146,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Tjoila */
-	case 0x0a: {
+	case (TOWNS_TJOILA - 1): {
 		if (r_si == 2)
 			ds_writeb(TEVENT008_FLAG, 1);	/* Restplaces */
 		else if (r_si == 7)
@@ -157,15 +157,15 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Rukian and Angbodirtal */
-	case 0x0b:
-	case 0x0c:
+	case (TOWNS_RUKIAN - 1):
+	case (TOWNS_ANGBODIRTAL - 1):
 	 {
 		if (r_si == 1)
 			ds_writeb(TEVENT022_FLAG, 1);	/* Restplaces */
 		break;
 	}
 	/* Auplog */
-	case 0x0d: {
+	case (TOWNS_AUPLOG - 1): {
 		if (r_si == 1) {
 			/* Restplaces */
 			ds_writeb(TEVENT024_FLAG, ds_writeb(TEVENT025_FLAG, 1));
@@ -179,7 +179,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Vilnheim */
-	case 0x0e: {
+	case (TOWNS_VILNHEIM - 1): {
 		if (r_si == 1) {
 			/* Restplaces */
 			ds_writeb(TEVENT024_FLAG, ds_writeb(TEVENT025_FLAG, 1));
@@ -199,7 +199,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Bodon */
-	case 0x0f: {
+	case (TOWNS_BODON - 1): {
 		if (r_si == 3) {
 			/* Restplaces */
 			ds_writeb(TEVENT024_FLAG, ds_writeb(TEVENT025_FLAG, 1));
@@ -219,7 +219,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Oberorken */
-	case 0x10: {
+	case (TOWNS_OBERORKEN - 1): {
 		if (r_si == 2)
 			ds_writeb(TEVENT072_FLAG, 1);	/* Restplaces */
 		else if (r_si == 3)
@@ -228,7 +228,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Phexcaer */
-	case 0x11: {
+	case (TOWNS_PHEXCAER - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT034_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2) {
@@ -248,7 +248,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Felsteyn */
-	case 0x13: {
+	case (TOWNS_FELSTEYN - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT072_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2)
@@ -261,7 +261,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Orkanger */
-	case 0x15: {
+	case (TOWNS_ORKANGER - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT075_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2)
@@ -270,7 +270,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Clanegh */
-	case 0x16: {
+	case (TOWNS_CLANEGH - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT079_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2)
@@ -279,7 +279,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Thoss */
-	case 0x18: {
+	case (TOWNS_THOSS - 1): {
 		if (r_si == 1) {
 			/* Restplaces */
 			ds_writeb(TEVENT069_FLAG, ds_writeb(TEVENT070_FLAG, ds_writeb(TEVENT070_HERB_FLAG, 1)));
@@ -289,8 +289,8 @@ unsigned short get_tavern_gossip(void)
 
 		break;
 	}
-	/* Orvil */
-	case 0x1a: {
+	/* Ala */
+	case (TOWNS_ALA - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT066_TRACK_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2) {
@@ -299,8 +299,8 @@ unsigned short get_tavern_gossip(void)
 
 		break;
 	}
-	/* Overthorn */
-	case 0x1b: {
+	/* Orvil */
+	case (TOWNS_ORVIL - 1): {
 		if (r_si == 1) {
 			/* Restplaces */
 			ds_writeb(TEVENT058_FLAG, ds_writeb(TEVENTU03_FLAG, 1));
@@ -316,22 +316,22 @@ unsigned short get_tavern_gossip(void)
 
 		break;
 	}
-	/* Hjalsingor */
-	case 0x1d: {
+	/* Rovik */
+	case (TOWNS_ROVIK - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENTU12_FLAG, 1);	/* Restplaces */
 
 		break;
 	}
 	/* Kord */
-	case 0x20: {
+	case (TOWNS_KORD - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENTU05_FLAG, 1);	/* Restplaces */
 
 		break;
 	}
 	/* Runinshaven */
-	case 0x23: {
+	case (TOWNS_RUNINSHAVEN - 1): {
 		if (r_si == 1) {
 			/* Restplaces */
 			ds_writeb(TEVENT128_FLAG, ds_writeb(TEVENTU09_FLAG, 1));
@@ -341,7 +341,7 @@ unsigned short get_tavern_gossip(void)
 	}
 
 	/* Ottarje */
-	case 0x24: {
+	case (TOWNS_OTTARJE - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENTU04_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2)
@@ -359,7 +359,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Skjal */
-	case 0x25: {
+	case (TOWNS_SKJAL - 1): {
 		if (r_si == 1) {
 			/* Restplaces */
 			ds_writeb(TEVENT049_FLAG, ds_writeb(TEVENT053_FLAG, 1));
@@ -375,7 +375,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Prem */
-	case 0x26: {
+	case (TOWNS_PREM - 1): {
 		if (r_si == 2)
 			ds_writeb(TEVENTU06_FLAG, 1);	/* Restplaces */
 		else if (r_si == 3)
@@ -384,14 +384,14 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Rybon */
-	case 0x28: {
+	case (TOWNS_RYBON - 1): {
 		if (r_si == 0)
 			ds_writeb(TEVENTU08_FLAG, 1);	/* Restplaces */
 
 		break;
 	}
 	/* Varnheim */
-	case 0x2a: {
+	case (TOWNS_VARNHEIM - 1): {
 		if (r_si == 2)
 			ds_writeb(TEVENT040_FLAG, 1);	/* Restplaces */
 		else if (r_si == 3) {
@@ -406,7 +406,7 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Vaermhag */
-	case 0x2b: {
+	case (TOWNS_VAERMHAG - 1): {
 		if (r_si == 7)
 			ds_writeb_z(INFORMER_FLAGS + INFORMER_ELIANE, 1);	/* Eliane Windenbeck */
 		else if (r_si == 8)
@@ -415,21 +415,21 @@ unsigned short get_tavern_gossip(void)
 		break;
 	}
 	/* Tyldon */
-	case 0x2c: {
+	case (TOWNS_TYLDON - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENT081_FLAG, 1);	/* Restplaces */
 
 		break;
 	}
 	/* Brendhil */
-	case 0x2e: {
+	case (TOWNS_BRENDHIL - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENTU13_FLAG, 1);	/* Restplaces */
 
 		break;
 	}
 	/* Manrin */
-	case 0x2f: {
+	case (TOWNS_MANRIN - 1): {
 		if (r_si == 1)
 			ds_writeb(TEVENTU13_FLAG, 1);	/* Restplaces */
 		else if (r_si == 2)
@@ -496,7 +496,7 @@ signed short tavern_quest_infos(void)
 		}
 		/* Original-Bug: which return value here? */
 
-	} else if ((ds_readbs(CURRENT_TOWN) == 1) &&
+	} else if ((ds_readbs(CURRENT_TOWN) == TOWNS_THORWAL) &&
 			!(ds_readb(QUEST_DEADSHIP)) &&
 			(ds_readws(TYPEINDEX) == 6))
 	{
@@ -506,7 +506,7 @@ signed short tavern_quest_infos(void)
 		/* remember that */
 		ds_writeb(QUEST_DEADSHIP, (unsigned char)(l_si = 1));
 
-	} else if ((ds_readbs(CURRENT_TOWN) == 38) &&
+	} else if ((ds_readbs(CURRENT_TOWN) == TOWNS_SKJAL) &&
 			(ds_readws(TYPEINDEX) == 69) &&
 			(ds_readb(INFORMER_FLAGS + INFORMER_JURGE) != 2) &&
 			(ds_readb(INFORMER_FLAGS + INFORMER_JURGE) != 0) &&
@@ -518,7 +518,7 @@ signed short tavern_quest_infos(void)
 			ds_writeb(CURRENT_INFORMER, (unsigned char)(l_si = 1));
 		}
 
-	} else if ((ds_readbs(CURRENT_TOWN) == 46) &&
+	} else if ((ds_readbs(CURRENT_TOWN) == TOWNS_VIDSAND) &&
 			(ds_readws(TYPEINDEX) == 84) &&
 			(ds_readb(INFORMER_FLAGS + INFORMER_RAGNA) != 2) &&
 			(ds_readb(INFORMER_FLAGS + INFORMER_RAGNA) != 0))
@@ -529,7 +529,7 @@ signed short tavern_quest_infos(void)
 			ds_writeb(CURRENT_INFORMER, (unsigned char)(l_si = 6));
 		}
 
-	} else if ((ds_readbs(CURRENT_TOWN) == 13) &&
+	} else if ((ds_readbs(CURRENT_TOWN) == TOWNS_ANGBODIRTAL) &&
 			((ds_readws(TYPEINDEX) == 27) || (ds_readws(TYPEINDEX) == 28)) &&
 			(ds_readb(INFORMER_FLAGS + INFORMER_BEORN) != 2) &&
 			(ds_readb(INFORMER_FLAGS + INFORMER_BEORN) != 0))
@@ -543,7 +543,7 @@ signed short tavern_quest_infos(void)
 		}
 
 
-	} else if ((ds_readbs(CURRENT_TOWN) == 3) &&
+	} else if ((ds_readbs(CURRENT_TOWN) == TOWNS_BREIDA) &&
 			((ds_readws(TYPEINDEX) == 14) || (ds_readws(TYPEINDEX) == 15)) &&
 			(ds_readb(INFORMER_FLAGS + INFORMER_ASGRIMM) != 2) &&
 			(ds_readb(INFORMER_FLAGS + INFORMER_ASGRIMM) != 0) &&
@@ -555,7 +555,7 @@ signed short tavern_quest_infos(void)
 			ds_writeb(CURRENT_INFORMER, (unsigned char)(l_si = 8));
 		}
 
-	} else if ((ds_readbs(CURRENT_TOWN) == 31) &&
+	} else if ((ds_readbs(CURRENT_TOWN) == TOWNS_HJALSINGOR) &&
 			((ds_readws(TYPEINDEX) == 61) || (ds_readws(TYPEINDEX) == 62)) &&
 			(ds_readb(INFORMER_FLAGS + INFORMER_ALGRID) != 2) &&
 			(ds_readb(INFORMER_FLAGS + INFORMER_ALGRID) != 0))
@@ -568,7 +568,7 @@ signed short tavern_quest_infos(void)
 			ds_writeb(CURRENT_INFORMER, (unsigned char)(l_si = 14));
 		}
 
-	} else if ((ds_readbs(CURRENT_TOWN) == 18) && (ds_readb(ALRIK_DERONDAN))) {
+	} else if ((ds_readbs(CURRENT_TOWN) == TOWNS_PHEXCAER) && (ds_readb(ALRIK_DERONDAN))) {
 
 		/* meet Alrik Derondan */
 		PHX_alrik_derondan();
