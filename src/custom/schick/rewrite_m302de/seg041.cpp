@@ -343,7 +343,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		enemy_gfx_id = host_readbs(enemy_p + ENEMY_SHEET_GFX_ID);
 
 		/* magic SABRE gives Damage + 1 to SKELETONS and ZOMBIES */
-		if ((right_hand == 172) && (enemy_gfx_id == 0x1c || enemy_gfx_id == 0x22)) {
+		if ((right_hand == ITEM_SABER_MAGIC) && (enemy_gfx_id == 0x1c || enemy_gfx_id == 0x22)) {
 			damage++;
 		} else {
 			if (right_hand == ITEM_KUKRIS_DAGGER) {

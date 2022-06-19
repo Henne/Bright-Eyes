@@ -141,18 +141,18 @@ void do_harbour(void)
 
 		handle_gui_input();
 
-		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			answer = GUI_radio(get_tx(9), 4,
 						get_tx(10), get_tx(11),
 						get_tx(12), get_tx(13)) - 1;
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 129) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 			answer = prepare_passages();
 
@@ -229,7 +229,7 @@ void do_harbour(void)
 				}
 			}
 
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 
 			if (ds_readds(DAY_TIMER) <= HOURS(6) || ds_readds(DAY_TIMER) >= HOURS(21)) {
 
@@ -294,7 +294,7 @@ void do_harbour(void)
 				}
 			}
 
-		} else if (ds_readws(ACTION) == 131) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 
 			if (ds_readb(SEA_TRAVEL_PSGBOOKED_FLAG) != 0xaa) {
 
@@ -379,7 +379,7 @@ void do_harbour(void)
 				}
 			}
 
-		} else if (ds_readws(ACTION) == 132) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 			done = 1;
 		}
 

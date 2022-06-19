@@ -525,7 +525,7 @@ signed short game_options(void)
 		handle_input();
 		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0);
 
-		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			/* use the radio menu */
 			answer = GUI_radio(get_ttx(590), 9,
@@ -540,11 +540,11 @@ signed short game_options(void)
 						get_ttx(589)) - 1;
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 129) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 			do {
 				game_state = load_game_state();
@@ -554,29 +554,29 @@ signed short game_options(void)
 				done = 1;
 			}
 
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 
 			if (save_game_state()) {
 				done = 1;
 			}
 
-		} else if (ds_readws(ACTION) == 131) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 
 			ds_writeb(RENDERBUF_IN_USE_FLAG, 1);
 			char_erase();
 			ds_writeb(RENDERBUF_IN_USE_FLAG, 0);
 
-		} else if (ds_readws(ACTION) == 132) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 
 			ds_writeb(RENDERBUF_IN_USE_FLAG, 1);
 			show_treasure_map();
 			ds_writeb(SPECIAL_SCREEN, 1);
 
-		} else if (ds_readws(ACTION) == 133) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 
 			diary_show();
 			done = 1;
-		} else if (ds_readws(ACTION) == 134) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_6) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ttx(827),
@@ -588,11 +588,11 @@ signed short game_options(void)
 				ds_writew(DELAY_FACTOR, new_delay);
 			}
 
-		} else if (ds_readws(ACTION) == 135) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_7) {
 
 			sound_menu();
 
-		} else if (ds_readws(ACTION) == 136) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_8) {
 
 			if (GUI_bool(get_ttx(299))) {
 
@@ -600,7 +600,7 @@ signed short game_options(void)
 				ds_writew(GAME_STATE, GAME_STATE_QUIT);
 			}
 
-		} else if (ds_readws(ACTION) == 137) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_9) {
 			done = 1;
 		}
 

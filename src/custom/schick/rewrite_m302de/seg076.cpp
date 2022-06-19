@@ -88,7 +88,10 @@ static signed short (*DNG_handler[])(void) = {
 /**
  * \brief   opening doors logic
  *
- * \param   action      how to try to open the door (smash / lockpicks / magic)
+ * \param   action      how to try to open the door
+ * ACTION_ID_ICON_7 = 135 = smash
+ * ACTION_ID_ICON_8 = 136 = lockpicks
+ * ACTION_ID_ICON_9 = 137 = magic (Foramen spell)
  */
 void DNG_door(signed short action)
 {
@@ -128,7 +131,7 @@ void DNG_door(signed short action)
 					host_readbs((Bit8u*)ptr + 4));
 #endif
 
-			if (action == 135)
+			if (action == ACTION_ID_ICON_7)
 			{
 				/* smash door */
 				if (ds_readws(DNG_EXTRA_ACTION) != 5)
@@ -209,7 +212,7 @@ void DNG_door(signed short action)
 				}
 			}
 
-			if (action == 136)
+			if (action == ACTION_ID_ICON_8)
 			{
 				/* use lockpicks */
 
@@ -264,7 +267,7 @@ void DNG_door(signed short action)
 				}
 			}
 
-			if (action == 137)
+			if (action == ACTION_ID_ICON_9)
 			{
 				/* use magic */
 				hero_pos = select_hero_ok(get_ttx(317));
@@ -468,7 +471,7 @@ signed short DNG_step(void)
 
 	handle_gui_input();
 
-	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73)
+	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP)
 	{
 		tw_bak = ds_readws(TEXTBOX_WIDTH);
 		ds_writew(TEXTBOX_WIDTH, 3);
@@ -498,7 +501,7 @@ signed short DNG_step(void)
 
 		if (l_di != -2)
 		{
-			ds_writew(ACTION, l_di + 129);
+			ds_writew(ACTION, l_di + ACTION_ID_ICON_1);
 		}
 
 		ds_writew(TEXTBOX_WIDTH, tw_bak);
@@ -506,12 +509,12 @@ signed short DNG_step(void)
 
 	l_di = 0;
 
-	if (ds_readws(ACTION) == 129)
+	if (ds_readws(ACTION) == ACTION_ID_ICON_1)
 	{
 		GRP_split();
 		ds_writeb(CAN_MERGE_GROUP, (unsigned char)can_merge_group());
 
-	} else if (ds_readws(ACTION) == 130)
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_2)
 	{
 		/* merge groups or reach hands through the mirror */
 		pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
@@ -531,42 +534,42 @@ signed short DNG_step(void)
 			/* TODO: if a "dark" group was merged with a "lighted" group, make group "lighted". */
 		}
 
-	} else if (ds_readws(ACTION) == 131)
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_3)
 	{
 		GRP_switch_to_next(0);
 
-	} else if (ds_readws(ACTION) == 132)
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_4)
 	{
 		game_options();
 
-	} else if (ds_readws(ACTION) == 133)
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_5)
 	{
 		show_automap();
 
-	} else if (ds_readws(ACTION) == 134)
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_6)
 	{
 		if (select_magic_user() > 0)
 		{
 			ds_writew(DNG_REFRESH_DIRECTION, -1);
 		}
 
-	} else if (ds_readws(ACTION) == 135 && ds_readw(DNG_EXTRA_ACTION) == 0)
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && ds_readw(DNG_EXTRA_ACTION) == 0)
 	{
 		ds_writeb(LOCATION, LOCATION_CITYCAMP);
 		ds_writeb(CITYCAMP_CITY, 0);
 		l_di = 1;
 
-	} else if (ds_readws(ACTION) == 75)
+	} else if (ds_readws(ACTION) == ACTION_ID_LEFT)
 	{
 		update_direction(3);
 		ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 
-	} else if (ds_readws(ACTION) == 77)
+	} else if (ds_readws(ACTION) == ACTION_ID_RIGHT)
 	{
 		update_direction(1);
 		ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 
-	} else if (ds_readws(ACTION) == 72)
+	} else if (ds_readws(ACTION) == ACTION_ID_UP)
 	{
 		if ((l_si = div16(ds_readb(STEPTARGET_FRONT))) == 11)
 		{
@@ -588,7 +591,7 @@ signed short DNG_step(void)
 			no_way();
 		}
 
-	} else if (ds_readws(ACTION) == 80)
+	} else if (ds_readws(ACTION) == ACTION_ID_DOWN)
 	{
 		if ((l_si = div16(ds_readb(STEPTARGET_BACK))) != 15 &&
 				l_si != 1 &&
@@ -601,14 +604,14 @@ signed short DNG_step(void)
 			no_way();
 		}
 
-	} else if (ds_readws(ACTION) >= 135 &&
-			ds_readws(ACTION) <= 137 &&
-			ds_readbs((NEW_MENU_ICONS - 129) + ds_readws(ACTION)) != -1)
+	} else if (ds_readws(ACTION) >= ACTION_ID_ICON_7 &&
+			ds_readws(ACTION) <= ACTION_ID_ICON_9 &&
+			ds_readbs((NEW_MENU_ICONS - ACTION_ID_ICON_1) + ds_readws(ACTION)) != -1)
 	{
 		if (ds_readw(DNG_EXTRA_ACTION) == 1 || ds_readw(DNG_EXTRA_ACTION) == 3 || ds_readw(DNG_EXTRA_ACTION) == 5)
 		{
 			DNG_door(ds_readws(ACTION));
-		} else if (ds_readws(ACTION) == 135 && ds_readw(DNG_EXTRA_ACTION) == 2)
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && ds_readw(DNG_EXTRA_ACTION) == 2)
 		{
 			seg092_06b4(1);
 
@@ -627,7 +630,7 @@ signed short DNG_step(void)
 
 				or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x02);
 			}
-		} else if (ds_readws(ACTION) == 135 && (!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && (!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
 		{
 			DNG15_riddle();
 		}

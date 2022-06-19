@@ -344,7 +344,7 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 				GUI_print_loc_line(Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item))))));
 			}
 
-			if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == 73) {
+			if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 				answer = GUI_radio(NULL, 5,
 						get_ttx(433),
@@ -354,19 +354,21 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 						get_ttx(437)) - 1;
 
 				if (answer != -2) {
-					ds_writew(ACTION, answer + 129);
+					ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 				}
 			}
 
-			if (ds_readws(ACTION) == 131 && item != 0) {
+			if (ds_readws(ACTION) == ACTION_ID_ICON_3 && item != 0) {
 				l8 = 1;
 				item -= 15;
-			} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (item + 15))) {
+			} else if (ds_readws(ACTION) == ACTION_ID_ICON_2 && host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (item + 15))) {
 				l8 = 1;
 				item += 15;
 			}
 
-			if (ds_readws(ACTION) == 144 || ds_readws(ACTION) == 129 || ds_readws(ACTION) == 28) {
+			if (ds_readws(ACTION) == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK || ds_readws(ACTION) == ACTION_ID_ICON_1 || ds_readws(ACTION) == ACTION_ID_RETURN) {
+				/* Is ACTION == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK possible at all?
+				 * ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK can be written to ACTION in buy_screen(), but where should it show up in repair_screen()?? */
 
 				item_id = host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item));
 
@@ -467,11 +469,11 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 				l11 = 1;
 			}
 
-			if (ds_readws(ACTION) == 132) {
+			if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 				l10 = 1;
 			}
 
-			if (ds_readws(ACTION) == 133) {
+			if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 				done = 1;
 			}
 
@@ -529,7 +531,7 @@ void do_smith(void)
 
 		handle_gui_input();
 
-		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			ds_writew(TEXTBOX_WIDTH, 4);
 
@@ -542,13 +544,13 @@ void do_smith(void)
 			ds_writew(TEXTBOX_WIDTH, 3);
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 131) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 			done = 1;
-		} else if (ds_readws(ACTION) == 129) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 			talk_smith();
 			ds_writew(REQUEST_REFRESH, 1);
@@ -559,7 +561,7 @@ void do_smith(void)
 			{
 				done = 1;
 			}
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 			repair_screen(smith_ptr, ds_readws(TYPEINDEX));
 		}
 	}

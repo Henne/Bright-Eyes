@@ -243,7 +243,7 @@ void TM_func1(signed short route_no, signed short backwards)
 		add_ds_ws(ROUTE_PROGRESS, (ds_readws(TRV_RETURN) == 2 ? -ds_readws(ROUTE_STEPSIZE) : ds_readws(ROUTE_STEPSIZE)));
 		add_ds_ws(ROUTE_DAYPROGRESS, ds_readws(ROUTE_STEPSIZE));
 
-		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73)
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP)
 		{
 			if (!ds_readb(FORCEDMARCH_TIMER))
 			{

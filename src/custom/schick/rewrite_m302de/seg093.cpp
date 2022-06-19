@@ -100,7 +100,7 @@ signed short do_travel_mode(void)
 			while (1) {
 				handle_input();
 
-				if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73)
+				if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP)
 				{
 					i = 0;
 					while ((l_di = host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + i)) != 255)
