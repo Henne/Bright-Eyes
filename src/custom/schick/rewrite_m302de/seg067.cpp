@@ -60,7 +60,7 @@ void city_event_switch(void)
 }
 
 /**
- * \brief   a hero may loose W20 S to a pickpocket
+ * \brief   random city event 1: a hero may loose W20 S to a pickpocket
  */
 void city_event_1(void)
 {
@@ -125,7 +125,7 @@ void city_event_1(void)
 }
 
 /**
- * \brief   a hero may loose all money to a pickpocket
+ * \brief   random city event 2: a hero may loose all money to a pickpocket
  */
 void city_event_2(void)
 {
@@ -170,7 +170,7 @@ void city_event_2(void)
 }
 
 /**
- * \brief   a beggar asks for 1D
+ * \brief   random city event 3: a beggar asks for 1D
  */
 void city_event_3(void)
 {
@@ -196,7 +196,7 @@ void city_event_3(void)
 }
 
 /**
- * \brief   a beggar asks for 1D and tells some gossip
+ * \brief   random city event 4: a beggar asks for 1D and tells some gossip
  */
 void city_event_4(void)
 {
@@ -229,6 +229,9 @@ void city_event_4(void)
 	}
 }
 
+/**
+ * \brief   random city event 5: ??
+ */
 void city_event_5(void)
 {
 	signed short randval;
@@ -259,12 +262,16 @@ void city_event_5(void)
 }
 
 /**
- * \brief   meet a merchant
+ * \brief   random city event 6: meet a merchant
  */
 void city_event_6(void)
 {
 	signed short answer;
 	signed short location_bak;
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 24 */
+	signed short type_bak;
+#endif
 
 	if (ds_readds(DAY_TIMER) >= HOURS(8) && ds_readds(DAY_TIMER) <= HOURS(20)) {
 
@@ -284,15 +291,25 @@ void city_event_6(void)
 		} else if (answer == 3) {
 			location_bak = ds_readbs(LOCATION);
 			ds_writeb(LOCATION, LOCATION_MERCHANT);
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 24:
+	 * When entering a building in Thorwal, Prem, Phexcaer or Oberorken between 8:00 and 20:00 o'clock, the street merchant (random city event) shows up with a chance 1:900. Selecting the third answer in the text box, the buy screen appears. After leaving the street merchant, the entered building is corrupted. For example, an entered temple will be a Praios temple (which otherwise does not exist in the game), or an entered tavern may offer negative food prices.
+	 */
+			type_bak = ds_readw(TYPEINDEX);
+#endif
 			ds_writew(TYPEINDEX, 93);
 			do_merchant();
 			ds_writeb(LOCATION, (unsigned char)location_bak);
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 24 */
+			ds_writew(TYPEINDEX, type_bak);
+#endif
 		}
 	}
 }
 
 /**
- * \brief   some harmless events
+ * \brief   random city event 7: some harmless events
  */
 void city_event_7(void)
 {
@@ -349,7 +366,7 @@ void city_event_7(void)
 }
 
 /**
- * \brief   some harmless events
+ * \brief   random city event 8: some harmless events
  */
 void city_event_8(void)
 {
@@ -383,7 +400,7 @@ void city_event_8(void)
 }
 
 /**
- * \brief   some harmless events
+ * \brief   random city event 9: some harmless events
  */
 void city_event_9(void)
 {
