@@ -222,7 +222,7 @@ void tevent_014_chest(RealPt chest)
 
 void tevent_015(void)
 {
-	TRV_found_inn(44, 67);
+	TRV_found_inn(TOWNS_VAERMHAG, 67);
 }
 
 void tevent_017(void)

@@ -52,7 +52,7 @@ signed short enter_location(signed short town_id)
 	signed short b_index;
 	Bit8u *ptr;
 
-	if (town_id == 40) {
+	if (town_id == TOWNS_DASPOTA) {
 		return enter_location_daspota();
 	}
 

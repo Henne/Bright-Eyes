@@ -53,8 +53,8 @@
 #define BAD_ELIXIRS                     (0x090f)    /* signed short[8]; { MU ELIXIER (0xe2), KL ELIXIER (0xe3), CH ELIXIER (0xe4), FF ELIXIER (0xe5), GE ELIXIER (0xe6), IN ELIXIER (0xe7), KK ELIXIER (0xe8), 0xff } */
 #define ATTACK_ITEMS                    (0x091f)    /* signed short[3]; { ITEM_MIASTHMATICUM (0xee), ITEM_HYLAILIC_FIRE (0xef), -1 } */
 #define MONNAME_GENDERS                 (0x0925)    /* signed char[78] */
-#define STAFFSPELL_DESCRIPTIONS         (0x0973)    /* struct(6)[7]; struct{char attrib1, attrib2, attrib3, bonus, cost, ae_mod;} */
-#define SPELL_DESCRIPTIONS              (0x099d)    /* struct(10)[87]; struct{char unkn0, attrib1, attrib2, attrib3, cost, combat, unkn6, target_type, range, fight;} */
+#define STAFFSPELL_DESCRIPTIONS         (0x0973)    /* struct(6)[7]; struct{char attrib1, attrib2, attrib3, handicap, ae_cost, ae_mod;} */
+#define SPELL_DESCRIPTIONS              (0x099d)    /* struct(10)[87]; struct{char herotype, attrib1, attrib2, attrib3, ae_cost, where_to_use, unkn6, target_type, range, fight;} */
 #define SPELLS_INDEX                    (0x0d03)    /* struct(2)[8]; struct{signed char first, length;}; { {1,5}, {6,12}, {18,6}, {24,3}, {27,6}, {33,5}, {38,7}, {45,4} } */
 #define SPELLS_INDEX2                   (0x0d13)    /* struct(2)[4]; struct{signed char first, length;}; { {49,9}, {58,2}, {60,16}, {76,10} } */
 #define MAGIC_SCHOOLS_1                 (0x0d1b)    /* short[7]; array terminated by -1 */
@@ -68,7 +68,7 @@
 #define MAGIC_SCHOOLS_9                 (0x0d87)    /* short[8]; array terminated by -1 */
 #define MAGIC_SCHOOLS_INDEX             (0x0d97)    /* RealPt[9] */
 #define SPELL_HANDLERS                  (0x0dbb)    /* long[86]; function pointer[86] */
-#define MON_SPELL_DESCRIPTIONS          (0x0f13)    /* struct(8)[15]; struct{char cost, mode, unkn1, attrib1, attrib2, attrib3, vs_mr, ani_id;} */
+#define MON_SPELL_DESCRIPTIONS          (0x0f13)    /* struct(8)[15]; struct{char ae_cost, mode, unkn1, attrib1, attrib2, attrib3, vs_mr, ani_id;} */
 #define MON_SPELL_REPERTOIRE            (0x0f8b)    /* struct(5)[11]; struct{char spells[5];} */
 #define MON_SPELL_HANDLERS              (0x0fc2)    /* long[15]; function pointer[15] */
 #define SKILL_DESCRIPTIONS              (0x0ffe)    /* struct(4)[52]; struct{signed char attrib1, attrib2, attrib3, max_inc;} */
@@ -1241,7 +1241,7 @@
 #define SPELL_SELECT_ONES               (0xac30)    /* signed char[12]; { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } */
 #define ANALUES_ITEMS                   (0xac3c)    /* struct(5)[28]; struct{signed short item_id, barrier; signed char dtp;} */
 #define HEXENKNOTEN_GFX_BUF             (0xacc8)    /* RealPt */
-#define MONSTER_SPELL_COST              (0xaccc)    /* signed short */
+#define MONSTER_SPELL_AE_COST           (0xaccc)    /* signed short */
 #define SELECT_SKILL_LVLUP              (0xacce)    /* char[6]; "%s~%d" */
 #define SELECT_SKILL_DEFAULTS           (0xacd4)    /* signed char[6]; {44, 45, 46, -1, -1, -1} */
 #define ALCHEMY_RECIPES                 (0xacda)    /* struct(28)[13] */

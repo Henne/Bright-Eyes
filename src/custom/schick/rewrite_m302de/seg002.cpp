@@ -3338,7 +3338,7 @@ void passages_recalc(void)
 		 * summer -> 2
 		 * spring, autumn -> 0 */
 
-	for (i = 0; i < 45; p += SIZEOF_SEA_ROUTE, i++) {
+	for (i = 0; i < NR_SEA_ROUTES; p += SIZEOF_SEA_ROUTE, i++) {
 
 		if (dec_ptr_bs(p + SEA_ROUTE_PASSAGE_TIMER) == -1) {
 			/* ship of a sea passage has left yesterday -> set up a new ship of this passage */
@@ -3374,11 +3374,11 @@ void passages_reset(void)
 	Bit8u *p = p_datseg + SEA_ROUTES;
 
 #ifdef M302de_ORIGINAL_BUGFIX
-	for (i = 0; i < 45; p += SIZEOF_SEA_ROUTE, i++)
+	for (i = 0; i < NR_SEA_ROUTES; p += SIZEOF_SEA_ROUTE, i++)
 #else
 	/* Orig-BUG: the loop operates only on the first element
 		sizeof(element) == 8 */
-	for (i = 0; i < 45; i++)
+	for (i = 0; i < NR_SEA_ROUTES; i++)
 #endif
 	{
 		if (!host_readbs(p + SEA_ROUTE_PASSAGE_TIMER)) {
@@ -4591,17 +4591,17 @@ signed short compare_name(Bit8u *name)
  *
  * \param   hero        pointer to the hero
  * \param   attrib      number of the attribute
- * \param   bonus       handicap
+ * \param   handicap    may be positive or negative. The higher the value, the harder the test.
  * \return              the result of the test. > 0: success; <= 0: failure; -99: critical failure
  */
-signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
+signed short test_attrib(Bit8u* hero, signed short attrib, signed short handicap)
 {
 	signed short si = random_schick(20);
 	signed short tmp;
 
 #if !defined(__BORLANDC__)
 	D1_INFO("Eigenschaftsprobe %s auf %s %+d: W20 = %d",
-		(char*)(hero + HERO_NAME2), names_attrib[attrib], bonus, si);
+		(char*)(hero + HERO_NAME2), names_attrib[attrib], handicap, si);
 #endif
 
 	if (si == 20) {
@@ -4611,7 +4611,7 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
 		return -99;
 	} else {
 
-		si += bonus;
+		si += handicap;
 	}
 
 	tmp = host_readbs(hero + 3 * attrib + HERO_ATTRIB) + host_readbs(hero + 3 * attrib + HERO_ATTRIB_MOD);
@@ -4631,17 +4631,17 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
  * \param   attrib1     attribute 1
  * \param   attrib2     attribute 2
  * \param   attrib3     attribute 3
- * \param   bonus       handycap
+ * \param   handicap    may be positive or negative. The higher the value, the harder the test.
  * \return              a test is positive if the return value is greater than zero
  */
 
-signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib2, signed short attrib3, signed char difficulty)
+signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib2, signed short attrib3, signed char handicap)
 {
 #ifndef M302de_FEATURE_MOD
 	/* Feature mod 6: The implementation of the skill test logic differs from the original DSA2/3 rules.
-	 * It is sometimes called the 'pool' variant, where '3W20 + difficulty' is compared to the sum of the attributes.
+	 * It is sometimes called the 'pool' variant, where '3W20 + handicap' is compared to the sum of the attributes.
 	 * It is significantly easier than the original rule, where each individuall roll must be at most the corresponding attribute,
-	 * where positive difficulty must be used up during the process, and negative difficulty may be used for compensation. */
+	 * where positive handicap must be used up during the process, and negative handicap may be used for compensation. */
 	signed short i;
 	signed short rolls_sum;
 	signed short tmp;
@@ -4652,7 +4652,7 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 
 #if !defined(__BORLANDC__)
 	D1_INFO(" (%s/%s/%s) %+d -> ",
-		names_attrib[attrib1], names_attrib[attrib2], names_attrib[attrib3], difficulty);
+		names_attrib[attrib1], names_attrib[attrib2], names_attrib[attrib3], handicap);
 #endif
 
 	for (i = 0; i < 3; i++) {
@@ -4675,7 +4675,7 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 		rolls_sum += tmp;
 	}
 
-	rolls_sum += difficulty;
+	rolls_sum += handicap;
 
 	tmp = host_readbs(hero + 3 * attrib1 + HERO_ATTRIB) +
 		host_readbs(hero + 3 * attrib1 + HERO_ATTRIB_MOD) +
@@ -4693,7 +4693,7 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 #else
 	/* Here, the original DSA2/3 skill test logic is implemented.
 	 * WARNING: This makes skill tests, and thus the game, significantly harder!
-	 * Note that we are not implementing the DSA4 rules, where tests with a positive difficulty are yet harder. */
+	 * Note that we are not implementing the DSA4 rules, where tests with a positive handicap are yet harder. */
 	signed short i;
 	signed short tmp;
 	signed short nr_rolls_1 = 0;
@@ -4744,43 +4744,43 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 
 		if (!fail) {
 			tmp -= attrib[i];
-			if (difficulty <= 0) {
+			if (handicap <= 0) {
 				if (tmp > 0) {
-					if (tmp > -difficulty) {
+					if (tmp > -handicap) {
 						fail = 1;
 #if !defined(__BORLANDC__)
 						D1_INFO(" zu hoch!");
 #endif
 					} else  {
-						difficulty += tmp;
+						handicap += tmp;
 					}
 				}
 			}
-			if (difficulty > 0) {
+			if (handicap > 0) {
 				if (tmp > 0) {
 					fail = 1;
 #if !defined(__BORLANDC__)
 					D1_INFO(" zu hoch!");
 #endif
 				} else {
-					difficulty += tmp;
-					if (difficulty < 0) {
-						difficulty = 0;
+					handicap += tmp;
+					if (handicap < 0) {
+						handicap = 0;
 					}
 				}
 			}
 		}
 	}
-	if (fail || (difficulty > 0)) {
+	if (fail || (handicap > 0)) {
 #if !defined(__BORLANDC__)
 		D1_INFO(" -> nicht bestanden\n");
 #endif
 		return 0;
 	} else {
 #if !defined(__BORLANDC__)
-		D1_INFO(" -> bestanden mit %d.\n",-difficulty);
+		D1_INFO(" -> bestanden mit %d.\n",-handicap);
 #endif
-		return 1 - difficulty;
+		return 1 - handicap;
 	}
 #endif
 }

@@ -45,7 +45,7 @@ void tevent_053(void)
 /* Prem <-> Skjal: inn "Langschiff" */
 void tevent_054(void)
 {
-	TRV_found_inn(47, 68);
+	TRV_found_inn(TOWNS_BRENDHIL, 68);
 }
 
 /* Path ??? */
@@ -68,7 +68,7 @@ void tevent_055(void)
 
 void tevent_056(void)
 {
-	TRV_found_inn(48, 69);
+	TRV_found_inn(TOWNS_MANRIN, 69);
 }
 
 void tevent_057(void)

@@ -796,7 +796,7 @@ void spell_ueber_eis(void)
 void spell_balsam(void)
 {
 
-	signed short le;
+	signed short le_to_heal;
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
@@ -808,7 +808,7 @@ void spell_balsam(void)
 		((host_readbs(get_spelluser() + HERO_NPC_ID) != 0) && ds_readws(IN_FIGHT) != 0))
 	{
 		/* automatic */
-		le = (host_readws(get_spelltarget() + HERO_LE_ORIG) - host_readws(get_spelltarget() + HERO_LE)) / 2;
+		le_to_heal = (host_readws(get_spelltarget() + HERO_LE_ORIG) - host_readws(get_spelltarget() + HERO_LE)) / 2;
 	} else {
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -817,32 +817,38 @@ void spell_balsam(void)
 			(char*)get_spelltarget() + HERO_NAME2);
 
 		/* ask question */
-		le = GUI_input(Real2Host(ds_readd(DTP2)), 2);
+		le_to_heal = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 
 		/* terminate string */
 		host_writeb(Real2Host(ds_readd(DTP2)), 0);
 	}
 
-	if (le != -1) {
+	if (le_to_heal != -1) {
 
-		if (le < 7) {
-			/* costs are at least 7 */
+		if (le_to_heal < 7) {
+			/* AE-cost is at least 7 */
 			ds_writew(SPELL_SPECIAL_AECOST, 7);
+			/* TODO: potential ORIGINAL-BUG: What if le_to_heal is bigger than the missing LE? */
 		} else {
-			if (host_readws(get_spelltarget() + HERO_LE_ORIG) - host_readws(get_spelltarget() + HERO_LE) < le) {
+			if (host_readws(get_spelltarget() + HERO_LE_ORIG) - host_readws(get_spelltarget() + HERO_LE) < le_to_heal) {
+				/* spellcaster wants to heal more LE than wiche are missing */
 				ds_writew(SPELL_SPECIAL_AECOST, host_readws(get_spelltarget() + HERO_LE_ORIG) - host_readws(get_spelltarget() + HERO_LE));
-				le = ds_readws(SPELL_SPECIAL_AECOST);
+				le_to_heal = ds_readws(SPELL_SPECIAL_AECOST);
+				/* reduce le and AE_COST to the amount of LE which is actually missing */
+				/* This is in accordance with DSA3 rules. The spell costs are at least 7 AE, unless the spellcaster does not have 7 AE any more. */
 			} else {
-				ds_writew(SPELL_SPECIAL_AECOST, le);
+				ds_writew(SPELL_SPECIAL_AECOST, le_to_heal);
 			}
 		}
 
 		if (host_readws(get_spelluser() + HERO_AE) < ds_readws(SPELL_SPECIAL_AECOST)) {
+			/* not enough AE */
 			ds_writew(SPELL_SPECIAL_AECOST, host_readws(get_spelluser() + HERO_AE));
-			le = ds_readws(SPELL_SPECIAL_AECOST);
+			le_to_heal = ds_readws(SPELL_SPECIAL_AECOST);
+			/* reduce AE-costs and 'le_to_heal' to the available AE */
 		}
 
-		add_hero_le(get_spelltarget(), le);
+		add_hero_le(get_spelltarget(), le_to_heal);
 	}
 }
 
@@ -858,6 +864,7 @@ void spell_hexenspeichel(void)
 	ds_writew(SPELL_SPECIAL_AECOST, 0);
 
 	if (get_spelltarget() == get_spelluser()) {
+		/* spell cannot be used to heal yourself */
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),

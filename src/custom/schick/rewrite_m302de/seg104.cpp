@@ -103,7 +103,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 
 	hero_use_ingrendients(hero, recipe_index);
 
-	sub_ae_splash(hero, host_readws(r_ptr + RECIPE_AE));
+	sub_ae_splash(hero, host_readws(r_ptr + RECIPE_AE_COST));
 
 	and_ptr_bs(hero + HERO_FLAGS1, 0xf7); /* unset 'brewing' flag */
 	host_writeb(hero + HERO_RECIPE_TIMER, 0);
@@ -111,7 +111,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 	host_writeb(hero + HERO_RECIPE_ID, 0);
 	host_writeb(hero + HERO_HOSTEL_ID, 0);
 
-	if ((test_skill(hero, TA_ALCHIMIE, host_readbs(r_ptr + RECIPE_DIFFICULTY)) > 0) && (flag_abort == 0))
+	if ((test_skill(hero, TA_ALCHIMIE, host_readbs(r_ptr + RECIPE_HANDICAP)) > 0) && (flag_abort == 0))
 	{
 		/* success */
 
@@ -207,7 +207,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 				if (hero_has_ingrendients(hero, recipe_index)) {
 
-					if (ds_readws((ALCHEMY_RECIPES + RECIPE_AE) + recipe_index * SIZEOF_RECIPE) > host_readws(hero + HERO_AE)) {
+					if (ds_readws((ALCHEMY_RECIPES + RECIPE_AE_COST) + recipe_index * SIZEOF_RECIPE) > host_readws(hero + HERO_AE)) {
 						/* AE not sufficient => brewing not possible */
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),

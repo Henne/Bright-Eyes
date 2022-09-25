@@ -425,14 +425,16 @@ void TRV_found_replenish_place(signed short a0)
 	}
 }
 
-void TRV_found_inn(signed short city, signed short type)
+void TRV_found_inn(signed short town_id, signed short type)
+/* strange: why does an inn in the countryside need a town_id?
+ * This feels like a dirty hack... */
 {
 	load_ani(12);
 	draw_main_screen();
 	init_ani(0);
 
 	if (GUI_bool(get_tx(23))) {
-		ds_writew(CITYINDEX, city);
+		ds_writew(CITYINDEX, town_id);
 		ds_writew(TYPEINDEX, type);
 		ds_writeb(LOCATION, LOCATION_INN);
 
@@ -648,7 +650,7 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 /* Vaermhag <-> Varnheim: inn "Golfblick" */
 void tevent_001(void)
 {
-	TRV_found_inn(40, 65);
+	TRV_found_inn(TOWNS_DASPOTA, 65);
 }
 
 /* Varnheim <-> Daspota: hunter */
@@ -979,7 +981,7 @@ void tevent_009(void)
 
 void tevent_010(void)
 {
-	TRV_found_inn(43, 66);
+	TRV_found_inn(TOWNS_VARNHEIM, 66);
 }
 
 void tevent_012(void)

@@ -178,9 +178,9 @@ RealPt get_proper_hero(signed short skill)
  *
  * \param   hero        hero which should be tested
  * \param   skill       the skill to test
- * \param   bonus       the modification
+ * \param   handicap    may be positive or negative. The higher the value, the harder the test.
  */
-signed short test_skill(Bit8u *hero, signed short skill, signed char difficulty)
+signed short test_skill(Bit8u *hero, signed short skill, signed char handicap)
 {
 	signed short randval;
 	signed short e_skillval;
@@ -189,7 +189,7 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char difficulty)
 	if ((skill >= TA_SCHUSSWAFFEN) && (skill <= TA_SINNESSCHAERFE)) {
 
 #if !defined(__BORLANDC__)
-		D1_INFO("%s Talentprobe %s %+d (TaW %d)",(char*)(hero + HERO_NAME2), names_skill[skill], difficulty, host_readbs(hero + HERO_TALENTS + skill));
+		D1_INFO("%s Talentprobe %s %+d (TaW %d)",(char*)(hero + HERO_NAME2), names_skill[skill], handicap, host_readbs(hero + HERO_TALENTS + skill));
 #endif
 
 		/* special test if skill is a range weapon skill */
@@ -203,7 +203,7 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char difficulty)
 			/* add skill value */
 			e_skillval += host_readbs(hero + HERO_TALENTS + skill);
 			/* sub handycap */
-			e_skillval -= difficulty;
+			e_skillval -= handicap;
 
 			randval = random_schick(20);
 
@@ -247,9 +247,9 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char difficulty)
 		}
 
 		/* do the test */
-		difficulty -= host_readbs(hero + HERO_TALENTS + skill);
+		handicap -= host_readbs(hero + HERO_TALENTS + skill);
 
-		return test_attrib3(hero, ds_readbs(SKILL_DESCRIPTIONS + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 1) + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 2) + skill * 4), difficulty);
+		return test_attrib3(hero, ds_readbs(SKILL_DESCRIPTIONS + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 1) + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 2) + skill * 4), handicap);
 
 	}
 
@@ -308,7 +308,7 @@ signed short select_skill(void)
 	return l_si;
 }
 
-signed short use_skill(signed short hero_pos, signed char bonus, signed short skill)
+signed short use_skill(signed short hero_pos, signed char handicap, signed short skill)
 {
 	signed short l_si;
 	signed short l_di;
@@ -359,11 +359,11 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 						/* set patient timer */
 						host_writed(patient + HERO_HEAL_TIMER, 0x5460); /* 4 hours */
 
-						if (test_skill(hero, TA_HEILEN_GIFT, bonus) > 0) {
+						if (test_skill(hero, TA_HEILEN_GIFT, handicap) > 0) {
 
 							timewarp(0x708);
 
-							if (test_skill(hero, TA_HEILEN_GIFT, ds_readbs(POISON_PRICES + 2 * poison) + bonus) > 0) {
+							if (test_skill(hero, TA_HEILEN_GIFT, ds_readbs(POISON_PRICES + 2 * poison) + handicap) > 0) {
 								/* success */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ttx(690),
@@ -386,7 +386,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 										le = GUI_input(get_ttx(693), 2);
 									} while (le <= 0);
 
-									if ((l_si = test_skill(hero, TA_HEILEN_GIFT, le + bonus)) > 0) {
+									if ((l_si = test_skill(hero, TA_HEILEN_GIFT, le + handicap)) > 0) {
 
 										sprintf((char*)Real2Host(ds_readd(DTP2)),
 											(char*)get_ttx(691),
@@ -447,7 +447,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 			if (patient_pos != -1) {
 				patient = get_hero(patient_pos);
 
-				skill_cure_disease(hero, patient, bonus, 0);
+				skill_cure_disease(hero, patient, handicap, 0);
 			}
 			break;
 		}
@@ -478,8 +478,8 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 					} else {
 						host_writed(patient + HERO_HEAL_TIMER, 0x1fa40L); /* 1 day */
 
-						if (test_skill(hero, TA_HEILEN_WUNDEN, bonus) > 0) {
-							if (test_skill(hero, TA_HEILEN_WUNDEN, bonus) > 0) {
+						if (test_skill(hero, TA_HEILEN_WUNDEN, handicap) > 0) {
+							if (test_skill(hero, TA_HEILEN_WUNDEN, handicap) > 0) {
 
 								l_si = (host_readbs(hero + (HERO_TALENTS + TA_HEILEN_WUNDEN)) > 1) ? host_readbs(hero + (HERO_TALENTS + TA_HEILEN_WUNDEN)) : 1;
 
@@ -546,7 +546,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 			} else {
 
-				if (test_skill(hero, TA_AKROBATIK, bonus) > 0) {
+				if (test_skill(hero, TA_AKROBATIK, handicap) > 0) {
 
 					money = random_interval(10, 200);
 
@@ -580,7 +580,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 			} else {
 
-				if (test_skill(hero, TA_MUSIZIEREN, bonus) > 0) {
+				if (test_skill(hero, TA_MUSIZIEREN, handicap) > 0) {
 
 					money = random_interval(100, 300);
 
@@ -608,7 +608,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 		}
 		case 43 : {
 
-			if (test_skill(hero, TA_FALSCHSPIEL, bonus) > 0) {
+			if (test_skill(hero, TA_FALSCHSPIEL, handicap) > 0) {
 
 				money = random_interval(500, 1000);
 
@@ -636,7 +636,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 		}
 		case 49 : {
 
-			if (test_skill(hero, TA_TASCHENDIEBSTAHL, bonus) > 0) {
+			if (test_skill(hero, TA_TASCHENDIEBSTAHL, handicap) > 0) {
 
 				money = random_interval(500, 1000);
 
@@ -683,7 +683,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 	return l_si;
 }
 
-signed short GUI_use_skill(signed short hero_pos, signed char bonus)
+signed short GUI_use_skill(signed short hero_pos, signed char handicap)
 {
 	signed short skill;
 	Bit8u *hero;
@@ -695,10 +695,10 @@ signed short GUI_use_skill(signed short hero_pos, signed char bonus)
 	}
 
 	skill = select_skill();
-	return use_skill(hero_pos, bonus, skill);
+	return use_skill(hero_pos, handicap, skill);
 }
 
-signed short GUI_use_skill2(signed short bonus, Bit8u *msg)
+signed short GUI_use_skill2(signed short handicap, Bit8u *msg)
 {
 	signed short hero_pos;
 	signed short skill;
@@ -716,7 +716,7 @@ signed short GUI_use_skill2(signed short bonus, Bit8u *msg)
 			hero_pos = -1;
 		}
 		if (hero_pos != -1) {
-			return use_skill(hero_pos, (signed char)bonus, skill);
+			return use_skill(hero_pos, (signed char)handicap, skill);
 		}
 	}
 

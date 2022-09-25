@@ -68,7 +68,7 @@ unsigned short prepare_passages(void)
 	ent = p_datseg + SEA_ROUTES;
 #endif
 
-	for (i = prepared = 0; i < 45; ent += SIZEOF_SEA_ROUTE, i++) {
+	for (i = prepared = 0; i < NR_SEA_ROUTES; ent += SIZEOF_SEA_ROUTE, i++) {
 		if (!host_readbs(Real2Host(ent) + SEA_ROUTE_PASSAGE_TIMER) && /* passage is available today */
 			(host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_1) == ds_readb(CURRENT_TOWN) || 
 			(host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_2) == ds_readb(CURRENT_TOWN)))) {
@@ -205,7 +205,7 @@ unsigned short get_next_passages(unsigned short type)
 
 	entry = p_datseg + SEA_ROUTES;
 
-	for (i = destinations = 0; i < 45; entry += SIZEOF_SEA_ROUTE, i++) {
+	for (i = destinations = 0; i < NR_SEA_ROUTES; entry += SIZEOF_SEA_ROUTE, i++) {
 
 		if (type == 1) {
 			/* check passages in the next two days */
