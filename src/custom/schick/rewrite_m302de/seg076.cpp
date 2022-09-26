@@ -155,7 +155,6 @@ void DNG_door(signed short action)
 
 						if (div16(host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == 1) /* if 0001.... door is closed */
 						{
-
 							/* ASSERT */
 							/*
 							if (ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_OPEN_DOOR) {
@@ -188,7 +187,6 @@ void DNG_door(signed short action)
 
 						} else if (div16(host_readbs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == 2) /* 0010.... i.e. door is open */
 						{
-
 							/* ASSERT */
 							/*
 							if (ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_CLOSE_DOOR) {
