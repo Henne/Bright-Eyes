@@ -1334,7 +1334,7 @@
 #define AIL_SEQUENCE                    (0xbd21)    /* signed short */
 #define AIL_MUSIC_DRIVER_ID             (0xbd23)    /* signed short */
 #define PREGAME_STATE                   (0xbd25)    /* unsigned short; {0,1} */
-#define CITYCAMP_CITY                   (0xbd27)    /* unsigned char; {0 = camp in dungeon, 1} */
+#define CITYCAMP_CITY                   (0xbd27)    /* unsigned char; { 0 = camp in a dungeon, 1 = camp in a town } */
 #define CURRENT_FIGHT                   (0xbd28)    /* RealPt */
 #define SCENARIO_BUF                    (0xbd2c)    /* long */
 #define FIGHTOBJ_BUF                    (0xbd30)    /* RealPt */

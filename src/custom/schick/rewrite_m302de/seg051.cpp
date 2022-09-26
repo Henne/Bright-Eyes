@@ -373,7 +373,7 @@ void do_wildcamp(void)
 		ds_writeb(WILDCAMP_HERBSTATUS + i, ds_writeb(WILDCAMP_REPLSTATUS + i, 0));
 	}
 
-	turnaround();
+	leave_location();
 }
 
 signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)

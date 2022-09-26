@@ -1243,8 +1243,8 @@ static int n_seg025(unsigned short offs)
 		return 1;
 	}
 	case 0xea9: {
-		D1_LOG("near turnaround();\n");
-		turnaround();
+		D1_LOG("near leave_location();\n");
+		leave_location();
 		return 1;
 	}
 	case 0x114a: {
@@ -7065,8 +7065,8 @@ static int seg025(unsigned short offs) {
 		return 1;
 	}
 	case 0x25: {
-		D1_LOG("turnaround();\n");
-		turnaround();
+		D1_LOG("leave_location();\n");
+		leave_location();
 		return 1;
 	}
 	case 0x2a: {

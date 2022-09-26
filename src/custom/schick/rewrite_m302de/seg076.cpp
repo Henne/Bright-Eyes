@@ -557,7 +557,7 @@ signed short DNG_step(void)
 	} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && ds_readw(DNG_EXTRA_ACTION) == 0)
 	{
 		ds_writeb(LOCATION, LOCATION_CITYCAMP);
-		ds_writeb(CITYCAMP_CITY, 0);
+		ds_writeb(CITYCAMP_CITY, 0); /* CITYCAMP takes place in dungeon */
 		l_di = 1;
 
 	} else if (ds_readws(ACTION) == ACTION_ID_LEFT)

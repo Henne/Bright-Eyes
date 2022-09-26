@@ -54,14 +54,14 @@ void do_tavern(void)
 		if (ds_readds(DAY_TIMER) < HOURS(11) && ds_readds(DAY_TIMER) > HOURS(3)) {
 
 			GUI_output(get_ttx(801));
-			turnaround();
+			leave_location();
 			return;
 		}
 
 	} else if (ds_readds(DAY_TIMER) < HOURS(16) && ds_readds(DAY_TIMER) > HOURS(3)) {
 
 			GUI_output(get_ttx(481));
-			turnaround();
+			leave_location();
 			return;
 	}
 
@@ -233,7 +233,7 @@ void do_tavern(void)
 	}
 
 	copy_palette();
-	turnaround();
+	leave_location();
 }
 
 void octopus_attack_wrapper(void)

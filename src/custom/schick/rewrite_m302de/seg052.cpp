@@ -182,6 +182,10 @@ void do_citycamp(void)
 					l_di = 0;
 
 					if (ds_readws(CAMP_INCIDENT) == -1) {
+						/* with guards: (hours - 1) % chance for an incident */
+						/* without guards: (4*hours - 1) % chance for an incident */
+						/* For a 1 hour rest with guards this will be 0% chance! */
+						/* TODO: maybe change it to random_schick(100) - 1 to fix that */
 						if ((ds_readbs(CITYCAMP_GUARDS) == -1 ? 4 * hours : hours) > random_schick(100)) {
 							ds_writews(CAMP_INCIDENT, random_schick(3) - 1);
 						}
@@ -252,7 +256,7 @@ void do_citycamp(void)
 							}
 
 						} else {
-							/* in a city */
+							/* in a town */
 							done = 0;
 							loose_random_item(get_hero(get_random_hero()), 100, get_ttx(832));
 						}
@@ -288,7 +292,8 @@ void do_citycamp(void)
 	}
 
 	ds_writeb(LOCATION_BAK, 0);
-	turnaround();
+
+	leave_location();
 }
 
 #if !defined(__BORLANDC__)

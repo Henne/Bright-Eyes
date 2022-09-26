@@ -4,7 +4,7 @@ namespace M302de {
 /* 0x20 */
 void do_location(void);
 /* 0x25 */
-void turnaround(void);
+void leave_location(void);
 /* 0x2a */
 signed short game_options(void);
 /* 0x2f */
