@@ -711,7 +711,8 @@ void spell_foramen(void)
 	signed short x;
 	signed short y;
 
-	if (ds_readws(DNG_EXTRA_ACTION) != 5) {
+	if (ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_UNLOCK_DOOR) {
+		/* check if the party is in front of a closed door */
 		return;
 	}
 
@@ -731,7 +732,7 @@ void spell_foramen(void)
 
 	DNG_open_door();
 
-	add_hero_ap(get_spelluser(), 1);
+	add_hero_ap(get_spelluser(), 1); /* hero gets 1 AP for successful lock pick */
 
 	ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 	ds_writew(REDRAW_MENUICONS, 1);

@@ -1414,7 +1414,7 @@
 #define GGST_CURSOR                     (0xcecf)    /* struct(64); struct{char unkn[32]; unsigned short mask[16];} */
 #define MOUSE_BG_BAK                    (0xcf0f)    /* unsigned char[256] */
 #define DNG_INIT_FLAG                   (0xd00f)    /* unsigned short; {0,1} */
-#define DNG_EXTRA_ACTION                (0xd011)    /* unsigned short; {0 = warehouse,1 = open door,2 = open chest,3 = close door,4 = lever,5 = smash door} */
+#define DNG_MENU_MODE                   (0xd011)    /* unsigned short; {0 = warehouse (?), 1: 7th symbol is "open door" , 2: 7th symbol is "open chest", 3: 7th symbol is "close door", 4: 7th symbol is "lever", 5: 7th to 9th symbol are the different options to smash/unlock a door } */
 #define REDRAW_MENUICONS                (0xd013)    /* unsigned short; {0,1} */
 #define BUFFER9_PTR2                    (0xd015)    /* RealPt; copy of BUFFER9_PTR */
 #define BUFFER9_PTR3                    (0xd019)    /* RealPt; copy of BUFFER9_PTR */
