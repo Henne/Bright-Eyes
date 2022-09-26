@@ -530,7 +530,7 @@ void item_bag(void)
 
 	Bit8u *ptr;
 
-	if ((ds_readbs(DUNGEON_INDEX) == 7) && (ds_readbs(DUNGEON_LEVEL) == 0)) {
+	if ((ds_readbs(DUNGEON_INDEX) == DUNGEONS_RUINE_DES_SCHWARZMAGIERS) && (ds_readbs(DUNGEON_LEVEL) == 0)) {
 		/* set ptr to the map */
 		ptr = p_datseg + DNG_MAP;
 
@@ -543,6 +543,7 @@ void item_bag(void)
 		D1_INFO("\t\tEventuell kann das Spiel nicht mehr erfolgreich beendet werden.\n");
 	}
 #endif
+	/* TODO: avoid dropping the bag when not in the first level of the mage ruin. (via: 'nothing happens') */
 
 	/* print message */
 	GUI_output(get_ttx(775));

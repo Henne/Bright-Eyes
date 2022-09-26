@@ -137,17 +137,17 @@ void DNG_door(signed short action)
 				if (ds_readws(DNG_EXTRA_ACTION) != 5)
 				{
 
-					if (ds_readb(DUNGEON_INDEX) == 15 && pos == 0x1903 && ds_readb(DNG15_UNKNOWN_FLAG) != 0)
+					if (ds_readb(DUNGEON_INDEX) == DUNGEONS_HYGGELIKS_RUINE && pos == 0x1903 && ds_readb(DNG15_UNKNOWN_FLAG) != 0)
 					{
 						GUI_output(get_tx(18));
 
-					} else if (!(ds_readb(DUNGEON_INDEX) == 11 && pos == 0xc08 && ds_readb(DNG11_LEVER_FLAG) != 4) &&
-							!(ds_readb(DUNGEON_INDEX) == 6 && pos == 0xb01 && ds_readb(DNG06_PITDOOR_FLAG)) &&
-							!(ds_readb(DUNGEON_INDEX) == 12 && ds_readb(DNG12_WATERTRAP_WATER_RUNS)))
+					} else if (!(ds_readb(DUNGEON_INDEX) == DUNGEONS_PIRATENHOEHLE && pos == 0xc08 && ds_readb(DNG11_LEVER_FLAG) != 4) &&
+							!(ds_readb(DUNGEON_INDEX) == DUNGEONS_DASPOTASCHATZ && pos == 0xb01 && ds_readb(DNG06_PITDOOR_FLAG)) &&
+							!(ds_readb(DUNGEON_INDEX) == DUNGEONS_ZWERGENFESTE && ds_readb(DNG12_WATERTRAP_WATER_RUNS)))
 					{
 						/* for this door works an IRON KEY [first type] */
 						/* BEWARE: there are two types of IRON KEYs in the game */
-						if (ds_readb(DUNGEON_INDEX) == 11 && pos == 0xc08 && get_first_hero_with_item(ITEM_KEY_IRON_1) != -1) /* in pirate cave (Manrek) */
+						if (ds_readb(DUNGEON_INDEX) == DUNGEONS_PIRATENHOEHLE && pos == 0xc08 && get_first_hero_with_item(ITEM_KEY_IRON_1) != -1)
 						{
 							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x02); /* effect: ......1. i.e. door is unlocked */
 						}
@@ -191,6 +191,7 @@ void DNG_door(signed short action)
 						}
 					}
 				} else {
+					/* smash door */
 					play_voc(ARCHIVE_FILE_FX14_VOC);
 
 					if (check_heroes_KK(host_readbs((Bit8u*)ptr + 2)))
@@ -519,7 +520,7 @@ signed short DNG_step(void)
 		/* merge groups or reach hands through the mirror */
 		pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
 
-		if ((ds_readb(DUNGEON_INDEX) == 15 && pos == 0x1801) || pos == 0x1805)
+		if ((ds_readb(DUNGEON_INDEX) == DUNGEONS_HYGGELIKS_RUINE && pos == 0x1801) || pos == 0x1805)
 		{
 			GUI_output(get_tx(33));
 
@@ -636,7 +637,7 @@ signed short DNG_step(void)
 		}
 	}
 
-	if (ds_readb(DUNGEON_INDEX) != 0 &&
+	if (ds_readb(DUNGEON_INDEX) != DUNGEONS_NONE &&
 		ds_readbs(DNG_AREA_LOADED) != -1 &&
 		!l_di)
 	{
@@ -780,7 +781,7 @@ void do_dungeon(void)
 
 		set_audio_track(ARCHIVE_FILE_DUNGEON_XMI);
 
-		ds_writed(DNG_GFXTAB, (Bit32u)RealMake(datseg, (!ds_readb(DUNGEON_TYPE) ? DNG_GFXTAB_SHIPS : (ds_readb(DUNGEON_TYPE) == 1 ? DNG_GFXTAB_MARBLES : DNG_GFXTAB_STONES))));
+		ds_writed(DNG_GFXTAB, (Bit32u)RealMake(datseg, (!ds_readb(DUNGEON_GFX_STYLE) ? DNG_GFXTAB_WOOD : (ds_readb(DUNGEON_GFX_STYLE) == 1 ? DNG_GFXTAB_MARBLE : DNG_GFXTAB_STONE))));
 
 		ds_writew(DNG_INIT_FLAG, 0);
 		ds_writew(REQUEST_REFRESH, 1);
@@ -994,7 +995,7 @@ void DNG_see_lever(void)
 
 	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
 
-	if (ds_readbs(DUNGEON_INDEX) == 15 &&
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_HYGGELIKS_RUINE &&
 		(target_pos == 0x1801 || target_pos == 0x1805) &&
 		(!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
 	{

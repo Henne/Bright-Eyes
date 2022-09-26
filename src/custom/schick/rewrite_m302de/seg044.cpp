@@ -721,7 +721,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
  *          This is used for "Blitz", "Fulminictus", "Ignifaxius"
  *
  * \param   v1          0 or 1
- * \param   p           ????
+ * \param   p           pointer to an ENEMY_SHEET entry, ????
  * \param   v2          4 of 99
  * \param   target      the id of the target
  * \param   caster      the id of the caster
@@ -743,7 +743,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 
 
 	/* get a pointer from an array where the Monster-ID serves as index */
-	lp2 = Real2Host(ds_readd(GFX_ANI_INDEX + host_readbs(p + 1) * 4));
+	lp2 = Real2Host(ds_readd(GFX_ANI_INDEX + host_readbs(p + ENEMY_SHEET_GFX_ID) * 4));
 
 	FIG_search_obj_on_cb((signed char)caster, &x_caster, &y_caster);
 	FIG_search_obj_on_cb((signed char)target, &x_target, &y_target);
@@ -768,7 +768,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	}
 
 	if ((signed char)caster == (signed char)target)
-		dir = host_readbs(p + 0x27);
+		dir = host_readbs(p + ENEMY_SHEET_VIEWDIR);
 
 	/* this is true if a monster attacks a hero */
 	l1 = (v2 == 4) ? 29 : 16;
@@ -776,18 +776,18 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	lp1 = p_datseg + (FIG_ANISHEETS + 1) + v1 * 0xf3;
 
 	/* this is true if a monster attacks a hero */
-	l1 += (v2 == 4) ? dir : host_readbs(p + 0x27);
+	l1 += (v2 == 4) ? dir : host_readbs(p + ENEMY_SHEET_VIEWDIR);
 
 	ds_writeb(FIG_ANISHEETS + v1 * 0xf3, get_seq_header(host_readws(lp2 + l1 * 2)));
 
-	ds_writeb((FIG_ANISHEETS + 242) + v1 * 0xf3, host_readbs(p + 1));
+	ds_writeb((FIG_ANISHEETS + 242) + v1 * 0xf3, host_readbs(p + ENEMY_SHEET_GFX_ID));
 
-	if ((host_readbs(p + 0x27) != dir) && (v2 == 4)) {
+	if ((host_readbs(p + ENEMY_SHEET_VIEWDIR) != dir) && (v2 == 4)) {
 
 		ds_writeb(FIG_ANISHEETS + v1 * 0xf3, 0);
 		l3 = l2 = -1;
 
-		dir2 = host_readbs(p + 0x27);
+		dir2 = host_readbs(p + ENEMY_SHEET_VIEWDIR);
 		l3 = dir2;
 		dir2++;
 		if (dir2 == 4)
@@ -800,12 +800,12 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 			if (dir2 == 4)
 				dir2 = 0;
 			if (dir2 != dir) {
-				l3 = host_readbs(p + 0x27) + 4;
+				l3 = host_readbs(p + ENEMY_SHEET_VIEWDIR) + 4;
 				l2 = -1;
 			}
 		}
 
-		host_writebs(p + 0x27, (signed char)dir);
+		host_writebs(p + ENEMY_SHEET_VIEWDIR, (signed char)dir);
 
 		lp1 += copy_ani_seq(lp1, host_readws(lp2 + l3 * 2), 1);
 
@@ -842,7 +842,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	host_writeb(lp1, 0xff);
 
 	/* check if the moster sprite ID needs two fields */
-	if (is_in_byte_array(host_readb(p + 1),	p_datseg + TWO_FIELDED_SPRITE_ID)) {
+	if (is_in_byte_array(host_readb(p + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 		memcpy(p_datseg + (FIG_ANISHEETS + 2*0xf3) + v1 * 0xf3, p_datseg + FIG_ANISHEETS + v1 * 0xf3, 0xf3);
 	}
 

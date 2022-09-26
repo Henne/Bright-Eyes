@@ -355,7 +355,7 @@
 #define DUNGEON_LIGHT                   (0x3613)    /* unsigned char; 0 = light is on, 1, 2 = light is off */
 #define SHOW_TRAVEL_MAP                 (0x3614)    /* unsigned char; {0,1} */
 #define HERMIT_VISITED                  (0x3615)    /* unsigned char; {0,1} */
-#define DUNGEON_TYPE                    (0x3616)    /* unsigned char; { 0 = SHIPS, 1 = MARBLES, 2 = STONES } */
+#define DUNGEON_GFX_STYLE               (0x3616)    /* unsigned char; { 0 = wood, 1 = marble, 2 = stone } */
 #define ESTORIK_KNOWN                   (0x3617)    /* unsigned char; {0,1} */
 #define DIALOG_PARTNERS                 (0x3618)    /* struct(38)[10] */
 #define DIALOG_STATES                   (0x3794)    /* struct(8)[160] */
@@ -1126,9 +1126,9 @@
 #define AUTOMAP_SELX                    (0x7de5)    /* signed short */
 #define AUTOMAP_SELY                    (0x7de7)    /* signed short */
 // ?1
-#define DNG_GFXTAB_SHIPS                (0x7dea)    /* struct(18)[88] */
-#define DNG_GFXTAB_STONES               (0x841a)    /* struct(18)[88] */
-#define DNG_GFXTAB_MARBLES              (0x8a4a)    /* struct(18)[88] */
+#define DNG_GFXTAB_WOOD                 (0x7dea)    /* struct(18)[88] */
+#define DNG_GFXTAB_STONE                (0x841a)    /* struct(18)[88] */
+#define DNG_GFXTAB_MARBLE               (0x8a4a)    /* struct(18)[88] */
 #define DNG_STUB3_UNKN0                 (0x907a)    /* unsigned char[22] */
 #define DNG_STUB3_UNKN1                 (0x9090)    /* unsigned char[22] */
 #define DNG_STUB3_UNKN2                 (0x90a6)    /* unsigned char[22] */
@@ -1609,7 +1609,7 @@
 #define LOCKPICK_TRY_COUNTER            (0xe492)    /* signed short; {0..4} */
 #define DUNGEON_FIGHTS_BUF              (0xe494)    /* RealPt; to buffer of size 630 */
 #define DUNGEON_STAIRS_BUF              (0xe498)    /* RealPt; to buffer of size 80 */
-#define DUNGEON_DOORS_BUF               (0xe49c)    /* RealPt; to buffer of size 225 */
+#define DUNGEON_DOORS_BUF               (0xe49c)    /* RealPt; to buffer of size 225 = 45 * 5; each 5-byte entry consists of [pos, ?, smash-handicap, lockpick-handicap, foramen-handicap] */
 #define GET_EXTRA_LOOT                  (0xe4a0)    /* signed short; {0,1} */
 #define ROUTE59_FLAG                    (0xe4a2)    /* unsigned char; {0, 1 = from Kravik, 2 = from Peilinen, 3 = from Skelellen, 4 = from Rovamund} */
 #define TRV_MENU_SELECTION              (0xe4a3)    /* unsigned short */

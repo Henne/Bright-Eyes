@@ -798,28 +798,28 @@ void GUI_print_fight_intro_msg(signed short fight_id)
 	signed short textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
-	if (ds_readbs(DUNGEON_INDEX) == 2) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_VERFALLENE_HERBERGE) {
 		DNG02_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 5) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_GOBLINHOEHLE) {
 		DNG5_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 6) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_DASPOTASCHATZ) {
 		DNG06_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 9) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_KULTSTAETTE_DES_NAMENLOSEN) {
 		DNG09_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 11) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_PIRATENHOEHLE) {
 		DNG11_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 12) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_ZWERGENFESTE) {
 		DNG12_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 13) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_VERLASSENE_MINE) {
 		DNG13_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 14) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_ZWINGFESTE) {
 		DNG14_fight_intro(fight_id);
 	}
 

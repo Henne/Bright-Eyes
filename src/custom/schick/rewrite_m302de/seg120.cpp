@@ -419,7 +419,7 @@ void init_game_state(void)
 	ds_writew(Y_TARGET, 8);
 	ds_writeb(DIRECTION_BAK, 0);
 	ds_writeb(DIRECTION, 0);
-	ds_writeb(DUNGEON_INDEX, 0);
+	ds_writeb(DUNGEON_INDEX, DUNGEONS_NONE);
 
 	ds_writeb(CURRENT_TOWN_BAK, ds_writeb(CURRENT_TOWN, TOWNS_THORWAL));
 

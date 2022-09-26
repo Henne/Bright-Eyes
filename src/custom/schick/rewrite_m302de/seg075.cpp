@@ -319,8 +319,8 @@ void DNG_stub2(void)
 	if ((tmp == 2) || (tmp == 9)) {
 
 		if (div16(ds_readb((VISUAL_FIELD_VALS + 5))) == 15) {
-			DNG_draw_walls( ((ds_readb(DUNGEON_TYPE) == 1) ? 0x4e :
-						((ds_readb(DUNGEON_TYPE) == 2) ? 0x28 : 0x3e)),
+			DNG_draw_walls( ((ds_readb(DUNGEON_GFX_STYLE) == 1) ? 0x4e :
+						((ds_readb(DUNGEON_GFX_STYLE) == 2) ? 0x28 : 0x3e)),
 					0, 0x36);
 		}
 	}
@@ -513,7 +513,7 @@ void DNG_stub5(void)
 }
 
 /**
- * \brief   check for stafflevel >= in current group
+ * \brief   check for stafflevel >= 2 in current group
  *
  * \return              0 = false, 1 = true
  */
@@ -606,7 +606,7 @@ void DNG_timestep(signed short a1)
 			GUI_output(get_tx(23));
 		}
 
-		ds_writeb(DUNGEON_INDEX, 0);
+		ds_writeb(DUNGEON_INDEX, DUNGEONS_NONE);
 
 		/* exit game */
 		ds_writew(GAME_STATE, GAME_STATE_DEAD);
@@ -694,11 +694,11 @@ void DNG_open_door(void)
 
 	memmove(Real2Host(ds_readd(RENDERBUF_PTR)) + 0x7530, Real2Host(ds_readd(RENDERBUF_PTR)), 0x6db0);
 
-	if (!ds_readb(DUNGEON_TYPE)) {
+	if (!ds_readb(DUNGEON_GFX_STYLE)) {
 		x = 45;
 		y = 38;
 		iters = 19;
-	} else if (ds_readb(DUNGEON_TYPE) == 1) {
+	} else if (ds_readb(DUNGEON_GFX_STYLE) == 1) {
 		x = 47;
 		y = 30;
 		iters = 20;
@@ -739,15 +739,15 @@ void DNG_close_door(void)
 
 	memmove(Real2Host(ds_readd(RENDERBUF_PTR)) + 0x7530, Real2Host(ds_readd(RENDERBUF_PTR)), 0x6db0);
 
-	if (!ds_readb(DUNGEON_TYPE)) {
+	if (!ds_readb(DUNGEON_GFX_STYLE)) { /* dungeon graphics: wood */
 		x = 45;
 		y = 38;
 		iters = 18;
-	} else if (ds_readb(DUNGEON_TYPE) == 1) {
+	} else if (ds_readb(DUNGEON_GFX_STYLE) == 1) { /* dungeon graphics: marble */
 		x = 47;
 		y = 30;
 		iters = 19;
-	} else {
+	} else { /* dungeon graphics: stone */
 		x = 54;
 		y = 44;
 		iters = 16;
@@ -888,7 +888,7 @@ signed short DNG_check_climb_tools(void)
 
 		if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
-			!hero_dead(hero) &&
+			!hero_dead(hero) && /* TODO: potential Original-Bug: What if petrified / unconscious etc.? Compare to is_staff_lvl2_in_group where check_hero is called */
 			(host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) &&
 			(host_readbs(hero + HERO_STAFFSPELL_LVL) > 2))
 		{
