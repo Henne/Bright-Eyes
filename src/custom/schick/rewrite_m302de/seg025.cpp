@@ -753,7 +753,7 @@ void leave_location(void)
 	ds_writew(X_TARGET, ds_readw(X_TARGET_BAK));
 	ds_writew(Y_TARGET, ds_readw(Y_TARGET_BAK));
 
-	/* recalc direction */
+	/* rotate party by 180 degrees */
 	ds_writeb(DIRECTION, (ds_readbs(DIRECTION) + 2) % 4);
 
 	set_to_ff();
