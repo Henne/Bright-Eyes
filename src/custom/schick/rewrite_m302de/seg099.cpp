@@ -711,7 +711,15 @@ void spell_foramen(void)
 	signed short x;
 	signed short y;
 
-	if (ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_UNLOCK_DOOR) {
+	if
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 28:
+	 * Free Foramen spell (from the spellcast menu) can open closed dors only if the 'open door' submenu has been activated before (showing the three symbols smash, pick and spell). */
+	(ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_UNLOCK_DOOR)
+#else
+	(ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_UNLOCK_DOOR && ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_OPEN_DOOR)
+#endif
+	{
 		/* check if the party is in front of a closed door */
 		return;
 	}

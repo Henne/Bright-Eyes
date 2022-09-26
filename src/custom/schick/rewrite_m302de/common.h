@@ -621,6 +621,7 @@ enum {
 };
 
 enum {
+	SP_NONE = 0,
 	/* Antimagie */
 	SP_BEHERRSCHUNG_BRECHEN = 1,
 	SP_DESTRUCTIBO_ARCANITAS = 2,

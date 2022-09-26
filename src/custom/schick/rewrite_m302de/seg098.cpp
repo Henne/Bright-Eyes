@@ -837,15 +837,29 @@ signed short select_magic_user(void)
 	return -2;
 }
 
-signed short use_spell(RealPt hero, signed short a2, signed char handicap)
+/**
+ * \brief   casts a spell
+ *
+ * \param   hero        	the hero who casts the spell
+ * \param   selection_menu	1: select spell from menu / 0: spell is preselected in HERO_SPELL_ID
+ * \param   handicap		handicap modifier for the spell cast
+ */
+signed short use_spell(RealPt hero, signed short selection_menu, signed char handicap)
 {
 	signed short retval = 1;
-	signed short l_di;
+	signed short spell_id;
 	signed short ae_cost;
 	signed short textbox_width_bak;
 	Bit8u *ptr;
 	void (*func)(void);
 	signed short l4;
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 29: see below */
+	signed short x;
+	signed short y;
+	signed short pos;
+	Bit8u *ptr_doors;
+#endif
 
 	if (!check_hero(Real2Host(hero)) && !hero_renegade(Real2Host(hero))) {
 
@@ -855,12 +869,12 @@ signed short use_spell(RealPt hero, signed short a2, signed char handicap)
 	textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
-	if (a2 == 1) {
-		l_di = select_spell(Real2Host(hero), 0);
+	if (selection_menu == 1) {
+		spell_id = select_spell(Real2Host(hero), 0);
 
-		if (l_di > 0) {
+		if (spell_id > SP_NONE) {
 			/* pointer to the spell description */
-			ptr = p_datseg + SPELL_DESCRIPTIONS + SIZEOF_SPELL_DESCRIPTIONS * l_di;
+			ptr = p_datseg + SPELL_DESCRIPTIONS + SIZEOF_SPELL_DESCRIPTIONS * spell_id;
 			/* reset the spelltarget of the hero */
 			host_writeb(Real2Host(hero) + HERO_ENEMY_ID, 0);
 
@@ -875,20 +889,20 @@ signed short use_spell(RealPt hero, signed short a2, signed char handicap)
 					host_writeb(Real2Host(hero) + HERO_ENEMY_ID, select_hero_from_group(get_ttx(47)) + 1);
 
 					if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) <= 0) {
-						l_di = -1;
+						spell_id = -1;
 					}
 				}
 			}
 		}
 
 	} else {
-		l_di = host_readbs(Real2Host(hero) + HERO_SPELL_ID);
+		spell_id = host_readbs(Real2Host(hero) + HERO_SPELL_ID);
 	}
 
-	if (l_di > 0) {
+	if (spell_id > 0) {
 
 		/* pointer to the spell description */
-		ptr = p_datseg + SPELL_DESCRIPTIONS + SIZEOF_SPELL_DESCRIPTIONS * l_di;
+		ptr = p_datseg + SPELL_DESCRIPTIONS + SIZEOF_SPELL_DESCRIPTIONS * spell_id;
 
 		if ((ds_readws(IN_FIGHT) == 0) && (host_readbs(ptr + SPELL_DESCRIPTIONS_WHERE_TO_USE) == 1)) {
 			GUI_output(get_ttx(591));
@@ -901,7 +915,41 @@ signed short use_spell(RealPt hero, signed short a2, signed char handicap)
 
 		if (retval) {
 
-			ds_writew(SPELLTEST_RESULT, test_spell(Real2Host(hero), l_di, handicap));
+#ifdef M302de_ORIGINAL_BUGFIX
+			/* Original-Bug 29: door-specific spell handicap is not considered in a free Foramen spell (from the spellcast menu). */
+			D1_INFO("spell_id = %d, DNG_MENU_MODE = %d.\n",spell_id);
+			if (spell_id == SP_FORAMEN_FORAMINOR && (ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_OPEN_DOOR || ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_UNLOCK_DOOR)) {
+				x = ds_readws(X_TARGET);
+				y = ds_readws(Y_TARGET);
+				ptr_doors = Real2Host(ds_readd(DUNGEON_DOORS_BUF));
+
+				switch (ds_readbs(DIRECTION))
+				{
+					case 0: y--; break;
+					case 1:	x++; break;
+					case 2: y++; break;
+					case 3: x--; break;
+				}
+
+				pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
+
+				if ((host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x) & 0x02) == 0) {
+					/* entry is ......0. -> door is locked */
+					while (host_readws(ptr_doors + 0) != pos) {
+						/* ASSERT */
+						/*
+						if (host_readws(ptr_doors + 0) == -1) {
+						D1_INFO("In free call of Foramen spell: door not found. This should not happen.\n");
+						 */
+
+						ptr_doors += 5;
+					}
+					handicap += host_readbs(ptr_doors + 4);
+				}
+			}
+#endif
+
+			ds_writew(SPELLTEST_RESULT, test_spell(Real2Host(hero), spell_id, handicap));
 
 			if (ds_readws(SPELLTEST_RESULT) == -99) {
 
@@ -920,7 +968,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char handicap)
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(606));
 
-				sub_ae_splash(Real2Host(hero), get_spell_cost(l_di, 1));
+				sub_ae_splash(Real2Host(hero), get_spell_cost(spell_id, 1));
 
 				if (ds_readws(IN_FIGHT) == 0) {
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -931,7 +979,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char handicap)
 				/* set global spelluser variable */
 				ds_writed(SPELLUSER, (Bit32u)hero);
 
-				ae_cost = get_spell_cost(l_di, 0);
+				ae_cost = get_spell_cost(spell_id, 0);
 
 				ds_writew(SPELL_SPECIAL_AECOST, -1);
 
@@ -941,9 +989,9 @@ signed short use_spell(RealPt hero, signed short a2, signed char handicap)
 
 				load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 #if !defined(__BORLANDC__)
-				func = spellhandler[l_di];
+				func = spellhandler[spell_id];
 #else
-				func = (void (*)(void))ds_readd(SPELL_HANDLERS + 4 * l_di);
+				func = (void (*)(void))ds_readd(SPELL_HANDLERS + 4 * spell_id);
 #endif
 				func();
 
@@ -962,7 +1010,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char handicap)
 				} else if (ds_readws(SPELL_SPECIAL_AECOST) == -2) {
 
 					strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(606));
-					sub_ae_splash(Real2Host(hero), get_spell_cost(l_di, 1));
+					sub_ae_splash(Real2Host(hero), get_spell_cost(spell_id, 1));
 					retval = 0;
 				} else if (ds_readws(SPELL_SPECIAL_AECOST) != -1) {
 					sub_ae_splash(Real2Host(hero), ds_readws(SPELL_SPECIAL_AECOST));
