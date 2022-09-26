@@ -734,7 +734,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 }
 
 /**
- * \brief   makes a spell test
+ * \brief   makes a spell test. no AE deduction in this function.
  */
 signed short test_spell(Bit8u *hero, signed short spell_no, signed char handicap)
 {
@@ -801,13 +801,14 @@ signed short test_spell_group(signed short spell, signed char handicap)
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class is magicuser */
-		if ((host_readbs(hero_i + HERO_TYPE) >= 7) &&
+		if ((host_readbs(hero_i + HERO_TYPE) >= HERO_TYPE_WITCH) &&
 			/* Check class  BOGUS */
 			(host_readbs(hero_i + HERO_TYPE) != HERO_TYPE_NONE) &&
 			/* Check in group */
 			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			/* Check if dead */
 			!hero_dead(hero_i))
+			/* Original-Bug: what if petrified, sleeping, unconcious etc. */
 		{
 
 			if (test_spell(hero_i, spell, handicap) > 0) {

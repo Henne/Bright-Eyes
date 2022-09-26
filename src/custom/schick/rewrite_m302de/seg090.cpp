@@ -61,11 +61,13 @@ signed short DNG12_handler(void)
 #if !defined(__BORLANDC__)
 		D1_INFO("Geheimtuere\n");
 #endif
-		if (test_skill(hero, 0x33, 6) > 0) {
+		if (test_skill(hero, TA_SINNESSCHAERFE, 6) > 0) {
 
 			GUI_output(get_tx(21));
 
 			and_ptr_bs(ptr + 0x87, 0xf);
+			/* & 00001111 -> result: 0000.... */
+
 			/* turn off water trap */
 			ds_writeb(DNG12_WATERTRAP_ACTIVE, 0);
 			ds_writeb(DNG12_WATERTRAP_WATER_RUNS, 0);
@@ -138,6 +140,8 @@ signed short DNG12_handler(void)
 						}
 
 						and_ptr_bs(ptr + 0x87, 0xf);
+						/* & 00001111 -> result: 0000.... */
+
 						/* turn off water trap */
 						ds_writeb(DNG12_WATERTRAP_ACTIVE, 0);
 						ds_writeb(DNG12_WATERTRAP_WATER_RUNS, 0);
@@ -443,10 +447,10 @@ signed short DNG12_handler(void)
 	} else if (target_pos == 0x1e03 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG12_SPEARTRAP_ACTIVE) != 0) {
 		/* spear trap */
 
-		if (test_skill(hero, 0x33, 2) > 0) {
+		if (test_skill(hero, TA_SINNESSCHAERFE, 2) > 0) {
 
 			if (GUI_bool(get_tx(28))) {
-				if (test_skill(hero, 0x30, 0) <= 0) {
+				if (test_skill(hero, TA_SCHLOESSER, 0) <= 0) {
 					/* defusing trap failed */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx(29),

@@ -40,7 +40,7 @@ void tevent_011(void)
 	signed short answer;
 	Bit8u *hero;
 
-	if ((test_skill((hero = Real2Host(get_first_hero_available_in_group())), 51, 8) > 0 && !ds_readb(TEVENT011_FLAG)) ||
+	if ((test_skill((hero = Real2Host(get_first_hero_available_in_group())), TA_SINNESSCHAERFE, 8) > 0 && !ds_readb(TEVENT011_FLAG)) ||
 		ds_readb(TEVENT011_FLAG) != 0)
 	{
 		ds_writeb(TEVENT011_FLAG, 1);

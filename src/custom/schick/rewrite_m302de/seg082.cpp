@@ -111,11 +111,11 @@ signed short DNG07_handler(void)
 				{
 					GUI_output(get_ttx(330));
 				} else {
-					spell_result = test_spell(hero, 28, 5);
+					spell_result = test_spell(hero, SP_FORAMEN_FORAMINOR, 5);
 
 					if (spell_result > 0)
 					{
-						sub_ae_splash(hero, get_spell_cost(28, 0));
+						sub_ae_splash(hero, get_spell_cost(SP_FORAMEN_FORAMINOR, 0));
 
 						and_ptr_bs(amap_ptr + 0x2d, 0x0f);
 						or_ptr_bs(amap_ptr + 0x2d, 0x30);
@@ -125,7 +125,7 @@ signed short DNG07_handler(void)
 					} else if (spell_result != -99)
 					{
 
-						sub_ae_splash(hero, get_spell_cost(28, 1));
+						sub_ae_splash(hero, get_spell_cost(SP_FORAMEN_FORAMINOR, 1));
 
 						ds_writew((FIG_FLEE_POSITION + 0),
 							ds_writew((FIG_FLEE_POSITION + 2),
