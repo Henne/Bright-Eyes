@@ -86,14 +86,15 @@ static signed short (*DNG_handler[])(void) = {
 #endif
 
 /**
- * \brief   opening doors logic
+ * \brief   door logic
  *
- * \param   action      how to try to open the door
- * ACTION_ID_ICON_7 = 135 = smash
- * ACTION_ID_ICON_8 = 136 = lockpicks
- * ACTION_ID_ICON_9 = 137 = magic (Foramen spell)
+ * \param   action: which menu option (icon) has been triggered?
+ * ACTION_ID_ICON_7 = 135: might be 'open door', 'close door', 'smash door'. Can be distinguished by DNG_MENU_MODE
+ * ACTION_ID_ICON_8 = 136: 'lockpicks'
+ * ACTION_ID_ICON_9 = 137: 'foramen spell'
  */
 void DNG_door(signed short action)
+	/* is called from a single code position. DNG_MENU_MODE is one of 1 = DNG_MENU_MODE_OPEN_DOOR, 3 = DNG_MENU_MODE_CLOSE_DOOR, 5 = DNG_MENU_MODE_UNLOCK_DOOR */
 {
 	signed short x;
 	signed short y;
@@ -133,9 +134,9 @@ void DNG_door(signed short action)
 
 			if (action == ACTION_ID_ICON_7)
 			{
-				/* smash door */
-				if (ds_readws(DNG_EXTRA_ACTION) != 5)
-				{
+				/* 7th icon has been triggered. Might be 'open door', 'close door', 'smash door'. distinguish based on DNG_MENU_MODE */
+				if (ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_UNLOCK_DOOR) {
+					/* either 'open door' or 'close door' */
 
 					if (ds_readb(DUNGEON_INDEX) == DUNGEONS_HYGGELIKS_RUINE && pos == 0x1903 && ds_readb(DNG15_UNKNOWN_FLAG) != 0)
 					{
@@ -154,30 +155,46 @@ void DNG_door(signed short action)
 
 						if (div16(host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == 1) /* if 0001.... door is closed */
 						{
-							/* the door is closed -> open it */
+
+							/* ASSERT */
+							/*
+							if (ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_OPEN_DOOR) {
+								D1_INFO("FEHLER: DNG_MENU_MODE sollte DNG_MENU_MODE_OPEN_DOOR sein, stimmt aber nicht.\n");
+							}
+							*/
 							l4 = host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x) & 0x02; /* read bit 1: is door unlocked? */
 
 							if (l4 != 0 || !host_readbs((Bit8u*)ptr + 2))
 							{
+								/* door closed and unlocked -> open it */
+
 								and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* & 00001111 */
 								or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x20); /* | 00100000 */
-								/* efffect: 0010...., meaning that dor is open */
+								/* efffect: 0010...., meaning that door is open */
 								ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 								DNG_open_door();
 
 								ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 								ds_writew(REDRAW_MENUICONS, 1);
-								ds_writew(DNG_EXTRA_ACTION, 3);
+								ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_CLOSE_DOOR);
 							} else {
+								/* door closed and locked -> show icons for different opening methods */
 								ds_writebs((NEW_MENU_ICONS + 6), MENU_ICON_SMASH_DOOR);
 								ds_writebs((NEW_MENU_ICONS + 7), MENU_ICON_PICK_LOCK);
 								ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_MAGIC);
 								ds_writew(REDRAW_MENUICONS, 1);
-								ds_writew(DNG_EXTRA_ACTION, 5);
+								ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_UNLOCK_DOOR);
 							}
 
 						} else if (div16(host_readbs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == 2) /* 0010.... i.e. door is open */
 						{
+
+							/* ASSERT */
+							/*
+							if (ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_CLOSE_DOOR) {
+								D1_INFO("FEHLER: DNG_MENU_MODE sollte DNG_MENU_MODE_CLOSE_DOOR sein, stimmt aber nicht.\n");
+							}
+							*/
 
 							/* the door is open -> close it */
 							DNG_close_door();
@@ -187,7 +204,7 @@ void DNG_door(signed short action)
 							/* effect: 0001..1., meaning that door is closed (0001....), but unlocked (......1.) */
 
 							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
-							ds_writew(DNG_EXTRA_ACTION, 1);
+							ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_OPEN_DOOR);
 						}
 					}
 				} else {
@@ -228,6 +245,7 @@ void DNG_door(signed short action)
 						play_voc(ARCHIVE_FILE_FX11_VOC);
 
 						inc_ds_ws(LOCKPICK_TRY_COUNTER);
+						/* Original-Bug: Why is this a global variable? Should be related to the door. */
 
 						if (lockpick_result == -99 || ds_readws(LOCKPICK_TRY_COUNTER) > 3)
 						{
@@ -249,10 +267,11 @@ void DNG_door(signed short action)
 							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* & 00001111 */
 							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x20); /* | 00100000 */
 							/* effect: 0010.... i.e. door is open */
+							/* note that the 'unlocked' flag ......1. is not explicitly set. It will be set if the party closes the door. */
 							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 							DNG_open_door();
 
-							add_hero_ap(hero, 1L);
+							add_hero_ap(hero, 1L); /* hero gets 1 AP for successful lock pick */
 
 							ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 							ds_writew(REDRAW_MENUICONS, 1);
@@ -281,7 +300,7 @@ void DNG_door(signed short action)
 					{
 						GUI_output(get_ttx(330));
 					} else {
-						spell_result = test_spell(hero, 28, host_readbs((Bit8u*)ptr + 4));
+						spell_result = test_spell(hero, SP_FORAMEN_FORAMINOR, host_readbs((Bit8u*)ptr + 4));
 
 						if (spell_result == -99)
 						{
@@ -294,22 +313,23 @@ void DNG_door(signed short action)
 						} else if (spell_result <= 0)
 						{
 							/* failed => half AE costs */
-							sub_ae_splash(hero, get_spell_cost(28, 1));
+							sub_ae_splash(hero, get_spell_cost(SP_FORAMEN_FORAMINOR, 1));
 
 							play_voc(ARCHIVE_FILE_FX17_VOC);
 						} else {
 							play_voc(ARCHIVE_FILE_FX17_VOC);
 
-							sub_ae_splash(hero, get_spell_cost(28, 0));
+							sub_ae_splash(hero, get_spell_cost(SP_FORAMEN_FORAMINOR, 0));
 
 							/* success => the door opens */
 							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* & 00001111 */
 							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x20); /* | 00100000 */
 							/* effect: 0010.... i.e. door is open */
+							/* note that the 'unlocked' flag ......1. is not explicitly set. It will be set if the party closes the door. */
 							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 							DNG_open_door();
 
-							add_hero_ap(hero, 1L);
+							add_hero_ap(hero, 1L); /* hero gets 1 AP for successful lock pick */
 
 							ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 							ds_writew(REDRAW_MENUICONS, 1);
@@ -429,7 +449,7 @@ signed short DNG_step(void)
 	ds_writeb((NEW_MENU_ICONS + 4), MENU_ICON_MAP);
 	ds_writeb((NEW_MENU_ICONS + 5), MENU_ICON_MAGIC);
 
-	if (ds_readw(DNG_EXTRA_ACTION) == 0 && ds_readb((NEW_MENU_ICONS + 6)) != MENU_ICON_CAMP)
+	if (ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_PLAIN && ds_readb((NEW_MENU_ICONS + 6)) != MENU_ICON_CAMP)
 	{
 		ds_writeb((NEW_MENU_ICONS + 6), MENU_ICON_CAMP);
 		ds_writew(REDRAW_MENUICONS, 1);
@@ -492,11 +512,11 @@ signed short DNG_step(void)
 					get_ttx(538),
 					get_ttx(539),
 					get_ttx(213),
-					ds_readws(DNG_EXTRA_ACTION) == 0 ? get_ttx(306) :(
-						ds_readws(DNG_EXTRA_ACTION) == 1 ? get_ttx(540) :(
-						ds_readws(DNG_EXTRA_ACTION) == 3 ? get_ttx(787) :(
-						ds_readws(DNG_EXTRA_ACTION) == 5 ? get_ttx(542) :(
-						ds_readws(DNG_EXTRA_ACTION) == 4 ? get_ttx(555) : get_ttx(541))))),
+					ds_readws(DNG_MENU_MODE) == DNG_MENU_MODE_PLAIN ? get_ttx(306) :(
+						ds_readws(DNG_MENU_MODE) == DNG_MENU_MODE_OPEN_DOOR ? get_ttx(540) :(
+						ds_readws(DNG_MENU_MODE) == DNG_MENU_MODE_CLOSE_DOOR ? get_ttx(787) :(
+						ds_readws(DNG_MENU_MODE) == DNG_MENU_MODE_UNLOCK_DOOR ? get_ttx(542) :(
+						ds_readws(DNG_MENU_MODE) == 4 ? get_ttx(555) : get_ttx(541))))),
 					get_ttx(543),
 					get_ttx(544)) - 1;
 
@@ -554,7 +574,7 @@ signed short DNG_step(void)
 			ds_writew(DNG_REFRESH_DIRECTION, -1);
 		}
 
-	} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && ds_readw(DNG_EXTRA_ACTION) == 0)
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_PLAIN)
 	{
 		ds_writeb(LOCATION, LOCATION_CITYCAMP);
 		ds_writeb(CITYCAMP_CITY, 0); /* CITYCAMP takes place in dungeon */
@@ -609,10 +629,10 @@ signed short DNG_step(void)
 			ds_readws(ACTION) <= ACTION_ID_ICON_9 &&
 			ds_readbs((NEW_MENU_ICONS - ACTION_ID_ICON_1) + ds_readws(ACTION)) != -1)
 	{
-		if (ds_readw(DNG_EXTRA_ACTION) == 1 || ds_readw(DNG_EXTRA_ACTION) == 3 || ds_readw(DNG_EXTRA_ACTION) == 5)
+		if (ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_OPEN_DOOR || ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_CLOSE_DOOR || ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_UNLOCK_DOOR)
 		{
 			DNG_door(ds_readws(ACTION));
-		} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && ds_readw(DNG_EXTRA_ACTION) == 2)
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_OPEN_CHEST)
 		{
 			seg092_06b4(1);
 
@@ -731,17 +751,17 @@ void DNG_see_door(void)
 
 		if (ds_readbs((NEW_MENU_ICONS + 6)) != MENU_ICON_SMASH_DOOR)
 		{
-			ds_writew(DNG_EXTRA_ACTION, l_si == 1 ? 1 : 3);
+			ds_writew(DNG_MENU_MODE, l_si == 1 ? DNG_MENU_MODE_OPEN_DOOR : DNG_MENU_MODE_CLOSE_DOOR);
 		}
 
 	} else {
 		if (ds_readbs((NEW_MENU_ICONS + 6)) != MENU_ICON_NONE &&
-			(ds_readws(DNG_EXTRA_ACTION) == 1 || ds_readws(DNG_EXTRA_ACTION) == 3 || ds_readws(DNG_EXTRA_ACTION) == 5))
+			(ds_readws(DNG_MENU_MODE) == DNG_MENU_MODE_OPEN_DOOR || ds_readws(DNG_MENU_MODE) == DNG_MENU_MODE_CLOSE_DOOR || ds_readws(DNG_MENU_MODE) == DNG_MENU_MODE_UNLOCK_DOOR))
 		{
 			/* standing two fields before a door with view to it */
 			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 			ds_writew(REDRAW_MENUICONS, 1);
-			ds_writew(DNG_EXTRA_ACTION, 0);
+			ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_PLAIN);
 		}
 	}
 }
@@ -755,16 +775,16 @@ void DNG_see_chest(void)
 		{
 			ds_writebs((NEW_MENU_ICONS + 6), MENU_ICON_OPEN_CHEST);
 			ds_writew(REDRAW_MENUICONS, 1);
-			ds_writew(DNG_EXTRA_ACTION, 2);
+			ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_OPEN_CHEST);
 		}
 
 	} else {
-		if (ds_readbs((NEW_MENU_ICONS + 6)) != MENU_ICON_NONE && ds_readws(DNG_EXTRA_ACTION) == 2)
+		if (ds_readbs((NEW_MENU_ICONS + 6)) != MENU_ICON_NONE && ds_readws(DNG_MENU_MODE) == DNG_MENU_MODE_OPEN_CHEST)
 		{
 			/* standing two fields before a treasure chest with view to it */
 			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 			ds_writew(REDRAW_MENUICONS, 1);
-			ds_writew(DNG_EXTRA_ACTION, 0);
+			ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_PLAIN);
 		}
 	}
 }
@@ -1003,14 +1023,14 @@ void DNG_see_lever(void)
 		{
 			ds_writeb((NEW_MENU_ICONS + 6), MENU_ICON_MOVE_LEVER);
 			ds_writew(REDRAW_MENUICONS, 1);
-			ds_writew(DNG_EXTRA_ACTION, 4);
+			ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_LEVER);
 		}
 
-	} else if (ds_readbs((NEW_MENU_ICONS + 6)) != MENU_ICON_NONE && ds_readw(DNG_EXTRA_ACTION) == 4)
+	} else if (ds_readbs((NEW_MENU_ICONS + 6)) != MENU_ICON_NONE && ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_LEVER)
 	{
 			ds_writeb((NEW_MENU_ICONS + 6), MENU_ICON_NONE);
 			ds_writew(REDRAW_MENUICONS, 1);
-			ds_writew(DNG_EXTRA_ACTION, 0);
+			ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_PLAIN);
 	}
 }
 
