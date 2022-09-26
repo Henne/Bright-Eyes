@@ -252,11 +252,11 @@ signed short do_travel_mode(void)
 	if (!ds_readb(TRAVEL_DETOUR))
 	{
 		ds_writew(WALLCLOCK_UPDATE, 0);
-		turnaround();
+		leave_location();
 
 	} else if (ds_readb(TRAVEL_DETOUR) != 99)
 	{
-		ds_writeb(CURRENT_TOWN, 0);
+		ds_writeb(CURRENT_TOWN, TOWNS_NONE);
 	}
 
 	if (ds_readb(PP20_INDEX) == 5)

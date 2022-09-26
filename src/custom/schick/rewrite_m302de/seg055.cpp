@@ -89,19 +89,19 @@ void do_merchant(void)
 		/* shop closed */
 
 		GUI_output(get_ttx(482));
-		turnaround();
+		leave_location();
 		return;
 	}
 
 	if (ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
 		if (ds_readbs((SHOP_DESCR_TABLE + 1) + 9 * ds_readws(TYPEINDEX)) != 3) {
 			talk_merchant();
-			turnaround();
+			leave_location();
 			return;
 		}
 	} else if (ds_readb(MERCHANT_OFFENDED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
 		GUI_output(get_ttx(507));
-		turnaround();
+		leave_location();
 		return;
 	}
 
@@ -288,7 +288,7 @@ void do_merchant(void)
 
 	copy_palette();
 
-	turnaround();
+	leave_location();
 }
 
 void talk_merchant(void)

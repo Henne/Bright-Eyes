@@ -130,7 +130,7 @@ signed short enter_location_daspota(void)
 					do_talk(host_readbs(ptr + 2), host_readb(ptr + 3) - 1);
 
 					if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(ptr + 4))) {
-						turnaround();
+						leave_location();
 						return 1;
 					}
 				}
@@ -163,7 +163,7 @@ signed short enter_location_daspota(void)
 					do_fight(FIGHTS_DASP12B);
 				}
 
-				turnaround();
+				leave_location();
 
 			} else {
 				ds_writeb(LOCATION_BAK, 0);
@@ -284,7 +284,7 @@ void do_special_buildings(void)
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
-	turnaround();
+	leave_location();
 }
 
 void TLK_eremit(signed short state)
@@ -961,7 +961,7 @@ signed short city_step(void)
 	} else if (ds_readws(ACTION) == ACTION_ID_ICON_7) {
 
 		ds_writebs(LOCATION, LOCATION_CITYCAMP);
-		ds_writeb(CITYCAMP_CITY, 1);
+		ds_writeb(CITYCAMP_CITY, 1); /* CITYCAMP takes place in a town */
 		i = 1;
 
 	} else if (ds_readws(ACTION) == ACTION_ID_ICON_8 && ds_readbs((NEW_MENU_ICONS + 7)) != MENU_ICON_NONE) {

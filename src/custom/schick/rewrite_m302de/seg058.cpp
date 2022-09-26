@@ -497,7 +497,7 @@ void do_smith(void)
 	if (ds_readds(DAY_TIMER) < HOURS(6) || ds_readds(DAY_TIMER) > HOURS(20)) {
 
 		GUI_output(get_ttx(483));
-		turnaround();
+		leave_location();
 		return;
 	}
 
@@ -506,7 +506,7 @@ void do_smith(void)
 		(ds_readws(TYPEINDEX) == 1 && ds_readb(DNG14_CELLAREXIT_FLAG))) {
 
 		talk_smith();
-		turnaround();
+		leave_location();
 		return;
 	}
 
@@ -566,7 +566,7 @@ void do_smith(void)
 		}
 	}
 
-	turnaround();
+	leave_location();
 	copy_palette();
 }
 

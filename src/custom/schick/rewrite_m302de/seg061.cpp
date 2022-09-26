@@ -222,7 +222,7 @@ void do_temple(void)
 	}
 
 	copy_palette();
-	turnaround();
+	leave_location();
 
 	ds_writew(INTEMPLE, ds_writew(INTEMPLE2, 1));
 }

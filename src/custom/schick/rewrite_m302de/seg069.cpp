@@ -276,7 +276,7 @@ void THO_tav_inn_combi(void)
 	} while (answer != 0);
 
 	set_var_to_zero();
-	turnaround();
+	leave_location();
 }
 
 

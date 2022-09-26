@@ -51,7 +51,7 @@ namespace M302de {
 
 static void (*locationhandler[])(void) = {
 	NULL,
-	do_location1,
+	do_location1, /* empty function */
 	do_temple,
 	do_tavern,
 	do_healer,
@@ -85,7 +85,7 @@ void show_entrance(void)
 		DNG_enter_dungeon(ds_readws(TYPEINDEX));
 	} else {
 
-		turnaround();
+		leave_location();
 	}
 }
 
@@ -129,7 +129,7 @@ void show_citizen(void)
 	ds_writew(MOUSE1_EVENT2, 0);
 	set_var_to_zero();
 	copy_palette();
-	turnaround();
+	leave_location();
 }
 
 /**
@@ -220,7 +220,7 @@ void do_house(void)
 
 		set_var_to_zero();
 
-		turnaround();
+		leave_location();
 
 	} else {
 		ds_writeb(LOCATION, ds_readb(LOCATION_BAK));
@@ -250,7 +250,7 @@ void do_informer(void)
 	else if (no == 13) do_talk(8, 2);
 	else if (no == 14) do_talk(9, 1);
 
-	turnaround();
+	leave_location();
 }
 
 void enter_map(void)
@@ -740,9 +740,9 @@ void do_location(void)
 }
 
 /**
- * \brief   turn around in a pseudo 3d-view
+ * \brief   leaves a location, including a turn around (rotate by 180 degrees) of the party
  */
-void turnaround(void)
+void leave_location(void)
 {
 	set_var_to_zero();
 

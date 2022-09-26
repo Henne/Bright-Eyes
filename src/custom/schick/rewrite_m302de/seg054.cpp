@@ -625,7 +625,7 @@ void do_inn(void)
 
 	if (!stay) {
 		copy_palette();
-		turnaround();
+		leave_location();
 	} else {
 		GRP_switch_to_next(1);
 		draw_status_line();

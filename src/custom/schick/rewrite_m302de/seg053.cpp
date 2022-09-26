@@ -328,7 +328,7 @@ void do_healer(void)
 	}
 
 	copy_palette();
-	turnaround();
+	leave_location();
 
 }
 

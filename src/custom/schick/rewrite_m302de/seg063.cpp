@@ -131,7 +131,7 @@ void do_harbour(void)
 
 						ds_writeb(SWAFNILD_TRAVELLED, 0);
 
-						turnaround();
+						leave_location();
 
 						return;
 					}
@@ -394,11 +394,11 @@ void do_harbour(void)
 	if (!ds_readb(TRAVEL_DETOUR)) {
 
 		copy_palette();
-		turnaround();
+		leave_location();
 
 	} else {
 
-		ds_writeb(CURRENT_TOWN, 0);
+		ds_writeb(CURRENT_TOWN, TOWNS_NONE);
 	}
 }
 
