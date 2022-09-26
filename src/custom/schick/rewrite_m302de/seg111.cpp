@@ -524,7 +524,7 @@ void tevent_064(void)
 				if (approach_flag == 0) {
 					approach_flag = 1;
 				} else {
-					if (test_spell(hero, 84, 0) > 0) {
+					if (test_spell(hero, SP_SILENTIUM_SILENTILLE, 0) > 0) {
 
 						sub_ae_splash(hero, 2);
 

@@ -317,7 +317,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			}
 
 			damage_mod = (test_skill(hero,
-					(host_readbs(item_p_rh + 3) == 8 ? 8 : 7),
+					(host_readbs(item_p_rh + 3) == 8 ? TA_WURFWAFFEN : TA_SCHUSSWAFFEN),
 					host_readbs(p_rangedtab + 7) + 2 * distance_malus - 2 * target_size_bonus) > 0)
 				? ds_readbs(RANGED_WEAPONS_TABLE + 8 * host_readbs(p_weapontab + 4) + distance_malus)
 				: -damage;

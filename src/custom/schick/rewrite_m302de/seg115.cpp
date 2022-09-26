@@ -322,14 +322,14 @@ void tevent_095(void)
 						GUI_output(get_ttx(330));
 					} else {
 
-						ret_spell_test = test_spell(hero, 7, 0);
+						ret_spell_test = test_spell(hero, SP_BANNBALADIN, 0);
 
 						if (ret_spell_test > 0)
 						{
 							/* spell succeeded */
 
 							/* TODO: magicians with 4th staff spell may pay less */
-							sub_ae_splash(hero, get_spell_cost(7, 0));
+							sub_ae_splash(hero, get_spell_cost(SP_BANNBALADIN, 0));
 
 							GUI_output(get_tx2(16));
 
@@ -340,7 +340,7 @@ void tevent_095(void)
 							/* spell failed */
 
 							/* hero pays the half spell costs */
-							sub_ae_splash(hero, get_spell_cost(7, 1));
+							sub_ae_splash(hero, get_spell_cost(SP_BANNBALADIN, 1));
 
 							/* TODO: some output for the player */
 

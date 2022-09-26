@@ -729,11 +729,11 @@ void tevent_104(void)
 						GUI_output(get_ttx(330));
 					} else {
 
-						spell_result = test_spell(hero, 7, 0);
+						spell_result = test_spell(hero, SP_BANNBALADIN, 0);
 
 						if (spell_result > 0) {
 
-							sub_ae_splash(hero, get_spell_cost(7, 0));
+							sub_ae_splash(hero, get_spell_cost(SP_BANNBALADIN, 0));
 
 							GUI_output(get_tx2(16));
 
@@ -741,7 +741,7 @@ void tevent_104(void)
 
 						} else if (spell_result != -99) {
 
-							sub_ae_splash(hero, get_spell_cost(7, 1));
+							sub_ae_splash(hero, get_spell_cost(SP_BANNBALADIN, 1));
 
 							nr_heroes = 1;
 

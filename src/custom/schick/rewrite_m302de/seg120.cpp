@@ -169,7 +169,7 @@ void rabies(RealPt hero, signed short hero_pos)
 						if (host_readws(hero2 + HERO_AE) >= 15) {
 
 							/* spell must succeed */
-							if (test_spell(hero2, 15, 0)) {
+							if (test_spell(hero2, SP_SANFTMUT, 0)) {
 
 								done = 1;
 

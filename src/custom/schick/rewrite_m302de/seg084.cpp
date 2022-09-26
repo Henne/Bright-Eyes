@@ -403,7 +403,7 @@ signed short DNG09_handler(void)
 			(target_pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readbs(DIRECTION) == 3 && ds_readbs(DNG09_SECRETDOOR1) != 2)
 	{
-		if (ds_readb(DNG09_SECRETDOOR1) != 0 || test_skill((hero = Real2Host(get_first_hero_available_in_group())), 51, 6) > 0)
+		if (ds_readb(DNG09_SECRETDOOR1) != 0 || test_skill((hero = Real2Host(get_first_hero_available_in_group())), TA_SINNESSCHAERFE, 6) > 0)
 		{
 			ds_writeb(DNG09_SECRETDOOR1, 1);
 
@@ -440,7 +440,7 @@ signed short DNG09_handler(void)
 			(target_pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readbs(DIRECTION) == 1 && ds_readbs(DNG09_SECRETDOOR2) != 2)
 	{
-		if (ds_readb(DNG09_SECRETDOOR2) != 0 || test_skill((hero = Real2Host(get_first_hero_available_in_group())), 51, 8) > 0)
+		if (ds_readb(DNG09_SECRETDOOR2) != 0 || test_skill((hero = Real2Host(get_first_hero_available_in_group())), TA_SINNESSCHAERFE, 8) > 0)
 		{
 			ds_writeb(DNG09_SECRETDOOR2, 1);
 
@@ -577,10 +577,11 @@ void DNG09_chest4_x1(RealPt chest)
 			} else if (answer == 2)
 			{
 				hero = get_hero(0) + select_hero_ok_forced(get_ttx(317)) * SIZEOF_HERO;
-				if (test_spell(hero, 2, 0) > 0)
+				if (test_spell(hero, SP_DESTRUCTIBO_ARCANITAS, 0) > 0)
 				{
 					sub_ae_splash(hero, 20);
 
+					/* permanent AE loss of 3 */
 					sub_ptr_ws(hero + HERO_AE_ORIG, 3);
 
 					GUI_output(get_tx(27));
@@ -600,10 +601,11 @@ void DNG09_chest4_x1(RealPt chest)
 			} else if (answer == 3)
 			{
 				hero = get_hero(0) + select_hero_ok_forced(get_ttx(317)) * SIZEOF_HERO;
-				if (test_spell(hero, 53, 0) > 0)
+				if (test_spell(hero, SP_IGNIFAXIUS_FLAMMENSTRAHL, 0) > 0)
 				{
 					sub_ae_splash(hero, 35);
 
+					/* permanent AE loss of 3 */
 					sub_ptr_ws(hero + HERO_AE_ORIG, 3);
 
 					GUI_output(get_tx(27));

@@ -70,7 +70,7 @@ signed short DNG02_handler(void)
 			(char*)get_tx(4));
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
-			 (char*)((test_spell_group(42, 0) == 0) ? get_tx(5) : get_tx(6)));
+			 (char*)((test_spell_group(SP_ODEM_ARCANUM, 0) == 0) ? get_tx(5) : get_tx(6)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -80,7 +80,7 @@ signed short DNG02_handler(void)
 
 	} else if ((target_pos == 0x70d || target_pos == 0x1605 || target_pos == 0x140e) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (test_skill((hero = Real2Host(get_first_hero_available_in_group())), 51, 6) > 0)
+		if (test_skill((hero = Real2Host(get_first_hero_available_in_group())), TA_SINNESSCHAERFE, 6) > 0)
 		{
 			GUI_output(get_tx(8));
 

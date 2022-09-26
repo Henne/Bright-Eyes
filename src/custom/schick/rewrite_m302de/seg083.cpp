@@ -341,7 +341,7 @@ signed short DNG08_handler(void)
 			ds_readbs(DNG08_SECRET_DOOR) != 2)
 	{
 		if (ds_readbs(DNG08_SECRET_DOOR) != 0 ||
-			test_skill((hero = Real2Host(get_first_hero_available_in_group())), 51, 1) > 0)
+			test_skill((hero = Real2Host(get_first_hero_available_in_group())), TA_SINNESSCHAERFE, 1) > 0)
 		{
 			ds_writeb(DNG08_SECRET_DOOR, 1);
 

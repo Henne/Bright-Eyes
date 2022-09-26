@@ -695,17 +695,17 @@ void tevent_123(void)
 				/* cast a spell */
 				hero = get_hero(select_hero_ok_forced(get_ttx(317)));
 
-				if (test_spell(hero, 70, 0) > 0)
+				if (test_spell(hero, SP_MU_STEIGERN, 0) > 0)
 				{
 					/* success */
-					sub_ae_splash(hero, get_spell_cost(70, 0));
+					sub_ae_splash(hero, get_spell_cost(SP_MU_STEIGERN, 0));
 
 					GUI_dialog_na(0, get_tx2(43));
 
 					done = 1;
 				} else {
 					/* failed */
-					sub_ae_splash(hero, get_spell_cost(70, 1));
+					sub_ae_splash(hero, get_spell_cost(SP_MU_STEIGERN, 1));
 
 					hero = get_hero(0);
 					for (i = counter = 0; i <= 6; i++, hero += SIZEOF_HERO)
