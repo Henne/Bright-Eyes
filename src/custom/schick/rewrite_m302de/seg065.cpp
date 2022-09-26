@@ -78,7 +78,7 @@ void do_market(void)
 			/* clean up */
 			ds_writew(TYPEINDEX, type_bak);
 			ds_writeb(DIRECTION_BAK, (signed char)bak1);
-			ds_writeb(DIRECTION, (signed char)dir_bak);
+			ds_writeb(DIRECTION, (signed char)dir_bak); /* by this line, the party will *not* be rotated after leaving the market */
 			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 0, 0);
 			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 2, 0);
 			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 1, 0);

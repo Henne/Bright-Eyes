@@ -304,6 +304,13 @@ void city_event_6(void)
 	/* Original-Bug 24 */
 			ds_writew(TYPEINDEX, type_bak);
 #endif
+	/* Original-Bug 27: After leaving the street merchant (random city event), the party is rotated by 180 degrees. This doesn't make too much sense, and it is inconsistent to the similar situation of visiting a merchant at a market, where no rotation is performed. If moreover the street merchant happens to appear when the party is about to enter some building, after leaving the street merchant and then leaving the building the party will *not* be rotated. */
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* fix analogous to to Original-Bug 26.
+	 * The rotation is performed in the function leave_location(), which has been called in do_merchant() above.
+	 * We fix the bug in a hacky way by simply correcting the rotation afterwards. */
+	ds_writeb(DIRECTION, (ds_readbs(DIRECTION) + 2) % 4); /* rotate by 180 degrees */
+#endif
 		}
 	}
 }
