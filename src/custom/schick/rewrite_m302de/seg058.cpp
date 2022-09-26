@@ -557,7 +557,7 @@ void do_smith(void)
 
 			if (ds_readbs(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
 				ds_readbs(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
-				ds_readbs(DUNGEON_INDEX) != 0)
+				ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE)
 			{
 				done = 1;
 			}

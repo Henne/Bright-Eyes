@@ -221,7 +221,7 @@ void render_automap(signed short x_off)
 		for (x = 0; x < 16; x++) {
 			if (is_discovered(x + x_off, y)) {
 
-				if (ds_readbs(DUNGEON_INDEX) != 0) {
+				if (ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE) {
 
 					tile_type = div16(get_mapval_small(x, y));
 

@@ -1203,7 +1203,7 @@ void interrupt mouse_isr(void)
 			ds_writew(MOUSE2_EVENT, 1);
 		}
 
-		if (((ds_readb(DUNGEON_INDEX) != 0) || (ds_readb(CURRENT_TOWN) != TOWNS_NONE)) &&
+		if (((ds_readb(DUNGEON_INDEX) != DUNGEONS_NONE) || (ds_readb(CURRENT_TOWN) != TOWNS_NONE)) &&
 				!ds_readbs(LOCATION) &&
 				!ds_readbs(DIALOGBOX_LOCK) &&
 				(ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK))
@@ -1819,7 +1819,7 @@ void game_loop(void)
 			do_location();
 		} else if (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) {
 			do_town();
-		} else if (ds_readbs(DUNGEON_INDEX) != 0) {
+		} else if (ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE) {
 			do_dungeon();
 		} else if (ds_readbs(SHOW_TRAVEL_MAP) != 0) {
 			do_travel_mode();
@@ -2353,7 +2353,7 @@ void do_timers(void)
 
 					/* hero is in group and in mage dungeon */
 					if ((ds_readbs(CURRENT_GROUP) == di) &&
-						(ds_readb(DUNGEON_INDEX) == 7))
+						(ds_readb(DUNGEON_INDEX) == DUNGEONS_RUINE_DES_SCHWARZMAGIERS))
 					{
 
 						if (ds_readbs(DUNGEON_LEVEL) == 1) {
@@ -3914,7 +3914,7 @@ void draw_compass(void)
 		/* Has something to do with traveling */
 		!ds_readbs(TRAVEL_EVENT_ACTIVE) &&
 		/* Not in town or dungeon */
-		((ds_readbs(DUNGEON_INDEX) != 0) || (ds_readbs(CURRENT_TOWN) != TOWNS_NONE)) &&
+		((ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE) || (ds_readbs(CURRENT_TOWN) != TOWNS_NONE)) &&
 		/* I have no clue */
 		(ds_readb(FADING_STATE) != 2))
 	{

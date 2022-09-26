@@ -1218,6 +1218,25 @@ enum {
 };
 
 enum {
+	DUNGEONS_NONE = 0,
+	DUNGEONS_TOTENSCHIFF = 1, /* random encounter in high seas */ /* wood */
+	DUNGEONS_VERFALLENE_HERBERGE = 2, /* Ottarje-Daspota */ /* marble */
+	DUNGEONS_SPINNENHOEHLE = 3, /* Ottarje-Skjal */ /* stone */
+	DUNGEONS_WOLFSHOEHLE = 4, /* Ottarje-Orvil */ /* stone */
+	DUNGEONS_GOBLINHOEHLE = 5, /* Felsteyn-Orkanger */ /* stone */
+	DUNGEONS_DASPOTASCHATZ = 6, /* Rybon-Thoss */ /* stone */
+	DUNGEONS_RUINE_DES_SCHWARZMAGIERS = 7, /* Rybon-Thoss */ /* marble */
+	DUNGEONS_ORKBEHAUSUNG = 8, /* Phexcaer-Skelellen */ /* stone */
+	DUNGEONS_KULTSTAETTE_DES_NAMENLOSEN = 9, /* on island Hjalland */ /* marble */
+	DUNGEONS_DRACHENHORT = 10, /* on island Runin */ /* stone */
+	DUNGEONS_PIRATENHOEHLE = 11, /* on island Manrek */ /* marble */
+	DUNGEONS_ZWERGENFESTE = 12, /* in town Oberorken */ /* marble */
+	DUNGEONS_VERLASSENE_MINE = 13, /* in town Prem */ /* marble */
+	DUNGEONS_ZWINGFESTE = 14, /* in town Thorwal */ /* marble */
+	DUNGEONS_HYGGELIKS_RUINE = 15 /* Phexcaer-Vilnheim / Phexcaer-Skelellen */ /* marble */
+};
+
+enum {
 	ARCHIVE_FILE_PLAYM_UK		= 0x00,
 	ARCHIVE_FILE_KDBACK_DAT		= 0x01,
 	ARCHIVE_FILE_KCBACK_DAT		= 0x02,
