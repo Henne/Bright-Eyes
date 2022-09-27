@@ -66,15 +66,18 @@ enum {
 
 enum {
 	ACTION_ID_ESC = 1,
-	ACTION_ID_CLOSING_SQUARE_BRACKET = 27, // the ']' key. used in buy_screen() at a merchant to decrease the number of items.
+	ACTION_ID_CLOSING_SQUARE_BRACKET = 27, /* the ']' key. used in buy_screen() at a merchant to decrease the number of items. */
 	ACTION_ID_RETURN = 28,
+	ACTION_ID_J = 44, /* the 'J' key. used in seg097.cpp in GUI_menu_input (when called from GUI_bool()). selects the "Ja" (yes) answer. */
+	ACTION_ID_N = 49, /* the 'N' key. used in seg097.cpp in GUI_menu_input (when called from GUI_bool()). selects the "Nein" (no) answer. */
 	ACTION_ID_SLASH = 53, // the '/' key. used in buy_screen() at a merchant to increase the number of items.
 	ACTION_ID_SPACE = 57,
 	ACTION_ID_UP = 72,
-	ACTION_ID_PAGE_UP = 73,
+	ACTION_ID_PAGE_UP = 73, /* opens the menu */
 	ACTION_ID_LEFT = 75,
 	ACTION_ID_RIGHT = 77,
 	ACTION_ID_DOWN = 80,
+	ACTION_ID_PAGE_DOWN = 81, /* closes the menu */
 	/* in seg048.cpp there is "if (ds_readws(ACTION) >= 128 && ds_readws(ACTION) <= 152) [...]".
 	 * I think these 25 numbers are used for the icons in the character screen, probably in the order
 	 * head, arms, body, right hand, left hand, legs, feet, knapsack1 .. knapsack16; eye, mouth */
@@ -89,6 +92,7 @@ enum {
 	ACTION_ID_ICON_9 = 137,
 	ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK = 144, /* set in buy_screen() at a merchant if an item is right-clicked to decrease the count. */
 	ACTION_ID_240 = 240, /* what does it mean? used in status_menu() */
+	/* In seg057.cpp and seg058.cpp there is "if (ds_readws(ACTION) >= 241 && ds_readws(ACTION) <= 247) [...]" */
 	ACTION_ID_VOID = 999
 };
 
