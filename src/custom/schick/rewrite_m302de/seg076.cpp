@@ -600,7 +600,7 @@ signed short DNG_step(void)
 			}
 
 		} else if ((l_si = div16(ds_readb(STEPTARGET_FRONT))) != 15 &&
-				l_si != 1 &&
+				l_si != 1 && /* closed door */
 				l_si != 10 &&
 				l_si != 8 &&
 				l_si != 7)

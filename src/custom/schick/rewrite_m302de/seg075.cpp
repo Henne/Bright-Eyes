@@ -589,16 +589,22 @@ void DNG_lights(void)
 	}
 }
 
-void DNG_timestep(signed short a1)
+/**
+ * \brief   performs a step (forward or backward) in a dungeon. time advances by 1 minute.
+ *
+ * \param 	foward	1: forward step; -1: backward step
+ */
+void DNG_timestep(signed short forward)
 {
 	signed short dir;
 
-	timewarp(90);
+	timewarp(MINUTES(1));
 
 	if ((ds_readws(DEATHTRAP) != 0) && !(dec_ds_ws(DEATHTRAP_STEPS))) {
+		/* oh oh: death trap is activated and there are no remaining steps in the dungeon... */
 
-		/* deathship / Totenschiff sinks */
 		if (ds_readws(DEATHTRAP) == 1) {
+			/* It is the death trap on the Totenschiff. -> it sinks...  */
 
 			load_ani(18);
 			init_ani(1);
@@ -616,7 +622,7 @@ void DNG_timestep(signed short a1)
 
 		dir = ds_readbs(DIRECTION);
 
-		if (a1 == 1) {
+		if (forward == 1) {
 
 			/* go forward */
 
