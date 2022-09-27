@@ -105,7 +105,7 @@ unsigned short prepare_passages(void)
 			prepared++;
 		} else {
 			/* not before 14.00 o'clock */
-			if (((signed long)ds_readd(DAY_TIMER) > (0x1518 * 14L))
+			if (((signed long)ds_readd(DAY_TIMER) > HOURS(14))
 				/* only for ships tomorrow */
 				&& (host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_TIMER) == 1)
 				/* only in this city */

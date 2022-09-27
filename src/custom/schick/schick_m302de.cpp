@@ -5331,8 +5331,8 @@ static int seg002(unsigned short offs) {
 	case 0x3dbb: {
 		Bit32s time = CPU_Pop32();
 		CPU_Push32(time);
-		D1_LOG("timewarp_until(0x%x);\n", time);
-		timewarp_until(time);
+		D1_LOG("timewarp_until_time_of_day(0x%x);\n", time);
+		timewarp_until_time_of_day(time);
 		return 1;
 	}
 	case 0x3ebb: {

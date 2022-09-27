@@ -296,7 +296,7 @@ void PHX_bordell(void)
 	    /* increase RAHJA's estimation */
 		add_ds_ds((GODS_ESTIMATION + 4 * 12), 30L);
 
-		timewarp_until(0x93a8);
+		timewarp_until_time_of_day(HOURS(7));
 
 		GUI_input(get_tx2(49), 0);
 

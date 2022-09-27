@@ -357,11 +357,11 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
 						/* set patient timer */
-						host_writed(patient + HERO_HEAL_TIMER, 0x5460); /* 4 hours */
+						host_writed(patient + HERO_HEAL_TIMER, HOURS(4)); /* 4 hours */
 
 						if (test_skill(hero, TA_HEILEN_GIFT, handicap) > 0) {
 
-							timewarp(0x708);
+							timewarp(MINUTES(20));
 
 							if (test_skill(hero, TA_HEILEN_GIFT, ds_readbs(POISON_PRICES + 2 * poison) + handicap) > 0) {
 								/* success */
@@ -476,7 +476,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 					} else {
-						host_writed(patient + HERO_HEAL_TIMER, 0x1fa40L); /* 1 day */
+						host_writed(patient + HERO_HEAL_TIMER, DAYS(1));
 
 						if (test_skill(hero, TA_HEILEN_WUNDEN, handicap) > 0) {
 							if (test_skill(hero, TA_HEILEN_WUNDEN, handicap) > 0) {
@@ -510,7 +510,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 
 								l_si = 0;
 
-								host_writed(patient + HERO_STAFFSPELL_TIMER, 0x1fa40L); /* 1 day */
+								host_writed(patient + HERO_STAFFSPELL_TIMER, DAYS(1));
 							}
 						} else {
 
@@ -561,12 +561,12 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 
 					add_party_money(money);
 
-					ds_writed((INGAME_TIMERS + 0x18), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 0x18), HOURS(8));
 					ds_writew(REQUEST_REFRESH, 1);
 				} else {
 					GUI_output(get_tx(36));
 
-					ds_writed((INGAME_TIMERS + 0x18), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 0x18), HOURS(8));
 					l_si = -1;
 				}
 			}
@@ -595,12 +595,12 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 
 					add_party_money(money);
 
-					ds_writed((INGAME_TIMERS + 0x1c), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 0x1c), HOURS(8));
 					ds_writew(REQUEST_REFRESH, 1);
 				} else {
 					GUI_output(get_tx(36));
 
-					ds_writed((INGAME_TIMERS + 0x1c), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 0x1c), HOURS(8));
 					l_si = -1;
 				}
 			}

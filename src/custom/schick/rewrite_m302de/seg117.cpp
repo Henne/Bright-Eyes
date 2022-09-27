@@ -260,7 +260,7 @@ void hunt_cavebear(void)
 		GUI_output(get_tx2(24));
 
 		/* time to flee = 1.5 hour */
-		timewarp(0x1fa4);
+		timewarp(MINUTES(90));
 
 	} else {
 		GUI_output(get_tx2(22));

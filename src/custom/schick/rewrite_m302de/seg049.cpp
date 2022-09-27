@@ -310,7 +310,7 @@ void GRP_switch_to_next(signed short mode)
 						GUI_output(get_ttx(36));
 					} else {
 						if ((state == 2) && GUI_bool(get_ttx(773))) {
-							timewarp_until(0x7e90);
+							timewarp_until_time_of_day(HOURS(6));
 							done = 1;
 						}
 					}

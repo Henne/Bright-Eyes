@@ -93,7 +93,7 @@ void do_healer(void)
 				motivation = 1;
 
 				/* from 9.00 pm to 6.00 am the healer gets unkind */
-				if (ds_readds(DAY_TIMER) > 0x1baf8 || ds_readds(DAY_TIMER) < 0x7e90) {
+				if (ds_readds(DAY_TIMER) > HOURS(21) || ds_readds(DAY_TIMER) < HOURS(6)) {
 					GUI_output(get_ttx(484));
 					motivation = 2;
 				}
@@ -119,16 +119,16 @@ void do_healer(void)
 			ds_writew(TEXTBOX_WIDTH, 3);
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 0x81);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readw(ACTION) == 0x84) {
+		if (ds_readw(ACTION) == ACTION_ID_ICON_4) {
 			leave_healer = 1;
 			continue;
 		}
 
-		if (ds_readw(ACTION) == 0x81) {
+		if (ds_readw(ACTION) == ACTION_ID_ICON_1) {
 
 			/* Heal Wounds */
 
@@ -179,8 +179,8 @@ void do_healer(void)
 								add_ptr_ws(hero + HERO_LE_ORIG, host_readbs(hero + HERO_LE_MOD));
 								host_writeb(hero + HERO_LE_MOD, 0);
 
-								/* let pass some time */
-								timewarp(90 * (signed long)(host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE)));
+								/* time passes by (number of missing LE) minutes */
+								timewarp(MINUTES((signed long)(host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE))));
 
 								/* heal LE */
 								add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
@@ -197,7 +197,7 @@ void do_healer(void)
 				}
 			}
 
-		} else if (ds_readw(ACTION) == 0x82) {
+		} else if (ds_readw(ACTION) == ACTION_ID_ICON_2) {
 			/* Cure Disease */
 			money = get_party_money();
 			answer = select_hero_from_group(get_ttx(460));
@@ -236,8 +236,7 @@ void do_healer(void)
 							if (money < price) {
 								GUI_output(get_ttx(401));
 							} else {
-								/* let pass some time */
-								timewarp(5400);
+								timewarp(HOURS(1));
 
 								if (random_schick(100) <= (120 - host_readbs(info + 1) * 10) + ds_readws(DISEASE_DELAYS + disease * 2)) {
 									/* heal the disease */
@@ -263,7 +262,7 @@ void do_healer(void)
 					}
 				}
 			}
-		} else if (ds_readw(ACTION) == 0x83) {
+		} else if (ds_readw(ACTION) == ACTION_ID_ICON_3) {
 			/* Heal Poison */
 			money = get_party_money();
 			answer = select_hero_from_group(get_ttx(460));
@@ -299,7 +298,7 @@ void do_healer(void)
 							if (money < price) {
 								GUI_output(get_ttx(401));
 							} else {
-								timewarp(5400);
+								timewarp(HOURS(1));
 
 								if (random_schick(100) <= (120 - host_readbs(info + 1) * 5) + ds_readws(POISON_DELAYS + poison * 2)) {
 									/* cure the poison */

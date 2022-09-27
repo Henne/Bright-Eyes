@@ -121,7 +121,7 @@ void passages_recalc(void);
 //static
 void passages_reset();
 void timewarp(Bit32s);
-void timewarp_until(Bit32s);
+void timewarp_until_time_of_day(Bit32s);
 void dec_splash(void);
 //static
 void draw_splash(signed short, signed short);
