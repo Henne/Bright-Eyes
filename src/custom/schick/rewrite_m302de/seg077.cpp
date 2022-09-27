@@ -206,10 +206,20 @@ signed short DNG01_handler(void)
 
 			GUI_output(get_tx(15));
 
-			/* Original-Bug
-			 * See https://www.crystals-dsa-foren.de/showthread.php?tid=4589&pid=145465#pid145465
-			 */
-			if (ds_readws(DEATHTRAP) == 1 && ds_readws(DEATHTRAP_STEPS) != 0)
+			if
+#ifndef M302de_ORIGINAL_BUGFIX
+			/* Original-Bug 30: 
+			 * After killing the demon on the death ship, it begins to sink. The party has 30 remaining steps to leave the ship. Succeeding in this, the corresponding message of the sinking death ship (present in the data) is not displayed.
+			 * Apparently, the bug is not present in the floppy version. However, there was the bug that an activated dungeon death trap will not be deactivated when leaving the dungeon. Fixing this bug in the CD-version,  Attic has introduced this new (and much less critical) bug.
+			 * reported 2014-04-15 by Alrik at https://www.crystals-dsa-foren.de/showthread.php?tid=4589&pid=131934#pid131934 and https://www.crystals-dsa-foren.de/showthread.php?tid=4589&pid=131938#pid131938
+			 * fixed 2016-03-06 by NRS https://www.crystals-dsa-foren.de/showthread.php?tid=4589&pid=145465#pid145465
+
+			 * The problem is that 'DEATHTRAP' has been resetted to 0 in the function leave_dungeon() called above. */
+
+				(ds_readws(DEATHTRAP) == 1 && ds_readws(DEATHTRAP_STEPS) != 0)
+#else
+				(ds_readws(QUEST_DEADSHIP_DONE) == 1)
+#endif
 			{
 				load_ani(18);
 				init_ani(1);
@@ -366,7 +376,7 @@ void DNG01_chest0_x1(RealPt chest)
 	{
 		ds_writeb(DEADSHIP_FINAL, 1);
 
-		/* enable deathtrap */
+		/* enable deathtrap. the ship begins to sink... */
 		ds_writew(DEATHTRAP_STEPS, 30);
 		ds_writew(DEATHTRAP, 1);
 
