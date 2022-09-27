@@ -354,7 +354,7 @@ void do_wildcamp(void)
 
 						if (l6 > 0) {
 							ds_writeb(FOOD_MOD, 1);
-							timewarp_until(HOURS(8));
+							timewarp_until_time_of_day(HOURS(8));
 							ds_writeb(FOOD_MOD, 0);
 						}
 					}

@@ -1058,8 +1058,7 @@ signed short do_fight(signed short fight_id)
 			FIG_do_round();
 			/* increment round counter */
 			inc_ds_ws(FIGHT_ROUND);
-			/* do a timewarp */
-			timewarp(9L); /* 6 seconds */
+			timewarp(SECONDS(6));
 
 			if (ds_readws(IN_FIGHT) != 0) {
 				FIG_latecomers();

@@ -2073,10 +2073,10 @@ void pal_fade_in(Bit8u *dst, Bit8u *p2, signed short v3, signed short colors)
  */
 void dawning(void)
 {
-	/* Between 6 and 7, in 64 steps */
-	if ((ds_readds(DAY_TIMER) >= 0x7e90) &&
-		(ds_readds(DAY_TIMER) <= 0x93a8) &&
-		!((ds_readds(DAY_TIMER) - 0x7e90L) % 0x54))
+	/* Between 6 and 7, in 64 steps (i.e. each 56 seconds) */
+	if ((ds_readds(DAY_TIMER) >= HOURS(6)) &&
+		(ds_readds(DAY_TIMER) <= HOURS(7)) &&
+		!((ds_readds(DAY_TIMER) - HOURS(6)) % SECONDS(56)))
 	{
 
 		/* floor */
@@ -2114,10 +2114,10 @@ void dawning(void)
  */
 void nightfall(void)
 {
-	/* Between 20 and 21 */
-	if ((ds_readds(DAY_TIMER) >= 0x1a5e0L) &&
-		(ds_readds(DAY_TIMER) <= 0x1baf8L) &&
-		!((ds_readds(DAY_TIMER) - 0x1a5e0L) % 0x54))
+	/* Between 20 and 21, in 64 steps (i.e. each 56 seconds) */
+	if ((ds_readds(DAY_TIMER) >= HOURS(20)) &&
+		(ds_readds(DAY_TIMER) <= HOURS(21)) &&
+		!((ds_readds(DAY_TIMER) - HOURS(20)) % SECONDS(56)))
 	{
 
 		/* floor */
@@ -2249,13 +2249,13 @@ void do_timers(void)
 
 		/* set day timer to pm */
 		/* TODO: afternoon is useless */
-		if (ds_readds(DAY_TIMER) >= 0xfd20) {
-			sub_ds_ds(DAY_TIMER, 0xfd20);
+		if (ds_readds(DAY_TIMER) >= HOURS(12)) {
+			sub_ds_ds(DAY_TIMER, HOURS(12));
 			afternoon = 1;
 		}
 
 		/* every 5 minutes ingame */
-		if (!(ds_readds(DAY_TIMER) % 0x1c2)) {
+		if (!(ds_readds(DAY_TIMER) % MINUTES(5))) {
 			seg002_2f7a(1);
 		}
 
@@ -2264,7 +2264,7 @@ void do_timers(void)
 			sub_light_timers(1L);
 		}
 		/* every hour ingame */
-		if (!(ds_readds(DAY_TIMER) % 0x1518)) {
+		if (!(ds_readds(DAY_TIMER) % HOURS(1))) {
 
 			magical_chainmail_damage();
 
@@ -2294,12 +2294,12 @@ void do_timers(void)
 
 		/* reset the day timer to 24h time */
 		if (afternoon) {
-			add_ds_ds(DAY_TIMER, 0xfd20L);
+			add_ds_ds(DAY_TIMER, HOURS(12));
 		}
 	}
 
 	/* at 6 o'clock in the morninig */
-	if (ds_readd(DAY_TIMER) == 0x7e90L) {
+	if (ds_readd(DAY_TIMER) == HOURS(6)) {
 
 		hero_i = get_hero(0);
 
@@ -2322,7 +2322,7 @@ void do_timers(void)
 	}
 
 	/* at 10 o'clock */
-	if (ds_readd(DAY_TIMER) == 0xd2f0) {
+	if (ds_readd(DAY_TIMER) == HOURS(10)) {
 
 		hero_i = get_hero(0);
 
@@ -2342,7 +2342,7 @@ void do_timers(void)
 		sub_ds_ds(DNG07_POISON_TIMER, 1);
 
 		/* every 15 minutes  do damage */
-		if (ds_readd(DNG07_POISON_TIMER) % 0x546 == 0) {
+		if (ds_readd(DNG07_POISON_TIMER) % MINUTES(15) == 0) {
 
 			ptr = get_hero(0);
 
@@ -2391,7 +2391,7 @@ void do_timers(void)
 	}
 
 	/* at 24 o'clock, daily stuff */
-	if (ds_readds(DAY_TIMER) >= 0x1fa40L) {
+	if (ds_readds(DAY_TIMER) >= HOURS(24)) {
 
 		timers_daily();
 
@@ -2488,7 +2488,7 @@ void do_timers(void)
 	}
 
 	/* at 9 o'clock */
-	if (ds_readd(DAY_TIMER) == 0xbdd8) {
+	if (ds_readd(DAY_TIMER) == HOURS(9)) {
 		/* ships leave the harbour at 9 o'clock */
 		passages_reset();
 	}
@@ -2751,7 +2751,7 @@ void seg002_2f7a(Bit32s fmin)
 			/* Timer to the next healing attempt */
 			if (host_readds(hero_i + HERO_HEAL_TIMER) > 0) {
 
-				sub_ptr_ds(hero_i + HERO_HEAL_TIMER, fmin * 450);
+				sub_ptr_ds(hero_i + HERO_HEAL_TIMER, fmin * MINUTES(5));
 #if !defined(__BORLANDC__)
 				if (host_readds(hero_i + HERO_HEAL_TIMER) <= 0) {
 					D1_INFO("%s kann wieder geheilt werden\n",
@@ -2766,7 +2766,7 @@ void seg002_2f7a(Bit32s fmin)
 
 			/* Timer set after Staffspell */
 			if (host_readds(hero_i + HERO_STAFFSPELL_TIMER) > 0) {
-				sub_ptr_ds(hero_i + HERO_STAFFSPELL_TIMER, fmin * 450);
+				sub_ptr_ds(hero_i + HERO_STAFFSPELL_TIMER, fmin * MINUTES(5));
 #if !defined(__BORLANDC__)
 				if (host_readds(hero_i + HERO_STAFFSPELL_TIMER) <= 0) {
 					D1_INFO("%s kann wieder einen Stabzauber versuchen\n",
@@ -3425,13 +3425,13 @@ void timewarp(Bit32s time)
 
 	sub_mod_timers(time);
 
-	seg002_2f7a(time / 0x1c2);
+	seg002_2f7a(time / MINUTES(5));
 
 	sub_light_timers(time / MINUTES(15));
 
 	/* calculate hours */
-	hour_old = (signed short)(timer_bak / 0x1518);
-	hour_new = (signed short)(ds_readd(DAY_TIMER) / 0x1518);
+	hour_old = (signed short)(timer_bak / HOURS(1));
+	hour_new = (signed short)(ds_readd(DAY_TIMER) / HOURS(1));
 
 	if (hour_old != hour_new) {
 		if (hour_new > hour_old) {
@@ -3452,11 +3452,11 @@ void timewarp(Bit32s time)
 }
 
 /**
- * \brief   forwards the ingame time
+ * \brief   forwards the ingame time till the given time of the day
  *
  * \param   time        ticks to forward to e.g 6 AM
  */
-void timewarp_until(Bit32s time)
+void timewarp_until_time_of_day(Bit32s time)
 {
 	signed short hour_old;
 	signed short hour_new;
@@ -3486,13 +3486,13 @@ void timewarp_until(Bit32s time)
 
 	sub_mod_timers(i);
 
-	seg002_2f7a(i / 0x1c2);
+	seg002_2f7a(i / MINUTES(5));
 
 	sub_light_timers(i / MINUTES(15));
 
 	/* calculate hours */
-	hour_old = (signed short)(timer_bak / 0x1518);
-	hour_new = (signed short)(ds_readds(DAY_TIMER) / 0x1518);
+	hour_old = (signed short)(timer_bak / HOURS(1));
+	hour_new = (signed short)(ds_readds(DAY_TIMER) / HOURS(1));
 
 	if (hour_old != hour_new) {
 		if (hour_new > hour_old) {

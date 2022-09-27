@@ -479,10 +479,9 @@ signed short use_magic(RealPt hero)
 						inc_ptr_bs(Real2Host(hero) + HERO_STAFFSPELL_LVL);
 
 						/* set the timer */
-						host_writed(Real2Host(hero) + HERO_STAFFSPELL_TIMER, 0xfd20);
+						host_writed(Real2Host(hero) + HERO_STAFFSPELL_TIMER, HOURS(12));
 
-						/* let some time pass */
-						timewarp(0x6978);
+						timewarp(HOURS(5));
 					} else {
 						/* Failed */
 						GUI_output(get_ttx(338));
@@ -490,8 +489,7 @@ signed short use_magic(RealPt hero)
 						/* only half of the AE costs */
 						sub_ae_splash(Real2Host(hero), ds_readbs((STAFFSPELL_DESCRIPTIONS + STAFFSPELL_DESCRIPTIONS_AE_COST) + SIZEOF_STAFFSPELL_DESCRIPTIONS * host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL)) / 2);
 
-						/* let some time pass */
-						timewarp(0x2a30);
+						timewarp(HOURS(2));
 					}
 				} else {
 					/* not enough AE */

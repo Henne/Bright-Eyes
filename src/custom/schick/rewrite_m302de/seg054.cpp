@@ -556,7 +556,7 @@ void do_inn(void)
 					ds_writebs(FOOD_MOD, 1);
 
 					do {
-						timewarp_until(HOURS(8));
+						timewarp_until_time_of_day(HOURS(8));
 					} while (dec_ds_bs(BOOKED_INN_DAYS));
 
 					ds_writeb(FOOD_MOD, 0);

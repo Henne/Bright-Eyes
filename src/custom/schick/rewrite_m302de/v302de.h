@@ -19,6 +19,7 @@
 #include "symbols.h"
 #include "datseg.h"
 
+#define SECONDS(n)      ((n/2) * 3L)
 #define MINUTES(n)	((n) * 90L)
 #define HOURS(n)	(MINUTES(n) * 60L)
 #define DAYS(n)		(HOURS(n) * 24L)

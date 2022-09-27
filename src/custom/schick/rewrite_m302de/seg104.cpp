@@ -276,7 +276,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 							if (decision == 1) {
 								/* rest of group waits */
-								timewarp(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE) * 0x1518L);
+								timewarp(HOURS(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE)));
 
 								if (ds_readbs(LOCATION) != LOCATION_WILDCAMP) {
 									hero_p = get_hero(0);
@@ -288,7 +288,7 @@ signed short plan_alchemy(Bit8u *hero)
 										}
 									}
 								} else {
-									host_writed(hero + HERO_STAFFSPELL_TIMER, 0x1fa40); /* 1 day. Why STAFFSPELL ?? */
+									host_writed(hero + HERO_STAFFSPELL_TIMER, DAYS(1)); /* TODO: Why STAFFSPELL ?? */
 								}
 
 								retval = do_alchemy(hero, recipe_index, 0);
@@ -453,10 +453,10 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		} else {
-			timewarp(0x1c2);
+			timewarp(MINUTES(5));
 
 			/* set timer */
-			host_writed(patient + HERO_HEAL_TIMER, 0x5460);
+			host_writed(patient + HERO_HEAL_TIMER, HOURS(4));
 
 			if ((flag != 0) || (test_skill(healer, TA_HEILEN_KRANKHEITEN, (signed char)handycap) > 0)) {
 

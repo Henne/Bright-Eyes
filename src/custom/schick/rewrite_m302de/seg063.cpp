@@ -312,7 +312,7 @@ void do_harbour(void)
 
 				ds_writeb(TRAVEL_HEROKEEPING, 1);
 
-				timewarp_until(HOURS(9));
+				timewarp_until_time_of_day(HOURS(9));
 
 				if (ds_readws(CHECK_DISEASE) != 0) {
 
