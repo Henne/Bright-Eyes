@@ -201,7 +201,7 @@ dummy:
 
 		if (c == 0x0d) {
 
-		} else if (ds_readw(ACTION) == 1) {
+		} else if (ds_readw(ACTION) == ACTION_ID_ESC) {
 			host_writeb(dst_start, 0);
 			refresh_screen_size();
 			ds_writew(ACTION, 0);
@@ -424,6 +424,11 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	return retval;
 }
 
+/**
+ * \brief   shows a text box with two radio buttons "Ja" (yes) and "Nein" (no).
+ *
+ * \param   text	the displayed text
+ */
 signed short GUI_bool(Bit8u *text)
 {
 	signed short ret_radio;
@@ -644,26 +649,25 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 			}
 
 			if (ds_readw(MOUSE2_EVENT) != 0 ||
-				ds_readw(ACTION) == 1 ||
-				ds_readw(ACTION) == 0x51) {
+				ds_readw(ACTION) == ACTION_ID_ESC ||
+				ds_readw(ACTION) == ACTION_ID_PAGE_DOWN) {
+				/* close menu */
 
 				retval = -1;
 				done = 1;
 				ds_writew(MOUSE2_EVENT, 0);
 			}
 
-			if (ds_readw(ACTION) == 0x1c) {
+			if (ds_readw(ACTION) == ACTION_ID_RETURN) {
 				retval = ds_readw(MENU_SELECTED);
 				done = 1;
 			}
 
-			/* Key UP */
-			if (ds_readw(ACTION) == 0x48) {
+			if (ds_readw(ACTION) == ACTION_ID_UP) {
 				if (dec_ds_ws_post(MENU_SELECTED) == 1)
 					ds_writew(MENU_SELECTED, positions);
 			}
-			/* Key DOWN */
-			if (ds_readw(ACTION) == 0x50) {
+			if (ds_readw(ACTION) == ACTION_ID_DOWN) {
 				if (inc_ds_ws_post(MENU_SELECTED) == positions)
 					ds_writew(MENU_SELECTED, 1);
 			}
@@ -674,9 +678,10 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 			}
 
 			if (ds_readw(GUI_BOOL_FLAG) != 0) {
-				if (ds_readw(ACTION) == 0x2c) {
+				/* in yes-no-mode, answer "Ja" (yes) can be selected with the 'J' key, and answer "Nein" (no) can be selected with the 'N' key. */
+				if (ds_readw(ACTION) == ACTION_ID_J) {
 					retval = done = 1;
-				} else if (ds_readw(ACTION) == 0x31) {
+				} else if (ds_readw(ACTION) == ACTION_ID_N) {
 					retval = 2;
 					done = 1;
 				}

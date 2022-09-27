@@ -209,7 +209,7 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 	do {
 		handle_input();
 
-		if ((ds_readws(ACTION) == 1) || /* ESC */
+		if ((ds_readws(ACTION) == ACTION_ID_ESC) ||
 			(ds_readws(MOUSE2_EVENT) != 0)) {
 
 			/* cancel */
@@ -227,10 +227,10 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 
 		from_kbd = 0;
 
-		if ((ds_readws(ACTION) == ACTION_ID_UP) || /* up */
-			(ds_readws(ACTION) == ACTION_ID_DOWN) || /* down */
-			(ds_readws(ACTION) == ACTION_ID_RIGHT) || /* right */
-			(ds_readws(ACTION) == ACTION_ID_LEFT)) /* left */
+		if ((ds_readws(ACTION) == ACTION_ID_UP) ||
+			(ds_readws(ACTION) == ACTION_ID_DOWN) ||
+			(ds_readws(ACTION) == ACTION_ID_RIGHT) ||
+			(ds_readws(ACTION) == ACTION_ID_LEFT))
 		{
 			from_kbd = 1;
 		} else {
@@ -261,7 +261,7 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 		}
 
 		if (ds_readws(MOUSE1_EVENT1) != 0) {
-			ds_writew(ACTION, ACTION_ID_RETURN); /* return */
+			ds_writew(ACTION, ACTION_ID_RETURN);
 			ds_writew(MOUSE1_EVENT1, 0);
 		}
 
@@ -326,7 +326,7 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 			FIG_set_gfx();
 		}
 
-	} while (ds_readws(ACTION) != ACTION_ID_RETURN); /* != return */
+	} while (ds_readws(ACTION) != ACTION_ID_RETURN);
 
 	FIG_remove_from_list(ds_readbs(FIG_CB_SELECTOR_ID), 0);
 
@@ -869,7 +869,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			set_textcolor(fg_bak, bg_bak);
 		}
 
-		if ((ds_readws(MOUSE2_EVENT) != 0) || (ds_readws(ACTION) == 1)) {
+		if ((ds_readws(MOUSE2_EVENT) != 0) || (ds_readws(ACTION) == ACTION_ID_ESC)) {
 			ds_writew(MOUSE2_EVENT, 0);
 			ds_writew(ACTION, ACTION_ID_RETURN);
 			problem = 5;

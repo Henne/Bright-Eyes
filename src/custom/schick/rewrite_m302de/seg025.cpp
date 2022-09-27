@@ -114,7 +114,7 @@ void show_citizen(void)
 				if (!show_storytext()) {
 					GUI_print_loc_line(Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)));
 				} else {
-					ds_writew(ACTION, 1);
+					ds_writew(ACTION, ACTION_ID_ESC);
 				}
 			} else {
 				GUI_print_loc_line(Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)));
