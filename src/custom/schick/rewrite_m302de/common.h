@@ -91,7 +91,7 @@ enum {
 	ACTION_ID_ICON_8 = 136,
 	ACTION_ID_ICON_9 = 137,
 	ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK = 144, /* set in buy_screen() at a merchant if an item is right-clicked to decrease the count. */
-	ACTION_ID_240 = 240, /* what does it mean? used in status_menu() */
+	ACTION_ID_240 = 240, /* what does it mean? used in status_menu() in seg048.cpp */
 	/* In seg057.cpp and seg058.cpp there is "if (ds_readws(ACTION) >= 241 && ds_readws(ACTION) <= 247) [...]" */
 	ACTION_ID_VOID = 999
 };
@@ -1223,6 +1223,24 @@ enum {
 };
 
 enum {
+	/* https://github.com/shihan42/BrightEyesWiki/wiki/DAT-%28Stadt%29 seems to be wrong */
+	TOWN_TILE_STREET = 0,
+	TOWN_TILE_TEMPLE = 1,
+	TOWN_TILE_HOUSE_1 = 2, /* usually: stone wall, 3 stairs at the entrance, with a hatch under the window. */ /* dark brown */
+	TOWN_TILE_HOUSE_2 = 3, /* usually: wooden blockhouse. red-white signs on the window shutters. */ //dark blue
+	TOWN_TILE_HOUSE_3 = 4, /* usually: timber framework, window half-open. */ //olive green
+	TOWN_TILE_HOUSE_4 = 5, /* usually: stone wall, red roof, trapezial ornament at the door. (there are exceptions in the city of Thorwal) */ /* dark purple */
+	TOWN_TILE_WATER = 6,
+	TOWN_TILE_GRASS = 7,
+	TOWN_TILE_SIGNPOST = 8,
+	TOWN_TILE_INN_OR_TAVERN = 9,
+	TOWN_TILE_MERCHANT = 10, /* The lighthouse on Runin is also displayed in Grey */
+	TOWN_TILE_SMITH = 11,
+	TOWN_TILE_HEALER = 12,
+	TOWN_TILE_BLACK_FINGER = 13 /* The black tower in the city of Thorwal */
+};
+
+enum {
 	DUNGEONS_NONE = 0,
 	DUNGEONS_TOTENSCHIFF = 1, /* random encounter in high seas */ /* wood */
 	DUNGEONS_VERFALLENE_HERBERGE = 2, /* Ottarje-Daspota */ /* marble */
@@ -1248,6 +1266,49 @@ enum {
 	DNG_MENU_MODE_CLOSE_DOOR = 3,
 	DNG_MENU_MODE_LEVER = 4,
 	DNG_MENU_MODE_UNLOCK_DOOR = 5
+};
+
+enum {
+	/* https://github.com/shihan42/BrightEyesWiki/wiki/DNG */
+	DNG_TILE_CORRIDOR = 0,
+	DNG_TILE_CLOSED_DOOR = 1, /* flag 1: 0 = 'locked' / 1 = 'unlocked' */
+	DNG_TILE_OPEN_DOOR = 2,
+	DNG_TILE_STAIR_DOWN = 3,
+	DNG_TILE_STAIR_UP = 4,
+	DNG_TILE_PIT_IN_CEILING = 5,
+	DNG_TILE_PIT = 6,
+	DNG_TILE_BLOCKER = 7, /* what is this? */
+	DNG_TILE_CHEST = 8, /* flag 1: 0 = 'closed' / 1 = 'opened' */
+	DNG_TILE_SMASHED_DOOR = 9,
+	DNG_TILE_REMOVABLE_WALL = 10,
+	DNG_TILE_SEMIPERMEABLE_WALL = 11, /* 4 flags for the 4 directions. 0 = 'blocked', 1 = 'accessible' */
+	DNG_TILE_FAKE_WALL = 12,
+	DNG_TILE_WALL = 15,
+};
+
+enum {
+	MAP_TILE_BLACK = 0,
+	MAP_TILE_RED = 1,
+	MAP_TILE_BRIGHT_GREEN = 2,
+	MAP_TILE_BLUE = 3,
+	MAP_TILE_YELLOW_ARROW = 4,
+	MAP_TILE_PINK = 5,
+	MAP_TILE_LIGHT_BLUE = 6,
+	MAP_TILE_CROSS = 7,
+	MAP_TILE_LIGHT_PURPLE = 8, /* unused? */
+	MAP_TILE_DARK_GREEN = 9,
+	MAP_TILE_DARK_PURPLE = 10,
+	MAP_TILE_DARK_RED = 11,
+	MAP_TILE_ORANGE = 12,
+	MAP_TILE_DARK_PINK = 13, /* unused? */
+	MAP_TILE_OLIVE_GREEN = 14, /* unused? */
+	MAP_TILE_GREY = 15,
+	MAP_TILE_PURPLE_ARROW = 16,
+	MAP_TILE_BROWN = 17,
+	MAP_TILE_GREEN = 18,
+	MAP_TILE_DARK_GREY = 19,
+	MAP_TILE_DARK_BLUE = 20, /* unused? */
+	MAP_TILE_DARK_BROWN = 21 /* unused? */
 };
 
 enum {

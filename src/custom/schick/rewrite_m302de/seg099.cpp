@@ -717,10 +717,10 @@ void spell_foramen(void)
 	 * Free Foramen spell (from the spellcast menu) can open closed dors only if the 'open door' submenu has been activated before (showing the three symbols smash, pick and spell). */
 	(ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_UNLOCK_DOOR)
 #else
-	(ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_UNLOCK_DOOR && ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_OPEN_DOOR)
+	(ds_readbs(DUNGEON_INDEX) == DUNGEONS_NONE || (ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_UNLOCK_DOOR && ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_OPEN_DOOR))
 #endif
 	{
-		/* check if the party is in front of a closed door */
+		/* check if the party is in front of a closed door in a dungeon */
 		return;
 	}
 
@@ -734,8 +734,8 @@ void spell_foramen(void)
 		case 3: x--; break;
 	}
 
-	and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + y * 16 + x, 0x0f);
-	or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + y * 16 + x, 0x20);
+	and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + y * 16 + x, 0x0f); /* clear higher 4 bits */
+	or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + y * 16 + x, DNG_TILE_OPEN_DOOR << 4);
 	ds_writeb(STEPTARGET_FRONT, host_readbs(Real2Host(ds_readd(DNG_MAP_PTR)) + y * 16 + x));
 
 	DNG_open_door();
@@ -763,6 +763,7 @@ void spell_spurlos(void)
 void spell_transversalis(void)
 {
 	if (!ds_readbs(DUNGEON_INDEX) && !ds_readbs(CURRENT_TOWN)) {
+		/* cannot be used outside of a dungeon or a town */
 
 		/* prepare message */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),

@@ -361,7 +361,7 @@ signed short hero_has_lockpicks(Bit8u *hero)
 void (*func)(RealPt);
 
 struct chest {
-	signed short id;
+	signed short pos;
 	signed char mod;
 	void (*func1)(RealPt);
 	void (*func2)(void);
@@ -376,7 +376,7 @@ void seg092_06b4(signed short a1)
 {
 	signed short x;
 	signed short y;
-	signed short chest_id;
+	signed short pos;
 	signed short l4;
 	RealPt chest_ptr;
 	Bit8u *ptr;
@@ -396,14 +396,14 @@ void seg092_06b4(signed short a1)
 		}
 	}
 
-	l4 = host_readb(ptr + 16 * y + x) & 2;
-	chest_id = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
+	l4 = host_readb(ptr + 16 * y + x) & 0x02;
+	pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
 
 	play_voc(ARCHIVE_FILE_FX13_VOC);
 
 	do {
 
-		if (host_readws(Real2Host(chest_ptr)) == chest_id) {
+		if (host_readws(Real2Host(chest_ptr)) == pos) {
 
 			if (l4 != 0 && host_readd(Real2Host(chest_ptr) + 11)) {
 #if defined(__BORLANDC__)

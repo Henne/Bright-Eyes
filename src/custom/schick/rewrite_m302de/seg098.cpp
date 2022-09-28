@@ -916,7 +916,7 @@ signed short use_spell(RealPt hero, signed short selection_menu, signed char han
 #ifdef M302de_ORIGINAL_BUGFIX
 			/* Original-Bug 29: door-specific spell handicap is not considered in a free Foramen spell (from the spellcast menu). */
 			D1_INFO("spell_id = %d, DNG_MENU_MODE = %d.\n",spell_id);
-			if (spell_id == SP_FORAMEN_FORAMINOR && (ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_OPEN_DOOR || ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_UNLOCK_DOOR)) {
+			if (spell_id == SP_FORAMEN_FORAMINOR && ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE && (ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_OPEN_DOOR || ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_UNLOCK_DOOR)) {
 				x = ds_readws(X_TARGET);
 				y = ds_readws(Y_TARGET);
 				ptr_doors = Real2Host(ds_readd(DUNGEON_DOORS_BUF));
@@ -932,7 +932,7 @@ signed short use_spell(RealPt hero, signed short selection_menu, signed char han
 				pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
 
 				if ((host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x) & 0x02) == 0) {
-					/* entry is ......0. -> door is locked */
+					/* flag 1 'unlocked' is not set -> door is locked  */
 					while (host_readws(ptr_doors + 0) != pos) {
 						/* ASSERT */
 						/*
