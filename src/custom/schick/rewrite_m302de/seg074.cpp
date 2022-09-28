@@ -271,11 +271,17 @@ void render_automap(signed short x_off)
 		}
 	}
 
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* draw yellow arrow at the position of the active group */
+
+	/* Original-Bug 31: If there is another group on the same map square as the active group, the automap will mark that square by a purple arrow (for the other group) instead of a yellow one (for the active group).
+	 * The reason is that the yellow arrow will be overdrawn by the purple ones, which are drawn later. */
 	if (((ds_readws(X_TARGET) - x_off) >= 0) && ((ds_readws(X_TARGET) - x_off) <= 16)) { /* shouldn't this always be true? */
 
 		draw_automap_square(ds_readws(X_TARGET) - x_off, ds_readws(Y_TARGET),
 					MAP_TILE_YELLOW_ARROW, ds_readbs(DIRECTION));
 	}
+#endif
 
 	/* draw purple arrows at the positions of other groups */
 	for (group_i = 0; group_i < 6; group_i++) {
@@ -295,6 +301,18 @@ void render_automap(signed short x_off)
 					ds_readbs(GROUPS_DIRECTION + group_i));
 		}
 	}
+
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* draw yellow arrow at the position of the active group */
+
+	/* Original-Bug 31: see above.
+	 * Fix: Move the code block drawing the yellow arrow after the one drawing the purple arrows. */
+	if (((ds_readws(X_TARGET) - x_off) >= 0) && ((ds_readws(X_TARGET) - x_off) <= 16)) { /* shouldn't this always be true? */
+
+		draw_automap_square(ds_readws(X_TARGET) - x_off, ds_readws(Y_TARGET),
+					MAP_TILE_YELLOW_ARROW, ds_readbs(DIRECTION));
+	}
+#endif
 
 	/* In the target selector screen of the Transversalis spell, mark the target with a cross */
 	if (((ds_readws(AUTOMAP_SELX) - x_off) >= 0) && ((ds_readws(AUTOMAP_SELX) - x_off) <= 16)) {
