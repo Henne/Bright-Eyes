@@ -988,55 +988,55 @@ void DNG_enter_dungeon(signed short dungeon_id)
 
 	switch (dungeon_id) {
 
-		case 1:  x_pos = 9;  y_pos = 11;  dir = 0;  level = 2;  break;
-		case 2:  x_pos = 1;  y_pos = 1;   dir = 2;  level = 0;  break;
-		case 3:  x_pos = 1;  y_pos = 8;   dir = 1;  level = 0;  break;
+		case DUNGEONS_TOTENSCHIFF:  x_pos = 9;  y_pos = 11;  dir = NORTH;  level = 2;  break;
+		case DUNGEONS_VERFALLENE_HERBERGE:  x_pos = 1;  y_pos = 1;   dir = SOUTH;  level = 0;  break;
+		case DUNGEONS_SPINNENHOEHLE:  x_pos = 1;  y_pos = 8;   dir = EAST;  level = 0;  break;
 
 #if !defined(__BORLANDC__)
-		case 4:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+		case DUNGEONS_WOLFSHOEHLE:  x_pos = 7;  y_pos = 14;  dir = NORTH;  level = 0;  break;
 #else
-mark1:		case 4:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+mark1:		case DUNGEONS_WOLFSHOEHLE:  x_pos = 7;  y_pos = 14;  dir = NORTH;  level = 0;  break;
 #endif
 
-		case 5:  x_pos = 6;  y_pos = 14;  dir = 0;  level = 0;  break;
-		case 6:  x_pos = 13; y_pos = 14;  dir = 0;  level = 0;  break;
-		case 7:  x_pos = 1;  y_pos = 13;  dir = 0;  level = 0;  break;
-		case 8:  x_pos = 1;  y_pos = 14;  dir = 1;  level = 0;  break;
+		case DUNGEONS_GOBLINHOEHLE:  x_pos = 6;  y_pos = 14;  dir = NORTH;  level = 0;  break;
+		case DUNGEONS_DASPOTASCHATZ:  x_pos = 13; y_pos = 14;  dir = NORTH;  level = 0;  break;
+		case DUNGEONS_RUINE_DES_SCHWARZMAGIERS:  x_pos = 1;  y_pos = 13;  dir = NORTH;  level = 0;  break;
+		case DUNGEONS_ORKBEHAUSUNG:  x_pos = 1;  y_pos = 14;  dir = EAST;  level = 0;  break;
 
 #if !defined(__BORLANDC__)
-		case 9:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+		case DUNGEONS_KULTSTAETTE_DES_NAMENLOSEN:  x_pos = 7;  y_pos = 14;  dir = NORTH;  level = 0;  break;
 #else
-		case 9:  goto mark1;
+		case DUNGEONS_KULTSTAETTE_DES_NAMENLOSEN:  goto mark1;
 mark2:			   goto mark1;
 #endif
 
-		case 10:  x_pos = 1;  y_pos = 3;   dir = 1;  level = 0;  break;
+		case DUNGEONS_DRACHENHORT:  x_pos = 1;  y_pos = 3;   dir = EAST;  level = 0;  break;
 
 #if !defined(__BORLANDC__)
-		case 11:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+		case DUNGEONS_PIRATENHOEHLE:  x_pos = 7;  y_pos = 14;  dir = NORTH;  level = 0;  break;
 #else
-		case 11:  goto mark2;
+		case DUNGEONS_PIRATENHOEHLE:  goto mark2;
 #endif
 
-		case 12:  x_pos = 13; y_pos = 14;  dir = 0;  level = 0;  break;
-		case 13: {
+		case DUNGEONS_ZWERGENFESTE:  x_pos = 13; y_pos = 14;  dir = NORTH;  level = 0;  break;
+		case DUNGEONS_VERLASSENE_MINE: {
 			x_pos = 7;
 			y_pos = 14;
-			dir = 0;
+			dir = NORTH;
 			level = 0;
 
 			ds_writeb(DNG13_COLLAPSECOUNT, 0);
 			ds_writeb(DNG13_HEROCOUNT, (signed char)count_heroes_in_group());
 			break;
 		}
-		case 14: {
+		case DUNGEONS_ZWINGFESTE: {
 			x_pos = 1;
 			y_pos = 14;
-			dir = 3;
+			dir = WEST;
 			level = ds_writebs(LOCATION, 0);
 			break;
 		}
-		case 15:  x_pos = 1;  y_pos = 11;   dir = 1;  level = 0;  break;
+		case DUNGEONS_HYGGELIKS_RUINE:  x_pos = 1;  y_pos = 11;   dir = EAST;  level = 0;  break;
 	}
 
 	ds_writew(X_TARGET, x_pos);
@@ -1049,7 +1049,7 @@ mark2:			   goto mark1;
 	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, TOWNS_NONE));
 	ds_writeb(DNG_AREA_LOADED, ds_writeb(CITY_AREA_LOADED, -1));
 
-	if (dungeon_id == 14) {
+	if (dungeon_id == DUNGEONS_ZWINGFESTE) {
 
 		ptr = Real2Host(ds_readd(RENDERBUF_PTR)) + 0x1f4;
 		memset(Real2Host(ds_readd(RENDERBUF_PTR)), 0, 0x120);
