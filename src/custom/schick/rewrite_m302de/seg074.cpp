@@ -222,20 +222,21 @@ void render_automap(signed short x_off)
 			if (is_discovered(x + x_off, y)) {
 
 				if (ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE) {
+					/* in dungeon */
 
 					tile_type = div16(get_mapval_small(x, y));
 
 					draw_automap_square(x, y,
-						(tile_type <= 0)? 19 :
-							(((tile_type == 1) || (tile_type == 9) || tile_type == 2) ? 11 :
-							((tile_type == 4) ? 6 :
-							((tile_type == 3) ? 3 :
-							((tile_type == 5) ? 2 :
-							((tile_type == 8) ? 17 :
-							((tile_type == 6) ? 9 : 1)))))), -1);
-
+						(tile_type <= DNG_TILE_CORRIDOR)? MAP_TILE_DARK_GREY :
+							(((tile_type == DNG_TILE_CLOSED_DOOR) || (tile_type == DNG_TILE_SMASHED_DOOR) || tile_type == DNG_TILE_OPEN_DOOR) ? MAP_TILE_DARK_RED :
+							((tile_type == DNG_TILE_STAIR_UP) ? MAP_TILE_LIGHT_BLUE :
+							((tile_type == DNG_TILE_STAIR_DOWN) ? MAP_TILE_BLUE :
+							((tile_type == DNG_TILE_PIT_IN_CEILING) ? MAP_TILE_BRIGHT_GREEN :
+							((tile_type == DNG_TILE_CHEST) ? MAP_TILE_BROWN :
+							((tile_type == DNG_TILE_PIT) ? MAP_TILE_DARK_GREEN : MAP_TILE_RED)))))), -1);
 
 				} else {
+					/* in a town */
 
 					if (!(tile_type = get_maploc(x + x_off, y))) {
 						tile_type = get_border_index((ds_readb(DNG_MAP_SIZE) == 16) ?
@@ -244,19 +245,19 @@ void render_automap(signed short x_off)
 					}
 
 					draw_automap_square(x, y,
-						(tile_type <= 0)? 19 :
-							((tile_type == 6) ? 3 :
-							((tile_type == 7) ? 18 :
-							((tile_type == 8) ? 1 :
-							((tile_type == 1) ? 12 :
-							((tile_type == 9) ? 6 :
-							((tile_type == 10) ? 15 :
-							((tile_type == 11) ? 9 :
-							((tile_type == 12) ? 5 :
-							((tile_type == 13) ? 10 :
-							(((tile_type >= 2) && (tile_type <= 5)) ? 11 : 0)))))))))), -1);
+						(tile_type <= TOWN_TILE_STREET)? MAP_TILE_DARK_GREY :
+							((tile_type == TOWN_TILE_WATER) ? MAP_TILE_BLUE :
+							((tile_type == TOWN_TILE_GRASS) ? MAP_TILE_GREEN :
+							((tile_type == TOWN_TILE_SIGNPOST) ? MAP_TILE_RED :
+							((tile_type == TOWN_TILE_TEMPLE) ? MAP_TILE_ORANGE :
+							((tile_type == TOWN_TILE_INN_OR_TAVERN) ? MAP_TILE_LIGHT_BLUE :
+							((tile_type == TOWN_TILE_MERCHANT) ? MAP_TILE_GREY : /* The lightouse on Runin is also displayed in Gray */
+							((tile_type == TOWN_TILE_SMITH) ? MAP_TILE_DARK_GREEN :
+							((tile_type == TOWN_TILE_HEALER) ? MAP_TILE_PINK :
+							((tile_type == TOWN_TILE_BLACK_FINGER) ? MAP_TILE_DARK_PURPLE :
+							(((tile_type >= TOWN_TILE_HOUSE_1) && (tile_type <= TOWN_TILE_HOUSE_4)) ? MAP_TILE_DARK_RED : MAP_TILE_BLACK)))))))))), -1);
 
-					if ((tile_type != 0) && (tile_type != 7) && (tile_type != 6) && (tile_type != 8)) {
+					if ((tile_type != TOWN_TILE_STREET) && (tile_type != TOWN_TILE_GRASS) && (tile_type != TOWN_TILE_WATER) && (tile_type != TOWN_TILE_SIGNPOST)) {
 
 						entrance_dir = (ds_readb(DNG_MAP_SIZE) == 16) ?
 										get_mapval_small(x, y) :
@@ -270,12 +271,13 @@ void render_automap(signed short x_off)
 		}
 	}
 
-	if (((ds_readws(X_TARGET) - x_off) >= 0) && ((ds_readws(X_TARGET) - x_off) <= 16)) {
+	if (((ds_readws(X_TARGET) - x_off) >= 0) && ((ds_readws(X_TARGET) - x_off) <= 16)) { /* shouldn't this always be true? */
 
 		draw_automap_square(ds_readws(X_TARGET) - x_off, ds_readws(Y_TARGET),
-					4, ds_readbs(DIRECTION));
+					MAP_TILE_YELLOW_ARROW, ds_readbs(DIRECTION));
 	}
 
+	/* draw purple arrows at the positions of other groups */
 	for (group_i = 0; group_i < 6; group_i++) {
 
 		if ((ds_readbs(CURRENT_GROUP) != group_i) &&
@@ -289,14 +291,15 @@ void render_automap(signed short x_off)
 		{
 			draw_automap_square(ds_readws(GROUPS_X_TARGET + 2 * group_i) - x_off,
 					ds_readws(GROUPS_Y_TARGET + 2 * group_i),
-					16,
+					MAP_TILE_PURPLE_ARROW,
 					ds_readbs(GROUPS_DIRECTION + group_i));
 		}
 	}
 
+	/* In the target selector screen of the Transversalis spell, mark the target with a cross */
 	if (((ds_readws(AUTOMAP_SELX) - x_off) >= 0) && ((ds_readws(AUTOMAP_SELX) - x_off) <= 16)) {
 
-		draw_automap_square(ds_readws(AUTOMAP_SELX) - x_off,	ds_readws(AUTOMAP_SELY), 7, -1);
+		draw_automap_square(ds_readws(AUTOMAP_SELX) - x_off,	ds_readws(AUTOMAP_SELY), MAP_TILE_CROSS, -1);
 	}
 }
 

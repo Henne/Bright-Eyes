@@ -153,7 +153,7 @@ void DNG_door(signed short action)
 							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x02); /* effect: ......1. i.e. door is unlocked */
 						}
 
-						if (div16(host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == 1) /* if 0001.... door is closed */
+						if (div16(host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == DNG_TILE_CLOSED_DOOR) /* if 0001.... door is closed */
 						{
 							/* ASSERT */
 							/*
@@ -167,9 +167,8 @@ void DNG_door(signed short action)
 							{
 								/* door closed and unlocked -> open it */
 
-								and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* & 00001111 */
-								or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x20); /* | 00100000 */
-								/* efffect: 0010...., meaning that door is open */
+								and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* clear higher 4 bits */
+								or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, DNG_TILE_OPEN_DOOR << 4);
 								ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 								DNG_open_door();
 
@@ -185,7 +184,7 @@ void DNG_door(signed short action)
 								ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_UNLOCK_DOOR);
 							}
 
-						} else if (div16(host_readbs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == 2) /* 0010.... i.e. door is open */
+						} else if (div16(host_readbs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == DNG_TILE_OPEN_DOOR) /* 0010.... i.e. door is open */
 						{
 							/* ASSERT */
 							/*
@@ -197,9 +196,8 @@ void DNG_door(signed short action)
 							/* the door is open -> close it */
 							DNG_close_door();
 
-							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* & 00001111 */
-							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x12);  /* | 00010010 */
-							/* effect: 0001..1., meaning that door is closed (0001....), but unlocked (......1.) */
+							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* clear higher 4 bits */
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, (DNG_TILE_CLOSED_DOOR << 4) + 0x02); /* +0x02: set bit 1 'unlocked' */
 
 							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 							ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_OPEN_DOOR);
@@ -211,9 +209,8 @@ void DNG_door(signed short action)
 
 					if (check_heroes_KK(host_readbs((Bit8u*)ptr + 2)))
 					{
-						and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* & 00001111 */
-						or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x90); /* | 10010000 */
-						/* effect: 1001.... i.e. door is smashed */
+						and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* clear higher 4 bits */
+						or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, DNG_TILE_SMASHED_DOOR << 4);
 
 						ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 						ds_writew(DNG_REFRESH_DIRECTION, -1);
@@ -262,9 +259,8 @@ void DNG_door(signed short action)
 
 						} else {
 							/* success => the door opens */
-							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* & 00001111 */
-							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x20); /* | 00100000 */
-							/* effect: 0010.... i.e. door is open */
+							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* clear higher 4 bits */
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, DNG_TILE_OPEN_DOOR << 4);
 							/* note that the 'unlocked' flag ......1. is not explicitly set. It will be set if the party closes the door. */
 							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 							DNG_open_door();
@@ -320,9 +316,8 @@ void DNG_door(signed short action)
 							sub_ae_splash(hero, get_spell_cost(SP_FORAMEN_FORAMINOR, 0));
 
 							/* success => the door opens */
-							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* & 00001111 */
-							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x20); /* | 00100000 */
-							/* effect: 0010.... i.e. door is open */
+							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* clear higher 4 bits */
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, DNG_TILE_OPEN_DOOR << 4);
 							/* note that the 'unlocked' flag ......1. is not explicitly set. It will be set if the party closes the door. */
 							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 							DNG_open_door();
@@ -365,9 +360,8 @@ void DNG_fallpit_test(signed short max_damage)
 
 	play_voc(ARCHIVE_FILE_FX18_VOC);
 
-	and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* & 00001111 */
-	or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x60);  /* | 01100000 */
-	/* effect: 0110.... */
+	and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* clear higher 4 bits */
+	or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), DNG_TILE_PIT << 4);
 
 	if (ds_readb(DUNGEON_LIGHT) != 0)
 	{
@@ -377,8 +371,8 @@ void DNG_fallpit_test(signed short max_damage)
 		/* drop one level down */
 		DNG_inc_level();
 
-		and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* & 00001111 */
-		or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);  /* | 01010000 */
+		and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* clear higher 4 bits */
+		or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), DNG_TILE_PIT_IN_CEILING << 4);
 		/* effect: 0101.... */
 
 		/* damage the heroes */
@@ -400,11 +394,10 @@ void DNG_fallpit_test(signed short max_damage)
 			inc_ds_bs_post(DUNGEON_LEVEL);
 			load_area_description(1);
 
-			and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* & 00001111 */
-			or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);  /* | 01010000 */
-			/* effect: 0101.... */
+			and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* clear higher 4 bits */
+			or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), DNG_TILE_PIT_IN_CEILING << 4);
 
-			/* move one level up. Why? */
+			/* move one level up. */
 			dec_ds_bs_post(DUNGEON_LEVEL);
 
 			ds_writews(X_TARGET, ds_readws(X_TARGET_BAK));
@@ -414,8 +407,8 @@ void DNG_fallpit_test(signed short max_damage)
 
 			DNG_update_pos();
 		} else {
-			and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* & 00001111 */
-			or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);  /* | 01010000 */
+			and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* clear higher 4 bits */
+			or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), DNG_TILE_PIT_IN_CEILING << 4);
 			/* effect: 0101.... */
 		}
 	}
@@ -590,20 +583,21 @@ signed short DNG_step(void)
 
 	} else if (ds_readws(ACTION) == ACTION_ID_UP)
 	{
-		if ((l_si = div16(ds_readb(STEPTARGET_FRONT))) == 11)
+		if ((l_si = div16(ds_readb(STEPTARGET_FRONT))) == DNG_TILE_SEMIPERMEABLE_WALL)
 		{
 			l_si = 1 << ds_readbs(DIRECTION);
 
 			if (ds_readb(STEPTARGET_FRONT) & l_si & 0x0f)
+				/* can only be entered if flag no. <direction> is set. */
 			{
 				DNG_timestep(1);
 			}
 
-		} else if ((l_si = div16(ds_readb(STEPTARGET_FRONT))) != 15 &&
-				l_si != 1 && /* closed door */
-				l_si != 10 &&
-				l_si != 8 &&
-				l_si != 7)
+		} else if ((l_si = div16(ds_readb(STEPTARGET_FRONT))) != DNG_TILE_WALL &&
+				l_si != DNG_TILE_CLOSED_DOOR && /* closed door */
+				l_si != DNG_TILE_REMOVABLE_WALL &&
+				l_si != DNG_TILE_CHEST &&
+				l_si != DNG_TILE_BLOCKER)
 		{
 			DNG_timestep(1);
 		} else {
@@ -612,11 +606,11 @@ signed short DNG_step(void)
 
 	} else if (ds_readws(ACTION) == ACTION_ID_DOWN)
 	{
-		if ((l_si = div16(ds_readb(STEPTARGET_BACK))) != 15 &&
-				l_si != 1 &&
-				l_si != 10 &&
-				l_si != 8 &&
-				l_si != 7)
+		if ((l_si = div16(ds_readb(STEPTARGET_BACK))) != DNG_TILE_WALL &&
+				l_si != DNG_TILE_CLOSED_DOOR &&
+				l_si != DNG_TILE_REMOVABLE_WALL &&
+				l_si != DNG_TILE_CHEST &&
+				l_si != DNG_TILE_BLOCKER)
 		{
 			DNG_timestep(-1);
 		} else {
@@ -648,6 +642,7 @@ signed short DNG_step(void)
 				}
 
 				or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x02);
+				/* set bit 1 'unlocked' */
 			}
 		} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && (!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
 		{
