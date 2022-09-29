@@ -168,13 +168,13 @@ signed short DNG02_handler(void)
 
 		hero_weight = get_hero_weight(Real2Host(get_heaviest_hero()));
 
-		host_writebs(amap_ptr + MAP_POS(10,11), (hero_weight >= weight_sum ? 0 : MAP_POS(0,15)));
+		host_writebs(amap_ptr + MAP_POS(10,11), (hero_weight >= weight_sum ? (DNG_TILE_CORRIDOR << 4) : (DNG_TILE_WALL << 4)));
 
 		play_voc(305);
 
 	} else if ((target_pos == DNG_POS(0,10,13) || target_pos == DNG_POS(0,10,9)) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		host_writeb(amap_ptr + MAP_POS(10,11), 0);
+		host_writeb(amap_ptr + MAP_POS(10,11), DNG_TILE_CORRIDOR << 4);
 
 		play_voc(305);
 
@@ -230,7 +230,7 @@ signed short DNG02_handler(void)
 
 			GUI_output(get_tx(14));
 
-			host_writebs(amap_ptr + MAP_POS(5,2), 0);
+			host_writebs(amap_ptr + MAP_POS(5,2), DNG_TILE_CORRIDOR << 4);
 		}
 
 	} else if (target_pos == DNG_POS(0,11,6) && target_pos != ds_readws(DNG_HANDLED_POS))
@@ -249,7 +249,7 @@ signed short DNG02_handler(void)
 		{
 			GUI_output(get_tx(15));
 
-			host_writeb(amap_ptr + MAP_POS(11,8), 0);
+			host_writeb(amap_ptr + MAP_POS(11,8), DNG_TILE_CORRIDOR << 4);
 		}
 
 	} else if ((target_pos == DNG_POS(0,10,6) || target_pos == DNG_POS(0,11,5)) && target_pos != ds_readws(DNG_HANDLED_POS))
