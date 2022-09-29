@@ -627,12 +627,16 @@ void DNG_timestep(signed short forward)
 			/* go forward */
 
 			if (!dir) {
+				/* north */
 				dec_ds_ws(Y_TARGET);
-			} else if (dir == 1) {
+			} else if (dir == EAST) {
+				/* east */
 				inc_ds_ws(X_TARGET);
-			} else if (dir == 2) {
+			} else if (dir == SOUTH) {
+				/* south */
 				inc_ds_ws(Y_TARGET);
 			} else {
+				/* west */
 				dec_ds_ws(X_TARGET);
 			}
 		} else {
@@ -640,12 +644,16 @@ void DNG_timestep(signed short forward)
 			/* go backward */
 
 			if (!dir) {
+				/* north */
 				inc_ds_ws(Y_TARGET);
-			} else if (dir == 1) {
+			} else if (dir == EAST) {
+				/* east */
 				dec_ds_ws(X_TARGET);
-			} else if (dir == 2) {
+			} else if (dir == SOUTH) {
+				/* south */
 				dec_ds_ws(Y_TARGET);
 			} else {
+				/* west */
 				inc_ds_ws(X_TARGET);
 			}
 		}

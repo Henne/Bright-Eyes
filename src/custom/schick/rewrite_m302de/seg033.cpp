@@ -352,7 +352,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 			} else if (selected == FIG_ACTION_SPELL) {
 				/* CAST SPELL / ZAUBERN */
 
-				if (host_readbs(hero + HERO_TYPE) < 7) {
+				if (host_readbs(hero + HERO_TYPE) < HERO_TYPE_WITCH) {
 					/* not a magic user */
 					GUI_output(get_ttx(215));
 				} else {

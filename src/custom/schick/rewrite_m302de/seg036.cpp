@@ -945,7 +945,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 		} else {
 
-			if ((host_readbs(hero + HERO_TYPE) >= 7) &&		/* magic user */
+			if ((host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH) &&		/* magic user */
 				(host_readws(hero + HERO_AE) > 10) &&	/* AE > 10 */
 				(l5 != 0) &&
 				(ds_readws(CURRENT_FIG_NO) != FIGHTS_F144) &&	/* not in the final fight */

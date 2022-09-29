@@ -458,7 +458,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				case 0x9a: {
 					/* Zaubertrank */
 
-					if (host_readbs(consumer + HERO_TYPE) >= 7) {
+					if (host_readbs(consumer + HERO_TYPE) >= HERO_TYPE_WITCH) {
 						/* Magicuser */
 
 						l_si = host_readw(consumer + HERO_AE_ORIG) - host_readw(consumer + HERO_AE);
@@ -502,7 +502,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				case 0x9b: {
 					/* Zaubertrank (stark) */
 
-					if (host_readbs(consumer + HERO_TYPE) >= 7) {
+					if (host_readbs(consumer + HERO_TYPE) >= HERO_TYPE_WITCH) {
 						/* Magicuser */
 
 						l_si = host_readw(consumer + HERO_AE_ORIG) - host_readw(consumer + HERO_AE);

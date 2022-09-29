@@ -196,13 +196,13 @@ void DNG15_riddle(void)
 	/* check if the other group is in position */
 	for (i = l_di = 0; i < 6; i++) {
 
-		if (pos == 0x1801 && ds_readws(GROUPS_X_TARGET + 2 * i) == 8 &&
+		if (pos == DNG_POS(1,8,1) && ds_readws(GROUPS_X_TARGET + 2 * i) == 8 &&
 			ds_readws(GROUPS_Y_TARGET + 2 * i) == 5 && ds_readbs(CURRENT_GROUP) != i)
 		{
 			l_di = 1;
 		}
 
-		if (pos == 0x1805 && ds_readws(GROUPS_X_TARGET + 2 * i) == 8 &&
+		if (pos == DNG_POS(1,8,5) && ds_readws(GROUPS_X_TARGET + 2 * i) == 8 &&
 			ds_readws(GROUPS_Y_TARGET + 2 * i) == 1 && ds_readbs(CURRENT_GROUP) != i)
 		{
 			l_di = 1;
@@ -238,7 +238,7 @@ void DNG15_riddle(void)
 				/* riddle solved: remove the door from the map */
 				GUI_output(get_tx(32));
 
-				host_writeb(ptr + 0x39, 0x20);
+				host_writeb(ptr + MAP_POS(9,3), DNG_TILE_OPEN_DOOR << 4);
 
 				add_hero_ap_all(10);
 			} else {

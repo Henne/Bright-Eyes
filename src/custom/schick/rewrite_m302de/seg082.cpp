@@ -43,13 +43,13 @@ signed short DNG07_handler(void)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
-	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+	target_pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), ds_readws(X_TARGET), ds_readws(Y_TARGET));
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	if (target_pos == 0xd02 && target_pos != ds_readws(DNG_HANDLED_POS))
+	if (target_pos == DNG_POS(0,13,2) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (div16(host_readb(amap_ptr + 0x2d)) != 3)
+		if (div16(host_readb(amap_ptr + MAP_POS(13,2))) != DNG_TILE_STAIR_DOWN)
 		{
 			do {
 				i = GUI_radio(get_tx(8), 3,
@@ -89,8 +89,8 @@ signed short DNG07_handler(void)
 
 						} else {
 
-							and_ptr_bs(amap_ptr + 0x2d, 0x0f);
-							or_ptr_bs(amap_ptr + 0x2d, 0x30);
+							and_ptr_bs(amap_ptr + MAP_POS(13,2), 0x0f);
+							or_ptr_bs(amap_ptr + MAP_POS(13,2), DNG_TILE_STAIR_DOWN << 4);
 
 							add_hero_ap(hero, 1L);
 						}
@@ -107,7 +107,7 @@ signed short DNG07_handler(void)
 
 				hero = get_hero(select_hero_ok_forced(get_ttx(317)));
 
-				if (host_readbs(hero + HERO_TYPE) < 7)
+				if (host_readbs(hero + HERO_TYPE) < HERO_TYPE_WITCH)
 				{
 					GUI_output(get_ttx(330));
 				} else {
@@ -117,8 +117,8 @@ signed short DNG07_handler(void)
 					{
 						sub_ae_splash(hero, get_spell_cost(SP_FORAMEN_FORAMINOR, 0));
 
-						and_ptr_bs(amap_ptr + 0x2d, 0x0f);
-						or_ptr_bs(amap_ptr + 0x2d, 0x30);
+						and_ptr_bs(amap_ptr + MAP_POS(13,2), 0x0f);
+						or_ptr_bs(amap_ptr + MAP_POS(13,2), DNG_TILE_STAIR_DOWN << 4);
 
 						add_hero_ap(hero, 1L);
 
@@ -154,18 +154,18 @@ signed short DNG07_handler(void)
 			DNG_inc_level();
 		}
 
-	} else if (target_pos == 0x1c03 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb((TREASURE_MAPS + 1)) != 1)
+	} else if (target_pos == DNG_POS(1,12,3) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb((TREASURE_MAPS + 1)) != 1)
 	{
 		GUI_output(get_tx(1));
 
-	} else if (target_pos == 0x1d02 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(1,13,2) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 
 		inc_ds_ws(X_TARGET);
 
 		DNG_dec_level();
 
-	} else if (target_pos == 0x1601 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG07_MUELIXIER_FLAG) != 2)
+	} else if (target_pos == DNG_POS(1,6,1) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG07_MUELIXIER_FLAG) != 2)
 	{
 		if (!ds_readb(DNG07_MUELIXIER_FLAG))
 		{
@@ -200,13 +200,13 @@ signed short DNG07_handler(void)
 			}
 		}
 
-	} else if ((target_pos == 0x230d || target_pos == 0x220d) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG07_FLICKER_FLAG))
+	} else if ((target_pos == DNG_POS(2,3,13) || target_pos == DNG_POS(2,2,13)) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG07_FLICKER_FLAG))
 	{
 		ds_writeb(DNG07_FLICKER_FLAG, 1);
 
 		GUI_output(get_tx(4));
 
-	} else if (target_pos == 0x210b && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG07_ANTIMUELIXIER_FLAG))
+	} else if (target_pos == DNG_POS(2,1,11) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG07_ANTIMUELIXIER_FLAG))
 	{
 		if (GUI_bool(get_tx(5)))
 		{
@@ -215,7 +215,7 @@ signed short DNG07_handler(void)
 			ds_writeb(DNG07_ANTIMUELIXIER_FLAG, 1);
 		}
 
-	} else if (target_pos == 0x2a01 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(2,10,1) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (!do_fight(FIGHTS_F100_13))
 		{
@@ -231,19 +231,19 @@ signed short DNG07_handler(void)
 			show_treasure_map();
 		}
 
-	} else if (target_pos == 0x2e0d && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(2,14,13) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		ds_writew(X_TARGET, 7);
 
 		ds_writeb(DIRECTION, (ds_readbs(DIRECTION) + 2) & 3);
 
-	} else if (target_pos == 0x280d && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(2,8,13) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		ds_writew(X_TARGET, 13);
 
 		ds_writeb(DIRECTION, (ds_readbs(DIRECTION) + 2) & 3);
 
-	} else if (target_pos == 0x2102 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG07_POISON_FLAG))
+	} else if (target_pos == DNG_POS(2,1,2) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG07_POISON_FLAG))
 	{
 		if (GUI_bool(get_tx(6)))
 		{
@@ -257,7 +257,7 @@ signed short DNG07_handler(void)
 
 			ds_writed(DNG07_POISON_TIMER, DAYS(1));
 		}
-	} else if (target_pos == 0x10e && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,1,14) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (GUI_bool(get_tx(15)))
 		{
@@ -314,7 +314,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 
 	amap_ptr = p_datseg + DNG_MAP;
 
-	if (host_readbs(amap_ptr + 16 * ds_readws(Y_TARGET) + ds_readws(X_TARGET)) == 4)
+	if (host_readbs(amap_ptr + MAP_POS(ds_readws(X_TARGET), ds_readws(Y_TARGET))) == 4)
 	{
 		/* TODO: no forced decision here ? */
 		i = GUI_radio(get_tx(4), 3,
@@ -362,7 +362,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 			/* destroy the statue */
 
 			/* remove the statue from the map */
-			and_ptr_bs(amap_ptr + 16 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), 0xfb);
+			and_ptr_bs(amap_ptr + MAP_POS(ds_readws(X_TARGET), ds_readws(Y_TARGET)), 0xfb); /* clear flag 2 */
 
 			GUI_output(get_tx(10));
 

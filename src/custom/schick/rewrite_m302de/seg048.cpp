@@ -181,7 +181,7 @@ void status_menu(signed short hero_pos)
 				if (hero_pos > 6) hero_pos = 0;
 			} while (!host_readbs(get_hero(hero_pos) + HERO_TYPE) ||
 					host_readbs(get_hero(hero_pos) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) ||
-					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(STATUS_PAGE_MODE) > 3));
+					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < HERO_TYPE_WITCH && ds_readws(STATUS_PAGE_MODE) > 3));
 
 
 			if (ds_readbs(STATUSPAGE_SELITEM4_NO) != -1) {
@@ -214,7 +214,7 @@ void status_menu(signed short hero_pos)
 				if (hero_pos < 0) hero_pos = 6;
 			} while (!host_readbs(get_hero(hero_pos) + HERO_TYPE) ||
 					host_readbs(get_hero(hero_pos) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) ||
-					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(STATUS_PAGE_MODE) > 3));
+					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < HERO_TYPE_WITCH && ds_readws(STATUS_PAGE_MODE) > 3));
 
 
 			if (ds_readbs(STATUSPAGE_SELITEM4_NO) != -1) {
@@ -596,7 +596,8 @@ void status_menu(signed short hero_pos)
 					}
 					case 8: {
 						/* show spells */
-						if (host_readbs(hero2 + HERO_TYPE) < 7) {
+						if (host_readbs(hero2 + HERO_TYPE) < HERO_TYPE_WITCH) {
+							/* not a spellcaster */
 							GUI_output(get_ttx(215));
 						} else {
 							reset_item_selector();
@@ -695,7 +696,8 @@ void status_menu(signed short hero_pos)
 						break;
 					}
 					case 7: {
-						if (host_readbs(hero2 + HERO_TYPE) < 7) {
+						if (host_readbs(hero2 + HERO_TYPE) < HERO_TYPE_WITCH) {
+							/* not a spellcaster */
 							GUI_output(get_ttx(215));
 						} else {
 							reset_item_selector();
@@ -747,7 +749,8 @@ void status_menu(signed short hero_pos)
 						break;
 					}
 					case 4: {
-						if (host_readbs(hero2 + HERO_TYPE) < 7) {
+						if (host_readbs(hero2 + HERO_TYPE) < HERO_TYPE_WITCH) {
+							/* not a spellcaster */
 							GUI_output(get_ttx(215));
 						} else {
 							ds_writew(STATUS_PAGE_MODE, 4);

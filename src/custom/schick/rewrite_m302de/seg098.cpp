@@ -561,7 +561,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 	}
 
 	/* only for magic users */
-	if (host_readbs(hero + HERO_TYPE) < 7) {
+	if (host_readbs(hero + HERO_TYPE) < HERO_TYPE_WITCH) {
 		GUI_output(get_ttx(330));
 		return -2;
 	}
@@ -740,7 +740,7 @@ signed short test_spell(Bit8u *hero, signed short spell_no, signed char handicap
 	Bit8u *spell_desc;
 
 	/* check if class is magic user */
-	if ((host_readbs(hero + HERO_TYPE) < 7) || (check_hero(hero) == 0)) {
+	if ((host_readbs(hero + HERO_TYPE) < HERO_TYPE_WITCH) || (check_hero(hero) == 0)) {
 		return 0;
 	}
 	/* check if spell skill >= -5 */
@@ -923,15 +923,15 @@ signed short use_spell(RealPt hero, signed short selection_menu, signed char han
 
 				switch (ds_readbs(DIRECTION))
 				{
-					case 0: y--; break;
-					case 1:	x++; break;
-					case 2: y++; break;
-					case 3: x--; break;
+					case NORTH: y--; break;
+					case EAST:  x++; break;
+					case SOUTH: y++; break;
+					case WEST:  x--; break;
 				}
 
-				pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
+				pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), x, y);
 
-				if ((host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x) & 0x02) == 0) {
+				if ((host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y)) & 0x02) == 0) {
 					/* flag 1 'unlocked' is not set -> door is locked  */
 					while (host_readws(ptr_doors + 0) != pos) {
 						/* ASSERT */

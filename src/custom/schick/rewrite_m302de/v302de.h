@@ -25,6 +25,13 @@
 #define DAYS(n)		(HOURS(n) * 24L)
 #define MONTHS(n)	(DAYS(n) * 30L)
 
+/* for positions stored in 2 bytes, containing data level, x, y and possibly direction. */
+#define DNG_POS(level, x, y)	(((level) << 12) + ((x) << 8) + (y))
+#define DNG_POS_DIR(level, x, y, dir) (DNG_POS(level, x, y) + ((dir) << 4))
+
+/* for positions stored in 1 byte, containing x and y. */
+#define MAP_POS(x,y) ((y) << 4) + (x) /* no outer parantheses, otherwise binary BCC-check will be broken! */
+
 /* HACK: this cast is not optimized by Borland C++ 3.1 */
 static inline unsigned short cast_u16(unsigned char v)
 {

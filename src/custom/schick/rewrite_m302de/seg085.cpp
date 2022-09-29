@@ -48,11 +48,11 @@ signed short DNG10_handler(void)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
-	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+	target_pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), ds_readws(X_TARGET), ds_readws(Y_TARGET));
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	if ((target_pos == 0x101 || target_pos == 0x302) && target_pos != ds_readws(DNG_HANDLED_POS))
+	if ((target_pos == DNG_POS(0,1,1) || target_pos == DNG_POS(0,3,2)) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* TRAP: a hole in a wall; leader gets 2 LE damage */
 		if (GUI_bool(get_tx(1)))
@@ -66,12 +66,12 @@ signed short DNG10_handler(void)
 			sub_hero_le(hero, 2);
 		}
 
-	} else if (target_pos == 0x502 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,5,2) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* a dead dwarf */
 		seg092_06b4(0);
 
-	} else if (target_pos == 0x801 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,8,1) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* another hole in a wall with a lever for a trap */
 		if ((ds_readb(DNG10_LEVER_FOUND) != 0) || test_skill(hero, TA_SINNESSCHAERFE, 7) > 0)
@@ -90,8 +90,8 @@ signed short DNG10_handler(void)
 			}
 		}
 
-	} else if ((target_pos == 0x804 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG10_LEVER_STATE)) ||
-			(target_pos == 0x704 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG10_LEVER_STATE) != 0))
+	} else if ((target_pos == DNG_POS(0,8,4) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG10_LEVER_STATE)) ||
+			(target_pos == DNG_POS(0,7,4) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG10_LEVER_STATE) != 0))
 	{
 		/* TRAP: terrible pain; radom hero gets 3W6+4 LE damage */
 		hero = get_hero(get_random_hero());
@@ -117,9 +117,9 @@ signed short DNG10_handler(void)
 
 		sub_hero_le(hero, answer);
 
-	} else if (target_pos == 0x30a &&
+	} else if (target_pos == DNG_POS(0,3,10) &&
 			(target_pos != ds_readws(DNG_HANDLED_POS) || ds_readb(DIRECTION) != ds_readb(DIRECTION_BAK)) &&
-			ds_readbs(DIRECTION) == 3)
+			ds_readbs(DIRECTION) == WEST)
 	{
 		/* TRAP: a loose stone in a wall */
 		if (ds_readb(DNG10_HOLE_STATE) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 5) > 0)
@@ -152,7 +152,7 @@ signed short DNG10_handler(void)
 					if (ds_readb(DNG10_HOLE_DAMAGE) >= 7)
 					{
 						/* the secret wall can now be passed forward */
-						host_writeb(amap_ptr + 0x73, 0xbf);
+						host_writeb(amap_ptr + MAP_POS(3,7), (DNG_TILE_SEMIPERMEABLE_WALL << 4) + 0x0f); /* set flags 0,1,2,3 => can be entered from all directions */
 					}
 				}
 
@@ -163,7 +163,7 @@ signed short DNG10_handler(void)
 
 			ds_writew(DNG_HANDLED_POS, target_pos);
 		}
-	} else if (target_pos == 0x108 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,1,8) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* TRAP: a floorplate */
 		if (ds_readb(DNG10_FLOORPLATE_FOUND) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 5) > 0)
@@ -194,12 +194,12 @@ signed short DNG10_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x10c && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,1,12) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* INFO: you see three holes in the wall */
 		GUI_output(get_tx(16));
 
-	} else if (target_pos == 0x30e && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,3,14) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* INFO: collection bowl */
 		if (GUI_bool(get_tx(17)))
@@ -216,17 +216,17 @@ signed short DNG10_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x60c && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 2)
+	} else if (target_pos == DNG_POS(0,6,12) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == SOUTH)
 	{
 		/* INFO: an empty room */
 		GUI_output(get_tx(21));
 
-	} else if (target_pos == 0xa0d && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG10_HESHTOT))
+	} else if (target_pos == DNG_POS(0,10,13) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG10_HESHTOT))
 	{
 		/* FIGHT: scared heshtot */
 		if (GUI_bool(get_tx(22)))
 		{
-			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0xa0d))));
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), DNG_POS_DIR(0,10,13,NORTH)))));
 			ds_writew(DNG_HANDLED_POS, 0);
 
 			if (!do_fight(FIGHTS_F129_17))
@@ -239,12 +239,12 @@ signed short DNG10_handler(void)
 
 			ds_writew(X_TARGET, 1);
 			ds_writew(Y_TARGET, 3);
-			ds_writeb(DIRECTION, 3);
+			ds_writeb(DIRECTION, WEST);
 			DNG_update_pos();
 		}
 
-	} else if ((target_pos == 0x1e08 || target_pos == 0x1e09 || target_pos == 0x1e0a || target_pos == 0x1e07 ||
-			target_pos == 0x1e06 || target_pos == 0x1e05) &&
+	} else if ((target_pos == DNG_POS(1,14,8) || target_pos == DNG_POS(1,14,9) || target_pos == DNG_POS(1,14,10) || target_pos == DNG_POS(1,14,7) ||
+			target_pos == DNG_POS(1,14,6) || target_pos == DNG_POS(1,14,5)) &&
 			target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* TRAP: column of fire, probability 10%, damage 1W6 for each hero in the party */
@@ -263,7 +263,7 @@ signed short DNG10_handler(void)
 				}
 			}
 		}
-	} else if (target_pos == 0x1e02 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(1,14,2) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* LEVER: enables/disables fight 111, leader get 2 LE damage */
 		if (GUI_bool(get_tx(25)))
@@ -279,27 +279,27 @@ signed short DNG10_handler(void)
 			sub_hero_le(hero, 2);
 		}
 
-	} else if ((target_pos == 0x1a03 || target_pos == 0x1703) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG10_MUMMY_LEVER) != 0)
+	} else if ((target_pos == DNG_POS(1,10,3) || target_pos == DNG_POS(1,7,3)) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG10_MUMMY_LEVER) != 0)
 	{
 		/* FIGHT: four mummies again and again */
-		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 6), 0x1533));
-		ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), 0x1c13));
+		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 6), DNG_POS_DIR(1,5,3,WEST)));
+		ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), DNG_POS_DIR(1,12,3,EAST)));
 		ds_writew(FIG_DISCARD, 1);
 		do_fight(FIGHTS_F129_21);
 
-	} else if (target_pos == 0x110c && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 2)
+	} else if (target_pos == DNG_POS(1,1,12) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == SOUTH)
 	{
 		/* INFO: glowing walls */
 		GUI_output(get_tx(27));
 
-	} else if (target_pos == 0x190c && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG10_DRAGON_QUEST) != 0)
+	} else if (target_pos == DNG_POS(1,9,12) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG10_DRAGON_QUEST) != 0)
 	{
 		/* FIGHT: get PLATINKEY for the dragon */
-		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 6), 0x190a));
-		ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), 0x190a));
+		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 6), DNG_POS_DIR(1,9,10,NORTH)));
+		ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), DNG_POS_DIR(1,9,10,NORTH)));
 		do_fight(FIGHTS_F129_29);
 
-	} else if (target_pos == 0x2c0c && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(2,12,12) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* QUEST: the dragon */
 		/* TIP: plunder sucessfully, do the quest and get the reward */
@@ -408,12 +408,12 @@ signed short DNG10_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x2005 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(2,0,5) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* INFO: some fools you are */
 		GUI_output(get_tx(39));
 
-	} else if (target_pos == 0x03 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,0,3) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		leave_dungeon();
 

@@ -80,7 +80,7 @@ void ask_miracle(void)
 					l5 = 1;
 
 					for (i = 0; ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > i; i++) {
-						if (host_readbs(get_hero(i) + HERO_TYPE) >= 7) {
+						if (host_readbs(get_hero(i) + HERO_TYPE) >= HERO_TYPE_WITCH) {
 							l5 = 1;
 						}
 					}

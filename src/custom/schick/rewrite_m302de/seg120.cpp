@@ -163,7 +163,7 @@ void rabies(RealPt hero, signed short hero_pos)
 					hero2 = get_hero(answer);
 
 					/* check that hero2 is a magic user */
-					if (host_readbs(hero2 + HERO_TYPE) >= 7) {
+					if (host_readbs(hero2 + HERO_TYPE) >= HERO_TYPE_WITCH) {
 
 						/* need 15 AE */
 						if (host_readws(hero2 + HERO_AE) >= 15) {
