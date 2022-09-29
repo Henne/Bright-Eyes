@@ -109,7 +109,7 @@ void chest_petrified(void)
 	ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group());
 
 	/* and make him petrified */
-	or_ptr_bs(Real2Host(ds_readd(MAIN_ACTING_HERO)) + 0xaa, 0x04);
+	or_ptr_bs(Real2Host(ds_readd(MAIN_ACTING_HERO)) + HERO_FLAGS1, 0x04); /* set 'petrified' flag */
 }
 
 void chest_ignifax_normal(void)
@@ -389,15 +389,15 @@ void seg092_06b4(signed short a1)
 
 	if (a1 != 0) {
 		switch(ds_readbs(DIRECTION)) {
-			case 0: y--; break;
-			case 1: x++; break;
-			case 2: y++; break;
-			case 3: x--; break;
+			case NORTH: y--; break;
+			case EAST: x++; break;
+			case SOUTH: y++; break;
+			case WEST: x--; break;
 		}
 	}
 
-	l4 = host_readb(ptr + 16 * y + x) & 0x02;
-	pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
+	l4 = host_readb(ptr + MAP_POS(x,y)) & 0x02;
+	pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), x, y);
 
 	play_voc(ARCHIVE_FILE_FX13_VOC);
 

@@ -101,59 +101,59 @@ void DNG_door(signed short action)
 	signed short pos;
 	signed short l4;
 	signed short spell_result;
-	struct dummy5 *ptr;
+	struct dummy5 *ptr_doors;
 	Bit8u *hero;
 	signed short hero_pos;
 	signed short lockpick_pos;
 	signed short lockpick_result;
 
-	ptr = (struct dummy5*)Real2Host(ds_readd(DUNGEON_DOORS_BUF));
+	ptr_doors = (struct dummy5*)Real2Host(ds_readd(DUNGEON_DOORS_BUF));
 	x = ds_readws(X_TARGET);
 	y = ds_readws(Y_TARGET);
 
 	switch (ds_readbs(DIRECTION))
 	{
-		case 0: y--; break;
-		case 1:	x++; break;
-		case 2: y++; break;
-		case 3: x--; break;
+		case NORTH: y--; break;
+		case EAST:  x++; break;
+		case SOUTH: y++; break;
+		case WEST:  x--; break;
 	}
 
-	pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
+	pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), x, y);
 
 	do {
 
-		if (host_readws((Bit8u*)ptr + 0) == pos)
+		if (host_readws((Bit8u*)ptr_doors + 0) == pos)
 		{
 #if !defined(__BORLANDC__)
 			D1_INFO("Tuer: KK notwendig %d, SCHLOESSER mod = %d, FORAMEN mod = %d\n",
-					host_readbs((Bit8u*)ptr + 2),
-					host_readbs((Bit8u*)ptr + 3),
-					host_readbs((Bit8u*)ptr + 4));
+					host_readbs((Bit8u*)ptr_doors + 2),
+					host_readbs((Bit8u*)ptr_doors + 3),
+					host_readbs((Bit8u*)ptr_doors + 4));
 #endif
 
 			if (action == ACTION_ID_ICON_7)
 			{
-				/* 7th icon has been triggered. Might be 'open door', 'close door', 'smash door'. distinguish based on DNG_MENU_MODE */
+				/* 7th icon/menu option has been triggered. Might be 'open door', 'close door', 'smash door'. distinguish based on DNG_MENU_MODE */
 				if (ds_readws(DNG_MENU_MODE) != DNG_MENU_MODE_UNLOCK_DOOR) {
 					/* either 'open door' or 'close door' */
 
-					if (ds_readb(DUNGEON_INDEX) == DUNGEONS_HYGGELIKS_RUINE && pos == 0x1903 && ds_readb(DNG15_UNKNOWN_FLAG) != 0)
+					if (ds_readb(DUNGEON_INDEX) == DUNGEONS_HYGGELIKS_RUINE && pos == DNG_POS(1,9,3) && ds_readb(DNG15_UNKNOWN_FLAG) != 0)
 					{
 						GUI_output(get_tx(18));
 
-					} else if (!(ds_readb(DUNGEON_INDEX) == DUNGEONS_PIRATENHOEHLE && pos == 0xc08 && ds_readb(DNG11_LEVER_FLAG) != 4) &&
-							!(ds_readb(DUNGEON_INDEX) == DUNGEONS_DASPOTASCHATZ && pos == 0xb01 && ds_readb(DNG06_PITDOOR_FLAG)) &&
+					} else if (!(ds_readb(DUNGEON_INDEX) == DUNGEONS_PIRATENHOEHLE && pos == DNG_POS(0,12,8) && ds_readb(DNG11_LEVER_FLAG) != 4) &&
+							!(ds_readb(DUNGEON_INDEX) == DUNGEONS_DASPOTASCHATZ && pos == DNG_POS(0,11,1) && ds_readb(DNG06_PITDOOR_FLAG)) &&
 							!(ds_readb(DUNGEON_INDEX) == DUNGEONS_ZWERGENFESTE && ds_readb(DNG12_WATERTRAP_WATER_RUNS)))
 					{
 						/* for this door works an IRON KEY [first type] */
 						/* BEWARE: there are two types of IRON KEYs in the game */
-						if (ds_readb(DUNGEON_INDEX) == DUNGEONS_PIRATENHOEHLE && pos == 0xc08 && get_first_hero_with_item(ITEM_KEY_IRON_1) != -1)
+						if (ds_readb(DUNGEON_INDEX) == DUNGEONS_PIRATENHOEHLE && pos == DNG_POS(0,12,8) && get_first_hero_with_item(ITEM_KEY_IRON_1) != -1)
 						{
-							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x02); /* effect: ......1. i.e. door is unlocked */
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), 0x02); /* effect: ......1. i.e. door is unlocked */
 						}
 
-						if (div16(host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == DNG_TILE_CLOSED_DOOR) /* if 0001.... door is closed */
+						if (div16(host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y))) == DNG_TILE_CLOSED_DOOR) /* if 0001.... door is closed */
 						{
 							/* ASSERT */
 							/*
@@ -161,15 +161,15 @@ void DNG_door(signed short action)
 								D1_INFO("FEHLER: DNG_MENU_MODE sollte DNG_MENU_MODE_OPEN_DOOR sein, stimmt aber nicht.\n");
 							}
 							*/
-							l4 = host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x) & 0x02; /* read bit 1: is door unlocked? */
+							l4 = host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y)) & 0x02; /* read bit 1: is door unlocked? */
 
-							if (l4 != 0 || !host_readbs((Bit8u*)ptr + 2))
+							if (l4 != 0 || !host_readbs((Bit8u*)ptr_doors + 2))
 							{
 								/* door closed and unlocked -> open it */
 
-								and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* clear higher 4 bits */
-								or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, DNG_TILE_OPEN_DOOR << 4);
-								ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
+								and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), 0x0f); /* clear higher 4 bits */
+								or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), DNG_TILE_OPEN_DOOR << 4);
+								ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y)));
 								DNG_open_door();
 
 								ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
@@ -184,7 +184,7 @@ void DNG_door(signed short action)
 								ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_UNLOCK_DOOR);
 							}
 
-						} else if (div16(host_readbs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == DNG_TILE_OPEN_DOOR) /* 0010.... i.e. door is open */
+						} else if (div16(host_readbs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y))) == DNG_TILE_OPEN_DOOR) /* 0010.... i.e. door is open */
 						{
 							/* ASSERT */
 							/*
@@ -196,10 +196,10 @@ void DNG_door(signed short action)
 							/* the door is open -> close it */
 							DNG_close_door();
 
-							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* clear higher 4 bits */
-							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, (DNG_TILE_CLOSED_DOOR << 4) + 0x02); /* +0x02: set bit 1 'unlocked' */
+							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), 0x0f); /* clear higher 4 bits */
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), (DNG_TILE_CLOSED_DOOR << 4) + 0x02); /* +0x02: set bit 1 'unlocked' */
 
-							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
+							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y)));
 							ds_writew(DNG_MENU_MODE, DNG_MENU_MODE_OPEN_DOOR);
 						}
 					}
@@ -207,12 +207,12 @@ void DNG_door(signed short action)
 					/* smash door */
 					play_voc(ARCHIVE_FILE_FX14_VOC);
 
-					if (check_heroes_KK(host_readbs((Bit8u*)ptr + 2)))
+					if (check_heroes_KK(host_readbs((Bit8u*)ptr_doors + 2)))
 					{
-						and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* clear higher 4 bits */
-						or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, DNG_TILE_SMASHED_DOOR << 4);
+						and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), 0x0f); /* clear higher 4 bits */
+						or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), DNG_TILE_SMASHED_DOOR << 4);
 
-						ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
+						ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y)));
 						ds_writew(DNG_REFRESH_DIRECTION, -1);
 					}
 
@@ -235,7 +235,7 @@ void DNG_door(signed short action)
 				{
 					if (lockpick_pos != -2)
 					{
-						lockpick_result = test_skill(hero, TA_SCHLOESSER, host_readbs((Bit8u*)ptr + 3));
+						lockpick_result = test_skill(hero, TA_SCHLOESSER, host_readbs((Bit8u*)ptr_doors + 3));
 
 						play_voc(ARCHIVE_FILE_FX11_VOC);
 
@@ -259,10 +259,10 @@ void DNG_door(signed short action)
 
 						} else {
 							/* success => the door opens */
-							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* clear higher 4 bits */
-							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, DNG_TILE_OPEN_DOOR << 4);
+							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), 0x0f); /* clear higher 4 bits */
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), DNG_TILE_OPEN_DOOR << 4);
 							/* note that the 'unlocked' flag ......1. is not explicitly set. It will be set if the party closes the door. */
-							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
+							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y)));
 							DNG_open_door();
 
 							add_hero_ap(hero, 1L); /* hero gets 1 AP for successful lock pick */
@@ -290,11 +290,12 @@ void DNG_door(signed short action)
 				{
 					hero = get_hero(hero_pos);
 
-					if (host_readbs(hero + HERO_TYPE) < 7)
+					if (host_readbs(hero + HERO_TYPE) < HERO_TYPE_WITCH)
 					{
+						/* not a spellcaster */
 						GUI_output(get_ttx(330));
 					} else {
-						spell_result = test_spell(hero, SP_FORAMEN_FORAMINOR, host_readbs((Bit8u*)ptr + 4));
+						spell_result = test_spell(hero, SP_FORAMEN_FORAMINOR, host_readbs((Bit8u*)ptr_doors + 4));
 
 						if (spell_result == -99)
 						{
@@ -316,10 +317,10 @@ void DNG_door(signed short action)
 							sub_ae_splash(hero, get_spell_cost(SP_FORAMEN_FORAMINOR, 0));
 
 							/* success => the door opens */
-							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f); /* clear higher 4 bits */
-							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, DNG_TILE_OPEN_DOOR << 4);
+							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), 0x0f); /* clear higher 4 bits */
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), DNG_TILE_OPEN_DOOR << 4);
 							/* note that the 'unlocked' flag ......1. is not explicitly set. It will be set if the party closes the door. */
-							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
+							ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y)));
 							DNG_open_door();
 
 							add_hero_ap(hero, 1L); /* hero gets 1 AP for successful lock pick */
@@ -332,7 +333,7 @@ void DNG_door(signed short action)
 			}
 		}
 
-	} while (host_readws((Bit8u*)(ptr++)) != -1);
+	} while (host_readws((Bit8u*)(ptr_doors++)) != -1);
 }
 
 void print_msg_with_first_hero(Bit8u *msg)
@@ -360,8 +361,8 @@ void DNG_fallpit_test(signed short max_damage)
 
 	play_voc(ARCHIVE_FILE_FX18_VOC);
 
-	and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* clear higher 4 bits */
-	or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), DNG_TILE_PIT << 4);
+	and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(ds_readws(X_TARGET), ds_readws(Y_TARGET)), 0x0f); /* clear higher 4 bits */
+	or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(ds_readws(X_TARGET), ds_readws(Y_TARGET)), DNG_TILE_PIT << 4);
 
 	if (ds_readb(DUNGEON_LIGHT) != 0)
 	{
@@ -371,8 +372,8 @@ void DNG_fallpit_test(signed short max_damage)
 		/* drop one level down */
 		DNG_inc_level();
 
-		and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* clear higher 4 bits */
-		or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), DNG_TILE_PIT_IN_CEILING << 4);
+		and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(ds_readws(X_TARGET), ds_readws(Y_TARGET)), 0x0f); /* clear higher 4 bits */
+		or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(ds_readws(X_TARGET), ds_readws(Y_TARGET)), DNG_TILE_PIT_IN_CEILING << 4);
 		/* effect: 0101.... */
 
 		/* damage the heroes */
@@ -394,8 +395,8 @@ void DNG_fallpit_test(signed short max_damage)
 			inc_ds_bs_post(DUNGEON_LEVEL);
 			load_area_description(1);
 
-			and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* clear higher 4 bits */
-			or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), DNG_TILE_PIT_IN_CEILING << 4);
+			and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(ds_readws(X_TARGET), ds_readws(Y_TARGET)), 0x0f); /* clear higher 4 bits */
+			or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(ds_readws(X_TARGET), ds_readws(Y_TARGET)), DNG_TILE_PIT_IN_CEILING << 4);
 
 			/* move one level up. */
 			dec_ds_bs_post(DUNGEON_LEVEL);
@@ -407,8 +408,8 @@ void DNG_fallpit_test(signed short max_damage)
 
 			DNG_update_pos();
 		} else {
-			and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f); /* clear higher 4 bits */
-			or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), DNG_TILE_PIT_IN_CEILING << 4);
+			and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(ds_readws(X_TARGET), ds_readws(Y_TARGET)), 0x0f); /* clear higher 4 bits */
+			or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(ds_readws(X_TARGET), ds_readws(Y_TARGET)), DNG_TILE_PIT_IN_CEILING << 4);
 			/* effect: 0101.... */
 		}
 	}
@@ -529,9 +530,9 @@ signed short DNG_step(void)
 	} else if (ds_readws(ACTION) == ACTION_ID_ICON_2)
 	{
 		/* merge groups or reach hands through the mirror */
-		pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+		pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), ds_readws(X_TARGET), ds_readws(Y_TARGET));
 
-		if ((ds_readb(DUNGEON_INDEX) == DUNGEONS_HYGGELIKS_RUINE && pos == 0x1801) || pos == 0x1805)
+		if ((ds_readb(DUNGEON_INDEX) == DUNGEONS_HYGGELIKS_RUINE && pos == DNG_POS(1,8,1)) || pos == DNG_POS(1,8,5))
 		{
 			GUI_output(get_tx(33));
 
@@ -635,13 +636,13 @@ signed short DNG_step(void)
 
 				switch (ds_readbs(DIRECTION))
 				{
-					case 0:	y--; break;
-					case 1:	x++; break;
-					case 2:	y++; break;
-					case 3:	x--; break;
+					case NORTH: y--; break;
+					case EAST:  x++; break;
+					case SOUTH: y++; break;
+					case WEST:  x--; break;
 				}
 
-				or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x02);
+				or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), 0x02);
 				/* set bit 1 'unlocked' */
 			}
 		} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && (!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
@@ -682,7 +683,7 @@ void DNG_see_stairs(void)
 	stair_struct *stair_ptr;
 	stair_ptr = (stair_struct*)Real2Host(ds_readd(DUNGEON_STAIRS_BUF));
 
-	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+	target_pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), ds_readws(X_TARGET), ds_readws(Y_TARGET));
 
 #if !defined(__BORLANDC__)
 	if (sizeof(stair_struct) != 4)
@@ -829,7 +830,7 @@ void DNG_fight(void)
 
 	fight_ptr = (struct fight_struct*)Real2Host(ds_readd(DUNGEON_FIGHTS_BUF));
 
-	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+	target_pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), ds_readws(X_TARGET), ds_readws(Y_TARGET));
 
 #if !defined(__BORLANDC__)
 	if (sizeof(fight_struct) != 14)
@@ -1006,10 +1007,10 @@ void DNG_see_lever(void)
 {
 	signed short target_pos;
 
-	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+	target_pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), ds_readws(X_TARGET), ds_readws(Y_TARGET));
 
 	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_HYGGELIKS_RUINE &&
-		(target_pos == 0x1801 || target_pos == 0x1805) &&
+		(target_pos == DNG_POS(1,8,1) || target_pos == DNG_POS(1,8,5)) &&
 		(!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
 	{
 		if (ds_readbs((NEW_MENU_ICONS + 6)) == MENU_ICON_NONE)

@@ -724,7 +724,7 @@ void tevent_104(void)
 
 					hero = get_hero(select_hero_ok_forced(get_ttx(317)));
 
-					if (host_readbs(hero + HERO_TYPE) < 7) {
+					if (host_readbs(hero + HERO_TYPE) < HERO_TYPE_WITCH) {
 						/* hero is not a spell user */
 						GUI_output(get_ttx(330));
 					} else {

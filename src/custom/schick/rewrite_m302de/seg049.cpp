@@ -677,7 +677,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 					}
 
 					/* swap LE and AE */
-					if ((host_readbs(hero + HERO_TYPE) >= 7) && (le_regen < ae_regen)) {
+					if ((host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH) && (le_regen < ae_regen)) {
 						tmp = ae_regen;
 						ae_regen = le_regen;
 						le_regen = tmp;
@@ -722,7 +722,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 					}
 
-					if (host_readbs(hero + HERO_TYPE) >= 7) {
+					if (host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH) {
 
 						diff = host_readws(hero + HERO_AE_ORIG) - host_readws(hero + HERO_AE);
 

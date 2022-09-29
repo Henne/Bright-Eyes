@@ -612,7 +612,7 @@ void level_up(signed short hero_pos)
 	/* roll how many LE points the hero may get */
 	i = random_schick(6);
 
-	if (host_readbs(hero + HERO_TYPE) >= 7) {
+	if (host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH) {
 		/* a magic user */
 
 		/* add spell increasements */
@@ -891,7 +891,7 @@ void level_up(signed short hero_pos)
 
 	} else {
 
-		if ((host_readbs(hero + HERO_TYPE) >= 7) &&
+		if ((host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH) &&
 			(l_di = ds_readbs((LEVELUP_SPTA_CONV - 7) + host_readbs(hero + HERO_TYPE))) &&
 			GUI_bool(get_tx2(45)))
 		{

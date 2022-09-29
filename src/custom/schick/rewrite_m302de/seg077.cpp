@@ -47,23 +47,23 @@ signed short DNG01_handler(void)
 	Bit8u *hero;
 
 
-	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+	target_pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), ds_readws(X_TARGET), ds_readws(Y_TARGET));
 
-	if (target_pos == 0x108)
+	if (target_pos == DNG_POS(0,1,8))
 	{
 		DNG_fallpit_test(6);
 
-	} else if (target_pos == 0x1309)
+	} else if (target_pos == DNG_POS(1,3,9))
 	{
 		dec_ds_ws_post(X_TARGET);
 		DNG_fallpit_test(6);
 
-	} else if (target_pos == 0x1e05)
+	} else if (target_pos == DNG_POS(1,14,5))
 	{
 		inc_ds_ws_post(Y_TARGET);
 		DNG_fallpit_test(6);
 
-	} else if (target_pos == 0x2706 || target_pos == 0x2709)
+	} else if (target_pos == DNG_POS(2,7,6) || target_pos == DNG_POS(2,7,9))
 	{
 		DNG_stub6();
 
@@ -71,12 +71,12 @@ signed short DNG01_handler(void)
 	{
 		DNG_fallpit_test(6);
 
-	} else if (target_pos == 0x4706)
+	} else if (target_pos == DNG_POS(4,7,6))
 	{
 		DNG_fallpit_test(6);
 		inc_ds_ws_post(Y_TARGET);
 
-	} else if (target_pos == 0x1d05 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_SABRE_TAKEN))
+	} else if (target_pos == DNG_POS(1,13,5) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_SABRE_TAKEN))
 	{
 		sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
 			(char*)get_ttx(528),
@@ -89,7 +89,7 @@ signed short DNG01_handler(void)
 			ds_writeb(DNG01_SABRE_TAKEN, 1);
 		}
 
-	} else if (target_pos == 0x3209 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_CROSSBOW_TAKEN))
+	} else if (target_pos == DNG_POS(3,2,9) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_CROSSBOW_TAKEN))
 	{
 		sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
 			(char*)get_ttx(528),
@@ -102,7 +102,7 @@ signed short DNG01_handler(void)
 			ds_writeb(DNG01_CROSSBOW_TAKEN, 1);
 		}
 
-	} else if (target_pos == 0x4209 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_AMULET_TAKEN))
+	} else if (target_pos == DNG_POS(4,2,9) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_AMULET_TAKEN))
 	{
 		/* ITEM: a magic AMULET */
 		if (GUI_bool(get_tx(7)) && get_item(ITEM_AMULET_GREEN, 1, 1))
@@ -111,7 +111,7 @@ signed short DNG01_handler(void)
 			sub_ds_ds(GODS_ESTIMATION + 4 * 5, 100L);
 		}
 
-	} else if (target_pos == 0x4d06 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(4,13,6) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		seg092_06b4(0);
 
@@ -138,7 +138,7 @@ signed short DNG01_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x5108 && !ds_readbs(DNG01_ARDORA_FREED))
+	} else if (target_pos == DNG_POS(5,1,8) && !ds_readbs(DNG01_ARDORA_FREED))
 	{
 		/* NPC: ARDORA */
 		ds_writew(TEXTBOX_WIDTH, 7);
@@ -171,7 +171,7 @@ signed short DNG01_handler(void)
 
 		add_hero_ap_all(20);
 
-	} else if (target_pos == 0x5e07 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(5,14,7) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (GUI_bool(get_tx(11)))
 		{
@@ -183,9 +183,11 @@ signed short DNG01_handler(void)
 				/* Original-Bug: better get_first_hero_available_in_group() */
 				if (test_skill(get_hero(0), TA_KLETTERN, 0) > 0)
 				{
-					ds_writeb(DNG_MAP + 32 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), 0x50);
+					/* Original-Bug: '32 * ' should probably be '16 *'. */
+					ds_writeb(DNG_MAP + 32 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), DNG_TILE_PIT_IN_CEILING << 4);
 					DNG_dec_level();
-					ds_writeb(DNG_MAP + 32 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), 0x60);
+					/* Original-Bug: '32 * ' should probably be '16 *'. */
+					ds_writeb(DNG_MAP + 32 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), DNG_TILE_PIT << 4);
 					inc_ds_ws_post(Y_TARGET);
 				}
 			} else {
@@ -193,7 +195,7 @@ signed short DNG01_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x280b && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(2,8,11) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (GUI_bool(get_tx(24)))
 		{
@@ -381,7 +383,7 @@ void DNG01_chest0_x1(RealPt chest)
 		ds_writew(DEATHTRAP, 1);
 
 		/* fight the demon */
-		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), 0x1d3a))));
+		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 6), DNG_POS_DIR(1,13,10,WEST)))));
 
 		if (!do_fight(FIGHTS_SHIP10_1))
 		{

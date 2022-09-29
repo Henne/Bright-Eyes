@@ -523,7 +523,7 @@ void do_inn(void)
 
 					hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer;
 
-					if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
+					if (host_readbs(Real2Host(hero) + HERO_TYPE) >= HERO_TYPE_WITCH) {
 
 						if (magic_act[answer] != 0) {
 							GUI_output(get_ttx(334));
