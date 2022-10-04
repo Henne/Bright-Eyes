@@ -264,7 +264,7 @@ signed short select_skill(void)
 {
 	signed short l_si = -1;
 	signed short nr_skills = 3;
-	/* available skills {44, 45, 46, -1, -1, -1} */
+	/* available skills {TA_HEILEN_GIFT, TA_HEILEN_KRANKHEITEN, TA_HEILEN_WUNDEN, -1, -1, -1} */
 	struct dummy2 a = *(struct dummy2*)(p_datseg + SELECT_SKILL_DEFAULTS);
 
 	/* add skills for special location */
@@ -311,7 +311,7 @@ signed short select_skill(void)
 signed short use_skill(signed short hero_pos, signed char handicap, signed short skill)
 {
 	signed short l_si;
-	signed short l_di;
+	signed short le_damage;
 
 	signed short patient_pos;
 	signed short le;
@@ -332,7 +332,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 		load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
 		switch(skill) {
-		case 44 : {
+		case TA_HEILEN_GIFT: {
 			ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ttx(460));
@@ -372,8 +372,8 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 
-								host_writeb(patient + 0xd7 + 5 * poison, 0);
-								host_writeb(patient + 0xd6 + 5 * poison, 1);
+								host_writeb(patient + (HERO_POISON + 1) + 5 * poison, 0);
+								host_writeb(patient + HERO_POISON + 5 * poison, 1);
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ttx(692),
@@ -398,18 +398,20 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 
 										GUI_output(Real2Host(ds_readd(DTP2)));
 									} else {
-										l_di = 3;
+										/* skill test failed */
+										le_damage = 3;
 
-										if (host_readws(patient + 0x60) <= l_di) {
-											l_di = host_readws(patient + 0x60) - 1;
+										if (host_readws(patient + HERO_LE) <= le_damage) {
+											/* don't kill the patient: at least 1 LE should remain */
+											le_damage = host_readws(patient + HERO_LE) - 1;
 										}
 
-										sub_hero_le(patient, l_di);
+										sub_hero_le(patient, le_damage);
 
 										sprintf((char*)Real2Host(ds_readd(DTP2)),
 											(char*)get_ttx(694),
 											(char*)patient + HERO_NAME2,
-											l_di);
+											le_damage);
 
 										GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -439,7 +441,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 			}
 			break;
 		}
-		case 45 : {
+		case  TA_HEILEN_KRANKHEITEN : {
 			ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ttx(460));
@@ -451,7 +453,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 			}
 			break;
 		}
-		case 46 : {
+		case TA_HEILEN_WUNDEN : {
 			ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ttx(460));
@@ -460,7 +462,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 				patient = get_hero(patient_pos);
 				if (is_hero_healable(patient)) {
 
-					if (host_readws(patient + 0x60) >= host_readws(patient + 0x5e)) {
+					if (host_readws(patient + HERO_LE) >= host_readws(patient + HERO_LE_ORIG)) {
 						/* no need to heal */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ttx(461),
@@ -493,38 +495,40 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 							} else {
-								l_di = 3;
+								/* skill test failed */
+								le_damage = 3;
 
-								if (host_readws(patient + 0x60) <= l_di) {
-									l_di = host_readws(patient + 0x60) - 1;
+								if (host_readws(patient + HERO_LE) <= le_damage) {
+									/* don't kill the patient: at least 1 LE should remain */
+									le_damage = host_readws(patient + HERO_LE) - 1;
 								}
 
-								sub_hero_le(patient, l_di);
+								sub_hero_le(patient, le_damage);
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ttx(694),
 									(char*)patient + HERO_NAME2,
-									l_di);
+									le_damage);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 
 								l_si = 0;
 
-								host_writed(patient + HERO_STAFFSPELL_TIMER, DAYS(1));
+								host_writed(patient + HERO_STAFFSPELL_TIMER, DAYS(1)); /* TODO: Why STAFFSPELL ?? */
 							}
 						} else {
 
 							if (random_schick(20) <= 7) {
-								/* infected */
+								/* 35% chance: infected with Wundfieber illness */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ttx(699),
 									(char*)hero + HERO_NAME2,
 									(char*)patient + HERO_NAME2);
 
-								host_writeb(patient + 0xb3, -1);
-								host_writeb(patient + 0xb4, 0);
+								host_writeb(patient + (HERO_ILLNESS + 5 * ILLNESS_TYPE_WUNDFIEBER), -1);
+								host_writeb(patient + (HERO_ILLNESS + 5 * ILLNESS_TYPE_WUNDFIEBER + 1), 0);
 							} else {
-								/* just failed */
+								/* 65% chance: just failed, no infection */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ttx(698),
 									(char*)hero + HERO_NAME2,
@@ -538,7 +542,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 			}
 			break;
 		}
-		case 9 : {
+		case TA_AKROBATIK : {
 
 			if (ds_readds((INGAME_TIMERS + 0x18)) > 0) {
 
@@ -572,7 +576,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 			}
 			break;
 		}
-		case 47 : {
+		case TA_MUSIZIEREN : {
 
 			if (ds_readds((INGAME_TIMERS + 0x1c)) > 0) {
 
@@ -606,7 +610,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 			}
 			break;
 		}
-		case 43 : {
+		case TA_FALSCHSPIEL : {
 
 			if (test_skill(hero, TA_FALSCHSPIEL, handicap) > 0) {
 
@@ -634,7 +638,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 
 			break;
 		}
-		case 49 : {
+		case TA_TASCHENDIEBSTAHL : {
 
 			if (test_skill(hero, TA_TASCHENDIEBSTAHL, handicap) > 0) {
 
@@ -668,8 +672,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 
 			break;
 		}
-		case 32 : {
-			/* ALCHEMY */
+		case TA_ALCHIMIE : {
 			l_si = plan_alchemy(hero);
 			break;
 		}

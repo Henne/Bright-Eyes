@@ -45,7 +45,7 @@ signed short calc_beeline(signed short x1, signed short y1, signed short x2, sig
  * \brief   get the type of the range weapon of a hero
  *
  * \param   hero        pointer to hero
- * \return              range weapon type {-1, 3, 4, 5}: -1 = none, 3 = shooting, 4 = throwing, 5 = spear weapon
+ * \return              range weapon type {-1, 3, 4, 5}: -1 = none, 3 = shooting, 4 = throwing, 5 = weapon of type spear, but not magic wand or quarterstaff
  */
 signed short FIG_get_range_weapon_type(Bit8u *hero)
 {
@@ -53,23 +53,24 @@ signed short FIG_get_range_weapon_type(Bit8u *hero)
 	signed short retval = -1;
 	signed short weapon;
 
-	/* get equipped weapon of the hero and make a pointer to the entry of ITEMS.DAT */
-	ptr = get_itemsdat((weapon = host_readw(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID)));
+	/* get equipped item in the right hand of the hero and make a pointer to the entry of ITEMS.DAT */
+	ptr = get_itemsdat(weapon = host_readw(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID));
 
 
-	/* not a weapon */
 	if (item_weapon(ptr)) {
+		/* is a weapon */
 
 		/* MagicStaffs or Fightstaffs are spears, but no range weapons */
-		if (host_readb(ptr + 3) == 5 && weapon != ITEM_MAGIC_WAND && weapon != ITEM_QUARTERSTAFF) {
+		if (host_readb(ptr + ITEM_STATS_SUBTYPE) == WEAPON_TYPE_SPEER && weapon != ITEM_MAGIC_WAND && weapon != ITEM_QUARTERSTAFF) {
+			/* TODO: according to original DSA2/3 rules, weapon type SPEER is a melee discipline... */
 
 			retval = 5;
 
-		} else if (host_readb(ptr + 3) == 7) {
+		} else if (host_readb(ptr + ITEM_STATS_SUBTYPE) == WEAPON_TYPE_SCHUSSWAFFE) {
 
 			retval = 3;
 
-		} else if (host_readb(ptr + 3) == 8) {
+		} else if (host_readb(ptr + ITEM_STATS_SUBTYPE) == WEAPON_TYPE_WURFWAFFE) {
 
 			retval = 4;
 		}

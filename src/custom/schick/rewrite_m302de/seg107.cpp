@@ -432,7 +432,7 @@ void item_magic_book(void)
 	GUI_output(get_ttx(749));
 
 	/* Heptagon +2 */
-	add_ptr_bs(get_itemuser() + (HERO_SP_DEMON + 3), 2);
+	add_ptr_bs(get_itemuser() + (HERO_SPELLS + SP_HEPTAGON_UND_KROETENEI), 2);
 
 	/* drop the book */
 	drop_item(get_itemuser(), get_item_pos(get_itemuser(), ITEM_BOOK_HEPTAGON), 1);
@@ -535,7 +535,7 @@ void item_bag(void)
 		ptr = p_datseg + DNG_MAP;
 
 		/* remove the wall there */
-		host_writeb(ptr + 0x3a, 1);
+		host_writeb(ptr + MAP_POS(10,3), DNG_TILE_CORRIDOR + 0x01); /* set flag 0, is there a reason? */
 	}
 #if !defined(__BORLANDC__)
 	else {

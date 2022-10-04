@@ -39,7 +39,7 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 	Bit8u *item_p;
 
 	/* unequip of item 0 is not allowed */
-	if (item == 0)
+	if (item == ITEM_NONE)
 		return;
 
 	item_p = get_itemsdat(item);
@@ -64,7 +64,7 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 	/* unequip Helm CH + 1 (cursed) */
 	if (item == ITEM_HELMET_CURSED)
 		inc_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_CH));
-	/* unequip Silberschmuck TA + 1 */
+	/* unequip Silberschmuck TA + 2 */
 	if (item == ITEM_SILVER_JEWELRY_MAGIC)
 		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) + 2);
 	/* unequip Stirnreif or Ring MR - 2 */
@@ -216,18 +216,18 @@ unsigned short can_item_at_pos(unsigned short item, unsigned short pos)
 	if (item_armor(item_p)) {
 
 		/* can be weared on the head */
-		if ((pos == 0 && host_readb(item_p + 3) == 0) ||
+		if ((pos == HERO_INVENTORY_SLOT_HEAD && host_readb(item_p + ITEM_STATS_SUBTYPE) == ARMOR_TYPE_HEAD) ||
 			/* can be weared on the torso */
-			(pos == 2 && host_readb(item_p + 3) == 2) ||
+			(pos == HERO_INVENTORY_SLOT_BODY && host_readb(item_p + ITEM_STATS_SUBTYPE) == ARMOR_TYPE_BODY) ||
 			/* can be weared at the feet */
-			(pos == 6 && host_readb(item_p + 3) == 6) ||
+			(pos == HERO_INVENTORY_SLOT_FEET && host_readb(item_p + ITEM_STATS_SUBTYPE) == ARMOR_TYPE_FEET) ||
 			/* can be weared at the arms */
-			(pos == 1 && host_readb(item_p + 3) == 1) ||
+			(pos == HERO_INVENTORY_SLOT_ARMS && host_readb(item_p + ITEM_STATS_SUBTYPE) == ARMOR_TYPE_ARMS) ||
 			/* can be weared at the legs */
-			(pos == 5 && host_readb(item_p + 3) == 5) ||
+			(pos == HERO_INVENTORY_SLOT_LEGS && host_readb(item_p + ITEM_STATS_SUBTYPE) == ARMOR_TYPE_LEGS) ||
 			/* can be weared at the left hand */
-			(pos == 4 && host_readb(item_p + 3) == 9)) {
-				return 1;
+			(pos == HERO_INVENTORY_SLOT_LEFT_HAND && host_readb(item_p + ITEM_STATS_SUBTYPE) == ARMOR_TYPE_LEFT_HAND)) {
+			return 1;
 		} else {
 			return 0;
 		}
@@ -235,14 +235,14 @@ unsigned short can_item_at_pos(unsigned short item, unsigned short pos)
 
 		/* coronet (Stirnreif) (3 types) can be weared at the head */
 		if ((item == ITEM_CORONET_BLUE || item == ITEM_CORONET_SILVER || item == ITEM_CORONET_GREEN)
-			&& (pos == 0))
+			&& (pos == HERO_INVENTORY_SLOT_HEAD))
 		{
 			return 1;
 		}
 
-		/* you can take everything else in the hands */
+		/* you can take everything else in the hands, but nowhere else */
 
-		if ((pos != 3) && (pos != 4)) {
+		if ((pos != HERO_INVENTORY_SLOT_RIGHT_HAND) && (pos != HERO_INVENTORY_SLOT_LEFT_HAND)) {
 			return 0;
 		}
 
@@ -305,9 +305,9 @@ signed short has_hero_stacked(Bit8u *hero, unsigned short item)
  * \param   hero        the hero who should get the item
  * \param   item        id of the item
  * \param   mode        0 = quiet / 1 = warn / 2 = ignore
- * \param   no          number of item the hero should get
+ * \param   quantity	amount of items the hero should get
  */
-signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mode, signed short no)
+signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mode, signed short quantity)
 {
 	signed short l1;
 	signed short retval;
@@ -315,7 +315,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 	Bit8u *item_p;
 	signed short si, di;
 
-	si = no;
+	si = quantity;
 
 	retval = 0;
 
@@ -346,7 +346,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 			add_ptr_ws(hero + HERO_INVENTORY + INVENTORY_QUANTITY + l1 * SIZEOF_INVENTORY, si);
 
 			/* add weight */
-			add_ptr_ws(hero + HERO_LOAD, (host_readws(item_p + 5) * si));
+			add_ptr_ws(hero + HERO_LOAD, (host_readws(item_p + ITEM_STATS_WEIGHT) * si));
 
 			retval = si;
 		} else {
@@ -378,7 +378,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 #if 1
 							host_writew(hero + HERO_INVENTORY + INVENTORY_QUANTITY + di * SIZEOF_INVENTORY,
 								(item_stackable(item_p)) ? si :
-									(item_useable(item_p)) ?
+								(item_useable(item_p)) ?
 										ds_readbs((SPECIALITEMS_TABLE + 1) + host_readbs(item_p + ITEM_STATS_TABLE_INDEX) * 3): 0);
 #else
 
@@ -414,13 +414,13 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							if (item_stackable(item_p)) {
 								/* add stackable items weight */
 								add_ptr_ws(hero + HERO_LOAD,
-									(host_readws(item_p + 5) * si));
+									(host_readws(item_p + ITEM_STATS_WEIGHT) * si));
 								retval = si;
 								si = 0;
 							} else {
 								/* add single item weight */
 								add_ptr_ws(hero + HERO_LOAD,
-									host_readws(item_p + 5));
+									host_readws(item_p + ITEM_STATS_WEIGHT));
 								si--;
 								retval++;
 							}
@@ -464,10 +464,12 @@ unsigned short item_pleasing_ingerimm(unsigned short item)
 
 	p_item = get_itemsdat(item);
 
-	if (item_weapon(p_item) && (host_readb(p_item + 3) == 4))
+	if (item_weapon(p_item) && (host_readb(p_item + ITEM_STATS_SUBTYPE) == WEAPON_TYPE_AXT))
+		/* Ingerimm is pleased by either an axe ... */
 		return 1;
 
-	if (item_armor(p_item) && (ds_readbs(host_readbs(p_item + 4) * 2 + ARMORS_TABLE) > 1))
+	if (item_armor(p_item) && (ds_readbs(host_readbs(p_item + ITEM_STATS_TABLE_INDEX) * SIZEOF_ARMOR_STATS + ARMORS_TABLE + ARMOR_STATS_RS) > 1))
+		/* or an armor with RS > 1 */
 		return 1;
 
 	return 0;
@@ -555,7 +557,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short no)
 					dec_ptr_bs(hero + HERO_NR_INVENTORY_SLOTS_FILLED);
 
 					/* subtract item weight */
-					sub_ptr_ws(hero + HERO_LOAD, host_readws(p_item + 5));
+					sub_ptr_ws(hero + HERO_LOAD, host_readws(p_item + ITEM_STATS_WEIGHT));
 
 					/* check special items */
 					/* item: SICHEL Pflanzenkunde -3 */

@@ -212,20 +212,8 @@ enum {
 	HERO_POISON			= 0x0D6, /* 50 = 10 * 5 bytes */ /* 5 bytes for each of the following poisonings: 0-none (these 5 bytes appear to be unused!) 1-Shurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemel, 7-Lotusgift, 8-Kukris, 9-Bannstaubvergiftung */
 	HERO_TALENTS			= 0x108, /* 52 = 52 * 1 bytes, see enum TA_* below */
 	HERO_TA_RISE			= 0x13C, /* saved skill increases from last levelups */
-	HERO_SPELLS			= 0x13D, /* empty Byte */
-	HERO_SP_ANTI			= 0x13E, /* 5 = 5 * 1 bytes */
-	HERO_SP_CONTROL			= 0x143, /* 12 = 12 * 1 bytes */
-	HERO_SP_DEMON			= 0x14F, /* 6 = 6 * 1 bytes */
-	HERO_SP_ELEMENT			= 0x155, /* 3 = 3 * 1 bytes */
-	HERO_SP_MOTION			= 0x158, /* 6 = 6 * 1 bytes */
-	HERO_SP_HEAL			= 0x15E, /* 5 = 5 * 1 bytes */
-	HERO_SP_VISION			= 0x163, /* 7 = 7 * 1 bytes */
-	HERO_SP_ILLUSION		= 0x16A, /* 4 = 4 * 1 bytes */
-	HERO_SP_FIGHT			= 0x16E, /* 9 = 9 * 1 bytes */
-	HERO_SP_INTERACT		= 0x177, /* 2 = 2 * 1 bytes */
-	HERO_SP_TRANSFORM		= 0x179, /* 16 = 16 * 1 bytes */
-	HERO_SP_CHANGE			= 0x189, /* 10 = 10 * 1 bytes */
-	HERO_SP_RISE			= 0x193, /* 1 bytes */ /* saved spell increases from last levelups */
+	HERO_SPELLS			= 0x13D, /* 86 = 86 * 1 bytes, se enum SP_* below. Note that the first entry does not belong to an actual spell talent and is unused, apparentl. */
+	HERO_SP_RISE			= 0x193, /* 1 byte */ /* saved spell increases from last levelups */
 	HERO_MAGIC_SCHOOL		= 0x194, /* 1 byte */ /* only for mages */
 	HERO_STAFFSPELL_LVL		= 0x195, /* 1 byte */ /* only for mages */
 	HERO_INVENTORY			= 0x196, /* 322 = 23 * 14 bytes */ /* 23 inventory slots, each entry has 14 bytes */ /* first 7 slots: equipped inventory (head, arms etc.); following 16 slots: knapsack inventory */
@@ -773,27 +761,31 @@ enum {
 	/* structure of the entries of ITEMS.DAT */
 	ITEM_STATS_GFX		= 0,
 	ITEM_STATS_FLAGS	= 2, /* bitfield. bit 0: armor / bit 1: weapon / bit 2: useable / bit 3: nutrition / bit 4: stackable / bit 5: poison/herb/potion / bit 6: personal item (undropable) / bit 7: not usable by "use object"?? */
-	ITEM_STATS_SUBTYPE	= 3,
+	ITEM_STATS_SUBTYPE	= 3, /* meaning depends on item type set in ITEM_STATS_FLAGS. weapon -> WEAPON_TYPE_..., armor -> ARMOR_TYPE_..., nutrition -> NUTRITION_TYPE... */
 	ITEM_STATS_TABLE_INDEX	= 4,
 	ITEM_STATS_WEIGHT	= 5, /* weight in ounces */
 	ITEM_STATS_PRICE_UNIT	= 7, /* 1: Heller / 10: Silberstücke / 100: Dukaten */
 	ITEM_STATS_PRICE	= 8, /* unit is ITEM_STATS_PRICE_UNIT. So the price in Heller is ITEM_STATS_PRICE_UNIT * ITEM_STATS_PRICE */
 	ITEM_STATS_COMMONNESS	= 10,
-	ITEM_STATS_MAGIC	= 11 /* 0: not magic / 1: magic */
+	ITEM_STATS_MAGIC	= 11, /* 0: not magic / 1: magic */
+	SIZEOF_ITEM_STATS	= 12
 };
-#define SIZEOF_ITEM_STATS (12)
 
 enum {
+	/* https://github.com/shihan42/BrightEyesWiki/wiki/ITEMS.DAT */
+	/* except the last entry ITEM_SUBTYPE_ARMOR_LEFT_HAND (shields), all values agree with HERO_INVENTORY_SLOT_... */
 	ARMOR_TYPE_HEAD 	= 0,
 	ARMOR_TYPE_ARMS 	= 1,
 	ARMOR_TYPE_BODY 	= 2,
 	ARMOR_TYPE_LEGS 	= 5,
 	ARMOR_TYPE_FEET 	= 6,
-	ARMOR_TYPE_SHIELD 	= 9,
+	ARMOR_TYPE_LEFT_HAND 	= 9, /* shields */
 };
 
 enum {
-	WEAPON_TYPE_AMMUNITION	= 0,
+	/* https://github.com/shihan42/BrightEyesWiki/wiki/ITEMS.DAT */
+	/* parallel to TA_WAFFENLOS, TA_HIEBWAFFEN, TA_STICHWAFFEN ... */
+	WEAPON_TYPE_WAFFENLOS	= 0, /* note that ammunition (arrows, bolts) have this weapon type entry */
 	WEAPON_TYPE_HIEBWAFFE	= 1,
 	WEAPON_TYPE_STICHWAFFE	= 2,
 	WEAPON_TYPE_SCHWERT	= 3,
@@ -808,26 +800,60 @@ enum {
 	/* https://github.com/shihan42/BrightEyesWiki/wiki/SCHICKM.EXE#Waffentabelle */
 	/* structure of the entries of WEAPONS_TABLE */
 	WEAPON_STATS_DAMAGE_D6		= 0,
-	WEAPON_STATS_DAMAGE_SUMMAND	= 1,
+	WEAPON_STATS_DAMAGE_CONSTANT	= 1,
 	WEAPON_STATS_DAMAGE_KK_BONUS	= 2, /* Körperkraft-Zuschlag */
 	WEAPON_STATS_BF			= 3, /* Bruchfaktor */
-	WEAPON_STATS_UNKNOWN		= 4,
+	WEAPON_STATS_RANGED_INDEX	= 4, /* related to ranged weapons? */
 	WEAPON_STATS_AT_MOD		= 5,
-	WEAPON_STATS_PA_MOD		= 6
+	WEAPON_STATS_PA_MOD		= 6,
+	SIZEOF_WEAPON_STATS		= 7
 };
-#define SIZEOF_WEAPON_STATS (7)
 
 enum {
 	/* https://github.com/shihan42/BrightEyesWiki/wiki/SCHICKM.EXE#R%C3%BCstungstabelle */
 	/* structure of the entries of ARMORS_TABLE */
 	ARMOR_STATS_RS = 0, /* Rüstungsschutz */
-	ARMOR_STATS_BE = 1 /* Behinderung */
+	ARMOR_STATS_BE = 1, /* Behinderung */
+	SIZEOF_ARMOR_STATS = 2
 };
-#define SIZEOF_ARMOR_STATS (2)
 
 enum {
-	ITEM_SUBTYPE_NUTRITION_DRINK	= 0,
-	ITEM_SUBTYPE_NUTRITION_FOOD	= 1
+	/* structure of the entries of RANGED_WEAPON_TABLE */
+	RANGED_WEAPON_STATS_DAMAGE_MODIFIER = 0, /* char[7] table with damage modifiers depending on the distance */
+	RANGED_WEAPON_STATS_BASE_HANDICAP = 7,
+	SIZEOF_RANGED_WEAPON_STATS = 8
+	/* According to DSA3 rules (MSZ), there are the following distance types.
+	 *
+	 * name         distance          encoding in Schicksalsklinge
+	 * extrem nah	1-5 Schritt       0
+	 * sehr nah     5-10 Schritt	  1
+	 * nah          10-15 Schritt     2
+	 * mittel       15-25 Schritt     3
+	 * weit         25-40 Schritt     4
+	 * sehr weit    40-60 Schritt     5
+	 * extrem weit  61-100 Schritt    6
+	 *
+	 * Moreover, there are the following types of sizes of the target
+	 *
+	 * name         examples                                         encoding in Schicksalsklinge
+	 * winzig       Silbertaler, Drachenauge, Maus, Ratte, Kroete    0
+	 * sehr klein   Schlange, Fasan, Katze, Rabe                     1
+	 * klein        Wolf, Reh, Kobold, Zwerg                         2
+	 * mittel       Goblin, Elf, Mensch, Ork                         3
+	 * gross        Pferd, Elch, Oger, Troll                         4
+	 * sehr gross   Scheunentor, Drache, Elefant, Riese              5
+	 *
+	 * The skill test handicap for the ranged attack depends on the distance and the size of the target.
+	 * In Schicksalsklinge, RANGED_WEAPON_STATS_BASE_HANDICAP is the skill test handicap vs. a target which is extrem nah and winzig (0,0).
+	 * The general formula for the handicap is base_handicap + 2 * distance - 2 * target_size.
+	 *
+	 * The damage is calculated as the base damage of the weapon (like D6 + 3 for the shortbow) + a distance modifier.
+	 * The modifier is given in the RANGED_WEAPON_STATS_DAMAGE_MODIFIER array. */
+};
+
+enum {
+	NUTRITION_TYPE_DRINK	= 0,
+	NUTRITION_TYPE_FOOD	= 1
 };
 
 enum {
@@ -1505,8 +1531,8 @@ enum {
 	ITEM_KNIFE			= 0x04, /* Messer */
 	ITEM_SPEAR			= 0x05, /* Speer */
 	ITEM_SHORT_SWORD		= 0x06, /* Kurzschwert */
-	ITEM_SHORT_SHIELD		= 0x07, /* Schild */
-	ITEM_KRIEGSBEIL_1		= 0x08, /* Kriegsbeil [1st variant] */
+	ITEM_SHIELD			= 0x07, /* Schild */
+	ITEM_KRIEGSBEIL_SPECIAL		= 0x08, /* Kriegsbeil [special "Schicksalsklinge" variant, also for witches, druids and mages, 1D6 + 4, KK+14, BF 5, AT-0, PA-3, weight 120, price 45] */
 	ITEM_SHORTBOW			= 0x09, /* Kurzbogen */
 	ITEM_ARROWS			= 0x0a, /* Pfeil */
 	ITEM_STREITAXT			= 0x0b, /* Streitaxt */
@@ -1565,7 +1591,7 @@ enum {
 	ITEM_TARNELE			= 0x40, /* Tarnele */
 	ITEM_TORCH_OFF			= 0x41, /* Fackel [off] */
 	ITEM_MACE			= 0x42, /* Streitkolben */
-	ITEM_FENCING_SWORD		= 0x43, /* Degen */
+	ITEM_DEGEN			= 0x43, /* Degen */
 	ITEM_FLORET			= 0x44, /* Florett */
 	ITEM_QUARTERSTAFF		= 0x45, /* Kampfstab */
 	ITEM_CRYSTAL_BALL		= 0x46, /* Kristallkugel */
@@ -1573,8 +1599,8 @@ enum {
 	ITEM_BLANKET			= 0x48, /* Decke */
 	ITEM_SHOVEL			= 0x49, /* Schaufel */
 	ITEM_GOLD_JEWELRY		= 0x4a, /* Goldschmuck */
-	ITEM_ROBE_GREEN			= 0x4b, /* Robe [green] */
-	ITEM_ROBE_RED			= 0x4c, /* Robe [red] */
+	ITEM_ROBE_GREEN			= 0x4b, /* Robe [green, cheap] */
+	ITEM_ROBE_RED			= 0x4c, /* Robe [red, expensive] */
 	ITEM_POT_HELMET			= 0x4d, /* Topfhelm */
 	ITEM_LEATHER_HELMET		= 0x4e, /* Lederhelm */
 	ITEM_SURCOAT			= 0x4f, /* Waffenrock */
@@ -1633,7 +1659,7 @@ enum {
 	ITEM_LOTUS			= 0x84, /* Lotusblüte */
 	ITEM_MAGIC_WAND			= 0x85, /* Zauberstab */
 	ITEM_SKRAJA			= 0x86, /* Skraja */
-	ITEM_KRIEGSBEIL_2		= 0x87, /* Kriegsbeil [2nd variant] */
+	ITEM_KRIEGSBEIL			= 0x87, /* Kriegsbeil [the common one, 1D6 + 4, KK+13, BF 2, AT-2, PA-4] */
 	ITEM_ORKNASE			= 0x88, /* Orknase */
 	ITEM_SCHNEIDZAHN		= 0x89, /* Schneidzahn */
 	ITEM_ROBBENTOETER		= 0x8a, /* Robbentöter */
@@ -1716,7 +1742,7 @@ enum {
 	ITEM_SILVER_JEWELRY_MAGIC	= 0xd7, /* silver jewelry [magic: TA - 2; found in Verfallene Herberge] */
 	ITEM_SPEAR_MAGIC		= 0xd8, /* Speer [magic; found in spider cave] */
 	ITEM_CORONET_BLUE		= 0xd9, /* Stirnreif [blau, magic: MR + 2; found in Tempel des Namenlosen] */
-	ITEM_THROWING_DAGGER		= 0xda, /* Wurfdolch [magic; found in dragon cave] */
+	ITEM_THROWING_DAGGER_MAGIC	= 0xda, /* Wurfdolch [magic; found in dragon cave]. note that there is no 'ordinary' throwing dagger in the game */
 	ITEM_KEY_GOLDEN_2		= 0xdb, /* Goldschlüssel */
 	ITEM_RING_GREEN			= 0xdc, /* Ring [green, magic: protection from magic fire; found in dragon cave] */
 	ITEM_BAG			= 0xdd, /* Beutel [found and used in the first level of the ruin of the black wizard to open a passage] */
@@ -1731,7 +1757,7 @@ enum {
 	ITEM_GE_ELIXIR_BAD		= 0xe6, /* GE Elixier [bad] */
 	ITEM_IN_ELIXIR_BAD		= 0xe7, /* IN Elixier [bad] */
 	ITEM_KK_ELIXIR_BAD		= 0xe8, /* KK Elixier [bad] */
-	ITEM_ROBE_3			= 0xe9, /* Robe */
+	ITEM_ROBE_GREEN_2		= 0xe9, /* Robe [green] */
 	ITEM_GOLDEN_SHIELD		= 0xea, /* goldener Schild [magic: can be equiped by all hero classes; found in Tempel des Namenlosen */
 	ITEM_WRITING_OF_HETMAN		= 0xeb, /* Empfehlungsschreiben [Hetman] */
 	ITEM_WUNDERKUR			= 0xec, /* Wunderkur */
@@ -1751,7 +1777,7 @@ enum {
 	ITEM_DUCATS			= 0xfa, /* Dukaten */
 	ITEM_200_ARROWS			= 0xfb, /* 200 Pfeile */
 	ITEM_50_BOLTS			= 0xfc, /* 50 Bolzen */
-	ITEM_20_CLIMBING_HOOKS		= 0xfd /* 20 Kletterhaken */
+	ITEM_20_CLIMBING_HOOKS		= 0xfd  /* 20 Kletterhaken */
 };
 
 enum {

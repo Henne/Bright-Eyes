@@ -54,9 +54,9 @@ signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos
 		if (in_hand) {
 
 			/* check if one hand has a two-handed weapon */
-			if ((item_weapon(get_itemsdat(item)) && host_readbs(get_itemsdat(item) + 3) == 6) ||
-			(item_weapon(get_itemsdat(in_hand)) && host_readbs(get_itemsdat(in_hand) + 3) == 6)) {
-					retval = 1;
+			if ((item_weapon(get_itemsdat(item)) && host_readbs(get_itemsdat(item) + ITEM_STATS_SUBTYPE) == WEAPON_TYPE_ZWEIHAENDER) ||
+			(item_weapon(get_itemsdat(in_hand)) && host_readbs(get_itemsdat(in_hand) + ITEM_STATS_SUBTYPE) == WEAPON_TYPE_ZWEIHAENDER)) {
+				retval = 1;
 			}
 		}
 	}
@@ -65,6 +65,7 @@ signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos
 }
 
 /* Borlandified and identical */
+/* is it pos2 -> pos1 or pos1 -> pos2 ? */
 void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 {
 	signed short item1;
@@ -76,17 +77,17 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 	if (!check_hero(hero) || (pos1 == pos2)) { }
 	else {
 
-		if ((pos2 > 6) && (pos1 > 6)) {
+		if ((pos2 > HERO_INVENTORY_SLOT_KNAPSACK_1 - 1) && (pos1 > HERO_INVENTORY_SLOT_KNAPSACK_1 - 1)) {
 			/* Both items are in knapsacks */
 			v3 = 1;
-			item1 = host_readws(hero + HERO_INVENTORY + pos1  * SIZEOF_INVENTORY);
-			item2 = host_readws(hero + HERO_INVENTORY + pos2  * SIZEOF_INVENTORY);
+			item1 = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + pos1 * SIZEOF_INVENTORY);
+			item2 = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + pos2 * SIZEOF_INVENTORY);
 		} else {
-			item1 = host_readws(hero + HERO_INVENTORY + pos1  * SIZEOF_INVENTORY);
-			item2 = host_readws(hero + HERO_INVENTORY + pos2  * SIZEOF_INVENTORY);
+			item1 = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + pos1  * SIZEOF_INVENTORY);
+			item2 = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + pos2  * SIZEOF_INVENTORY);
 
-			if ((pos2 < pos1) || ((pos1 < 7) && (pos2 < 7))) {
-				if (pos1 < 7) {
+			if ((pos2 < pos1) || ((pos1 < HERO_INVENTORY_SLOT_KNAPSACK_1) && (pos2 < HERO_INVENTORY_SLOT_KNAPSACK_1))) {
+				if (pos1 < HERO_INVENTORY_SLOT_KNAPSACK_1) {
 					if (item1 != 0)
 						v3 = 1;
 				} else {
@@ -645,10 +646,10 @@ void startup_equipment(Bit8u *hero)
 	signed short i;
 	struct items_all all;
 #if !defined(__BORLANDC__)
-	all.a[0] = 30;
-	all.a[1] = 45;
-	all.a[2] = 45;
-	all.a[3] = 49;
+	all.a[0] = ITEM_WATERSKIN;
+	all.a[1] = ITEM_FOOD_PACKAGE;
+	all.a[2] = ITEM_FOOD_PACKAGE;
+	all.a[3] = ITEM_TROUSERS;
 #else
 	*(struct items_all*)&all = *(struct items_all*)(p_datseg + HERO_STARTUP_ITEMS_ALL);
 #endif
@@ -657,11 +658,12 @@ void startup_equipment(Bit8u *hero)
 		give_hero_new_item(hero, all.a[i], 1, 1);
 	}
 
-	move_item(5, 9, hero);
+	move_item(HERO_INVENTORY_SLOT_LEGS, HERO_INVENTORY_SLOT_KNAPSACK_3, hero);
 
 	if (host_readbs(hero + HERO_SEX) != 0 && host_readbs(hero + HERO_TYPE) != HERO_TYPE_WARRIOR && host_readbs(hero + HERO_TYPE) != HERO_TYPE_MAGE) {
+		/* female non-warriors and non-mages get a free shirt */
 		give_hero_new_item(hero, ITEM_SHIRT, 1, 1);
-		move_item(2, 9, hero);
+		move_item(HERO_INVENTORY_SLOT_BODY, HERO_INVENTORY_SLOT_KNAPSACK_3, hero);
 	}
 
 	i = 0;
@@ -670,16 +672,16 @@ void startup_equipment(Bit8u *hero)
 		give_hero_new_item(hero, ds_readws((HERO_STARTUP_ITEMS-8) + 8 * host_readbs(hero + HERO_TYPE) + 2 * i++), 1, 1);
 
 		if (i == 1) {
-			move_item(3, 9, hero);
+			move_item(HERO_INVENTORY_SLOT_RIGHT_HAND, HERO_INVENTORY_SLOT_KNAPSACK_3, hero);
 		}
 	}
 
 	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_WARRIOR) {
-		move_item(2, get_item_pos(hero, ITEM_LEATHER_ARMOR), hero);
+		move_item(HERO_INVENTORY_SLOT_BODY, get_item_pos(hero, ITEM_LEATHER_ARMOR), hero);
 	}
 
 	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) {
-		move_item(2, get_item_pos(hero, ITEM_ROBE_GREEN), hero);
+		move_item(HERO_INVENTORY_SLOT_BODY, get_item_pos(hero, ITEM_ROBE_GREEN), hero);
 	}
 
 	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_HUNTER ||
@@ -687,7 +689,7 @@ void startup_equipment(Bit8u *hero)
 		host_readbs(hero + HERO_TYPE) == HERO_TYPE_SYLVAN_ELF)
 	{
 		give_hero_new_item(hero, ITEM_ARROWS, 1, 20);
-		move_item(4, get_item_pos(hero, ITEM_ARROWS), hero);
+		move_item(HERO_INVENTORY_SLOT_LEFT_HAND, get_item_pos(hero, ITEM_ARROWS), hero);
 	}
 }
 

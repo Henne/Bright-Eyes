@@ -8031,8 +8031,8 @@ static int seg041(unsigned short offs) {
 		RealPt target = CPU_Pop32();
 		Bit16u flag = CPU_Pop16();
 
-		reg_ax = FIG_get_hero_melee_attack_damage(Real2Host(hero), Real2Host(target), flag);
-		D1_LOG("FIG_get_hero_melee_attack_damage(%s, %s); = %d\n",
+		reg_ax = FIG_get_hero_weapon_attack_damage(Real2Host(hero), Real2Host(target), flag);
+		D1_LOG("FIG_get_hero_weapon_attack_damage(%s, %s); = %d\n",
 			(char*)Real2Host(hero) + 0x10,
 			flag != 0 ? (char*)Real2Host(target) + 0x10 : "enemy",
 			reg_ax);

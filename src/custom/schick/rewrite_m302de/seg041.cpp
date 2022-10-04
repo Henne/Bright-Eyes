@@ -59,19 +59,26 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 		case ITEM_THROWING_AXE:		/* Wurfaxt */
 		case ITEM_THROWING_KNIFE:	/* Wurfmesser */
 		case ITEM_SCHNEIDZAHN:		/* Schneidzahn */
-		case ITEM_THROWING_DAGGER: 	/* Wurfdolch */
+		case ITEM_THROWING_DAGGER_MAGIC:/* Wurfdolch */
+			/* Original-Bug: missing throwing weapon: ITEM_SPEAR_MAGIC */
 			{
 				if (!arg) {
 
 					if (ds_readws(FIG_DROPPED_COUNTER) < 30) {
+						/* potential Original-Bug: Only the item IDs are stored, but not the other item stats. Is this a problem?
+						 * For example, magic_revealed for the ITEM_THROWING_DAGGER_MAGIC might get lost.
+						 * Moreover, it would be nice to store the owner, to give it back the hero who used the ranged weapon. */
 						ds_writew(FIG_DROPPED_WEAPONS + ds_readw(FIG_DROPPED_COUNTER) * 2, right_hand);
 						inc_ds_ws(FIG_DROPPED_COUNTER);
 					}
 
-					drop_item(hero, 3, 1);
+					drop_item(hero, HERO_INVENTORY_SLOT_RIGHT_HAND, 1);
+					/* Original-Bug: throwing weapon is dropped before the damage logic is done.
+					 * found 2016-04-02 by NRS at https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146051#pid146051
+					 * "Oh mein Gott..." */
 
 					if (left_hand == right_hand) {
-						move_item(3, 4, hero);
+						move_item(HERO_INVENTORY_SLOT_RIGHT_HAND, HERO_INVENTORY_SLOT_LEFT_HAND, hero);
 					}
 
 				}
@@ -93,7 +100,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 
 				} else {
 					if (!arg) {
-						drop_item(hero, 4, 1);
+						drop_item(hero, HERO_INVENTORY_SLOT_LEFT_HAND, 1);
 					}
 					retval = 1;
 				}
@@ -112,7 +119,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 					}
 				} else {
 					if (!arg) {
-						drop_item(hero, 4, 1);
+						drop_item(hero, HERO_INVENTORY_SLOT_LEFT_HAND, 1);
 					}
 					retval = 1;
 				}
@@ -134,7 +141,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 					}
 				} else {
 					if (!arg) {
-						drop_item(hero, 4, 1);
+						drop_item(hero, HERO_INVENTORY_SLOT_LEFT_HAND, 1);
 					}
 					retval = 1;
 				}
@@ -228,17 +235,21 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short preserve_renegad
 		and_ptr_bs(enemy + ENEMY_SHEET_FLAGS2, 0xfd); /* unset 'renegade' flag */
 }
 
-signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed short attack_hero)
+/*
+ *	\param attack_hero	0 = the attacked one is a foe; 1 = the attacked one is a hero
+ */
+
+signed short FIG_get_hero_weapon_attack_damage(Bit8u* hero, Bit8u* target, signed short attack_hero)
 {
 	signed short damage;
 	signed short damage_mod;
 	Bit8u* item_p_rh;
 	Bit8u* p_weapontab;
 	Bit8u* p_rangedtab;
-	signed short target_size_bonus;
+	signed short target_size;
 	signed short right_hand;
 	signed short beeline;
-	signed short distance_malus;
+	signed short distance;
 	signed short x_hero;
 	signed short y_hero;
 	signed short x_target;
@@ -261,16 +272,28 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	weapon_type = weapon_check(hero);
 
 	if (weapon_type == -1) {
+		/* not a weapon or a ranged weapon */
 		weapon_type = FIG_get_range_weapon_type(hero);
 	}
 
+	/* now depending on the item in the right hand, <weapon_type> is
+	 * -1: not a weapon or broken melee weapon (inluding broken WEAPON_TYPE_WAFFENLOS (i.e. ammunition), broken ITEM_MAGIC_WAND and broken ITEM_QUARTERSTAFF, but no other WEAPON_TYPE_SPEER)
+	 *  0: non-broken knive weapon
+	 *  1: non-broken force weapon (including ITEM_MAGIC_WAND and ITEM_QUARTERSTAFF)
+	 *  2: other non-broken meelee weapon, including WEAPON_TYPE_WAFFENLOS (i.e. ammunition), but not WEAPON_TYPE_SPEER
+	 *  3: any WEAPON_TYPE_SCHUSSWAFFE, broken or not
+	 *  4: any WEAPON_TYPE_WURFWAFFE, broken or not
+	 *  5: any weapon of type WEAPON_TYPE_SPEER with the exception of ITEM_QUARTERSTAFF and ITEM_MAGIC_WAND, broken or not
+	 */
+
 	if (weapon_type != -1) {
 
-		p_weapontab = p_datseg + WEAPONS_TABLE + host_readbs(item_p_rh + 4) * 7;
+		p_weapontab = p_datseg + WEAPONS_TABLE + host_readbs(item_p_rh + ITEM_STATS_TABLE_INDEX) * SIZEOF_WEAPON_STATS;
 
-		damage = dice_roll(host_readbs(p_weapontab), 6, host_readbs(p_weapontab + 1));
+		damage = dice_roll(host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_D6), 6, host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_CONSTANT));
 
-		if (host_readbs(p_weapontab + 4) != -1) {
+		if (host_readbs(p_weapontab + WEAPON_STATS_RANGED_INDEX) != -1) {
+			/* weapon does ranged damage */
 
 			hero_idx = get_hero_index(hero);
 
@@ -287,49 +310,54 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			beeline = calc_beeline(x_hero, y_hero, x_target, y_target);
 
 			if (beeline <= 2) {
-				distance_malus = 0;
+				distance = 0;
 			} else if (beeline <= 4) {
-				distance_malus = 1;
+				distance = 1;
 			} else if (beeline <= 6) {
-				distance_malus = 2;
+				distance = 2;
 			} else if (beeline <= 9) {
-				distance_malus = 3;
+				distance = 3;
 			} else if (beeline <= 15) {
-				distance_malus = 4;
+				distance = 4;
 			} else if (beeline <= 20) {
-				distance_malus = 5;
+				distance = 5;
 			} else {
-				distance_malus = 6;
+				distance = 6;
 			}
 
-			p_rangedtab = p_datseg + RANGED_WEAPONS_TABLE + host_readbs(p_weapontab + 4) * 8;
+			p_rangedtab = p_datseg + RANGED_WEAPONS_TABLE + host_readbs(p_weapontab + WEAPON_STATS_RANGED_INDEX) * SIZEOF_RANGED_WEAPON_STATS;
 
 			if (attack_hero != 0) {
 				if (host_readbs(target + HERO_TYPE) == HERO_TYPE_DWARF) {
 					/* ZWERG / DWARF */
-					target_size_bonus = 2;
+					target_size = 2;
 				} else {
-					target_size_bonus = 3;
+					target_size = 3;
 				}
 			} else {
 					/* size of the enemy */
-				target_size_bonus = host_readbs(target + ENEMY_SHEET_SIZE);
+				target_size = host_readbs(target + ENEMY_SHEET_SIZE);
 			}
 
-			damage_mod = (test_skill(hero,
-					(host_readbs(item_p_rh + 3) == 8 ? TA_WURFWAFFEN : TA_SCHUSSWAFFEN),
-					host_readbs(p_rangedtab + 7) + 2 * distance_malus - 2 * target_size_bonus) > 0)
-				? ds_readbs(RANGED_WEAPONS_TABLE + 8 * host_readbs(p_weapontab + 4) + distance_malus)
-				: -damage;
+			damage_mod = (test_skill(
+						hero,
+					/* Original-Bug: For ITEM_SPEAR and ITEM_SPEAR_MAGIC, a test on TA_SCHUSSWAFFEN will be performed */
+						(host_readbs(item_p_rh + ITEM_STATS_SUBTYPE) == WEAPON_TYPE_WURFWAFFE ? TA_WURFWAFFEN : TA_SCHUSSWAFFEN),
+						host_readbs(p_rangedtab + RANGED_WEAPON_STATS_BASE_HANDICAP) + 2 * distance - 2 * target_size
+					)
+				> 0) ?
+					ds_readbs(RANGED_WEAPONS_TABLE + SIZEOF_RANGED_WEAPON_STATS * host_readbs(p_weapontab + WEAPON_STATS_RANGED_INDEX) + RANGED_WEAPON_STATS_DAMAGE_MODIFIER + distance)
+					: -damage;
 
-			if (damage_mod != 0) {
+			if (damage_mod != 0) { /* test is redundant */
 				damage += damage_mod;
 			}
-
+			/* If the skill test was not successful, damage == 0 by now. */
 
 		} else {
+			/* weapon does melee damage */
 
-			damage_mod = host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK)) - host_readbs(p_weapontab + 2);
+			damage_mod = host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK)) - host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_KK_BONUS);
 			if (damage_mod > 0) {
 				damage += damage_mod;
 			}
@@ -353,9 +381,9 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 				damage = 1000;
 
 				/* drop the KUKRISDOLCH and equip a normal DOLCH / DAGGER */
-				drop_item(hero, 3, 1);
-				give_hero_new_item(hero, ITEM_DAGGER, 1 ,1);
-				move_item(3, get_item_pos(hero, ITEM_DAGGER), hero);
+				drop_item(hero, HERO_INVENTORY_SLOT_RIGHT_HAND, 1);
+				give_hero_new_item(hero, ITEM_DAGGER, 1 ,1); /* TODO: what if no free knapsack slot? */
+				move_item(HERO_INVENTORY_SLOT_RIGHT_HAND, get_item_pos(hero, ITEM_DAGGER), hero);
 
 			} else if (right_hand == ITEM_KUKRIS_MENGBILAR) {
 				/* KUKRISMENGBILAR */
@@ -364,12 +392,12 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 				damage = 1000;
 
 				/* drop the KUKRISMENGBILAR and equip a normal MENGBILAR  */
-				drop_item(hero, 3, 1);
-				give_hero_new_item(hero, ITEM_MENGBILAR, 1 ,1);
-				move_item(3, get_item_pos(hero, ITEM_MENGBILAR), hero);
+				drop_item(hero, HERO_INVENTORY_SLOT_RIGHT_HAND, 1);
+				give_hero_new_item(hero, ITEM_MENGBILAR, 1 ,1); /* TODO: what if no free knapsack slot? */
+				move_item(HERO_INVENTORY_SLOT_RIGHT_HAND, get_item_pos(hero, ITEM_MENGBILAR), hero);
 
 			} else if ((right_hand == ITEM_SILVER_MACE) && (enemy_gfx_id == 0x1c)) {
-				/* SILVER MACE/ SILBERSTREITKOLBEN gives Damage + 4 to SKELETONS */
+				/* SILVER MACE / SILBERSTREITKOLBEN gives Damage + 4 to SKELETONS */
 				damage += 4;
 			} else if ((right_hand == ITEM_GRIMRING) && (enemy_gfx_id == 0x18)) {
 				/* DAS SCHWERT GRIMRING gives Damage + 5 to ORCS */
@@ -483,7 +511,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		/* subtract RS */
 		damage -= host_readbs(hero + HERO_RS_BONUS1);
 
-		/* armour bonus against skeletons and zombies */
+		/* armor bonus against skeletons and zombies */
 		if (host_readw(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) == ITEM_CHAIN_MAIL_CURSED && (
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
 			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
@@ -550,7 +578,11 @@ void seg041_8c8(void)
  *
  * \param   hero        pointer to hero
  *
- *	Returns: -1 not a useful weapon, 0 = knive weapon, 1 = force weapon, 2 = everything else
+ * \return
+ *	-1 = not a weapon or a broken weapon or a ranged weapon (the latter including WEAPON_TYPE_SPEER, but not ITEM_MAGIC_WAND or ITEM_QUARTERSTAFF),
+ *	0 = non-broken knive weapon,
+ *	1 = non-broken force weapon (includes ITEM_MAGIC_WAND and ITEM_QUARTERSTAFF),
+ *	2 = any other non-broken melee weapon, including WEAPON_TYPE_WAFFENLOS (i.e. ammunition), but no WEAPON_TYPE_SPEER
  */
 signed short weapon_check(Bit8u *hero)
 {
@@ -564,12 +596,13 @@ signed short weapon_check(Bit8u *hero)
 
 	item_p = get_itemsdat(item);
 
-	if (!item_weapon(item_p) ||	/* check if its a weapon */
+	if (!item_weapon(item_p) ||
 		inventory_broken(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY) ||
 		(item_weapon(item_p) &&
-			((host_readbs(item_p + 3) == 7) ||
-			(host_readbs(item_p + 3) == 8) ||
-			(host_readbs(item_p + 3) == 5 && item != ITEM_MAGIC_WAND && item != ITEM_QUARTERSTAFF))))
+			((host_readbs(item_p + ITEM_STATS_SUBTYPE) == WEAPON_TYPE_SCHUSSWAFFE) ||
+			(host_readbs(item_p + ITEM_STATS_SUBTYPE) == WEAPON_TYPE_WURFWAFFE) ||
+			/* TODO: according to original DSA2/3 rules, weapon type SPEER is a melee discipline. */
+			(host_readbs(item_p + ITEM_STATS_SUBTYPE) == WEAPON_TYPE_SPEER && item != ITEM_MAGIC_WAND && item != ITEM_QUARTERSTAFF))))
 	{
 		l_di = -1;
 	} else {

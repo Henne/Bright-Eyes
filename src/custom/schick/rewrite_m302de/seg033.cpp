@@ -567,7 +567,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 								/* subtract 2 BP */
 								sub_ptr_bs(hero + HERO_BP_LEFT, 2);
-								move_item(4, slots[selected -1], hero);
+								move_item(HERO_INVENTORY_SLOT_LEFT_HAND, slots[selected -1], hero);
 							}
 						}
 					} else {
@@ -647,7 +647,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 								rwt1 = FIG_get_range_weapon_type(hero);
 
-								move_item(3, slots[selected -1], hero);
+								move_item(HERO_INVENTORY_SLOT_RIGHT_HAND, slots[selected -1], hero);
 
 								rwt2 = FIG_get_range_weapon_type(hero);
 
@@ -714,9 +714,9 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 
 						p_itemsdat = get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID));
-						p_weapontab = p_datseg + WEAPONS_TABLE + 7 * host_readbs(p_itemsdat + 4);
+						p_weapontab = p_datseg + WEAPONS_TABLE + SIZEOF_WEAPON_STATS * host_readbs(p_itemsdat + ITEM_STATS_TABLE_INDEX);
 
-						calc_damage_range(host_readbs(p_weapontab), 6, host_readbs(p_weapontab + 1),
+						calc_damage_range(host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_D6), 6, host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_CONSTANT),
 							(Bit8u*)&damage_lo, (Bit8u*)&damage_hi);
 
 					}
@@ -735,9 +735,9 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 
 					p_itemsdat = get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID));
-					p_weapontab = p_datseg + WEAPONS_TABLE + 7 * host_readbs(p_itemsdat + 4);
+					p_weapontab = p_datseg + WEAPONS_TABLE + SIZEOF_WEAPON_STATS * host_readbs(p_itemsdat + ITEM_STATS_TABLE_INDEX);
 
-					calc_damage_range(host_readbs(p_weapontab), 6, host_readbs(p_weapontab + 1),
+					calc_damage_range(host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_D6), 6, host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_CONSTANT),
 						(Bit8u*)&damage_lo, (Bit8u*)&damage_hi);
 
 					/* "THE SWORD GRIMRING" gets a damage bonus + 5 in the final fight */
@@ -748,7 +748,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					weapon_id = host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK))
 							+ host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))
-							- host_readbs(p_weapontab + 2);
+							- host_readbs(p_weapontab +  WEAPON_STATS_DAMAGE_KK_BONUS);
 
 					if (weapon_id > 0) {
 						damage_lo += weapon_id;

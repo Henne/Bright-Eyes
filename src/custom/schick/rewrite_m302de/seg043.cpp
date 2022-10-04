@@ -270,7 +270,7 @@ void FIG_do_enemy_action(RealPt monster, signed short monster_pos)
 						if (random_schick(20) <= defender_at) {
 
 							if (target_is_hero != 0) {
-								damage = FIG_get_hero_melee_attack_damage(hero, Real2Host(monster), 0);
+								damage = FIG_get_hero_weapon_attack_damage(hero, Real2Host(monster), 0);
 							} else {
 								damage = FIG_get_enemy_attack_damage(mon, Real2Host(monster), 1);
 							}
@@ -867,7 +867,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 		}
 
 		/* drop the item in the left hand */
-		drop_item(hero, 4, 1);
+		drop_item(hero, HERO_INVENTORY_SLOT_LEFT_HAND, 1);
 
 	} else if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) == ITEM_HYLAILIC_FIRE) {
 
@@ -899,7 +899,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 		}
 
 		/* drop the item in the left hand */
-		drop_item(hero, 4, 1);
+		drop_item(hero, HERO_INVENTORY_SLOT_LEFT_HAND, 1);
 
 		hylailic = 1;
 	} else {

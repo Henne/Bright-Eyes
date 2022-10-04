@@ -41,10 +41,10 @@ void add_item_to_shop(Bit8u *shop_ptr, signed short item_id, signed short pos)
 	host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * pos, item_id);
 
 	host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * pos + 2,
-		host_readws(get_itemsdat(item_id) + 8) + host_readws(get_itemsdat(item_id) + 8) * host_readbs(shop_ptr) / 100);
+		host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) + host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(shop_ptr) / 100);
 
 	host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * pos + 4,
-			host_readbs(get_itemsdat(item_id) + 7));
+			host_readbs(get_itemsdat(item_id) + ITEM_STATS_PRICE_UNIT));
 }
 
 struct dummy7 {
@@ -123,7 +123,7 @@ void do_merchant(void)
 
 	while (host_readws(get_itemsdat(l_si)) != -1) {
 
-		if (host_readbs(shop_p + 2) <= host_readbs(get_itemsdat(l_si) + 0xa)) {
+		if (host_readbs(shop_p + 2) <= host_readbs(get_itemsdat(l_si) + ITEM_STATS_COMMONNESS)) {
 
 			if (item_armor(get_itemsdat(l_si)) || item_weapon(get_itemsdat(l_si))) {
 

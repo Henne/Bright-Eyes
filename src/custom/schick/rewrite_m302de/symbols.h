@@ -248,8 +248,8 @@
 #define TAV_CHEATED_FLAGS               (0x318a)    /* unsigned char[88] */
 #define SMITH_REPAIRITEMS               (0x31e2)    /* struct(6)[50]; struct{short unkn1; long unkn2;} */
 #define DNG_HANDLED_POS                 (0x330e)    /* unsigned short */
-#define DEATHTRAP_STEPS                 (0x3310)    /* signed short */ /* for activated deathtrap: number of remaining steps in dungeon */
-#define DEATHTRAP                       (0x3312)    /* signed short */ /* 0: no death trap activated. 1: death trap on Totenschiff activated. 2: death trap in Sinnenhoehle activated. */
+#define DEATHTRAP_STEPS                 (0x3310)    /* signed short; for activated deathtrap: number of remaining steps in dungeon */
+#define DEATHTRAP                       (0x3312)    /* signed short; 0: no death trap activated. 1: death trap on Totenschiff activated. 2: death trap in Spinnenhoehle activated. */
 #define DNG01_AMULET_TAKEN              (0x3314)    /* signed char; {0,1} */
 #define DNG01_SABRE_TAKEN               (0x3315)    /* signed char; {0,1} */
 #define DNG01_CROSSBOW_TAKEN            (0x3316)    /* signed char; {0,1} */
@@ -757,13 +757,13 @@
 #define TEVENTS_TAB_PTR                 (0x426a)    /* unsigned long */
 #define TRAVEL_ROUTE_PTR                (0x426e)    /* unsigned long */
 #define ROUTE_TEVENTS                   (0x4272)    /* struct(4)[15]; struct{short place, event_id;} */
-#define SEA_TRAVEL_PSGBOOKED_FLAG       (0x42ae)    /* signed char */ /* 0 = passage is not booked; 0xaa = passage is booked */ /* why 0xaa instead of simply 1 ?? */
-#define SEA_TRAVEL_PSGBOOKED_TIMER      (0x42af)    /* signed char */ /* 0 = ship leaves today at 9 o'clock; 1 = ship leaves tomorrow at 9 o'clock */
+#define SEA_TRAVEL_PSGBOOKED_FLAG       (0x42ae)    /* signed char; 0 = passage is not booked; 0xaa = passage is booked */ /* why 0xaa instead of simply 1 ?? */
+#define SEA_TRAVEL_PSGBOOKED_TIMER      (0x42af)    /* signed char; 0 = ship leaves today at 9 o'clock; 1 = ship leaves tomorrow at 9 o'clock */
 #define SEA_TRAVEL_PASSAGE_SPEED1       (0x42b0)    /* signed char */
 #define SEA_TRAVEL_PASSAGE_ID           (0x42b1)    /* signed char */
-#define HARBOR_OPTIONS                  (0x42b2)    /* struct(12)[10] */ /* buffering passage data for building the menu in a harbour where a sea passage can be selected */
+#define HARBOR_OPTIONS                  (0x42b2)    /* struct(12)[10]; buffering passage data for building the menu in a harbour where a sea passage can be selected */
 #define SEA_TRAVEL_PASSAGE_PRICE        (0x432a)    /* signed short */
-#define SEA_TRAVEL_PASSAGE_SPEED2       (0x432c)    /* signed short */ /* basically, the same purpose as SEA_TRAVEL_PASSAGE_SPEED1. The variables could be merged. */
+#define SEA_TRAVEL_PASSAGE_SPEED2       (0x432c)    /* signed short; basically, the same purpose as SEA_TRAVEL_PASSAGE_SPEED1. The variables could be merged. */
 #define TRAVEL_MAP_PTR                  (0x432e)    /* RealPt */
 #define FORCEDMARCH_TIMER               (0x4332)    /* unsigned char */
 #define TRAVEL_DETOUR                   (0x4333)    /* unsigned char */
@@ -1352,7 +1352,7 @@
 #define EMS_TRAVEL_MAP                  (0xbd90)    /* unsigned short */
 #define EMS_UNUSED_HANDLE               (0xbd92)    /* unsigned short */
 #define DNG_MAP_SIZE                    (0xbd94)    /* unsigned char; {16, 32} */
-#define DNG_MAP                         (0xbd95)    /* unsigned char[512] */ /* 1 byte for each square of the current dungeon level. my impression: bit 0--3 are flags. bit 1: "door is unlocked". bits 4--7 are read as a number in [0..15]. 1: closed door. 2: open door. 5: pit opening in ceiling. 6: pit in the floor. 7: ? (blocking_square) 8: ? (blocking_square) 9: smashed door. 10: ? (blocking square) 11: ? (semi-blocking square. probably a secret wall or ordinary wall) 15: ? (blocking square) */
+#define DNG_MAP                         (0xbd95)    /* unsigned char[512]; 1 byte for each square of the current dungeon level. higher nybble: ID of the tile on the square. lower nybble: 4 flags */
 #define RADIO_NAME_LIST                 (0xbf95)    /* RealPt[15]; used for items, heroes, spells, skills, recipes */
 // ?40
 #define GUI_BUFFER_UNKN                 (0xbff9)    /* RealPt */

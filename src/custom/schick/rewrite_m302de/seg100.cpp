@@ -529,7 +529,7 @@ void spell_ignifaxius(void)
 	signed short hero_pos;
 	signed short slot;
 	signed short mummy = 0;
-	Bit8u *p_armour;
+	Bit8u *p_armor;
 	signed short damage;
 	signed short level;
 
@@ -607,19 +607,19 @@ void spell_ignifaxius(void)
 		ds_writed(SPELLTARGET,
 	                (Bit32u)((RealPt)ds_readd(HEROES) + hero_pos * SIZEOF_HERO));
 
-		/* get a pointer to the armour */
-		p_armour = get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY;
+		/* get a pointer to the armor */
+		p_armor = get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY;
 
-		if ((host_readws(p_armour + INVENTORY_ITEM_ID) != ITEM_NONE) && (rs_malus != 0)) {
+		if ((host_readws(p_armor + INVENTORY_ITEM_ID) != ITEM_NONE) && (rs_malus != 0)) {
 
-			/* adjust rs_malus such that the RS of the worn body armour won't be negative */
-			if ((host_readbs(p_armour + INVENTORY_RS_LOST) + rs_malus) > ds_readbs(ARMORS_TABLE + host_readbs(get_itemsdat(host_readws(p_armour + INVENTORY_ITEM_ID)) + 4) * 2)) {
-				rs_malus = ds_readbs(ARMORS_TABLE + host_readbs(get_itemsdat(host_readws(p_armour + INVENTORY_ITEM_ID)) + 4) * 2) - host_readbs(p_armour + INVENTORY_RS_LOST);
+			/* adjust rs_malus such that the RS of the worn body armor won't be negative */
+			if ((host_readbs(p_armor + INVENTORY_RS_LOST) + rs_malus) > ds_readbs(ARMORS_TABLE + ARMOR_STATS_RS + host_readbs(get_itemsdat(host_readws(p_armor + INVENTORY_ITEM_ID)) + ITEM_STATS_TABLE_INDEX) * SIZEOF_ARMOR_STATS)) {
+				rs_malus = ds_readbs(ARMORS_TABLE + ARMOR_STATS_RS + host_readbs(get_itemsdat(host_readws(p_armor + INVENTORY_ITEM_ID)) + ITEM_STATS_TABLE_INDEX) * SIZEOF_ARMOR_STATS) - host_readbs(p_armor + INVENTORY_RS_LOST);
 			}
 
-			/* add rs_malus to the armour */
-			host_writebs(p_armour + INVENTORY_RS_LOST,
-				host_readbs(p_armour + INVENTORY_RS_LOST) + rs_malus);
+			/* add rs_malus to the armor */
+			host_writebs(p_armor + INVENTORY_RS_LOST,
+				host_readbs(p_armor + INVENTORY_RS_LOST) + rs_malus);
 			/* subtract rs_malus from RS1 */
 			host_writebs(get_spelltarget() + HERO_RS_BONUS1,
 				host_readbs(get_spelltarget() + HERO_RS_BONUS1) - rs_malus);
