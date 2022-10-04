@@ -575,15 +575,30 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 				if (weapon_type != -1) {
 
+#ifndef M302de_ORIGINAL_BUGFIX
+					/* Original-Bug 32: throwing weapon in a ranged attack is dropped before the damage logic is done.
+					 * As result, all throwing weapons (except throwing stars in a pile of at least 2 units) will be treated
+					 * as weaponless fighting for the damage calculation.
+					 * This means that they will always hit (without a skill test) and will do only 1D6 damage.
+					 * found 2016-04-02 by NRS at https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146051#pid146051
+					 * "Oh mein Gott..." */
 					if (!range_attack_check_ammo(Real2Host(hero), 0)) {
 						return;
 					}
-
+#endif
 
 					if (target_is_hero != 0) {
 
 						/* note that for ranged attacks, the skill test will be done in the following function call. */
 						damage = FIG_get_hero_weapon_attack_damage(Real2Host(hero), target_hero, 1);
+#ifdef M302de_ORIGINAL_BUGFIX
+						/* Original-Bug 32:
+						 * Fix: move the function call after the damage calculation.
+						 */
+						if (!range_attack_check_ammo(Real2Host(hero), 0)) {
+							return;
+						}
+#endif
 
 						if (damage > 0) {
 
@@ -599,6 +614,14 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 						/* note that for ranged attacks, the skill test will be done in the following function call. */
 						damage = FIG_get_hero_weapon_attack_damage(Real2Host(hero), target_monster, 0);
+#ifdef M302de_ORIGINAL_BUGFIX
+						/* Original-Bug 32:
+						 * Fix: move the function call after the damage calculation.
+						 */
+						if (!range_attack_check_ammo(Real2Host(hero), 0)) {
+							return;
+						}
+#endif
 
 						if (damage > 0 ) {
 

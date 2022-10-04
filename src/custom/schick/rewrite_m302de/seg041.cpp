@@ -73,9 +73,6 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 					}
 
 					drop_item(hero, HERO_INVENTORY_SLOT_RIGHT_HAND, 1);
-					/* Original-Bug: throwing weapon is dropped before the damage logic is done.
-					 * found 2016-04-02 by NRS at https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146051#pid146051
-					 * "Oh mein Gott..." */
 
 					if (left_hand == right_hand) {
 						move_item(HERO_INVENTORY_SLOT_RIGHT_HAND, HERO_INVENTORY_SLOT_LEFT_HAND, hero);
