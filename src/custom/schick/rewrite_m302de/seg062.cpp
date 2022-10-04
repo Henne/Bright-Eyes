@@ -229,7 +229,7 @@ void ask_miracle(void)
 					/* HESINDE */
 					if (l_si <= 3) {
 						if (!ds_readd(INGAME_TIMERS + 0x40)) {
-							miracle_modify(get_hero(0) + (HERO_SP_VISION + 1) - get_hero(0), 4 * HOURS(24), 1);
+							miracle_modify(get_hero(0) + (HERO_SPELLS + SP_ANALUES_ARCANSTRUKTUR) - get_hero(0), 4 * HOURS(24), 1);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(16));
 							ds_writed(INGAME_TIMERS + 0x40, 4 * HOURS(24));
 						}

@@ -233,8 +233,8 @@ signed short DNG03_handler(void)
 
 			if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) != ITEM_NONE)
 			{
-				/* RS of the equipped body armour gets degraded by 3, but not below 0 */
-				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY)) + 4))
+				/* RS of the equipped body armor gets degraded by 3, but not below 0 */
+				l3 = ds_readbs(ARMORS_TABLE + ARMOR_STATS_RS + SIZEOF_ARMOR_STATS * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY)) + ITEM_STATS_TABLE_INDEX))
 				    - host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_RS_LOST);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
@@ -265,8 +265,8 @@ signed short DNG03_handler(void)
 
 			if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) != ITEM_NONE)
 			{
-				/* RS of the equipped body armour gets degraded by 3, but not below 0 */
-				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY)) + 4))
+				/* RS of the equipped body armor gets degraded by 3, but not below 0 */
+				l3 = ds_readbs(ARMORS_TABLE + ARMOR_STATS_RS + SIZEOF_ARMOR_STATS * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY)) + ITEM_STATS_TABLE_INDEX))
 				    - host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_RS_LOST);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));

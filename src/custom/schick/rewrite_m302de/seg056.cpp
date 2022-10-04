@@ -295,7 +295,7 @@ void buy_screen(void)
 					(char*)p_datseg + BUY_SCREEN_STR_COMMA_SPACE);
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(48 + host_readbs(get_itemsdat(item_id) + 3)));
+					(char*)get_ttx(48 + host_readbs(get_itemsdat(item_id) + ITEM_STATS_SUBTYPE)));
 			}
 
 			GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
@@ -561,7 +561,7 @@ void buy_screen(void)
 
 							ds_writeb(MARKET_ITEMSALDO_TABLE + item_id, 0);
 
-							add_ptr_ws(get_itemsdat(item_id) + 8, host_readws(get_itemsdat(item_id) + 8) * 10 / 100);
+							add_ptr_ws(get_itemsdat(item_id) + ITEM_STATS_PRICE, host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * 10 / 100);
 						}
 
 						if (given_items == 0 && !l_di) {
@@ -662,21 +662,21 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 	} else if (inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos) ||
 			 host_readbs(hero + (HERO_INVENTORY + INVENTORY_RS_LOST) + SIZEOF_INVENTORY * item_pos) != 0)
 	{
-		/* this item is broken or RS of an armour got degraded */
+		/* this item is broken or RS of an armor got degraded */
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 1);
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4, 1);
 
 	} else {
 		/* calculate the price */
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2,
-			(host_readws(get_itemsdat(item_id) + 8) + (host_readws(get_itemsdat(item_id) + 8) * host_readbs(shop_ptr) / 100) ) / 2);
+			(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) + (host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(shop_ptr) / 100) ) / 2);
 		/* adjust price to 1 if zero */
 		if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2) == 0) {
 			host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 1);
 		}
 
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4,
-			host_readbs(get_itemsdat(item_id) + 7));
+			host_readbs(get_itemsdat(item_id) + ITEM_STATS_PRICE_UNIT));
 	}
 
 	host_writebs(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 6, (signed char)item_pos);

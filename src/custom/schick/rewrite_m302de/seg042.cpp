@@ -219,12 +219,13 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 			if (weapon_type == -1) {
 				/* no valid weapon == bare hands */
-				atpa = host_readbs(Real2Host(hero) + HERO_AT) + host_readbs(Real2Host(hero) + HERO_ATTACK_TYPE) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
+				atpa = host_readbs(Real2Host(hero) + HERO_AT + WEAPON_TYPE_WAFFENLOS) + host_readbs(Real2Host(hero) + HERO_ATTACK_TYPE) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
 			} else {
 				atpa = host_readbs(Real2Host(hero) + HERO_AT + host_readbs(Real2Host(hero) + HERO_WEAPON_TYPE)) + host_readbs(Real2Host(hero) + HERO_ATTACK_TYPE) + host_readbs(Real2Host(hero) + HERO_AT_MOD) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
 			}
 
 			if (host_readbs(Real2Host(hero) + HERO_RS_BE) & 1) {
+				/* if RS_BE is odd, subtract another point. Changes the rounding behaviour of 'host_readbs(Real2Host(hero) + HERO_RS_BE) / 2' above to "round up". */
 				atpa--;
 			}
 
@@ -294,7 +295,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					if (target_is_hero != 0) {
 
 						if (random_schick(20) <= l11) {
-							damage = FIG_get_hero_melee_attack_damage(target_hero, Real2Host(hero), 1);
+							damage = FIG_get_hero_weapon_attack_damage(target_hero, Real2Host(hero), 1);
 						}
 
 					} else {
@@ -407,7 +408,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 								if (target_is_hero != 0) {
 
-									damage = FIG_get_hero_melee_attack_damage(Real2Host(hero), target_hero, 1);
+									damage = FIG_get_hero_weapon_attack_damage(Real2Host(hero), target_hero, 1);
 
 									if (damage > 0) {
 
@@ -421,7 +422,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 									}
 								} else {
 
-									damage = FIG_get_hero_melee_attack_damage(Real2Host(hero), target_monster, 0);
+									damage = FIG_get_hero_weapon_attack_damage(Real2Host(hero), target_monster, 0);
 
 									if (damage > 0) {
 
@@ -506,7 +507,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					if (target_is_hero != 0) {
 
-						damage = FIG_get_hero_melee_attack_damage(Real2Host(hero), target_hero, 1);
+						damage = FIG_get_hero_weapon_attack_damage(Real2Host(hero), target_hero, 1);
 
 						if (damage > 0) {
 
@@ -520,7 +521,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						}
 					} else {
 
-						damage = FIG_get_hero_melee_attack_damage(Real2Host(hero), target_monster, 0);
+						damage = FIG_get_hero_weapon_attack_damage(Real2Host(hero), target_monster, 0);
 
 						if (damage > 0 ) {
 
@@ -581,7 +582,8 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					if (target_is_hero != 0) {
 
-						damage = FIG_get_hero_melee_attack_damage(Real2Host(hero), target_hero, 1);
+						/* note that for ranged attacks, the skill test will be done in the following function call. */
+						damage = FIG_get_hero_weapon_attack_damage(Real2Host(hero), target_hero, 1);
 
 						if (damage > 0) {
 
@@ -595,7 +597,8 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						}
 					} else {
 
-						damage = FIG_get_hero_melee_attack_damage(Real2Host(hero), target_monster, 0);
+						/* note that for ranged attacks, the skill test will be done in the following function call. */
+						damage = FIG_get_hero_weapon_attack_damage(Real2Host(hero), target_monster, 0);
 
 						if (damage > 0 ) {
 

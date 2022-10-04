@@ -762,7 +762,7 @@ signed short academy_get_equal_item(signed short price)
 
 					if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos) != ITEM_NONE &&
 						!inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
-						/* remark: armour with degraded RS is accepted */
+						/* remark: armor with degraded RS is accepted */
 					{
 						p_item = get_itemsdat(host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos));
 

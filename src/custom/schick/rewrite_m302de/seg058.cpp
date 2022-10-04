@@ -55,31 +55,31 @@ void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, sig
 		if (inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos)) {
 
 			host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
-				(host_readws(get_itemsdat(item_id) + 8) +
-					(host_readws(get_itemsdat(item_id) + 8) * host_readbs(smith_ptr) / 100)) / 2);
+				(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) +
+					(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(smith_ptr) / 100)) / 2);
 
 			if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2) == 0) {
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 1);
 			}
 
 			host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 4,
-				host_readbs(get_itemsdat(item_id) + 7));
+				host_readbs(get_itemsdat(item_id) + ITEM_STATS_PRICE_UNIT));
 
 		} else {
 
 			if (host_readbs(hero + HERO_INVENTORY + INVENTORY_RS_LOST + SIZEOF_INVENTORY * item_pos) != 0) {
-				/* armour has degraded RS */
+				/* armor has degraded RS */
 
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
-					(host_readws(get_itemsdat(item_id) + 8) +
-						(host_readws(get_itemsdat(item_id) + 8) * host_readbs(smith_ptr) / 100)) / 4);
+					(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) +
+						(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(smith_ptr) / 100)) / 4);
 
 				if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2) == 0) {
 					host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 1);
 				}
 
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 4,
-					host_readbs(get_itemsdat(item_id) + 7));
+					host_readbs(get_itemsdat(item_id) + ITEM_STATS_PRICE_UNIT));
 			} else {
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 0);
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 4, 1);

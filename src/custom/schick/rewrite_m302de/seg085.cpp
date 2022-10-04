@@ -352,7 +352,7 @@ signed short DNG10_handler(void)
 					/* 2x HEALING POTION, MAGIC POTION, THROWING DAGGER and ...*/
 					get_item(ITEM_LE_POTION, 1, 2);
 					get_item(ITEM_AE_POTION, 1, 1);
-					get_item(ITEM_THROWING_DAGGER, 1, 1);
+					get_item(ITEM_THROWING_DAGGER_MAGIC, 1, 1);
 
 					/* 200 Ducats */
 					p_money = get_party_money();
@@ -391,7 +391,7 @@ signed short DNG10_handler(void)
 				/* 2x HEALING POTION, MAGIC POTION, THROWING DAGGER, CRYSTAL BALL and ...*/
 				get_item(ITEM_LE_POTION, 1, 2);
 				get_item(ITEM_AE_POTION, 1, 1);
-				get_item(ITEM_THROWING_DAGGER, 1, 1);
+				get_item(ITEM_THROWING_DAGGER_MAGIC, 1, 1);
 				get_item(ITEM_CRYSTAL_BALL, 1, 1);
 
 				/* ... 200 Ducats and ... */

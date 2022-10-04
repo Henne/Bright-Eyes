@@ -476,7 +476,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 								if (ds_readbs(MARKET_ITEMSALDO_TABLE + item_id) <= -10) {
 									ds_writeb(MARKET_ITEMSALDO_TABLE + item_id, 0);
-									sub_ptr_ws(get_itemsdat(item_id) + 8, host_readws(get_itemsdat(item_id) + 8) * 10 / 100);
+									sub_ptr_ws(get_itemsdat(item_id) + ITEM_STATS_PRICE, host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * 10 / 100);
 								}
 							}
 						}

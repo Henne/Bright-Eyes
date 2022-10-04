@@ -439,6 +439,9 @@ signed short use_magic(RealPt hero)
 			}
 
 			if (host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL) == 7) {
+				/* Original-Bug: This never happens.
+				 * The highest possible staff spell is the 4th one, since the 5th staff spell has handicap 99.
+				 * The check should ask for '== 4' instead. */
 				GUI_output(get_ttx(335));
 			} else {
 
@@ -448,7 +451,7 @@ signed short use_magic(RealPt hero)
 					retval = 1;
 
 #if !defined(__BORLANDC__)
-					D1_INFO("%s Probe fuer Stabzauber Nr. %d (%+d)",(char*)(Real2Host(hero) + HERO_NAME2), host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL), ds_readbs((STAFFSPELL_DESCRIPTIONS + 3) + 6 * host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL)));
+					D1_INFO("%s Probe fuer Stabzauber Nr. %d (%+d)",(char*)(Real2Host(hero) + HERO_NAME2), host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL + 1), ds_readbs((STAFFSPELL_DESCRIPTIONS + 3) + 6 * host_readbs(Real2Host(hero) + HERO_STAFFSPELL_LVL)));
 #endif
 					if (test_attrib3(Real2Host(hero),
 

@@ -348,58 +348,40 @@ signed short has_herb_for_disease(Bit8u *hero, signed short disease)
 	signed short retval = 0;
 
 	switch (disease) {
-	case 1:
-	case 3: {
-		retval = 99;
-		break;
-	}
-	case 2: {
-		/* a subset of herbs */
-		if (get_item_pos(hero, ITEM_BELMART)          != -1)
-      retval = ITEM_BELMART;
-		else if (get_item_pos(hero, ITEM_WHIRLWEED)   != -1)
-      retval = ITEM_WHIRLWEED;
-		else if (get_item_pos(hero, ITEM_EINBEERE)    != -1)
-      retval = ITEM_EINBEERE;
-		else if (get_item_pos(hero, ITEM_TARNELE)     != -1)
-      retval = ITEM_TARNELE;
-		else if (get_item_pos(hero, ITEM_DONF_SPRING) != -1)
-      retval = ITEM_DONF_SPRING;
-		else if (get_item_pos(hero, ITEM_FINAGE_TREE) != -1)
-      retval = ITEM_FINAGE_TREE;
-		else if (get_item_pos(hero, ITEM_MENCHAL)     != -1)
-      retval = ITEM_MENCHAL;
-		else if (get_item_pos(hero, ITEM_OLGIN_ROOT)  != -1)
-      retval = ITEM_OLGIN_ROOT;
-		else if (get_item_pos(hero, ITEM_JORUGA_ROOT) != -1)
-      retval = ITEM_JORUGA_ROOT;
-		break;
-	}
-	case 4: {
-		/* DONF SPRING */
-		if (get_item_pos(hero, ITEM_DONF_SPRING) != -1)
-      retval = ITEM_DONF_SPRING;
-		break;
-	}
-	case 5: {
-		/* JORUGA ROOT & GULMOND LEAF */
-    if ( (get_item_pos(hero, ITEM_JORUGA_ROOT) != -1)
-         && (get_item_pos(hero, ITEM_GULMOND_LEAF) != -1))
-      retval = 999;
-		break;
-	}
-	case 6: {
-		/* WHIRLWEED */
-		if (get_item_pos(hero, ITEM_WHIRLWEED) != -1)
-      retval = ITEM_WHIRLWEED;
-		break;
-	}
-	case 7: {
-		/* JORUGA ROOT */
-		if (get_item_pos(hero, ITEM_JORUGA_ROOT) != -1)
-      retval = ITEM_JORUGA_ROOT;
-		break;
-	}
+		case ILLNESS_TYPE_WUNDFIEBER:
+		case ILLNESS_TYPE_BLAUE_KEUCHE:
+			retval = 99;
+			break;
+
+		case ILLNESS_TYPE_DUMPFSCHAEDEL:
+			/* any single one of the following herbs is sufficient */
+			if (get_item_pos(hero, ITEM_BELMART)          != -1) retval = ITEM_BELMART;
+			else if (get_item_pos(hero, ITEM_WHIRLWEED)   != -1) retval = ITEM_WHIRLWEED;
+			else if (get_item_pos(hero, ITEM_EINBEERE)    != -1) retval = ITEM_EINBEERE;
+			else if (get_item_pos(hero, ITEM_TARNELE)     != -1) retval = ITEM_TARNELE;
+			else if (get_item_pos(hero, ITEM_DONF_SPRING) != -1) retval = ITEM_DONF_SPRING;
+			else if (get_item_pos(hero, ITEM_FINAGE_TREE) != -1) retval = ITEM_FINAGE_TREE;
+			else if (get_item_pos(hero, ITEM_MENCHAL)     != -1) retval = ITEM_MENCHAL;
+			else if (get_item_pos(hero, ITEM_OLGIN_ROOT)  != -1) retval = ITEM_OLGIN_ROOT;
+			else if (get_item_pos(hero, ITEM_JORUGA_ROOT) != -1) retval = ITEM_JORUGA_ROOT;
+			break;
+
+		case ILLNESS_TYPE_PARALYSE:
+			if (get_item_pos(hero, ITEM_DONF_SPRING) != -1)
+				retval = ITEM_DONF_SPRING;
+			break;
+
+		case ILLNESS_TYPE_SCHLACHTENFIEBER:
+			if ( (get_item_pos(hero, ITEM_JORUGA_ROOT) != -1) && (get_item_pos(hero, ITEM_GULMOND_LEAF) != -1)) retval = 999;
+			break;
+
+		case ILLNESS_TYPE_FROSTSCHAEDEN:
+			if (get_item_pos(hero, ITEM_WHIRLWEED) != -1) retval = ITEM_WHIRLWEED;
+			break;
+
+		case ILLNESS_TYPE_TOLLWUT:
+			if (get_item_pos(hero, ITEM_JORUGA_ROOT) != -1) retval = ITEM_JORUGA_ROOT;
+			break;
 	}
 
 	return retval;
@@ -445,7 +427,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
 		} else if (!(herb = has_herb_for_disease(healer, disease))) {
-			/* no herb for this disease */
+			/* not the needed herbs for healing this disease */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_tx(118),
@@ -461,7 +443,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 			if ((flag != 0) || (test_skill(healer, TA_HEILEN_KRANKHEITEN, (signed char)handycap) > 0)) {
 
 				if (((retval = test_skill(healer, TA_HEILEN_KRANKHEITEN, ds_readbs(DISEASE_PRICES + 2 * disease) + handycap)) > 0) &&
-					(disease != 1) && (disease != 3))
+					(disease != ILLNESS_TYPE_WUNDFIEBER) && (disease != ILLNESS_TYPE_BLAUE_KEUCHE))
 				{
 
 					add_hero_le(patient, retval);
@@ -470,14 +452,14 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 						(char*)get_ttx(695),
 						(char*)healer + HERO_NAME2,
 						(char*)patient + HERO_NAME2,
-						(char*)Real2Host(GUI_get_ptr(host_readbs(patient + 0x22), 3)),
+						(char*)Real2Host(GUI_get_ptr(host_readbs(patient + HERO_SEX), 3)),
 						retval);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
 					/* cure the disease */
-					host_writeb(patient + 0xae + disease * 5, 1);
-					host_writeb(patient + 0xaf + disease * 5, 0);
+					host_writeb(patient + HERO_ILLNESS + disease * 5, 1);
+					host_writeb(patient + (HERO_ILLNESS + 1) + disease * 5, 0);
 
 					if (herb == 999) {
 						/* drop JORUGA & GULMOND LEAF */
@@ -490,10 +472,12 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 
 					retval = 1;
 				} else {
+					/* skill test failed */
 					damage = 3;
 
-					if (host_readws(patient + 0x60) <= damage) {
-						damage = host_readws(patient + 0x60) - 1;
+					if (host_readws(patient + HERO_LE) <= damage) {
+						/* don't kill the patient: at least 1 LE should remain */
+						damage = host_readws(patient + HERO_LE) - 1;
 					}
 
 					sub_hero_le(patient, damage);

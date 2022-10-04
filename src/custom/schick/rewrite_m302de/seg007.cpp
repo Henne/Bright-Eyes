@@ -77,7 +77,11 @@ int dice_roll(const int n, const int m, const int x)
 }
 
 /**
- * \brief   calculate min/max damage of a weapon
+ * \brief   calculate min/max damage of a weapon with the damage formula n * Wm + x
+ *
+ * \param n	number of dice thrown
+ * \param m	number of sides of the dice (outcome of a single dice roll is [1..m])
+ * \param x	constant summand in the damage formula
  */
 void calc_damage_range(const int n, const int m, const int x, Bit8u *min, Bit8u *max)
 {

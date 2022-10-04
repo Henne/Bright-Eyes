@@ -667,7 +667,7 @@ void mspell_ignifaxius(void)
 	signed short rs_malus;
 	signed short hero_pos;
 	signed short slot;
-	Bit8u *p_armour;
+	Bit8u *p_armor;
 
 	/* get the level of the spelluser */
 	level = host_readbs(get_spelluser_e() + ENEMY_SHEET_LEVEL);
@@ -696,20 +696,20 @@ void mspell_ignifaxius(void)
 		ds_writed(SPELLTARGET,
 			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 
-		/* pointer to the armour of the target hero */
-		p_armour = get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY;
+		/* pointer to the armor of the target hero */
+		p_armor = get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY;
 
-		if ((host_readws(p_armour + INVENTORY_ITEM_ID) != ITEM_NONE) && (rs_malus != 0)) {
+		if ((host_readws(p_armor + INVENTORY_ITEM_ID) != ITEM_NONE) && (rs_malus != 0)) {
 
-			/* adjust rs_malus such that the RS of the worn body armour won't be negative */
-			if ((host_readbs(p_armour + INVENTORY_RS_LOST) + rs_malus) > ds_readbs(ARMORS_TABLE + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour + INVENTORY_ITEM_ID)))))
+			/* adjust rs_malus such that the RS of the worn body armor won't be negative */
+			if ((host_readbs(p_armor + INVENTORY_RS_LOST) + rs_malus) > ds_readbs(ARMORS_TABLE + ARMOR_STATS_RS + SIZEOF_ARMOR_STATS * host_readbs(ITEM_STATS_TABLE_INDEX + get_itemsdat(host_readws(p_armor + INVENTORY_ITEM_ID)))))
 			{
-				rs_malus = ds_readbs(ARMORS_TABLE + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour + INVENTORY_ITEM_ID))))
-						- host_readbs(p_armour + INVENTORY_RS_LOST);
+				rs_malus = ds_readbs(ARMORS_TABLE + ARMOR_STATS_RS + SIZEOF_ARMOR_STATS * host_readbs(ITEM_STATS_TABLE_INDEX + get_itemsdat(host_readws(p_armor + INVENTORY_ITEM_ID))))
+						- host_readbs(p_armor + INVENTORY_RS_LOST);
 			}
 
-			host_writeb(p_armour + INVENTORY_RS_LOST, host_readbs(p_armour + INVENTORY_RS_LOST) + rs_malus);
-			host_writeb(get_spelltarget()  + HERO_RS_BONUS1, host_readbs(get_spelltarget() + HERO_RS_BONUS1) - rs_malus);
+			host_writeb(p_armor + INVENTORY_RS_LOST, host_readbs(p_armor + INVENTORY_RS_LOST) + rs_malus);
+			host_writeb(get_spelltarget() + HERO_RS_BONUS1, host_readbs(get_spelltarget() + HERO_RS_BONUS1) - rs_malus);
 		}
 
 		/* AT - level / 2 */
