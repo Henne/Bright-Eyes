@@ -602,6 +602,7 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 
 		if (answer == 1) {
 
+			/* Original-Bug: If party doesn't have enough money, the price will stay at *5*nr_heroes (typically *30) afterwards... */
 			price *= 5 * nr_heroes;
 			p_money = get_party_money();
 
@@ -830,15 +831,17 @@ void tevent_005(void)
 }
 
 void tevent_006(void)
+	/* Tjeula <-> Faehrstation Tjeula: ferry */
 {
 	TRV_ferry(get_tx(69), 4);
 }
 
 void tevent_007(void)
+/* Tjeula <-> Breida: bridge building */
 {
 	signed short season = get_current_season();
 
-	if (season == 3 || season == 1) {
+	if (season == SEASON_AUTUMN || season == SEASON_SPRING) {
 		TRV_barrier(16);
 	}
 }
@@ -902,7 +905,9 @@ void TRV_barrier(signed short text_start)
 
 				} while (l_di && ds_readbs(TRAVEL_EVENT_AXES + i) != -1);
 
-				if (l_di || get_first_hero_with_item(ITEM_HAMMER) == -1) {
+				if
+					(l_di || get_first_hero_with_item(ITEM_HAMMER) == -1)
+				{
 
 					GUI_dialog_na(0, get_tx2(text_start + 4));
 
@@ -957,6 +962,7 @@ void TRV_barrier(signed short text_start)
 	} while (done == 0);
 }
 
+/* Tjeula <-> Breida: kleiner Bachlauf */
 void tevent_008(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT008_FLAG)) ||

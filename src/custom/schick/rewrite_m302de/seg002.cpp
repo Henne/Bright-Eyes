@@ -2169,13 +2169,13 @@ void nightfall(void)
 signed short get_current_season(void)
 {
 	if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_WINTER)) {
-		return 0;
+		return SEASON_WINTER;
 	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_SUMMER)) {
-		return 2;
+		return SEASON_SUMMER;
 	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_SPRING)) {
-		return 1;
+		return SEASON_SPRING;
 	} else {
-		return 3;
+		return SEASON_AUTUMN;
 	}
 }
 

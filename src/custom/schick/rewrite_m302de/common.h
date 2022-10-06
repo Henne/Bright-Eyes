@@ -52,6 +52,13 @@ enum {
 };
 
 enum {
+	SEASON_WINTER = 0,
+	SEASON_SPRING = 1,
+	SEASON_SUMMER = 2,
+	SEASON_AUTUMN = 3
+};
+
+enum {
 	ANI_AREA_NAME		 = 0x00, /* String of length 5 (zero-terminated) */
 	ANI_AREA_X		 = 0x05,
 	ANI_AREA_Y		 = 0x07,
@@ -1739,7 +1746,7 @@ enum {
 	ITEM_KEY_BRONZE			= 0xd4, /* Bronzeschlüssel */
 	ITEM_SILVER_HELMET		= 0xd5, /* Silberhelm [magic: can be worn by all hero classes; found in wolf cave] */
 	ITEM_SILVER_MACE		= 0xd6, /* Silberstreitkolben [magic; found in Verfallene Herberge] */
-	ITEM_SILVER_JEWELRY_MAGIC	= 0xd7, /* silver jewelry [magic: TA - 2; found in Verfallene Herberge] */
+	ITEM_SILVER_JEWELRY_MAGIC	= 0xd7, /* Silberschmuck [magic: TA - 2; found in Verfallene Herberge] */
 	ITEM_SPEAR_MAGIC		= 0xd8, /* Speer [magic; found in spider cave] */
 	ITEM_CORONET_BLUE		= 0xd9, /* Stirnreif [blau, magic: MR + 2; found in Tempel des Namenlosen] */
 	ITEM_THROWING_DAGGER_MAGIC	= 0xda, /* Wurfdolch [magic; found in dragon cave]. note that there is no 'ordinary' throwing dagger in the game */

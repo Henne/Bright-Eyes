@@ -30,7 +30,7 @@
 namespace M302de {
 #endif
 
-/* Ottarje <-> Skjal */
+/* Ottarje <-> Skjal: alte Feuerstelle. idealer Rastplatz */
 void tevent_053(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 1) > 0 && !ds_readb(TEVENT053_FLAG)) ||
@@ -55,8 +55,7 @@ void tevent_055(void)
 
 	season = get_current_season();
 
-	/* only in autumn or spring */
-	if (season == 1 || season == 3) {
+	if (season == SEASON_SPRING || season == SEASON_AUTUMN) {
 
 		load_in_head(52);
 

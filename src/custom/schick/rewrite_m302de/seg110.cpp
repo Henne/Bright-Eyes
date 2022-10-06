@@ -289,6 +289,7 @@ void tevent_021(void)
 }
 
 void tevent_022(void)
+	/* Rukian <-> Faehrstation Angbodirtal: windgeschuetzte Stelle */
 {
 	signed short answer;
 
@@ -318,6 +319,7 @@ void tevent_022(void)
 }
 
 void tevent_024(void)
+	/* Auplog <-> Vilnheim: windgeschuetzte Stelle. Idealer Rastplatz */
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT024_FLAG)) ||
 		ds_readb(TEVENT024_FLAG) != 0)
@@ -328,6 +330,7 @@ void tevent_024(void)
 }
 
 void tevent_025(void)
+	/* Auplog <-> Vilnheim: umgestuerzte, moosbewachsene Baumstaemme. idealer Rastplatz. */
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 1) > 0 && !ds_readb(TEVENT025_FLAG)) ||
 		ds_readb(TEVENT025_FLAG) != 0)
@@ -572,6 +575,7 @@ void tevent_039(void)
 }
 
 void tevent_040(void)
+/* Auplog <-> Varnheim: alte Feuerstelle. idealer Rastplatz */
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 4) > 0 && !ds_readb(TEVENT040_FLAG)) ||
 		ds_readb(TEVENT040_FLAG) != 0)
@@ -581,6 +585,7 @@ void tevent_040(void)
 	}
 }
 
+/* Auplog <-> Varnheim: kleiner aber reissender Bach, ueber den sich urspruenglich einmal eine Haengebruecke spannte. bridge building */
 void tevent_041(void)
 {
 	signed short answer;
@@ -590,6 +595,7 @@ void tevent_041(void)
 	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 0) > 0 && !ds_readb(TEVENT041_FLAG))
 	{
 		do {
+			/* Spuren von Karenen */
 			answer = GUI_radio(get_tx2(20), 2,
 						get_tx2(21),
 						get_tx2(22));
@@ -605,6 +611,7 @@ void tevent_041(void)
 }
 
 void tevent_042(void)
+	/* Auplog <-> Varnheim: (weiter von Auplog weg als tevent_043) kleiner Bachlauf. Nahrung. */
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT042_FLAG)) ||
 		ds_readb(TEVENT042_FLAG) != 0)
@@ -615,6 +622,7 @@ void tevent_042(void)
 }
 
 void tevent_043(void)
+	/* Auplog <-> Varnheim: (nahe an Auplog) kleiner Bachlauf. Nahrung. */
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(TEVENT043_FLAG)) ||
 		ds_readb(TEVENT043_FLAG) != 0)
@@ -688,7 +696,7 @@ void tevent_045(void)
 	}
 }
 
-/* Daspota <-> Ottarje: entrance to the dungeon "abandoned inn" */
+/* Daspota <-> Ottarje: entrance to the dungeon "verlassene Herberge"("abandoned inn") */
 void tevent_046(void)
 {
 	signed short answer;
@@ -773,6 +781,7 @@ void tevent_046(void)
 	ds_writew(REQUEST_REFRESH, 1);
 }
 
+/* Daspota <-> Ottarje: alte Feuerstelle. idealer Rastplatz. */
 void tevent_048(void)
 {
 	signed short answer;
@@ -787,6 +796,7 @@ void tevent_048(void)
 			if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 3) > 0 && !ds_readb(TEVENT048_TRACK_FLAG)) ||
 				ds_readb(TEVENT048_TRACK_FLAG) != 0)
 			{
+				/* Spuren einer kleinen Karenherde */
 				do {
 					answer = GUI_radio(get_tx2(52), 2,
 								get_tx2(53),
