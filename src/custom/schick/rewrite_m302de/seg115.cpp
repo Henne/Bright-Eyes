@@ -551,7 +551,7 @@ void tevent_129(void)
 	}
 }
 
-/* a cutter */
+/* Daspota <-> Ottarje: a cutter */
 void tevent_047(void)
 {
 	signed short answer;
