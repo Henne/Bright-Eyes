@@ -5445,7 +5445,25 @@ unsigned short g_light_type = 0; // ds:0xaee8, 0 = none, 1 = torch, 2 = lantern
 long g_travel_event_handlers[146] = { 0x00000000, 0x149b0052, 0x149b0057, 0x149b005c, 0x149b0061, 0x149b0066, 0x149b006b, 0x149b0070, 0x149b0075, 0x149b007a, 0x149b007f, 0x14a7009d, 0x149b0084, 0x14a700a2, 0x14a700a7, 0x14a700ac, 0x14d10039, 0x14a700b1, 0x149b0089, 0x149b008e, 0x14a700b6, 0x14a700bb, 0x14a700c0, 0x149b0093, 0x14a700c5, 0x14a700ca, 0x14a7002f, 0x14a70034, 0x14a70039, 0x14a7003e, 0x14a70043, 0x14a70048, 0x14a7004d, 0x14a70052, 0x14a70057, 0x14a7005c, 0x14a70061, 0x14e70020, 0x14e70025, 0x14a70066, 0x14a7006b, 0x14a70070, 0x14a70075, 0x14a7007a, 0x14a7007f, 0x14a70084, 0x14a70089, 0x14d10057, 0x14a7008e, 0x14a70093, 0x14a70098, 0x14e70034, 0x14e70039, 0x14b40048, 0x14b4004d, 0x14b40052, 0x14b40057, 0x14b4005c, 0x14b40061, 0x14b40066, 0x14b40025, 0x14b4002a, 0x14b4002f, 0x14b40034, 0x14b40039, 0x14b4003e, 0x14b40043, 0x14bb0048, 0x14bb004d, 0x14bb0052, 0x14bb0057, 0x14bb0025, 0x14bb002a, 0x14bb002f, 0x14bb0034, 0x14bb0039, 0x14bb003e, 0x14bb0043, 0x14e7002a, 0x14e7002f, 0x14c20061, 0x14c20066, 0x14c2006b, 0x14c20070, 0x14c20075, 0x14c2007a, 0x14c2007f, 0x14e00061, 0x14c20084, 0x14c20089, 0x14d10020, 0x14d1003e, 0x149b0098, 0x14d10025, 0x14d1002a, 0x14d1002f, 0x14d10034, 0x14c20025, 0x14c2002a, 0x14c2002f, 0x14d1005c, 0x14c20034, 0x14c20039, 0x14c2003e, 0x14c20043, 0x14c20048, 0x14c2004d, 0x14c20052, 0x14c20057, 0x14c2005c, 0x14cb0043, 0x14cb0048, 0x14cb004d, 0x14cb0052, 0x14cb0020, 0x14e00057, 0x14cb0025, 0x14cb002a, 0x14cb002f, 0x14cb0034, 0x14e7003e, 0x14e70043, 0x14cb0039, 0x14cb003e, 0x14e70048, 0x14e7004d, 0x14d10043, 0x14d10048, 0x14d1004d, 0x14d10052, 0x14d80052, 0x14d80057, 0x14d8005c, 0x14d80061, 0x14d80066, 0x14d80020, 0x14d80025, 0x14d8002a, 0x14d8002f, 0x14d80034, 0x14d80039, 0x14d8003e, 0x14d80043, 0x14d80048, 0x14d8004d, 0x14e70052 }; // ds:0xaeea, function pointers,
 signed char g_travel_event_active = 0; // ds:0xb132
 signed short g_travel_event_tx2 = -1; // ds:0xb133
+#ifndef M302de_ORIGINAL_BUGFIX
+/* Original-Bug 33:
+ * In certain travel events, an axe is needed as a tool.
+ * (These are: bridge building Breida <-> Tjoila, bridge building Auplog <-> Varnheim, path blocked by a tree Skjal <-> Ottarje)
+ * The list of accepted axes is a bit arbitrary (The common pattern is that all have "...axt" or "...beil" in their name.
+ * Other more or less sensible options would be: ITEM_SKRAJA, ITEM_ORKNASE, ITEM_SCHNEIDZAHN, ITEM_ORKNASE_MAGIC, ITEM_HELLEBARDE. */
 unsigned char g_travel_event_axes[6] = { ITEM_KRIEGSBEIL_SPECIAL, ITEM_STREITAXT, ITEM_THROWING_AXE, ITEM_FRANCESCA, ITEM_KRIEGSBEIL, 0xff }; // ds:0xb135
+#else
+unsigned char g_travel_event_axes[6] = { ITEM_KRIEGSBEIL_SPECIAL, ITEM_STREITAXT, ITEM_ORKNASE, ITEM_ORKNASE_MAGIC, ITEM_KRIEGSBEIL, 0xff }; // ds:0xb135
+/* rationale:
+ * - don't allow throwing axes (ITEM_THROWING_AXE, ITEM_FRANCESCA, ITEM_SCHNEIDZAHN), as they are pretty light and designed for a completely different purpose.
+ * - don't allow ITEM_HELLEBARDE, as it is a polearm with a different purpose. (Note that surprisingliy, it is classified as WEAPON_TYPE_AXT in Schicksalsklinge)
+ * - don't allow ITEM_SKRAJA, as it is a small axe with a very short shaft, which won't produce too much momentum.
+   (Note that while being an axe, ITEM_SKRAJA is classified as WEAPON_TYPE_HIEBWAFFEN in Schicksalsklinge -- which might be a bug on its own.)
+ * - allow all other axes in the game.
+ * In this way, we get again a list of 5 possible items.
+ * See discussion at https://www.crystals-dsa-foren.de/showthread.php?tid=6036&pid=170066#pid170066
+ */
+#endif
 char g_empty_string10[1] = ""; // ds:0xb13b
 char g_empty_string11[1] = ""; // ds:0xb13c
 char g_empty_string12[1] = ""; // ds:0xb13d
