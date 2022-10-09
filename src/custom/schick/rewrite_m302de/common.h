@@ -104,13 +104,14 @@ enum {
 	ACTION_ID_VOID = 999
 };
 
+/* 26 ingame timers for (in this order) active miracles (6), unavailable talent usages (2), active spells (2) and unavailable miracles (16). */
 enum {
 	INGAME_TIMER_RONDRA_NO_SPELLS = 0, /* Rondra miracle active: block spells (6 hours) */
 	INGAME_TIMER_EFFERD_FIND_WATER = 1, /* Efferd miracle active: search for water in wildcamp will always be successful (3 days) */
 	INGAME_TIMER_EFFERD_SAFE_PASSAGE = 2, /* Efferd miracle active: no incidences on sea traveling (3 days) */
 	INGAME_TIMER_FIRUN_HUNT = 3, /* Firun miracle active: hunting in wildcamps will always be successful (3 or 7 days) */
 	INGAME_TIMER_TRAVIA_SAFE_REST = 4, /* Travia miracle active: safety during the night (no camp attacks during sleep) active (7 days) */
-	INGAME_TIMER_BORON_UNDEAD = 5, /* Boron miracle active: protection from undead (but does not have an impact anywhere...) (3 days) */
+	INGAME_TIMER_BORON_UNDEAD = 5, /* Boron miracle active: protection from undead (but apparently, does not have an impact anywhere...) (3 days) */
 	INGAME_TIMER_AKROBATIK = 6, /* talent usage unavailable: Akrobatik (8 hours) */
 	INGAME_TIMER_MUSIZIEREN = 7, /* talent usage unavailable: Musizieren (8 hours) */
 	INGAME_TIMER_FLIM_FLAM = 8, /* spell 'Flim Flam' is active */
@@ -132,7 +133,6 @@ enum {
 	INGAME_TIMER_RAHJA_CH = 24, /* Rahja miracle unavailable: CH +1 (3 days) */
 	INGAME_TIMER_RAHJA_TALENTS_PERMANENT = 25 /* Rahja miracle unavailable: Tanzen +1 (permanent), Betoeren +1 (permanent) (7 days) */
 };
-
 
 /**
  *	struct hero_flags - status of the hero
