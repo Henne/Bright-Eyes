@@ -69,6 +69,7 @@ enum {
 	ANI_AREA_PICS_TAB	 = 0x0d, /* RealPt[20] */
 	ANI_AREA_CHANGES	 = 0x5d,
 	ANI_AREA_CHANGES_TB	 = 0x5f, /* struct{ short pic, duration; }[42] */
+	SIZEOF_ANI_AREA 	 = 0x107
 };
 
 enum {
@@ -103,7 +104,35 @@ enum {
 	ACTION_ID_VOID = 999
 };
 
-#define SIZEOF_ANI_AREA (0x107)
+enum {
+	INGAME_TIMER_RONDRA_NO_SPELLS = 0, /* Rondra miracle active: block spells (6 hours) */
+	INGAME_TIMER_EFFERD_FIND_WATER = 1, /* Efferd miracle active: search for water in wildcamp will always be successful (3 days) */
+	INGAME_TIMER_EFFERD_SAFE_PASSAGE = 2, /* Efferd miracle active: no incidences on sea traveling (3 days) */
+	INGAME_TIMER_FIRUN_HUNT = 3, /* Firun miracle active: hunting in wildcamps will always be successful (3 or 7 days) */
+	INGAME_TIMER_TRAVIA_SAFE_REST = 4, /* Travia miracle active: safety during the night (no camp attacks during sleep) active (7 days) */
+	INGAME_TIMER_BORON_UNDEAD = 5, /* Boron miracle active: protection from undead (but does not have an impact anywhere...) (3 days) */
+	INGAME_TIMER_AKROBATIK = 6, /* talent usage unavailable: Akrobatik (8 hours) */
+	INGAME_TIMER_MUSIZIEREN = 7, /* talent usage unavailable: Musizieren (8 hours) */
+	INGAME_TIMER_FLIM_FLAM = 8, /* spell 'Flim Flam' is active */
+	INGAME_TIMER_DARKNESS = 9, /* spell 'Dunkelheit' is active */
+	INGAME_TIMER_PRAIOS_MU = 10, /* Praios miracle unavailable: MU +1 (1 day) */
+	INGAME_TIMER_PRAIOS_MR = 11, /* Praios miracle unavailable: MR +99 (3 days) */
+	INGAME_TIMER_RONDRA_SWORDS = 12, /* Rondra miracle unavailable: Schwerter +1, AT + 1 (3 days) */
+	INGAME_TIMER_RONDRA_MAGIC_WEAPON = 13, /* Rondra miracle unavailable: make weapon magic (1 day) */
+	INGAME_TIMER_EFFERD_SWIM = 14, /* Efferd miracle unavailable: Schwimmen +2 (4 days) */
+	INGAME_TIMER_BORON_TA = 15, /* Boron miracle unavailable: TA -1 (4 days) */
+	INGAME_TIMER_HESINDE_ANALUES = 16, /* Hesinde miracle unavailable: 'Analues Arkanstruktur +1' (5 days) */
+	INGAME_TIMER_HESINDE_MR = 17, /* Hesinde miracle unavailable: MR +5 (4 days) */
+	INGAME_TIMER_FIRUN_SATED = 18, /* Firun miracle unavailable: no hunger or thirst (7 days) */
+	INGAME_TIMER_PHEX_THIEF = 19, /* Phex miracle unavailable: talents Schleichen +1, Taschendiebstahl +1 (3 days) */
+	INGAME_TIMER_PHEX_FEILSCHEN = 20, /* Phex miracle unavailable: Feilschen +1 (3 days) */
+	INGAME_TIMER_PHEX_FF = 21, /* Phex miracle unavailable: FF +1 (3 days) */
+	INGAME_TIMER_INGERIMM_MAGIC_WEAPON = 22, /* Ingerimm miracle unavailable: make weapon magic (1 day) */
+	INGAME_TIMER_RAHJA_TALENTS = 23, /* Rahja miracle unavailable: Tanzen +1, Betoeren +1 (7 days) */
+	INGAME_TIMER_RAHJA_CH = 24, /* Rahja miracle unavailable: CH +1 (3 days) */
+	INGAME_TIMER_RAHJA_TALENTS_PERMANENT = 25 /* Rahja miracle unavailable: Tanzen +1 (permanent), Betoeren +1 (permanent) (7 days) */
+};
+
 
 /**
  *	struct hero_flags - status of the hero
@@ -893,6 +922,23 @@ enum {
 	GAME_STATE_OUTRO	= 5, /* after (successfull) outro */
 	GAME_STATE_FIGQUIT	= 7, /* quit game during fight */
 	GAME_STATE_VICTORY	= 99 /* final fight won (before outro) */
+};
+
+enum {
+	GOD_PRAIOS		= 1,
+	GOD_RONDRA		= 2,
+	GOD_EFFERD		= 3,
+	GOD_TRAVIA		= 4,
+	GOD_BORON		= 5,
+	GOD_HESINDE		= 6,
+	GOD_FIRUN		= 7,
+	GOD_TSA			= 8,
+	GOD_PHEX		= 9,
+	GOD_PERAINE		= 10,
+	GOD_INGERIMM		= 11,
+	GOD_RAHJA		= 12,
+	GOD_SWAFNIR		= 13,
+	GOD_IFIRN		= 14
 };
 
 enum {

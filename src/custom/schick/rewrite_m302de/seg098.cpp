@@ -843,7 +843,7 @@ signed short select_magic_user(void)
  *
  * \param   hero        	the hero who casts the spell
  * \param   selection_menu	1: select spell from menu / 0: spell is preselected in HERO_SPELL_ID
- * \param   handicap		handicap modifier for the spell cast
+ * \param   handicap		modifier for the spell cast
  */
 signed short use_spell(RealPt hero, signed short selection_menu, signed char handicap)
 {
@@ -918,7 +918,6 @@ signed short use_spell(RealPt hero, signed short selection_menu, signed char han
 
 #ifdef M302de_ORIGINAL_BUGFIX
 			/* Original-Bug 29: door-specific spell handicap is not considered in a free Foramen spell (from the spellcast menu). */
-			D1_INFO("spell_id = %d, DNG_MENU_MODE = %d.\n",spell_id);
 			if (spell_id == SP_FORAMEN_FORAMINOR && ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE && (ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_OPEN_DOOR || ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_UNLOCK_DOOR)) {
 				x = ds_readws(X_TARGET);
 				y = ds_readws(Y_TARGET);
@@ -965,7 +964,7 @@ signed short use_spell(RealPt hero, signed short selection_menu, signed char han
 
 				retval = -1;
 
-			} else if ((ds_readws(SPELLTEST_RESULT) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
+			} else if ((ds_readws(SPELLTEST_RESULT) <= 0) || (ds_readds(INGAME_TIMERS + 4 * INGAME_TIMER_RONDRA_NO_SPELLS) > 0)) {
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(606));
 

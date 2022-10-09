@@ -255,6 +255,7 @@ void do_wildcamp(void)
 				}
 			}
 		} else if (ds_readws(ACTION) == ACTION_ID_ICON_6) {
+			/* Sleep */
 
 			if (GUI_bool(get_ttx(318))) {
 
@@ -269,7 +270,7 @@ void do_wildcamp(void)
 
 				if (ds_readws(CAMP_INCIDENT) == -1) {
 
-					if ((ds_readbs(WILDCAMP_GUARDS) == -1 ? 60 : 10) > random_schick(100) && !ds_readds(INGAME_TIMERS + 0x10))
+					if ((ds_readbs(WILDCAMP_GUARDS) == -1 ? 60 : 10) > random_schick(100) && !ds_readds(INGAME_TIMERS + 4 * INGAME_TIMER_TRAVIA_SAFE_REST))
 					{
 						ds_writews(CAMP_INCIDENT, random_schick(3) - 1);
 					}
@@ -512,7 +513,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 					retval = 1;
 
 					/* search for water */
-					if (test_skill(Real2Host(hero), TA_WILDNISLEBEN, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 4)) {
+					if (test_skill(Real2Host(hero), TA_WILDNISLEBEN, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_EFFERD_FIND_WATER)) {
 
 						/* found water */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -547,7 +548,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 					delay_or_keypress(200);
 
 					/* search for food */
-					if (test_skill(Real2Host(hero), TA_FAEHRTENSUCHEN, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 0xc)) {
+					if (test_skill(Real2Host(hero), TA_FAEHRTENSUCHEN, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_FIRUN_HUNT)) {
 
 						/* remove hunger of all living heroes in the current group */
 						hero2 = get_hero(0);

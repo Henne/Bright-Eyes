@@ -53,7 +53,7 @@ void ask_miracle(void)
 
 	load_tx2(ARCHIVE_FILE_WONDER_LTX);
 
-	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(0));
+	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(0)); /* "Eure Bitten werden nicht erhoert" */
 
 	/* check gods estimation */
 	if (ds_readds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD)) >= 100) {
@@ -61,7 +61,6 @@ void ask_miracle(void)
 		bonus = (signed short)((ga1.a[ds_readws(TEMPLE_GOD)] * (ds_readds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD)) / 100) / 10) - l3);
 
 		if (ds_readbs(CURRENT_TOWN) == TOWNS_CLANEGH) {
-			/* CLANEGH */
 			bonus += 2;
 		}
 
@@ -75,8 +74,7 @@ void ask_miracle(void)
 				miracle_resurrect(get_tx2(35));
 			} else {
 				switch (ds_readws(TEMPLE_GOD)) {
-				case 1: {
-					/* PRAIOS */
+				case GOD_PRAIOS: {
 					l5 = 1;
 
 					for (i = 0; ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > i; i++) {
@@ -89,14 +87,14 @@ void ask_miracle(void)
 
 						if (l_si <= 5) {
 							/* MU+1 for 1 day */
-							if (!ds_readd(INGAME_TIMERS + 0x28)) {
-								miracle_modify(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_MU) - get_hero(0), HOURS(24), 1);
+							if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_PRAIOS_MU)) {
+								miracle_modify(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_MU) - get_hero(0), DAYS(1), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(1));
-								ds_writed(INGAME_TIMERS + 0x28, HOURS(24));
+								ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_PRAIOS_MU, DAYS(1));
 							}
 						} else if (l_si <= 7) {
 							/* MR+99 for 3 days */
-							if (!ds_readd(INGAME_TIMERS + 0x2c)) {
+							if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_PRAIOS_MR)) {
 
 								i = get_random_hero();
 
@@ -109,7 +107,7 @@ void ask_miracle(void)
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
 										(char*)get_tx2(2),
 										(char*)get_hero(i) + HERO_NAME2);
-									ds_writed(INGAME_TIMERS + 0x2c, 3 * HOURS(24));
+									ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_PRAIOS_MR, DAYS(3));
 								}
 							}
 						} else if (l_si <= 8) {
@@ -147,48 +145,50 @@ void ask_miracle(void)
 					}
 					break;
 				}
-				case 2: {
-					/* RONDRA */
+				case GOD_RONDRA: {
 					if (l_si <= 5) {
-						if (!ds_readd(INGAME_TIMERS + 0x30)) {
-							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_SCHWERTER) - get_hero(0), 3 * HOURS(24), 1); /* for 3 days: skill 'Schwerter' + 1 */
-							miracle_modify(get_hero(0) + (HERO_AT + 3) - get_hero(0), 3 * HOURS(24), 1); /* for 3 days: AT + 1 */
-							ds_writed(INGAME_TIMERS + 0x30, 3 * HOURS(24));
+						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_RONDRA_SWORDS)) {
+							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_SCHWERTER) - get_hero(0), DAYS(3), 1); /* for 3 days: skill 'Schwerter' + 1 */
+							miracle_modify(get_hero(0) + (HERO_AT + 3) - get_hero(0), DAYS(3), 1); /* for 3 days: AT + 1 */
+							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_RONDRA_SWORDS, DAYS(3));
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(4));
 						}
 					} else if (l_si <= 7) {
-						ds_writed(INGAME_TIMERS, HOURS(6));
+						/* "Rondra breitet ihre Aura ueber euch aus, so dass keine Magie mehr wirken kann. */
+						/* spellcasting is blocked (heroes and foes) */
+						ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_RONDRA_NO_SPELLS, HOURS(6));
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(5));
 					} else if (l_si <= 8) {
-						if (!ds_readd(INGAME_TIMERS + 0x34)) {
+						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_RONDRA_MAGIC_WEAPON)) {
 							miracle_weapon(get_tx2(6), 0);
-							ds_writed(INGAME_TIMERS + 0x34, HOURS(24));
+							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_RONDRA_MAGIC_WEAPON, DAYS(1));
 						}
 					}
 					break;
 				}
-				case 3: {
-					/* EFFERD */
+				case GOD_EFFERD: {
 					if (l_si <= 5) {
-						ds_writed(INGAME_TIMERS + 4, 3 * HOURS(24));
+						/* "Efferd verleiht euch die Gabe, Wasser zu finden." */
+						/* searching for water in a wildcamp will always be successful */
+						ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_EFFERD_FIND_WATER, DAYS(3));
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(7));
 					} else if (l_si <= 8) {
-						ds_writed(INGAME_TIMERS + 8, 3 * HOURS(24));
+						/* "Efferd gewaehrt euch seinen Schutz auf Wasser." */
+						ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_EFFERD_SAFE_PASSAGE, DAYS(3));
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(8));
 					} else if (l_si <= 9) {
-						if (!ds_readd(INGAME_TIMERS + 0x38)) {
-							/* Schwimmen + 2 for 4 days */
-							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_SCHWIMMEN) - get_hero(0), 4 * HOURS(24), 2);
+						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_EFFERD_SWIM)) {
+							/* Schwimmen +2 for 4 days */
+							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_SCHWIMMEN) - get_hero(0), DAYS(4), 2);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(9));
-							ds_writed(INGAME_TIMERS + 0x38, 4 * HOURS(24));
+							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_EFFERD_SWIM, DAYS(4));
 						}
 					}
 					break;
 				}
-				case 4: {
-					/* TRAVIA */
+				case GOD_TRAVIA: {
 					if (l_si <= 10) {
-						/* food miracle */
+						/* "Die ganze Gruppe wird von Travia goettlich gesaettigt." */
 						for (i = 0; i <= 6; i++) {
 							hero = get_hero(i);
 
@@ -197,6 +197,7 @@ void ask_miracle(void)
 								!hero_gods_pissed(hero))
 							{
 								host_writebs(hero + HERO_HUNGER, host_writebs(hero + HERO_THIRST, 0));
+								/* TODO: What about hunger? */
 							}
 						}
 
@@ -204,34 +205,35 @@ void ask_miracle(void)
 					} else if (l_si <= 15) {
 						miracle_heal_hero(dice_roll(1, 6, 2), get_tx2(11));
 					} else if (l_si <= 16) {
-						ds_writed(INGAME_TIMERS + 0x10, 7 * HOURS(24));
+						/* "Travia gewaehrt der Gruppe ihren Schutz in der Nacht */
+						ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_TRAVIA_SAFE_REST, DAYS(7));
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(12));
 					}
 					break;
 				}
-				case 5: {
-					/* BORON */
+				case GOD_BORON: {
 					if (l_si <= 3) {
-						ds_writed(INGAME_TIMERS + 0x14, 3 * HOURS(24));
+						/* "Boron gewaehrt euch Schutz vor Untoten" */
+						/* not implemented anywhere */
+						ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_BORON_UNDEAD, DAYS(3));
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(13));
 					} else if (l_si <= 4) {
 						miracle_resurrect(get_tx2(14));
 					} else if (l_si <= 5) {
-						if (!ds_readd(INGAME_TIMERS + 0x3c)) {
-							miracle_modify(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_TA) - get_hero(0), 4 * HOURS(24), -1);
+						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_BORON_TA)) {
+							miracle_modify(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_TA) - get_hero(0), DAYS(4), -1);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(15));
-							ds_writed(INGAME_TIMERS + 0x3c, 4 * HOURS(24));
+							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_BORON_TA, DAYS(4));
 						}
 					}
 					break;
 				}
-				case 6: {
-					/* HESINDE */
+				case GOD_HESINDE: {
 					if (l_si <= 3) {
-						if (!ds_readd(INGAME_TIMERS + 0x40)) {
-							miracle_modify(get_hero(0) + (HERO_SPELLS + SP_ANALUES_ARCANSTRUKTUR) - get_hero(0), 4 * HOURS(24), 1);
+						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_HESINDE_ANALUES)) {
+							miracle_modify(get_hero(0) + (HERO_SPELLS + SP_ANALUES_ARCANSTRUKTUR) - get_hero(0), DAYS(4), 1);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(16));
-							ds_writed(INGAME_TIMERS + 0x40, 4 * HOURS(24));
+							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_HESINDE_ANALUES, DAYS(4));
 						}
 					} else if (l_si <= 6) {
 						/* unset transformation or renegade state of the first feasible hero */
@@ -263,25 +265,26 @@ void ask_miracle(void)
 							}
 						}
 					} else if (l_si <= 7) {
-						if (!ds_readd(INGAME_TIMERS + 0x44)) {
-							miracle_modify(get_hero(0) + HERO_MR - get_hero(0), 3 * HOURS(24), 5);
+						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_HESINDE_MR)) {
+							miracle_modify(get_hero(0) + HERO_MR - get_hero(0), DAYS(3), 5);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(18));
-							ds_writed(INGAME_TIMERS + 0x44, 3 * HOURS(24));
+							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_HESINDE_MR, DAYS(3));
 						}
 					}
 					break;
 				}
-				case 7: case 14: {
-					/* FIRUN & IFIRN */
+				case GOD_FIRUN: case GOD_IFIRN: {
 					if (l_si <= 5) {
-						ds_writed(INGAME_TIMERS + 0x0c, 3 * HOURS(24));
+						/* hunting in a wildcamp will always be successful */
+						ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_FIRUN_HUNT, DAYS(3));
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(19));
 					} else if (l_si <= 8) {
-						ds_writed(INGAME_TIMERS + 0x0c, 7 * HOURS(24));
+						ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_FIRUN_HUNT, DAYS(7));
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(19));
 					} else if (l_si <= 9) {
+						/* "Ihr verspuert keinen Hunger oder Durst mehr." */
 						/* +1 for 7 days */
-						if (!ds_readd(INGAME_TIMERS + 0x48)) {
+						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_FIRUN_SATED)) {
 
 							i = get_random_hero();
 
@@ -296,17 +299,18 @@ void ask_miracle(void)
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_tx2(20),
 									(char*)get_hero(i) + HERO_NAME2);
-								ds_writed(INGAME_TIMERS + 0x48, 7 * HOURS(24));
+								ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_FIRUN_SATED, DAYS(7));
 							}
 						}
 					}
 					break;
 				}
-				case 8: {
-					/* TSA */
+				case GOD_TSA: {
 					if (l_si <= 10) {
+						/* heal 2D6 LE of a hero */
 						miracle_heal_hero(dice_roll(2, 6, 0), get_tx2(21));
 					} else if (l_si <= 15) {
+						/* completely heal all heroes */
 
 						hero = get_hero(0);
 						for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
@@ -317,6 +321,7 @@ void ask_miracle(void)
 								!hero_gods_pissed(hero))
 							{
 								/* heal hero completely */
+								/* this looks like adding more LE than missing, but the excess LE will be dealt with in add_hero_le */
 								add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
 							}
 						}
@@ -328,39 +333,38 @@ void ask_miracle(void)
 					}
 					break;
 				}
-				case 9: {
+				case GOD_PHEX: {
 					/* PHEX wants a bit more estimation */
 					if (ds_readds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD)) > 500) {
 
 						if (l_si <= 5) {
-							if (!ds_readd(INGAME_TIMERS + 0x4c)) {
+							if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_PHEX_THIEF)) {
 								/* Taschendiebstahl +1 for 3 days */
-								miracle_modify(get_hero(0) + (HERO_TALENTS + TA_TASCHENDIEBSTAHL) - get_hero(0), 3 * HOURS(24), 1);
+								miracle_modify(get_hero(0) + (HERO_TALENTS + TA_TASCHENDIEBSTAHL) - get_hero(0), DAYS(3), 1);
 								/* Schloesser knacken +1 for 3 days */
-								miracle_modify(get_hero(0) + (HERO_TALENTS + TA_SCHLOESSER) - get_hero(0), 3 * HOURS(24), 1);
+								miracle_modify(get_hero(0) + (HERO_TALENTS + TA_SCHLOESSER) - get_hero(0), DAYS(3), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(24));
-								ds_writed(INGAME_TIMERS + 0x4c, 3 * HOURS(24));
+								ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_PHEX_THIEF, DAYS(3));
 							}
 						} else if (l_si <= 8) {
-							if (!ds_readd(INGAME_TIMERS + 0x50)) {
+							if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_PHEX_FEILSCHEN)) {
 								/* Feilschen +1 for 3 days */
-								miracle_modify(get_hero(0) + (HERO_TALENTS + TA_FEILSCHEN) - get_hero(0), 3 * HOURS(24), 1);
+								miracle_modify(get_hero(0) + (HERO_TALENTS + TA_FEILSCHEN) - get_hero(0), DAYS(3), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(25));
-								ds_writed(INGAME_TIMERS + 0x50, 3 * HOURS(24));
+								ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_PHEX_FEILSCHEN, DAYS(3));
 							}
 						} else if (l_si <= 9) {
-							if (!ds_readd(INGAME_TIMERS + 0x54)) {
+							if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_PHEX_FF)) {
 								/* FF +1 for 3 days */
-								miracle_modify(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_FF) - get_hero(0), 3 * HOURS(24), 1);
+								miracle_modify(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_FF) - get_hero(0), DAYS(3), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(26));
-								ds_writed(INGAME_TIMERS + 0x54, 3 * HOURS(24));
+								ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_PHEX_FF, DAYS(3));
 							}
 						}
 					}
 					break;
 				}
-				case 10: {
-					/* PERAINE */
+				case GOD_PERAINE: {
 					if (l_si <= 10) {
 						miracle_heal_hero(dice_roll(1, 6, 0), get_tx2(27));
 					} else if (l_si <= 16) {
@@ -387,9 +391,9 @@ void ask_miracle(void)
 					}
 					break;
 				}
-				case 11: {
-					/* INGERIMM */
+				case GOD_INGERIMM: {
 					if (l_si <= 5) {
+						/* "Ingerimm segnet alle eure Waffen." */
 						/* decrease BF of all weapons of all heroes by 2, but not below 0 */
 
 						for (i = 0; i <= 6; i++) {
@@ -420,36 +424,35 @@ void ask_miracle(void)
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(29));
 
 					} else if (l_si <= 6) {
-						if (!ds_readd(INGAME_TIMERS + 0x58)) {
+						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_INGERIMM_MAGIC_WEAPON)) {
 							miracle_weapon(get_tx2(30), 0);
-							ds_writed(INGAME_TIMERS + 0x58, HOURS(24));
+							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_INGERIMM_MAGIC_WEAPON, DAYS(1));
 						}
 					} else if (l_si <= 7) {
 						miracle_weapon(get_tx2(31), 1);
 					}
 					break;
 				}
-				case 12: {
-					/* RAHJA */
+				case GOD_RAHJA: {
 					if (l_si <= 8) {
-						if (!ds_readd(INGAME_TIMERS + 0x5c)) {
+						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_RAHJA_TALENTS)) {
 							/* Betören +2 for 7 days */
-							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_BETOEREN) - get_hero(0), 7 * HOURS(24), 2);
+							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_BETOEREN) - get_hero(0), DAYS(7), 2);
 							/* Tanzen +2 for 7 days */
-							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_TANZEN) - get_hero(0), 7 * HOURS(24), 2);
+							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_TANZEN) - get_hero(0), DAYS(7), 2);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(32));
-							ds_writed(INGAME_TIMERS + 0x5c, 7 * HOURS(24));
+							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_RAHJA_TALENTS, DAYS(7));
 						}
 					} else if (l_si <= 13) {
-						if (!ds_readd(INGAME_TIMERS + 0x60)) {
+						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_RAHJA_CH)) {
 							/* CH +1 for 3 days */
-							miracle_modify(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_CH) - get_hero(0), 3 * HOURS(24), 1);
+							miracle_modify(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_CH) - get_hero(0), DAYS(3), 1);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(33));
-							ds_writed(INGAME_TIMERS + 0x60, 3 * HOURS(24));
+							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_RAHJA_CH, DAYS(3));
 						}
 					} else if (l_si <= 14) {
 
-						if (!ds_readds(INGAME_TIMERS + 0x64)) {
+						if (!ds_readds(INGAME_TIMERS + 4 * INGAME_TIMER_RAHJA_TALENTS_PERMANENT)) {
 
 							hero = get_hero(0);
 							for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
@@ -467,7 +470,7 @@ void ask_miracle(void)
 							}
 
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(34));
-							ds_writed(INGAME_TIMERS + 0x64, 7 * HOURS(24));
+							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_RAHJA_TALENTS_PERMANENT, DAYS(7));
 						}
 
 					}
