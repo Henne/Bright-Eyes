@@ -197,7 +197,6 @@ void ask_miracle(void)
 								!hero_gods_pissed(hero))
 							{
 								host_writebs(hero + HERO_HUNGER, host_writebs(hero + HERO_THIRST, 0));
-								/* TODO: What about hunger? */
 							}
 						}
 
@@ -214,7 +213,7 @@ void ask_miracle(void)
 				case GOD_BORON: {
 					if (l_si <= 3) {
 						/* "Boron gewaehrt euch Schutz vor Untoten" */
-						/* not implemented anywhere */
+						/* apparently, does not have an impact anywhere */
 						ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_BORON_UNDEAD, DAYS(3));
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(13));
 					} else if (l_si <= 4) {
