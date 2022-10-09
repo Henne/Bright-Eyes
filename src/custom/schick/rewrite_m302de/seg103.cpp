@@ -544,7 +544,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 		}
 		case TA_AKROBATIK : {
 
-			if (ds_readds((INGAME_TIMERS + 0x18)) > 0) {
+			if (ds_readds((INGAME_TIMERS + 4 * INGAME_TIMER_AKROBATIK)) > 0) {
 
 				GUI_output(get_tx(34));
 
@@ -565,12 +565,12 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 
 					add_party_money(money);
 
-					ds_writed((INGAME_TIMERS + 0x18), HOURS(8));
+					ds_writed((INGAME_TIMERS + 4 * INGAME_TIMER_AKROBATIK), HOURS(8));
 					ds_writew(REQUEST_REFRESH, 1);
 				} else {
 					GUI_output(get_tx(36));
 
-					ds_writed((INGAME_TIMERS + 0x18), HOURS(8));
+					ds_writed((INGAME_TIMERS + 4 * INGAME_TIMER_AKROBATIK), HOURS(8));
 					l_si = -1;
 				}
 			}
@@ -578,7 +578,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 		}
 		case TA_MUSIZIEREN : {
 
-			if (ds_readds((INGAME_TIMERS + 0x1c)) > 0) {
+			if (ds_readds((INGAME_TIMERS + 4 * INGAME_TIMER_MUSIZIEREN)) > 0) {
 
 				GUI_output(get_tx(37));
 
@@ -599,12 +599,12 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 
 					add_party_money(money);
 
-					ds_writed((INGAME_TIMERS + 0x1c), HOURS(8));
+					ds_writed((INGAME_TIMERS + 4 * INGAME_TIMER_MUSIZIEREN), HOURS(8));
 					ds_writew(REQUEST_REFRESH, 1);
 				} else {
 					GUI_output(get_tx(36));
 
-					ds_writed((INGAME_TIMERS + 0x1c), HOURS(8));
+					ds_writed((INGAME_TIMERS + 4 * INGAME_TIMER_MUSIZIEREN), HOURS(8));
 					l_si = -1;
 				}
 			}

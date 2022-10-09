@@ -207,13 +207,13 @@ void FIG_do_enemy_action(RealPt monster, signed short monster_pos)
 			}
 
 			/* spell_dunkelheit() is active => AT-4, PA-4*/
-			if (ds_readds(INGAME_TIMERS + 0x24)) {
+			if (ds_readds(INGAME_TIMERS + 4 * INGAME_TIMER_DARKNESS)) {
 				defender_at -= 4;
 				defender_pa -= 4;
 			}
 
 			attacker_at = host_readbs(Real2Host(monster) + ENEMY_SHEET_AT);
-			if (ds_readds(INGAME_TIMERS + 0x24)) {
+			if (ds_readds(INGAME_TIMERS + 4 * INGAME_TIMER_DARKNESS)) {
 				attacker_at -= 4;
 			}
 
