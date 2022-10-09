@@ -533,7 +533,15 @@ void sea_travel(signed short passage, signed short dir)
 		} else if (ds_readws(PASSAGE_OCTOPUS_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(PASSAGE_OCTOPUS_TIME) && !ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_EFFERD_SAFE_PASSAGE)) {
 			octopus_attack_wrapper();
 			ds_writew(PASSAGE_OCTOPUS_FLAG, 0);
-		} else if (ds_readws(PASSAGE_PIRATES_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(PASSAGE_PIRATES_TIME)) {
+		} else if
+#ifndef M302de_ORIGINAL_BUGFIX
+			/* There is an Efferd miracle with the text "Efferd gewaehrt euch seinen Schutz auf Wasser.".
+			 * For sea travelling, it prevents octopus encounters. However, pirate encounters are still possible. */
+			(ds_readws(PASSAGE_PIRATES_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(PASSAGE_PIRATES_TIME))
+#else
+			(ds_readws(PASSAGE_PIRATES_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(PASSAGE_PIRATES_TIME) && !ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_EFFERD_SAFE_PASSAGE))
+#endif
+			{
 			pirates_attack_wrapper();
 			ds_writew(PASSAGE_PIRATES_FLAG, 0);
 		}
