@@ -530,7 +530,7 @@ void sea_travel(signed short passage, signed short dir)
 		if (ds_readws(PASSAGE_DEADSHIP_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(PASSAGE_DEADSHIP_TIME) && !ds_readb(QUEST_DEADSHIP_DONE)) {
 			enter_ghostship();
 			ds_writew(PASSAGE_DEADSHIP_FLAG, 0);
-		} else if (ds_readws(PASSAGE_OCTOPUS_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(PASSAGE_OCTOPUS_TIME) && !ds_readd(INGAME_TIMERS + 8)) {
+		} else if (ds_readws(PASSAGE_OCTOPUS_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(PASSAGE_OCTOPUS_TIME) && !ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_EFFERD_SAFE_PASSAGE)) {
 			octopus_attack_wrapper();
 			ds_writew(PASSAGE_OCTOPUS_FLAG, 0);
 		} else if (ds_readws(PASSAGE_PIRATES_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(PASSAGE_PIRATES_TIME)) {
