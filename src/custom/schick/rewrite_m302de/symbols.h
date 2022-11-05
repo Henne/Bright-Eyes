@@ -766,7 +766,7 @@
 #define SEA_TRAVEL_PASSAGE_SPEED2       (0x432c)    /* unsigned short; basically, the same purpose as SEA_TRAVEL_PASSAGE_SPEED1. The variables could be merged. */
 #define TRAVEL_MAP_PTR                  (0x432e)    /* RealPt */
 #define FORCEDMARCH_TIMER               (0x4332)    /* unsigned char */
-#define TRAVEL_DETOUR                   (0x4333)    /* unsigned char; indicates a detour from travelling, mostly to a dungeon (if it holds a DUNGEONS_... ID, which is a value in [1..15]). further possible values: 0, 99, and an extra usage of 1 in seg110.cpp */
+#define TRAVEL_DETOUR                   (0x4333)    /* unsigned char; indicates a detour from traveling, mostly to a dungeon (if it holds a DUNGEONS_... ID, which is a value in [1..15]). further possible values: 0, 99, and an extra usage of 1 in seg110.cpp */
 #define CURRENT_DIRSIGN                 (0x4334)    /* unsigned short */
 #define TRV_RETURN                      (0x4336)    /* signed short; {-1, 0, 1, 2} + ? */
 #define TRV_DEST_REACHED                (0x4338)    /* unsigned short */
@@ -1113,7 +1113,7 @@
 // ?1
 #define TMAP_DOUBLE1                    (0x7c9a)    /* unsigned char; 1 = unicorn brought a piece you already have */
 #define TMAP_DOUBLE2                    (0x7c9b)    /* unsigned char; 1 = you got a piece you already have from the unicorn */
-#define SWAFNILD_TRAVELLED              (0x7c9c)    /* unsigned char; {0,1} */
+#define SWAFNILD_TRAVELED               (0x7c9c)    /* unsigned char; {0,1} */
 #define TOWNS_GOSSIP_MAX                (0x7c9d)    /* unsigned char[52] */
 #define TOWNS_GOSSIP_OFF                (0x7cd1)    /* unsigned char[52] */
 // ?1

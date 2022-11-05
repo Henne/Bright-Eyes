@@ -180,11 +180,11 @@ RealPt print_passage_price(signed short price, Bit8u *route_ptr)
 }
 
 /**
- * \brief   calculates the travelling time of a ship passage in hours
+ * \brief   calculates the traveling time of a ship passage in hours
  *
  * \param   distance     the distance [unit: km]
  * \param   base_speed   base speed of the ship [unit: km per day]
- * \return               the travelling time in hours
+ * \return               the traveling time in hours
  */
 unsigned short get_passage_travel_hours(signed short distance, signed short base_speed)
 {
@@ -212,7 +212,7 @@ unsigned short get_passage_travel_hours(signed short distance, signed short base
 
 #ifndef M302de_ORIGINAL_BUGFIX
 	/* Original-Bug 35:
-	 * In the predicted travelling times of sea passages, only very specific values show up.
+	 * In the predicted traveling times of sea passages, only very specific values show up.
 	 * For example, the predicted number of hours for Prem-Hjalsingor will be one of 14, 15, 16, 17, 19, 21, 23, 26, 30, 35, 42, 52, 70, 105, 210.
 	 * The reason is that a bad conversion severly reduces the computational precision. */
 
@@ -233,7 +233,7 @@ unsigned short get_passage_travel_hours(signed short distance, signed short base
 		/* should not happen, see computed values above */
 		tmp = 1;
 
-	tmp = distance / tmp; /* now 'tmp' is the number of travelling hours */
+	tmp = distance / tmp; /* now 'tmp' is the number of traveling hours */
 #else
 	/* first multiply, then divide for higher precision */
 	tmp = ROUNDED_DIVISION(10 * distance, ds_readws(SEA_TRAVEL_PASSAGE_SPEED2));

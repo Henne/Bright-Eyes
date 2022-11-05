@@ -806,7 +806,7 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
 			}
 
 			ds_writeb(LOCATION_BAK, 0);
-			ds_writeb(SWAFNILD_TRAVELLED, 1);
+			ds_writeb(SWAFNILD_TRAVELED, 1);
 
 			timewarp_until_midnight();
 		} else if (state == 42) {
