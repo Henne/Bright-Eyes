@@ -150,6 +150,7 @@ signed short do_travel_mode(void)
 					if (!get_current_season() &&
 						(route_id == 31 || route_id == 41 || route_id == 47 || route_id == 48 || route_id == 49))
 					{
+						/* routes not available in winter */
 						GUI_input(get_tx(69), 0);
 						break;
 					}

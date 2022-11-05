@@ -217,7 +217,7 @@ void tevent_094(void)
 
 		if (answer == 1) {
 			/* enter Daspota dungeon */
-			ds_writeb(TRAVEL_DETOUR, 6);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_DASPOTASCHATZ);
 		}
 	}
 }
@@ -465,7 +465,7 @@ void tevent_126(void)
 
 		if (answer == 1)
 		{
-			ds_writeb(TRAVEL_DETOUR, 9);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_KULTSTAETTE_DES_NAMENLOSEN);
 		}
 	}
 }
@@ -531,7 +531,7 @@ void tevent_129(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 10);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_DRACHENHORT);
 		}
 
 	} else if (ds_readb(TEVENT129_FLAG) != 0) {
@@ -546,7 +546,7 @@ void tevent_129(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 10);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_DRACHENHORT);
 		}
 	}
 }
@@ -712,7 +712,7 @@ void tevent_100(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(TRAVEL_DETOUR, 7);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_RUINE_DES_SCHWARZMAGIERS);
 			} else {
 
 				GUI_output(get_tx2(67));

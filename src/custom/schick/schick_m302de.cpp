@@ -685,8 +685,8 @@ static int n_seg002(unsigned short offs)
 	case 0x2f7a: {
 		Bit32s val = CPU_Pop32();
 		CPU_Push32(val);
-		D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
-		seg002_2f7a(val);
+		D1_LOG("near sub_heal_staffspell_timers(fmin=%d);\n", val);
+		sub_heal_staffspell_timers(val);
 		return 1;
 	}
 	/* Callers: 4 */
@@ -2539,8 +2539,8 @@ static int n_seg061(unsigned offs) {
 static int n_seg063(unsigned offs) {
 	switch (offs) {
 	case 0x0ad: {
-		D1_LOG("do_harbour()\n");
-		do_harbour();
+		D1_LOG("do_harbor()\n");
+		do_harbor();
 		return 1;
 	}
 	case 0x999: {
@@ -5292,8 +5292,8 @@ static int seg002(unsigned short offs) {
 		Bit32s v1 = CPU_Pop32();
 		CPU_Push32(v1);
 
-		D1_LOG("seg002_2f7a(v1=%d);\n", v1);
-		seg002_2f7a(v1);
+		D1_LOG("sub_heal_staffspell_timers(fmin=%d);\n", v1);
+		sub_heal_staffspell_timers(v1);
 
 		return 1;
 	}
@@ -8774,8 +8774,8 @@ static int seg059(unsigned short offs)
 			return 1;
 		}
 		case 0x2f: {
-			D1_LOG("enter_ghostship()\n");
-			enter_ghostship();
+			D1_LOG("prolog_ghostship()\n");
+			prolog_ghostship();
 			return 1;
 		}
 		default: {

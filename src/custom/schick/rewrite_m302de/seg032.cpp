@@ -1164,7 +1164,8 @@ signed short do_fight(signed short fight_id)
 			write_fight_lst();
 		}
 
-		if ((retval == 1) && (ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE)) { /* heroes escaped and fight was in a dungeon => distribute escaped heroes and split group */
+		if ((retval == 1) && (ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE)) {
+			/* heroes escaped and fight was in a dungeon => distribute escaped heroes and split group */
 
 			nr_escape_positions = 0;
 
@@ -1248,6 +1249,7 @@ signed short do_fight(signed short fight_id)
 		}
 
 	} else {
+		/* GAME_STATE == GAME_STATE_FIGQUIT */
 		ds_writeb(TRAVEL_DETOUR, 99);
 		retval = 4;
 	}

@@ -745,11 +745,11 @@
 #define ROUTE_FIGHT_TIME                (0x424a)    /* unsigned short */
 #define TRAVEL_SPEED                    (0x424c)    /* unsigned short */
 #define PASSAGE_DEADSHIP_FLAG           (0x424e)    /* unsigned short; {0,1} */
-#define PASSAGE_DEADSHIP_TIME           (0x4250)    /* unsigned short */
+#define PASSAGE_DEADSHIP_POSITION       (0x4250)    /* unsigned short */
 #define PASSAGE_OCTOPUS_FLAG            (0x4252)    /* unsigned short; {0,1} */
-#define PASSAGE_OCTOPUS_TIME            (0x4254)    /* unsigned short */
+#define PASSAGE_OCTOPUS_POSITION        (0x4254)    /* unsigned short */
 #define PASSAGE_PIRATES_FLAG            (0x4256)    /* unsigned short; {0,1} */
-#define PASSAGE_PIRATES_TIME            (0x4258)    /* unsigned short */
+#define PASSAGE_PIRATES_POSITION        (0x4258)    /* unsigned short */
 #define ROUTE_COURSE_PTR                (0x425a)    /* RealPt */
 #define ROUTE_COURSE_START              (0x425e)    /* RealPt */
 #define ROUTE_COURSE_PTR2               (0x4262)    /* RealPt */
@@ -761,12 +761,12 @@
 #define SEA_TRAVEL_PSGBOOKED_TIMER      (0x42af)    /* signed char; 0 = ship leaves today at 9 o'clock; 1 = ship leaves tomorrow at 9 o'clock */
 #define SEA_TRAVEL_PASSAGE_SPEED1       (0x42b0)    /* signed char */
 #define SEA_TRAVEL_PASSAGE_ID           (0x42b1)    /* signed char */
-#define HARBOR_OPTIONS                  (0x42b2)    /* struct(12)[10]; buffering passage data for building the menu in a harbour where a sea passage can be selected */
+#define HARBOR_OPTIONS                  (0x42b2)    /* struct(12)[10]; buffering passage data for building the menu in a harbor where a sea passage can be selected */
 #define SEA_TRAVEL_PASSAGE_PRICE        (0x432a)    /* signed short */
-#define SEA_TRAVEL_PASSAGE_SPEED2       (0x432c)    /* signed short; basically, the same purpose as SEA_TRAVEL_PASSAGE_SPEED1. The variables could be merged. */
+#define SEA_TRAVEL_PASSAGE_SPEED2       (0x432c)    /* unsigned short; basically, the same purpose as SEA_TRAVEL_PASSAGE_SPEED1. The variables could be merged. */
 #define TRAVEL_MAP_PTR                  (0x432e)    /* RealPt */
 #define FORCEDMARCH_TIMER               (0x4332)    /* unsigned char */
-#define TRAVEL_DETOUR                   (0x4333)    /* unsigned char */
+#define TRAVEL_DETOUR                   (0x4333)    /* unsigned char; indicates a detour from travelling, mostly to a dungeon (if it holds a DUNGEONS_... ID, which is a value in [1..15]). further possible values: 0, 99, and an extra usage of 1 in seg110.cpp */
 #define CURRENT_DIRSIGN                 (0x4334)    /* unsigned short */
 #define TRV_RETURN                      (0x4336)    /* signed short; {-1, 0, 1, 2} + ? */
 #define TRV_DEST_REACHED                (0x4338)    /* unsigned short */
@@ -1065,7 +1065,7 @@
 // ?1
 #define TEMPLE_MIRACLE_BONUS            (0x6ea4)    /* signed char[15]; {0, 2, 15, 10, 20, 5, 10, 1, 15, 3, 15, 5, 10, 0} */
 #define TEMPLE_MIRACLE_DICE             (0x6eb3)    /* signed char[15]; {0, 9, 9, 10, 17, 6, 10, 10, 18, 10, 19, 8, 15, 0, 10} */
-#define SEA_TRAVEL_TX_CLASS             (0x6ec2)    /* signed short[7]; {0x001d, 0x001e, 0x001f, 0x0020, 0x0021, 0x0022, 0x0023} */ /* maps entry PASSAGE_TYPE in SHIP_TABLE -> ptr to name of type of passage (Begleitschutzfahrt, Deckpassage etc.) */
+#define PASSAGE_TYPE_TO_NAME            (0x6ec2)    /* signed short[7]; {0x001d, 0x001e, 0x001f, 0x0020, 0x0021, 0x0022, 0x0023} */ /* maps entry PASSAGE_TYPE in SHIP_TABLE -> ptr to name of type of passage (Begleitschutzfahrt, Deckpassage etc.) */
 #define SHIP_TABLE                      (0x6ed0)    /* struct(4)[8]; struct{unsigned char passage_type,unkn2,base_price_per_distance,base_speed;}; { { 0, 1, 0, 120 }, { 3, 1, 35, 100 }, { 1, 1, 0, 150 }, { 2, 1, 45, 150 }, { 0, 1, 0, 90 }, { 4, 1, 20, 80 }, { 5, 0, 10, 60 }, { 6, 0, 0, 40 } } */
 #define SEA_TRAVEL_TX_SHIP              (0x6ef0)    /* signed short[8]; { 0x0024, 0x0025, 0x0026, 0x0026, 0x0024, 0x0027, 0x0028, 0x0029 }*/ /* maps ship_type -> ptr to ship name (Langschiff, Kutter, etc.) */
 #define SEA_ROUTES                      (0x6f00)    /* struct(8)[46] */

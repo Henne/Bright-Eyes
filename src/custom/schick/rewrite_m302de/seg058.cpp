@@ -594,7 +594,7 @@ void TLK_schmied(signed short state)
 		ds_writew(PRICE_MODIFICATOR, 3);
 	} else if (state == 30) {
 
-		DNG_enter_dungeon(14);
+		DNG_enter_dungeon(DUNGEONS_ZWINGFESTE);
 		ds_writeb(DUNGEON_LEVEL, 3);
 		ds_writews(X_TARGET_BAK, ds_writews(X_TARGET, 11));
 		ds_writews(Y_TARGET_BAK, ds_writews(Y_TARGET, 2));

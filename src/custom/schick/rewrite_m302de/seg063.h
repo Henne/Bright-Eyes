@@ -3,7 +3,7 @@ namespace M302de {
 #endif
 
 /* 0x20 */
-void do_harbour(void);
+void do_harbor(void);
 /* 0x25 */
 void passages_init(void);
 /* 0x2a */

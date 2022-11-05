@@ -2601,11 +2601,11 @@ unsigned short g_route_fight_flag = 0; // ds:0x4248
 unsigned short g_route_fight_time = 0; // ds:0x424a
 unsigned short g_travel_speed = 0; // ds:0x424c
 unsigned short g_passage_deadship_flag = 0; // ds:0x424e
-unsigned short g_passage_deadship_time = 0; // ds:0x4250
+unsigned short g_passage_deadship_position = 0; // ds:0x4250
 unsigned short g_passage_octopus_flag = 0; // ds:0x4252
-unsigned short g_passage_octopus_time = 0; // ds:0x4254
+unsigned short g_passage_octopus_position = 0; // ds:0x4254
 unsigned short g_passage_pirates_flag = 0; // ds:0x4256
-unsigned short g_passage_pirates_time = 0; // ds:0x4258
+unsigned short g_passage_pirates_position = 0; // ds:0x4258
 long g_route_course_ptr = 0; // ds:0x425a; RealPt
 long g_route_course_start = 0; // ds:0x425e; RealPt
 long g_route_course_ptr2 = 0; // ds:0x4262; RealPt
@@ -2631,9 +2631,9 @@ struct{short place, event_id;} g_route_tevents[15] = {
 }; // ds:0x4272
 signed char g_sea_travel_psgbooked_flag = 0; // ds:0x42ae
 signed char g_sea_travel_psgbooked_timer = 0; // ds:0x42af
-signed char g_sea_travel_passage_unkn1 = 0; // ds:0x42b0
+signed char g_sea_travel_passage_speed1 = 0; // ds:0x42b0 // shouldn't this be _unsigned_ ?
 signed char g_sea_travel_passage_id = 0; // ds:0x42b1
-struct{unsigned char unkn[12];} g_harbour_options[10] = {
+struct{unsigned char unkn[12];} g_harbor_options[10] = {
 	{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
 	{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
 	{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
@@ -2646,7 +2646,7 @@ struct{unsigned char unkn[12];} g_harbour_options[10] = {
 	{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }
 }; // ds:0x42b2
 signed short g_sea_travel_passage_price = 0; // ds:0x432a
-signed short g_sea_travel_passage_unkn2 = 0; // ds:0x432c
+signed short g_sea_travel_passage_speed2 = 0; // ds:0x432c // shouldn't this be _unsigned_ ?
 long g_travel_map_ptr = 0; // ds:0x432e; RealPt
 unsigned char g_forcedmarch_timer = 0; // ds:0x4332
 unsigned char g_travel_detour = 0; // ds:0x4333
@@ -2869,7 +2869,9 @@ signed short g_bank_heller = 0; // ds:0x4646
 char g_consume_quiet = 0; // ds:0x4648
 unsigned char g_herokeeping_flag = 0; // ds:0x4649
 unsigned char g_unkn_031[4] = { 0x00, 0x00, 0x00, 0x00 }; // ds:0x464a
-signed long g_level_ap_tab[21] = { 0x00000000, 0x00000064, 0x0000012c, 0x00000258, 0x000003e8, 0x000005dc, 0x00000834, 0x00000af0, 0x00000e10, 0x00001194, 0x0000157c, 0x000019c8, 0x00001e78, 0x0000238c, 0x00002904, 0x00002ee0, 0x00003520, 0x00003bc4, 0x000042cc, 0x00004a38, 0x00005208 }; // ds:0x464e
+
+// for the following there is an easy formula: g_level_ap_tab[i] = 50 * i * (i+1). therefore, these 84 bytes could be easily freed and reused */
+signed long g_level_ap_tab[21] = { 0, 100, 300, 600, 1000, 1500, 2100, 2800, 3600, 4500, 5500, 6600, 7800, 9100, 10500, 12000, 13600, 15300, 17100, 19000, 21000 }; // ds:0x464e
 unsigned char g_delay_or_keypress_flag = 0; // ds:0x46a2, writeonly (0,1)
 signed short g_merchant_items_posx[15] = { 0x001e, 0x001e, 0x001e, 0x001e, 0x001e, 0x005f, 0x005f, 0x005f, 0x005f, 0x005f, 0x00a0, 0x00a0, 0x00a0, 0x00a0, 0x00a0 }; // ds:0x46a3
 signed short g_merchant_items_posy[15] = { 0x0023, 0x0037, 0x004b, 0x005f, 0x0073, 0x0023, 0x0037, 0x004b, 0x005f, 0x0073, 0x0023, 0x0037, 0x004b, 0x005f, 0x0073 }; // ds:0x46c1
@@ -3816,7 +3818,16 @@ char g_str_no_save_in_temple[41] = "IN DIESEM TEMPEL KEIN SPEICHERN M\x99GLICH!"
 unsigned char g_unkn_049[1] = { 0x00 }; // ds:0x6ea3
 signed char g_temple_miracle_bonus[15] = { 0x00, 0x02, 0x0f, 0x0a, 0x14, 0x05, 0x0a, 0x01, 0x0f, 0x03, 0x0f, 0x05, 0x0a, 0x00, 0x01 }; // ds:0x6ea4
 signed char g_temple_miracle_dice[15] = { 0x00, 0x09, 0x09, 0x0a, 0x11, 0x06, 0x0a, 0x0a, 0x12, 0x0a, 0x13, 0x08, 0x0f, 0x00, 0x0a }; // ds:0x6eb3
-signed short g_sea_travel_tx_class[7] = { 0x001d, 0x001e, 0x001f, 0x0020, 0x0021, 0x0022, 0x0023 }; // ds:0x6ec2
+signed short g_passage_type_to_name[7] = {
+	/* maps entry PASSAGE_TYPE in SHIP_TABLE -> ptr to name of type of passage (Begleitschutzfahrt, Deckpassage etc.) */
+	0x001d, /* HEUER */
+	0x001e, /* BEGLEITSCHUTZFAHRT */
+	0x001f, /* LUXUSPASSAGE */
+	0x0020, /* KOMFORTABLE PASSAGE */
+	0x0021, /* KABINENPASSAGE */
+	0x0022, /* DECKPASSAGE */
+	0x0023  /* MITFAHRGELEGENHEIT */
+}; // ds:0x6ec2/*
 struct{unsigned char passage_type,unkn2,base_price_per_distance,base_speed;} g_ship_table[8] = { { 0x00, 0x01, 0x00, 0x78 }, { 0x03, 0x01, 0x23, 0x64 }, { 0x01, 0x01, 0x00, 0x96 }, { 0x02, 0x01, 0x2d, 0x96 }, { 0x00, 0x01, 0x00, 0x5a }, { 0x04, 0x01, 0x14, 0x50 }, { 0x05, 0x00, 0x0a, 0x3c }, { 0x06, 0x00, 0x00, 0x28 } }; // ds:0x6ed0
 signed short g_sea_travel_tx_ship[8] = { 0x0024, 0x0025, 0x0026, 0x0026, 0x0024, 0x0027, 0x0028, 0x0029 }; // ds:0x6ef0
 struct{unsigned char unkn[8];} g_sea_travel_passages[46] = {

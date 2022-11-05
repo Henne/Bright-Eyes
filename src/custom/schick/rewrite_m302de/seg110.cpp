@@ -151,6 +151,10 @@ void TRV_a_path(void)
 	{
 		/* follow the path */
 		ds_writeb(ROUTE59_FLAG, (ds_readb(CURRENT_TOWN) == TOWNS_PEILINEN ? 2 : 4));
+
+		/* Original-Glitch:
+		 * TRAVEL_DETOUR == 1 is indicating a detour to DNG_TOTENSCHIFF (which has the ID 1).
+		 * Probably, this does not make a difference, but still, it would be better to use another number. */
 		ds_writeb(TRAVEL_DETOUR, 1);
 	} else {
 		/* swim back */
@@ -268,6 +272,10 @@ void tevent_020(void)
 			{
 			    /* TODO: Original-Bug: CURRENT_TOWN is either Kravik or Skelellen. */
 				ds_writeb(ROUTE59_FLAG, (ds_readb(CURRENT_TOWN) == TOWNS_PEILINEN ? 1 : 3));
+
+				/* Original-Glitch:
+				 * TRAVEL_DETOUR == 1 is indicating a detour to DNG_TOTENSCHIFF (which had the ID 1).
+				 * Probably, this does not make a difference, but still, it would be better to use another number. */
 				ds_writeb(TRAVEL_DETOUR, 1);
 			}
 		}
@@ -745,7 +753,7 @@ void tevent_046(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(TRAVEL_DETOUR, 2);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_VERFALLENE_HERBERGE);
 				enter_inn = 1;
 			}
 		}
@@ -770,7 +778,7 @@ void tevent_046(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(TRAVEL_DETOUR, 2);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_VERFALLENE_HERBERGE);
 			}
 		}
 	}
