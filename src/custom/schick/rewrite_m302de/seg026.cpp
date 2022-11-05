@@ -620,7 +620,7 @@ signed short save_game_state(void)
 		filepos += bc__write(l_di, &filepos, 4);
 #endif
 
-		/* save the satus section 5952 bytes */
+		/* save the status section 5952 bytes */
 		filepos += bc__write(l_di, p_status_start, status_len);
 
 		/* check if enough bytes were written */

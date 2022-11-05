@@ -55,7 +55,10 @@ RealPt get_ship_name(signed char passage_type, signed short nr_ships_created)
 }
 
 /**
- * \brief   */
+ * \brief   prepares the available passages at a harbour
+ *
+ * \return	number of prepared passages */
+
 unsigned short prepare_passages(void)
 {
 	signed short prepared;
@@ -69,22 +72,25 @@ unsigned short prepare_passages(void)
 #endif
 
 	for (i = prepared = 0; i < NR_SEA_ROUTES; ent += SIZEOF_SEA_ROUTE, i++) {
-		if (!host_readbs(Real2Host(ent) + SEA_ROUTE_PASSAGE_TIMER) && /* passage is available today */
-			(host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_1) == ds_readb(CURRENT_TOWN) || 
-			(host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_2) == ds_readb(CURRENT_TOWN)))) {
+		if (
+			!host_readbs(Real2Host(ent) + SEA_ROUTE_PASSAGE_TIMER) && /* passage is available today */
+			(host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_1) == ds_readb(CURRENT_TOWN) ||
+			(host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_2) == ds_readb(CURRENT_TOWN)))
+		) {
+			/* ship is leaving today */
 
-			/* prepare an entry of 12 byte for a passage today */
+			/* prepare a 12-byte entry in HARBOR_OPTIONS */
 			ds_writeb((HARBOR_OPTIONS + HARBOR_OPTION_ROUTE_ID) + prepared * SIZEOF_HARBOR_OPTION, (unsigned char)i);
 			ds_writed((HARBOR_OPTIONS + HARBOR_OPTION_ROUTE_PTR) + prepared * SIZEOF_HARBOR_OPTION, (Bit32u)ent);
 			ds_writeb((HARBOR_OPTIONS + HARBOR_OPTION_SHIP_TIMER) + prepared * SIZEOF_HARBOR_OPTION, 0);
-			ds_writeb((HARBOR_OPTIONS + HARBOR_OPTION_SHIP_TYPE) + prepared * SIZEOF_HARBOR_OPTION, host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_TYPE));
+			ds_writeb((HARBOR_OPTIONS + HARBOR_OPTION_SHIP_TYPE) + prepared * SIZEOF_HARBOR_OPTION, host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_SHIP_TYPE));
 
 #ifndef M302de_ORIGINAL_BUGFIX
 			/* Original-Bug 23:
 			 * In the function get_ship_name(..), the ship names are created randomly every time the party checks the available ships at a harbour.
 			 * In this way, the names of the ships can (and usually do) change when repeatedly checking the available ships. */
 			ds_writed(HARBOR_OPTIONS + prepared * SIZEOF_HARBOR_OPTION + HARBOR_OPTION_SHIP_NAME_PTR,
-				(Bit32u)get_ship_name(host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_TYPE), prepared));
+				(Bit32u)get_ship_name(host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_SHIP_TYPE), prepared));
 #else
 			/* As a fix, we derive the name from the PASSAGE_PRICE_MOD entry of the SEA_ROUTE, which is created
 			 * randomly once the new passage of the route is set up, and is kept fixed over the lifetime of the passage.
@@ -93,7 +99,7 @@ unsigned short prepare_passages(void)
 			 * (which has been avoided in the original random assignment code). But this is a rare event and not be a big issue anyway.
 			 */
 			ds_writed(HARBOR_OPTIONS + prepared * SIZEOF_HARBOR_OPTION + HARBOR_OPTION_SHIP_NAME_PTR,
-				(RealPt)host_readd(Real2Host(ds_readd(TX_INDEX)) + 4 * (host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_TYPE) * 10 + (host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_PRICE_MOD)) % 10 + 0x2a))
+				(RealPt)host_readd(Real2Host(ds_readd(TX_INDEX)) + 4 * (host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_SHIP_TYPE) * 10 + (host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_PRICE_MOD)) % 10 + 0x2a))
 			);
 #endif
 
@@ -104,21 +110,31 @@ unsigned short prepare_passages(void)
 			); /* store the other town of the connection */
 			prepared++;
 		} else {
-			/* not before 14.00 o'clock */
-			if (((signed long)ds_readd(DAY_TIMER) > HOURS(14))
-				/* only for ships tomorrow */
+			if (
+				((signed long)ds_readd(DAY_TIMER) > HOURS(14))
 				&& (host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_TIMER) == 1)
-				/* only in this city */
 				&& ((host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_1) == ds_readb(CURRENT_TOWN))
-				|| (host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_2) == ds_readb(CURRENT_TOWN))))
-			{
-				/* prepare an entry of 12 byte for a passage tomorrow */
+				|| (host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_2) == ds_readb(CURRENT_TOWN)))
+			) {
+				/* ship is leaving tomorrow and it is later than 14:00 */
+
+				/* prepare a 12-byte entry in HARBOR_OPTIONS */
 				ds_writeb((HARBOR_OPTIONS + HARBOR_OPTION_ROUTE_ID) + prepared * SIZEOF_HARBOR_OPTION, (unsigned char)i);
 				ds_writed((HARBOR_OPTIONS + HARBOR_OPTION_ROUTE_PTR) + prepared * SIZEOF_HARBOR_OPTION, (Bit32u)ent);
 				ds_writeb((HARBOR_OPTIONS + HARBOR_OPTION_SHIP_TIMER) + prepared * SIZEOF_HARBOR_OPTION, 1);
-				ds_writeb((HARBOR_OPTIONS + HARBOR_OPTION_SHIP_TYPE) + prepared * SIZEOF_HARBOR_OPTION, host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_TYPE));
+				ds_writeb((HARBOR_OPTIONS + HARBOR_OPTION_SHIP_TYPE) + prepared * SIZEOF_HARBOR_OPTION, host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_SHIP_TYPE));
+
+#ifndef M302de_ORIGINAL_BUGFIX
+				/* Original-Bug 23:
+				 * see above */
 				ds_writed(HARBOR_OPTIONS + prepared * SIZEOF_HARBOR_OPTION + HARBOR_OPTION_SHIP_NAME_PTR,
-					(Bit32u)get_ship_name(host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_TYPE), prepared));
+					(Bit32u)get_ship_name(host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_SHIP_TYPE), prepared));
+#else
+				ds_writed(HARBOR_OPTIONS + prepared * SIZEOF_HARBOR_OPTION + HARBOR_OPTION_SHIP_NAME_PTR,
+					(RealPt)host_readd(Real2Host(ds_readd(TX_INDEX)) + 4 * (host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_SHIP_TYPE) * 10 + (host_readb(Real2Host(ent) + SEA_ROUTE_PASSAGE_PRICE_MOD)) % 10 + 0x2a))
+				);
+#endif
+
 				ds_writeb((HARBOR_OPTIONS + HARBOR_OPTION_DESTINATION) + prepared * SIZEOF_HARBOR_OPTION ,
 					host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_1) == ds_readb(CURRENT_TOWN) ?
 						host_readb(Real2Host(ent) + SEA_ROUTE_TOWN_2) :
@@ -147,7 +163,7 @@ RealPt print_passage_price(signed short price, Bit8u *route_ptr)
 		di = ((unsigned char)host_readb(route_ptr + SEA_ROUTE_PASSAGE_PRICE_MOD) * price + 4) / 10;
 		/* multiply with distance */
 		di = di * (unsigned char)host_readb(route_ptr + SEA_ROUTE_DISTANCE);
-		/* round up and divide by 100 */
+		/* divide by 100, round to nearest integer */
 		price = (di + 49) / 100;
 
 		/* generate a price string "%d^HELLER" */
@@ -167,24 +183,54 @@ RealPt print_passage_price(signed short price, Bit8u *route_ptr)
 /**
  * \brief   calculates the travelling time of a ship passage in hours
  *
- * \param   distance     the distance
- * \param   base_speed   base speed
+ * \param   distance     the distance [unit: km]
+ * \param   base_speed   base speed of the ship [unit: km per day]
  * \return               the travelling time in hours
  */
 unsigned short get_passage_travel_hours(signed short distance, signed short base_speed)
 {
 	Bit32u tmp;
 
+	/* convert base_speed to unit [100m per hour] */
 	base_speed = (base_speed * 10 + 11) / 24;
+	/* "+ 11" for proper rounding (nearest integer) */
+	/* lowest possible value: (40 * 10 + 11) / 24 = 17 (for Fischerboot) */
+	/* highest possible value: (150 * 10 + 11) / 24 = 62 (for Schnellsegler) */
 
-	/*	WEATHER1 = random(6)
-	 *	WEATHER2 = random(7) */
+	/* reminder: WEATHER1 = random([1..6]), WEATHER2 = random([1..7]) */
+	/* adjust speed to between 80.5% (when WEATHER1 = WEATHER2 = 1) and 247% (when WEATHER1 = 6 and WEATHER2 = 7). */
+	/* unit: [100m per hour] */
 	ds_writew(SEA_TRAVEL_PASSAGE_SPEED2,
 		(base_speed * (ds_readw(WEATHER2) + 6) * (ds_readw(WEATHER1) * 15 + 100) + 499L) / 1000L);
+		/* "+499L" for proper rounding (nearest integer) */
+		/* possible values for SEA_TRAVEL_PASSAGE_SPEED2:
+		 * ## high seas routes ##
+		 * Schnellsegler (base_speed 150): {* 50, 56, 57, 63, 64^^2, 69, 71, 72, 73, 76, 78, 79, 81^^2, 82, 86, 87, 89^^2, 90, 93, 94, 97, 98, 99^^2, 105, 106, 108^^2, 109, 117, 118, 119^^2, 129, 130^^2, 141^^2, 153 *}
+		 * Langschiff (base_speed 120): {* 40, 45, 46, 51, 52^^2, 56, 57, 58^^2, 61, 63, 64, 65^^2, 66, 69, 70, 71, 72^^2, 75, 76, 78, 79, 80^^2, 84, 85, 87^^2, 88, 94, 95, 96^^2, 104^^2, 105, 114^^2, 123 *}
+		 * Karracke (base_speed 100): {* 34, 38, 39, 43^^2, 44, 47, 48, 49^^2, 51, 53, 54, 55^^2, 56, 58, 59, 60^^2, 61, 63, 64, 66^^2, 67^^2, 71, 72, 73^^2, 74, 79, 80, 81^^2, 87, 88^^2, 96^^2, 104 *}
+		 * ## costal routes ##
+		 * Langschiff (base_speed 90): {* 30, 34^^2, 38^^3, 41, 43^^3, 45, 47^^2, 48^^2, 49, 51, 52, 53^^2, 54, 55, 56, 58^^2, 59^^2, 63^^2, 64, 65^^2, 70^^2, 71^^2, 77^^2, 78, 84^^2, 91 *}
+		 * Kuestensegler (base_speed 80): {* 27, 30^^2, 33, 34^^2, 37, 38^^2, 39, 40, 42^^2, 43^^2, 44, 46^^2, 47, 48^^2, 49, 50, 51, 52, 53^^2, 56^^2, 57, 58^^2, 62, 63^^2, 64, 69^^3, 75^^2, 82 *}
+		 * Kutter (base_speed 60): {* 20, 23^^2, 25, 26^^2, 28, 29^^3, 31, 32^^3, 33^^2, 34, 35, 36^^3, 37, 38, 39^^2, 40^^2, 42, 43^^2, 44^^2, 47^^2, 48^^2, 52^^3, 57^^2, 62 *}
+		 * Fischerboot (base_speed 40): {* 14, 15, 16, 17, 18^^2, 19, 20^^3, 21, 22^^4, 23^^2, 24^^3, 25^^2, 26, 27^^4, 29^^2, 30^^3, 32^^2, 33^^2, 35, 36^^2, 39^^2, 42 *} */
 
-	tmp = (ds_readws(SEA_TRAVEL_PASSAGE_SPEED2) + 4) / 10; /* the speed of the ship */
+	tmp = (ds_readws(SEA_TRAVEL_PASSAGE_SPEED2) + 4) / 10; /* the speed of the ship [unit: km per hour] */
+	/* "+ 4" for proper rounding (nearest integer).
+	 * Original-Bug: This rounding severely coarsens the computational precision. */
+
+	/* possible values for tmp at this point:
+	 * ## high seas routes ##
+	 * Schnellsegler (base_speed 150): {* 5, 6^^5, 7^^4, 8^^6, 9^^7, 10^^5, 11^^4, 12^^4, 13^^3, 14^^2, 15 *}
+	 * Langschiff (base_speed 120): {* 4^^2, 5^^4, 6^^9, 7^^7, 8^^7, 9^^5, 10^^5, 11^^2, 12 *}
+	 * Karracke (base_speed 100): {* 3, 4^^5, 5^^9, 6^^8, 7^^9, 8^^4, 9^^3, 10^^3 *}
+	 * ## costal routes ##
+	 * Langschiff (base_speed 90): {* 3^^3, 4^^8, 5^^11, 6^^10, 7^^4, 8^^5, 9 *}
+	 * Kuestensegler (base_speed 80): {* 3^^6, 4^^10, 5^^11, 6^^9, 7^^5, 8 *}
+	 * Kutter (base_speed 60): {* 2^^4, 3^^14, 4^^14, 5^^7, 6^^3 *}
+	 * Fischerboot (base_speed 40): {* 1^^2, 2^^20, 3^^15, 4^^5 *} */
 
 	if (tmp == 0)
+		/* should not happen, see computed values above */
 		tmp = 1;
 
 	tmp = distance / tmp; /* now 'tmp' is the number of travelling hours */
@@ -193,9 +239,10 @@ unsigned short get_passage_travel_hours(signed short distance, signed short base
 }
 
 /**
- * \brief   get destination harbours
+ * \brief   get destination harbors. called from Hafenmeister option at a harbour
  *
- * \param   type        1 = passages next days / 2 = all passages
+ * \param   type        1 = passages next days "Ankommende Routen erfragen" / 2 = all passages
+ * \return  number of prepared passages.
  */
 unsigned short get_next_passages(unsigned short type)
 {

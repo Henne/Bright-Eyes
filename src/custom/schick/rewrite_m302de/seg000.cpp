@@ -274,6 +274,7 @@ Bit32s bc_time_dosbox(RealPt p)
 	return reg_ax;
 }
 
+/* \brief	returns time in seconds */
 Bit32s bc_time(time_t *p)
 {
 	Bit32u reg_esp_bak = reg_esp;

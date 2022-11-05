@@ -835,7 +835,7 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 42 || state == 60) {
 		timewarp(MINUTES(150));
 	} else if (state == 67 || state == 44) {
-		ds_writeb(TRAVEL_DETOUR, 15);
+		ds_writeb(TRAVEL_DETOUR, DUNGEONS_HYGGELIKS_RUINE);
 
 	} else if (state == 48) {
 

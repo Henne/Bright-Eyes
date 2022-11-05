@@ -1852,15 +1852,34 @@ enum {
 #define NR_SEA_ROUTES (45)
 
 enum {
+	/* rationale: write SEA_ROUTE_PASSAGE... if the value depends on the current passage on the route (and will change with time).
+	 * the other values are constants. */
 	SEA_ROUTE_TOWN_1 = 0, /* one byte readonly */ /* ID of the first town of the connection. Note that the routes are undirected; i.e. both endpoint towns are treated equal. */
 	SEA_ROUTE_TOWN_2 = 1, /* one byte readonly */ /* ID of the second town of the connection */
 	SEA_ROUTE_DISTANCE = 2, /* one byte readonly */
 	SEA_ROUTE_FREQUENCY = 3, /* one byte readonly */ /* the higher this value, the rarer a passage on the route is offered */
 	SEA_ROUTE_PASSAGE_TIMER = 4, /* one byte rw */ /* after how many days will a ship do a passage on this route? */
-	SEA_ROUTE_COSTAL_ROUTE = 5, /* one byte readonly */ /* 0 = offshore route (= Hochseeroute), 1 = costal route */
-	SEA_ROUTE_PASSAGE_TYPE = 6, /* one byte rw */ /* passage type of the next passage on this route */
+	SEA_ROUTE_COSTAL_ROUTE = 5, /* one byte readonly */ /* 0 = high seas route (= Hochseeroute), 1 = costal route */
+	SEA_ROUTE_PASSAGE_SHIP_TYPE = 6, /* one byte rw */ /* passage type of the next passage on this route */
 	SEA_ROUTE_PASSAGE_PRICE_MOD = 7, /* one byte rw */ /* a number between 70 and 130 which serves as a percentage modifier to the price of the next ship on this route */
 	SIZEOF_SEA_ROUTE = 8
+};
+
+enum {
+	/* strictly speaking, these values encode not only the ship type, but the combined information
+	 * route type (high seas vs. costal); ship type (Langschiff, etc.); passage type (Kabinenpassage, etc.)
+	 * As there are at most two possible combinations per type of ship, we still call it SHIP_TYPE for simplicity. */
+
+	/* ships on high seas routes */
+	SHIP_TYPE_LANGSCHIFF_HIGH_SEAS  = 0,
+	SHIP_TYPE_KARRACKE  = 1,
+	SHIP_TYPE_SCHNELLSEGLER  = 2,
+	SHIP_TYPE_SCHNELLSEGLER_LUXURY = 3,
+	/* ships on costal routes */
+	SHIP_TYPE_LANGSCHIFF_COSTAL  = 4,
+	SHIP_TYPE_KUESTENSEGLER  = 5,
+	SHIP_TYPE_KUTTER  = 6,
+	SHIP_TYPE_FISCHERBOOT = 7
 };
 
 enum {
@@ -1874,8 +1893,8 @@ enum {
 	       6 = Mitfahrgelegenheit (Regen. 0)
 	*/
 	SHIP_TABLE_UNKN = 1, /* one byte */ /* is this byte ever read? */
-	SHIP_TABLE_BASE_PRICE_PER_DISTANCE = 2, /* one byte */
-	SHIP_TABLE_BASE_SPEED = 3, /* one byte */
+	SHIP_TABLE_BASE_PRICE_PER_DISTANCE = 2, /* one byte. Unit: [Heller per 10 km] */
+	SHIP_TABLE_BASE_SPEED = 3, /* one byte. Unit: [km per day] */
 	SIZEOF_SHIP_TABLE_ENTRY = 4
 };
 

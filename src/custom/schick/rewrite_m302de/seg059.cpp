@@ -1,5 +1,5 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg059 (tavern: main / harbour wrappers)
+ *	Rewrite of DSA1 v3.02_de functions of seg059 (tavern: main / harbor wrappers)
  *	Functions rewritten: 4/4 (complete)
  *
  *	Borlandified and identical
@@ -208,6 +208,8 @@ void do_tavern(void)
 
 			bc_time(&timeval);
 
+			/* skill test will be +50 if the game was saved up to 2 minutes ago.
+			 * probably to prevent excessive save & reload */
 			bonus = (timeval - ds_readds(LAST_SAVE_TIME)) > 120 ? 0 : 50;
 
 			if (GUI_use_skill2(bonus, get_ttx(395)) == -1) {
@@ -248,7 +250,7 @@ void pirates_attack_wrapper(void)
 	ds_writew(REQUEST_REFRESH, 1);
 }
 
-void enter_ghostship(void)
+void prolog_ghostship(void)
 {
 	signed short answer;
 	signed short tw_bak;
@@ -277,7 +279,7 @@ void enter_ghostship(void)
 
 	if (answer == 1) {
 		ds_writew(REQUEST_REFRESH, 0);
-		ds_writeb(TRAVEL_DETOUR, 1);
+		ds_writeb(TRAVEL_DETOUR, DUNGEONS_TOTENSCHIFF);
 	} else {
 		ds_writew(REQUEST_REFRESH, 1);
 	}

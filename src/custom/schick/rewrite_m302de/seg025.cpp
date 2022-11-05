@@ -61,7 +61,7 @@ static void (*locationhandler[])(void) = {
 	do_smith,
 	do_market,
 	show_citizen,
-	do_harbour,
+	do_harbor,
 	enter_map,
 	do_informer,
 	show_entrance,

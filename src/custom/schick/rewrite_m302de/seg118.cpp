@@ -413,7 +413,7 @@ void tevent_051(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(TRAVEL_DETOUR, 3);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_SPINNENHOEHLE);
 			}
 		}
 
@@ -429,7 +429,7 @@ void tevent_051(void)
 
 		if (answer == 1)
 		{
-			ds_writeb(TRAVEL_DETOUR, 3);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_SPINNENHOEHLE);
 		}
 	}
 }

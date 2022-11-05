@@ -9,7 +9,7 @@ void octopus_attack_wrapper(void);
 /* 0x2a */
 void pirates_attack_wrapper(void);
 /* 0x2f */
-void enter_ghostship(void);
+void prolog_ghostship(void);
 
 #if !defined(__BORLANDC__)
 }

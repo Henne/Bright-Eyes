@@ -20,6 +20,7 @@
 
 
 #define SCHICK_INFO
+#define SCHICK_INFO_VERBOSE
 //#define SCHICK_LOG
 //#define SCHICK_TRAC
 //#define SCHICK_GFX
@@ -36,6 +37,12 @@ static inline void D1_LOG(...) { }
 #define D1_INFO(...) fprintf(stderr, __VA_ARGS__)
 #else
 static inline void D1_INFO(...) { }
+#endif
+
+#ifdef SCHICK_INFO_VERBOSE
+#define D1_INFO_VERBOSE(...) fprintf(stderr, __VA_ARGS__)
+#else
+static inline void D1_INFO_VERBOSE(...) { }
 #endif
 
 #ifdef SCHICK_TRAC

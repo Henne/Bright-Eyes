@@ -405,7 +405,7 @@ void tevent_061(void)
 			} while (answer == -1);
 
 			if (answer == 1) {
-				ds_writeb(TRAVEL_DETOUR, 4);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_WOLFSHOEHLE);
 			}
 		}
 
@@ -421,7 +421,7 @@ void tevent_061(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 4);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_WOLFSHOEHLE);
 		}
 	}
 }

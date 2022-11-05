@@ -340,6 +340,7 @@ void do_wildcamp(void)
 					ds_writeb(FIG_INITIATIVE, 1);
 					ds_writew(FIG_DISCARD, 1);
 
+					/* pick a random campfight out of 4 possibilities */
 					do_fight(ds_readws((CAMPFIGHTS-2) + 2 * random_schick(4)));
 
 					if (ds_readb(TRAVEL_DETOUR) != 99 && ds_readw(GAME_STATE) == GAME_STATE_MAIN) {

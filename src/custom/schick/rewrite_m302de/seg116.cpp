@@ -103,7 +103,7 @@ void tevent_131(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 11);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_PIRATENHOEHLE);
 		}
 
 	} else {
@@ -117,7 +117,7 @@ void tevent_131(void)
 			} while (answer == -1);
 
 			if (answer == 1) {
-				ds_writeb(TRAVEL_DETOUR, 11);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_PIRATENHOEHLE);
 			}
 		}
 	}
@@ -586,7 +586,8 @@ void tevent_144(void)
 			right_time_flag = 1;
 		} else {
 			if (ds_readb(ORCDOCUMENT_READ_FLAG) != 0 && GUI_bool(get_tx2(46))) {
-			/* the time is not right, forward time  */
+			/* the heroes are too early and they know about it since they have read the orc document.
+			 * they decided to wait...forward time  */
 
 				GUI_output(get_tx2(47));
 
@@ -595,10 +596,11 @@ void tevent_144(void)
 				ds_writebs(MONTH, 10);
 				ds_writebs(DAY_OF_MONTH, 10);
 
+				/* seems like the timers are simply forwarded by an arbitrary time span. */
 				sub_ingame_timers(MONTHS(1));
 				sub_mod_timers(MONTHS(1));
-				seg002_2f7a(0x21c0);
-				sub_light_timers(100);
+				sub_heal_staffspell_timers(MONTHS(1)/MINUTES(5));
+				sub_light_timers(HOURS(25)/MINUTES(15));
 				right_time_flag = 1;
 			}
 		}

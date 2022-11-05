@@ -149,7 +149,7 @@ void ask_miracle(void)
 					if (l_si <= 5) {
 						if (!ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_RONDRA_SWORDS)) {
 							miracle_modify(get_hero(0) + (HERO_TALENTS + TA_SCHWERTER) - get_hero(0), DAYS(3), 1); /* for 3 days: skill 'Schwerter' + 1 */
-							miracle_modify(get_hero(0) + (HERO_AT + 3) - get_hero(0), DAYS(3), 1); /* for 3 days: AT + 1 */
+							miracle_modify(get_hero(0) + (HERO_AT + WEAPON_TYPE_SCHWERT) - get_hero(0), DAYS(3), 1); /* for 3 days: AT + 1 */
 							ds_writed(INGAME_TIMERS + 4 * INGAME_TIMER_RONDRA_SWORDS, DAYS(3));
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(4));
 						}

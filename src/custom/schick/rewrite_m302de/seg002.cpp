@@ -2233,6 +2233,7 @@ void do_census(void)
 }
 
 void do_timers(void)
+	/* called from timewarp(..), timewarp_until_time_of_day(..), timewarp_until_midnight(..) and interrupt timer_isr() */
 {
 	Bit8u *hero_i;
 	signed char afternoon;
@@ -2242,6 +2243,7 @@ void do_timers(void)
 	afternoon = 0;
 
 	if (ds_readw(TIMERS_DISABLED) != 0)
+		/* TIMERS_DISABLED is set during a fight or a level-up or if the game is paused (Ctrl + P) */
 		return;
 
 	dawning();
@@ -2252,6 +2254,8 @@ void do_timers(void)
 	add_ds_ds(DAY_TIMER, 1);
 
 	if (!ds_readbs(FREEZE_TIMERS)) {
+		/* FREEZE_TIMERS is set in timewarp(..) and timewarp_until_time_of_day(..) for efficiency reasons,
+		 *  where certain timers are updated separately in a single step (instead of many 1-tick update calls). */
 		sub_ingame_timers(1);
 		sub_mod_timers(1);
 	}
@@ -2267,7 +2271,7 @@ void do_timers(void)
 
 		/* every 5 minutes ingame */
 		if (!(ds_readds(DAY_TIMER) % MINUTES(5))) {
-			seg002_2f7a(1);
+			sub_heal_staffspell_timers(1);
 		}
 
 		/* every 15 minutes ingame */
@@ -2488,6 +2492,11 @@ void do_timers(void)
 		/* roll out the weather, used for passages */
 		ds_writew(WEATHER1, random_schick(6));
 		ds_writew(WEATHER2, random_schick(7));
+#ifndef __BORLANDC__
+		i = (ds_readw(WEATHER2) + 6) * (ds_readw(WEATHER1) * 15 + 100); /* between 805 and 2470 */
+		D1_INFO_VERBOSE("WEATHER1=%d, WEATHER2=%d -> ",ds_readw(WEATHER1), ds_readw(WEATHER2));
+		D1_INFO("Heutige Wetter-Anpassung der Schiffs-Geschwindigkeiten: %d,%d%%.\n",i/10,i%10);
+#endif
 
 		/* check if times up */
 		if ((ds_readbs(YEAR) == 17) &&
@@ -2500,7 +2509,7 @@ void do_timers(void)
 
 	/* at 9 o'clock */
 	if (ds_readd(DAY_TIMER) == HOURS(9)) {
-		/* ships leave the harbour at 9 o'clock */
+		/* ships leave the harbor at 9 o'clock */
 		passages_reset();
 	}
 }
@@ -2670,12 +2679,14 @@ signed short get_free_mod_slot(void)
 	}
 
 	if (i == 100) {
+		/* all 100 mod timers are in use. apply hack to free timer in slot 0 */
 
 		/* set timer of slot 0 to 1 */
 		host_writed(p_datseg + MODIFICATION_TIMERS, 1);
-		/* subtract one */
+		/* subtract one from each mod timer -> timer in slot 0 will be freed. */
 		sub_mod_timers(1);
 
+		/* now timer slot 0 can be used again. */
 		return 0;
 	}
 
@@ -2743,10 +2754,11 @@ void set_mod_slot(signed short slot_no, Bit32s timer_value, Bit8u *ptr,
 }
 
 /**
- *
  * \param   fmin        five minutes
+ *
+ *	This function decrements the timers for the healing and staffspell timeouts.
  */
-void seg002_2f7a(Bit32s fmin)
+void sub_heal_staffspell_timers(Bit32s fmin)
 {
 	signed short i;
 	Bit8u *hero_i;
@@ -2886,7 +2898,7 @@ void magical_chainmail_damage(void)
 			hero_i = get_hero(i);
 
 			if (!hero_dead(hero_i) &&
-				/* check if not in chail */
+				/* check if not in jail (the argument might be: heroes are forced to take off armor in jail) */
 				!host_readbs(hero_i + HERO_JAIL) &&
 				/* check if cursed chainmail is equipped */
 				(host_readw(hero_i + HERO_INVENTORY + INVENTORY_ITEM_ID + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY) == ITEM_CHAIN_MAIL_CURSED))
@@ -3142,11 +3154,15 @@ void check_level_up(void)
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
+			if (
+				(host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 				!hero_dead(hero) &&
 				(host_readbs(hero + HERO_LEVEL) < 20) &&
-				(ds_readds(LEVEL_AP_TAB + 4 * host_readbs(hero + HERO_LEVEL)) < host_readds(hero + HERO_AP)))
-			{
+
+				/* could be easily done without accessing the data segment by the formula level_ap_tab[i] = 50 * i * (i+1) */
+				/* Original-Bug: should be <= according to official DSA3 rules */
+				(ds_readds(LEVEL_AP_TAB + 4 * host_readbs(hero + HERO_LEVEL)) < host_readds(hero + HERO_AP))
+			) {
 				level_up(i);
 				done = 1;
 			}
@@ -3344,7 +3360,7 @@ void passages_recalc(void)
 
 	i = get_current_season();
 
-	frequency_modifier = (i == 2) ? 2 : ((i == 0) ? 4 : 0);
+	frequency_modifier = (i == SEASON_SUMMER) ? 2 : ((i == SEASON_WINTER) ? 4 : 0);
 		/* winter -> 4
 		 * summer -> 2
 		 * spring, autumn -> 0 */
@@ -3359,14 +3375,26 @@ void passages_recalc(void)
 
 			host_writeb(p + SEA_ROUTE_PASSAGE_TIMER, random_interval(0, host_readbs(p + SEA_ROUTE_FREQUENCY) * 10 + host_readbs(p + SEA_ROUTE_FREQUENCY) * frequency_modifier) / 10);
 			/* setup timer: In how many days will a ship of this passage be available? */
-			/* Up to rounding effects, this is essentially a random number of days in [ 0..(1 + frequency_modifier/10) * SEA_ROUTE_FREQUENCY ] */
+			/* This results in a random number in the interval [ 0..(SEA_ROUTE_FREQUENCY + frequency_modifier) ], where
+			 * all numbers have the same probabilty, except the upper end SEA_ROUTE_FREQUENCY + frequency_modifier
+			 * of the interval which has only 1/10 of the probabilty of each other number. */
 
 			di = random_schick(100);
 
-			host_writeb(p + SEA_ROUTE_PASSAGE_TYPE,
+			host_writeb(p + SEA_ROUTE_PASSAGE_SHIP_TYPE,
 				(!host_readbs(p + SEA_ROUTE_COSTAL_ROUTE)) ?
-					((di <= 50) ? 0 : ((di <= 80) ? 1 : (di <= 95) ? 2 : 3)) :
-					((di <= 10) ? 4 : ((di <= 40) ? 5 : (di <= 80) ? 6 : 7)));
+					((di <= 50) ? SHIP_TYPE_LANGSCHIFF_HIGH_SEAS : ((di <= 80) ? SHIP_TYPE_KARRACKE : (di <= 95) ? SHIP_TYPE_SCHNELLSEGLER : SHIP_TYPE_SCHNELLSEGLER_LUXURY)) :
+					((di <= 10) ? SHIP_TYPE_LANGSCHIFF_COSTAL : ((di <= 40) ? SHIP_TYPE_KUESTENSEGLER : (di <= 80) ? SHIP_TYPE_KUTTER : SHIP_TYPE_FISCHERBOOT)));
+#ifndef __BORLANDC__
+			D1_INFO_VERBOSE("Neue Passage auf Seeroute ID %d (%s -- %s): Abfahrt in %d Tagen, Schiffstyp: %d, Preisanpassung: %d%%.\n",
+					i,
+					get_ttx(host_readb(p + SEA_ROUTE_TOWN_1) + 235),
+					get_ttx(host_readb(p + SEA_ROUTE_TOWN_2) + 235),
+					host_readb(p + SEA_ROUTE_PASSAGE_TIMER),
+					host_readb(p + SEA_ROUTE_PASSAGE_SHIP_TYPE), // TODO: Ausgabe fuer Schiffstyp verbessern (momentan nur Zahl)
+					host_readb(p + SEA_ROUTE_PASSAGE_PRICE_MOD)
+			);
+#endif
 		}
 	}
 
@@ -3377,7 +3405,7 @@ void passages_recalc(void)
 }
 
 /**
- * \brief   called once every day at 9 o'clock when the ships leave the harbours
+ * \brief   called once every day at 9 o'clock when the ships leave the harbors
  */
 void passages_reset(void)
 {
@@ -3387,7 +3415,7 @@ void passages_reset(void)
 #ifdef M302de_ORIGINAL_BUGFIX
 	for (i = 0; i < NR_SEA_ROUTES; p += SIZEOF_SEA_ROUTE, i++)
 #else
-	/* Orig-BUG: the loop operates only on the first element
+	/* Original-Bug: the loop operates only on the first element
 		sizeof(element) == 8 */
 	for (i = 0; i < NR_SEA_ROUTES; i++)
 #endif
@@ -3423,6 +3451,9 @@ void timewarp(Bit32s time)
 	ds_writew(TIMERS_DISABLED, 0);
 
 	ds_writeb(FREEZE_TIMERS, 1);
+	/* this deactivates the function calls sub_ingame_timers(1); and sub_mod_timers(1); in do_timers(); within the following loop.
+	 * these timers will be dealt with in a single call sub_ingame_timers(time); and sub_mod_timers(time); for efficiency reasons.
+	 */
 
 	for (i = 0; i < time; i++) {
 		do_timers();
@@ -3436,15 +3467,25 @@ void timewarp(Bit32s time)
 
 	sub_mod_timers(time);
 
-	seg002_2f7a(time / MINUTES(5));
+
+	sub_heal_staffspell_timers(time / MINUTES(5));
+	/* Original-Bug:
+	 * because of rounding down, time / MINUTES(5) will be 0 in many situations (like step forward in town/dungeon)
+	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
 
 	sub_light_timers(time / MINUTES(15));
+	/* Original-Bug:
+	 * because of rounding down, time / MINUTES(15) will be 0 in many situations (like step forward in town/dungeon)
+	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
 
 	/* calculate hours */
 	hour_old = (signed short)(timer_bak / HOURS(1));
 	hour_new = (signed short)(ds_readd(DAY_TIMER) / HOURS(1));
 
 	if (hour_old != hour_new) {
+		/* Original-Bug:
+		 * The case hour_old == hour_new needs also be considered.
+		 * Hour difference might be 0 (which is o.k.), but also 23 (which has been omitted here). */
 		if (hour_new > hour_old) {
 			hour_diff = hour_new - hour_old;
 		} else {
@@ -3456,6 +3497,11 @@ void timewarp(Bit32s time)
 			herokeeping();
 		}
 	}
+	/* Original-Bug:
+	 * forgotten hourly timers: UNICORN_TIMER, DNG02_SPHERE_TIMER,DNG08_TIMER1, DNG08_TIMER2
+	 * see do_timers(..).
+	 * For a bugfix either add code here (and in timewarp_until_time_of_day(..)), or modify do_timers(..)
+	 * */
 
 	/* restore variables */
 	ds_writeb(FREEZE_TIMERS, 0);
@@ -3483,6 +3529,9 @@ void timewarp_until_time_of_day(Bit32s time)
 	ds_writew(TIMERS_DISABLED, 0);
 
 	ds_writeb(FREEZE_TIMERS, 1);
+	/* this deactivates the function calls sub_ingame_timers(1); and sub_mod_timers(1); in do_timers(); within the following loop.
+	 * these timers will be dealt with in a single call sub_ingame_timers(time); and sub_mod_timers(time); for efficiency reasons.
+	 */
 
 	do {
 		do_timers();
@@ -3497,15 +3546,24 @@ void timewarp_until_time_of_day(Bit32s time)
 
 	sub_mod_timers(i);
 
-	seg002_2f7a(i / MINUTES(5));
+	sub_heal_staffspell_timers(i / MINUTES(5));
+	/* Original-Bug:
+	 * because of rounding down, time / MINUTES(5) will be 0 in many situations (like step forward in town/dungeon)
+	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
 
 	sub_light_timers(i / MINUTES(15));
+	/* Original-Bug:
+	 * because of rounding down, time / MINUTES(15) will be 0 in many situations (like step forward in town/dungeon)
+	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
 
 	/* calculate hours */
 	hour_old = (signed short)(timer_bak / HOURS(1));
 	hour_new = (signed short)(ds_readds(DAY_TIMER) / HOURS(1));
 
 	if (hour_old != hour_new) {
+		/* Original-Bug:
+		 * The case hour_old == hour_new needs also be considered.
+		 * Hour difference might be 0 (which is o.k.), but also 23 (which has been omitted here). */
 		if (hour_new > hour_old) {
 			hour_diff = hour_new - hour_old;
 		} else {
@@ -3517,6 +3575,11 @@ void timewarp_until_time_of_day(Bit32s time)
 			herokeeping();
 		}
 	}
+	/* Original-Bug:
+	 * forgotten hourly timers: UNICORN_TIMER, DNG02_SPHERE_TIMER,DNG08_TIMER1, DNG08_TIMER2
+	 * see do_timers(..).
+	 * For a bugfix either add code here (and in timewarp(..)), or modify do_timers(..)
+	 * */
 
 	/* restore variables */
 	ds_writeb(FREEZE_TIMERS, 0);
@@ -3533,7 +3596,8 @@ void dec_splash(void)
 	for (i = 0; i <= 6; i++) {
 
 		/* I have no clue */
-		if (!ds_readbs(DIALOGBOX_LOCK) &&
+		if (
+			!ds_readbs(DIALOGBOX_LOCK) &&
 			/* Check if splash timer is 0 */
 			(ds_readbs(HERO_SPLASH_TIMER + i) != 0) &&
 			!add_ds_bu(HERO_SPLASH_TIMER + i, -1) &&
@@ -3542,8 +3606,8 @@ void dec_splash(void)
 			/* Could be in fight */
 			(ds_readb(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) &&
 			/* check if hero is dead */
-			!hero_dead(get_hero(i)))
-		{
+			!hero_dead(get_hero(i))
+		) {
 			restore_rect((RealPt)ds_readd(FRAMEBUF_PTR), get_hero(i) + HERO_PORTRAIT, ds_readw(HERO_PIC_POSX + i * 2), 157, 32, 32);
 		}
 	}
@@ -3594,8 +3658,8 @@ void timewarp_until_midnight(void)
 	do_timers();
 	sub_ingame_timers(ticks_left);
 	sub_mod_timers(ticks_left);
-	seg002_2f7a(ticks_left / 450);
-	sub_light_timers(100);
+	sub_heal_staffspell_timers(ticks_left / MINUTES(5));
+	sub_light_timers(100); /* Original-Bug: why not sub_light_timers(ticks_left / MINUTES(15)) ?? */
 
 	/* restore the timer status */
 	ds_writew(TIMERS_DISABLED, td_bak);
@@ -4188,14 +4252,15 @@ void seg002_484f(void)
 /* should be static */
 signed short check_hero(Bit8u *hero)
 {
-	if (!host_readbs(hero + HERO_TYPE) ||
+	if (
+		!host_readbs(hero + HERO_TYPE) ||
 		hero_asleep(hero) ||
 		hero_dead(hero) ||
 		hero_petrified(hero) ||
 		hero_unconscious(hero) ||
 		hero_renegade(hero) ||
-		(host_readb(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE))
-	{
+		(host_readb(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE)
+	) {
 		return 0;
 	}
 
@@ -4209,12 +4274,13 @@ signed short check_hero(Bit8u *hero)
 signed short check_hero_no2(Bit8u *hero)
 {
 
-	if (!host_readbs(hero + HERO_TYPE) ||
+	if (
+		!host_readbs(hero + HERO_TYPE) ||
 		hero_dead(hero) ||
 		hero_petrified(hero) ||
 		hero_unconscious(hero) ||
-		hero_renegade(hero))
-	{
+		hero_renegade(hero)
+	) {
 		return 0;
 	}
 
@@ -4230,11 +4296,12 @@ signed short check_hero_no2(Bit8u *hero)
 /* should be static */
 signed short check_hero_no3(Bit8u *hero)
 {
-	if (!host_readbs(hero + HERO_TYPE) ||
+	if (
+		!host_readbs(hero + HERO_TYPE) ||
 		hero_dead(hero) ||
 		hero_petrified(hero) ||
-		hero_unconscious(hero))
-	{
+		hero_unconscious(hero)
+	) {
 		return 0;
 	}
 
@@ -4244,7 +4311,10 @@ signed short check_hero_no3(Bit8u *hero)
 signed short is_hero_available_in_group(Bit8u *hero)
 {
 
-	if (check_hero(hero) && (host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))) {
+	if (
+		check_hero(hero) &&
+		(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
+	) {
 		return 1;
 	}
 
@@ -4403,6 +4473,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				&& (ds_readw(IN_FIGHT) == 0) &&
 				(!count_heroes_available_in_group() || ((count_heroes_available_in_group() == 1) && is_hero_available_in_group(get_hero(6))))) /* count_heroes_available_in_group_ignore_npc() == 0 */
 			{
+				/* if traveling, not in a fight, and no hero in the group (except possibly the NPC) is available. */
 
 				ds_writeb(TRAVEL_DETOUR, 99);
 
@@ -4850,9 +4921,11 @@ signed short get_random_hero(void)
 		cur_hero = pos;
 #endif
 
-	} while (!host_readbs(get_hero(cur_hero) + HERO_TYPE) ||
-			(host_readbs(get_hero(cur_hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) ||
-			hero_dead(get_hero(cur_hero)));
+	} while (
+		!host_readbs(get_hero(cur_hero) + HERO_TYPE) ||
+		(host_readbs(get_hero(cur_hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) ||
+		hero_dead(get_hero(cur_hero))
+	);
 
 	return cur_hero;
 }
@@ -4905,9 +4978,11 @@ void set_party_money(Bit32s money)
 	hero = get_hero(6);
 
 	/* if we have an NPC in current group and alive */
-	if (host_readbs(hero + HERO_TYPE) &&
+	if (
+		host_readbs(hero + HERO_TYPE) &&
 		(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
-		!hero_dead(hero)) {
+		!hero_dead(hero)
+	) {
 
 		/* If only the NPC is in that group give him all the money */
 		if (heroes > 1) {
@@ -4926,10 +5001,11 @@ void set_party_money(Bit32s money)
 
 		for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(hero + HERO_TYPE) &&
+			if (
+				host_readbs(hero + HERO_TYPE) &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
-				!hero_dead(hero))
-			{
+				!hero_dead(hero)
+			) {
 				/* account the money to hero */
 				host_writed(hero + HERO_MONEY, hero_money);
 			} else {
@@ -4992,7 +5068,7 @@ void add_group_ap(Bit32s ap)
 }
 
 /**
- * \brief   add AP to every hero in the group
+ * \brief   add AP to every non-dead hero in the group
  *
  * \param   ap          AP to add
  */
@@ -5021,7 +5097,7 @@ void add_hero_ap_all(signed short ap)
 }
 
 /**
- * \brief   subtracts AP from every hero in the group
+ * \brief   subtracts AP from every non-dead hero in the group
  *
  * \param   ap          AP to subtract
  */

@@ -454,7 +454,7 @@ void THO_ugdalf(void)
 		dramosch_says(get_tx2(35));
 
 		/* enter the dungeon */
-		DNG_enter_dungeon(14);
+		DNG_enter_dungeon(DUNGEONS_ZWINGFESTE);
 
 		ds_writews(X_TARGET_BAK, ds_readw(X_TARGET));
 		ds_writews(Y_TARGET_BAK, ds_readw(Y_TARGET));
@@ -493,7 +493,7 @@ void THO_ugdalf(void)
 		dramosch_says(Real2Host(ds_readd(DTP2)) + 0x400);
 
 		/* enter the dungeon */
-		DNG_enter_dungeon(14);
+		DNG_enter_dungeon(DUNGEONS_ZWINGFESTE);
 
 		ds_writews(X_TARGET_BAK, ds_readw(X_TARGET));
 		ds_writews(Y_TARGET_BAK, ds_readw(Y_TARGET));
