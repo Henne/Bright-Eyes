@@ -3159,9 +3159,17 @@ void check_level_up(void)
 				!hero_dead(hero) &&
 				(host_readbs(hero + HERO_LEVEL) < 20) &&
 
-				/* could be easily done without accessing the data segment by the formula level_ap_tab[i] = 50 * i * (i+1) */
-				/* Original-Bug: should be <= according to official DSA3 rules */
+#ifndef M302de_FEATURE_MOD
+				/* Feature mod 8:
+				 * Adjust AP requirement for level up to match the original DSA 2/3 rules.
+				 * Without this mod, it is "off by one".
+				 * For example, for level 2, 100 AP should be enough, but the game requires 101 AP. */
 				(ds_readds(LEVEL_AP_TAB + 4 * host_readbs(hero + HERO_LEVEL)) < host_readds(hero + HERO_AP))
+				/* could be easily done without accessing the data segment by the formula level_ap_tab[i] = 50 * i * (i+1) */
+#else
+				(50 * host_readbs(hero + HERO_LEVEL) * (host_readbs(hero + HERO_LEVEL) + 1) <= host_readds(hero + HERO_AP))
+				/* while we're at it, avoid accessing the data segment... */
+#endif
 			) {
 				level_up(i);
 				done = 1;
