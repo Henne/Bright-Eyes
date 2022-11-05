@@ -509,14 +509,14 @@ void mspell_balsam(void)
 
 #ifndef M302de_ORIGINAL_BUGFIX
 	/* Original-Bug:
-	 * very strange behaviour.
+	 * very strange behavior.
 	 * If LE loss is less then 14, 7 LE will be healed, price AE = LE.
 	 * If not enouh AE available, number of healed LE is lowered accordingly.
 	 *
 	 * Problem 1: For LE loss < 7, LE may be healed above max.
 	 * Problem 2: For LE loss >=14, no effect. No healing.
 	 *
-	 * Hard to guess what the intended behaviour was. */
+	 * Hard to guess what the intended behavior was. */
 
 	ds_writew(MONSTER_SPELL_AE_COST, 0);
 

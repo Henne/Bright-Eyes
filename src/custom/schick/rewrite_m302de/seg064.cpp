@@ -160,11 +160,10 @@ RealPt print_passage_price(signed short price, Bit8u *route_ptr)
 
 	if (price != 0) {
 		/* calc price per distance */
-		di = ((unsigned char)host_readb(route_ptr + SEA_ROUTE_PASSAGE_PRICE_MOD) * price + 4) / 10;
+		di = ROUNDED_DIVISION((unsigned char)host_readb(route_ptr + SEA_ROUTE_PASSAGE_PRICE_MOD) * price, 10);
 		/* multiply with distance */
 		di = di * (unsigned char)host_readb(route_ptr + SEA_ROUTE_DISTANCE);
-		/* divide by 100, round to nearest integer */
-		price = (di + 49) / 100;
+		price = ROUNDED_DIVISION(di,100);
 
 		/* generate a price string "%d^HELLER" */
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
@@ -192,17 +191,14 @@ unsigned short get_passage_travel_hours(signed short distance, signed short base
 	Bit32u tmp;
 
 	/* convert base_speed to unit [100m per hour] */
-	base_speed = (base_speed * 10 + 11) / 24;
-	/* "+ 11" for proper rounding (nearest integer) */
+	base_speed = ROUNDED_DIVISION(base_speed * 10, 24);
 	/* lowest possible value: (40 * 10 + 11) / 24 = 17 (for Fischerboot) */
 	/* highest possible value: (150 * 10 + 11) / 24 = 62 (for Schnellsegler) */
 
 	/* reminder: WEATHER1 = random([1..6]), WEATHER2 = random([1..7]) */
 	/* adjust speed to between 80.5% (when WEATHER1 = WEATHER2 = 1) and 247% (when WEATHER1 = 6 and WEATHER2 = 7). */
 	/* unit: [100m per hour] */
-	ds_writew(SEA_TRAVEL_PASSAGE_SPEED2,
-		(base_speed * (ds_readw(WEATHER2) + 6) * (ds_readw(WEATHER1) * 15 + 100) + 499L) / 1000L);
-		/* "+499L" for proper rounding (nearest integer) */
+	ds_writew(SEA_TRAVEL_PASSAGE_SPEED2, ROUNDED_DIVISION(base_speed * (ds_readw(WEATHER2) + 6) * (ds_readw(WEATHER1) * 15 + 100), 1000L));
 		/* possible values for SEA_TRAVEL_PASSAGE_SPEED2:
 		 * ## high seas routes ##
 		 * Schnellsegler (base_speed 150): {* 50, 56, 57, 63, 64^^2, 69, 71, 72, 73, 76, 78, 79, 81^^2, 82, 86, 87, 89^^2, 90, 93, 94, 97, 98, 99^^2, 105, 106, 108^^2, 109, 117, 118, 119^^2, 129, 130^^2, 141^^2, 153 *}
@@ -220,10 +216,7 @@ unsigned short get_passage_travel_hours(signed short distance, signed short base
 	 * For example, the predicted number of hours for Prem-Hjalsingor will be one of 14, 15, 16, 17, 19, 21, 23, 26, 30, 35, 42, 52, 70, 105, 210.
 	 * The reason is that a bad conversion severly reduces the computational precision. */
 
-	tmp = (ds_readws(SEA_TRAVEL_PASSAGE_SPEED2) + 4) / 10; /* the speed of the ship [unit: km per hour] */
-
-	/* "+ 4" for proper rounding (nearest integer).
-	 * Original-Bug: This division severely coarsens the computational precision. */
+	tmp = ROUNDED_DIVISION(ds_readws(SEA_TRAVEL_PASSAGE_SPEED2), 10); /* the speed of the ship [unit: km per hour] */
 
 	/* possible values for tmp at this point:
 	 * ## high seas routes ##
@@ -243,7 +236,7 @@ unsigned short get_passage_travel_hours(signed short distance, signed short base
 	tmp = distance / tmp; /* now 'tmp' is the number of travelling hours */
 #else
 	/* first multiply, then divide for higher precision */
-	tmp = (10 * distance + (ds_readws(SEA_TRAVEL_PASSAGE_SPEED2)-1)/2) / ds_readws(SEA_TRAVEL_PASSAGE_SPEED2);
+	tmp = ROUNDED_DIVISION(10 * distance, ds_readws(SEA_TRAVEL_PASSAGE_SPEED2));
 #endif
 
 	return (unsigned short)tmp;

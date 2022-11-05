@@ -599,8 +599,8 @@ void tevent_144(void)
 				/* seems like the timers are simply forwarded by an arbitrary time span. */
 				sub_ingame_timers(MONTHS(1));
 				sub_mod_timers(MONTHS(1));
-				sub_heal_staffspell_timers(MONTHS(1)/MINUTES(5));
-				sub_light_timers(HOURS(25)/MINUTES(15));
+				sub_heal_staffspell_timers(MONTHS(1)/MINUTES(5)); /* note that the argument is given in units of 5 minutes */
+				sub_light_timers(HOURS(25)/MINUTES(15)); /* note that the argument is given in units of 15 minutes */
 				right_time_flag = 1;
 			}
 		}
