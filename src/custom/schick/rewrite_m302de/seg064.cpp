@@ -214,9 +214,16 @@ unsigned short get_passage_travel_hours(signed short distance, signed short base
 		 * Kutter (base_speed 60): {* 20, 23^^2, 25, 26^^2, 28, 29^^3, 31, 32^^3, 33^^2, 34, 35, 36^^3, 37, 38, 39^^2, 40^^2, 42, 43^^2, 44^^2, 47^^2, 48^^2, 52^^3, 57^^2, 62 *}
 		 * Fischerboot (base_speed 40): {* 14, 15, 16, 17, 18^^2, 19, 20^^3, 21, 22^^4, 23^^2, 24^^3, 25^^2, 26, 27^^4, 29^^2, 30^^3, 32^^2, 33^^2, 35, 36^^2, 39^^2, 42 *} */
 
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 35:
+	 * In the predicted travelling times of sea passages, only very specific values show up.
+	 * For example, the predicted number of hours for Prem-Hjalsingor will be one of 14, 15, 16, 17, 19, 21, 23, 26, 30, 35, 42, 52, 70, 105, 210.
+	 * The reason is that a bad conversion severly reduces the computational precision. */
+
 	tmp = (ds_readws(SEA_TRAVEL_PASSAGE_SPEED2) + 4) / 10; /* the speed of the ship [unit: km per hour] */
+
 	/* "+ 4" for proper rounding (nearest integer).
-	 * Original-Bug: This rounding severely coarsens the computational precision. */
+	 * Original-Bug: This division severely coarsens the computational precision. */
 
 	/* possible values for tmp at this point:
 	 * ## high seas routes ##
@@ -234,6 +241,10 @@ unsigned short get_passage_travel_hours(signed short distance, signed short base
 		tmp = 1;
 
 	tmp = distance / tmp; /* now 'tmp' is the number of travelling hours */
+#else
+	/* first multiply, then divide for higher precision */
+	tmp = (10 * distance + (ds_readws(SEA_TRAVEL_PASSAGE_SPEED2)-1)/2) / ds_readws(SEA_TRAVEL_PASSAGE_SPEED2);
+#endif
 
 	return (unsigned short)tmp;
 }
