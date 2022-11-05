@@ -127,9 +127,9 @@ void do_harbor(void)
 					/* meet SWAFNILD */
 					do_talk(12, 0);
 
-					if (ds_readb(SWAFNILD_TRAVELLED) != 0) {
+					if (ds_readb(SWAFNILD_TRAVELED) != 0) {
 
-						ds_writeb(SWAFNILD_TRAVELLED, 0);
+						ds_writeb(SWAFNILD_TRAVELED, 0);
 
 						leave_location();
 
@@ -596,7 +596,7 @@ void sea_travel(signed short passage, signed short dir)
 #ifndef M302de_ORIGINAL_BUGFIX
 			/* Original-Bug 34:
 			 * There is an Efferd miracle with the text "Efferd gewaehrt euch seinen Schutz auf Wasser.".
-			 * For sea travelling, it prevents octopus encounters. However, pirate encounters are still possible, which feels wrong. */
+			 * For sea traveling, it prevents octopus encounters. However, pirate encounters are still possible, which feels wrong. */
 			(ds_readws(PASSAGE_PIRATES_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(PASSAGE_PIRATES_POSITION))
 #else
 			(ds_readws(PASSAGE_PIRATES_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(PASSAGE_PIRATES_POSITION) && !ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_EFFERD_SAFE_PASSAGE))
