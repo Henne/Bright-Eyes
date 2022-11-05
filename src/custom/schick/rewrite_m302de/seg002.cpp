@@ -3375,7 +3375,7 @@ void passages_recalc(void)
 
 	for (i = 0; i < NR_SEA_ROUTES; p += SIZEOF_SEA_ROUTE, i++) {
 
-		if (dec_ptr_bs(p + SEA_ROUTE_PASSAGE_TIMER) == -1) {
+		if (dec_ptr_bs(p + SEA_ROUTE_PASSAGE_TIMER) == -1) { /* note that dec_ptr_bs returns the old (still un-decremented) value */
 			/* ship of a sea passage has left yesterday -> set up a new ship of this passage */
 
 			host_writeb(p + SEA_ROUTE_PASSAGE_PRICE_MOD, (unsigned char)random_interval(70, 130));
@@ -3420,12 +3420,11 @@ void passages_reset(void)
 	signed short i;
 	Bit8u *p = p_datseg + SEA_ROUTES;
 
-#ifdef M302de_ORIGINAL_BUGFIX
-	for (i = 0; i < NR_SEA_ROUTES; p += SIZEOF_SEA_ROUTE, i++)
-#else
-	/* Original-Bug: the loop operates only on the first element
-		sizeof(element) == 8 */
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 36: the loop operates only on the first element */
 	for (i = 0; i < NR_SEA_ROUTES; i++)
+#else
+	for (i = 0; i < NR_SEA_ROUTES; p += SIZEOF_SEA_ROUTE, i++)
 #endif
 	{
 		if (!host_readbs(p + SEA_ROUTE_PASSAGE_TIMER)) {
