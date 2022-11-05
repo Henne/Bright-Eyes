@@ -19,6 +19,11 @@
 #include "symbols.h"
 #include "datseg.h"
 
+#define ROUNDED_DIVISION(n,k)	((n + (k-1)/2)/k)
+/* divide n/k and round to the closest integer. In ambigous cases, round down. */
+/* only used in seg064.cpp */
+/* (n + k/2)/k would be more natural, but it is done in this way in the original game */
+
 #define SECONDS(n)      ((n/2) * 3L)
 #define MINUTES(n)	((n) * 90L)
 #define HOURS(n)	(MINUTES(n) * 60L)

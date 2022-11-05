@@ -225,7 +225,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 			}
 
 			if (host_readbs(Real2Host(hero) + HERO_RS_BE) & 1) {
-				/* if RS_BE is odd, subtract another point. Changes the rounding behaviour of 'host_readbs(Real2Host(hero) + HERO_RS_BE) / 2' above to "round up". */
+				/* if RS_BE is odd, subtract another point. Changes the rounding behavior of 'host_readbs(Real2Host(hero) + HERO_RS_BE) / 2' above to "round up". */
 				atpa--;
 			}
 

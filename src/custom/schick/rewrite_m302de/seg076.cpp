@@ -904,6 +904,7 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 					/* 1 unit of water <=> 10 Points of thirst */
 
 					units_needed = (host_readbs(hero + HERO_THIRST) + 9) / 10;
+					/* +9 means: round up */
 
 					if (host_readb(unit_ptr) <= units_needed)
 					{

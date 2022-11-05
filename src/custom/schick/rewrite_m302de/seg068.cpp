@@ -508,7 +508,7 @@ void academy_analues(void)
 
 	GUI_input(get_tx2(62), 0);
 
-	/* change behaviour of analues spell */
+	/* change behavior of analues spell */
 	ds_writew(IN_ACADEMY, 99);
 
 	/* select a hero (does not need to be a magic user here) */

@@ -408,7 +408,7 @@ void octopus_attack(void)
 				 * For GE <= 17, its always 5% strangling attack, 5% grabbing attack, 90% hero attacks octopus.
 				 * For GE = 18 its 5% strangling attack, 95% hero attacks octopus.
 				 * For GE <= 19 it is 100% hero attacks octopus.
-				 * The intended behaviour probably was: critical failure: grabbing attack; normal failure: strangling attack; success: hero attacks octopus. */
+				 * The intended behavior probably was: critical failure: grabbing attack; normal failure: strangling attack; success: hero attacks octopus. */
 				if (!(tmp = test_attrib(hero, ATTRIB_GE, 0)))
 #else
 				tmp = test_attrib(hero, ATTRIB_GE, 0);

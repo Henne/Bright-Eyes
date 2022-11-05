@@ -455,7 +455,7 @@ void status_show(Bit16u index)
 				/* Original-Bugfix end */
 #else
 
-				/* Original Behaviour: print max LE in black */
+				/* Original Behavior: print max LE in black */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_tx2(13),
 					host_readw(Real2Host(hero) + HERO_LE), host_readw(Real2Host(hero) + HERO_LE_ORIG),	/* LE */
