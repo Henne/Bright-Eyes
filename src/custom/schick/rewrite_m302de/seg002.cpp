@@ -3474,16 +3474,16 @@ void timewarp(Bit32s time)
 
 	sub_mod_timers(time);
 
-
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 37:
+	 * because of rounding down, time / MINUTES(5) and time / MINUTES(15) will be 0 in many situations (like step forward in town/dungeon)
+	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
 	sub_heal_staffspell_timers(time / MINUTES(5));
-	/* Original-Bug:
-	 * because of rounding down, time / MINUTES(5) will be 0 in many situations (like step forward in town/dungeon)
-	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
-
 	sub_light_timers(time / MINUTES(15));
-	/* Original-Bug:
-	 * because of rounding down, time / MINUTES(15) will be 0 in many situations (like step forward in town/dungeon)
-	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
+#else
+	sub_heal_staffspell_timers((time + (timer_bak % MINUTES(5))) / MINUTES(5));
+	sub_light_timers((time + (timer_bak % MINUTES(15)))/ MINUTES(15));
+#endif
 
 	/* calculate hours */
 	hour_old = (signed short)(timer_bak / HOURS(1));
@@ -3553,15 +3553,16 @@ void timewarp_until_time_of_day(Bit32s time)
 
 	sub_mod_timers(i);
 
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 37:
+	 * because of rounding down, time / MINUTES(5) and time / MINUTES(15) will be 0 in many situations (like step forward in town/dungeon)
+	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
 	sub_heal_staffspell_timers(i / MINUTES(5));
-	/* Original-Bug:
-	 * because of rounding down, time / MINUTES(5) will be 0 in many situations (like step forward in town/dungeon)
-	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
-
 	sub_light_timers(i / MINUTES(15));
-	/* Original-Bug:
-	 * because of rounding down, time / MINUTES(15) will be 0 in many situations (like step forward in town/dungeon)
-	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
+#else
+	sub_heal_staffspell_timers((i + (timer_bak % MINUTES(5))) / MINUTES(5));
+	sub_light_timers((i + (timer_bak % MINUTES(15)))/ MINUTES(15));
+#endif
 
 	/* calculate hours */
 	hour_old = (signed short)(timer_bak / HOURS(1));
