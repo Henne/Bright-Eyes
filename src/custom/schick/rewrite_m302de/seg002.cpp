@@ -2283,6 +2283,8 @@ void do_timers(void)
 
 			magical_chainmail_damage();
 
+			/* What about herokeeping()? Original-Bug? */
+
 			/* decrement unicorn timer */
 			if (ds_readb(UNICORN_GET_MAP) != 0 &&
 				ds_readb(UNICORN_TIMER) != 0)
@@ -2298,7 +2300,7 @@ void do_timers(void)
 				}
 			}
 
-			/* two timers of a dungeon */
+			/* barrels with orc muck in the orc dungeon */
 			if (ds_readbs(DNG08_TIMER1) != 0) {
 				dec_ds_bs_post(DNG08_TIMER1);
 			}
@@ -2356,7 +2358,7 @@ void do_timers(void)
 		/* decrement the timer */
 		sub_ds_ds(DNG07_POISON_TIMER, 1);
 
-		/* every 15 minutes  do damage */
+		/* every 15 minutes do damage */
 		if (ds_readd(DNG07_POISON_TIMER) % MINUTES(15) == 0) {
 
 			ptr = get_hero(0);
@@ -3490,8 +3492,10 @@ void timewarp(Bit32s time)
 #endif
 
 #ifndef M302de_ORIGINAL_BUGFIX
-	/* Original-Bug 38:
-	 * In some situations, the hourly damage by the magic chain mail is not correctly applied.
+	/* fixes Original-Bugs 38 and 39.
+	 *
+	 * Original-Bug 38:
+	 * In some situations, the hourly damage from the magic chain mail is not correctly applied.
 	 * For example, if the hero stays in an inn for from 8:30 till 8:00 the next day, he doesn't take any damage (while he should have suffered the damage 12 times).
 	 *
 	 * Below, the case (hour_old == hour_new) might also come from a difference of 23 hours (which has not been considered).
@@ -3512,13 +3516,40 @@ void timewarp(Bit32s time)
 		for (i = 0; hour_diff > i; i++) {
 			magical_chainmail_damage();
 			herokeeping();
+			/* Original-Bug 39: Timers for 2nd encounter of the unicorn, Sphaerenriss in verfallene Herberge
+			 * and two timers for barrels with orc muck in the orc dungeon are not affected from passing in-game time.
+			 * Reason: They are present in do_timers(), but missing at this place. */
 		}
 	}
 #else
-	/* better not overcomplicate things... */
+	/* fix Original-Bug 38. better not overcomplicate things... */
 	for (i = 0; i < (time + (timer_bak % HOURS(1))) / HOURS(1); ++i) {
 		magical_chainmail_damage();
 		herokeeping();
+
+		/* fix Original-Bug 39. add missing timers. */
+		/* timer for 2nd encounter of the unicorn */
+		if (ds_readb(UNICORN_GET_MAP) != 0 &&
+			ds_readb(UNICORN_TIMER) != 0)
+		{
+			dec_ds_bs_post(UNICORN_TIMER);
+		}
+
+		/* timer for Sphaerenriss in verfallene Herberge */
+		if (ds_readb(DNG02_SPHERE_TIMER) != 0) {
+
+			if (!add_ds_bu(DNG02_SPHERE_TIMER, -1)) {
+				ds_writeb(DNG02_SPHERE_ACTIVE, 1);
+			}
+		}
+
+		/* barrels with orc muck in the orc dungeon */
+		if (ds_readbs(DNG08_TIMER1) != 0) {
+			dec_ds_bs_post(DNG08_TIMER1);
+		}
+		if (ds_readbs(DNG08_TIMER2) != 0) {
+			dec_ds_bs_post(DNG08_TIMER2);
+		}
 	}
 #endif
 
