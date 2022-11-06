@@ -1963,7 +1963,7 @@ void timers_daily(void)
 	ds_writew(CHECK_DISEASE, 1);
 
 #ifdef M302de_ORIGINAL_BUGFIX
-	/* Original-BUG: Reenable identifying item in the academy */
+	/* Original-Bug: Reenable identifying item in the academy */
 	ds_writew(ACADEMY_DAILY_IDENT, 0);
 #endif
 
@@ -2970,7 +2970,7 @@ void herokeeping(void)
 					}
 
 					if (host_readbs(hero + HERO_HUNGER) < 100) {
-						/* increase food counter food_mod is always 0 or 1 */
+						/* increase hunger value. FOOD_MOD is always 0 or 1 */
 						if (host_readbs(hero + HERO_HUNGER_TIMER) <= 0) {
 							/* increase more (2 or 1) */
 							add_ptr_bs(hero + HERO_HUNGER, 2 / (ds_readbs(FOOD_MOD) * 2 + 1));
@@ -3421,7 +3421,7 @@ void passages_reset(void)
 	Bit8u *p = p_datseg + SEA_ROUTES;
 
 #ifndef M302de_ORIGINAL_BUGFIX
-	/* Original-Bug 36: the loop operates only on the first element */
+	/* Original-Bug 36: the loop operates only on the first  */
 	for (i = 0; i < NR_SEA_ROUTES; i++)
 #else
 	for (i = 0; i < NR_SEA_ROUTES; p += SIZEOF_SEA_ROUTE, i++)
@@ -3464,7 +3464,7 @@ void timewarp(Bit32s time)
 
 	for (i = 0; i < time; i++) {
 		do_timers();
-#ifdef M302de_ORIGINAL_BUGFIX
+#ifdef M302de_SPEEDFIX
 		if (i % 768 == 0)
 			wait_for_vsync();
 #endif
@@ -3476,7 +3476,11 @@ void timewarp(Bit32s time)
 
 #ifndef M302de_ORIGINAL_BUGFIX
 	/* Original-Bug 37:
-	 * because of rounding down, time / MINUTES(5) and time / MINUTES(15) will be 0 in many situations (like step forward in town/dungeon)
+	 * Healing time-offs, staffspell time-offs and timers for the consumption of burning lanterns and torches
+	 * do not get updated in certain situations, like a step forward in a city or dungeon.
+	 * Reason: Because of rounding down, time / MINUTES(5) and time / MINUTES(15) will be 0 in many situations.
+	 *
+	 * Not exactly a masterpiece in modular arithmetics...
 	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
 	sub_heal_staffspell_timers(time / MINUTES(5));
 	sub_light_timers(time / MINUTES(15));
@@ -3485,14 +3489,20 @@ void timewarp(Bit32s time)
 	sub_light_timers((time + (timer_bak % MINUTES(15)))/ MINUTES(15));
 #endif
 
-	/* calculate hours */
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 38:
+	 * In some situations, the hourly damage by the magic chain mail is not correctly applied.
+	 * For example, if the hero stays in an inn for from 8:30 till 8:00 the next day, he doesn't take any damage (while he should have suffered the damage 12 times).
+	 *
+	 * Below, the case (hour_old == hour_new) might also come from a difference of 23 hours (which has not been considered).
+	 * Furthermore, according to do_timers(..), magical_chainmail_damage() should be called at *full* hours.
+	 * For example, hour_new - hour_old == 1 could mean that 0 or 1 full hours have been passed.
+	 *
+	 * Again, sloppy treatment of modular arithmetics. */
 	hour_old = (signed short)(timer_bak / HOURS(1));
 	hour_new = (signed short)(ds_readd(DAY_TIMER) / HOURS(1));
 
 	if (hour_old != hour_new) {
-		/* Original-Bug:
-		 * The case hour_old == hour_new needs also be considered.
-		 * Hour difference might be 0 (which is o.k.), but also 23 (which has been omitted here). */
 		if (hour_new > hour_old) {
 			hour_diff = hour_new - hour_old;
 		} else {
@@ -3504,8 +3514,16 @@ void timewarp(Bit32s time)
 			herokeeping();
 		}
 	}
+#else
+	/* better not overcomplicate things... */
+	for (i = 0; i < (time + (timer_bak % HOURS(1))) / HOURS(1); ++i) {
+		magical_chainmail_damage();
+		herokeeping();
+	}
+#endif
+
 	/* Original-Bug:
-	 * forgotten hourly timers: UNICORN_TIMER, DNG02_SPHERE_TIMER,DNG08_TIMER1, DNG08_TIMER2
+	 * forgotten hourly timers: UNICORN_TIMER, DNG02_SPHERE_TIMER, DNG08_TIMER1, DNG08_TIMER2
 	 * see do_timers(..).
 	 * For a bugfix either add code here (and in timewarp_until_time_of_day(..)), or modify do_timers(..)
 	 * */
@@ -3516,12 +3534,22 @@ void timewarp(Bit32s time)
 }
 
 /**
- * \brief   forwards the ingame time till the given time of the day
+ * \brief   forwards the ingame time till the given time of the day.
  *
- * \param   time        ticks to forward to e.g 6 AM
+ * \param   time        ticks to forward to, e.g to 6 AM. If the passed time agrees with the current time of the day, 24 hours will be forwarded.
  */
 void timewarp_until_time_of_day(Bit32s time)
 {
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* The code of the function replicates the one of timewarp(..)
+	 * Better call timewarp(..), such that we don't have to apply the same bugfixes twice.
+	 * The bypassed code below suffers from Original-Bug 37 and 38. */
+	if (ds_readd(DAY_TIMER) < time) {
+		timewarp(time - ds_readd(DAY_TIMER));
+	} else {
+		timewarp(DAYS(1) + time - ds_readd(DAY_TIMER));
+	}
+#else
 	signed short hour_old;
 	signed short hour_new;
 	Bit32s i;
@@ -3536,14 +3564,11 @@ void timewarp_until_time_of_day(Bit32s time)
 	ds_writew(TIMERS_DISABLED, 0);
 
 	ds_writeb(FREEZE_TIMERS, 1);
-	/* this deactivates the function calls sub_ingame_timers(1); and sub_mod_timers(1); in do_timers(); within the following loop.
-	 * these timers will be dealt with in a single call sub_ingame_timers(time); and sub_mod_timers(time); for efficiency reasons.
-	 */
 
 	do {
 		do_timers();
 		i++;
-#ifdef M302de_ORIGINAL_BUGFIX
+#ifdef M302de_SPEEDFIX
 		if (i % 768 == 0)
 			wait_for_vsync();
 #endif
@@ -3553,25 +3578,15 @@ void timewarp_until_time_of_day(Bit32s time)
 
 	sub_mod_timers(i);
 
-#ifndef M302de_ORIGINAL_BUGFIX
-	/* Original-Bug 37:
-	 * because of rounding down, time / MINUTES(5) and time / MINUTES(15) will be 0 in many situations (like step forward in town/dungeon)
-	 * see https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146023#pid146023 */
+	/* Original-Bug 37: see above. */
 	sub_heal_staffspell_timers(i / MINUTES(5));
 	sub_light_timers(i / MINUTES(15));
-#else
-	sub_heal_staffspell_timers((i + (timer_bak % MINUTES(5))) / MINUTES(5));
-	sub_light_timers((i + (timer_bak % MINUTES(15)))/ MINUTES(15));
-#endif
 
-	/* calculate hours */
 	hour_old = (signed short)(timer_bak / HOURS(1));
 	hour_new = (signed short)(ds_readds(DAY_TIMER) / HOURS(1));
 
+	/* Original-Bug 38: see above */
 	if (hour_old != hour_new) {
-		/* Original-Bug:
-		 * The case hour_old == hour_new needs also be considered.
-		 * Hour difference might be 0 (which is o.k.), but also 23 (which has been omitted here). */
 		if (hour_new > hour_old) {
 			hour_diff = hour_new - hour_old;
 		} else {
@@ -3583,6 +3598,7 @@ void timewarp_until_time_of_day(Bit32s time)
 			herokeeping();
 		}
 	}
+
 	/* Original-Bug:
 	 * forgotten hourly timers: UNICORN_TIMER, DNG02_SPHERE_TIMER,DNG08_TIMER1, DNG08_TIMER2
 	 * see do_timers(..).
@@ -3592,6 +3608,7 @@ void timewarp_until_time_of_day(Bit32s time)
 	/* restore variables */
 	ds_writeb(FREEZE_TIMERS, 0);
 	ds_writew(TIMERS_DISABLED, td_bak);
+#endif
 }
 
 /**
@@ -3648,6 +3665,7 @@ void draw_splash(signed short hero_pos, signed short type)
  */
 void timewarp_until_midnight(void)
 {
+	/* TODO: This doesn't look all correct to me... Have all timers been considered? Why not call timewarp_until_time_of_the_day(..)? */
 	Bit32s ticks_left;
 	signed short td_bak;
 
@@ -3658,7 +3676,7 @@ void timewarp_until_midnight(void)
 	ds_writew(TIMERS_DISABLED, 0);
 
 	/* calculate the ticks left on this day */
-	ticks_left = (HOURS(24) -1) - ds_readd(DAY_TIMER);
+	ticks_left = (HOURS(24) - 1) - ds_readd(DAY_TIMER);
 
 	/* set the day timer to the last tick of this day */
 	ds_writed(DAY_TIMER, (HOURS(24) - 1));
