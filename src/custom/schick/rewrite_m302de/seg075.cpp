@@ -319,8 +319,8 @@ void DNG_stub2(void)
 	if ((tmp == 2) || (tmp == 9)) {
 
 		if (div16(ds_readb((VISUAL_FIELD_VALS + 5))) == 15) {
-			DNG_draw_walls( ((ds_readb(DUNGEON_TYPE) == 1) ? 0x4e :
-						((ds_readb(DUNGEON_TYPE) == 2) ? 0x28 : 0x3e)),
+			DNG_draw_walls( ((ds_readb(DUNGEON_GFX_STYLE) == 1) ? 0x4e :
+						((ds_readb(DUNGEON_GFX_STYLE) == 2) ? 0x28 : 0x3e)),
 					0, 0x36);
 		}
 	}
@@ -513,7 +513,7 @@ void DNG_stub5(void)
 }
 
 /**
- * \brief   check for stafflevel >= in current group
+ * \brief   check for stafflevel >= 2 in current group
  *
  * \return              0 = false, 1 = true
  */
@@ -551,9 +551,9 @@ void DNG_lights(void)
 
 		if (!(ds_readb((VISUAL_FIELD_VALS + 1)) & 1)) {
 
-			if (ds_readd(INGAME_TIMERS + 0x24)) {
+			if (ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_DARKNESS)) {
 				l1 = 10;
-			} else if (ds_readd(INGAME_TIMERS + 0x20) || is_staff_lvl2_in_group()) {
+			} else if (ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_FLIM_FLAM) || is_staff_lvl2_in_group()) {
 				l1 = 0;
 			} else {
 				if ( (l1 = get_max_light_time()) != -1) {
@@ -563,7 +563,7 @@ void DNG_lights(void)
 				}
 			}
 		} else {
-			if (ds_readd(INGAME_TIMERS + 0x24)) {
+			if (ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_DARKNESS)) {
 				l1 = 10;
 			} else {
 				l1 = 0;
@@ -589,16 +589,22 @@ void DNG_lights(void)
 	}
 }
 
-void DNG_timestep(signed short a1)
+/**
+ * \brief   performs a step (forward or backward) in a dungeon. time advances by 1 minute.
+ *
+ * \param 	foward	1: forward step; -1: backward step
+ */
+void DNG_timestep(signed short forward)
 {
 	signed short dir;
 
-	timewarp(90);
+	timewarp(MINUTES(1));
 
 	if ((ds_readws(DEATHTRAP) != 0) && !(dec_ds_ws(DEATHTRAP_STEPS))) {
+		/* oh oh: death trap is activated and there are no remaining steps in the dungeon... */
 
-		/* deathship / Totenschiff sinks */
 		if (ds_readws(DEATHTRAP) == 1) {
+			/* It is the death trap on the Totenschiff. -> it sinks...  */
 
 			load_ani(18);
 			init_ani(1);
@@ -606,7 +612,7 @@ void DNG_timestep(signed short a1)
 			GUI_output(get_tx(23));
 		}
 
-		ds_writeb(DUNGEON_INDEX, 0);
+		ds_writeb(DUNGEON_INDEX, DUNGEONS_NONE);
 
 		/* exit game */
 		ds_writew(GAME_STATE, GAME_STATE_DEAD);
@@ -616,17 +622,21 @@ void DNG_timestep(signed short a1)
 
 		dir = ds_readbs(DIRECTION);
 
-		if (a1 == 1) {
+		if (forward == 1) {
 
 			/* go forward */
 
 			if (!dir) {
+				/* north */
 				dec_ds_ws(Y_TARGET);
-			} else if (dir == 1) {
+			} else if (dir == EAST) {
+				/* east */
 				inc_ds_ws(X_TARGET);
-			} else if (dir == 2) {
+			} else if (dir == SOUTH) {
+				/* south */
 				inc_ds_ws(Y_TARGET);
 			} else {
+				/* west */
 				dec_ds_ws(X_TARGET);
 			}
 		} else {
@@ -634,12 +644,16 @@ void DNG_timestep(signed short a1)
 			/* go backward */
 
 			if (!dir) {
+				/* north */
 				inc_ds_ws(Y_TARGET);
-			} else if (dir == 1) {
+			} else if (dir == EAST) {
+				/* east */
 				dec_ds_ws(X_TARGET);
-			} else if (dir == 2) {
+			} else if (dir == SOUTH) {
+				/* south */
 				dec_ds_ws(Y_TARGET);
 			} else {
+				/* west */
 				inc_ds_ws(X_TARGET);
 			}
 		}
@@ -694,11 +708,11 @@ void DNG_open_door(void)
 
 	memmove(Real2Host(ds_readd(RENDERBUF_PTR)) + 0x7530, Real2Host(ds_readd(RENDERBUF_PTR)), 0x6db0);
 
-	if (!ds_readb(DUNGEON_TYPE)) {
+	if (!ds_readb(DUNGEON_GFX_STYLE)) {
 		x = 45;
 		y = 38;
 		iters = 19;
-	} else if (ds_readb(DUNGEON_TYPE) == 1) {
+	} else if (ds_readb(DUNGEON_GFX_STYLE) == 1) {
 		x = 47;
 		y = 30;
 		iters = 20;
@@ -739,15 +753,15 @@ void DNG_close_door(void)
 
 	memmove(Real2Host(ds_readd(RENDERBUF_PTR)) + 0x7530, Real2Host(ds_readd(RENDERBUF_PTR)), 0x6db0);
 
-	if (!ds_readb(DUNGEON_TYPE)) {
+	if (!ds_readb(DUNGEON_GFX_STYLE)) { /* dungeon graphics: wood */
 		x = 45;
 		y = 38;
 		iters = 18;
-	} else if (ds_readb(DUNGEON_TYPE) == 1) {
+	} else if (ds_readb(DUNGEON_GFX_STYLE) == 1) { /* dungeon graphics: marble */
 		x = 47;
 		y = 30;
 		iters = 19;
-	} else {
+	} else { /* dungeon graphics: stone */
 		x = 54;
 		y = 44;
 		iters = 16;
@@ -888,7 +902,7 @@ signed short DNG_check_climb_tools(void)
 
 		if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
-			!hero_dead(hero) &&
+			!hero_dead(hero) && /* TODO: potential Original-Bug: What if petrified / unconscious etc.? Compare to is_staff_lvl2_in_group where check_hero is called */
 			(host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) &&
 			(host_readbs(hero + HERO_STAFFSPELL_LVL) > 2))
 		{
@@ -897,68 +911,72 @@ signed short DNG_check_climb_tools(void)
 	}
 
 	/* check for ladder or rope */
-	return ((get_first_hero_with_item(0x79) != -1) ||
-			(get_first_hero_with_item(0x20) != -1)) ? 0 : -1;
+	return ((get_first_hero_with_item(ITEM_ROPE) != -1) ||
+			(get_first_hero_with_item(ITEM_ROPE_LADDER) != -1)) ? 0 : -1;
 }
 
-signed short DNG_fallpit(signed short a1)
+signed short DNG_fallpit(signed short max_damage)
 {
-	signed short l_si;
-	signed short l_di;
-	signed short l1;
-	signed short l2;
+	signed short hero_id;
+	signed short i;
+	signed short nr_fallen_heroes;
+	signed short new_group;
 	signed short retval;
 
-	l2 = 0;
+	new_group = 0;
 	retval = 0;
 
 	ds_writew(DNG_LEVEL_CHANGED, 1);
-	l1 = random_schick(ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)));
+	nr_fallen_heroes = random_schick(ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)));
 
-	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) - 1 == l1) {
-		l1 = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
+	/* If the result was rolled that all but one hero of the active group should fall down, all heroes will fall down.
+	 * Reason probably: Avoid that the NPC gets separated into a single group (as he might be the single hero not falling down) */
+
+	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) - 1 == nr_fallen_heroes) {
+		nr_fallen_heroes = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 	}
 
-	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) != l1) {
+	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) != nr_fallen_heroes) {
+		/* only a part of the heroes of the active group falls down */
 
-		while (ds_readbs(GROUP_MEMBER_COUNTS + l2)) {
-			l2++;
+		/* find empty group */
+		while (ds_readbs(GROUP_MEMBER_COUNTS + new_group)) {
+			new_group++;
 		}
 
-		for (l_di = 0; l_di < l1; l_di++) {
+		for (i = 0; i < nr_fallen_heroes; i++) {
 
 			do {
-				l_si = random_schick(7) - 1;
+				hero_id = random_schick(7) - 1;
 
-			} while ( (!host_readbs(get_hero(l_si) + HERO_TYPE)) ||
-					(host_readbs(get_hero(l_si) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) ||
-					((l1 == 1) && (l_si == 6)));
+			} while ( (!host_readbs(get_hero(hero_id) + HERO_TYPE)) ||
+					(host_readbs(get_hero(hero_id) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) ||
+					((nr_fallen_heroes == 1) && (hero_id == 6))); /* avoid that the NPC gets separated into a single group */
 
-			host_writeb(get_hero(l_si) + HERO_GROUP_NO, (unsigned char)l2);
-			inc_ds_bs_post(GROUP_MEMBER_COUNTS + l2);
+			host_writeb(get_hero(hero_id) + HERO_GROUP_NO, (unsigned char)new_group);
+			inc_ds_bs_post(GROUP_MEMBER_COUNTS + new_group);
 			dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
-			sub_hero_le(get_hero(l_si), random_schick(a1));
-
+			sub_hero_le(get_hero(hero_id), random_schick(max_damage));
 		}
 
-		GRP_save_pos(l2);
-		ds_writeb(GROUPS_DNG_LEVEL + l2, ds_readbs(DUNGEON_LEVEL) + 1);
+		GRP_save_pos(new_group);
+		ds_writeb(GROUPS_DNG_LEVEL + new_group, ds_readbs(DUNGEON_LEVEL) + 1);
 
 		retval = 1;
 
 	} else {
 
-		l_si = 0;
+		hero_id = 0;
 
-		for (l_di = 0; l_di < l1; l_di++) {
+		for (i = 0; i < nr_fallen_heroes; i++) {
 
-			while (!host_readbs(get_hero(l_si) + HERO_TYPE) ||
-				(host_readbs(get_hero(l_si) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
+			while (!host_readbs(get_hero(hero_id) + HERO_TYPE) ||
+				(host_readbs(get_hero(hero_id) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
 			{
-				l_si++;
+				hero_id++;
 			}
 
-			sub_hero_le(get_hero(l_si++), random_schick(a1));
+			sub_hero_le(get_hero(hero_id++), random_schick(max_damage));
 		}
 
 		DNG_inc_level();
@@ -978,55 +996,55 @@ void DNG_enter_dungeon(signed short dungeon_id)
 
 	switch (dungeon_id) {
 
-		case 1:  x_pos = 9;  y_pos = 11;  dir = 0;  level = 2;  break;
-		case 2:  x_pos = 1;  y_pos = 1;   dir = 2;  level = 0;  break;
-		case 3:  x_pos = 1;  y_pos = 8;   dir = 1;  level = 0;  break;
+		case DUNGEONS_TOTENSCHIFF:  x_pos = 9;  y_pos = 11;  dir = NORTH;  level = 2;  break;
+		case DUNGEONS_VERFALLENE_HERBERGE:  x_pos = 1;  y_pos = 1;   dir = SOUTH;  level = 0;  break;
+		case DUNGEONS_SPINNENHOEHLE:  x_pos = 1;  y_pos = 8;   dir = EAST;  level = 0;  break;
 
 #if !defined(__BORLANDC__)
-		case 4:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+		case DUNGEONS_WOLFSHOEHLE:  x_pos = 7;  y_pos = 14;  dir = NORTH;  level = 0;  break;
 #else
-mark1:		case 4:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+mark1:		case DUNGEONS_WOLFSHOEHLE:  x_pos = 7;  y_pos = 14;  dir = NORTH;  level = 0;  break;
 #endif
 
-		case 5:  x_pos = 6;  y_pos = 14;  dir = 0;  level = 0;  break;
-		case 6:  x_pos = 13; y_pos = 14;  dir = 0;  level = 0;  break;
-		case 7:  x_pos = 1;  y_pos = 13;  dir = 0;  level = 0;  break;
-		case 8:  x_pos = 1;  y_pos = 14;  dir = 1;  level = 0;  break;
+		case DUNGEONS_GOBLINHOEHLE:  x_pos = 6;  y_pos = 14;  dir = NORTH;  level = 0;  break;
+		case DUNGEONS_DASPOTASCHATZ:  x_pos = 13; y_pos = 14;  dir = NORTH;  level = 0;  break;
+		case DUNGEONS_RUINE_DES_SCHWARZMAGIERS:  x_pos = 1;  y_pos = 13;  dir = NORTH;  level = 0;  break;
+		case DUNGEONS_ORKBEHAUSUNG:  x_pos = 1;  y_pos = 14;  dir = EAST;  level = 0;  break;
 
 #if !defined(__BORLANDC__)
-		case 9:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+		case DUNGEONS_KULTSTAETTE_DES_NAMENLOSEN:  x_pos = 7;  y_pos = 14;  dir = NORTH;  level = 0;  break;
 #else
-		case 9:  goto mark1;
+		case DUNGEONS_KULTSTAETTE_DES_NAMENLOSEN:  goto mark1;
 mark2:			   goto mark1;
 #endif
 
-		case 10:  x_pos = 1;  y_pos = 3;   dir = 1;  level = 0;  break;
+		case DUNGEONS_DRACHENHORT:  x_pos = 1;  y_pos = 3;   dir = EAST;  level = 0;  break;
 
 #if !defined(__BORLANDC__)
-		case 11:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+		case DUNGEONS_PIRATENHOEHLE:  x_pos = 7;  y_pos = 14;  dir = NORTH;  level = 0;  break;
 #else
-		case 11:  goto mark2;
+		case DUNGEONS_PIRATENHOEHLE:  goto mark2;
 #endif
 
-		case 12:  x_pos = 13; y_pos = 14;  dir = 0;  level = 0;  break;
-		case 13: {
+		case DUNGEONS_ZWERGENFESTE:  x_pos = 13; y_pos = 14;  dir = NORTH;  level = 0;  break;
+		case DUNGEONS_VERLASSENE_MINE: {
 			x_pos = 7;
 			y_pos = 14;
-			dir = 0;
+			dir = NORTH;
 			level = 0;
 
 			ds_writeb(DNG13_COLLAPSECOUNT, 0);
 			ds_writeb(DNG13_HEROCOUNT, (signed char)count_heroes_in_group());
 			break;
 		}
-		case 14: {
+		case DUNGEONS_ZWINGFESTE: {
 			x_pos = 1;
 			y_pos = 14;
-			dir = 3;
+			dir = WEST;
 			level = ds_writebs(LOCATION, 0);
 			break;
 		}
-		case 15:  x_pos = 1;  y_pos = 11;   dir = 1;  level = 0;  break;
+		case DUNGEONS_HYGGELIKS_RUINE:  x_pos = 1;  y_pos = 11;   dir = EAST;  level = 0;  break;
 	}
 
 	ds_writew(X_TARGET, x_pos);
@@ -1036,10 +1054,10 @@ mark2:			   goto mark1;
 	ds_writeb(DUNGEON_INDEX, (signed char)dungeon_id);
 	ds_writebs(LOCATION_BAK, ds_readbs(LOCATION));
 	ds_writeb(CURRENT_TOWN_BAK, ds_readb(CURRENT_TOWN));
-	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
+	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, TOWNS_NONE));
 	ds_writeb(DNG_AREA_LOADED, ds_writeb(CITY_AREA_LOADED, -1));
 
-	if (dungeon_id == 14) {
+	if (dungeon_id == DUNGEONS_ZWINGFESTE) {
 
 		ptr = Real2Host(ds_readd(RENDERBUF_PTR)) + 0x1f4;
 		memset(Real2Host(ds_readd(RENDERBUF_PTR)), 0, 0x120);

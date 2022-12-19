@@ -41,10 +41,10 @@ void add_item_to_shop(Bit8u *shop_ptr, signed short item_id, signed short pos)
 	host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * pos, item_id);
 
 	host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * pos + 2,
-		host_readws(get_itemsdat(item_id) + 8) + host_readws(get_itemsdat(item_id) + 8) * host_readbs(shop_ptr) / 100);
+		host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) + host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(shop_ptr) / 100);
 
 	host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * pos + 4,
-			host_readbs(get_itemsdat(item_id) + 7));
+			host_readbs(get_itemsdat(item_id) + ITEM_STATS_PRICE_UNIT));
 }
 
 struct dummy7 {
@@ -86,21 +86,22 @@ void do_merchant(void)
 
 	if ((ds_readds(DAY_TIMER) < HOURS(8) || ds_readds(DAY_TIMER) > HOURS(19)) && ds_readbs(LOCATION) != LOCATION_MARKET)
 	{
+		/* shop closed */
 
 		GUI_output(get_ttx(482));
-		turnaround();
+		leave_location();
 		return;
 	}
 
 	if (ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
 		if (ds_readbs((SHOP_DESCR_TABLE + 1) + 9 * ds_readws(TYPEINDEX)) != 3) {
 			talk_merchant();
-			turnaround();
+			leave_location();
 			return;
 		}
 	} else if (ds_readb(MERCHANT_OFFENDED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
 		GUI_output(get_ttx(507));
-		turnaround();
+		leave_location();
 		return;
 	}
 
@@ -122,7 +123,7 @@ void do_merchant(void)
 
 	while (host_readws(get_itemsdat(l_si)) != -1) {
 
-		if (host_readbs(shop_p + 2) <= host_readbs(get_itemsdat(l_si) + 0xa)) {
+		if (host_readbs(shop_p + 2) <= host_readbs(get_itemsdat(l_si) + ITEM_STATS_COMMONNESS)) {
 
 			if (item_armor(get_itemsdat(l_si)) || item_weapon(get_itemsdat(l_si))) {
 
@@ -181,7 +182,7 @@ void do_merchant(void)
 
 		if (ds_readws(REQUEST_REFRESH) != 0) {
 
-			draw_loc_icons(4, 22, 24, 21, 8);
+			draw_loc_icons(4, MENU_ICON_BUY, MENU_ICON_SELL, MENU_ICON_TALK, MENU_ICON_LEAVE);
 
 			draw_main_screen();
 
@@ -194,6 +195,7 @@ void do_merchant(void)
 			set_audio_track(ARCHIVE_FILE_TERMS_XMI);
 
 			GUI_print_loc_line(ds_readbs(LOCATION) == LOCATION_MARKET ? get_ttx(679) : (ds_readws(TYPEINDEX) == 93 ?  get_ttx(46) : get_tx(ds_readws(CITYINDEX))));
+			// TYPEINDEX 93 is the merchant from random city event 6.
 
 			ds_writew(REQUEST_REFRESH, refresh = 0);
 
@@ -250,31 +252,31 @@ void do_merchant(void)
 			}
 		}
 
-		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			answer = GUI_radio(get_ttx(430), 4,
 						get_ttx(431), get_ttx(432),
 						get_ttx(343), get_ttx(434)) - 1;
 
 			if (answer != -2) {
-				ds_writews(ACTION, answer + 129);
+				ds_writews(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 132) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 
 			done = 1;
 
-		} else if (ds_readws(ACTION) == 129) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 
 			buy_screen();
 
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 
 			sell_screen(shop_p);
 
-		} else if (ds_readws(ACTION) == 131) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 
 			talk_merchant();
 
@@ -286,7 +288,7 @@ void do_merchant(void)
 
 	copy_palette();
 
-	turnaround();
+	leave_location();
 }
 
 void talk_merchant(void)

@@ -1,5 +1,5 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg047 (heros, group)
+ *	Rewrite of DSA1 v3.02_de functions of seg047 (heroes, group)
  *	Functions rewritten: 18/18 (complete)
  *
  *	Borlandified and identical
@@ -102,7 +102,7 @@ unsigned short hero_is_diseased(Bit8u *hero)
 	signed short i;
 
 	for (i = 1; i <= 7; i++)
-		if (host_readbs(hero + (HERO_ILLNESS-5) + i * 5) == -1)
+		if (host_readbs(hero + HERO_ILLNESS + i * SIZEOF_HERO_ILLNESS) == -1)
 			return i;
 
 	return 0;
@@ -122,7 +122,7 @@ unsigned short hero_is_poisoned(Bit8u *hero)
 	signed short i;
 
 	for (i = 1; i <= 9; i++)
-		if (host_readbs(hero + (HERO_POISON-5) + i * 5) == -1)
+		if (host_readbs(hero + HERO_POISON + i * SIZEOF_HERO_POISON) == -1)
 			return i;
 
 	return 0;
@@ -212,13 +212,13 @@ short check_hero_KK_unused(short val)
 }
 
 /**
- *	check_heros_KK
+ *	check_heroes_KK
  * \param   val         value to compare KK with
  *
  *	This function, like hero_check_KK_unused, is buggy!
  *	It does not check if the first slot is a valid hero.
  */
-short check_heros_KK(short val) {
+short check_heroes_KK(short val) {
 
 	Bit8u *hero;
 	signed short sum;
@@ -292,6 +292,9 @@ void update_atpa(Bit8u *hero)
 
 	/* ATPA base = (IN + KK + GE) / 5 rounded */
 	erg = div(host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_IN)) + host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_GE)), 5);
+	/* Original-Bug:
+	 * According to DSA 3 rules, AT basis value is (MU + KK + GE) / 5
+	 * (PA basis (IN + KK + GE)/5 is correct */
 
 	/* round up */
 	if (erg.rem >= 3)
@@ -327,7 +330,7 @@ void update_atpa(Bit8u *hero)
  * \brief   selects a hero to enter / get deleted
  *
  * \param   ptr         pointer
- * \param   entries     how many heros
+ * \param   entries     how many heroes
  * \param   mode        1 = enter / -1 = delete
  * \return              the number of the selected hero.
  * Used only in temples.
@@ -397,7 +400,7 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
  *
  * \param   title       titlestring for the menu
  * \return              index of the hero or -1 (ESC).
- * Remark: The available heros must be in the group only.
+ * Remark: The available heroes must be in the group only.
  */
 signed short select_hero_from_group(Bit8u *title)
 {
@@ -423,7 +426,7 @@ signed short select_hero_from_group(Bit8u *title)
 
 	for (i = 0; i <= 6; i++) {
 
-		hero = (RealPt)ds_readd(HEROS) + i * SIZEOF_HERO;
+		hero = (RealPt)ds_readd(HEROES) + i * SIZEOF_HERO;
 
 		if (host_readb(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
@@ -474,7 +477,7 @@ signed short select_hero_from_group(Bit8u *title)
  *
  * \param   title       titlestring for the menu
  * \return              index of the hero or -1 (ESC).
- * Remark: The available heros must be in the group and pass check_hero().
+ * Remark: The available heroes must be in the group and pass check_hero().
  */
 signed short select_hero_ok(Bit8u *title)
 {
@@ -498,7 +501,7 @@ signed short select_hero_ok(Bit8u *title)
 	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
-	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
+	for (hero = (RealPt)ds_readd(HEROES), i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if (host_readb(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
@@ -551,7 +554,7 @@ signed short select_hero_ok(Bit8u *title)
  *
  * \param   title       titlestring for the menu
  * \return              index of the hero or -1 (ESC).
- * Remark: The available heros must be in the group, pass check_hero() and
+ * Remark: The available heroes must be in the group, pass check_hero() and
  *		you are forced to select a hero.
  */
 signed short select_hero_ok_forced(Bit8u *title)
@@ -576,7 +579,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
-	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
+	for (hero = (RealPt)ds_readd(HEROES), i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if (host_readb(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
@@ -628,7 +631,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 /**
  * \brief   counts the heroes in the current group
  *
- * \return              how many alive heros are in the group.
+ * \return              how many alive heroes are in the group.
  */
 signed short count_heroes_in_group(void)
 {

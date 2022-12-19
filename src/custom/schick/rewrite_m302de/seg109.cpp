@@ -394,7 +394,7 @@ void TRV_found_replenish_place(signed short a0)
 
 		/* Original-Bug: This code assumes, that the leader of the group will replenish the stocks,
 		 *		 which may not be the case, since replenish_stocks() asks who may do it.
-		 *		 To be prepared clear these arrays for all heros.
+		 *		 To be prepared clear these arrays for all heroes.
 		*/
 #ifdef M302de_ORIGINAL_BUGFIX
 		for (hero_pos = 0; hero_pos <= 7; hero_pos++) {
@@ -425,14 +425,16 @@ void TRV_found_replenish_place(signed short a0)
 	}
 }
 
-void TRV_found_inn(signed short city, signed short type)
+void TRV_found_inn(signed short town_id, signed short type)
+/* strange: why does an inn in the countryside need a town_id?
+ * This feels like a dirty hack... */
 {
 	load_ani(12);
 	draw_main_screen();
 	init_ani(0);
 
 	if (GUI_bool(get_tx(23))) {
-		ds_writew(CITYINDEX, city);
+		ds_writew(CITYINDEX, town_id);
 		ds_writew(TYPEINDEX, type);
 		ds_writeb(LOCATION, LOCATION_INN);
 
@@ -578,11 +580,11 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 {
 	signed short done;
 	signed short answer;
-	signed short nr_heros;
+	signed short nr_heroes;
 	Bit32u p_money;
 
 	done = 0;
-	nr_heros = count_heroes_in_group();
+	nr_heroes = count_heroes_in_group();
 
 	do {
 
@@ -600,7 +602,8 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 
 		if (answer == 1) {
 
-			price *= 5 * nr_heros;
+			/* Original-Bug: If party doesn't have enough money, the price will stay at *5*nr_heroes (typically *30) afterwards... */
+			price *= 5 * nr_heroes;
 			p_money = get_party_money();
 
 			if ((Bit32u)price > p_money) {
@@ -614,7 +617,7 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 
 		} else if (answer == 2) {
 
-			price *= nr_heros;
+			price *= nr_heroes;
 			p_money = get_party_money();
 
 			if ((Bit32u)price > p_money) {
@@ -645,12 +648,13 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 	return 1;
 }
 
+/* Vaermhag <-> Varnheim: inn "Golfblick" */
 void tevent_001(void)
 {
-	TRV_found_inn(40, 65);
+	TRV_found_inn(TOWNS_DASPOTA, 65);
 }
 
-/* The hunter Varnheim <-> Daspota */
+/* Varnheim <-> Daspota: hunter */
 void tevent_002(void)
 {
 	signed short answer;
@@ -776,7 +780,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 				timewarp(HOURS(1));
 
-				get_item(45, 1, foods1);
+				get_item(ITEM_FOOD_PACKAGE, 1, foods1);
 
 				answer = 0;
 			} else {
@@ -799,7 +803,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 		add_hero_ap_all(ap_all2);
 
 		if (foods2 != 0) {
-			get_item(45, 1, foods2);
+			get_item(ITEM_FOOD_PACKAGE, 1, foods2);
 		}
 
 	} else if (answer == 1) {
@@ -827,15 +831,17 @@ void tevent_005(void)
 }
 
 void tevent_006(void)
+	/* Tjeula <-> Faehrstation Tjeula: ferry */
 {
 	TRV_ferry(get_tx(69), 4);
 }
 
 void tevent_007(void)
+/* Tjeula <-> Breida: bridge building */
 {
 	signed short season = get_current_season();
 
-	if (season == 3 || season == 1) {
+	if (season == SEASON_AUTUMN || season == SEASON_SPRING) {
 		TRV_barrier(16);
 	}
 }
@@ -870,24 +876,26 @@ void TRV_barrier(signed short text_start)
 			done = 1;
 		} else {
 
+			/* count ropes and rope ladders in the active group */
 			hero = get_hero(0);
 			for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
-					l_di+=hero_count_item(hero, 121);
-					l_di+=hero_count_item(hero, 32);
+					l_di+=hero_count_item(hero, ITEM_ROPE);
+					l_di+=hero_count_item(hero, ITEM_ROPE_LADDER);
 				}
 			}
 
 			if (l_di >= 2) {
-				/* enough */
+				/* at least 2 ropes or rope ladders: enough */
 
 				i = 0;
 				l_di = 1;
 
 				do {
+					/* look for a suitable axe */
 					if (get_first_hero_with_item(ds_readb(TRAVEL_EVENT_AXES + i)) != -1)
 					{
 						l_di = 0;
@@ -897,7 +905,9 @@ void TRV_barrier(signed short text_start)
 
 				} while (l_di && ds_readbs(TRAVEL_EVENT_AXES + i) != -1);
 
-				if (l_di || get_first_hero_with_item(27) == -1) {
+				if
+					(l_di || get_first_hero_with_item(ITEM_HAMMER) == -1)
+				{
 
 					GUI_dialog_na(0, get_tx2(text_start + 4));
 
@@ -911,15 +921,15 @@ void TRV_barrier(signed short text_start)
 
 					add_hero_ap_all(10);
 
-					i = get_item_pos(hero = get_hero(get_first_hero_with_item(121)), 121);
+					i = get_item_pos(hero = get_hero(get_first_hero_with_item(ITEM_ROPE)), ITEM_ROPE);
 					if (i == -1) {
-						i = get_item_pos(hero = get_hero(get_first_hero_with_item(32)), 32);
+						i = get_item_pos(hero = get_hero(get_first_hero_with_item(ITEM_ROPE_LADDER)), ITEM_ROPE_LADDER);
 					}
 					drop_item(hero, i, 1);
 
-					i = get_item_pos(hero = get_hero(get_first_hero_with_item(121)), 121);
+					i = get_item_pos(hero = get_hero(get_first_hero_with_item(ITEM_ROPE)), ITEM_ROPE);
 					if (i == -1) {
-						i = get_item_pos(hero = get_hero(get_first_hero_with_item(32)), 32);
+						i = get_item_pos(hero = get_hero(get_first_hero_with_item(ITEM_ROPE_LADDER)), ITEM_ROPE_LADDER);
 					}
 					drop_item(hero, i, 1);
 
@@ -952,6 +962,7 @@ void TRV_barrier(signed short text_start)
 	} while (done == 0);
 }
 
+/* Tjeula <-> Breida: kleiner Bachlauf */
 void tevent_008(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT008_FLAG)) ||
@@ -976,7 +987,7 @@ void tevent_009(void)
 
 void tevent_010(void)
 {
-	TRV_found_inn(43, 66);
+	TRV_found_inn(TOWNS_VARNHEIM, 66);
 }
 
 void tevent_012(void)

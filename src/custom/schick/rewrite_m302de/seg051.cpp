@@ -65,7 +65,7 @@ void do_wildcamp(void)
 	}
 
 	i = !ds_readb(GOOD_CAMP_PLACE) ? 6 : 7;
-	draw_loc_icons(i, 9, 16, 25, 11, 20, 17, 48);
+	draw_loc_icons(i, MENU_ICON_GUARDS, MENU_ICON_REPLENISH_SUPPLIES, MENU_ICON_APPLY_SKILL, MENU_ICON_MAGIC, MENU_ICON_COLLECT_HERBS, MENU_ICON_SLEEP, MENU_ICON_QUIT_CAMP);
 
 	while (done == 0) {
 
@@ -86,7 +86,7 @@ void do_wildcamp(void)
 
 		handle_gui_input();
 
-		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			i = !ds_readb(GOOD_CAMP_PLACE) ? 6 : 7;
 
@@ -97,11 +97,11 @@ void do_wildcamp(void)
 						get_ttx(814)) -1;
 
 			if (answer != -2) {
-				ds_writews(ACTION, answer + 129);
+				ds_writews(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 129) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 			answer = -1;
 
@@ -136,7 +136,7 @@ void do_wildcamp(void)
 						}
 
 						if (answer != -1) {
-							if (hero_busy(get_hero(answer))) {
+							if (hero_brewing(get_hero(answer))) {
 								GUI_output(get_ttx(730));
 								answer = -1;
 							}
@@ -149,7 +149,7 @@ void do_wildcamp(void)
 				}
 			}
 
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 
 			if (ds_readb(GOOD_CAMP_PLACE) == 99) {
 				l_di = replenish_stocks(ds_readws(REPLENISH_STOCKS_MOD) + 99, stock_tries);
@@ -161,16 +161,16 @@ void do_wildcamp(void)
 				stock_tries++;
 			}
 
-		} else if (ds_readws(ACTION) == 131) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 
 			GUI_use_skill2(0, get_ttx(395));
 
-		} else if (ds_readws(ACTION) == 132) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 
 			answer = select_hero_ok(get_ttx(317));
 
 			if (answer != -1) {
-				if (hero_busy(get_hero(answer))) {
+				if (hero_brewing(get_hero(answer))) {
 					GUI_output(get_ttx(730));
 					answer = -1;
 				}
@@ -178,10 +178,10 @@ void do_wildcamp(void)
 
 			if (answer != -1) {
 
-				hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
+				hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer;
 
 
-				if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
+				if (host_readbs(Real2Host(hero) + HERO_TYPE) >= HERO_TYPE_WITCH) {
 
 					if (ds_readbs(WILDCAMP_GUARDSTATUS + answer) != 0 ||
 						ds_readbs(WILDCAMP_HERBSTATUS + answer) != 0 ||
@@ -202,14 +202,14 @@ void do_wildcamp(void)
 				}
 			}
 
-		} else if (ds_readws(ACTION) == 133) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 			/* COLLECT HERBS */
 
 			ds_writews(SKILLED_HERO_POS, get_skilled_hero_pos(TA_PFLANZENKUNDE));
 
 			answer = select_hero_ok(get_ttx(326));
 
-			if (answer != -1 && hero_busy(get_hero(answer))) {
+			if (answer != -1 && hero_brewing(get_hero(answer))) {
 				GUI_output(get_ttx(730));
 				answer = -1;
 			}
@@ -235,7 +235,7 @@ void do_wildcamp(void)
 
 					if (herb_tries < 1)
 					{
-						hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
+						hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer;
 
 						herb_hours = (signed char)GUI_input(get_ttx(327), 1);
 
@@ -254,7 +254,8 @@ void do_wildcamp(void)
 					}
 				}
 			}
-		} else if (ds_readws(ACTION) == 134) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_6) {
+			/* Sleep */
 
 			if (GUI_bool(get_ttx(318))) {
 
@@ -269,7 +270,7 @@ void do_wildcamp(void)
 
 				if (ds_readws(CAMP_INCIDENT) == -1) {
 
-					if ((ds_readbs(WILDCAMP_GUARDS) == -1 ? 60 : 10) > random_schick(100) && !ds_readds(INGAME_TIMERS + 0x10))
+					if ((ds_readbs(WILDCAMP_GUARDS) == -1 ? 60 : 10) > random_schick(100) && !ds_readds(INGAME_TIMERS + 4 * INGAME_TIMER_TRAVIA_SAFE_REST))
 					{
 						ds_writews(CAMP_INCIDENT, random_schick(3) - 1);
 					}
@@ -321,7 +322,7 @@ void do_wildcamp(void)
 
 				if (done == 0) {
 
-					hero = (RealPt)ds_readd(HEROS);
+					hero = (RealPt)ds_readd(HEROES);
 
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 						if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -339,6 +340,7 @@ void do_wildcamp(void)
 					ds_writeb(FIG_INITIATIVE, 1);
 					ds_writew(FIG_DISCARD, 1);
 
+					/* pick a random campfight out of 4 possibilities */
 					do_fight(ds_readws((CAMPFIGHTS-2) + 2 * random_schick(4)));
 
 					if (ds_readb(TRAVEL_DETOUR) != 99 && ds_readw(GAME_STATE) == GAME_STATE_MAIN) {
@@ -354,7 +356,7 @@ void do_wildcamp(void)
 
 						if (l6 > 0) {
 							ds_writeb(FOOD_MOD, 1);
-							timewarp_until(HOURS(8));
+							timewarp_until_time_of_day(HOURS(8));
 							ds_writeb(FOOD_MOD, 0);
 						}
 					}
@@ -364,7 +366,7 @@ void do_wildcamp(void)
 
 				done = 1;
 			}
-		} else if (ds_readws(ACTION) == 135) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_7) {
 			done = 1;
 		}
 	}
@@ -373,7 +375,7 @@ void do_wildcamp(void)
 		ds_writeb(WILDCAMP_HERBSTATUS + i, ds_writeb(WILDCAMP_REPLSTATUS + i, 0));
 	}
 
-	turnaround();
+	leave_location();
 }
 
 signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
@@ -479,7 +481,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 	ds_writews(SKILLED_HERO_POS, get_skilled_hero_pos(TA_WILDNISLEBEN));
 	hero_pos = select_hero_ok(get_ttx(322));
 
-	if (hero_pos != -1 && hero_busy(get_hero(hero_pos))) {
+	if (hero_pos != -1 && hero_brewing(get_hero(hero_pos))) {
 		GUI_output(get_ttx(730));
 		hero_pos = -1;
 	}
@@ -507,19 +509,19 @@ signed short replenish_stocks(signed short mod, signed short tries)
 				if (tries < 2) {
 
 					timewarp(HOURS(1));
-					ds_writed(MAIN_ACTING_HERO, (Bit32u)(hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
+					ds_writed(MAIN_ACTING_HERO, (Bit32u)(hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 					ds_writeb(WILDCAMP_REPLSTATUS + hero_pos, 1);
 					retval = 1;
 
 					/* search for water */
-					if (test_skill(Real2Host(hero), TA_WILDNISLEBEN, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 4)) {
+					if (test_skill(Real2Host(hero), TA_WILDNISLEBEN, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_EFFERD_FIND_WATER)) {
 
 						/* found water */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ttx(324),
 							(char*)Real2Host(hero) + HERO_NAME2);
 
-						/* fill up all waterskins and remove thirst of all living heros in the current group */
+						/* fill up all waterskins and remove thirst of all living heroes in the current group */
 						hero2 = get_hero(0);
 						for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 							if (host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -528,10 +530,10 @@ signed short replenish_stocks(signed short mod, signed short tries)
 							{
 								host_writebs(hero2 + HERO_THIRST, 0);
 
-								for (j = 0; j < 23; j++) {
-									if (host_readws(hero2 + 14 * j + HERO_ITEM_HEAD) == 30) {
-										and_ptr_bs(hero2 + 14 * j + HERO_ITEM_HEAD + 4, 0xfb);
-										and_ptr_bs(hero2 + 14 * j + HERO_ITEM_HEAD + 4, 0xfd);
+								for (j = 0; j < NR_HERO_INVENTORY_SLOTS; j++) {
+									if (host_readws(hero2 + SIZEOF_INVENTORY * j + HERO_INVENTORY + INVENTORY_ITEM_ID) == ITEM_WATERSKIN) {
+										and_ptr_bs(hero2 + SIZEOF_INVENTORY * j + HERO_INVENTORY + INVENTORY_FLAGS, 0xfb); /* unset 'empty' flag */
+										and_ptr_bs(hero2 + SIZEOF_INVENTORY * j + HERO_INVENTORY + INVENTORY_FLAGS, 0xfd); /* unset 'half_empty' flag */
 									}
 								}
 							}
@@ -547,9 +549,9 @@ signed short replenish_stocks(signed short mod, signed short tries)
 					delay_or_keypress(200);
 
 					/* search for food */
-					if (test_skill(Real2Host(hero), TA_FAEHRTENSUCHEN, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 0xc)) {
+					if (test_skill(Real2Host(hero), TA_FAEHRTENSUCHEN, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 4 * INGAME_TIMER_FIRUN_HUNT)) {
 
-						/* remove hunger of all living heros in the current group */
+						/* remove hunger of all living heroes in the current group */
 						hero2 = get_hero(0);
 						for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 							if (host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -561,7 +563,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 						}
 
 						/* the group may get three food packages */
-						if (!get_item(45, 1, 3)) {
+						if (!get_item(ITEM_FOOD_PACKAGE, 1, 3)) {
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(306));
 							ds_writew(REQUEST_REFRESH, 1);
 						} else {

@@ -201,7 +201,7 @@ dummy:
 
 		if (c == 0x0d) {
 
-		} else if (ds_readw(ACTION) == 1) {
+		} else if (ds_readw(ACTION) == ACTION_ID_ESC) {
 			host_writeb(dst_start, 0);
 			refresh_screen_size();
 			ds_writew(ACTION, 0);
@@ -424,6 +424,11 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	return retval;
 }
 
+/**
+ * \brief   shows a text box with two radio buttons "Ja" (yes) and "Nein" (no).
+ *
+ * \param   text	the displayed text
+ */
 signed short GUI_bool(Bit8u *text)
 {
 	signed short ret_radio;
@@ -644,26 +649,25 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 			}
 
 			if (ds_readw(MOUSE2_EVENT) != 0 ||
-				ds_readw(ACTION) == 1 ||
-				ds_readw(ACTION) == 0x51) {
+				ds_readw(ACTION) == ACTION_ID_ESC ||
+				ds_readw(ACTION) == ACTION_ID_PAGE_DOWN) {
+				/* close menu */
 
 				retval = -1;
 				done = 1;
 				ds_writew(MOUSE2_EVENT, 0);
 			}
 
-			if (ds_readw(ACTION) == 0x1c) {
+			if (ds_readw(ACTION) == ACTION_ID_RETURN) {
 				retval = ds_readw(MENU_SELECTED);
 				done = 1;
 			}
 
-			/* Key UP */
-			if (ds_readw(ACTION) == 0x48) {
+			if (ds_readw(ACTION) == ACTION_ID_UP) {
 				if (dec_ds_ws_post(MENU_SELECTED) == 1)
 					ds_writew(MENU_SELECTED, positions);
 			}
-			/* Key DOWN */
-			if (ds_readw(ACTION) == 0x50) {
+			if (ds_readw(ACTION) == ACTION_ID_DOWN) {
 				if (inc_ds_ws_post(MENU_SELECTED) == positions)
 					ds_writew(MENU_SELECTED, 1);
 			}
@@ -674,9 +678,10 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 			}
 
 			if (ds_readw(GUI_BOOL_FLAG) != 0) {
-				if (ds_readw(ACTION) == 0x2c) {
+				/* in yes-no-mode, answer "Ja" (yes) can be selected with the 'J' key, and answer "Nein" (no) can be selected with the 'N' key. */
+				if (ds_readw(ACTION) == ACTION_ID_J) {
 					retval = done = 1;
-				} else if (ds_readw(ACTION) == 0x31) {
+				} else if (ds_readw(ACTION) == ACTION_ID_N) {
 					retval = 2;
 					done = 1;
 				}
@@ -762,13 +767,13 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	for (i = 0; i < options; l4 += 8, i++) {
 
 		/* highlight special option */
-		if (ds_readw(GAME_MODE) == 1 && ds_readw(SKILLED_HERO_POS) == i)
+		if (ds_readw(GAME_MODE) == GAME_MODE_BEGINNER && ds_readw(SKILLED_HERO_POS) == i)
 			set_textcolor(0xc9, 0xdf);
 
 		GUI_print_string((Bit8u*)va_arg(arguments, char*), l3, l4);
 
 		/* reset highlight special option */
-		if (ds_readw(GAME_MODE) == 1 && ds_readw(SKILLED_HERO_POS) == i)
+		if (ds_readw(GAME_MODE) == GAME_MODE_BEGINNER && ds_readw(SKILLED_HERO_POS) == i)
 			set_textcolor(0xff, 0xdf);
 	}
 
@@ -798,28 +803,28 @@ void GUI_print_fight_intro_msg(signed short fight_id)
 	signed short textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
-	if (ds_readbs(DUNGEON_INDEX) == 2) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_VERFALLENE_HERBERGE) {
 		DNG02_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 5) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_GOBLINHOEHLE) {
 		DNG5_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 6) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_DASPOTASCHATZ) {
 		DNG06_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 9) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_KULTSTAETTE_DES_NAMENLOSEN) {
 		DNG09_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 11) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_PIRATENHOEHLE) {
 		DNG11_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 12) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_ZWERGENFESTE) {
 		DNG12_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 13) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_VERLASSENE_MINE) {
 		DNG13_fight_intro(fight_id);
 	}
-	if (ds_readbs(DUNGEON_INDEX) == 14) {
+	if (ds_readbs(DUNGEON_INDEX) == DUNGEONS_ZWINGFESTE) {
 		DNG14_fight_intro(fight_id);
 	}
 

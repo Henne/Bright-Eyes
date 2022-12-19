@@ -71,9 +71,9 @@ void show_automap(void)
 				ds_writeb(LOCATION, (signed char)loc_bak);
 
 				if (ds_readb(DNG_MAP_SIZE) == 16) {
-					draw_loc_icons(1, 8);
+					draw_loc_icons(1, MENU_ICON_LEAVE);
 				} else {
-					draw_loc_icons(3, 27, 26, 8);
+					draw_loc_icons(3, MENU_ICON_SCROLL_LEFT, MENU_ICON_SCROLL_RIGHT, MENU_ICON_LEAVE);
 				}
 
 				render_automap(l_si);
@@ -87,7 +87,7 @@ void show_automap(void)
 
 			handle_gui_input();
 
-			if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
+			if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == ACTION_ID_PAGE_UP)) {
 
 				if (ds_readb(DNG_MAP_SIZE) == 16) {
 					l_di = GUI_radio(get_ttx(612), 1, get_ttx(613)) - 1;
@@ -100,13 +100,13 @@ void show_automap(void)
 				}
 
 				if (l_di != -2) {
-					ds_writew(ACTION, l_di + 129);
+					ds_writew(ACTION, l_di + ACTION_ID_ICON_1);
 				}
 			}
 
 			if (ds_readb(DNG_MAP_SIZE) != 16) {
 
-				if ((ds_readws(ACTION) == 129) || (ds_readws(ACTION) == 75)) {
+				if ((ds_readws(ACTION) == ACTION_ID_ICON_1) || (ds_readws(ACTION) == ACTION_ID_LEFT)) {
 
 					if (l_si > 0) {
 						render_automap(--l_si);
@@ -114,7 +114,7 @@ void show_automap(void)
 					}
 				}
 
-				if ((ds_readws(ACTION) == 130) || (ds_readws(ACTION) == 77)) {
+				if ((ds_readws(ACTION) == ACTION_ID_ICON_2) || (ds_readws(ACTION) == ACTION_ID_RIGHT)) {
 
 					if (l_si < 16) {
 						render_automap(++l_si);
@@ -123,8 +123,8 @@ void show_automap(void)
 				}
 			}
 
-			if (((ds_readws(ACTION) == 129) && (ds_readb(DNG_MAP_SIZE) == 16)) ||
-				((ds_readws(ACTION) == 131) && (ds_readb(DNG_MAP_SIZE) != 16)))
+			if (((ds_readws(ACTION) == ACTION_ID_ICON_1) && (ds_readb(DNG_MAP_SIZE) == 16)) ||
+				((ds_readws(ACTION) == ACTION_ID_ICON_3) && (ds_readb(DNG_MAP_SIZE) != 16)))
 			{
 				done = 1;
 			}
@@ -221,21 +221,22 @@ void render_automap(signed short x_off)
 		for (x = 0; x < 16; x++) {
 			if (is_discovered(x + x_off, y)) {
 
-				if (ds_readbs(DUNGEON_INDEX) != 0) {
+				if (ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE) {
+					/* in dungeon */
 
 					tile_type = div16(get_mapval_small(x, y));
 
 					draw_automap_square(x, y,
-						(tile_type <= 0)? 19 :
-							(((tile_type == 1) || (tile_type == 9) || tile_type == 2) ? 11 :
-							((tile_type == 4) ? 6 :
-							((tile_type == 3) ? 3 :
-							((tile_type == 5) ? 2 :
-							((tile_type == 8) ? 17 :
-							((tile_type == 6) ? 9 : 1)))))), -1);
-
+						(tile_type <= DNG_TILE_CORRIDOR)? MAP_TILE_DARK_GREY :
+							(((tile_type == DNG_TILE_CLOSED_DOOR) || (tile_type == DNG_TILE_SMASHED_DOOR) || tile_type == DNG_TILE_OPEN_DOOR) ? MAP_TILE_DARK_RED :
+							((tile_type == DNG_TILE_STAIR_UP) ? MAP_TILE_LIGHT_BLUE :
+							((tile_type == DNG_TILE_STAIR_DOWN) ? MAP_TILE_BLUE :
+							((tile_type == DNG_TILE_PIT_IN_CEILING) ? MAP_TILE_BRIGHT_GREEN :
+							((tile_type == DNG_TILE_CHEST) ? MAP_TILE_BROWN :
+							((tile_type == DNG_TILE_PIT) ? MAP_TILE_DARK_GREEN : MAP_TILE_RED)))))), -1);
 
 				} else {
+					/* in a town */
 
 					if (!(tile_type = get_maploc(x + x_off, y))) {
 						tile_type = get_border_index((ds_readb(DNG_MAP_SIZE) == 16) ?
@@ -244,19 +245,19 @@ void render_automap(signed short x_off)
 					}
 
 					draw_automap_square(x, y,
-						(tile_type <= 0)? 19 :
-							((tile_type == 6) ? 3 :
-							((tile_type == 7) ? 18 :
-							((tile_type == 8) ? 1 :
-							((tile_type == 1) ? 12 :
-							((tile_type == 9) ? 6 :
-							((tile_type == 10) ? 15 :
-							((tile_type == 11) ? 9 :
-							((tile_type == 12) ? 5 :
-							((tile_type == 13) ? 10 :
-							(((tile_type >= 2) && (tile_type <= 5)) ? 11 : 0)))))))))), -1);
+						(tile_type <= TOWN_TILE_STREET)? MAP_TILE_DARK_GREY :
+							((tile_type == TOWN_TILE_WATER) ? MAP_TILE_BLUE :
+							((tile_type == TOWN_TILE_GRASS) ? MAP_TILE_GREEN :
+							((tile_type == TOWN_TILE_SIGNPOST) ? MAP_TILE_RED :
+							((tile_type == TOWN_TILE_TEMPLE) ? MAP_TILE_ORANGE :
+							((tile_type == TOWN_TILE_INN_OR_TAVERN) ? MAP_TILE_LIGHT_BLUE :
+							((tile_type == TOWN_TILE_MERCHANT) ? MAP_TILE_GREY : /* The lightouse on Runin is also displayed in Gray */
+							((tile_type == TOWN_TILE_SMITH) ? MAP_TILE_DARK_GREEN :
+							((tile_type == TOWN_TILE_HEALER) ? MAP_TILE_PINK :
+							((tile_type == TOWN_TILE_BLACK_FINGER) ? MAP_TILE_DARK_PURPLE :
+							(((tile_type >= TOWN_TILE_HOUSE_1) && (tile_type <= TOWN_TILE_HOUSE_4)) ? MAP_TILE_DARK_RED : MAP_TILE_BLACK)))))))))), -1);
 
-					if ((tile_type != 0) && (tile_type != 7) && (tile_type != 6) && (tile_type != 8)) {
+					if ((tile_type != TOWN_TILE_STREET) && (tile_type != TOWN_TILE_GRASS) && (tile_type != TOWN_TILE_WATER) && (tile_type != TOWN_TILE_SIGNPOST)) {
 
 						entrance_dir = (ds_readb(DNG_MAP_SIZE) == 16) ?
 										get_mapval_small(x, y) :
@@ -270,12 +271,19 @@ void render_automap(signed short x_off)
 		}
 	}
 
-	if (((ds_readws(X_TARGET) - x_off) >= 0) && ((ds_readws(X_TARGET) - x_off) <= 16)) {
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* draw yellow arrow at the position of the active group */
+
+	/* Original-Bug 31: If there is another group on the same map square as the active group, the automap will mark that square by a purple arrow (for the other group) instead of a yellow one (for the active group).
+	 * The reason is that the yellow arrow will be overdrawn by the purple ones, which are drawn later. */
+	if (((ds_readws(X_TARGET) - x_off) >= 0) && ((ds_readws(X_TARGET) - x_off) <= 16)) { /* shouldn't this always be true? */
 
 		draw_automap_square(ds_readws(X_TARGET) - x_off, ds_readws(Y_TARGET),
-					4, ds_readbs(DIRECTION));
+					MAP_TILE_YELLOW_ARROW, ds_readbs(DIRECTION));
 	}
+#endif
 
+	/* draw purple arrows at the positions of other groups */
 	for (group_i = 0; group_i < 6; group_i++) {
 
 		if ((ds_readbs(CURRENT_GROUP) != group_i) &&
@@ -289,14 +297,27 @@ void render_automap(signed short x_off)
 		{
 			draw_automap_square(ds_readws(GROUPS_X_TARGET + 2 * group_i) - x_off,
 					ds_readws(GROUPS_Y_TARGET + 2 * group_i),
-					16,
+					MAP_TILE_PURPLE_ARROW,
 					ds_readbs(GROUPS_DIRECTION + group_i));
 		}
 	}
 
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* draw yellow arrow at the position of the active group */
+
+	/* Original-Bug 31: see above.
+	 * Fix: Move the code block drawing the yellow arrow after the one drawing the purple arrows. */
+	if (((ds_readws(X_TARGET) - x_off) >= 0) && ((ds_readws(X_TARGET) - x_off) <= 16)) { /* shouldn't this always be true? */
+
+		draw_automap_square(ds_readws(X_TARGET) - x_off, ds_readws(Y_TARGET),
+					MAP_TILE_YELLOW_ARROW, ds_readbs(DIRECTION));
+	}
+#endif
+
+	/* In the target selector screen of the Transversalis spell, mark the target with a cross */
 	if (((ds_readws(AUTOMAP_SELX) - x_off) >= 0) && ((ds_readws(AUTOMAP_SELX) - x_off) <= 16)) {
 
-		draw_automap_square(ds_readws(AUTOMAP_SELX) - x_off,	ds_readws(AUTOMAP_SELY), 7, -1);
+		draw_automap_square(ds_readws(AUTOMAP_SELX) - x_off,	ds_readws(AUTOMAP_SELY), MAP_TILE_CROSS, -1);
 	}
 }
 
@@ -518,9 +539,9 @@ signed short select_teleport_dest(void)
 	set_ani_pal(p_datseg + PALETTE_FIGHT2);
 
 	if (ds_readb(DNG_MAP_SIZE) == 16) {
-		draw_loc_icons(1, 11);
+		draw_loc_icons(1, MENU_ICON_MAGIC);
 	} else {
-		draw_loc_icons(3, 27, 26, 11);
+		draw_loc_icons(3, MENU_ICON_SCROLL_LEFT, MENU_ICON_SCROLL_RIGHT, MENU_ICON_MAGIC);
 	}
 
 	done = 0;
@@ -528,7 +549,7 @@ signed short select_teleport_dest(void)
 	do {
 		handle_input();
 
-		if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
+		if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == ACTION_ID_PAGE_UP)) {
 
 			if (ds_readb(DNG_MAP_SIZE) == 16) {
 				answer = GUI_radio(get_ttx(616), 1, get_ttx(617)) - 1;
@@ -540,11 +561,11 @@ signed short select_teleport_dest(void)
 			}
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if ((ds_readw(ACTION) == 75) &&
+		if ((ds_readw(ACTION) == ACTION_ID_LEFT) &&
 			(ds_readws(AUTOMAP_SELX) > 0) &&
 			is_discovered(ds_readws(AUTOMAP_SELX) - 1, ds_readws(AUTOMAP_SELY)))
 		{
@@ -552,7 +573,7 @@ signed short select_teleport_dest(void)
 			render_automap(l_si);
 			draw_automap_to_screen();
 
-		} else if ((ds_readw(ACTION) == 72) &&
+		} else if ((ds_readw(ACTION) == ACTION_ID_UP) &&
 			(ds_readws(AUTOMAP_SELY) > 0) &&
 			is_discovered(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY) - 1))
 		{
@@ -560,7 +581,7 @@ signed short select_teleport_dest(void)
 			render_automap(l_si);
 			draw_automap_to_screen();
 
-		} else if ((ds_readw(ACTION) == 77) &&
+		} else if ((ds_readw(ACTION) == ACTION_ID_RIGHT) &&
 			(ds_readb(DNG_MAP_SIZE) - 1 > ds_readws(AUTOMAP_SELX)) &&
 			is_discovered(ds_readws(AUTOMAP_SELX) + 1, ds_readws(AUTOMAP_SELY)))
 		{
@@ -568,7 +589,7 @@ signed short select_teleport_dest(void)
 			render_automap(l_si);
 			draw_automap_to_screen();
 
-		} else if ((ds_readw(ACTION) == 80) &&
+		} else if ((ds_readw(ACTION) == ACTION_ID_DOWN) &&
 			(ds_readws(AUTOMAP_SELY) < 16) &&
 			is_discovered(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY) + 1))
 		{
@@ -579,19 +600,19 @@ signed short select_teleport_dest(void)
 
 		if (ds_readb(DNG_MAP_SIZE) != 16) {
 
-			if ((ds_readw(ACTION) == 129) && (l_si > 0)) {
+			if ((ds_readw(ACTION) == ACTION_ID_ICON_1) && (l_si > 0)) {
 				render_automap(--l_si);
 				draw_automap_to_screen();
 			}
 
-			if ((ds_readw(ACTION) == 130) && (l_si < 16)) {
+			if ((ds_readw(ACTION) == ACTION_ID_ICON_2) && (l_si < 16)) {
 				render_automap(++l_si);
 				draw_automap_to_screen();
 			}
 		}
 
-		if (((ds_readw(ACTION) == 129) && (ds_readb(DNG_MAP_SIZE) == 16)) ||
-			((ds_readw(ACTION) == 131) && (ds_readb(DNG_MAP_SIZE) != 16)))
+		if (((ds_readw(ACTION) == ACTION_ID_ICON_1) && (ds_readb(DNG_MAP_SIZE) == 16)) ||
+			((ds_readw(ACTION) == ACTION_ID_ICON_3) && (ds_readb(DNG_MAP_SIZE) != 16)))
 		{
 			done = 1;
 		}
@@ -603,7 +624,7 @@ signed short select_teleport_dest(void)
 		get_mapval_small(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY)) :
 		get_mapval_large(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY));
 
-	if (ds_readbs(CURRENT_TOWN) != 0) {
+	if (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) {
 		l_di = get_border_index(l_di);
 	} else {
 		l_di = div16(l_di);
@@ -618,7 +639,7 @@ signed short select_teleport_dest(void)
 		host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
 	} else if (((ds_readbs(DUNGEON_INDEX) != 0) && (l_di == 15)) ||
-			((ds_readbs(CURRENT_TOWN) != 0) && (((l_di >= 2) && (l_di <= 5)) ||
+			((ds_readbs(CURRENT_TOWN) != TOWNS_NONE) && (((l_di >= 2) && (l_di <= 5)) ||
 			(l_di == 6))))
 	{
 		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(611));
@@ -663,7 +684,7 @@ signed short get_maploc(signed short x, signed short y)
 		if (pos_xy == (28 << 8) + 9) {
 			return 9;
 		}
-	} else if (ds_readbs(CURRENT_TOWN) == TOWNS_GUDDASUN) {
+	} else if (ds_readbs(CURRENT_TOWN) == TOWNS_GUDDASUNDEN) {
 		if (pos_xy == (1 << 8) + 14) {
 			return 8;
 		}

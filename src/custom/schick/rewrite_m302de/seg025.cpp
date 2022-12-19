@@ -51,7 +51,7 @@ namespace M302de {
 
 static void (*locationhandler[])(void) = {
 	NULL,
-	do_location1,
+	do_location1, /* empty function */
 	do_temple,
 	do_tavern,
 	do_healer,
@@ -61,7 +61,7 @@ static void (*locationhandler[])(void) = {
 	do_smith,
 	do_market,
 	show_citizen,
-	do_harbour,
+	do_harbor,
 	enter_map,
 	do_informer,
 	show_entrance,
@@ -85,7 +85,7 @@ void show_entrance(void)
 		DNG_enter_dungeon(ds_readws(TYPEINDEX));
 	} else {
 
-		turnaround();
+		leave_location();
 	}
 }
 
@@ -114,7 +114,7 @@ void show_citizen(void)
 				if (!show_storytext()) {
 					GUI_print_loc_line(Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)));
 				} else {
-					ds_writew(ACTION, 1);
+					ds_writew(ACTION, ACTION_ID_ESC);
 				}
 			} else {
 				GUI_print_loc_line(Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)));
@@ -129,7 +129,7 @@ void show_citizen(void)
 	ds_writew(MOUSE1_EVENT2, 0);
 	set_var_to_zero();
 	copy_palette();
-	turnaround();
+	leave_location();
 }
 
 /**
@@ -206,10 +206,10 @@ void do_house(void)
 
 						if (ds_readds(DAY_TIMER) < HOURS(6)) {
 							/* before 6:00 turn clock to 0:00 */
-							timewarp_until(0);
+							timewarp_until_time_of_day(HOURS(0));
 						}
 
-						timewarp_until(HOURS(6));
+						timewarp_until_time_of_day(HOURS(6));
 
 						GUI_output(get_ttx(633));
 					}
@@ -220,7 +220,7 @@ void do_house(void)
 
 		set_var_to_zero();
 
-		turnaround();
+		leave_location();
 
 	} else {
 		ds_writeb(LOCATION, ds_readb(LOCATION_BAK));
@@ -250,7 +250,7 @@ void do_informer(void)
 	else if (no == 13) do_talk(8, 2);
 	else if (no == 14) do_talk(9, 1);
 
-	turnaround();
+	leave_location();
 }
 
 void enter_map(void)
@@ -259,7 +259,7 @@ void enter_map(void)
 
 	ds_writew(TYPEINDEX, ds_readbs(CURRENT_TOWN));
 
-	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
+	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, TOWNS_NONE));
 	ds_writeb(SHOW_TRAVEL_MAP, 1);
 }
 
@@ -469,7 +469,7 @@ signed short game_options(void)
 
 	memset(Real2Host(ds_readd(BUFFER9_PTR)), 0, 28000);
 
-	if (ds_readbs(CURRENT_TOWN) != 0) {
+	if (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) {
 		/* if the party is in a town */
 		load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 
@@ -487,15 +487,15 @@ signed short game_options(void)
 	}
 
 	/* draw the icons */
-	draw_icon(3, 5, 30);
-	draw_icon(4, 5, 60);
-	draw_icon(2, 5, 90);
+	draw_icon(MENU_ICON_LOAD_GAME, 5, 30);
+	draw_icon(MENU_ICON_SAVE_GAME, 5, 60);
+	draw_icon(MENU_ICON_DELETE_HERO, 5, 90);
 
-	draw_icon(44, 70, 170);
-	draw_icon(52, 110, 170);
-	draw_icon(51, 150, 170);
-	draw_icon(53, 190, 170);
-	draw_icon(5, 236, 170);
+	draw_icon(MENU_ICON_HYGELLIK_MAP, 70, 170);
+	draw_icon(MENU_ICON_DIARY, 110, 170);
+	draw_icon(MENU_ICON_BATTLE_FRAME_RATE, 150, 170);
+	draw_icon(MENU_ICON_SOUND, 190, 170);
+	draw_icon(MENU_ICON_QUIT_GAME, 236, 170);
 
 	ds_writew(PIC_COPY_X1, 0);
 	ds_writew(PIC_COPY_Y1, 0);
@@ -525,7 +525,7 @@ signed short game_options(void)
 		handle_input();
 		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0);
 
-		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			/* use the radio menu */
 			answer = GUI_radio(get_ttx(590), 9,
@@ -540,11 +540,11 @@ signed short game_options(void)
 						get_ttx(589)) - 1;
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 129) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 			do {
 				game_state = load_game_state();
@@ -554,29 +554,29 @@ signed short game_options(void)
 				done = 1;
 			}
 
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 
 			if (save_game_state()) {
 				done = 1;
 			}
 
-		} else if (ds_readws(ACTION) == 131) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 
 			ds_writeb(RENDERBUF_IN_USE_FLAG, 1);
 			char_erase();
 			ds_writeb(RENDERBUF_IN_USE_FLAG, 0);
 
-		} else if (ds_readws(ACTION) == 132) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 
 			ds_writeb(RENDERBUF_IN_USE_FLAG, 1);
 			show_treasure_map();
 			ds_writeb(SPECIAL_SCREEN, 1);
 
-		} else if (ds_readws(ACTION) == 133) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 
 			diary_show();
 			done = 1;
-		} else if (ds_readws(ACTION) == 134) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_6) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ttx(827),
@@ -588,11 +588,11 @@ signed short game_options(void)
 				ds_writew(DELAY_FACTOR, new_delay);
 			}
 
-		} else if (ds_readws(ACTION) == 135) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_7) {
 
 			sound_menu();
 
-		} else if (ds_readws(ACTION) == 136) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_8) {
 
 			if (GUI_bool(get_ttx(299))) {
 
@@ -600,7 +600,7 @@ signed short game_options(void)
 				ds_writew(GAME_STATE, GAME_STATE_QUIT);
 			}
 
-		} else if (ds_readws(ACTION) == 137) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_9) {
 			done = 1;
 		}
 
@@ -612,7 +612,7 @@ signed short game_options(void)
 	ds_writew(REQUEST_REFRESH, 1);
 	ds_writeb(SPECIAL_SCREEN, 0);
 
-	if (ds_readbs(CURRENT_TOWN) != 0) {
+	if (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) {
 		ds_writeb(FADING_STATE, 3);
 	}
 
@@ -740,9 +740,9 @@ void do_location(void)
 }
 
 /**
- * \brief   turn around in a pseudo 3d-view
+ * \brief   leaves a location, including a turn around (rotate by 180 degrees) of the party
  */
-void turnaround(void)
+void leave_location(void)
 {
 	set_var_to_zero();
 
@@ -753,7 +753,7 @@ void turnaround(void)
 	ds_writew(X_TARGET, ds_readw(X_TARGET_BAK));
 	ds_writew(Y_TARGET, ds_readw(Y_TARGET_BAK));
 
-	/* recalc direction */
+	/* rotate party by 180 degrees */
 	ds_writeb(DIRECTION, (ds_readbs(DIRECTION) + 2) % 4);
 
 	set_to_ff();

@@ -28,7 +28,7 @@
 namespace M302de {
 #endif
 
-int GRP_compare_heros(const void *p1, const void *p2)
+int GRP_compare_heroes(const void *p1, const void *p2)
 {
 	Bit8u *hero1, *hero2;
 
@@ -114,11 +114,11 @@ int GRP_compare_heros(const void *p1, const void *p2)
 	return 0;
 }
 
-void GRP_sort_heros(void)
+void GRP_sort_heroes(void)
 {
 	signed short i;
 
-	qsort((void*)get_hero(0), 6, SIZEOF_HERO, GRP_compare_heros);
+	qsort((void*)get_hero(0), 6, SIZEOF_HERO, GRP_compare_heroes);
 
 	for (i = 0; i < 6; i++) {
 		host_writeb(get_hero(i) + HERO_GROUP_POS, i + 1);
@@ -135,7 +135,7 @@ void GRP_save_pos(signed short group)
 
 	group &= 0x7fff;
 
-	GRP_sort_heros();
+	GRP_sort_heroes();
 
 	ds_writeb(GROUPS_DIRECTION + group, ds_readbs(DIRECTION));
 
@@ -163,20 +163,28 @@ void GRP_save_pos(signed short group)
 
 void GRP_split(void)
 {
-	signed short new_group;
+	signed short new_group_id;
 	signed short not_empty;
 	signed short answer;
 
-	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1)) {
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 13:
+	 * Split group does not work if the active group consists of 2 available heroes and there is an NPC in another group. */
+	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1))
+#else
+	if (count_heroes_available_in_group_ignore_npc() <= 1)
+#endif
+	{
+		/* don't allow to split a group consisting of a single hero or of a single hero + NPC */
 
-		GUI_output(get_ttx(514));
+		GUI_output(get_ttx(514)); /* Einer alleine kann sich doch nicht aufteilen... Oder soll er sich zerreissen? */
 	} else {
 
 		not_empty = 0;
-		new_group = 0;
+		new_group_id = 0;
 
-		while (ds_readbs(GROUP_MEMBER_COUNTS + new_group) != 0) {
-			new_group++;
+		while (ds_readbs(GROUP_MEMBER_COUNTS + new_group_id) != 0) {
+			new_group_id++;
 		}
 
 		do {
@@ -188,15 +196,22 @@ void GRP_split(void)
 			} else {
 
 				not_empty = 1;
-				host_writeb(get_hero(answer) + HERO_GROUP_NO, (signed char)new_group);
-				inc_ds_bs_post(GROUP_MEMBER_COUNTS + new_group);
+				host_writeb(get_hero(answer) + HERO_GROUP_NO, (signed char)new_group_id);
+				inc_ds_bs_post(GROUP_MEMBER_COUNTS + new_group_id);
 				dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 			}
 
-		} while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1));
+		}
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 14:
+	 * Split group does not allow to select all but one available hero of the active group if there is an NPC in another group. */
+		while (count_heroes_available_in_group() > (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1));
+#else
+		while (count_heroes_available_in_group_ignore_npc() > 1);
+#endif
 
 		if (not_empty) {
-			GRP_save_pos(new_group);
+			GRP_save_pos(new_group_id);
 		}
 	}
 }
@@ -240,7 +255,7 @@ void GRP_merge(void)
 					inc_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 				}
 			}
-			GRP_sort_heros();
+			GRP_sort_heroes();
 			answer = can_merge_group();
 		} while (answer != -1);
 
@@ -295,7 +310,7 @@ void GRP_switch_to_next(signed short mode)
 						GUI_output(get_ttx(36));
 					} else {
 						if ((state == 2) && GUI_bool(get_ttx(773))) {
-							timewarp_until(0x7e90);
+							timewarp_until_time_of_day(HOURS(6));
 							done = 1;
 						}
 					}
@@ -313,8 +328,8 @@ void GRP_switch_to_next(signed short mode)
 
 	if (ds_readbs(CURRENT_GROUP) != group) {
 
-		if ( ( (ds_readbs(CURRENT_TOWN) != 0) && !ds_readbs(GROUPS_TOWN + group)) ||
-			(!ds_readbs(CURRENT_TOWN) && (ds_readbs(GROUPS_TOWN + group) != 0)))
+		if ( ( (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) && !ds_readbs(GROUPS_TOWN + group)) ||
+			(!ds_readbs(CURRENT_TOWN) && (ds_readbs(GROUPS_TOWN + group) != TOWNS_NONE)))
 		{
 			set_palette(p_datseg + PALETTE_ALLBLACK2, 0x00, 0x20);
 			set_palette(p_datseg + PALETTE_ALLBLACK2, 0x80, 0x20);
@@ -372,7 +387,7 @@ void GRP_switch_to_next(signed short mode)
 		ds_writeb(DUNGEON_INDEX_BAK, ds_readb(GROUPS_DNG_INDEX_BAK + group));
 		ds_writeb(DUNGEON_LEVEL_BAK, ds_readb(GROUPS_DNG_LEVEL_BAK + group));
 
-		GRP_sort_heros();
+		GRP_sort_heroes();
 
 		for (group = 0; group <= 6; group++) {
 			ds_writeb(FOOD_MESSAGE + group, ds_writeb(UNCONSCIOUS_MESSAGE + group, 0));
@@ -386,7 +401,7 @@ struct dummy {
 	char a[SIZEOF_HERO];
 };
 
-void GRP_swap_heros(void)
+void GRP_swap_heroes(void)
 {
 	signed short hero1_no;
 	signed short hero2_no;
@@ -466,7 +481,7 @@ void GRP_move_hero(signed short src_pos)
 	signed char src_herbstatus;
 	signed char i;
 
-	/* dont move NPC */
+	/* don't move NPC */
 	if (src_pos != 6) {
 
 		ds_writew(MOUSE_POSY_MIN, 157);
@@ -646,7 +661,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 					dec_ptr_bs(hero + HERO_RUHE_KOERPER);
 				}
 
-				if (!hero_busy(hero)) {
+				if (!hero_brewing(hero)) {
 
 					le_regen = random_schick(6) + quality;
 					ae_regen = random_schick(6) + quality;
@@ -662,7 +677,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 					}
 
 					/* swap LE and AE */
-					if ((host_readbs(hero + HERO_TYPE) >= 7) && (le_regen < ae_regen)) {
+					if ((host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH) && (le_regen < ae_regen)) {
 						tmp = ae_regen;
 						ae_regen = le_regen;
 						le_regen = tmp;
@@ -707,7 +722,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 					}
 
-					if (host_readbs(hero + HERO_TYPE) >= 7) {
+					if (host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH) {
 
 						diff = host_readws(hero + HERO_AE_ORIG) - host_readws(hero + HERO_AE);
 
@@ -742,6 +757,8 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 						}
 					}
 				} else {
+					/* hero brewing, HERO_STAFFSPELL_TIMER == 0, HERO_RECIPE_TIMER == 0, not dead, not deseased, not poisoned */
+					/* TODO: potential Original-Bug: why is 'not poisoned', 'not deseased' and 'HERO_STAFFSPELL_TIMER == 0' needed to complete the brewing process? */
 					do_alchemy(hero, host_readbs(hero + HERO_RECIPE_ID), 0);
 				}
 			} else {

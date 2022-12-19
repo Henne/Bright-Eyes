@@ -56,7 +56,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 	signed char pa;
 	Bit8u *p_itemsdat;
 	Bit8u *p_weapontab;
-	Bit8u *spell;
+	Bit8u *spell_description;
 	signed short damage_lo;
 	signed short damage_hi;
 	signed short weapon_id;
@@ -79,21 +79,21 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 		FIG_init_list_elem(hero_pos + 1);
 		draw_fight_screen_pal(0);
 
-		if ((hero_unkn3(hero)) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE)) {
+		if ((hero_scared(hero)) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE)) {
 
-			and_ptr_bs(hero + HERO_STATUS1, 0x7f);
-			and_ptr_bs(hero + HERO_STATUS1, 0xfb);
+			and_ptr_bs(hero + HERO_FLAGS1, 0x7f); /* unset 'tied' flag (why??) */
+			and_ptr_bs(hero + HERO_FLAGS1, 0xfb); /* unset 'petrified' flag (why???) */
 
-			if (seg038(hero, hero_pos, x, y, 5) != -1) {
-				seg036_00ae(hero, hero_pos);
+			if (FIG_find_path_to_target(hero, hero_pos, x, y, 5) != -1) {
+				seg036_00ae(hero, hero_pos); /* probably: execute hero movement based on path saved in 'FIG_MOVE_PATHDIR'. */
 			}
 			done = 1;
 
-		} else if (hero_cursed(hero) || (host_readbs(hero + HERO_NPC_ID) > 0)|| (ds_readws(AUTOFIGHT) != 0)) {
+		} else if (hero_renegade(hero) || (host_readbs(hero + HERO_NPC_ID) > 0)|| (ds_readws(AUTOFIGHT) != 0)) {
 
 			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 
-			if (((ds_readws(CURRENT_FIG_NO) != 192) || (ds_readbs(FINALFIGHT_TUMULT) != 0)) &&
+			if (((ds_readws(CURRENT_FIG_NO) != FIGHTS_F144) || (ds_readbs(FINALFIGHT_TUMULT) != 0)) &&
 				(host_readbs(hero + HERO_BP_LEFT) >= 3))
 			{
 				KI_hero(hero, hero_pos, x, y);
@@ -116,9 +116,10 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				refresh_screen_size();
 
-				weapon_id = host_readws(hero + HERO_ITEM_RIGHT);
+				weapon_id = host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID);
 
-				if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && test_bit0(hero + (HERO_ITEM_RIGHT+4)))) {
+				//if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && test_bit0(hero + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_FLAGS)))) { /* test 'broken' flag */
+				if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && inventory_broken(hero + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)))) { /* test 'broken' flag */
 					/* no weapon or weapon broken, use red color for "change weapon" */
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)p_datseg + RED_STRING1,
@@ -166,20 +167,21 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 			if (selected == FIG_ACTION_MOVE) {
 				/* MOVE / BEWEGEN */
 
-				if (hero_unkn2(hero)) {
-					/* MU + 2 */
+				if (hero_tied(hero)) {
+					/* Probe: MU + 2 */
 					if (test_attrib(hero, ATTRIB_MU, 2) > 0) {
-
-						/* unset this bit */
-						and_ptr_bs(hero + HERO_STATUS1, 0x7f);
+						/* Success */
+						and_ptr_bs(hero + HERO_FLAGS1, 0x7f); /* unset 'tied' flag */
 
 					} else if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU)) > 4) {
+						/* Failure */
+						/* MU - 2 for 7 hours */
 						slot_no = get_free_mod_slot();
 						set_mod_slot(slot_no, HOURS(7), hero + (HERO_ATTRIB + 3 * ATTRIB_MU), -2, (signed char)hero_pos);
 					}
 				}
 
-				if (!hero_unkn2(hero)) {
+				if (!hero_tied(hero)) {
 
 					host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 
@@ -200,7 +202,10 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						y = host_readws((Bit8u*)&y);
 #endif
 						update_mouse_cursor();
-						and_ptr_bs(hero + HERO_STATUS1, 0xef);
+
+						/* Moving destroys an active 'Chamaelioni' spell */
+						and_ptr_bs(hero + HERO_FLAGS1, 0xef); /* unset 'chamaelioni' flag.  (???) */
+						/* TODO: What if the target square agreed with the starting square (such that no movement has happened? */
 
 					} else {
 						/* no BP left */
@@ -216,7 +221,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
-			} else if (selected == FIG_ACTION_ATTACK) {
+			} else if (selected == FIG_ACTION_MELEE_ATTACK) {
 				/* ATTACK / ANGRIFF */
 
 				if (host_readbs(hero + HERO_BP_LEFT) >= 3) {
@@ -266,13 +271,13 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							GUI_output(get_tx(3));
 						} else if (((target_id < 10) && hero_dead(get_hero(target_id - 1))) ||
 								((target_id >= 10) && (target_id < 30) &&
-										/* unconscious or dead */
-										(test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) ||
-										test_bit6(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))) ||
+										/* mushroom or dead */
+										(test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * target_id) || /* check 'dead' flag */
+										test_bit6(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * target_id))) || /* check 'mushroom' flag */
 								((target_id >= 30) &&
-										/* unconscious or dead */
-										(test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) ||
-										test_bit6(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))))
+										/* mushroom or dead */
+										(test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * target_id) || /* check 'dead' flag */
+										test_bit6(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * target_id)))) /* check 'mushroom' flag */
 						{
 							GUI_output(get_tx(29));
 
@@ -314,7 +319,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							host_writeb(hero + HERO_ENEMY_ID, target_id);
 							/* set BP to 0 */
 							host_writeb(hero + HERO_BP_LEFT, 0);
-							host_writeb(hero + HERO_ACTION_ID, (range_weapon > 0 ? FIG_ACTION_RANGE_ATTACK : FIG_ACTION_ATTACK));
+							host_writeb(hero + HERO_ACTION_ID, (range_weapon > 0 ? FIG_ACTION_RANGE_ATTACK : FIG_ACTION_MELEE_ATTACK));
 							done = 1;
 						}
 					}
@@ -347,7 +352,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 			} else if (selected == FIG_ACTION_SPELL) {
 				/* CAST SPELL / ZAUBERN */
 
-				if (host_readbs(hero + HERO_TYPE) < 7) {
+				if (host_readbs(hero + HERO_TYPE) < HERO_TYPE_WITCH) {
 					/* not a magic user */
 					GUI_output(get_ttx(215));
 				} else {
@@ -363,21 +368,21 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 							host_writeb(hero + HERO_ENEMY_ID, 0);
 
-							spell = p_datseg + SPELL_DESCRIPTIONS + 10 * host_readbs(hero + HERO_SPELL_ID);
+							spell_description = p_datseg + SPELL_DESCRIPTIONS + SIZEOF_SPELL_DESCRIPTIONS * host_readbs(hero + HERO_SPELL_ID);
 
-							if (host_readbs(spell + 5) == -1) {
+							if (host_readbs(spell_description + SPELL_DESCRIPTIONS_WHERE_TO_USE) == -1) {
 
 								/* not a combat spell */
 								GUI_output(get_ttx(592));
 
 							} else {
 
-								if (host_readbs(spell + 7) != 0) {
+								if (host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 0) {
 
 									target_x = x;
 									target_y = y;
 									weapon_id = 1;
-									if (host_readbs(spell + 8) > 0) {
+									if (host_readbs(spell_description + SPELL_DESCRIPTIONS_RANGE) > 0) {
 										weapon_id = 99;
 									}
 									refresh_screen_size();
@@ -400,19 +405,19 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 											GUI_output(get_tx(28));
 
 										} else if ((target_id == 0) &&
-											(host_readbs(spell + 7) != 4))
+											(host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 4))
 										{
 											GUI_output(get_tx(4));
 
 										} else if ((target_id < 10) &&
-											(host_readbs(spell + 7) != 2) &&
-											(host_readbs(spell + 7) != 3))
+											(host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 2) &&
+											(host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 3))
 										{
 											GUI_output(get_tx(5));
 										} else if ((target_id >= 10) &&
 											(target_id < 50) &&
-											(host_readbs(spell + 7) != 1) &&
-											(host_readbs(spell + 7) != 3))
+											(host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 1) &&
+											(host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 3))
 										{
 											GUI_output(get_tx(6));
 
@@ -452,7 +457,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					if (host_readbs(hero + HERO_BP_LEFT) >= 3) {
 
-						if (is_in_word_array(host_readws(hero + HERO_ITEM_LEFT), (signed short*)(p_datseg + ATTACK_ITEMS)))
+						if (is_in_word_array(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID), (signed short*)(p_datseg + ATTACK_ITEMS)))
 						{
 							target_x = x;
 							target_y = y;
@@ -497,9 +502,9 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 						radio_i = 0;
 
-						for (slot_no = 7; slot_no < 23; slot_no++) {
+						for (slot_no = HERO_INVENTORY_SLOT_KNAPSACK_1; slot_no < NR_HERO_INVENTORY_SLOTS; slot_no++) {
 
-							weapon_id = host_readws(hero + HERO_ITEM_HEAD + 14 * slot_no);
+							weapon_id = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * slot_no);
 
 							if (weapon_id != 0) {
 
@@ -521,7 +526,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								(char*)hero + HERO_NAME2);
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
-							if (host_readws(hero + HERO_ITEM_LEFT) == 0) {
+							if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) == ITEM_NONE) {
 								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 									(char*)get_tx(60),
 									(char*)hero + HERO_NAME2);
@@ -529,7 +534,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 									(char*)get_tx(31),
 									(char*)hero + HERO_NAME2,
-									(char*)Real2Host(GUI_names_grammar((signed short)0x8002, host_readws(hero + HERO_ITEM_LEFT), 0)));
+									(char*)Real2Host(GUI_names_grammar((signed short)0x8002, host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_LEFT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID), 0)));
 							}
 
 							refresh_screen_size();
@@ -562,7 +567,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 								/* subtract 2 BP */
 								sub_ptr_bs(hero + HERO_BP_LEFT, 2);
-								move_item(4, slots[selected -1], hero);
+								move_item(HERO_INVENTORY_SLOT_LEFT_HAND, slots[selected -1], hero);
 							}
 						}
 					} else {
@@ -578,9 +583,9 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 						radio_i = 0;
 
-						for (slot_no = 7; slot_no < 23; slot_no++) {
+						for (slot_no = HERO_INVENTORY_SLOT_KNAPSACK_1; slot_no < NR_HERO_INVENTORY_SLOTS; slot_no++) {
 
-							weapon_id = host_readws(hero + HERO_ITEM_HEAD + 14 * slot_no);
+							weapon_id = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * slot_no);
 
 							if (item_weapon(get_itemsdat(weapon_id))) {
 
@@ -592,7 +597,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * radio_i)),
 									(char*)p_datseg + SPACE_SEPARATED_STRINGS, /* "%s %s" */
 									(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(weapon_id))),
-									ks_broken(hero + HERO_ITEM_HEAD + 14 * slot_no) ? get_ttx(478) : p_datseg + EMPTY_STRING3);
+									inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * slot_no) ? get_ttx(478) : p_datseg + EMPTY_STRING3);
 
 								radio_i++;
 							}
@@ -607,7 +612,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 								(char*)get_tx(2),
 								(char*)hero + HERO_NAME2,
-								(char*)Real2Host(GUI_names_grammar((signed short)0x8002, host_readws(hero + HERO_ITEM_RIGHT), 0)));
+								(char*)Real2Host(GUI_names_grammar((signed short)0x8002, host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID), 0)));
 
 							refresh_screen_size();
 							textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
@@ -642,7 +647,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 								rwt1 = FIG_get_range_weapon_type(hero);
 
-								move_item(3, slots[selected -1], hero);
+								move_item(HERO_INVENTORY_SLOT_RIGHT_HAND, slots[selected -1], hero);
 
 								rwt2 = FIG_get_range_weapon_type(hero);
 
@@ -696,54 +701,54 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					} else {
 
 						/* calculate AT and PA values for range weapons */
-						at = host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS))
+						at = host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WEAPON_TYPE))
 							- host_readbs(hero + HERO_RS_BE) / 2
 							+ host_readbs(hero + HERO_AT_MOD);
 
 						if (host_readbs(hero + HERO_RS_BE) & 1) {
 							at--;
 						}
-						pa = host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WP_CLASS))
+						pa = host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WEAPON_TYPE))
 							- host_readbs(hero + HERO_RS_BE) / 2
 							+ host_readbs(hero + HERO_PA_MOD);
 
 
-						p_itemsdat = get_itemsdat(host_readws(hero + HERO_ITEM_RIGHT));
-						p_weapontab = p_datseg + WEAPONS_TABLE + 7 * host_readbs(p_itemsdat + 4);
+						p_itemsdat = get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID));
+						p_weapontab = p_datseg + WEAPONS_TABLE + SIZEOF_WEAPON_STATS * host_readbs(p_itemsdat + ITEM_STATS_TABLE_INDEX);
 
-						calc_damage_range(host_readbs(p_weapontab), 6, host_readbs(p_weapontab + 1),
+						calc_damage_range(host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_D6), 6, host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_CONSTANT),
 							(Bit8u*)&damage_lo, (Bit8u*)&damage_hi);
 
 					}
 				} else {
 					/* calculate AT and PA values for melee weapons */
-					at = host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS))
+					at = host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WEAPON_TYPE))
 						- host_readbs(hero + HERO_RS_BE) / 2
 						+ host_readbs(hero + HERO_AT_MOD);
 
 					if (host_readbs(hero + HERO_RS_BE) & 1) {
 						at--;
 					}
-					pa = host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WP_CLASS))
+					pa = host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WEAPON_TYPE))
 						- host_readbs(hero + HERO_RS_BE) / 2
 						+ host_readbs(hero + HERO_PA_MOD);
 
 
-					p_itemsdat = get_itemsdat(host_readws(hero + HERO_ITEM_RIGHT));
-					p_weapontab = p_datseg + WEAPONS_TABLE + 7 * host_readbs(p_itemsdat + 4);
+					p_itemsdat = get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID));
+					p_weapontab = p_datseg + WEAPONS_TABLE + SIZEOF_WEAPON_STATS * host_readbs(p_itemsdat + ITEM_STATS_TABLE_INDEX);
 
-					calc_damage_range(host_readbs(p_weapontab), 6, host_readbs(p_weapontab + 1),
+					calc_damage_range(host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_D6), 6, host_readbs(p_weapontab + WEAPON_STATS_DAMAGE_CONSTANT),
 						(Bit8u*)&damage_lo, (Bit8u*)&damage_hi);
 
 					/* "THE SWORD GRIMRING" gets a damage bonus + 5 in the final fight */
-					if ((host_readws(hero + HERO_ITEM_RIGHT) == 181) && (ds_readws(CURRENT_FIG_NO) == 192)) {
+					if ((host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) == ITEM_GRIMRING) && (ds_readws(CURRENT_FIG_NO) == FIGHTS_F144)) {
 						damage_lo += 5;
 						damage_hi += 5;
 					}
 
 					weapon_id = host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK))
 							+ host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))
-							- host_readbs(p_weapontab + 2);
+							- host_readbs(p_weapontab +  WEAPON_STATS_DAMAGE_KK_BONUS);
 
 					if (weapon_id > 0) {
 						damage_lo += weapon_id;
@@ -772,7 +777,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					/* RS */
 					host_readbs(hero + HERO_RS_BONUS1),
 					/* weapon name */
-					Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero + HERO_ITEM_RIGHT)))),
+					Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_ITEM_ID)))),
 					/* damage bounds */
 					damage_lo, damage_hi,
 					/* LE */
@@ -781,8 +786,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					host_readws(hero + HERO_AE), host_readws(hero + HERO_AE_ORIG),
 					/* poison */
 					hero_is_poisoned(hero) ? get_tx(36) : p_datseg + EMPTY_STRING4,
-					/* cursed */
-					hero_cursed(hero) == 1 ? get_tx(38) : p_datseg + EMPTY_STRING5);
+					/* renegade */
+					hero_renegade(hero) == 1 ? get_tx(38) : p_datseg + EMPTY_STRING5);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -799,7 +804,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 			} else if (selected == FIG_ACTION_COMPUTER_FIGHT) {
 				/* COMPUTER FIGHT / COMPUTERKAMPF */
 
-				if (ds_readws(CURRENT_FIG_NO) != 192) {
+				if (ds_readws(CURRENT_FIG_NO) != FIGHTS_F144) {
 
 					refresh_screen_size();
 
@@ -817,9 +822,9 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					radio_i = 0;
 
-					for (slot_no = 7; slot_no < 23; slot_no++) {
+					for (slot_no = HERO_INVENTORY_SLOT_KNAPSACK_1; slot_no < NR_HERO_INVENTORY_SLOTS; slot_no++) {
 
-						weapon_id = host_readws(hero + HERO_ITEM_HEAD + 14 * slot_no);
+						weapon_id = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * slot_no);
 
 						if (weapon_id != 0) {
 
@@ -907,13 +912,13 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				/* check last action and target_id */
 				if (((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) ||
-					(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_ATTACK) ||
+					(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_MELEE_ATTACK) ||
 					(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK)) && (host_readbs(hero + HERO_ENEMY_ID) > 0))
 				{
 
 					/* TODO: check fighter_id upper bound */
 					if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 49) + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
+						&& (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) || /* check 'dead' flag */
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
 						&& (hero_dead(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{
@@ -925,9 +930,9 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					/* TODO: check fighter_id upper bound */
 					} else if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit2(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 0x32 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
+						&& (test_bit2(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS2 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) || /* check 'scared' flag */
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
-						&& (hero_unkn3(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
+						&& (hero_scared(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{
 
 						/* GUI_output(get_tx(29)); */
@@ -948,13 +953,13 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 		}
 	}
 
-	if ((ds_readws(CURRENT_FIG_NO) == 192) &&
+	if ((ds_readws(CURRENT_FIG_NO) == FIGHTS_F144) && /* final fight vs. Orkchampion */
 		(get_hero_index(Real2Host(ds_readd(MAIN_ACTING_HERO))) != hero_pos) &&
-		((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_ATTACK) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) ||
+		((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_MELEE_ATTACK) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) ||
 		(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM)))
 	{
 		for (slot_no = 0; slot_no < 20; slot_no++) {
-			and_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * slot_no, (signed char)0xdf);
+			and_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * slot_no, (signed char)0xdf); /* unset 'tied' flag */
 		}
 
 		ds_writeb(FINALFIGHT_TUMULT, 1);

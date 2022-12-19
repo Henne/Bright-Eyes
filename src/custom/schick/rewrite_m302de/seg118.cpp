@@ -72,7 +72,7 @@ void tevent_037(void)
 
 				timewarp(MINUTES(15));
 
-				/* loop until you decicide to go on */
+				/* loop until you decide to go on */
 				do {
 					answer = GUI_radio(get_tx2(31), 2,
 								get_tx2(30),
@@ -112,7 +112,7 @@ void tevent_037(void)
 
 				} else {
 
-					/* entered time was to short */
+					/* entered time was too short */
 					do {
 						answer = GUI_radio(get_tx2(37), 2,
 									get_tx2(33),
@@ -259,7 +259,7 @@ void tevent_038(void)
 
 void tevent_078(void)
 {
-	signed short hours;
+	signed short tmp;
 	signed short answer;
 	signed short found_path;
 	signed short days;
@@ -282,18 +282,18 @@ void tevent_078(void)
 			/* try to clean the path */
 
 			/* with SHOVEL/SCHAUFEL 5 Hours, without 8 Hours */
-			if (get_first_hero_with_item(73) != -1) {
-				hours = 5;
+			if (get_first_hero_with_item(ITEM_SHOVEL) != -1) {
+				tmp = 5;
 			} else {
-				hours = 8;
+				tmp = 8;
 			}
 
-			timewarp(HOURS(hours));
+			timewarp(HOURS(tmp));
 
 			GUI_dialog_na(0, get_tx2(81));
 
-			/* each hero in the group looses hours / 2 LE */
-			sub_group_le(hours >> 1);
+			/* each hero in the group looses tmp / 2 LE */
+			sub_group_le(tmp >> 1);
 
 			ds_writews(WILDCAMP_SLEEP_QUALITY, -6);
 
@@ -356,11 +356,20 @@ void tevent_078(void)
 
 				timewarp(HOURS(8));
 
-				/* Original-Bug: all heros die, even if they are not in the current group */
+				/* TODO: Original-Bug: all heroes die, even if they are not in the current group */
 				hero = get_hero(0);
-				for (hours = 0; hours <= 6; hours++, hero += SIZEOF_HERO)
+				for (tmp = 0; tmp <= 6; tmp++, hero += SIZEOF_HERO)
 				{
-					hero_disappear(hero, hours, -1);
+#ifndef M302de_ORIGINAL_BUGFIX
+					/* Original-Bug 16: all heroes die, even if they are not in the current group */
+					hero_disappear(hero, tmp, -1);
+#else
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)
+					) {
+						hero_disappear(hero, tmp, -1);
+					}
+#endif
 				}
 			}
 		}
@@ -379,6 +388,7 @@ void tevent_079(void)
 	}
 }
 
+/* Ottarje <-> Skal: entrance to spider cave */
 void tevent_051(void)
 {
 	signed short answer;
@@ -403,7 +413,7 @@ void tevent_051(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(TRAVEL_DETOUR, 3);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_SPINNENHOEHLE);
 			}
 		}
 
@@ -419,11 +429,12 @@ void tevent_051(void)
 
 		if (answer == 1)
 		{
-			ds_writeb(TRAVEL_DETOUR, 3);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_SPINNENHOEHLE);
 		}
 	}
 }
 
+/* Ottarje <-> Skjal: narrow pass blocked by a tree */
 void tevent_052(void)
 {
 	signed short done;
@@ -533,7 +544,7 @@ void tevent_124(void)
 				/* the climb test failed */
 				counter++;
 
-				/* Original-Bug: a skilltest with a fatal result return -99, not -1 */
+				/* Original-Bug: a skill test with a fatal result returns -99, not -1 */
 #ifdef M302de_ORIGINAL_BUGFIX
 				if (skill_ret == -99 && have_climb_tools == 0)
 #else
@@ -610,10 +621,10 @@ void tevent_145(void)
 		if (answer == 1)
 		{
 			ds_writew(TRV_DESTINATION, TOWNS_KRAVIK);
-			ds_writeb(CURRENT_TOWN, TOWNS_SKELELLE);
+			ds_writeb(CURRENT_TOWN, TOWNS_SKELELLEN);
 
 		} else {
-			ds_writew(TRV_DESTINATION, TOWNS_SKELELLE);
+			ds_writew(TRV_DESTINATION, TOWNS_SKELELLEN);
 			ds_writeb(CURRENT_TOWN, TOWNS_KRAVIK);
 		}
 

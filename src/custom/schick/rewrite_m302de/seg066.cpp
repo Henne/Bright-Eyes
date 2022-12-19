@@ -52,7 +52,7 @@ signed short enter_location(signed short town_id)
 	signed short b_index;
 	Bit8u *ptr;
 
-	if (town_id == 40) {
+	if (town_id == TOWNS_DASPOTA) {
 		return enter_location_daspota();
 	}
 
@@ -130,7 +130,7 @@ signed short enter_location_daspota(void)
 					do_talk(host_readbs(ptr + 2), host_readb(ptr + 3) - 1);
 
 					if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(ptr + 4))) {
-						turnaround();
+						leave_location();
 						return 1;
 					}
 				}
@@ -163,7 +163,7 @@ signed short enter_location_daspota(void)
 					do_fight(FIGHTS_DASP12B);
 				}
 
-				turnaround();
+				leave_location();
 
 			} else {
 				ds_writeb(LOCATION_BAK, 0);
@@ -272,7 +272,7 @@ void do_special_buildings(void)
 		}
 
 
-	} else if (ds_readb(CURRENT_TOWN) == TOWNS_EINSIEDL) {
+	} else if (ds_readb(CURRENT_TOWN) == TOWNS_EINSIEDLERSEE) {
 		/*  HERMITS LAKE / EINSIEDLERSEE */
 
 		if (type == 1) {
@@ -284,7 +284,7 @@ void do_special_buildings(void)
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
-	turnaround();
+	leave_location();
 }
 
 void TLK_eremit(signed short state)
@@ -863,19 +863,19 @@ signed short city_step(void)
 	signed short options;
 	signed short l4;
 
-	ds_writebs((NEW_MENU_ICONS + 0), 12);
+	ds_writebs((NEW_MENU_ICONS + 0), MENU_ICON_SPLIT_GROUP);
 	l4 = ds_readbs((NEW_MENU_ICONS + 1));
-	ds_writebs((NEW_MENU_ICONS + 1), ds_readbs(CAN_MERGE_GROUP) == -1 ? 45 : 15);
+	ds_writebs((NEW_MENU_ICONS + 1), ds_readbs(CAN_MERGE_GROUP) == -1 ? MENU_ICON_MERGE_GROUP_GRAYED : MENU_ICON_MERGE_GROUP);
 
 	if (ds_readbs((NEW_MENU_ICONS + 1)) != l4) {
 		ds_writew(REDRAW_MENUICONS, 1);
 	}
 
-	ds_writebs((NEW_MENU_ICONS + 2), 29);
-	ds_writebs((NEW_MENU_ICONS + 3), 37);
-	ds_writebs((NEW_MENU_ICONS + 4), 39);
-	ds_writebs((NEW_MENU_ICONS + 5), 11);
-	ds_writebs((NEW_MENU_ICONS + 6), 54);
+	ds_writebs((NEW_MENU_ICONS + 2), MENU_ICON_SWITCH_GROUP);
+	ds_writebs((NEW_MENU_ICONS + 3), MENU_ICON_INFO);
+	ds_writebs((NEW_MENU_ICONS + 4), MENU_ICON_MAP);
+	ds_writebs((NEW_MENU_ICONS + 5), MENU_ICON_MAGIC);
+	ds_writebs((NEW_MENU_ICONS + 6), MENU_ICON_CAMP);
 
 	if (ds_readws(REQUEST_REFRESH) != 0) {
 
@@ -911,10 +911,10 @@ signed short city_step(void)
 
 	handle_gui_input();
 
-	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 		for (i = options = 0; i < 9; i++) {
-			if (ds_readbs(NEW_MENU_ICONS + i) != -1) {
+			if (ds_readbs(NEW_MENU_ICONS + i) != MENU_ICON_NONE) {
 				options++;
 			}
 		}
@@ -925,59 +925,59 @@ signed short city_step(void)
 				get_ttx(306), get_ttx(569)) - 1;
 
 		if (i != -2) {
-			ds_writew(ACTION, i + 129);
+			ds_writew(ACTION, i + ACTION_ID_ICON_1);
 		}
 	}
 
 	i = 0;
 
-	if (ds_readws(ACTION) == 129) {
+	if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 		GRP_split();
 		ds_writebs(CAN_MERGE_GROUP, (signed char)can_merge_group());
 
-	} else if (ds_readws(ACTION) == 130) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 
 		GRP_merge();
 		ds_writebs(CAN_MERGE_GROUP, -1);
 
-	} else if (ds_readws(ACTION) == 131) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 
 		GRP_switch_to_next(0);
 		i = 1;
 
-	} else if (ds_readws(ACTION) == 132) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 
 		game_options();
 
-	} else if (ds_readws(ACTION) == 133) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 
 		show_automap();
 
-	} else if (ds_readws(ACTION) == 134) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_6) {
 
 		select_magic_user();
 
-	} else if (ds_readws(ACTION) == 135) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_7) {
 
 		ds_writebs(LOCATION, LOCATION_CITYCAMP);
-		ds_writeb(CITYCAMP_CITY, 1);
+		ds_writeb(CITYCAMP_CITY, 1); /* CITYCAMP takes place in a town */
 		i = 1;
 
-	} else if (ds_readws(ACTION) == 136 && ds_readbs((NEW_MENU_ICONS + 7)) != -1) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_8 && ds_readbs((NEW_MENU_ICONS + 7)) != MENU_ICON_NONE) {
 
 		ds_writebs(LOCATION, LOCATION_MARKET);
 		i = 1;
 
-	} else if (ds_readws(ACTION) == 75) {
+	} else if (ds_readws(ACTION) == ACTION_ID_LEFT) {
 
 		update_direction(3);
 
-	} else if (ds_readws(ACTION) == 77) {
+	} else if (ds_readws(ACTION) == ACTION_ID_RIGHT) {
 
 		update_direction(1);
 
-	} else if (ds_readws(ACTION) == 72) {
+	} else if (ds_readws(ACTION) == ACTION_ID_UP) {
 
 		bi = get_border_index(ds_readb(STEPTARGET_FRONT));
 
@@ -989,7 +989,7 @@ signed short city_step(void)
 			no_way();
 		}
 
-	} else if (ds_readws(ACTION) == 80) {
+	} else if (ds_readws(ACTION) == ACTION_ID_DOWN) {
 
 		bi = get_border_index(ds_readb(STEPTARGET_BACK));
 
@@ -1000,43 +1000,44 @@ signed short city_step(void)
 		}
 	}
 
-	if (ds_readb(CURRENT_TOWN) != 0 && ds_readbs(CITY_AREA_LOADED) != -1) {
+	if (ds_readb(CURRENT_TOWN) != TOWNS_NONE && ds_readbs(CITY_AREA_LOADED) != -1) {
 
 		if (!i) {
 			options = enter_location(ds_readbs(CURRENT_TOWN));
 		}
 
-		/* check move and a big city */
+		/* random city event? */
+		/* check if the party has moved to another square */
 		if ((ds_readws(Y_TARGET) != ds_readws(Y_TARGET_BAK) ||
 			(ds_readws(X_TARGET) != ds_readws(X_TARGET_BAK))) &&
 
+			/* only in big town */
 			(ds_readb(CURRENT_TOWN) == TOWNS_THORWAL || ds_readb(CURRENT_TOWN) == TOWNS_PREM ||
 			ds_readb(CURRENT_TOWN) == TOWNS_PHEXCAER || ds_readb(CURRENT_TOWN) == TOWNS_OBERORKEN))
 		{
 
-			/* roll a dice */
-			if (random_schick(100) <= 1 &&
-				ds_readds(DAY_TIMER) > HOURS(8) &&
+			if (random_schick(100) <= 1 && /* 1% chance */
+				ds_readds(DAY_TIMER) > HOURS(8) && /* only between 8:00 and 20:00 o'clock */
 				ds_readds(DAY_TIMER) < HOURS(20))
 			{
 				city_event_switch();
 			}
 		}
 
-		if (ds_readb(LOCATION_MARKET_FLAG) != 0 && ds_readb((NEW_MENU_ICONS + 7)) != 43) {
+		if (ds_readb(LOCATION_MARKET_FLAG) != 0 && ds_readb((NEW_MENU_ICONS + 7)) != MENU_ICON_MARKET) {
 
 			if (((i = ds_readws((MARKET_DESCR_TABLE + 4) + 8 * ds_readws(TYPEINDEX))) == -1 ||
 				ds_readbs(DAY_OF_WEEK) == i) &&
 				ds_readds(DAY_TIMER) >= HOURS(6) &&
 				ds_readds(DAY_TIMER) <= HOURS(16))
 			{
-				ds_writebs((NEW_MENU_ICONS + 7), 43);
+				ds_writebs((NEW_MENU_ICONS + 7), MENU_ICON_MARKET);
 				draw_icons();
 			}
 
-		} else if (!ds_readbs(LOCATION_MARKET_FLAG) && ds_readbs((NEW_MENU_ICONS + 7)) == 43) {
+		} else if (!ds_readbs(LOCATION_MARKET_FLAG) && ds_readbs((NEW_MENU_ICONS + 7)) == MENU_ICON_MARKET) {
 
-			ds_writebs((NEW_MENU_ICONS + 7), -1);
+			ds_writebs((NEW_MENU_ICONS + 7), MENU_ICON_NONE);
 			draw_icons();
 		}
 	}

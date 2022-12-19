@@ -68,7 +68,7 @@ struct dummy_c6 {
 
 
 /**
- * \brief   shows the buy-screen an provides interaction
+ * \brief   shows the buy-screen and provides interaction
  */
 void buy_screen(void)
 {
@@ -139,8 +139,8 @@ void buy_screen(void)
 				if (host_readbs(hero2 + HERO_TYPE) &&
 					host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
-					for (j = 7; j < 23; j++) {
-						if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * j) == 0) {
+					for (j = HERO_INVENTORY_SLOT_KNAPSACK_1; j < NR_HERO_INVENTORY_SLOTS; j++) {
+						if (host_readws(hero2 + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * j) == ITEM_NONE) {
 							free_slots++;
 						}
 					}
@@ -150,7 +150,7 @@ void buy_screen(void)
 			set_var_to_zero();
 
 			ds_writeb(PP20_INDEX, 0xff);
-			draw_loc_icons(4, 23, 26, 27, 8);
+			draw_loc_icons(4, MENU_ICON_BARGAIN, MENU_ICON_SCROLL_RIGHT, MENU_ICON_SCROLL_LEFT, MENU_ICON_LEAVE);
 			draw_main_screen();
 
 			/* ICONS */
@@ -295,7 +295,7 @@ void buy_screen(void)
 					(char*)p_datseg + BUY_SCREEN_STR_COMMA_SPACE);
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ttx(48 + host_readbs(get_itemsdat(item_id) + 3)));
+					(char*)get_ttx(48 + host_readbs(get_itemsdat(item_id) + ITEM_STATS_SUBTYPE)));
 			}
 
 			GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
@@ -335,10 +335,10 @@ void buy_screen(void)
 		}
 
 		if ((ds_readws(MOUSE2_EVENT) != 0) && get_mouse_action(ds_readws(MOUSE_POSX), ds_readws(MOUSE_POSY), p_datseg + ACTION_TABLE_MERCHANT)) {
-			ds_writew(ACTION, 144);
+			ds_writew(ACTION, ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK);
 		}
 
-		if ((ds_readws(MOUSE2_EVENT) != 0 && ds_readws(ACTION) != 144) || ds_readws(ACTION) == 73) {
+		if ((ds_readws(MOUSE2_EVENT) != 0 && ds_readws(ACTION) != ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK) || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			l3 = GUI_radio(NULL, 4,
 					get_ttx(433),
@@ -347,22 +347,22 @@ void buy_screen(void)
 					get_ttx(437)) - 1;
 
 			if (l3 != -2) {
-				ds_writew(ACTION, l3 + 129);
+				ds_writew(ACTION, l3 + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 27 || ds_readws(ACTION) == 53 || ds_readws(ACTION) == 144) {
+		if (ds_readws(ACTION) == ACTION_ID_CLOSING_SQUARE_BRACKET || ds_readws(ACTION) == ACTION_ID_SLASH || ds_readws(ACTION) == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK) {
 
 			l3 = 1;
 
-			if (ds_readws(ACTION) == 144) {
+			if (ds_readws(ACTION) == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK) {
 
 				if (ds_readws(MOUSE2_EVENT) != 0) {
 					ds_writew(MOUSE2_EVENT, 0);
 					l3 = 2;
 				}
 			} else {
-				if (ds_readws(ACTION) == 53) {
+				if (ds_readws(ACTION) == ACTION_ID_SLASH) {
 					l3 = 2;
 				}
 			}
@@ -495,16 +495,16 @@ void buy_screen(void)
 			}
 		}
 
-		if (ds_readws(ACTION) == 131 && item != 0) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_3 && item != 0) {
 			l8 = 1;
 			item -= 15;
-		} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (item + 15))) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2 && host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (item + 15))) {
 			l8 = 1;
 			item += 15;
 		}
 
 
-		if (ds_readws(ACTION) == 129 && price) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1 && price) {
 
 			j = 0;
 
@@ -561,7 +561,7 @@ void buy_screen(void)
 
 							ds_writeb(MARKET_ITEMSALDO_TABLE + item_id, 0);
 
-							add_ptr_ws(get_itemsdat(item_id) + 8, host_readws(get_itemsdat(item_id) + 8) * 10 / 100);
+							add_ptr_ws(get_itemsdat(item_id) + ITEM_STATS_PRICE, host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * 10 / 100);
 						}
 
 						if (given_items == 0 && !l_di) {
@@ -611,7 +611,7 @@ void buy_screen(void)
 			}
 		}
 
-		if (ds_readws(ACTION) == 132) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 			done = 1;
 		}
 	}
@@ -626,7 +626,7 @@ void buy_screen(void)
  *
  * \param   shop_ptr    pointer to the shop description
  * \param   hero        pointer to the hero
- * \param   item_pos    position of the item in the heros inventory
+ * \param   item_pos    position of the item in the heroes inventory
  * \param   shop_pos    position if the item in the sales array
  */
 void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, signed short shop_pos)
@@ -634,7 +634,7 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 	signed short item_id;
 	signed short sellable = 0;
 
-	item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos);
+	item_id = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos);
 	host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos, item_id);
 
 	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
@@ -659,24 +659,24 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 0);
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4, 1);
 
-	} else if (ks_broken(hero + HERO_ITEM_HEAD + 14 * item_pos) ||
-			 host_readbs(hero + (HERO_ITEM_HEAD+7) + 14 * item_pos) != 0)
+	} else if (inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos) ||
+			 host_readbs(hero + (HERO_INVENTORY + INVENTORY_RS_LOST) + SIZEOF_INVENTORY * item_pos) != 0)
 	{
-		/* this item is broken or empty */
+		/* this item is broken or RS of an armor got degraded */
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 1);
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4, 1);
 
 	} else {
 		/* calculate the price */
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2,
-			(host_readws(get_itemsdat(item_id) + 8) + (host_readws(get_itemsdat(item_id) + 8) * host_readbs(shop_ptr) / 100) ) / 2);
+			(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) + (host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(shop_ptr) / 100) ) / 2);
 		/* adjust price to 1 if zero */
 		if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2) == 0) {
 			host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 1);
 		}
 
 		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4,
-			host_readbs(get_itemsdat(item_id) + 7));
+			host_readbs(get_itemsdat(item_id) + ITEM_STATS_PRICE_UNIT));
 	}
 
 	host_writebs(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 6, (signed char)item_pos);

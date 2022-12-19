@@ -42,9 +42,9 @@ signed short DNG03_handler(void)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
-	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256  * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+	target_pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), ds_readws(X_TARGET), ds_readws(Y_TARGET));
 
-	if ((target_pos == 0x407 || target_pos == 0x409 || target_pos == 0x608) &&
+	if ((target_pos == DNG_POS(0,4,7) || target_pos == DNG_POS(0,4,9) || target_pos == DNG_POS(0,6,8)) &&
 		target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_tx(1));
@@ -52,7 +52,7 @@ signed short DNG03_handler(void)
 		ds_writew(X_TARGET, ds_writew(Y_TARGET, 1));
 		DNG_inc_level();
 
-	} else if (target_pos == 0x304 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 0)
+	} else if (target_pos == DNG_POS(0,3,4) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == NORTH)
 	{
 		GUI_input(get_tx(2), 15);
 
@@ -68,7 +68,7 @@ signed short DNG03_handler(void)
 			hero = get_hero(0);
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) >= 7 &&
+				if (host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH &&
 					host_readws(hero + HERO_AE) != 0)
 				{
 					sub_ae_splash(hero, random_schick(6));
@@ -80,20 +80,20 @@ signed short DNG03_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0xb06 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,11,6) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_tx(4));
 
 		ds_writew(X_TARGET, 1);
 		ds_writew(Y_TARGET, 8);
-		ds_writeb(DIRECTION, 3);
+		ds_writeb(DIRECTION, WEST);
 
 		DNG_update_pos();
 
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) >= 7 &&
+			if (host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH &&
 				host_readws(hero + HERO_AE) != 0)
 			{
 				sub_ae_splash(hero, random_schick(6));
@@ -104,11 +104,11 @@ signed short DNG03_handler(void)
 			}
 		}
 
-	} else if ((target_pos == 0x60a || target_pos == 0x709) &&
+	} else if ((target_pos == DNG_POS(0,6,10) || target_pos == DNG_POS(0,7,9)) &&
 			(target_pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)))
 	{
-		if ((target_pos == 0x60a && ds_readbs(DIRECTION) == 1) ||
-			(target_pos == 0x709 && ds_readbs(DIRECTION) == 2))
+		if ((target_pos == DNG_POS(0,6,10) && ds_readbs(DIRECTION) == EAST) ||
+			(target_pos == DNG_POS(0,7,9) && ds_readbs(DIRECTION) == SOUTH))
 		{
 			DNG_update_pos();
 			GUI_output(get_tx(3));
@@ -116,7 +116,7 @@ signed short DNG03_handler(void)
 			ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 		}
 
-	} else if ((target_pos == 0xa09 || target_pos == 0x90e) &&
+	} else if ((target_pos == DNG_POS(0,10,9) || target_pos == DNG_POS(0,9,14)) &&
 			ds_readb(DNG03_LEVER_TRAP) != 0 &&
 			target_pos != ds_readws(DNG_HANDLED_POS))
 	{
@@ -141,9 +141,9 @@ signed short DNG03_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x50e &&
+	} else if (target_pos == DNG_POS(0,5,14) &&
 			ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK) &&
-			ds_readbs(DIRECTION) == 2)
+			ds_readbs(DIRECTION) == SOUTH)
 	{
 		GUI_input(get_tx(7), 15);
 
@@ -154,13 +154,13 @@ signed short DNG03_handler(void)
 
 			ds_writew(X_TARGET, 3);
 			ds_writew(Y_TARGET, 4);
-			ds_writeb(DIRECTION, 2);
+			ds_writeb(DIRECTION, SOUTH);
 			DNG_update_pos();
 
 			hero = get_hero(0);
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) >= 7 &&
+				if (host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH &&
 					host_readws(hero + HERO_AE) != 0)
 				{
 					sub_ae_splash(hero, random_schick(6));
@@ -171,11 +171,11 @@ signed short DNG03_handler(void)
 				}
 			}
 		} else {
-			ds_writeb(DIRECTION, 3);
+			ds_writeb(DIRECTION, WEST);
 		}
 
-	} else if (target_pos == 0x90b &&
-			ds_readbs(DIRECTION) == 3 &&
+	} else if (target_pos == DNG_POS(0,9,11) &&
+			ds_readbs(DIRECTION) == WEST &&
 			target_pos != ds_readws(DNG_HANDLED_POS) &&
 			ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK))
 	{
@@ -186,8 +186,8 @@ signed short DNG03_handler(void)
 			GUI_output(get_tx(9));
 		}
 
-	} else if (target_pos == 0x130b &&
-			ds_readbs(DIRECTION) == 1 &&
+	} else if (target_pos == DNG_POS(1,3,11) &&
+			ds_readbs(DIRECTION) == EAST &&
 			(target_pos != ds_readws(DNG_HANDLED_POS) ||
 			ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)))
 	{
@@ -197,7 +197,7 @@ signed short DNG03_handler(void)
 			GUI_output(get_tx(9));
 		}
 
-	} else if ((target_pos == 0x1e0d || target_pos == 0x1d04 || target_pos == 0x1b02) &&
+	} else if ((target_pos == DNG_POS(1,14,13) || target_pos == DNG_POS(1,13,4) || target_pos == DNG_POS(1,11,2)) &&
 		target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		j = 0;
@@ -231,14 +231,15 @@ signed short DNG03_handler(void)
 
 			timewarp(MINUTES(20));
 
-			if (host_readws(hero + HERO_ITEM_BODY) != 0)
+			if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) != ITEM_NONE)
 			{
-				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4))
-				    - host_readbs(hero + HERO_ITEM_BODY + 7);
+				/* RS of the equipped body armor gets degraded by 3, but not below 0 */
+				l3 = ds_readbs(ARMORS_TABLE + ARMOR_STATS_RS + SIZEOF_ARMOR_STATS * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY)) + ITEM_STATS_TABLE_INDEX))
+				    - host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_RS_LOST);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
-				add_ptr_bs(hero + HERO_ITEM_BODY + 7, (unsigned char)l4);
+				add_ptr_bs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_RS_LOST, (unsigned char)l4);
 				sub_ptr_bs(hero + HERO_RS_BONUS1, (unsigned char)l4);
 			}
 		}
@@ -262,23 +263,24 @@ signed short DNG03_handler(void)
 
 			timewarp(MINUTES(20));
 
-			if (host_readws(hero + HERO_ITEM_BODY) != 0)
+			if (host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_ITEM_ID) != ITEM_NONE)
 			{
-				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4))
-				    - host_readbs(hero + HERO_ITEM_BODY + 7);
+				/* RS of the equipped body armor gets degraded by 3, but not below 0 */
+				l3 = ds_readbs(ARMORS_TABLE + ARMOR_STATS_RS + SIZEOF_ARMOR_STATS * host_readbs(get_itemsdat(host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY)) + ITEM_STATS_TABLE_INDEX))
+				    - host_readbs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_RS_LOST);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
-				add_ptr_bs(hero + HERO_ITEM_BODY + 7, (unsigned char)l4);
+				add_ptr_bs(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_BODY * SIZEOF_INVENTORY + INVENTORY_RS_LOST, (unsigned char)l4);
 				sub_ptr_bs(hero + HERO_RS_BONUS1, (unsigned char)l4);
 			}
 		}
 
-	} else if ((target_pos == 0x120a || target_pos == 0x130d) &&
+	} else if ((target_pos == DNG_POS(1,2,10) || target_pos == DNG_POS(1,3,13)) &&
 		target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		ds_writews((FIG_FLEE_POSITION + 0), ds_writews((FIG_FLEE_POSITION + 6), 0x1208));
-		ds_writews((FIG_FLEE_POSITION + 2), ds_writews((FIG_FLEE_POSITION + 4), 0x150d));
+		ds_writews((FIG_FLEE_POSITION + 0), ds_writews((FIG_FLEE_POSITION + 6), DNG_POS_DIR(1,2,8,NORTH)));
+		ds_writews((FIG_FLEE_POSITION + 2), ds_writews((FIG_FLEE_POSITION + 4), DNG_POS_DIR(1,5,13,NORTH)));
 
 		if (!ds_readb(DNG03_HIGHPRIEST_KILLED))
 		{
@@ -287,11 +289,11 @@ signed short DNG03_handler(void)
 
 		do_fight(ds_readb(DNG03_HIGHPRIEST_KILLED) == 14 ? 224 : 225);
 
-	} else if ((target_pos == 0x1204 || target_pos == 0x1502) &&
+	} else if ((target_pos == DNG_POS(1,2,4) || target_pos == DNG_POS(1,5,2)) &&
 		target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		ds_writews((FIG_FLEE_POSITION + 0), ds_writews((FIG_FLEE_POSITION + 2), 0x1702));
-		ds_writews((FIG_FLEE_POSITION + 4), ds_writews((FIG_FLEE_POSITION + 6), 0x1206));
+		ds_writews((FIG_FLEE_POSITION + 0), ds_writews((FIG_FLEE_POSITION + 2), DNG_POS_DIR(1,7,2,NORTH)));
+		ds_writews((FIG_FLEE_POSITION + 4), ds_writews((FIG_FLEE_POSITION + 6), DNG_POS_DIR(1,2,6,NORTH)));
 
 		if (!ds_readb(DNG03_HIGHPRIEST_KILLED))
 		{
@@ -300,13 +302,13 @@ signed short DNG03_handler(void)
 
 		do_fight(ds_readb(DNG03_HIGHPRIEST_KILLED) == 16 ? 222 : 223);
 
-	} else if (target_pos == 0x110c &&
+	} else if (target_pos == DNG_POS(1,1,12) &&
 			target_pos != ds_readws(DNG_HANDLED_POS) &&
 			!ds_readb(DNG03_SANCTUM_SMASHED))
 	{
 
 		/* check if a hero in this group has crystals */
-		i = get_first_hero_with_item(225) != -1 ? 0 : 1;
+		i = get_first_hero_with_item(ITEM_CRYSTAL) != -1 ? 0 : 1;
 
 		do {
 			j = GUI_radio(get_tx(14), 2,
@@ -326,24 +328,24 @@ signed short DNG03_handler(void)
 			ds_writews((FIG_FLEE_POSITION + 0),
 				ds_writews((FIG_FLEE_POSITION + 2),
 				ds_writews((FIG_FLEE_POSITION + 4),
-				ds_writews((FIG_FLEE_POSITION + 6), 0x150d))));
+				ds_writews((FIG_FLEE_POSITION + 6), DNG_POS_DIR(1,5,13,NORTH)))));
 
-			/* drop all crystals from the heros of that group */
-			i = get_first_hero_with_item(225);
+			/* drop all crystals from the heroes of that group */
+			i = get_first_hero_with_item(ITEM_CRYSTAL);
 
 			do {
 				hero = get_hero(i);
 
-				drop_item(hero, get_item_pos(hero, 225), 1);
+				drop_item(hero, get_item_pos(hero, ITEM_CRYSTAL), 1);
 
-				i = get_first_hero_with_item(225);
+				i = get_first_hero_with_item(ITEM_CRYSTAL);
 
 			} while (i != -1);
 
 			do_fight(FIGHTS_F051_14C);
 		}
 
-	} else if (target_pos == 0x1101 &&
+	} else if (target_pos == DNG_POS(1,1,1) &&
 			target_pos != ds_readws(DNG_HANDLED_POS) &&
 			!ds_readb(DNG03_SPIDEREGGS_BURNED))
 	{
@@ -366,22 +368,22 @@ signed short DNG03_handler(void)
 			ds_writew(DEATHTRAP, 2);
 		}
 
-	} else if (target_pos == 0x1a04 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(1,10,4) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_tx(24));
 
-	} else if (target_pos == 0x1a08 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(1,10,8) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_tx(4));
 		ds_writew(X_TARGET, 5);
 		ds_writew(Y_TARGET, 14);
 		DNG_dec_level();
-		ds_writeb(DIRECTION, 0);
+		ds_writeb(DIRECTION, NORTH);
 
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) >= 7 &&
+			if (host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH &&
 				host_readws(hero + HERO_AE) != 0)
 			{
 				sub_ae_splash(hero, random_schick(6));
@@ -392,8 +394,8 @@ signed short DNG03_handler(void)
 			}
 		}
 
-	} else if ((target_pos == 0x1201 && target_pos != ds_readws(DNG_HANDLED_POS) && GUI_bool(get_tx(23))) ||
-			target_pos == 0x0008)
+	} else if ((target_pos == DNG_POS(1,2,1) && target_pos != ds_readws(DNG_HANDLED_POS) && GUI_bool(get_tx(23))) ||
+			target_pos == DNG_POS(0,0,8))
 	{
 		leave_dungeon();
 		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
@@ -537,10 +539,10 @@ void DNG03_chest12_func3(RealPt chest)
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	/* count the crystals in the inventory of the leader */
-	for (i = 7; i < 23; i++)
+	/* count the crystals in the knapsack of the leader */
+	for (i = HERO_INVENTORY_SLOT_KNAPSACK_1; i < NR_HERO_INVENTORY_SLOTS; i++)
 	{
-		if (host_readws(hero + HERO_ITEM_HEAD + SIZEOF_KS_ITEM * i) == 225)
+		if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * i) == ITEM_CRYSTAL)
 		{
 			crystals++;
 		}

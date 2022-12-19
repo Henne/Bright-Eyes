@@ -40,7 +40,7 @@ void tevent_011(void)
 	signed short answer;
 	Bit8u *hero;
 
-	if ((test_skill((hero = Real2Host(get_first_hero_available_in_group())), 51, 8) > 0 && !ds_readb(TEVENT011_FLAG)) ||
+	if ((test_skill((hero = Real2Host(get_first_hero_available_in_group())), TA_SINNESSCHAERFE, 8) > 0 && !ds_readb(TEVENT011_FLAG)) ||
 		ds_readb(TEVENT011_FLAG) != 0)
 	{
 		ds_writeb(TEVENT011_FLAG, 1);
@@ -135,7 +135,7 @@ void TRV_swim2(signed char mod, signed short percent)
 
 }
 
-/* Path east from the route Rovamund-Peilinen. */
+/* Path east from the route Rovamund <-> Peilinen. */
 /* should be static */
 void TRV_a_path(void)
 {
@@ -151,6 +151,10 @@ void TRV_a_path(void)
 	{
 		/* follow the path */
 		ds_writeb(ROUTE59_FLAG, (ds_readb(CURRENT_TOWN) == TOWNS_PEILINEN ? 2 : 4));
+
+		/* Original-Glitch:
+		 * TRAVEL_DETOUR == 1 is indicating a detour to DNG_TOTENSCHIFF (which has the ID 1).
+		 * Probably, this does not make a difference, but still, it would be better to use another number. */
 		ds_writeb(TRAVEL_DETOUR, 1);
 	} else {
 		/* swim back */
@@ -222,7 +226,7 @@ void tevent_014_chest(RealPt chest)
 
 void tevent_015(void)
 {
-	TRV_found_inn(44, 67);
+	TRV_found_inn(TOWNS_VAERMHAG, 67);
 }
 
 void tevent_017(void)
@@ -235,7 +239,7 @@ void tevent_017(void)
 	}
 }
 
-/* Path west from the route Kravik-Skelellen. */
+/* Path west from the route Kravik <-> Skelellen. */
 void tevent_020(void)
 {
 	signed short answer;
@@ -268,6 +272,10 @@ void tevent_020(void)
 			{
 			    /* TODO: Original-Bug: CURRENT_TOWN is either Kravik or Skelellen. */
 				ds_writeb(ROUTE59_FLAG, (ds_readb(CURRENT_TOWN) == TOWNS_PEILINEN ? 1 : 3));
+
+				/* Original-Glitch:
+				 * TRAVEL_DETOUR == 1 is indicating a detour to DNG_TOTENSCHIFF (which had the ID 1).
+				 * Probably, this does not make a difference, but still, it would be better to use another number. */
 				ds_writeb(TRAVEL_DETOUR, 1);
 			}
 		}
@@ -289,6 +297,7 @@ void tevent_021(void)
 }
 
 void tevent_022(void)
+	/* Rukian <-> Faehrstation Angbodirtal: windgeschuetzte Stelle */
 {
 	signed short answer;
 
@@ -318,6 +327,7 @@ void tevent_022(void)
 }
 
 void tevent_024(void)
+	/* Auplog <-> Vilnheim: windgeschuetzte Stelle. Idealer Rastplatz */
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT024_FLAG)) ||
 		ds_readb(TEVENT024_FLAG) != 0)
@@ -328,6 +338,7 @@ void tevent_024(void)
 }
 
 void tevent_025(void)
+	/* Auplog <-> Vilnheim: umgestuerzte, moosbewachsene Baumstaemme. idealer Rastplatz. */
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 1) > 0 && !ds_readb(TEVENT025_FLAG)) ||
 		ds_readb(TEVENT025_FLAG) != 0)
@@ -391,20 +402,20 @@ void tevent_029(void)
 			{
 				sub_hero_le(hero, 2);
 
-				item_pos = get_item_pos(hero, 45);
+				item_pos = get_item_pos(hero, ITEM_FOOD_PACKAGE);
 
 				if (item_pos != -1)
 				{
 					/* hero looses the first set of FOOD PACKAGES */
-					drop_item(hero, item_pos, host_readws(hero + HERO_ITEM_HEAD + 2 + 14 * item_pos));
+					drop_item(hero, item_pos, host_readws(hero + HERO_INVENTORY + INVENTORY_QUANTITY + SIZEOF_INVENTORY * item_pos));
 				}
 
-				item_pos = hero_count_item(hero, 30);
+				item_pos = hero_count_item(hero, ITEM_WATERSKIN);
 
 				if (item_pos)
 				{
 					/* hero looses the first WATERSKIN */
-					drop_item(hero, get_item_pos(hero, 30), item_pos - 1);
+					drop_item(hero, get_item_pos(hero, ITEM_WATERSKIN), item_pos - 1);
 				}
 			}
 		}
@@ -572,6 +583,7 @@ void tevent_039(void)
 }
 
 void tevent_040(void)
+/* Auplog <-> Varnheim: alte Feuerstelle. idealer Rastplatz */
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 4) > 0 && !ds_readb(TEVENT040_FLAG)) ||
 		ds_readb(TEVENT040_FLAG) != 0)
@@ -581,6 +593,7 @@ void tevent_040(void)
 	}
 }
 
+/* Auplog <-> Varnheim: kleiner aber reissender Bach, ueber den sich urspruenglich einmal eine Haengebruecke spannte. bridge building */
 void tevent_041(void)
 {
 	signed short answer;
@@ -590,6 +603,7 @@ void tevent_041(void)
 	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 0) > 0 && !ds_readb(TEVENT041_FLAG))
 	{
 		do {
+			/* Spuren von Karenen */
 			answer = GUI_radio(get_tx2(20), 2,
 						get_tx2(21),
 						get_tx2(22));
@@ -605,6 +619,7 @@ void tevent_041(void)
 }
 
 void tevent_042(void)
+	/* Auplog <-> Varnheim: (weiter von Auplog weg als tevent_043) kleiner Bachlauf. Nahrung. */
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT042_FLAG)) ||
 		ds_readb(TEVENT042_FLAG) != 0)
@@ -615,6 +630,7 @@ void tevent_042(void)
 }
 
 void tevent_043(void)
+	/* Auplog <-> Varnheim: (nahe an Auplog) kleiner Bachlauf. Nahrung. */
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(TEVENT043_FLAG)) ||
 		ds_readb(TEVENT043_FLAG) != 0)
@@ -662,12 +678,12 @@ void tevent_044(void)
 	}
 }
 
-/* a farmer */
+/* Ottarje -> Daspota: a farmer */
 void tevent_045(void)
 {
 	signed short answer;
 
-	if (ds_readw(TRV_DESTINATION) == 40)
+	if (ds_readw(TRV_DESTINATION) == TOWNS_DASPOTA)
 	{
 		load_in_head(11);
 
@@ -688,7 +704,7 @@ void tevent_045(void)
 	}
 }
 
-/* abandoned inn */
+/* Daspota <-> Ottarje: entrance to the dungeon "verlassene Herberge"("abandoned inn") */
 void tevent_046(void)
 {
 	signed short answer;
@@ -737,7 +753,7 @@ void tevent_046(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(TRAVEL_DETOUR, 2);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_VERFALLENE_HERBERGE);
 				enter_inn = 1;
 			}
 		}
@@ -762,7 +778,7 @@ void tevent_046(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(TRAVEL_DETOUR, 2);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_VERFALLENE_HERBERGE);
 			}
 		}
 	}
@@ -773,6 +789,7 @@ void tevent_046(void)
 	ds_writew(REQUEST_REFRESH, 1);
 }
 
+/* Daspota <-> Ottarje: alte Feuerstelle. idealer Rastplatz. */
 void tevent_048(void)
 {
 	signed short answer;
@@ -787,6 +804,7 @@ void tevent_048(void)
 			if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 3) > 0 && !ds_readb(TEVENT048_TRACK_FLAG)) ||
 				ds_readb(TEVENT048_TRACK_FLAG) != 0)
 			{
+				/* Spuren einer kleinen Karenherde */
 				do {
 					answer = GUI_radio(get_tx2(52), 2,
 								get_tx2(53),
@@ -803,6 +821,7 @@ void tevent_048(void)
 	}
 }
 
+/* Ottarje <-> Skjal */
 void tevent_049(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT049_FLAG)) ||
@@ -813,6 +832,7 @@ void tevent_049(void)
 	}
 }
 
+/* Ottarje <-> Skjal */
 void tevent_050(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(TEVENT050_FLAG)) ||

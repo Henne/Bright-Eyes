@@ -30,6 +30,7 @@
 namespace M302de {
 #endif
 
+/* Ottarje <-> Skjal: alte Feuerstelle. idealer Rastplatz */
 void tevent_053(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 1) > 0 && !ds_readb(TEVENT053_FLAG)) ||
@@ -41,9 +42,10 @@ void tevent_053(void)
 
 }
 
+/* Prem <-> Skjal: inn "Langschiff" */
 void tevent_054(void)
 {
-	TRV_found_inn(47, 68);
+	TRV_found_inn(TOWNS_BRENDHIL, 68);
 }
 
 /* Path ??? */
@@ -53,8 +55,7 @@ void tevent_055(void)
 
 	season = get_current_season();
 
-	/* only in autumn or spring */
-	if (season == 1 || season == 3) {
+	if (season == SEASON_SPRING || season == SEASON_AUTUMN) {
 
 		load_in_head(52);
 
@@ -66,7 +67,7 @@ void tevent_055(void)
 
 void tevent_056(void)
 {
-	TRV_found_inn(48, 69);
+	TRV_found_inn(TOWNS_MANRIN, 69);
 }
 
 void tevent_057(void)
@@ -117,8 +118,8 @@ void tevent_057(void)
 				test_skill(hero, TA_KLETTERN, 3) <= 0)
 			{
 
-				/* Original-Bug: that condition does not make sense */
-				if (get_first_hero_with_item(121) == -1 || get_first_hero_with_item(32) != -1)
+				/* TODO: Original-Bug: that condition does not make sense */
+				if (get_first_hero_with_item(ITEM_ROPE) == -1 || get_first_hero_with_item(ITEM_ROPE_LADDER) != -1)
 				{
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -182,7 +183,7 @@ void tevent_059(void)
 
 		if (answer == 1) {
 
-			if (get_first_hero_with_item(92) != -1 || get_first_hero_with_item(91) != -1)
+			if (get_first_hero_with_item(ITEM_BRANDY) != -1 || get_first_hero_with_item(ITEM_WINE) != -1)
 			{
 				do {
 					answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL,
@@ -318,8 +319,8 @@ void tevent_060(void)
 							host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 							!hero_dead(hero))
 						{
-							nr_items += hero_count_item(hero, 121);
-							nr_items += hero_count_item(hero, 32);
+							nr_items += hero_count_item(hero, ITEM_ROPE);
+							nr_items += hero_count_item(hero, ITEM_ROPE_LADDER);
 
 							if (host_readbs(hero + HERO_STAFFSPELL_LVL) >= 3)
 							{
@@ -334,9 +335,9 @@ void tevent_060(void)
 
 						for (i = 0; i < 3; i++) {
 
-							answer = get_item_pos(hero = get_hero(get_first_hero_with_item(121)), 121);
+							answer = get_item_pos(hero = get_hero(get_first_hero_with_item(ITEM_ROPE)), ITEM_ROPE);
 							if (answer == -1) {
-								answer = get_item_pos(hero = get_hero(get_first_hero_with_item(32)), 32);
+								answer = get_item_pos(hero = get_hero(get_first_hero_with_item(ITEM_ROPE_LADDER)), ITEM_ROPE_LADDER);
 							}
 
 							drop_item(hero, answer, 1);
@@ -374,7 +375,7 @@ void tevent_060(void)
 	} while (done == 0);
 }
 
-/* entrance dungeon wolfcave */
+/* Ottarje <-> Orvil: entrance to the dungeon "wolf cave" */
 void tevent_061(void)
 {
 	signed short answer;
@@ -404,7 +405,7 @@ void tevent_061(void)
 			} while (answer == -1);
 
 			if (answer == 1) {
-				ds_writeb(TRAVEL_DETOUR, 4);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_WOLFSHOEHLE);
 			}
 		}
 
@@ -420,12 +421,12 @@ void tevent_061(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 4);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_WOLFSHOEHLE);
 		}
 	}
 }
 
-/* dummy Orvil<->Skjal */
+/* Orvil <-> Skjal: dummy */
 void tevent_062(void)
 {
 #if !defined(__BORLANDC__)
@@ -433,7 +434,7 @@ void tevent_062(void)
 #endif
 }
 
-/* dead animal Orvil<->Skjal */
+/* Orvil <-> Skjal: dead animal */
 void tevent_063(void)
 {
 	signed short i;
@@ -513,7 +514,7 @@ void tevent_064(void)
 
 				hero = get_hero(select_hero_ok_forced(get_ttx(317)));
 
-				if (host_readbs(hero + HERO_TYPE) < 7) {
+				if (host_readbs(hero + HERO_TYPE) < HERO_TYPE_WITCH) {
 					GUI_output(get_ttx(330));
 				} else {
 					approach_flag = 1;
@@ -522,7 +523,7 @@ void tevent_064(void)
 				if (approach_flag == 0) {
 					approach_flag = 1;
 				} else {
-					if (test_spell(hero, 84, 0) > 0) {
+					if (test_spell(hero, SP_SILENTIUM_SILENTILLE, 0) > 0) {
 
 						sub_ae_splash(hero, 2);
 
@@ -671,7 +672,7 @@ void tevent_064_chest(void)
 	loot_multi_chest(p_datseg + TEVENT064_CHEST, get_tx2(74));
 }
 
-/* The rider Orvil <-> Ala */
+/* Orvil <-> Ala: rider */
 void tevent_065(void)
 {
 	signed short answer;

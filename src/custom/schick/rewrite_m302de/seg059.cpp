@@ -1,5 +1,5 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg059 (tavern: main / harbour wrappers)
+ *	Rewrite of DSA1 v3.02_de functions of seg059 (tavern: main / harbor wrappers)
  *	Functions rewritten: 4/4 (complete)
  *
  *	Borlandified and identical
@@ -54,18 +54,18 @@ void do_tavern(void)
 		if (ds_readds(DAY_TIMER) < HOURS(11) && ds_readds(DAY_TIMER) > HOURS(3)) {
 
 			GUI_output(get_ttx(801));
-			turnaround();
+			leave_location();
 			return;
 		}
 
 	} else if (ds_readds(DAY_TIMER) < HOURS(16) && ds_readds(DAY_TIMER) > HOURS(3)) {
 
 			GUI_output(get_ttx(481));
-			turnaround();
+			leave_location();
 			return;
 	}
 
-	draw_loc_icons(ds_readws(COMBO_MODE) == 0 ? 4 : 5, 21, 13, 25, 8, 49);
+	draw_loc_icons(ds_readws(COMBO_MODE) == 0 ? 4 : 5, MENU_ICON_TALK, MENU_ICON_ORDER_FOOD, MENU_ICON_APPLY_SKILL, MENU_ICON_LEAVE, MENU_ICON_INN);
 
 	while (!done) {
 
@@ -96,7 +96,7 @@ void do_tavern(void)
 			ds_writew(MOUSE2_EVENT, ds_writew(ACTION, 0));
 		}
 
-		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			answer = GUI_radio(get_ttx(469), ds_readw(COMBO_MODE) == 0 ? 4 : 5,
 						get_ttx(343),
@@ -106,11 +106,11 @@ void do_tavern(void)
 						get_ttx(824)) - 1;
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 129) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 			/* TALK */
 
 			p_money_before = get_party_money();
@@ -135,7 +135,7 @@ void do_tavern(void)
 			ds_writew(REQUEST_REFRESH, done = 1);
 			ds_writew(COMBO_MODE, 0);
 
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 			/* EAT AND DRINK */
 
 			p_money_after = count_heroes_in_group() * (6 - host_readws(tav_ptr) / 4);
@@ -203,11 +203,13 @@ void do_tavern(void)
 				}
 			}
 
-		} else if (ds_readws(ACTION) == 131) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 			/* USE SKILL */
 
 			bc_time(&timeval);
 
+			/* skill test will be +50 if the game was saved up to 2 minutes ago.
+			 * probably to prevent excessive save & reload */
 			bonus = (timeval - ds_readds(LAST_SAVE_TIME)) > 120 ? 0 : 50;
 
 			if (GUI_use_skill2(bonus, get_ttx(395)) == -1) {
@@ -215,13 +217,13 @@ void do_tavern(void)
 				ds_writew(COMBO_MODE, 0);
 			}
 
-		} else if (ds_readws(ACTION) == 132) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 			/* LEAVE */
 
 			done = 1;
 			ds_writew(COMBO_MODE, 0);
 
-		} else if (ds_readws(ACTION) == 133) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 			/* VISIT INN */
 
 			if (ds_readws(COMBO_MODE) != 0) {
@@ -233,7 +235,7 @@ void do_tavern(void)
 	}
 
 	copy_palette();
-	turnaround();
+	leave_location();
 }
 
 void octopus_attack_wrapper(void)
@@ -248,7 +250,7 @@ void pirates_attack_wrapper(void)
 	ds_writew(REQUEST_REFRESH, 1);
 }
 
-void enter_ghostship(void)
+void prolog_ghostship(void)
 {
 	signed short answer;
 	signed short tw_bak;
@@ -277,7 +279,7 @@ void enter_ghostship(void)
 
 	if (answer == 1) {
 		ds_writew(REQUEST_REFRESH, 0);
-		ds_writeb(TRAVEL_DETOUR, 1);
+		ds_writeb(TRAVEL_DETOUR, DUNGEONS_TOTENSCHIFF);
 	} else {
 		ds_writew(REQUEST_REFRESH, 1);
 	}

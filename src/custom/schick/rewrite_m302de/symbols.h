@@ -53,8 +53,8 @@
 #define BAD_ELIXIRS                     (0x090f)    /* signed short[8]; { MU ELIXIER (0xe2), KL ELIXIER (0xe3), CH ELIXIER (0xe4), FF ELIXIER (0xe5), GE ELIXIER (0xe6), IN ELIXIER (0xe7), KK ELIXIER (0xe8), 0xff } */
 #define ATTACK_ITEMS                    (0x091f)    /* signed short[3]; { ITEM_MIASTHMATICUM (0xee), ITEM_HYLAILIC_FIRE (0xef), -1 } */
 #define MONNAME_GENDERS                 (0x0925)    /* signed char[78] */
-#define STAFFSPELL_DESCRIPTIONS         (0x0973)    /* struct(6)[7]; struct{char attrib1, attrib2, attrib3, bonus, cost, ae_mod;} */
-#define SPELL_DESCRIPTIONS              (0x099d)    /* struct(10)[87]; struct{char unkn0, attrib1, attrib2, attrib3, cost, combat, unkn6, target_type, range, fight;} */
+#define STAFFSPELL_DESCRIPTIONS         (0x0973)    /* struct(6)[7]; struct{char attrib1, attrib2, attrib3, handicap, ae_cost, ae_mod;} */
+#define SPELL_DESCRIPTIONS              (0x099d)    /* struct(10)[87]; struct{char herotype, attrib1, attrib2, attrib3, ae_cost, where_to_use, unkn6, target_type, range, fight;} */
 #define SPELLS_INDEX                    (0x0d03)    /* struct(2)[8]; struct{signed char first, length;}; { {1,5}, {6,12}, {18,6}, {24,3}, {27,6}, {33,5}, {38,7}, {45,4} } */
 #define SPELLS_INDEX2                   (0x0d13)    /* struct(2)[4]; struct{signed char first, length;}; { {49,9}, {58,2}, {60,16}, {76,10} } */
 #define MAGIC_SCHOOLS_1                 (0x0d1b)    /* short[7]; array terminated by -1 */
@@ -68,7 +68,7 @@
 #define MAGIC_SCHOOLS_9                 (0x0d87)    /* short[8]; array terminated by -1 */
 #define MAGIC_SCHOOLS_INDEX             (0x0d97)    /* RealPt[9] */
 #define SPELL_HANDLERS                  (0x0dbb)    /* long[86]; function pointer[86] */
-#define MON_SPELL_DESCRIPTIONS          (0x0f13)    /* struct(8)[15]; struct{char cost, mode, unkn1, attrib1, attrib2, attrib3, unkn2, ani_id;} */
+#define MON_SPELL_DESCRIPTIONS          (0x0f13)    /* struct(8)[15]; struct{char ae_cost, mode, unkn1, attrib1, attrib2, attrib3, vs_mr, ani_id;} */
 #define MON_SPELL_REPERTOIRE            (0x0f8b)    /* struct(5)[11]; struct{char spells[5];} */
 #define MON_SPELL_HANDLERS              (0x0fc2)    /* long[15]; function pointer[15] */
 #define SKILL_DESCRIPTIONS              (0x0ffe)    /* struct(4)[52]; struct{signed char attrib1, attrib2, attrib3, max_inc;} */
@@ -248,8 +248,8 @@
 #define TAV_CHEATED_FLAGS               (0x318a)    /* unsigned char[88] */
 #define SMITH_REPAIRITEMS               (0x31e2)    /* struct(6)[50]; struct{short unkn1; long unkn2;} */
 #define DNG_HANDLED_POS                 (0x330e)    /* unsigned short */
-#define DEATHTRAP_STEPS                 (0x3310)    /* signed short */
-#define DEATHTRAP                       (0x3312)    /* signed short */
+#define DEATHTRAP_STEPS                 (0x3310)    /* signed short; for activated deathtrap: number of remaining steps in dungeon */
+#define DEATHTRAP                       (0x3312)    /* signed short; 0: no death trap activated. 1: death trap on Totenschiff activated. 2: death trap in Spinnenhoehle activated. */
 #define DNG01_AMULET_TAKEN              (0x3314)    /* signed char; {0,1} */
 #define DNG01_SABRE_TAKEN               (0x3315)    /* signed char; {0,1} */
 #define DNG01_CROSSBOW_TAKEN            (0x3316)    /* signed char; {0,1} */
@@ -355,7 +355,7 @@
 #define DUNGEON_LIGHT                   (0x3613)    /* unsigned char; 0 = light is on, 1, 2 = light is off */
 #define SHOW_TRAVEL_MAP                 (0x3614)    /* unsigned char; {0,1} */
 #define HERMIT_VISITED                  (0x3615)    /* unsigned char; {0,1} */
-#define DUNGEON_TYPE                    (0x3616)    /* unsigned char; { 0 = SHIPS, 1 = MARBLES, 2 = STONES } */
+#define DUNGEON_GFX_STYLE               (0x3616)    /* unsigned char; { 0 = wood, 1 = marble, 2 = stone } */
 #define ESTORIK_KNOWN                   (0x3617)    /* unsigned char; {0,1} */
 #define DIALOG_PARTNERS                 (0x3618)    /* struct(38)[10] */
 #define DIALOG_STATES                   (0x3794)    /* struct(8)[160] */
@@ -745,11 +745,11 @@
 #define ROUTE_FIGHT_TIME                (0x424a)    /* unsigned short */
 #define TRAVEL_SPEED                    (0x424c)    /* unsigned short */
 #define PASSAGE_DEADSHIP_FLAG           (0x424e)    /* unsigned short; {0,1} */
-#define PASSAGE_DEADSHIP_TIME           (0x4250)    /* unsigned short */
+#define PASSAGE_DEADSHIP_POSITION       (0x4250)    /* unsigned short */
 #define PASSAGE_OCTOPUS_FLAG            (0x4252)    /* unsigned short; {0,1} */
-#define PASSAGE_OCTOPUS_TIME            (0x4254)    /* unsigned short */
+#define PASSAGE_OCTOPUS_POSITION        (0x4254)    /* unsigned short */
 #define PASSAGE_PIRATES_FLAG            (0x4256)    /* unsigned short; {0,1} */
-#define PASSAGE_PIRATES_TIME            (0x4258)    /* unsigned short */
+#define PASSAGE_PIRATES_POSITION        (0x4258)    /* unsigned short */
 #define ROUTE_COURSE_PTR                (0x425a)    /* RealPt */
 #define ROUTE_COURSE_START              (0x425e)    /* RealPt */
 #define ROUTE_COURSE_PTR2               (0x4262)    /* RealPt */
@@ -757,16 +757,16 @@
 #define TEVENTS_TAB_PTR                 (0x426a)    /* unsigned long */
 #define TRAVEL_ROUTE_PTR                (0x426e)    /* unsigned long */
 #define ROUTE_TEVENTS                   (0x4272)    /* struct(4)[15]; struct{short place, event_id;} */
-#define SEA_TRAVEL_PSGBOOKED_FLAG       (0x42ae)    /* signed char */
-#define SEA_TRAVEL_PSGBOOKED_TIMER      (0x42af)    /* signed char */
-#define SEA_TRAVEL_PASSAGE_UNKN1        (0x42b0)    /* signed char */
+#define SEA_TRAVEL_PSGBOOKED_FLAG       (0x42ae)    /* signed char; 0 = passage is not booked; 0xaa = passage is booked */ /* why 0xaa instead of simply 1 ?? */
+#define SEA_TRAVEL_PSGBOOKED_TIMER      (0x42af)    /* signed char; 0 = ship leaves today at 9 o'clock; 1 = ship leaves tomorrow at 9 o'clock */
+#define SEA_TRAVEL_PASSAGE_SPEED1       (0x42b0)    /* signed char */
 #define SEA_TRAVEL_PASSAGE_ID           (0x42b1)    /* signed char */
-#define SEA_TRAVEL_MENU_PASSAGES        (0x42b2)    /* struct(12)[10] */
+#define HARBOR_OPTIONS                  (0x42b2)    /* struct(12)[10]; buffering passage data for building the menu in a harbor where a sea passage can be selected */
 #define SEA_TRAVEL_PASSAGE_PRICE        (0x432a)    /* signed short */
-#define SEA_TRAVEL_PASSAGE_UNKN2        (0x432c)    /* signed short */
+#define SEA_TRAVEL_PASSAGE_SPEED2       (0x432c)    /* unsigned short; basically, the same purpose as SEA_TRAVEL_PASSAGE_SPEED1. The variables could be merged. */
 #define TRAVEL_MAP_PTR                  (0x432e)    /* RealPt */
 #define FORCEDMARCH_TIMER               (0x4332)    /* unsigned char */
-#define TRAVEL_DETOUR                   (0x4333)    /* unsigned char */
+#define TRAVEL_DETOUR                   (0x4333)    /* unsigned char; indicates a detour from traveling, mostly to a dungeon (if it holds a DUNGEONS_... ID, which is a value in [1..15]). further possible values: 0, 99, and an extra usage of 1 in seg110.cpp */
 #define CURRENT_DIRSIGN                 (0x4334)    /* unsigned short */
 #define TRV_RETURN                      (0x4336)    /* signed short; {-1, 0, 1, 2} + ? */
 #define TRV_DEST_REACHED                (0x4338)    /* unsigned short */
@@ -926,7 +926,7 @@
 // ?1
 #define INFORMER_TAB                    (0x5ed6)    /* struct(4)[15]; struct{short name_id; char town, unkn;} */
 #define FIG_DROPPED_COUNTER             (0x5f12)    /* signed short */
-#define FIG_ALL_HEROES_WITHDRAWN        (0x5f14)    /* unsigned short; {0,1} */
+#define FIG_ALL_HEROES_ESCAPED          (0x5f14)    /* unsigned short; {0,1} */
 #define MAX_ENEMIES                     (0x5f16)    /* signed short; an upper bound for the number of enemies */
 #define STR_ERROR_ON_OBJ_MALLOC         (0x5f18)    /* char[23]; "ERROR ON OBJECT MALLOC" */
 // ?1
@@ -1065,12 +1065,12 @@
 // ?1
 #define TEMPLE_MIRACLE_BONUS            (0x6ea4)    /* signed char[15]; {0, 2, 15, 10, 20, 5, 10, 1, 15, 3, 15, 5, 10, 0} */
 #define TEMPLE_MIRACLE_DICE             (0x6eb3)    /* signed char[15]; {0, 9, 9, 10, 17, 6, 10, 10, 18, 10, 19, 8, 15, 0, 10} */
-#define SEA_TRAVEL_TX_CLASS             (0x6ec2)    /* signed short[7] */
-#define SEA_TRAVEL_QUALITY_TABLE        (0x6ed0)    /* struct(4)[8]; struct{unsigned char cls,unkn,price,speed;} */
-#define SEA_TRAVEL_TX_SHIP              (0x6ef0)    /* signed short[8] */
-#define SEA_TRAVEL_PASSAGES             (0x6f00)    /* struct(8)[46] */
+#define PASSAGE_TYPE_TO_NAME            (0x6ec2)    /* signed short[7]; {0x001d, 0x001e, 0x001f, 0x0020, 0x0021, 0x0022, 0x0023} */ /* maps entry PASSAGE_TYPE in SHIP_TABLE -> ptr to name of type of passage (Begleitschutzfahrt, Deckpassage etc.) */
+#define SHIP_TABLE                      (0x6ed0)    /* struct(4)[8]; struct{unsigned char passage_type,unkn2,base_price_per_distance,base_speed;}; { { 0, 1, 0, 120 }, { 3, 1, 35, 100 }, { 1, 1, 0, 150 }, { 2, 1, 45, 150 }, { 0, 1, 0, 90 }, { 4, 1, 20, 80 }, { 5, 0, 10, 60 }, { 6, 0, 0, 40 } } */
+#define SEA_TRAVEL_TX_SHIP              (0x6ef0)    /* signed short[8]; { 0x0024, 0x0025, 0x0026, 0x0026, 0x0024, 0x0027, 0x0028, 0x0029 }*/ /* maps ship_type -> ptr to ship name (Langschiff, Kutter, etc.) */
+#define SEA_ROUTES                      (0x6f00)    /* struct(8)[46] */
 #define TRAVEL_BY_SHIP                  (0x7070)    /* unsigned char; 0 = on land, 1 = at the ship */
-#define SEA_TRAVEL_SLEEPBONUS_TABLE1    (0x7071)    /* signed short[7]; { -2, 0, 5, 4, 3, 1, 0 } */
+#define SEA_TRAVEL_SLEEPBONUS_TABLE1    (0x7071)    /* signed short[7]; { -2, 0, 5, 4, 3, 1, 0 } */ /* maps entry PASSAGE_TYPE in SHIP_TABLE -> regeneration modifier (aka 'sleep quality') */
 #define SEA_TRAVEL_SLEEPBONUS_TABLE2    (0x707f)    /* signed short[7]; { -2, 0, 5, 4, 3, 1, 0 } */
 #define SEA_TRAVEL_STR_T                (0x708d)    /* char[2]; "T" */
 #define SEA_TRAVEL_STR_EN               (0x708f)    /* char[3]; "EN" */
@@ -1113,7 +1113,7 @@
 // ?1
 #define TMAP_DOUBLE1                    (0x7c9a)    /* unsigned char; 1 = unicorn brought a piece you already have */
 #define TMAP_DOUBLE2                    (0x7c9b)    /* unsigned char; 1 = you got a piece you already have from the unicorn */
-#define SWAFNILD_TRAVELLED              (0x7c9c)    /* unsigned char; {0,1} */
+#define SWAFNILD_TRAVELED               (0x7c9c)    /* unsigned char; {0,1} */
 #define TOWNS_GOSSIP_MAX                (0x7c9d)    /* unsigned char[52] */
 #define TOWNS_GOSSIP_OFF                (0x7cd1)    /* unsigned char[52] */
 // ?1
@@ -1126,9 +1126,9 @@
 #define AUTOMAP_SELX                    (0x7de5)    /* signed short */
 #define AUTOMAP_SELY                    (0x7de7)    /* signed short */
 // ?1
-#define DNG_GFXTAB_SHIPS                (0x7dea)    /* struct(18)[88] */
-#define DNG_GFXTAB_STONES               (0x841a)    /* struct(18)[88] */
-#define DNG_GFXTAB_MARBLES              (0x8a4a)    /* struct(18)[88] */
+#define DNG_GFXTAB_WOOD                 (0x7dea)    /* struct(18)[88] */
+#define DNG_GFXTAB_STONE                (0x841a)    /* struct(18)[88] */
+#define DNG_GFXTAB_MARBLE               (0x8a4a)    /* struct(18)[88] */
 #define DNG_STUB3_UNKN0                 (0x907a)    /* unsigned char[22] */
 #define DNG_STUB3_UNKN1                 (0x9090)    /* unsigned char[22] */
 #define DNG_STUB3_UNKN2                 (0x90a6)    /* unsigned char[22] */
@@ -1241,7 +1241,7 @@
 #define SPELL_SELECT_ONES               (0xac30)    /* signed char[12]; { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } */
 #define ANALUES_ITEMS                   (0xac3c)    /* struct(5)[28]; struct{signed short item_id, barrier; signed char dtp;} */
 #define HEXENKNOTEN_GFX_BUF             (0xacc8)    /* RealPt */
-#define MONSTER_SPELL_COST              (0xaccc)    /* signed short */
+#define MONSTER_SPELL_AE_COST           (0xaccc)    /* signed short */
 #define SELECT_SKILL_LVLUP              (0xacce)    /* char[6]; "%s~%d" */
 #define SELECT_SKILL_DEFAULTS           (0xacd4)    /* signed char[6]; {44, 45, 46, -1, -1, -1} */
 #define ALCHEMY_RECIPES                 (0xacda)    /* struct(28)[13] */
@@ -1334,11 +1334,11 @@
 #define AIL_SEQUENCE                    (0xbd21)    /* signed short */
 #define AIL_MUSIC_DRIVER_ID             (0xbd23)    /* signed short */
 #define PREGAME_STATE                   (0xbd25)    /* unsigned short; {0,1} */
-#define CITYCAMP_CITY                   (0xbd27)    /* unsigned char; {0 = camp in dungeon, 1} */
+#define CITYCAMP_CITY                   (0xbd27)    /* unsigned char; { 0 = camp in a dungeon, 1 = camp in a town } */
 #define CURRENT_FIGHT                   (0xbd28)    /* RealPt */
 #define SCENARIO_BUF                    (0xbd2c)    /* long */
 #define FIGHTOBJ_BUF                    (0xbd30)    /* RealPt */
-#define HEROS                           (0xbd34)    /* long */
+#define HEROES                          (0xbd34)    /* long */
 #define NEW_MENU_ICONS                  (0xbd38)    /* signed char[9] */
 // ?12
 #define STEPTARGET_FRONT                (0xbd4d)    /* unsigned char */
@@ -1352,14 +1352,14 @@
 #define EMS_TRAVEL_MAP                  (0xbd90)    /* unsigned short */
 #define EMS_UNUSED_HANDLE               (0xbd92)    /* unsigned short */
 #define DNG_MAP_SIZE                    (0xbd94)    /* unsigned char; {16, 32} */
-#define DNG_MAP                         (0xbd95)    /* unsigned char[512] */
+#define DNG_MAP                         (0xbd95)    /* unsigned char[512]; 1 byte for each square of the current dungeon level. higher nybble: ID of the tile on the square. lower nybble: 4 flags */
 #define RADIO_NAME_LIST                 (0xbf95)    /* RealPt[15]; used for items, heroes, spells, skills, recipes */
 // ?40
 #define GUI_BUFFER_UNKN                 (0xbff9)    /* RealPt */
 #define TEXTBOX_WIDTH                   (0xbffd)    /* signed short */
 #define TEXTBOX_POS_X                   (0xbfff)    /* signed short; coordinate of upper left corner */
 #define TEXTBOX_POS_Y                   (0xc001)    /* signed short; coordinate of upper left corner */
-#define GAME_MODE                       (0xc003)    /* signed short; {-1 = Input error, 1 = Beginner, 2 = Advanced } */
+#define GAME_MODE                       (0xc003)    /* signed short; {-1 = unspecified, 1 = beginner, 2 = advanced } */
 #define SELLITEMS                       (0xc005)    /* RealPt; also used for repair items */
 #define BUYITEMS                        (0xc009)    /* RealPt; merchant's assortment */
 #define PIC_COPY_DST                    (0xc00d)    /* RealPt */
@@ -1387,9 +1387,9 @@
 #define UPDATE_STATUSLINE               (0xc3cb)    /* unsigned short; {0,1} */
 // ?2
 #define MOUSE1_DOUBLECLICK              (0xc3cf)    /* unsigned short; {0,1} */
-#define MOUSE1_EVENT1                   (0xc3d1)    /* unsigned short; {0,1} */
-#define MOUSE2_EVENT                    (0xc3d3)    /* unsigned short; {0,1} */
-#define MOUSE1_EVENT2                   (0xc3d5)    /* unsigned short; {0,1} */
+#define MOUSE1_EVENT1                   (0xc3d1)    /* unsigned short; {0,1}. Indicates a click event on mouse button 1 */
+#define MOUSE2_EVENT                    (0xc3d3)    /* unsigned short; {0,1}. Indicates a click event on mouse button 2 */
+#define MOUSE1_EVENT2                   (0xc3d5)    /* unsigned short; {0,1}. Indicates a click-and-drag event on mouse button 1 */
 #define BIOSKEY_EVENT                   (0xc3d7)    /* unsigned short */
 #define ACTION                          (0xc3d9)    /* unsigned short */
 #define BUFFER9_PTR                     (0xc3db)    /* RealPt; to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */
@@ -1414,7 +1414,7 @@
 #define GGST_CURSOR                     (0xcecf)    /* struct(64); struct{char unkn[32]; unsigned short mask[16];} */
 #define MOUSE_BG_BAK                    (0xcf0f)    /* unsigned char[256] */
 #define DNG_INIT_FLAG                   (0xd00f)    /* unsigned short; {0,1} */
-#define DNG_EXTRA_ACTION                (0xd011)    /* unsigned short; {0 = warehouse,1 = open door,2 = open chest,3 = close door,4 = lever,5 = smash door} */
+#define DNG_MENU_MODE                   (0xd011)    /* unsigned short; {0 = warehouse (?), 1: 7th symbol is "open door" , 2: 7th symbol is "open chest", 3: 7th symbol is "close door", 4: 7th symbol is "lever", 5: 7th to 9th symbol are the different options to smash/unlock a door } */
 #define REDRAW_MENUICONS                (0xd013)    /* unsigned short; {0,1} */
 #define BUFFER9_PTR2                    (0xd015)    /* RealPt; copy of BUFFER9_PTR */
 #define BUFFER9_PTR3                    (0xd019)    /* RealPt; copy of BUFFER9_PTR */
@@ -1468,14 +1468,14 @@
 #define TXT_TABPOS6                     (0xd31d)    /* signed short */
 #define TXT_TABPOS7                     (0xd31f)    /* signed short */
 #define TOWNPAL_BUF                     (0xd321)    /* RealPt */
-#define FIG_FLEE_POSITION               (0xd325)    /* signed short[4]; see HERO_UNKNOWN9 */
+#define FIG_FLEE_POSITION               (0xd325)    /* signed short[4]; the goal square in the dungeon if a hero escapes, depending on the direction the fight board is exited. the direction is stored at HERO_ESCAPE_POSITION */
 #define WILDCAMP_SLEEP_QUALITY          (0xd32d)    /* signed short */
 #define GATHER_HERBS_MOD                (0xd32f)    /* signed short */
 #define REPLENISH_STOCKS_MOD            (0xd331)    /* signed short */
 #define FIG_MSG_DATA                    (0xd333)    /* struct(4)[6]; struct{signed short type, damage;} */
 #define ENEMY_SHEETS                    (0xd34b)    /* struct(62)[20]; struct enemy[20] */
 #define FIG_MOVE_PATHDIR                (0xd823)    /* signed char[10] */
-#define FIG_MONSTERS_UNKN               (0xd82d)    /* signed char[30]; see FIG_ACTION_UNKNOWN2 */
+#define FIG_ACTORS_UNKN                 (0xd82d)    /* signed char[30]; see FIG_ACTION_UNKNOWN2 */
 #define HERO_IS_TARGET                  (0xd84b)    /* signed char[7] */
 #define CHESSBOARD                      (0xd852)    /* RealPt */
 #define FIG_SPELLGFX_BUF                (0xd856)    /* RealPt */
@@ -1489,7 +1489,7 @@
 #define FIGHTOBJ_LIST                   (0xd874)    /* unsigned char[90] */
 #define FIG_ANISHEETS                   (0xd8ce)    /* struct(243)[8] */
 #define FIG_LIST_ELEM                   (0xe066)    /* struct(35) */
-#define FIG_LIST_ARRAY                  (0xe089)    /* unsigned char[127] */
+#define FIG_LIST_ARRAY                  (0xe089)    /* unsigned char[127]; list of flags (0 or 1) indicating if the corresponding FIGHTER_ID is in use. more precisely: FIG_LIST_ARRAY[i] is 1 (otherwise 0) if the index i is the FIGHTER_ID of a fighter object. */
 #define FIG_LIST_HEAD                   (0xe108)    /* RealPt; to a list */
 #define LOCATION_MARKET_FLAG            (0xe10c)    /* unsigned char; {0,1} */
 #define WALLCLOCK_REDRAW                (0xe10d)    /* unsigned short; {0,1} */
@@ -1541,12 +1541,12 @@
 #define AUTOFIGHT                       (0xe318)    /* signed short */
 #define FIG_DROPPED_WEAPONS             (0xe31a)    /* signed short[30] */
 #define CHESSBOARD_CPY                  (0xe356)    /* RealPt */
-#define FIG_TWOFIELDED_TABLE            (0xe35a)    /* signed char[21] */
+#define FIG_TWOFIELDED_TABLE            (0xe35a)    /* signed char[21]; table containing the fighter-ids of the head parts of the twofielded enemies */
 #define FIG_TWOFIELDED_COUNT            (0xe36f)    /* signed char */
 #define FIGHTOBJ_BUF_FREESPACE          (0xe370)    /* signed long */
 #define BUFFER_WEAPANIDAT               (0xe374)    /* RealPt; pointer to WEAPANI.DAT */
 #define BUFFER_ANIDAT                   (0xe378)    /* RealPt; pointer to ANI.DAT buffer */
-#define FIG_LIST_BUFFER                 (0xe37c)    /* RealPt; to buffer of size 4445, initial value of FIG_LIST_HEAD */
+#define FIG_LIST_BUFFER                 (0xe37c)    /* RealPt; to buffer of size 4445, initial value of FIG_LIST_HEAD. A figther entry is of size 35, so the list can store up to 127 entries */
 #define FIGOBJ_GFXHEIGHT_TABLE          (0xe380)    /* RealPt; to signed short[63] */
 #define FIGOBJ_GFXWIDTH_TABLE           (0xe384)    /* RealPt; to signed short[63] */
 #define FIGOBJ_GFXBUF_TABLE             (0xe388)    /* RealPt; to RealPt[63] */
@@ -1609,7 +1609,7 @@
 #define LOCKPICK_TRY_COUNTER            (0xe492)    /* signed short; {0..4} */
 #define DUNGEON_FIGHTS_BUF              (0xe494)    /* RealPt; to buffer of size 630 */
 #define DUNGEON_STAIRS_BUF              (0xe498)    /* RealPt; to buffer of size 80 */
-#define DUNGEON_DOORS_BUF               (0xe49c)    /* RealPt; to buffer of size 225 */
+#define DUNGEON_DOORS_BUF               (0xe49c)    /* RealPt; to buffer of size 225 = 45 * 5; each 5-byte entry consists of [pos (2 bytes), smash-handicap, lockpick-handicap, foramen-handicap] */
 #define GET_EXTRA_LOOT                  (0xe4a0)    /* signed short; {0,1} */
 #define ROUTE59_FLAG                    (0xe4a2)    /* unsigned char; {0, 1 = from Kravik, 2 = from Peilinen, 3 = from Skelellen, 4 = from Rovamund} */
 #define TRV_MENU_SELECTION              (0xe4a3)    /* unsigned short */

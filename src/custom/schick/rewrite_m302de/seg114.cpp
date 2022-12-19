@@ -56,7 +56,7 @@ void tevent_110(void)
 			{
 				/* skill test failed */
 
-				if (get_first_hero_with_item(121) != -1)
+				if (get_first_hero_with_item(ITEM_ROPE) != -1)
 				{
 					/* one hero in the group has a rope */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -66,7 +66,7 @@ void tevent_110(void)
 					sub_hero_le(hero, random_schick(10));
 
 				} else {
-					/* all heros in the group have no ropes */
+					/* all heroes in the group have no ropes */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx2(86),
 						(char*)hero + HERO_NAME2);
@@ -207,7 +207,7 @@ void tevent_111(void)
 
 					timewarp(HOURS(3));
 
-					get_item(45, 1, 200);
+					get_item(ITEM_FOOD_PACKAGE, 1, 200);
 
 					ds_writeb(TEVENT111_FLAG, 2);
 
@@ -250,7 +250,7 @@ void tevent_111(void)
 							}
 						}
 
-						get_item(45, 1, 180);
+						get_item(ITEM_FOOD_PACKAGE, 1, 180);
 						ds_writeb(TEVENT111_FLAG, 2);
 					}
 
@@ -353,7 +353,7 @@ void tevent_113(void)
 	}
 }
 
-/* a swamp */
+/* Phexcaer <-> Skelellen: a swamp */
 void tevent_114(void)
 {
 	signed short i;
@@ -438,10 +438,10 @@ void tevent_114(void)
 				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(52), get_tx2(26), 0);
 
 				/* get RECIPE FOR POTENT HEALING POTION */
-				get_item(240, 1, 1);
+				get_item(ITEM_RECIPE_STRONG_LE_POTION, 1, 1);
 
-				/* ORIGINAL-BUG: this item could have been not taken => get_hero(-1) => SEGFAULT */
-				hero = get_hero(get_first_hero_with_item(240));
+				/* TODO: ORIGINAL-BUG: this item could have been not taken => get_hero(-1) => SEGFAULT */
+				hero = get_hero(get_first_hero_with_item(ITEM_RECIPE_STRONG_LE_POTION));
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_tx2(27),
@@ -548,7 +548,7 @@ void tevent_119(void)
 	}
 }
 
-/* wolves attack */
+/* Orvil - Rovik: wolves threaten a sheperd */
 void tevent_122(void)
 {
 	signed short answer;
@@ -563,6 +563,7 @@ void tevent_122(void)
 
 		if (answer == 1)
 		{
+			/* attack wolves */
 			if (!TRV_fight_event(FIGHTS_F122, 122))
 			{
 				ds_writeb(TEVENT122_FLAG, 1);
@@ -574,6 +575,7 @@ void tevent_122(void)
 				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(68), get_tx2(63), 0);
 			}
 		} else {
+			/* decline to help */
 			sub_hero_ap_all(20);
 		}
 	}
@@ -693,17 +695,17 @@ void tevent_123(void)
 				/* cast a spell */
 				hero = get_hero(select_hero_ok_forced(get_ttx(317)));
 
-				if (test_spell(hero, 70, 0) > 0)
+				if (test_spell(hero, SP_MU_STEIGERN, 0) > 0)
 				{
 					/* success */
-					sub_ae_splash(hero, get_spell_cost(70, 0));
+					sub_ae_splash(hero, get_spell_cost(SP_MU_STEIGERN, 0));
 
 					GUI_dialog_na(0, get_tx2(43));
 
 					done = 1;
 				} else {
 					/* failed */
-					sub_ae_splash(hero, get_spell_cost(70, 1));
+					sub_ae_splash(hero, get_spell_cost(SP_MU_STEIGERN, 1));
 
 					hero = get_hero(0);
 					for (i = counter = 0; i <= 6; i++, hero += SIZEOF_HERO)

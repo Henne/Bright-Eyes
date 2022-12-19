@@ -51,11 +51,11 @@ void disease_effect(void)
 
 		if ((host_readbs(get_hero(i) + HERO_TYPE) != HERO_TYPE_NONE) && !hero_dead(get_hero(i))) {
 
-			hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * i;
+			hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * i;
 
-			disease_ptr = Real2Host(hero) + HERO_ILLNESS;
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_WUNDFIEBER * SIZEOF_HERO_ILLNESS);
 
-			/* TETANUS / WUNDFIEBER: get worser */
+			/* TETANUS / WUNDFIEBER: get worse */
 			if (host_readbs(disease_ptr) == -1) {
 
 				if (host_readbs(disease_ptr + 1) > 13) {
@@ -109,9 +109,9 @@ void disease_effect(void)
 			}
 
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 5);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_DUMPFSCHAEDEL * SIZEOF_HERO_ILLNESS);
 
-			/* NUMBSKULL / DUMPFSCHAEDEL: get worser */
+			/* NUMBSKULL / DUMPFSCHAEDEL: get worse */
 			if (host_readbs(disease_ptr) == -1) {
 
 				if (!host_readbs(disease_ptr + 4)) {
@@ -209,9 +209,9 @@ void disease_effect(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 10);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_BLAUE_KEUCHE * SIZEOF_HERO_ILLNESS);
 
-			/* BLUE COUGH / BLAUE KEUCHE: get worser */
+			/* BLUE COUGH / BLAUE KEUCHE: get worse */
 			if (host_readbs(disease_ptr) == -1) {
 
 				if (!host_readbs(disease_ptr + 4)) {
@@ -293,9 +293,9 @@ void disease_effect(void)
 			}
 
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 15);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_PARALYSE * SIZEOF_HERO_ILLNESS);
 
-			/* PARALYSIS / PARALYSE: get worser */
+			/* PARALYSIS / PARALYSE: get worse */
 			if (host_readbs(disease_ptr) == -1) {
 
 				if (host_readbs(disease_ptr + 1) > dice_roll(1, 3, 4)) {
@@ -351,9 +351,9 @@ void disease_effect(void)
 			}
 
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 20);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_SCHLACHTENFIEBER * SIZEOF_HERO_ILLNESS);
 
-			/* BATTLEFIELD FEVER / SCHLACHTFELDFIEBER: get worser */
+			/* BATTLEFIELD FEVER / SCHLACHTFELDFIEBER: get worse */
 			if (host_readbs(disease_ptr) == -1) {
 
 				if (host_readbs(disease_ptr + 1) > 7) {
@@ -428,9 +428,9 @@ void disease_effect(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 25);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_FROSTSCHAEDEN * SIZEOF_HERO_ILLNESS);
 
-			/* FROSTBITE / FROSTSCHAEDEN: get worser */
+			/* FROSTBITE / FROSTSCHAEDEN: get worse */
 			if (host_readbs(disease_ptr) == -1) {
 
 				j = 0;
@@ -504,9 +504,9 @@ void disease_effect(void)
 				}
 			}
 
-			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 30);
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + ILLNESS_TYPE_TOLLWUT * SIZEOF_HERO_ILLNESS);
 
-			/* RABIES / TOLLWUT: get worser */
+			/* RABIES / TOLLWUT: get worse */
 			if (host_readbs(disease_ptr) == -1) {
 
 				if (host_readbs(disease_ptr + 1) > dice_roll(1, 6, 6)) {

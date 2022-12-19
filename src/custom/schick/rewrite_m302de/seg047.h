@@ -11,7 +11,7 @@ void hero_get_drunken(Bit8u *hero);
 /* 0x2f */
 signed short check_hero_KK_unused(signed short val);
 /* 0x34 */
-signed short check_heros_KK(signed short val);
+signed short check_heroes_KK(signed short val);
 /* 0x39 */
 unsigned short hero_is_diseased(Bit8u *hero);
 /* 0x3e */

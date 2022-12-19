@@ -198,7 +198,7 @@ void tevent_093(void)
 	}
 }
 
-/* entrance daspota-dungeon */
+/* Rybon <-> Thoss: entrance to the Daspota treasure dungeon */
 void tevent_094(void)
 {
 	if (ds_readb(TEVENT094_FLAG) != 0)
@@ -216,8 +216,8 @@ void tevent_094(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			/* enter daspota dungeon */
-			ds_writeb(TRAVEL_DETOUR, 6);
+			/* enter Daspota dungeon */
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_DASPOTASCHATZ);
 		}
 	}
 }
@@ -228,7 +228,7 @@ void tevent_095(void)
 	signed short counter_failed;
 	signed short done;
 	signed short i;
-	signed short counter_heros;
+	signed short counter_heroes;
 	Bit8u *hero;
 	signed short ret_spell_test;
 
@@ -240,13 +240,13 @@ void tevent_095(void)
 
 		hero = get_hero(0);
 
-		for (i = counter_failed = counter_heros = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		for (i = counter_failed = counter_heroes = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{
-				counter_heros++;
+				counter_heroes++;
 
 				if (test_attrib(hero, ATTRIB_HA, -1) > 0)
 				{
@@ -269,9 +269,9 @@ void tevent_095(void)
 			GUI_output(get_tx2(16));
 			done = 1;
 
-		} else if (counter_failed == counter_heros)
+		} else if (counter_failed == counter_heroes)
 		{
-			/* all heros failed HA-test */
+			/* all heroes failed HA-test */
 			do {
 				counter_failed = GUI_radio(get_tx2(9), 2,
 								get_tx2(10),
@@ -291,11 +291,11 @@ void tevent_095(void)
 			}
 		} else {
 			/* at least one hero failed HA-test */
-			counter_heros = 0;
+			counter_heroes = 0;
 
 			do {
 				do {
-					counter_failed = GUI_radio((counter_heros == 0 ? get_tx2(12) : get_tx2(87)), 3,
+					counter_failed = GUI_radio((counter_heroes == 0 ? get_tx2(12) : get_tx2(87)), 3,
 									get_tx2(13),
 									get_tx2(14),
 									get_tx2(15));
@@ -316,20 +316,20 @@ void tevent_095(void)
 					/* try a spell */
 					hero = get_hero(select_hero_ok_forced(get_ttx(317)));
 
-					if (host_readbs(hero + HERO_TYPE) < 7)
+					if (host_readbs(hero + HERO_TYPE) < HERO_TYPE_WITCH)
 					{
 						/* this hero is no magic-user */
 						GUI_output(get_ttx(330));
 					} else {
 
-						ret_spell_test = test_spell(hero, 7, 0);
+						ret_spell_test = test_spell(hero, SP_BANNBALADIN, 0);
 
 						if (ret_spell_test > 0)
 						{
 							/* spell succeeded */
 
 							/* TODO: magicians with 4th staff spell may pay less */
-							sub_ae_splash(hero, get_spell_cost(7, 0));
+							sub_ae_splash(hero, get_spell_cost(SP_BANNBALADIN, 0));
 
 							GUI_output(get_tx2(16));
 
@@ -340,11 +340,11 @@ void tevent_095(void)
 							/* spell failed */
 
 							/* hero pays the half spell costs */
-							sub_ae_splash(hero, get_spell_cost(7, 1));
+							sub_ae_splash(hero, get_spell_cost(SP_BANNBALADIN, 1));
 
 							/* TODO: some output for the player */
 
-							counter_heros = 1;
+							counter_heroes = 1;
 						} else {
 							/* spell failed unluckily */
 
@@ -360,7 +360,7 @@ void tevent_095(void)
 					}
 				} else
 				{
-					/* talk to the heros */
+					/* talk to the heroes */
 
 					/* wait for 4 hours */
 					timewarp(HOURS(4));
@@ -444,7 +444,7 @@ void tevent_096(void)
 	}
 }
 
-/* entrance dungeon: temple of the nameless */
+/* Hjalland: entrance to the dungeon "temple of the one without name" */
 void tevent_126(void)
 {
 	signed short answer;
@@ -465,7 +465,7 @@ void tevent_126(void)
 
 		if (answer == 1)
 		{
-			ds_writeb(TRAVEL_DETOUR, 9);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_KULTSTAETTE_DES_NAMENLOSEN);
 		}
 	}
 }
@@ -510,7 +510,7 @@ void tevent_128(void)
 	}
 }
 
-/* entrance dungeon: dragon cave */
+/* Runin: entrance to the dungeon "dragon cave" */
 void tevent_129(void)
 {
 	signed short answer;
@@ -531,7 +531,7 @@ void tevent_129(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 10);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_DRACHENHORT);
 		}
 
 	} else if (ds_readb(TEVENT129_FLAG) != 0) {
@@ -546,12 +546,12 @@ void tevent_129(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 10);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_DRACHENHORT);
 		}
 	}
 }
 
-/* a cutter */
+/* Daspota <-> Ottarje: a cutter */
 void tevent_047(void)
 {
 	signed short answer;
@@ -639,11 +639,11 @@ void tevent_047(void)
 
 						if (answer == 1)
 						{
-							ds_writeb(CURRENT_TOWN, 42);
+							ds_writeb(CURRENT_TOWN, TOWNS_LJASDAHL);
 							ds_writew(X_TARGET, 7);
 							ds_writew(Y_TARGET, 3);
 						} else {
-							ds_writeb(CURRENT_TOWN, 37);
+							ds_writeb(CURRENT_TOWN, TOWNS_OTTARJE);
 							ds_writew(X_TARGET, 9);
 							ds_writew(Y_TARGET, 10);
 						}
@@ -667,7 +667,7 @@ void tevent_047(void)
 						GUI_dialog_na(0, get_tx2(23));
 						GUI_dialog_na(0, get_tx2(25));
 
-						ds_writeb(CURRENT_TOWN, 43);
+						ds_writeb(CURRENT_TOWN, TOWNS_VARNHEIM);
 						ds_writew(X_TARGET, 4);
 						ds_writew(Y_TARGET, 10);
 						ds_writeb(TRAVEL_DETOUR, 99);
@@ -678,7 +678,7 @@ void tevent_047(void)
 	}
 }
 
-/* entrance dungeon: a ruin */
+/* Rybon <-> Thoss: entrance to the dungeon "ruin of the black wizard" */
 void tevent_100(void)
 {
 	signed short answer;
@@ -712,7 +712,7 @@ void tevent_100(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(TRAVEL_DETOUR, 7);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_RUINE_DES_SCHWARZMAGIERS);
 			} else {
 
 				GUI_output(get_tx2(67));

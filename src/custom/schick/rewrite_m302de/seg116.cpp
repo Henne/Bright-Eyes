@@ -85,9 +85,9 @@ void tevent_130(void)
 	}
 }
 
+/* Manrek: entrance to the dungeon "pirate cave" */
 void tevent_131(void)
 {
-	/* entrance to the pirate cave */
 	signed short answer;
 
 	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 8) > 0 && !ds_readb(TEVENT131_FLAG)) {
@@ -103,7 +103,7 @@ void tevent_131(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 11);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_PIRATENHOEHLE);
 		}
 
 	} else {
@@ -117,7 +117,7 @@ void tevent_131(void)
 			} while (answer == -1);
 
 			if (answer == 1) {
-				ds_writeb(TRAVEL_DETOUR, 11);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_PIRATENHOEHLE);
 			}
 		}
 	}
@@ -209,9 +209,10 @@ void tevent_134(void)
 }
 
 void tevent_135(void)
+/* Einsiedlersee <-> Einsiedlersee: Monolith */
 {
-	signed short l_si;
-	signed short l_di;
+	signed short tmp; /* used for (1) fall_height; (2) LE of the hero after falling */
+	signed short tmp2; /* used for (1) map tile position (2) falling damage */
 	signed short answer;
 	signed short done;
 	signed short count;
@@ -236,21 +237,21 @@ void tevent_135(void)
 
 			hero = get_hero(select_hero_ok_forced(get_tx2(45)));
 
-			l_si = 1;
+			tmp = 1;
 			if (test_skill(hero, TA_KLETTERN, -1) > 0) {
-				l_si = 2;
+				tmp = 2;
 				GUI_output(get_tx2(46));
 
 				if (test_skill(hero, TA_KLETTERN, 1) > 0) {
-					l_si = 3;
+					tmp = 3;
 					GUI_output(get_tx2(47));
 
 					if (test_skill(hero, TA_KLETTERN, 0) > 0) {
-						l_si = 4;
+						tmp = 4;
 						GUI_output(get_tx2(48));
 
 						if (test_skill(hero, TA_KLETTERN, 2) > 0) {
-							l_si = 5;
+							tmp = 5;
 							GUI_output(get_tx2(49));
 
 							if (test_skill(hero, TA_KLETTERN, 1) > 0) {
@@ -272,8 +273,8 @@ void tevent_135(void)
 
 								GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
 
-								for (l_di = count = 0; l_di < 9; l_di++) {
-									if (ds_readb(TREASURE_MAPS + l_di) != 0) {
+								for (tmp2 = count = 0; tmp2 < 9; tmp2++) {
+									if (ds_readb(TREASURE_MAPS + tmp2) != 0) {
 										count++;
 									}
 								}
@@ -304,7 +305,7 @@ void tevent_135(void)
 									(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
 								GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
 
-								l_si = 0;
+								tmp = 0;
 								done = 1;
 							}
 						}
@@ -312,28 +313,30 @@ void tevent_135(void)
 				}
 			}
 
-			if (l_si) {
+			if (tmp) {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_tx2(51),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
-				l_di = random_interval(ds_readb(TEVENT135_CLIMB_DAMAGE + 2 * l_si), host_readb((p_datseg + TEVENT135_CLIMB_DAMAGE + 1) + (2 * l_si)));
-				l_si = host_readws(hero + HERO_LE);
-				l_si -= l_di;
+				/* depending on fall height stored in tmp: damage in the interval [1..5], [4..13], [7..21], [10..32], [15..40] */
+				tmp2 = random_interval(ds_readb(TEVENT135_CLIMB_DAMAGE + 2 * tmp), host_readb((p_datseg + TEVENT135_CLIMB_DAMAGE + 1) + (2 * tmp)));
 
-				sub_hero_le(hero, l_di);
+				tmp = host_readws(hero + HERO_LE);
+				tmp -= tmp2;
 
-				if (l_si <= 0) {
+				sub_hero_le(hero, tmp2);
+
+				if (tmp <= 0) {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)(!l_si ? get_tx2(53) : get_tx2(52)),
+						(char*)(!tmp ? get_tx2(53) : get_tx2(52)),
 						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
 
-				if (count_heroes_available_in_group()) {
+				if (count_heroes_available_in_group()) { /* potential Original-Bug: Does this make sense if there is only the NPC left? (Can it happen?) */
 
 					if (!GUI_bool(get_tx2(59))) {
 						done = 1;
@@ -345,6 +348,7 @@ void tevent_135(void)
 
 		} while (done == 0);
 	}
+	/* potential Original-Bug: Can it happen that only the NPC survives? What then? */
 
 	set_var_to_zero();
 	ds_writew(REQUEST_REFRESH, 1);
@@ -378,18 +382,20 @@ void tevent_137(void)
 					!hero_dead(hero))
 				{
 					/* each hero gets five FOODPACKAGES */
-					give_hero_new_item(hero, ITEM_FOOD_PACKAGES, 1, 5);
+					give_hero_new_item(hero, ITEM_FOOD_PACKAGE, 1, 5);
 
-					/* search for the WATERSKIN */
-					if ((item_pos = get_item_pos(hero, 30)) != -1)
+					/* each hero gets his first WATERSKIN filled */
+					/* potential Original-Bug: Does it make sense that the further WATERSKINs are not filled? */
+
+					if ((item_pos = get_item_pos(hero, ITEM_WATERSKIN)) != -1)
 					{
-						/* reset empty and half_empty bits of the knapsack item status */
+						/* fill waterskin */
 #if !defined(__BORLANDC__)
-						and_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos, 0xfb);
-						and_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos, 0xfd);
+						and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos, 0xfb); /* unset 'empty' flag */
+						and_ptr_bs(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos, 0xfd); /* unset 'half_empty' flag */
 #else
-						(*(struct knapsack_status*)(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos)).half_empty =
-							(*(struct knapsack_status*)(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos)).empty = 0;
+						(*(struct inventory_flags*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).half_empty =
+							(*(struct inventory_flags*)(hero + HERO_INVENTORY + INVENTORY_FLAGS + SIZEOF_INVENTORY * item_pos)).empty = 0;
 #endif
 					}
 
@@ -574,13 +580,14 @@ void tevent_144(void)
 
 	right_time_flag = 0;
 
-	if ((grimring_hero_pos = get_first_hero_with_item(181)) != -1) {
+	if ((grimring_hero_pos = get_first_hero_with_item(ITEM_GRIMRING)) != -1) {
 
 		if (ds_readbs(YEAR) == 17 && ds_readbs(MONTH) == 10 && ds_readbs(DAY_OF_MONTH) >= 10) {
 			right_time_flag = 1;
 		} else {
 			if (ds_readb(ORCDOCUMENT_READ_FLAG) != 0 && GUI_bool(get_tx2(46))) {
-			/* the time is not right, forward time  */
+			/* the heroes are too early and they know about it since they have read the orc document.
+			 * they decided to wait...forward time  */
 
 				GUI_output(get_tx2(47));
 
@@ -589,10 +596,11 @@ void tevent_144(void)
 				ds_writebs(MONTH, 10);
 				ds_writebs(DAY_OF_MONTH, 10);
 
+				/* seems like the timers are simply forwarded by an arbitrary time span. */
 				sub_ingame_timers(MONTHS(1));
 				sub_mod_timers(MONTHS(1));
-				seg002_2f7a(0x21c0);
-				sub_light_timers(100);
+				sub_heal_staffspell_timers(MONTHS(1)/MINUTES(5)); /* note that the argument is given in units of 5 minutes */
+				sub_light_timers(HOURS(25)/MINUTES(15)); /* note that the argument is given in units of 15 minutes */
 				right_time_flag = 1;
 			}
 		}
@@ -628,7 +636,7 @@ void tevent_144(void)
 			do {
 				status_menu(grimring_hero_pos);
 
-				grimring_hero_pos = get_first_hero_with_item(181);
+				grimring_hero_pos = get_first_hero_with_item(ITEM_GRIMRING);
 
 				if (grimring_hero_pos == -1) {
 					grimring_hero_pos = 0;
@@ -640,14 +648,14 @@ void tevent_144(void)
 						(char*)get_tx2(38),
 						(char*)get_hero(6) + HERO_NAME2);
 
-					GUI_dialogbox((RealPt)ds_readd(HEROS) + SIZEOF_HERO * 6 + HERO_PORTRAIT,
-							Real2Host(ds_readd(HEROS)) + SIZEOF_HERO * 6  + HERO_NAME2,
+					GUI_dialogbox((RealPt)ds_readd(HEROES) + SIZEOF_HERO * 6 + HERO_PORTRAIT,
+							Real2Host(ds_readd(HEROES)) + SIZEOF_HERO * 6  + HERO_NAME2,
 							Real2Host(ds_readd(DTP2)), 0);
 				}
 
 			} while (grimring_hero_pos == 6);
 
-			ds_writed(MAIN_ACTING_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * grimring_hero_pos));
+			ds_writed(MAIN_ACTING_HERO, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * grimring_hero_pos));
 
 			final_intro();
 			if (!TRV_fight_event(FIGHTS_F144, 144)) {
@@ -711,7 +719,7 @@ void TLK_old_woman(signed short state)
 			}
 		}
 
-		ds_writed(RANDOM_TLK_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
+		ds_writed(RANDOM_TLK_HERO, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * get_random_hero()));
 
 		ds_writew(DIALOG_NEXT_STATE, count_heroes_in_group() == counter ? 24 : 25);
 
@@ -722,7 +730,7 @@ void TLK_old_woman(signed short state)
 		} while (1);
 
 	} else if (state == 34) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(CURRENT_TOWN) == 20 ? 35 : 39);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(CURRENT_TOWN) == TOWNS_FELSTEYN ? 35 : 39);
 	} else if (state == 37) {
 		ds_writeb(TEVENT093_FLAG, ds_writeb(TEVENT088_FLAG, 1));
 	} else if (state == 38) {

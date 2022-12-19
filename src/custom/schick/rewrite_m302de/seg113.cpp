@@ -256,7 +256,7 @@ void tevent_097(void)
 /**
  * \brief   travelevent 98: a gap
  *
- *          disappeared heros can be found in the efferd temple in liskor
+ *          disappeared heroes can be found in the Efferd temple in Liskor
  */
 void tevent_098(void)
 {
@@ -266,7 +266,7 @@ void tevent_098(void)
 	signed short hero_pos;
 	Bit8u *hero;
 
-	i = get_first_hero_with_item(121) != -1 || get_first_hero_with_item(32) != -1 ? 3 : 2;
+	i = get_first_hero_with_item(ITEM_ROPE) != -1 || get_first_hero_with_item(ITEM_ROPE_LADDER) != -1 ? 3 : 2; /* TODO: STAFFSPELL? */
 
 	do {
 		answer = GUI_radio(get_tx2(27), (signed char)i,
@@ -392,13 +392,21 @@ void tevent_098(void)
 	} while (repeat);
 }
 
-void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
+/**
+ * \brief   makes a hero disappear
+ *
+ * \param   hero        the hero
+ * \param   pos         the position of the hero
+ * \param   temple_id	value = -2, -1: hero disappears completely; value >= 0: hero can be found in the temple with that id.
+ */
+void hero_disappear(Bit8u *hero, unsigned short pos, signed short temple_id)
 {
 
 	/* decrement the number of heroes */
 	dec_ds_bs_post(TOTAL_HERO_COUNTER);
 
 	/* load a new savegame if no hero is present */
+	/* TODO: potential Original-Bug: What if only the NPC is left? */
 	if (!ds_readbs(TOTAL_HERO_COUNTER)) {
 		ds_writew(GAME_STATE, GAME_STATE_DEAD);
 	}
@@ -406,8 +414,8 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 	/* decrement group counter */
 	dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
-	/* write type to character sheet */
-	host_writeb(hero + HERO_TEMPLE_ID, (signed char)type);
+	/* write temple_id to character sheet */
+	host_writeb(hero + HERO_TEMPLE_ID, (signed char)temple_id);
 
 	/* reset position in group */
 	host_writeb(hero + HERO_GROUP_POS, 0);
@@ -426,13 +434,13 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 	/* set typus to 0 */
 	host_writeb(hero + HERO_TYPE, 0);
 
-	if (type != -2) {
+	if (temple_id != -2) {
 		draw_main_screen();
 		init_ani(2);
 		ds_writew(REQUEST_REFRESH, 1);
 	}
 
-	/* set flag to check all heros */
+	/* set flag to check all heroes */
 	ds_writeb(CHECK_PARTY, 1);
 }
 
@@ -614,7 +622,7 @@ void tevent_104(void)
 	signed short l_si;
 	signed short done;
 	signed short i;
-	signed short nr_heros;
+	signed short nr_heroes;
 	Bit8u *hero;
 	signed short spell_result;
 
@@ -628,13 +636,13 @@ void tevent_104(void)
 
 		hero = get_hero(0);
 
-		for (i = l_si = nr_heros = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		for (i = l_si = nr_heroes = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{
-				nr_heros++;
+				nr_heroes++;
 
 				/* test for HA+0 */
 
@@ -661,9 +669,9 @@ void tevent_104(void)
 			GUI_dialog_na(0, get_tx2(63));
 			done = 1;
 
-		} else if (l_si == nr_heros) {
+		} else if (l_si == nr_heroes) {
 
-			/* all heros have failed the test */
+			/* all heroes have failed the test */
 
 			do {
 				l_si = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
@@ -692,15 +700,15 @@ void tevent_104(void)
 
 		} else {
 
-			/* some heros, but not all, have failed the test */
+			/* some heroes, but not all, have failed the test */
 
-			nr_heros = 0;
+			nr_heroes = 0;
 
 			do {
 
 				do {
 					l_si = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
-								(nr_heros == 0 ? get_tx2(59) : get_tx2(87)), 3,
+								(nr_heroes == 0 ? get_tx2(59) : get_tx2(87)), 3,
 								get_tx2(60), get_tx2(61), get_tx2(62));
 				} while (l_si == -1);
 
@@ -716,16 +724,16 @@ void tevent_104(void)
 
 					hero = get_hero(select_hero_ok_forced(get_ttx(317)));
 
-					if (host_readbs(hero + HERO_TYPE) < 7) {
+					if (host_readbs(hero + HERO_TYPE) < HERO_TYPE_WITCH) {
 						/* hero is not a spell user */
 						GUI_output(get_ttx(330));
 					} else {
 
-						spell_result = test_spell(hero, 7, 0);
+						spell_result = test_spell(hero, SP_BANNBALADIN, 0);
 
 						if (spell_result > 0) {
 
-							sub_ae_splash(hero, get_spell_cost(7, 0));
+							sub_ae_splash(hero, get_spell_cost(SP_BANNBALADIN, 0));
 
 							GUI_output(get_tx2(16));
 
@@ -733,9 +741,9 @@ void tevent_104(void)
 
 						} else if (spell_result != -99) {
 
-							sub_ae_splash(hero, get_spell_cost(7, 1));
+							sub_ae_splash(hero, get_spell_cost(SP_BANNBALADIN, 1));
 
-							nr_heros = 1;
+							nr_heroes = 1;
 
 						} else {
 
@@ -808,7 +816,7 @@ void tevent_107(void)
 				test_skill(hero, TA_KLETTERN, 1) <= 0)
 			{
 
-				if (get_first_hero_with_item(121) != -1) {
+				if (get_first_hero_with_item(ITEM_ROPE) != -1) { /* TODO: ROPE_LADDER? STAFFSPELL? */
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx2(70),
@@ -852,6 +860,7 @@ void tevent_107(void)
 	ds_writew(REQUEST_REFRESH, 1);
 }
 
+/* Phexcaer <-> Skelellen: entrance to the dungeon 'orc cave' */
 void tevent_108(void)
 {
 	signed short answer;
@@ -869,7 +878,7 @@ void tevent_108(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 8);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_ORKBEHAUSUNG);
 		}
 
 	} else if (ds_readb(TEVENT108_FLAG) != 0) {
@@ -883,7 +892,7 @@ void tevent_108(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 8);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_ORKBEHAUSUNG);
 		}
 	}
 }

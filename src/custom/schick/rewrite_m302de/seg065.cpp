@@ -78,7 +78,7 @@ void do_market(void)
 			/* clean up */
 			ds_writew(TYPEINDEX, type_bak);
 			ds_writeb(DIRECTION_BAK, (signed char)bak1);
-			ds_writeb(DIRECTION, (signed char)dir_bak);
+			ds_writeb(DIRECTION, (signed char)dir_bak); /* by this line, the party will *not* be rotated after leaving the market */
 			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 0, 0);
 			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 2, 0);
 			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 1, 0);
@@ -544,7 +544,7 @@ void show_outro(void)
 	sub_mod_timers(DAYS(30));
 	sub_light_timers(100);
 
-	/* give the heros the reward and restore them */
+	/* give the heroes the reward and restore them */
 	hero = get_hero(0);
 	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
@@ -553,10 +553,10 @@ void show_outro(void)
 			/* get 50D */
 			add_party_money(5000);
 
-			and_ptr_bs(hero + HERO_STATUS1, 0xfd);
-			and_ptr_bs(hero + HERO_STATUS1, 0xfb);
-			and_ptr_bs(hero + HERO_STATUS1, 0xf7);
-			and_ptr_bs(hero + HERO_STATUS1, 0xdf);
+			and_ptr_bs(hero + HERO_FLAGS1, 0xfd); /* unset 'asleep' flag */
+			and_ptr_bs(hero + HERO_FLAGS1, 0xfb); /* unset 'petrified' flag */
+			and_ptr_bs(hero + HERO_FLAGS1, 0xf7); /* unset 'brewing' flag */
+			and_ptr_bs(hero + HERO_FLAGS1, 0xdf); /* unset 'renegade' flag */
 
 			/* reset every disease */
 			for (j = 0; j < 8; j++) {
@@ -580,7 +580,7 @@ void show_outro(void)
 
 #ifdef M302de_ORIGINAL_BUGFIX
 			/* Original-Bug: restore permanent LE-damage at the end of game */
-			/*  Famous heros get healed for free */
+			/*  Famous heroes get healed for free */
 			if (host_readbs(hero + HERO_LE_MOD) > 0)
 			{
 				add_ptr_ws(hero + HERO_LE_ORIG, host_readbs(hero + HERO_LE_MOD));

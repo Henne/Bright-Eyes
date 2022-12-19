@@ -37,12 +37,12 @@ signed short DNG13_handler(void)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
-	pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
+	pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), ds_readws(X_TARGET), ds_readws(Y_TARGET));
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
 	if (!(ds_readds(DAY_TIMER) % MINUTES(5)) &&
-		(pos == 0x501 || pos == 0x601 || pos == 0x701 || pos == 0x801) &&
+		(pos == DNG_POS(0,5,1) || pos == DNG_POS(0,6,1) || pos == DNG_POS(0,7,1) || pos == DNG_POS(0,8,1)) &&
 		random_schick(100) <= 5)
 	{
 		hero = get_hero(get_random_hero());
@@ -56,81 +56,81 @@ signed short DNG13_handler(void)
 		sub_hero_le(hero, 2);
 	}
 
-	if (pos == 0x90d && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG13_LANTERN_FLAG))
+	if (pos == DNG_POS(0,9,13) && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG13_LANTERN_FLAG))
 	{
 		if (GUI_bool(get_tx(1)))
 		{
 			ds_writeb(DNG13_LANTERN_FLAG, 1);
 
-			get_item(25, 1, 1);
+			get_item(ITEM_LANTERN_OFF, 1, 1);
 		}
 
-	} else if ((pos == 0x10c || pos == 0xe06 || pos == 0xe0d || pos == 0x301) &&
+	} else if ((pos == DNG_POS(0,1,12) || pos == DNG_POS(0,14,6) || pos == DNG_POS(0,14,13) || pos == DNG_POS(0,3,1)) &&
 			pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_tx(2));
 
-	} else if (pos == 0x20d && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,2,13) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_dialog_na(60, get_tx(3));
 
-	} else if (pos == 0x30c && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,3,12) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		DNG13_unblock_passage(get_tx(4), p_datseg + DNG13_PASSAGE1_FLAG);
 
-	} else if (pos == 0x409 &&
+	} else if (pos == DNG_POS(0,4,9) &&
 			 (pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readbs(DIRECTION) == WEST)
 	{
 		GUI_output(get_tx(6));
 		ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 
-	} else if (pos == 0xa02 &&
+	} else if (pos == DNG_POS(0,10,2) &&
 			 (pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readbs(DIRECTION) == EAST)
 	{
 		GUI_output(get_tx(6));
 		ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 
-	} else if (pos == 0x509 && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,5,9) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		DNG13_unblock_passage(get_tx(7), p_datseg + DNG13_PASSAGE2_FLAG);
 
-	} else if (pos == 0x209 && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,2,9) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		loot_multi_chest(p_datseg + DNG13_CHEST_EQUIPS, get_tx(8));
 
-	} else if (pos == 0xa06 && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,10,6) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		DNG13_unblock_passage(get_tx(7), p_datseg + DNG13_PASSAGE3_FLAG);
 
-	} else if (pos == 0xb05 && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,11,5) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		seg092_06b4(0);
 
-	} else if (pos == 0xa0a && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,10,10) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_tx(12));
 
-	} else if (pos == 0xe09 && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,14,9) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		DNG13_unblock_passage(get_tx(7), p_datseg + DNG13_PASSAGE4_FLAG);
 
-	} else if (pos == 0x703 && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,7,3) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		DNG13_unblock_passage(get_tx(7), p_datseg + DNG13_PASSAGE5_FLAG);
 
-	} else if (pos == 0x401 && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,4,1) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		seg092_06b4(0);
 
-	} else if (pos == 0x505 && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,5,5) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_tx(15));
 
 		GUI_output(get_tx(16));
 
-	} else if (pos == 0x407 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG13_MONEY_FLAG))
+	} else if (pos == DNG_POS(0,4,7) && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG13_MONEY_FLAG))
 	{
 		GUI_output(get_tx(17));
 
@@ -140,25 +140,26 @@ signed short DNG13_handler(void)
 		p_money += 41L;
 		set_party_money(p_money);
 
-	} else if ((pos == 0x70e || pos == 0x50c || pos == 0x108 || pos == 0x403 || pos == 0x705 || pos == 0xe01 || pos == 0x808) &&
+	} else if ((pos == DNG_POS(0,7,14) || pos == DNG_POS(0,5,12) || pos == DNG_POS(0,1,8) || pos == DNG_POS(0,4,3) || pos == DNG_POS(0,7,5) || pos == DNG_POS(0,14,1) || pos == DNG_POS(0,8,8)) &&
 			pos != ds_readws(DNG_HANDLED_POS))
 	{
 		DNG13_collapsing_ceiling();
 
-	} else if ((pos == 0xe0c || pos == 0x701) && pos != ds_readws(DNG_HANDLED_POS))
+	} else if ((pos == DNG_POS(0,14,12) || pos == DNG_POS(0,7,1)) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		DNG13_collapsing_ceiling_easy();
 
-	} else if (pos == 0x70f && pos != ds_readws(DNG_HANDLED_POS))
+	} else if (pos == DNG_POS(0,7,15) && pos != ds_readws(DNG_HANDLED_POS))
 	{
-        /* AP depending on number of collapsed ceilings and lost heroes */
+		/* leave dungeon */
+		/* AP bonus for each collapsed ceiling tile, 8 AP if no hero lost, 5 AP otherwise */
 		add_hero_ap_all(ds_readb(DNG13_COLLAPSECOUNT) * (ds_readb(DNG13_HEROCOUNT) == count_heroes_in_group() ? 8 : 5));
 
 		leave_dungeon();
 
 		ds_writew(X_TARGET, 9);
 		ds_writew(Y_TARGET, 1);
-		ds_writeb(DIRECTION, 1);
+		ds_writeb(DIRECTION, EAST);
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
@@ -180,20 +181,19 @@ void DNG13_unblock_passage(Bit8u* text, Bit8u* flag)
 	/* check if passage is blocked */
 	if (!host_readb(flag))
 	{
-		/* ask if the heros want to try */
+		/* ask if the heroes want to try */
 		if (GUI_bool(text))
 		{
 			/* check if the group has ALL of these items:
-				SHOVEL, HOE, CROWBAR, FRANCESCA
-				SCHAUFEL, HACKE, BRECKEISEN, WURFBEIL
-			*/
+			 * 	Schaufel, Hacke, Brecheisen, Wurfbeil
+			 * 	(= shovel, pickaxe, crowbar, francesca) */
 
 			has_items = 0;
 
-			if (get_first_hero_with_item(73) != -1 &&
-				get_first_hero_with_item(93) != -1 &&
-				get_first_hero_with_item(26) != -1 &&
-				get_first_hero_with_item(16) != -1)
+			if (get_first_hero_with_item(ITEM_SHOVEL) != -1 &&
+				get_first_hero_with_item(ITEM_PICKAXE) != -1 &&
+				get_first_hero_with_item(ITEM_CROWBAR) != -1 &&
+				get_first_hero_with_item(ITEM_FRANCESCA) != -1)
 			{
 				has_items = 1;
 			}
@@ -284,24 +284,23 @@ void DNG13_collapsing_ceiling(void)
 
 	if (fails > 1)
 	{
-		/* at least two heros failed in the skill test */
+		/* at least two heroes failed in the skill test */
 		GUI_output(get_tx(19));
 
-		sub_group_le(dice_roll(1, 6, 4));
+		sub_group_le(dice_roll(1, 6, 4)); /* 1D6 + 4 */
 
 		GUI_output(get_tx(20));
 
 		/* check if the group has ALL of these items:
-			SHOVEL, HOE, CROWBAR, FRANCESCA
-			SCHAUFEL, HACKE, BRECKEISEN, WURFBEIL
-		*/
+		 * 	Schaufel, Hacke, Brecheisen, Wurfbeil
+		 * 	(= shovel, pickaxe, crowbar, francesca) */
 
 		has_items = 0;
 
-		if (get_first_hero_with_item(73) != -1 &&
-			get_first_hero_with_item(93) != -1 &&
-			get_first_hero_with_item(26) != -1 &&
-			get_first_hero_with_item(16) != -1)
+		if (get_first_hero_with_item(ITEM_SHOVEL) != -1 &&
+			get_first_hero_with_item(ITEM_PICKAXE) != -1 &&
+			get_first_hero_with_item(ITEM_CROWBAR) != -1 &&
+			get_first_hero_with_item(ITEM_FRANCESCA) != -1)
 		{
 			has_items = 1;
 		}
@@ -334,30 +333,36 @@ void DNG13_collapsing_ceiling_easy(void)
 
 	if (fails > 1)
 	{
-		/* at least two heros failed in the skill test */
+		/* at least two heroes failed in the skill test */
 		GUI_output(get_tx(19));
 
-		sub_group_le(dice_roll(1, 6, 5));
+		sub_group_le(dice_roll(1, 6, 5)); /* 1D6 + 5 */
 
 		GUI_output(get_tx(20));
 
 		/* check if the group has ALL of these items:
-			SHOVEL, HOE, CROWBAR, FRANCESCA
-			SCHAUFEL, HACKE, BRECKEISEN, WURFBEIL
-		*/
+		 * 	Schaufel, Hacke, Brecheisen, Wurfbeil
+		 * 	(= shovel, pickaxe, crowbar, francesca) */
 
 		has_items = 0;
 
-		if (get_first_hero_with_item(73) != -1 &&
-			get_first_hero_with_item(93) != -1 &&
-			get_first_hero_with_item(26) != -1 &&
-			get_first_hero_with_item(16) != -1)
+		if (get_first_hero_with_item(ITEM_SHOVEL) != -1 &&
+			get_first_hero_with_item(ITEM_PICKAXE) != -1 &&
+			get_first_hero_with_item(ITEM_CROWBAR) != -1 &&
+			get_first_hero_with_item(ITEM_FRANCESCA) != -1)
 		{
 			has_items = 1;
 		}
 
-		/* if all items are available, it takes 18 hours instead of 12 */
+#ifndef M302de_ORIGINAL_BUGFIX
+		/* Original-Bug 18 */
+		/* if all items are available, it takes 18 hours instead of 12.
+		 * So in the presence of tools, it takes longer to clear the way. This doesn't make sense at all. */
 		timewarp(has_items == 0 ? HOURS(18) : HOURS(12));
+#else
+		/* Fix: Reverse the two cases */
+		timewarp(has_items == 0 ? HOURS(12) : HOURS(18));
+#endif
 	}
 }
 

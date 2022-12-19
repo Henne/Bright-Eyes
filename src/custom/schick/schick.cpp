@@ -298,7 +298,22 @@ const char* names_spell[] = {
     "Adler, Wolf", "Arcano Psychostabilis", "Armatrutz", "CH steigern", "Feuerbann", "FF steigern", "GE steigern", "IN steigern", "KK steigern", "KL steigern", "MU steigern", "Mutabili", "Paralü", "Salander", "See & Fluss", "Visibili", // Verwandlung
     "Abvenenum", "Aeolitus", "Brenne", "Claudibus", "Dunkelheit", "Erstarre", "Flim Flam", "Schmelze", "Silentium", "Sturmgebrüll" // Veränderung
 };
-
+const char* names_mspell[] = {
+    "Verwandlung Beenden",
+    "Bannbaladin",
+    "Böser Blick",
+    "Horriphobus",
+    "Axxeleratus",
+    "Balsam",
+    "Blitz",
+    "Eisenrost",
+    "Fulminictus",
+    "Ignifaxius",
+    "Plumbumbarum",
+    "Saft, Kraft, Monstermacht",
+    "Armatrutz",
+    "Paralü"
+};
 int schick_callf(unsigned selector, unsigned offs)
 {
 	if (selector == SegValue(ss))

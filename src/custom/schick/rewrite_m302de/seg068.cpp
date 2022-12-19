@@ -106,7 +106,10 @@ void THO_botschaft(void)
 {
 	int closed = 0;
 
-	/* At the 6th month in year 17 Hal another message is shown */
+	/* At the 6th month in year 17 Hal the embassy is closed and another message is shown */
+	/* Reason:
+	 * Diplomatische Probleme infolge des Bruchs des Garether Vertrags? (Die Thorwaler besetzen im Hesinde Salzerhaven) *
+	 * https://www.crystals-dsa-foren.de/showthread.php?tid=700&pid=99706#pid99706 */
 	if (ds_readbs(YEAR) > 17 ||
 		(ds_readbs(YEAR) == 17 && ds_readbs(MONTH) > 5)) {
 
@@ -274,7 +277,7 @@ void THO_arsenal(void)
 		load_in_head(13);
 
 		/* only show two options when the group has "LETTER FROM JADRA" or "LETTER OF INTRODUCTION" */
-		options = get_first_hero_with_item(187) != -1 || get_first_hero_with_item(235) != -1 ? 2 : 1;
+		options = get_first_hero_with_item(ITEM_WRITING_OF_JARDA) != -1 || get_first_hero_with_item(ITEM_WRITING_OF_HETMAN) != -1 ? 2 : 1;
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (RealPt)0,
@@ -353,7 +356,7 @@ void THO_magistracy(void)
 				GUI_output(get_tx2(14));
 
 				/* get "LETTER FROM JADRA" */
-				get_item(187, 1, 1);
+				get_item(ITEM_WRITING_OF_JARDA, 1, 1);
 
 			} else {
 				GUI_output(get_tx2(15));
@@ -451,7 +454,7 @@ void THO_ugdalf(void)
 		dramosch_says(get_tx2(35));
 
 		/* enter the dungeon */
-		DNG_enter_dungeon(14);
+		DNG_enter_dungeon(DUNGEONS_ZWINGFESTE);
 
 		ds_writews(X_TARGET_BAK, ds_readw(X_TARGET));
 		ds_writews(Y_TARGET_BAK, ds_readw(Y_TARGET));
@@ -459,7 +462,7 @@ void THO_ugdalf(void)
 		if (ds_readw(QUEST_UGDALF) == 1) {
 			add_party_money(2000L);
 
-		/* Original-Bug:	Everytime the heros enter the dungeon the get 20D.
+		/* Original-Bug:	Everytime the heroes enter the dungeon the get 20D.
 					Why this fix works is not seen that easy.
 					As long as ds_readb(DNG14_UGDALF_DONE) is 0 this block is executed.
 		 */
@@ -490,7 +493,7 @@ void THO_ugdalf(void)
 		dramosch_says(Real2Host(ds_readd(DTP2)) + 0x400);
 
 		/* enter the dungeon */
-		DNG_enter_dungeon(14);
+		DNG_enter_dungeon(DUNGEONS_ZWINGFESTE);
 
 		ds_writews(X_TARGET_BAK, ds_readw(X_TARGET));
 		ds_writews(Y_TARGET_BAK, ds_readw(Y_TARGET));
@@ -505,7 +508,7 @@ void academy_analues(void)
 
 	GUI_input(get_tx2(62), 0);
 
-	/* change behaviour of analues spell */
+	/* change behavior of analues spell */
 	ds_writew(IN_ACADEMY, 99);
 
 	/* select a hero (does not need to be a magic user here) */
@@ -513,7 +516,7 @@ void academy_analues(void)
 
 	if (hero_pos != -1) {
 
-		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
+		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 
 		buffer1_bak = ds_readws(TX_FILE_INDEX);
 
@@ -546,13 +549,13 @@ void THO_academy(void)
 	Bit32s p_money;
 	Bit8u *hero;
 
-	/* find the position of the first cursed hero */
+	/* find the position of the first cursed (=renegade) hero */
 	hero = get_hero(0);
 	for (item_pos = cursed_hero_pos = 0; item_pos <= 6; item_pos++, hero += SIZEOF_HERO) {
 
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-			hero_cursed(hero))
+			hero_renegade(hero))
 		{
 			cursed_hero_pos = item_pos;
 			break;
@@ -624,7 +627,7 @@ void THO_academy(void)
 
 							ds_writew(ACADEMY_DAILY_CURSE, 1);
 
-							and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf);
+							and_ptr_bs(get_hero(cursed_hero_pos) + HERO_FLAGS1, 0xdf); /* unset 'renegate' flag */
 
 						} else {
 							GUI_input(get_tx2(70), 0);
@@ -641,7 +644,7 @@ void THO_academy(void)
 
 					ds_writew(ACADEMY_DAILY_CURSE, 1);
 
-					and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf);
+					and_ptr_bs(get_hero(cursed_hero_pos) + HERO_FLAGS1, 0xdf); /* unset 'renegate' flag */
 
 				} else {
 					GUI_input(get_ttx(401), 0);
@@ -755,16 +758,17 @@ signed short academy_get_equal_item(signed short price)
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{
-				for (item_pos = 0; item_pos < 23; item_pos++) {
+				for (item_pos = 0; item_pos < NR_HERO_INVENTORY_SLOTS; item_pos++) {
 
-					if (host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos) != 0 &&
-						!ks_broken(hero + HERO_ITEM_HEAD + 14 * item_pos))
+					if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos) != ITEM_NONE &&
+						!inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos))
+						/* remark: armor with degraded RS is accepted */
 					{
-						p_item = get_itemsdat(host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos));
+						p_item = get_itemsdat(host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos));
 
-						if (host_readws(p_item + 8) * host_readbs(p_item + 7) >= price)
+						if (host_readws(p_item + ITEM_STATS_PRICE) * host_readbs(p_item + ITEM_STATS_PRICE_UNIT) >= price)
 						{
-							retval = host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos);
+							retval = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos);
 							break;
 						}
 					}

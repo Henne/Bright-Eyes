@@ -648,7 +648,7 @@ void tevent_075(void)
 	}
 }
 
-/* dungeon entrance: a cave */
+/* Felsteyn <-> Orkanger: entrance to the dungeon "goblin cave" */
 void tevent_076(void)
 {
 	signed short answer;
@@ -669,7 +669,7 @@ void tevent_076(void)
 			} while (answer == -1);
 
 			if (answer == 1) {
-				ds_writeb(TRAVEL_DETOUR, 5);
+				ds_writeb(TRAVEL_DETOUR, DUNGEONS_GOBLINHOEHLE);
 			}
 		}
 
@@ -685,7 +685,7 @@ void tevent_076(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(TRAVEL_DETOUR, 5);
+			ds_writeb(TRAVEL_DETOUR, DUNGEONS_GOBLINHOEHLE);
 		}
 	}
 }

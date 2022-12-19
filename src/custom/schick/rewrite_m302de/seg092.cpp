@@ -100,7 +100,7 @@ void chest_protected_brutal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
 }
 
-void chest_stoned(void)
+void chest_petrified(void)
 {
 	/* a protected chest */
 	print_msg_with_first_hero(get_ttx(776));
@@ -108,8 +108,8 @@ void chest_stoned(void)
 	/* save pointer of the first hero */
 	ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group());
 
-	/* and make him stoned */
-	or_ptr_bs(Real2Host(ds_readd(MAIN_ACTING_HERO)) + 0xaa, 0x04);
+	/* and make him petrified */
+	or_ptr_bs(Real2Host(ds_readd(MAIN_ACTING_HERO)) + HERO_FLAGS1, 0x04); /* set 'petrified' flag */
 }
 
 void chest_ignifax_normal(void)
@@ -150,6 +150,8 @@ void chest_crossbow_bolts(void)
 
 void chest_cursed(void)
 {
+	/* cursed chest on the Totenschiff. 50D, but each good attribute of the group leader is decreased by 1.
+	 * can be cured by 'Verwandlung beenden' spell or a Praios/Hesinde miracle */
 	signed short i;
 	Bit8u *hero;
 
@@ -158,8 +160,7 @@ void chest_cursed(void)
 
 	if (!hero_transformed(hero)) {
 
-		/* set transformed flag */
-		or_ptr_bs(hero + HERO_STATUS2, 0x40);
+		or_ptr_bs(hero + HERO_FLAGS2, 0x40); /* set 'transformed' flag */
 
 		/* decrement each good attribute */
 		for (i = 0; i <= 6; i++) {
@@ -339,14 +340,14 @@ signed short hero_has_lockpicks(Bit8u *hero)
 	signed short retval = -1;
 	signed short i;
 
-	/* in each knapsack slot... */
-	for (i = 0; i < 23; i++) {
+	/* in each inventory slot... */
+	for (i = 0; i < NR_HERO_INVENTORY_SLOTS; i++) {
 
 		/* ... check for lockpicks ... */
-		if (host_readws(hero + HERO_ITEM_HEAD + 14 * i) == 35) {
+		if (host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * i) == ITEM_PICKLOCKS) {
 
 			/* ... which are not broken */
-			if (!ks_broken(hero + HERO_ITEM_HEAD + 14 * i)) {
+			if (!inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * i)) {
 				return i;
 			} else {
 				retval = -2;
@@ -360,7 +361,7 @@ signed short hero_has_lockpicks(Bit8u *hero)
 void (*func)(RealPt);
 
 struct chest {
-	signed short id;
+	signed short pos;
 	signed char mod;
 	void (*func1)(RealPt);
 	void (*func2)(void);
@@ -375,7 +376,7 @@ void seg092_06b4(signed short a1)
 {
 	signed short x;
 	signed short y;
-	signed short chest_id;
+	signed short pos;
 	signed short l4;
 	RealPt chest_ptr;
 	Bit8u *ptr;
@@ -388,21 +389,21 @@ void seg092_06b4(signed short a1)
 
 	if (a1 != 0) {
 		switch(ds_readbs(DIRECTION)) {
-			case 0: y--; break;
-			case 1: x++; break;
-			case 2: y++; break;
-			case 3: x--; break;
+			case NORTH: y--; break;
+			case EAST: x++; break;
+			case SOUTH: y++; break;
+			case WEST: x--; break;
 		}
 	}
 
-	l4 = host_readb(ptr + 16 * y + x) & 2;
-	chest_id = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
+	l4 = host_readb(ptr + MAP_POS(x,y)) & 0x02;
+	pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), x, y);
 
 	play_voc(ARCHIVE_FILE_FX13_VOC);
 
 	do {
 
-		if (host_readws(Real2Host(chest_ptr)) == chest_id) {
+		if (host_readws(Real2Host(chest_ptr)) == pos) {
 
 			if (l4 != 0 && host_readd(Real2Host(chest_ptr) + 11)) {
 #if defined(__BORLANDC__)
@@ -464,7 +465,7 @@ void seg092_06b4(signed short a1)
 
 		if (host_readws(Real2Host(chest_ptr) + 19) != 0) {
 			/* There are FOOD PACKAGES in the chest */
-			get_item(45, 1, host_readws(Real2Host(chest_ptr) + 19));
+			get_item(ITEM_FOOD_PACKAGE, 1, host_readws(Real2Host(chest_ptr) + 19));
 		}
 	}
 }
@@ -487,7 +488,7 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 				/* unlucky, your lockpicks break... */
 
 				print_msg_with_first_hero(get_ttx(533));
-				or_ptr_bs(hero + (HERO_ITEM_HEAD+4) + 14 * l_si, 1);
+				or_ptr_bs(hero + (HERO_INVENTORY + INVENTORY_FLAGS) + SIZEOF_INVENTORY * l_si, 1); /* set 'broken' flag */
 
 				/* ... and you trigger the trap */
 #if !defined(__BORLANDC__)
@@ -562,7 +563,7 @@ void use_key_on_chest(RealPt chest_ptr)
 	if ((key_pos = get_item_pos(hero, host_readb(Real2Host(chest_ptr) + 2))) != -1)
 	{
 
-		if (!ks_broken(hero + HERO_ITEM_HEAD + 14 * key_pos))
+		if (!inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * key_pos))
 		{
 
 #if defined(__BORLANDC__)

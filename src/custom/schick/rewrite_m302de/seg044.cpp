@@ -135,7 +135,7 @@ Bit8s get_seq_header(Bit16s ani)
  * \param   a1          [0, 1]
  * \param   hero        pointer to hero
  * \param   weapon_type the type of weapon for the animation [-1, 5], 3,4,5 are range weapons
- * \param   action_type {2, 15, 100, 102, 103}
+ * \param   action_type {FIG_ACTION_MELEE_ATTACK = 2, FIG_ACTION_RANGE_ATTACK = 15, FIG_ACTION_UNKNOWN2 = 100, FIG_ACTION_UNKNOWN3 = 102, FIG_ACTION_UNKNOWN4 = 103}
  */
 /* Borlandified and identical */
 void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapon_type, signed short f_action, signed short fid_attacker, signed short fid_target, signed short a7)
@@ -156,7 +156,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	Bit8u *p3;
 
 	p3 = Real2Host(ds_readd(GFX_ANI_INDEX + host_readbs(hero + HERO_SPRITE_NO) * 4));
-	weapon = host_readws(hero + HERO_ITEM_RIGHT);
+	weapon = host_readws(hero + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY);
 
 	if ((signed char)fid_target != 0) {
 		FIG_search_obj_on_cb((signed char)fid_target, &target_x, &target_y);
@@ -186,18 +186,18 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		dir = host_readbs(hero + HERO_VIEWDIR);
 	}
 
-	if ((weapon_type == -1) || ((host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) && (weapon == 0x85))) {
+	if ((weapon_type == -1) || ((host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) && (weapon == ITEM_MAGIC_WAND))) {
 
-		l1 = (f_action == 2) ? 45 :			/* melee attack */
-			(f_action == 102) ? 41 :		/* drink potion */
-			(f_action == 103) ? 53 :		/* cast spell */
+		l1 = (f_action == FIG_ACTION_MELEE_ATTACK) ? 45 :			/* melee attack */
+			(f_action == FIG_ACTION_UNKNOWN3) ? 41 :		/* drink potion */
+			(f_action == FIG_ACTION_UNKNOWN4) ? 53 :		/* cast spell */
 			49;
 
 	} else {
-		l1 = (f_action == 2) ?  21:			/* melee attack */
-			(f_action == 102) ? 41 :		/* drink potion */
-			(f_action == 103) ? 53 :		/* cast spell */
-			(f_action != 15) ? 25 :
+		l1 = (f_action == FIG_ACTION_MELEE_ATTACK) ?  21:			/* melee attack */
+			(f_action == FIG_ACTION_UNKNOWN3) ? 41 :		/* drink potion */
+			(f_action == FIG_ACTION_UNKNOWN4) ? 53 :		/* cast spell */
+			(f_action != FIG_ACTION_RANGE_ATTACK) ? 25 :
 			(weapon_type == 3) ? 33 :
 			(weapon_type == 4) ? 57 :
 			61;
@@ -212,8 +212,8 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 
 	if (check_hero(hero) && (host_readbs(hero + HERO_VIEWDIR) != dir) &&
 
-		((f_action == 2) || (f_action == 15) || (f_action == 103) ||
-			((f_action == 100) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker)) ||
+		((f_action == FIG_ACTION_MELEE_ATTACK) || (f_action == FIG_ACTION_RANGE_ATTACK) || (f_action == FIG_ACTION_UNKNOWN4) ||
+			((f_action == FIG_ACTION_UNKNOWN2) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker)) ||
 			((ds_readws(ATTACKER_ATTACKS_AGAIN) != 0) && (a7 == 0)) ||
 			((ds_readws(DEFENDER_ATTACKS) != 0) && (a7 == 1))))
 	{
@@ -268,9 +268,9 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		}
 	}
 
-	if ((check_hero(hero) && (f_action == 2)) ||
-		((f_action == 15) || (f_action == 102) || (f_action == 103) ||
-			((f_action == 100) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker))))
+	if ((check_hero(hero) && (f_action == FIG_ACTION_MELEE_ATTACK)) ||
+		((f_action == FIG_ACTION_RANGE_ATTACK) || (f_action == FIG_ACTION_UNKNOWN3) || (f_action == FIG_ACTION_UNKNOWN4) ||
+			((f_action == FIG_ACTION_UNKNOWN2) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker))))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p3 + l1 *2), 2);
 
@@ -287,7 +287,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 			p2 += copy_ani_seq(p2,
 				ds_readw(WEAPONANI_TABLE +
 				((ds_readbs(WEAPONANI_TYPES + host_readbs(hero + HERO_SPRITE_NO)) * 48 + weapon_type * 16) +
-				((f_action == 2) ? 0 : 1) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2)), 3);
+				((f_action == FIG_ACTION_MELEE_ATTACK) ? 0 : 1) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2)), 3);
 		}
 	}
 
@@ -303,7 +303,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 				p2 += copy_ani_seq(p2,
 					ds_readw(WEAPONANI_TABLE +
 					((ds_readbs(WEAPONANI_TYPES + host_readbs(hero + HERO_SPRITE_NO)) * 48 + weapon_type * 16) +
-					((f_action == 2) ? 0 : 1) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2)), 3);
+					((f_action == FIG_ACTION_MELEE_ATTACK) ? 0 : 1) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2)), 3);
 			}
 	}
 
@@ -334,7 +334,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	}
 
 	host_writeb(p1, 0xff);
-	if (f_action == 100) {
+	if (f_action == FIG_ACTION_UNKNOWN2) {
 		ds_writeb((HERO_IS_TARGET-1) + (signed char)fid_attacker, 1);
 	}
 }
@@ -405,7 +405,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 
 
-	l1 = (f_action == 2) ? 21 :			/* melee attack */
+	l1 = (f_action == FIG_ACTION_MELEE_ATTACK) ? 21 :			/* melee attack */
 		25;
 
 	if ((host_readbs(enemy + ENEMY_SHEET_GFX_ID) == 8) ||
@@ -414,10 +414,10 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		(host_readbs(enemy + ENEMY_SHEET_GFX_ID) == 20))
 	{
 		weapon_type = -1;
-		l1 = (f_action == 2) ? 45 : 49;
+		l1 = (f_action == FIG_ACTION_MELEE_ATTACK) ? 45 : 49;
 	}
 
-	if (f_action == 15) {
+	if (f_action == FIG_ACTION_RANGE_ATTACK) {
 		l1 = 33;
 		weapon_type = -1;
 	}
@@ -433,8 +433,8 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 	/* first the enemy may turn */
 	if ((host_readbs(enemy + ENEMY_SHEET_VIEWDIR) != dir) &&
-		(	((f_action == 2) || (f_action == 15) ||
-			((f_action == 100) && !ds_readbs(FIG_MONSTERS_UNKN + (signed char)fid_attacker))) ||
+		(	((f_action == FIG_ACTION_MELEE_ATTACK) || (f_action == FIG_ACTION_RANGE_ATTACK) ||
+			((f_action == FIG_ACTION_UNKNOWN2) && !ds_readbs(FIG_ACTORS_UNKN + (signed char)fid_attacker))) ||
 			((ds_readw(ATTACKER_ATTACKS_AGAIN) != 0) && (a7 == 0)) ||
 			((ds_readw(DEFENDER_ATTACKS) != 0) && (a7 == 1))))
 		{
@@ -498,8 +498,8 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		}
 	}
 
-	if ((f_action == 2) || (f_action == 15) ||
-		((f_action == 100) && !ds_readbs(FIG_MONSTERS_UNKN + (signed char)fid_attacker)))
+	if ((f_action == FIG_ACTION_MELEE_ATTACK) || (f_action == FIG_ACTION_RANGE_ATTACK) ||
+		((f_action == FIG_ACTION_UNKNOWN2) && !ds_readbs(FIG_ACTORS_UNKN + (signed char)fid_attacker)))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p4 + l1 *2), 1);
 
@@ -517,7 +517,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 				ds_readws(WEAPONANI_TABLE +
 					(	ds_readbs(WEAPONANI_TYPES + host_readbs(enemy + ENEMY_SHEET_GFX_ID)) * 48 +
 						weapon_type * 16 +
-						((f_action == 2) ? 0 : 1) * 8 +
+						((f_action == FIG_ACTION_MELEE_ATTACK) ? 0 : 1) * 8 +
 						host_readbs(enemy + ENEMY_SHEET_VIEWDIR) * 2
 					)
 				), 3);
@@ -535,7 +535,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 				p2 += copy_ani_seq(p2,
 					ds_readws(WEAPONANI_TABLE +
 					((ds_readbs(WEAPONANI_TYPES + host_readbs(enemy + ENEMY_SHEET_GFX_ID)) * 48 + weapon_type * 16) +
-					((f_action == 2) ? 0 : 1) * 8 + host_readbs(enemy + ENEMY_SHEET_VIEWDIR) * 2)), 3);
+					((f_action == FIG_ACTION_MELEE_ATTACK) ? 0 : 1) * 8 + host_readbs(enemy + ENEMY_SHEET_VIEWDIR) * 2)), 3);
 			}
 	}
 
@@ -569,8 +569,8 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		host_writeb(p2, 0xff);
 	}
 
-	if (f_action == 100) {
-		ds_writeb(FIG_MONSTERS_UNKN + (signed char)fid_attacker, 1);
+	if (f_action == FIG_ACTION_UNKNOWN2) {
+		ds_writeb(FIG_ACTORS_UNKN + (signed char)fid_attacker, 1);
 	}
 }
 
@@ -721,7 +721,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
  *          This is used for "Blitz", "Fulminictus", "Ignifaxius"
  *
  * \param   v1          0 or 1
- * \param   p           ????
+ * \param   p           pointer to an ENEMY_SHEET entry, ????
  * \param   v2          4 of 99
  * \param   target      the id of the target
  * \param   caster      the id of the caster
@@ -743,7 +743,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 
 
 	/* get a pointer from an array where the Monster-ID serves as index */
-	lp2 = Real2Host(ds_readd(GFX_ANI_INDEX + host_readbs(p + 1) * 4));
+	lp2 = Real2Host(ds_readd(GFX_ANI_INDEX + host_readbs(p + ENEMY_SHEET_GFX_ID) * 4));
 
 	FIG_search_obj_on_cb((signed char)caster, &x_caster, &y_caster);
 	FIG_search_obj_on_cb((signed char)target, &x_target, &y_target);
@@ -753,7 +753,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	x_caster = host_readws((Bit8u*)&x_caster);
 	y_caster = host_readws((Bit8u*)&y_caster);
 	x_target = host_readws((Bit8u*)&x_target);
-	x_target = host_readws((Bit8u*)&y_target);
+	y_target = host_readws((Bit8u*)&y_target);
 #endif
 	if (x_target == x_caster) {
 		if (y_caster < y_target)
@@ -768,7 +768,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	}
 
 	if ((signed char)caster == (signed char)target)
-		dir = host_readbs(p + 0x27);
+		dir = host_readbs(p + ENEMY_SHEET_VIEWDIR);
 
 	/* this is true if a monster attacks a hero */
 	l1 = (v2 == 4) ? 29 : 16;
@@ -776,18 +776,18 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	lp1 = p_datseg + (FIG_ANISHEETS + 1) + v1 * 0xf3;
 
 	/* this is true if a monster attacks a hero */
-	l1 += (v2 == 4) ? dir : host_readbs(p + 0x27);
+	l1 += (v2 == 4) ? dir : host_readbs(p + ENEMY_SHEET_VIEWDIR);
 
 	ds_writeb(FIG_ANISHEETS + v1 * 0xf3, get_seq_header(host_readws(lp2 + l1 * 2)));
 
-	ds_writeb((FIG_ANISHEETS + 242) + v1 * 0xf3, host_readbs(p + 1));
+	ds_writeb((FIG_ANISHEETS + 242) + v1 * 0xf3, host_readbs(p + ENEMY_SHEET_GFX_ID));
 
-	if ((host_readbs(p + 0x27) != dir) && (v2 == 4)) {
+	if ((host_readbs(p + ENEMY_SHEET_VIEWDIR) != dir) && (v2 == 4)) {
 
 		ds_writeb(FIG_ANISHEETS + v1 * 0xf3, 0);
 		l3 = l2 = -1;
 
-		dir2 = host_readbs(p + 0x27);
+		dir2 = host_readbs(p + ENEMY_SHEET_VIEWDIR);
 		l3 = dir2;
 		dir2++;
 		if (dir2 == 4)
@@ -800,12 +800,12 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 			if (dir2 == 4)
 				dir2 = 0;
 			if (dir2 != dir) {
-				l3 = host_readbs(p + 0x27) + 4;
+				l3 = host_readbs(p + ENEMY_SHEET_VIEWDIR) + 4;
 				l2 = -1;
 			}
 		}
 
-		host_writebs(p + 0x27, (signed char)dir);
+		host_writebs(p + ENEMY_SHEET_VIEWDIR, (signed char)dir);
 
 		lp1 += copy_ani_seq(lp1, host_readws(lp2 + l3 * 2), 1);
 
@@ -842,7 +842,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	host_writeb(lp1, 0xff);
 
 	/* check if the moster sprite ID needs two fields */
-	if (is_in_byte_array(host_readb(p + 1),	p_datseg + TWO_FIELDED_SPRITE_ID)) {
+	if (is_in_byte_array(host_readb(p + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 		memcpy(p_datseg + (FIG_ANISHEETS + 2*0xf3) + v1 * 0xf3, p_datseg + FIG_ANISHEETS + v1 * 0xf3, 0xf3);
 	}
 

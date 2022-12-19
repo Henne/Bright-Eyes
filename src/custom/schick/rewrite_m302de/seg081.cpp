@@ -47,22 +47,22 @@ signed short DNG06_handler(void)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
-	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+	target_pos = DNG_POS(ds_readbs(DUNGEON_LEVEL), ds_readws(X_TARGET), ds_readws(Y_TARGET));
 
-	if (target_pos == 0xe05 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_BOOK_FLAG))
+	if (target_pos == DNG_POS(0,14,5) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_BOOK_FLAG))
 	{
-		if (GUI_bool(get_tx(1)) && get_item(224, 1, 1))
+		if (GUI_bool(get_tx(1)) && get_item(ITEM_BOOK_2, 1, 1))
 		{
 			ds_writeb(DNG06_BOOK_FLAG, 1);
 		}
 
 	}
 
-	if (target_pos == 0x909 && target_pos != ds_readws(DNG_HANDLED_POS))
+	if (target_pos == DNG_POS(0,9,9) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_tx(35));
 
-	} else if (target_pos == 0x40d && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,4,13) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (GUI_bool(get_tx(2)))
 		{
@@ -89,15 +89,15 @@ signed short DNG06_handler(void)
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
 
-	} else if (target_pos == 0x503 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_PROVIANT_FLAG))
+	} else if (target_pos == DNG_POS(0,5,3) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_PROVIANT_FLAG))
 	{
 		if (GUI_bool(get_tx(5)))
 		{
-			get_item(45, 1, 40);
+			get_item(ITEM_FOOD_PACKAGE, 1, 40);
 			ds_writeb(DNG06_PROVIANT_FLAG, 1);
 		}
 
-	} else if (target_pos == 0x201 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,2,1) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		hero = get_hero(0);
 		for (i = l3 = 0; i < 2; i++, hero += SIZEOF_HERO)
@@ -131,7 +131,7 @@ signed short DNG06_handler(void)
 			sub_hero_le(hero_second, random_schick(6));
 		}
 
-	} else if (target_pos == 0x907 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_PITDOOR_FLAG))
+	} else if (target_pos == DNG_POS(0,9,7) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_PITDOOR_FLAG))
 	{
 		hero = get_hero(0);
 		for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
@@ -189,7 +189,7 @@ signed short DNG06_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x807 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG06_GOLDKEY_FLAG) != 2)
+	} else if (target_pos == DNG_POS(0,8,7) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG06_GOLDKEY_FLAG) != 2)
 	{
 		hero = get_hero(0);
 		for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
@@ -211,7 +211,7 @@ signed short DNG06_handler(void)
 			{
 				ds_writeb(DNG06_GOLDKEY_FLAG, 2);
 
-				get_item(195, 1, 1);
+				get_item(ITEM_KEY_GOLDEN_1, 1, 1);
 
 				/* TODO: This is not neccessary */
 				hero = Real2Host(get_first_hero_available_in_group());
@@ -220,11 +220,11 @@ signed short DNG06_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0xb06 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG06_COUNTDOWN_FLAG) != 0)
+	} else if (target_pos == DNG_POS(0,11,6) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG06_COUNTDOWN_FLAG) != 0)
 	{
-		if (div16(host_readb(amap_ptr + 0x1b)) != 1 ||
-			div16(host_readb(amap_ptr + 0x62)) != 1 ||
-			div16(host_readb(amap_ptr + 0x4b)) != 1)
+		if (div16(host_readb(amap_ptr + MAP_POS(11,1))) != DNG_TILE_CLOSED_DOOR ||
+			div16(host_readb(amap_ptr + MAP_POS(2,6))) != DNG_TILE_CLOSED_DOOR ||
+			div16(host_readb(amap_ptr + MAP_POS(11,4))) != DNG_TILE_CLOSED_DOOR)
 		{
 			dec_ds_bs_post(DNG06_COUNTDOWN_FLAG);
 
@@ -241,7 +241,7 @@ signed short DNG06_handler(void)
 			sub_hero_le(hero, dice_roll(l3, 6, 0));
 		}
 
-	} else if (target_pos == 0x1d05 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(1,13,5) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		do {
 			i = GUI_radio(get_tx(14), 3,
@@ -273,7 +273,7 @@ signed short DNG06_handler(void)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					test_skill(hero, TA_KOERPERBEH, host_readbs(hero + HERO_RS_BONUS1)) <= 0)
+					test_skill(hero, TA_KOERPERBEHERRSCHUNG, host_readbs(hero + HERO_RS_BONUS1)) <= 0)
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx(20),
@@ -288,7 +288,7 @@ signed short DNG06_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x1102 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(1,1,2) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* Hole in the wall: want to reach into it? want to move the lever? */
 		if (GUI_bool(get_tx(21)) && GUI_bool(get_tx(22)))
@@ -314,7 +314,7 @@ signed short DNG06_handler(void)
 
 			if (l3 != 0)
 			{
-				/* some heros are in the right position: hear gentle click */
+				/* some heroes are in the right position: hear gentle click */
 				GUI_output(get_tx(24));
 
 				ds_writeb(DNG06_LEVER_FLAG, 1);
@@ -332,7 +332,7 @@ signed short DNG06_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x1306 && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(1,3,6) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* Hole in the wall: want to reach into it? want to move the lever? */
 		if (GUI_bool(get_tx(21)) && GUI_bool(get_tx(22)))
@@ -358,7 +358,7 @@ signed short DNG06_handler(void)
 
 			if (l3 != 0)
 			{
-				/* some heros are in the right position: hear gentle click */
+				/* some heroes are in the right position: hear gentle click */
 				GUI_output(get_tx(24));
 
 				ds_writeb(DNG06_LEVER_FLAG, 1);
@@ -376,7 +376,7 @@ signed short DNG06_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x1508 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_LEVER_FLAG))
+	} else if (target_pos == DNG_POS(1,5,8) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_LEVER_FLAG))
 	{
 		hero = Real2Host(get_first_hero_available_in_group());
 
@@ -387,7 +387,7 @@ signed short DNG06_handler(void)
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
-		if (test_skill(hero, TA_KOERPERBEH, 0) > 0 && test_skill(hero, TA_GEFAHRENSINN, 0) > 0)
+		if (test_skill(hero, TA_KOERPERBEHERRSCHUNG, 0) > 0 && test_skill(hero, TA_GEFAHRENSINN, 0) > 0)
 		{
 			/* evasion succeeds */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -407,7 +407,7 @@ signed short DNG06_handler(void)
 			sub_hero_le(hero, dice_roll(3, 6, 0));
 		}
 
-	} else if (target_pos == 0x170d && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_FIGHT19_FLAG))
+	} else if (target_pos == DNG_POS(1,7,13) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_FIGHT19_FLAG))
 	{
 		if (GUI_bool(get_tx(28)))
 		{
@@ -424,7 +424,7 @@ signed short DNG06_handler(void)
 			sub_hero_le(hero, 2);
 		}
 
-	} else if (target_pos == 0x160b && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_DASPTREAS_FOUND))
+	} else if (target_pos == DNG_POS(1,6,11) && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG06_DASPTREAS_FOUND))
 	{
 		/* treasure of Daspota found */
 		GUI_output(get_tx(36));
@@ -439,17 +439,17 @@ signed short DNG06_handler(void)
 
 		add_hero_ap_all(30);
 
-	} else if (target_pos == 0x180e && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(1,8,14) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 6), 0x163e));
-		ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 2), 0x1d0d));
+		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 6), DNG_POS_DIR(1,6,14,WEST)));
+		ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 2), DNG_POS_DIR(1,13,13,NORTH)));
 
 		if (!do_fight(FIGHTS_F094_19))
 		{
 			ds_writeb(DNG06_FIGHT19_FLAG, 1);
 		}
 
-	} else if (target_pos == 0xd0f && target_pos != ds_readws(DNG_HANDLED_POS))
+	} else if (target_pos == DNG_POS(0,13,15) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		leave_dungeon();
 
@@ -531,6 +531,14 @@ void DNG06_chest2(RealPt chest)
 	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
+/**
+ * \brief   handles the pit in Kultstaette des Namenlosen, level 2, square (3,12)
+ *
+ * 	heroes in the pit are separated into a new group.
+ * 	This group will have an entry GROUPS_DNG_LEVEL = 2,
+ * 	which indicates that it is in the pit.
+ */
+
 void DNG09_pitfall(void)
 {
 	signed short i;
@@ -549,6 +557,7 @@ void DNG09_pitfall(void)
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_skill(hero, TA_GEFAHRENSINN, 4) > 0)
+				/* TODO: potential Original-Bug: Why should 'petrified' or 'uncouscious' (or maybe other properties ) be o.k. here?? */
 			{
 				l3 = 1;
 			}
@@ -564,7 +573,7 @@ void DNG09_pitfall(void)
 
 			if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) >= 2)
 			{
-				/* the current group has at least two heros */
+				/* the current group has at least two heroes */
 
 				/* print message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -574,7 +583,7 @@ void DNG09_pitfall(void)
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
-				/* each of these two heros looses 3W6+3 LE */
+				/* each of these two heroes looses 3W6+3 LE */
 				sub_hero_le(hero_first, dice_roll(3, 6, 3));
 				sub_hero_le(hero_second, dice_roll(3, 6, 3));
 
@@ -582,7 +591,7 @@ void DNG09_pitfall(void)
 				l3 = 0;
 				while (ds_readb(GROUP_MEMBER_COUNTS + l3) != 0) l3++;
 
-				/* put these heros in empty group */
+				/* put these heroes in empty group */
 				host_writeb(hero_first + HERO_GROUP_NO, (signed char)l3);
 				host_writeb(hero_second + HERO_GROUP_NO, (signed char)l3);
 				add_ds_bs(GROUP_MEMBER_COUNTS + l3, 2);
@@ -628,8 +637,8 @@ void DNG09_pitfall(void)
 
 		if ((i = DNG_check_climb_tools()) != -1)
 		{
-			l3 = group_count_item(121);
-			l3 += group_count_item(32);
+			l3 = group_count_item(ITEM_ROPE);
+			l3 += group_count_item(ITEM_ROPE_LADDER);
 
 			if (l3 >= 2 || (l3 == 1 && i))
 			{

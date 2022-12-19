@@ -95,9 +95,9 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_no)
 
 	signed short i;
 
-	ds_writeb((FIG_ANISHEETS + 0xf3), 0);
-	ds_writeb((FIG_ANISHEETS + 242 + 0xf3), host_readbs(enemy + ENEMY_SHEET_GFX_ID));
-	p1 = p_datseg + (FIG_ANISHEETS + 1 + 0xf3);
+	ds_writeb((FIG_ANISHEETS + 0xf3), 0); /* first position of the second FIG_ANISHEET (0xf3 == 243, FIG_ANISHEET is a struct(243)[8]) */
+	ds_writeb((FIG_ANISHEETS + 242 + 0xf3), host_readbs(enemy + ENEMY_SHEET_GFX_ID)); /* last position of the second FIG_ANISHEET */
+	p1 = p_datseg + (FIG_ANISHEETS + 1 + 0xf3); /* second position of the second FIG_ANISHEET */
 
 	i = 0;
 	p3 = Real2Host(ds_readd(GFX_ANI_INDEX + host_readbs(enemy + ENEMY_SHEET_GFX_ID) * 4));
@@ -174,14 +174,14 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_no)
 
 		p2 = Real2Host(FIG_get_ptr(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID)));
 
-		FIG_set_sheet(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p2 + 0x13)), 3);
+		FIG_set_sheet(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p2 + FIGHTER_TWOFIELDED)), 3);
 	}
 
 	/* draw_fight_screen */
 	draw_fight_screen(0);
 
-	memset(p_datseg + (FIG_ANISHEETS + 0xf3), -1, 0xf3);
-	memset(p_datseg + (FIG_ANISHEETS + 3*0xf3), -1, 0xf3);
+	memset(p_datseg + (FIG_ANISHEETS + 0xf3), -1, 0xf3); /* set second FIG_ANISHEET to -1 */
+	memset(p_datseg + (FIG_ANISHEETS + 3*0xf3), -1, 0xf3); /* set fourth FIG_ANISHEET to -1 */
 
 	FIG_init_list_elem(enemy_no + 10);
 }
@@ -208,11 +208,11 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
 
 		if ( ((cb_val > 0) && (cb_val < 10) &&
 			(!hero_dead(get_hero(cb_val - 1))) &&
-			(!hero_unc(get_hero(cb_val - 1)))
+			(!hero_unconscious(get_hero(cb_val - 1)))
 			) || (
 			(cb_val >= 10) && (cb_val < 30) &&
 				(!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + cb_val * SIZEOF_ENEMY_SHEET))  &&
-				(enemy_bb(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + cb_val * SIZEOF_ENEMY_SHEET)))
+				(enemy_renegade(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + cb_val * SIZEOF_ENEMY_SHEET)))
 			)
 		{
 			return 1;
@@ -233,7 +233,7 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
 	} else if (mode == 2) {
 
 		/* is a living, conscious hero */
-		if ((cb_val > 0) && (cb_val < 10) && (!hero_dead(get_hero(cb_val - 1))) && (!hero_unc(get_hero(cb_val - 1))))
+		if ((cb_val > 0) && (cb_val < 10) && (!hero_dead(get_hero(cb_val - 1))) && (!hero_unconscious(get_hero(cb_val - 1))))
 		{
 			return 1;
 		} else {
@@ -296,11 +296,11 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 				if ( (
 					(cb_val > 0) && (cb_val < 10) &&
 						!hero_dead(get_hero(cb_val - 1)) &&
-						!hero_unc(get_hero(cb_val - 1))
+						!hero_unconscious(get_hero(cb_val - 1))
 					) || (
 					(cb_val >= 10) && (cb_val < 30) &&
 						!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * cb_val) &&
-						enemy_bb(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * cb_val))
+						enemy_renegade(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * cb_val))
 				)
 				{
 					can_attack = 1;
@@ -344,7 +344,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 #endif
 
 					/* handle heroes or walls */
-					if (((cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unc(get_hero(cb_val - 1))) ||
+					if (((cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unconscious(get_hero(cb_val - 1))) ||
 						((cb_val >= 50) && !is_in_word_array(cb_val - 50, (signed short*)(p_datseg + CB_OBJ_NONOBSTACLE))))
 					{
 						done = 1;
@@ -353,7 +353,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 
 			} else if (mode == 2) {
 				/* attack hero */
-				if ((cb_val > 0) && (cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unc(get_hero(cb_val - 1)))
+				if ((cb_val > 0) && (cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unconscious(get_hero(cb_val - 1)))
 				{
 					can_attack = 1;
 					done = 1;
@@ -370,7 +370,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 
 					if ( (
 						(cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) &&
-						!hero_unc(get_hero(cb_val - 1))
+						!hero_unconscious(get_hero(cb_val - 1))
 						) || (
 						(cb_val >= 50) &&
 							!is_in_word_array(cb_val - 50, (signed short*)(p_datseg + CB_OBJ_NONOBSTACLE))
@@ -395,16 +395,17 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 
 
 signed short get_foe_attack_mode(signed short a1, signed short a2)
+	/* a1: ID of monster spell */
 {
 	signed short retval = 0;
-	Bit8u *ptr = p_datseg + MON_SPELL_DESCRIPTIONS + a1 * 8;
+	Bit8u *ptr = p_datseg + MON_SPELL_DESCRIPTIONS + a1 * SIZEOF_MON_SPELL_DESCRIPTIONS;
 
 	if (a2 == 0) {
 
-		if ((host_readbs(ptr + 1) == 3) || (host_readbs(ptr + 1) == 2)) {
+		if ((host_readbs(ptr + MON_SPELL_DESCRIPTIONS_MODE) == 3) || (host_readbs(ptr + MON_SPELL_DESCRIPTIONS_MODE) == 2)) {
 			retval = 2;
 		} else {
-			if (host_readbs(ptr + 1) == 1) {
+			if (host_readbs(ptr + MON_SPELL_DESCRIPTIONS_MODE) == 1) {
 				retval = 1;
 			} else {
 				retval = 3;
@@ -412,9 +413,9 @@ signed short get_foe_attack_mode(signed short a1, signed short a2)
 		}
 
 	} else {
-		if (host_readbs(ptr + 1) == 3) {
+		if (host_readbs(ptr + MON_SPELL_DESCRIPTIONS_MODE) == 3) {
 			retval = 1;
-		} else if (host_readbs(ptr + 1) == 0) {
+		} else if (host_readbs(ptr + MON_SPELL_DESCRIPTIONS_MODE) == 0) {
 			retval = 3;
 		}
 	}
@@ -444,8 +445,8 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 	signed short l_di;
 
 #if !defined(__BORLANDC__)
-	diff.d[0].x = 0;
-	diff.d[0].y = 1;
+	diff.d[0].x = 1;
+	diff.d[0].y = 0;
 	diff.d[1].x = 0;
 	diff.d[1].y = -1;
 	diff.d[2].x = -1;
@@ -473,7 +474,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 
 			l2 = ds_readbs(MON_SPELL_REPERTOIRE + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + l_si);
 
-			if (ds_readbs((MON_SPELL_DESCRIPTIONS + 2) + l2 * 8) == 1) {
+			if (ds_readbs((MON_SPELL_DESCRIPTIONS_UNKN1 + MON_SPELL_DESCRIPTIONS) + l2 * SIZEOF_MON_SPELL_DESCRIPTIONS) == 1) {
 
 				if (random_schick(100) < 75) {
 					l7 = 1;
@@ -497,7 +498,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 				done = 1;
 			} else {
 
-				if (!ds_readbs((MON_SPELL_DESCRIPTIONS + 2) + l2 * 8)) {
+				if (!ds_readbs((MON_SPELL_DESCRIPTIONS + MON_SPELL_DESCRIPTIONS_UNKN1) + l2 * SIZEOF_MON_SPELL_DESCRIPTIONS)) {
 
 					while ((host_readbs(enemy + ENEMY_SHEET_BP) != 0) && (done == 0)) {
 
@@ -521,12 +522,12 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 							retval = 1;
 							done = 1;
 						} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
-							if (!enemy_cursed(enemy)) {
+							if (!enemy_tied(enemy)) {
 
 								if (mode == 1)
-									l6 = seg038(enemy, enemy_no, x, y, 2);
+									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 2);
 								else
-									l6 = seg038(enemy, enemy_no, x, y, 0);
+									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 0);
 
 								if (l6 != -1) {
 									seg037_00ae(enemy, enemy_no);
@@ -570,12 +571,12 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 							retval = 1;
 							done = 1;
 						} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
-							if (!enemy_cursed(enemy)) {
+							if (!enemy_tied(enemy)) {
 
 								if (mode == 1)
-									l6 = seg038(enemy, enemy_no, x, y, 7);
+									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 7);
 								else
-									l6 = seg038(enemy, enemy_no, x, y, 6);
+									l6 = FIG_find_path_to_target(enemy, enemy_no, x, y, 6);
 
 								if (l6 != -1) {
 									seg037_00ae(enemy, enemy_no);
@@ -653,11 +654,11 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_no, signed short attac
 				done = 1;
 			} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
 
-					if (!enemy_cursed(enemy)) {
+					if (!enemy_tied(enemy)) {
 						if (attack_foe == 0)
-							l4 = seg038(enemy, enemy_no, x, y, 6);
+							l4 = FIG_find_path_to_target(enemy, enemy_no, x, y, 6);
 						else
-							l4 = seg038(enemy, enemy_no, x, y, 7);
+							l4 = FIG_find_path_to_target(enemy, enemy_no, x, y, 7);
 
 						if (l4 != -1) {
 							seg037_00ae(enemy, enemy_no);
@@ -687,14 +688,14 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_no, signed short attac
 
 void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed short y)
 {
-	signed short l1;
+	signed short target_reachable;
 	signed short attack_foe;
 	signed short dir;
 	signed short l3;
 	signed short done;
 	signed short l5;
-	signed short l6;
-	signed short l7;
+	signed short x_bak;
+	signed short y_bak;
 	struct dummy diff;
 	signed short l_di;
 
@@ -714,7 +715,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 #endif
 
 	/* check if we are in a special fight */
-	if (ds_readws(CURRENT_FIG_NO) == 180) {
+	if (ds_readws(CURRENT_FIG_NO) == FIGHTS_F064) {
 		/* F064: fight against GORAH */
 
 		if (host_readbs(enemy) == 0x46) {
@@ -725,22 +726,24 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 			}
 		}
 
-	} else if ((ds_readws(CURRENT_FIG_NO) == 189) &&
-			(random_interval(8, 12) <= ds_readws(FIGHT_ROUND))) {
+	} else if ((ds_readws(CURRENT_FIG_NO) == FIGHTS_F099) &&
 		/* F099: fight against four HARPIES */
+			(random_interval(8, 12) <= ds_readws(FIGHT_ROUND))) {
 
-			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
+			/* after 8-12 rounds, the enemies flee */
+			or_ptr_bs(enemy + ENEMY_SHEET_FLAGS2, 4); /* set 'scared' flag */
 
-	} else if ((ds_readws(CURRENT_FIG_NO) == 191) &&
-			(FIG_count_active_enemies() <= 3)) {
+	} else if ((ds_readws(CURRENT_FIG_NO) == FIGHTS_F122) && /* 13 wolves */
 		/* F122: fight against 13 WOLVES */
+			(FIG_count_active_enemies() <= 3)) {
 
-			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
+			/* if at most 3 wolves are left, the enemies flee */
+			or_ptr_bs(enemy + ENEMY_SHEET_FLAGS2, 4); /* set 'scared' flag */
 
-	} else if (ds_readws(CURRENT_FIG_NO) == 192) {
+	} else if (ds_readws(CURRENT_FIG_NO) == FIGHTS_F144) {
 		/* F144: final fight */
 
-		if (enemy_cursed(enemy)) {
+		if (enemy_tied(enemy)) {
 			host_writeb(enemy + ENEMY_SHEET_BP, 0);
 		}
 	}
@@ -764,7 +767,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 #if !defined(__BORLANDC__)
 			D1_INFO("Feind %d flieht\n", enemy_no);
 #endif
-			or_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 4);
+			or_ptr_bs(enemy + ENEMY_SHEET_FLAGS2, 4); /* set 'scared' flag */
 		}
 
 		/* chance of 4% that an illusion enemy disappears */
@@ -774,14 +777,15 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 				D1_INFO("Feind %d verliert seinen Illusionszauber\n", enemy_no);
 			}
 #endif
-			and_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 0xdf);
+			/* Original-Bug? Why unset 'tied' and not 'illusion'?? */
+			and_ptr_bs(enemy + ENEMY_SHEET_FLAGS1, 0xdf); /* unset 'tied' flag */
 		}
 
-		if (!enemy_bit10(enemy)) {
+		if (!enemy_scared(enemy)) {
 
 			attack_foe = 0;
 
-			if (enemy_bb(enemy)) {
+			if (enemy_renegade(enemy)) {
 				attack_foe = 1;
 			}
 
@@ -864,21 +868,21 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 			done = 1;
 		} else if (host_readbs(enemy + ENEMY_SHEET_BP) > 0) {
 
-			if (!enemy_cursed(enemy)) {
+			if (!enemy_tied(enemy)) {
 
-				if (enemy_bit10(enemy)) {
-					l1 = seg038(enemy, enemy_no, x, y, 4);
+				if (enemy_scared(enemy)) {
+					target_reachable = FIG_find_path_to_target(enemy, enemy_no, x, y, 4);
 					host_writeb(enemy + ENEMY_SHEET_BP, 0);
 				} else {
-					if (enemy_bb(enemy))
-						l1 = seg038(enemy, enemy_no, x, y, 2);
+					if (enemy_renegade(enemy))
+						target_reachable = FIG_find_path_to_target(enemy, enemy_no, x, y, 2);
 					else
-						l1 = seg038(enemy, enemy_no, x, y, 0);
+						target_reachable = FIG_find_path_to_target(enemy, enemy_no, x, y, 0);
 				}
 
-				if (l1 != -1) {
-					l6 = x;
-					l7 = y;
+				if (target_reachable != -1) {
+					x_bak = x;
+					y_bak = y;
 					seg037_00ae(enemy, enemy_no);
 					FIG_search_obj_on_cb(enemy_no + 10, &x, &y);
 
@@ -887,7 +891,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_no, signed short x, signed shor
 					x = host_readws((Bit8u*)&x);
 					y = host_readws((Bit8u*)&y);
 #endif
-					if ((l6 == x) && (l7 == y)) {
+					if ((x_bak == x) && (y_bak == y)) {
 						host_writeb(enemy + ENEMY_SHEET_BP, 0);
 					}
 

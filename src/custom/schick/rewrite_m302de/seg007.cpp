@@ -25,7 +25,7 @@ unsigned short _rotl(unsigned short op, unsigned char count) {
 #endif
 
 /**
- * \brief   generates a random number between lo and hi
+ * \brief   generates a random number in the range [lo .. hi]
  */
 int random_interval(const int lo, const int hi)
 {
@@ -34,7 +34,7 @@ int random_interval(const int lo, const int hi)
 }
 
 /**
- * \brief   generates a u16 random number
+ * \brief   generates a u16 random number in the range [1 .. val]
  */
 int random_schick(const int val)
 {
@@ -77,7 +77,11 @@ int dice_roll(const int n, const int m, const int x)
 }
 
 /**
- * \brief   calculate min/max damage of a weapon
+ * \brief   calculate min/max damage of a weapon with the damage formula n * Wm + x
+ *
+ * \param n	number of dice thrown
+ * \param m	number of sides of the dice (outcome of a single dice roll is [1..m])
+ * \param x	constant summand in the damage formula
  */
 void calc_damage_range(const int n, const int m, const int x, Bit8u *min, Bit8u *max)
 {

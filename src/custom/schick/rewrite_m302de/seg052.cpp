@@ -58,7 +58,7 @@ void do_citycamp(void)
 		ds_writeb(CITYCAMP_GUARDS + l_si, -1);
 	}
 
-	draw_loc_icons(5, 9, 25, 11, 17, 8);
+	draw_loc_icons(5, MENU_ICON_GUARDS, MENU_ICON_APPLY_SKILL, MENU_ICON_MAGIC, MENU_ICON_SLEEP, MENU_ICON_LEAVE);
 
 	while (done == 0) {
 
@@ -79,7 +79,7 @@ void do_citycamp(void)
 
 		handle_gui_input();
 
-		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			/* open citycamp radio menu */
 			answer = GUI_radio(get_ttx(307), 5,
@@ -91,11 +91,11 @@ void do_citycamp(void)
 
 			/* set action on a valid answer */
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 129) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 			answer = -1;
 
@@ -126,7 +126,7 @@ void do_citycamp(void)
 							answer = -1;
 						}
 
-						if (answer != -1 && hero_busy(get_hero(answer))) {
+						if (answer != -1 && hero_brewing(get_hero(answer))) {
 							GUI_output(get_ttx(730));
 							answer = -1;
 						}
@@ -138,24 +138,24 @@ void do_citycamp(void)
 				}
 			}
 
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 
 			GUI_use_skill2(0, get_ttx(395));
 
-		} else if (ds_readws(ACTION) == 131) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 
 			answer = select_hero_ok(get_ttx(317));
 
-			if (answer != -1 && hero_busy(get_hero(answer))) {
+			if (answer != -1 && hero_brewing(get_hero(answer))) {
 				GUI_output(get_ttx(730));
 				answer = -1;
 			}
 
 			if (answer != -1) {
 
-				hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
+				hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer;
 
-				if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
+				if (host_readbs(Real2Host(hero) + HERO_TYPE) >= HERO_TYPE_WITCH) {
 
 					if (ds_readb(CITYCAMP_GUARDSTATUS + answer) != 0) {
 						GUI_output(get_ttx(331));
@@ -170,7 +170,7 @@ void do_citycamp(void)
 					GUI_output(get_ttx(330));
 				}
 			}
-		} else if (ds_readws(ACTION) == 132) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 
 			if (GUI_bool(get_ttx(318))) {
 
@@ -182,6 +182,10 @@ void do_citycamp(void)
 					l_di = 0;
 
 					if (ds_readws(CAMP_INCIDENT) == -1) {
+						/* with guards: (hours - 1) % chance for an incident */
+						/* without guards: (4*hours - 1) % chance for an incident */
+						/* For a 1 hour rest with guards this will be 0% chance! */
+						/* TODO: maybe change it to random_schick(100) - 1 to fix that */
 						if ((ds_readbs(CITYCAMP_GUARDS) == -1 ? 4 * hours : hours) > random_schick(100)) {
 							ds_writews(CAMP_INCIDENT, random_schick(3) - 1);
 						}
@@ -252,7 +256,7 @@ void do_citycamp(void)
 							}
 
 						} else {
-							/* in a city */
+							/* in a town */
 							done = 0;
 							loose_random_item(get_hero(get_random_hero()), 100, get_ttx(832));
 						}
@@ -266,7 +270,7 @@ void do_citycamp(void)
 
 					if (done == 0) {
 
-						hero = (RealPt)ds_readd(HEROS);
+						hero = (RealPt)ds_readd(HEROES);
 						for (l_si = 0; l_si <= 6; l_si++, hero += SIZEOF_HERO) {
 
 							if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -282,13 +286,21 @@ void do_citycamp(void)
 				done = 1;
 			}
 
-		} else if (ds_readws(ACTION) == 133) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 			done = 1;
 		}
 	}
 
 	ds_writeb(LOCATION_BAK, 0);
-	turnaround();
+
+	/* Original-Bug 26: After leaving a camp in town/dungeon-mode, the party is rotated by 180 degrees. This does not make sense. */
+	leave_location();
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* The rotation is performed in the function leave_location().
+	 * We fix the bug in a hacky way by simply correcting the rotation afterwards. */
+	ds_writeb(DIRECTION, (ds_readbs(DIRECTION) + 2) % 4); /* rotate by 180 degrees */
+#endif
+
 }
 
 #if !defined(__BORLANDC__)

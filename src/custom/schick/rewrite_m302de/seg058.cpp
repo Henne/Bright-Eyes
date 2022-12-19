@@ -46,39 +46,40 @@ void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, sig
 {
 	signed short item_id;
 
-	item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos);
+	item_id = host_readws(hero + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * item_pos);
 
 	host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos, item_id);
 
 	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
 
-		if (ks_broken(hero + HERO_ITEM_HEAD + 14 * item_pos)) {
+		if (inventory_broken(hero + HERO_INVENTORY + SIZEOF_INVENTORY * item_pos)) {
 
 			host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
-				(host_readws(get_itemsdat(item_id) + 8) +
-					(host_readws(get_itemsdat(item_id) + 8) * host_readbs(smith_ptr) / 100)) / 2);
+				(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) +
+					(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(smith_ptr) / 100)) / 2);
 
 			if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2) == 0) {
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 1);
 			}
 
 			host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 4,
-				host_readbs(get_itemsdat(item_id) + 7));
+				host_readbs(get_itemsdat(item_id) + ITEM_STATS_PRICE_UNIT));
 
 		} else {
 
-			if (host_readbs(hero + HERO_ITEM_HEAD + 7 + 14 * item_pos) != 0) {
+			if (host_readbs(hero + HERO_INVENTORY + INVENTORY_RS_LOST + SIZEOF_INVENTORY * item_pos) != 0) {
+				/* armor has degraded RS */
 
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
-					(host_readws(get_itemsdat(item_id) + 8) +
-						(host_readws(get_itemsdat(item_id) + 8) * host_readbs(smith_ptr) / 100)) / 4);
+					(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) +
+						(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(smith_ptr) / 100)) / 4);
 
 				if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2) == 0) {
 					host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 1);
 				}
 
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 4,
-					host_readbs(get_itemsdat(item_id) + 7));
+					host_readbs(get_itemsdat(item_id) + ITEM_STATS_PRICE_UNIT));
 			} else {
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 0);
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 4, 1);
@@ -178,7 +179,7 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 		set_var_to_zero();
 		ds_writeb(PP20_INDEX, 0xff);
 
-		draw_loc_icons(5, 23, 26, 27, 28, 8);
+		draw_loc_icons(5, MENU_ICON_BARGAIN, MENU_ICON_SCROLL_RIGHT, MENU_ICON_SCROLL_LEFT, MENU_ICON_HERO, MENU_ICON_LEAVE);
 		draw_main_screen();
 
 		/* ICONS */
@@ -224,8 +225,8 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 				if (l11 != 0) {
 
 					smith_pos = 0;
-					for (l_si = 0; l_si < 23; l_si++) {
-						if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * l_si) != 0) {
+					for (l_si = 0; l_si < NR_HERO_INVENTORY_SLOTS; l_si++) {
+						if (host_readws(hero2 + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * l_si) != ITEM_NONE) {
 							add_item_to_smith(smith_ptr, hero2, l_si, smith_pos++);
 						}
 					}
@@ -281,7 +282,7 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 
 							if (item_stackable(get_itemsdat(j))) {
 
-								if ((val = host_readws(hero2 + (HERO_ITEM_HEAD+2) + 14 * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
+								if ((val = host_readws(hero2 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
 								{
 									my_itoa(val, (char*)Real2Host(ds_readd(DTP2)), 10);
 
@@ -343,7 +344,7 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 				GUI_print_loc_line(Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item))))));
 			}
 
-			if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == 73) {
+			if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 				answer = GUI_radio(NULL, 5,
 						get_ttx(433),
@@ -353,19 +354,21 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 						get_ttx(437)) - 1;
 
 				if (answer != -2) {
-					ds_writew(ACTION, answer + 129);
+					ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 				}
 			}
 
-			if (ds_readws(ACTION) == 131 && item != 0) {
+			if (ds_readws(ACTION) == ACTION_ID_ICON_3 && item != 0) {
 				l8 = 1;
 				item -= 15;
-			} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (item + 15))) {
+			} else if (ds_readws(ACTION) == ACTION_ID_ICON_2 && host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (item + 15))) {
 				l8 = 1;
 				item += 15;
 			}
 
-			if (ds_readws(ACTION) == 144 || ds_readws(ACTION) == 129 || ds_readws(ACTION) == 28) {
+			if (ds_readws(ACTION) == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK || ds_readws(ACTION) == ACTION_ID_ICON_1 || ds_readws(ACTION) == ACTION_ID_RETURN) {
+				/* Is ACTION == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK possible at all?
+				 * ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK can be written to ACTION in buy_screen(), but where should it show up in repair_screen()?? */
 
 				item_id = host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item));
 
@@ -466,11 +469,11 @@ void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 				l11 = 1;
 			}
 
-			if (ds_readws(ACTION) == 132) {
+			if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 				l10 = 1;
 			}
 
-			if (ds_readws(ACTION) == 133) {
+			if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 				done = 1;
 			}
 
@@ -494,7 +497,7 @@ void do_smith(void)
 	if (ds_readds(DAY_TIMER) < HOURS(6) || ds_readds(DAY_TIMER) > HOURS(20)) {
 
 		GUI_output(get_ttx(483));
-		turnaround();
+		leave_location();
 		return;
 	}
 
@@ -503,7 +506,7 @@ void do_smith(void)
 		(ds_readws(TYPEINDEX) == 1 && ds_readb(DNG14_CELLAREXIT_FLAG))) {
 
 		talk_smith();
-		turnaround();
+		leave_location();
 		return;
 	}
 
@@ -516,7 +519,7 @@ void do_smith(void)
 
 		if (ds_readws(REQUEST_REFRESH) != 0) {
 
-			draw_loc_icons(3, 21, 18, 8);
+			draw_loc_icons(3, MENU_ICON_TALK, MENU_ICON_REPAIR, MENU_ICON_LEAVE);
 			draw_main_screen();
 			set_var_to_zero();
 			load_ani(5);
@@ -528,7 +531,7 @@ void do_smith(void)
 
 		handle_gui_input();
 
-		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			ds_writew(TEXTBOX_WIDTH, 4);
 
@@ -541,29 +544,29 @@ void do_smith(void)
 			ds_writew(TEXTBOX_WIDTH, 3);
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 131) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 			done = 1;
-		} else if (ds_readws(ACTION) == 129) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 			talk_smith();
 			ds_writew(REQUEST_REFRESH, 1);
 
 			if (ds_readbs(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
 				ds_readbs(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
-				ds_readbs(DUNGEON_INDEX) != 0)
+				ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE)
 			{
 				done = 1;
 			}
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 			repair_screen(smith_ptr, ds_readws(TYPEINDEX));
 		}
 	}
 
-	turnaround();
+	leave_location();
 	copy_palette();
 }
 
@@ -591,7 +594,7 @@ void TLK_schmied(signed short state)
 		ds_writew(PRICE_MODIFICATOR, 3);
 	} else if (state == 30) {
 
-		DNG_enter_dungeon(14);
+		DNG_enter_dungeon(DUNGEONS_ZWINGFESTE);
 		ds_writeb(DUNGEON_LEVEL, 3);
 		ds_writews(X_TARGET_BAK, ds_writews(X_TARGET, 11));
 		ds_writews(Y_TARGET_BAK, ds_writews(Y_TARGET, 2));

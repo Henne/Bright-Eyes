@@ -34,7 +34,7 @@ namespace M302de {
 unsigned short is_hero_healable(Bit8u *hero)
 {
 
-	if (hero_dead(hero) || hero_stoned(hero)) {
+	if (hero_dead(hero) || hero_petrified(hero)) {
 		/* this hero can not be helped */
 		GUI_output(get_ttx(778));
 		return 0;
@@ -72,7 +72,7 @@ void do_healer(void)
 
 	v6 = ds_writew(REQUEST_REFRESH, 1);
 	info = p_datseg + HEALER_DESCR_TABLE + ds_readw(TYPEINDEX) * 2;
-	draw_loc_icons(4, 0x1e, 0x1f, 0x20, 8);
+	draw_loc_icons(4, MENU_ICON_HEAL_WOUNDS, MENU_ICON_HEAL_DISEASE, MENU_ICON_HEAL_POISON, MENU_ICON_LEAVE);
 
 	while (leave_healer == 0) {
 
@@ -93,7 +93,7 @@ void do_healer(void)
 				motivation = 1;
 
 				/* from 9.00 pm to 6.00 am the healer gets unkind */
-				if (ds_readds(DAY_TIMER) > 0x1baf8 || ds_readds(DAY_TIMER) < 0x7e90) {
+				if (ds_readds(DAY_TIMER) > HOURS(21) || ds_readds(DAY_TIMER) < HOURS(6)) {
 					GUI_output(get_ttx(484));
 					motivation = 2;
 				}
@@ -107,7 +107,7 @@ void do_healer(void)
 
 		handle_gui_input();
 
-		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readw(ACTION) == 0x49) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readw(ACTION) == ACTION_ID_PAGE_UP) {
 
 			ds_writew(TEXTBOX_WIDTH, 4);
 
@@ -119,16 +119,16 @@ void do_healer(void)
 			ds_writew(TEXTBOX_WIDTH, 3);
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 0x81);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readw(ACTION) == 0x84) {
+		if (ds_readw(ACTION) == ACTION_ID_ICON_4) {
 			leave_healer = 1;
 			continue;
 		}
 
-		if (ds_readw(ACTION) == 0x81) {
+		if (ds_readw(ACTION) == ACTION_ID_ICON_1) {
 
 			/* Heal Wounds */
 
@@ -179,8 +179,8 @@ void do_healer(void)
 								add_ptr_ws(hero + HERO_LE_ORIG, host_readbs(hero + HERO_LE_MOD));
 								host_writeb(hero + HERO_LE_MOD, 0);
 
-								/* let pass some time */
-								timewarp(90 * (signed long)(host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE)));
+								/* time passes by (number of missing LE) minutes */
+								timewarp(MINUTES((signed long)(host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE))));
 
 								/* heal LE */
 								add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
@@ -197,7 +197,7 @@ void do_healer(void)
 				}
 			}
 
-		} else if (ds_readw(ACTION) == 0x82) {
+		} else if (ds_readw(ACTION) == ACTION_ID_ICON_2) {
 			/* Cure Disease */
 			money = get_party_money();
 			answer = select_hero_from_group(get_ttx(460));
@@ -236,13 +236,12 @@ void do_healer(void)
 							if (money < price) {
 								GUI_output(get_ttx(401));
 							} else {
-								/* let pass some time */
-								timewarp(5400);
+								timewarp(HOURS(1));
 
 								if (random_schick(100) <= (120 - host_readbs(info + 1) * 10) + ds_readws(DISEASE_DELAYS + disease * 2)) {
 									/* heal the disease */
-									host_writeb(hero + (HERO_ILLNESS-5) + disease * 5, 1);
-									host_writeb(hero + (HERO_ILLNESS-4) + disease * 5, 0);
+									host_writeb(hero + (HERO_ILLNESS) + disease * SIZEOF_HERO_ILLNESS, 1);
+									host_writeb(hero + (HERO_ILLNESS + 1) + disease * SIZEOF_HERO_ILLNESS, 0);
 
 									/* prepare output */
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -263,7 +262,7 @@ void do_healer(void)
 					}
 				}
 			}
-		} else if (ds_readw(ACTION) == 0x83) {
+		} else if (ds_readw(ACTION) == ACTION_ID_ICON_3) {
 			/* Heal Poison */
 			money = get_party_money();
 			answer = select_hero_from_group(get_ttx(460));
@@ -299,12 +298,12 @@ void do_healer(void)
 							if (money < price) {
 								GUI_output(get_ttx(401));
 							} else {
-								timewarp(5400);
+								timewarp(HOURS(1));
 
 								if (random_schick(100) <= (120 - host_readbs(info + 1) * 5) + ds_readws(POISON_DELAYS + poison * 2)) {
 									/* cure the poison */
-									host_writeb(hero + (HERO_POISON-4) + poison * 5, 0);
-									host_writeb(hero + (HERO_POISON-5) + poison * 5, 1);
+									host_writeb(hero + (HERO_POISON + 1) + poison * SIZEOF_HERO_POISON, 0);
+									host_writeb(hero + (HERO_POISON) + poison * SIZEOF_HERO_POISON, 1);
 
 									/* prepare output */
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -328,7 +327,7 @@ void do_healer(void)
 	}
 
 	copy_palette();
-	turnaround();
+	leave_location();
 
 }
 

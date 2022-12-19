@@ -110,7 +110,7 @@ void sell_screen(Bit8u *shop_ptr)
 			}
 
 			price = 0;
-			draw_loc_icons(5, 23, 26, 27, 28, 8);
+			draw_loc_icons(5, MENU_ICON_BARGAIN, MENU_ICON_SCROLL_RIGHT, MENU_ICON_SCROLL_LEFT, MENU_ICON_HERO, MENU_ICON_LEAVE);
 			draw_main_screen();
 
 			/* ICONS */
@@ -143,7 +143,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 				hero_pos = select_hero_ok(get_ttx(448));
 
-				if (hero_pos == -1 || host_readbs(get_hero(hero_pos) + HERO_KS_TAKEN) == 0) {
+				if (hero_pos == -1 || host_readbs(get_hero(hero_pos) + HERO_NR_INVENTORY_SLOTS_FILLED) == 0) {
 					break;
 				}
 
@@ -160,8 +160,8 @@ void sell_screen(Bit8u *shop_ptr)
 			if (l11 != 0) {
 
 				l20 = 0;
-				for (l_di = 0; l_di < 23; l_di++) {
-					if (host_readws(hero1 + HERO_ITEM_HEAD + 14 * l_di) != 0) {
+				for (l_di = 0; l_di < NR_HERO_INVENTORY_SLOTS; l_di++) {
+					if (host_readws(hero1 + HERO_INVENTORY + INVENTORY_ITEM_ID + SIZEOF_INVENTORY * l_di) != ITEM_NONE) {
 						insert_sell_items(shop_ptr, hero1, l_di, l20++);
 					}
 				}
@@ -218,7 +218,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 						if (item_stackable(get_itemsdat(j))) {
 
-							if ((nice = host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
+							if ((nice = host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
 							{
 								my_itoa(nice, (char*)Real2Host(ds_readd(DTP2)), 10);
 
@@ -307,7 +307,7 @@ void sell_screen(Bit8u *shop_ptr)
 			GUI_print_loc_line(Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item))))));
 		}
 
-		if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			answer = GUI_radio(NULL, 5,
 					get_ttx(433),
@@ -317,19 +317,21 @@ void sell_screen(Bit8u *shop_ptr)
 					get_ttx(437)) - 1;
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 131 && item != 0) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_3 && item != 0) {
 			l8 = 1;
 			item -= 15;
-		} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (item + 15))) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2 && host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (item + 15))) {
 			l8 = 1;
 			item += 15;
 		}
 
-		if (ds_readws(ACTION) == 144 || ds_readws(ACTION) == 28) {
+		if (ds_readws(ACTION) == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK || ds_readws(ACTION) == ACTION_ID_RETURN) {
+			/* Is ACTION == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK possible at all?
+			 * ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK can be written to ACTION in buy_screen(), but where should it show up in sell_screen()?? */
 
 
 			item_id = host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item));
@@ -350,7 +352,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 					if (tmp[hero_pos][l15] != 0) {
 
-						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15) > 1) {
+						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15) > 1) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ttx(447),
@@ -362,8 +364,8 @@ void sell_screen(Bit8u *shop_ptr)
 								nice = 0;
 							}
 
-							if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15) < nice) {
-								nice = host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15);
+							if (host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15) < nice) {
+								nice = host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15);
 							}
 
 							price -= ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
@@ -383,7 +385,7 @@ void sell_screen(Bit8u *shop_ptr)
 									nice * ds_readws(PRICE_MODIFICATOR)) / 4L;
 						}
 					} else {
-						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15) > 1) {
+						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15) > 1) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ttx(447),
@@ -395,8 +397,8 @@ void sell_screen(Bit8u *shop_ptr)
 								nice = 0;
 							}
 
-							if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15) < nice) {
-								nice = host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15);
+							if (host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15) < nice) {
+								nice = host_readws(hero1 + (HERO_INVENTORY + INVENTORY_QUANTITY) + SIZEOF_INVENTORY * l15);
 							}
 
 							price -= ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
@@ -421,7 +423,7 @@ void sell_screen(Bit8u *shop_ptr)
 		}
 
 
-		if (ds_readws(ACTION) == 129 && price) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1 && price) {
 
 			j = nice = 0;
 			for (items_x = 0; items_x <= 6; items_x++) {
@@ -465,16 +467,16 @@ void sell_screen(Bit8u *shop_ptr)
 
 					hero3 = get_hero(0);
 					for (items_x = 0; items_x <= 6; items_x++, hero3 += SIZEOF_HERO) {
-						for (l_di = 0; l_di < 23; l_di++) {
+						for (l_di = 0; l_di < NR_HERO_INVENTORY_SLOTS; l_di++) {
 
 							if (tmp[items_x][l_di] != 0) {
-								item_id = host_readws(hero3 + HERO_ITEM_HEAD + 14 * l_di);
+								item_id = host_readws(hero3 + (HERO_INVENTORY + INVENTORY_ITEM_ID) + SIZEOF_INVENTORY * l_di);
 								drop_item(hero3, l_di, tmp[items_x][l_di]);
 								ds_writeb(MARKET_ITEMSALDO_TABLE + item_id, ds_readbs(MARKET_ITEMSALDO_TABLE + item_id) - tmp[items_x][l_di]);
 
 								if (ds_readbs(MARKET_ITEMSALDO_TABLE + item_id) <= -10) {
 									ds_writeb(MARKET_ITEMSALDO_TABLE + item_id, 0);
-									sub_ptr_ws(get_itemsdat(item_id) + 8, host_readws(get_itemsdat(item_id) + 8) * 10 / 100);
+									sub_ptr_ws(get_itemsdat(item_id) + ITEM_STATS_PRICE, host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * 10 / 100);
 								}
 							}
 						}
@@ -538,15 +540,15 @@ void sell_screen(Bit8u *shop_ptr)
 			}
 		}
 
-		if (ds_readws(ACTION) == 132) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 			l10 = 1;
 		}
 
-		if (ds_readws(ACTION) == 133) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 			done = 1;
 		}
 
-		if (host_readbs(hero1 + HERO_KS_TAKEN) == 0) {
+		if (host_readbs(hero1 + HERO_NR_INVENTORY_SLOTS_FILLED) == 0) {
 			done = 1;
 		}
 	}

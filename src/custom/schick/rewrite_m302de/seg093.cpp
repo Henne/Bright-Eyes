@@ -100,7 +100,7 @@ signed short do_travel_mode(void)
 			while (1) {
 				handle_input();
 
-				if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73)
+				if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP)
 				{
 					i = 0;
 					while ((l_di = host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + i)) != 255)
@@ -150,6 +150,7 @@ signed short do_travel_mode(void)
 					if (!get_current_season() &&
 						(route_id == 31 || route_id == 41 || route_id == 47 || route_id == 48 || route_id == 49))
 					{
+						/* routes not available in winter */
 						GUI_input(get_tx(69), 0);
 						break;
 					}
@@ -252,11 +253,11 @@ signed short do_travel_mode(void)
 	if (!ds_readb(TRAVEL_DETOUR))
 	{
 		ds_writew(WALLCLOCK_UPDATE, 0);
-		turnaround();
+		leave_location();
 
 	} else if (ds_readb(TRAVEL_DETOUR) != 99)
 	{
-		ds_writeb(CURRENT_TOWN, 0);
+		ds_writeb(CURRENT_TOWN, TOWNS_NONE);
 	}
 
 	if (ds_readb(PP20_INDEX) == 5)

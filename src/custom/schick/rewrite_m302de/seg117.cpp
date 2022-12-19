@@ -27,6 +27,10 @@
 #include "seg103.h"
 #include "seg105.h"
 #include "seg109.h"
+#ifdef M302de_ORIGINAL_BUGFIX
+/* Original-Bug 22: see below */
+#include "seg113.h"
+#endif
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -94,11 +98,11 @@ void hunt_karen(void)
 	} while (answer == -1);
 
 	if (answer == 1) {
-		/* check for a hunting weapon, BOWS, CROSSBOWS or SPEAR */
-		if ((get_first_hero_with_item(9) != -1) ||
-			(get_first_hero_with_item(19) != -1) ||
-			(get_first_hero_with_item(12) != -1) ||
-			(get_first_hero_with_item(5) != -1))
+		/* check for a hunting weapon, BOWS, CROSSBOWS or SPEAR */ /* TODO 2021-04-18: Original-Bug: What about magic spear? sling? (maybe not) */
+		if ((get_first_hero_with_item(ITEM_SHORTBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_LONGBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_CROSSBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_SPEAR) != -1))
 		{
 
 			hero = get_hero(0);
@@ -115,11 +119,11 @@ void hunt_karen(void)
 			}
 
 			if (count_heroes_in_group() <= passed) {
-				/* all heros passed STEALTH */
+				/* all heroes passed STEALTH */
 
 				GUI_output(get_tx2(5));
 
-				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */
+				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */ /* TODO 2021-04-18: Original-Bug: Why TA_SCHUSSWAFFEN for spears? */
 				hero = get_hero(0);
 				for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
@@ -137,14 +141,14 @@ void hunt_karen(void)
 
 					GUI_output(get_tx2(8));
 					/* get 80 FOOD PACKAGES */
-					get_item(45, 1, 80);
+					get_item(ITEM_FOOD_PACKAGE, 1, 80);
 
 				} else if (passed) {
 					/* at least one of the group passed MISSLE WEAPON+0 */
 
 					GUI_output(get_tx2(7));
 					/* get 40 FOOD PACKAGES */
-					get_item(45, 1, 40);
+					get_item(ITEM_FOOD_PACKAGE, 1, 40);
 				} else {
 					/* everybody failed MISSLE WEAPON+0 */
 					GUI_output(get_tx2(6));
@@ -176,11 +180,11 @@ void hunt_wildboar(void)
 	} while (answer == -1);
 
 	if (answer == 1) {
-		/* check for a hunting weapon, BOWS, CROSSBOWS or SPEAR */
-		if ((get_first_hero_with_item(9) != -1) ||
-			(get_first_hero_with_item(19) != -1) ||
-			(get_first_hero_with_item(12) != -1) ||
-			(get_first_hero_with_item(5) != -1))
+		/* check for a hunting weapon, BOWS, CROSSBOWS or SPEAR */ /* TODO 2021-04-18: Original-Bug: What about magic spear? sling? (maybe not) */
+		if ((get_first_hero_with_item(ITEM_SHORTBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_LONGBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_CROSSBOW) != -1) ||
+			(get_first_hero_with_item(ITEM_SPEAR) != -1))
 		{
 
 			hero = get_hero(0);
@@ -197,11 +201,11 @@ void hunt_wildboar(void)
 			}
 
 			if (count_heroes_in_group() <= passed) {
-				/* all heros passed STEALTH */
+				/* all heroes passed STEALTH */
 
 				GUI_output(get_tx2(15));
 
-				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */
+				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */ /* TODO 2021-04-18: Original-Bug: Why TA_SCHUSSWAFFEN for spears? */
 				hero = get_hero(0);
 				for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
@@ -219,7 +223,7 @@ void hunt_wildboar(void)
 
 					GUI_output(get_tx2(17));
 					/* get 30 FOOD PACKAGES */
-					get_item(45, 1, 30);
+					get_item(ITEM_FOOD_PACKAGE, 1, 30);
 
 				} else {
 					/* everybody failed MISSLE WEAPON+0 */
@@ -256,7 +260,7 @@ void hunt_cavebear(void)
 		GUI_output(get_tx2(24));
 
 		/* time to flee = 1.5 hour */
-		timewarp(0x1fa4);
+		timewarp(MINUTES(90));
 
 	} else {
 		GUI_output(get_tx2(22));
@@ -270,7 +274,7 @@ void hunt_cavebear(void)
 			{
 
 				/* AT of the current weapon - (RS-BE / 2) <= 1W20 */
-				if ((host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS)) - (host_readbs(hero + HERO_RS_BE) / 2)) <= random_schick(20))
+				if ((host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WEAPON_TYPE)) - (host_readbs(hero + HERO_RS_BE) / 2)) <= random_schick(20))
 				{
 #if !defined(__BORLANDC__)
 					D1_INFO("%-16s erhaelt 5 AP fuer eine gelungene Attacke.\n",
@@ -280,7 +284,7 @@ void hunt_cavebear(void)
 				}
 
 				/* PA of the current weapon - (RS-BE / 2) <= 1W20 */
-				if ((host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WP_CLASS)) - (host_readbs(hero + HERO_RS_BE) / 2)) > random_schick(20))
+				if ((host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WEAPON_TYPE)) - (host_readbs(hero + HERO_RS_BE) / 2)) > random_schick(20))
 				{
 #if !defined(__BORLANDC__)
 					D1_INFO("%-16s erhaelt 3 AP fuer eine misslungene Parade.\n",
@@ -369,6 +373,10 @@ void octopus_attack(void)
 	signed short tmp;
 	char overboard[7];
 	Bit8u *hero;
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 22: see below */
+	char any_hero_active;
+#endif
 
 	hits = 0;
 	pause_traveling(31);
@@ -378,6 +386,10 @@ void octopus_attack(void)
 	GUI_output(get_tx2(29));
 
 	do {
+#ifdef M302de_ORIGINAL_BUGFIX
+		/* Original-Bug 22: see below */
+		any_hero_active = 0;
+#endif
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
@@ -386,12 +398,25 @@ void octopus_attack(void)
 				!hero_dead(hero) &&
 				!overboard[i])
 			{
-				/* ORIGINAL-BUG: bad things happen only when the result of the test is 0 or -1.
-				 * all other results are success.
-				*/
-				/* GE+0 */
-				if (!(tmp = test_attrib(hero, ATTRIB_GE, 0))) {
+#ifdef M302de_ORIGINAL_BUGFIX
+				/* Original-Bug 22: see below */
+				any_hero_active = 1;
+#endif
+#ifndef M302de_ORIGINAL_BUGFIX
+				/* Original-Bug 21:
+				 * Apparently, the outcome of the following GE-attrib-test is misinterpreted.
+				 * For GE <= 17, its always 5% strangling attack, 5% grabbing attack, 90% hero attacks octopus.
+				 * For GE = 18 its 5% strangling attack, 95% hero attacks octopus.
+				 * For GE <= 19 it is 100% hero attacks octopus.
+				 * The intended behavior probably was: critical failure: grabbing attack; normal failure: strangling attack; success: hero attacks octopus. */
+				if (!(tmp = test_attrib(hero, ATTRIB_GE, 0)))
+#else
+				tmp = test_attrib(hero, ATTRIB_GE, 0);
+				if (tmp <= 0 && tmp != -99)
+#endif
+				{
 					/* strangling attack */
+					/* <hero> GERAET IN DEN WUERGEGRIFF DES KRAKENMOLCHS UND KANN SICH NUR UNTER MUEHEN WIEDER BEFREIEN. */
 
 					add_hero_ap(hero, 5);
 					sub_hero_le(hero, random_schick(6));
@@ -399,9 +424,17 @@ void octopus_attack(void)
 						(char*)get_tx2(30),
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
+				}
 
-				} else if (tmp == -1) {
-					/* over board */
+#ifndef M302de_ORIGINAL_BUGFIX
+				/* Original-Bug 21: see above */
+				else if (tmp == -1)
+#else
+				else if (tmp == -99)
+#endif
+				{
+					/* grabbing attack */
+					/* <hero> WIRD VON EINEM TENTAKEL GEPACKT UND UEBER BORD GERISSEN! */
 
 					add_hero_ap(hero, 20);
 					sub_hero_le(hero, random_schick(6));
@@ -417,15 +450,32 @@ void octopus_attack(void)
 
 				} else {
 					/* chance to hit the beast */
+					/* Original-Bug: Petrified, sleeping etc. heroes may hit the octopus (found by siebenstreich 2021-08-12 https://www.crystals-dsa-foren.de/showthread.php?tid=4589&pid=167425#pid167425) */
 
-					if (host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS)) <= random_schick(20)) {
+					/* Original-Bug: The following is the wrong way round, should be ">= random_schick(20)" (found by siebenstreich 2021-08-12 https://www.crystals-dsa-foren.de/showthread.php?tid=4589&pid=167430#pid167430) */
+					/* Further dubiosity: Only the bare HERO_AT value of weapon type of the equipped weapon is taken into account. HERO_AT_MOD (modifier of the current weapon) and HERO_RS_BE are ignored. */
+					if (host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WEAPON_TYPE)) <= random_schick(20)) {
 						hits++;
 					}
 				}
 			}
 		}
-		/* ORIGINAL-BUG: infinite-loop if all heroes are overboard */
-	} while (hits <= 5);
+	}
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 22: infinite loop if all heroes are overboard/dead */
+	while (hits <= 5);
+#else
+	while ((hits <= 5) && any_hero_active);
+	if (!any_hero_active) {
+		/* octopus has won. all heroes disappear in the open sea. */
+		hero = get_hero(0);
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE && host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) {
+				hero_disappear(hero, i, -2);
+			}
+		}
+	}
+#endif
 
 	sub_group_le(3);
 	add_hero_ap_all(5);
@@ -699,7 +749,7 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 4 || state == 7) {
 		timewarp(HOURS(1));
 	} else if (state == 6) {
-		hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero();
+		hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * get_random_hero();
 		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(hero), TA_WILDNISLEBEN, 6) > 0 ? 8 : 7);
 	} else if (state == 8) {
 		timewarp(HOURS(1));
@@ -707,7 +757,7 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 9) {
 
 		do {
-			hero = (RealPt)ds_readds(HEROS) + SIZEOF_HERO * ds_readws(TLK_RUIN_HERO_COUNTER);
+			hero = (RealPt)ds_readds(HEROES) + SIZEOF_HERO * ds_readws(TLK_RUIN_HERO_COUNTER);
 			inc_ds_ws(TLK_RUIN_HERO_COUNTER);
 
 			if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -742,7 +792,7 @@ void TLK_way_to_ruin(signed short state)
 		ds_writew(DIALOG_NEXT_STATE, test_skill(hero2, TA_ORIENTIERUNG, 5) > 0 ? 18 : 19);
 	} else if (state == 19) {
 		timewarp(MINUTES(20));
-		ds_writed(RUIN_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
+		ds_writed(RUIN_HERO, (Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * get_random_hero()));
 		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(ds_readd(RUIN_HERO)), TA_AEXTE, 2) > 0 ? 20 : 21);
 	} else if (state == 20) {
 		loose_random_item(get_hero(get_random_hero()), 5, get_ttx(506));
@@ -760,7 +810,7 @@ void TLK_way_to_ruin(signed short state)
 		timewarp(HOURS(5));
 	} else if (state == 28) {
 
-		hero = (RealPt)ds_readds(HEROS);
+		hero = (RealPt)ds_readds(HEROES);
 
 		for (i = ds_writews(TLK_RUIN_HERO_COUNTER, 0); i <= 6; i++, hero += SIZEOF_HERO) {
 
@@ -785,11 +835,11 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 42 || state == 60) {
 		timewarp(MINUTES(150));
 	} else if (state == 67 || state == 44) {
-		ds_writeb(TRAVEL_DETOUR, 15);
+		ds_writeb(TRAVEL_DETOUR, DUNGEONS_HYGGELIKS_RUINE);
 
 	} else if (state == 48) {
 
-		hero = (RealPt)ds_readds(HEROS);
+		hero = (RealPt)ds_readds(HEROES);
 
 		for (i = ds_writews(TLK_RUIN_HERO_COUNTER, 0); i <= 6; i++, hero += SIZEOF_HERO) {
 

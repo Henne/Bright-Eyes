@@ -309,8 +309,8 @@ signed short load_game_state(void)
 			}
 		}
 
-		/* clear the heros */
-		hero_i = (RealPt)ds_readd(HEROS);
+		/* clear the heroes */
+		hero_i = (RealPt)ds_readd(HEROES);
 		for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 			memset(Real2Host(hero_i), 0, SIZEOF_HERO);
 		}
@@ -412,7 +412,7 @@ signed short load_game_state(void)
 		ds_writeb(FADING_STATE, 3);
 
 		if (ds_readbs(LOCATION) != LOCATION_TEMPLE) {
-			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), -1)));
+			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((NEW_MENU_ICONS + 8), MENU_ICON_NONE)));
 		}
 
 		load_area_description(2);
@@ -453,31 +453,38 @@ signed short save_game_state(void)
 	/* prepare the header for the radio box */
 	if (ds_readws(GAME_STATE) == GAME_STATE_VICTORY) {
 
-		/* game done */
-		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(810));
+		/* game won. creating savegame for import in DSA2 */
+		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(810)); /* "Welcher Spielstand soll fuer die Fortsetzung abgespeichert werden?" */
 
 	} else {
 
+#ifndef M302de_FEATURE_MOD
+		/* Feature mod 4: In the original game, when creating a savegame while not being in a temple, the AP of all heroes is decreased by 1. This feature mod stops the AP decrease.
+		 * Here, the warning message "Dabei verliert jeder Held in der Gruppe einen Abenteuerpunkt" is displayed. */
 		if (ds_readbs(LOCATION) != LOCATION_TEMPLE && ds_readws(GAME_STATE) != GAME_STATE_VICTORY) {
 
-			/* save outside the temple */
+			/* create savegame not in a temple */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ttx(813),
+				(char*)get_ttx(813), /* "Dabei verliert jeder Held in der Gruppe einen Abenteuerpunkt" */
 				1,
 				get_ttx(392),
 				p_datseg + EMPTY_STRING1);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_ttx(1),
+				(char*)get_ttx(1), /* "Welchen Spielstand wollen Sie abspeichern ?" */
 				(char*)Real2Host(ds_readd(DTP2)));
 		} else {
+#endif
 
-			/* save inside a temple */
+			/* create savegame inside a temple */
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_ttx(1),
+				(char*)get_ttx(1), /* "Welchen Spielstand wollen Sie abspeichern ?" */
 				(char*)p_datseg + EMPTY_STRING2);
+#ifndef M302de_FEATURE_MOD
+		/* Feature mod 4: In the original game, when creating a savegame while not being in a temple, the AP of all heroes is decreased by 1. This mod stops the AP decrease. */
 		}
+#endif
 	}
 
 	/* get the slot number */
@@ -537,12 +544,16 @@ signed short save_game_state(void)
 				/* save position on the playmask */
 				host_writebs(get_hero(tw_bak) + HERO_GROUP_POS, tw_bak + 1);
 
+#ifndef M302de_FEATURE_MOD
+				/* Feature mod 4: In the original game, when creating a savegame while not being in a temple, the AP of all heroes is decrease by 1. This feature mod stops the AP decrease.
+				 * Here, the actual decrease is executed */
 				if (ds_readws(GAME_STATE) != GAME_STATE_VICTORY &&
 					ds_readbs(LOCATION) != LOCATION_TEMPLE &&
 					host_readds(get_hero(tw_bak) + HERO_AP) > 0)
 				{
 					add_hero_ap(get_hero(tw_bak), -1L);
 				}
+#endif
 
 				write_chr_temp(tw_bak);
 			}
@@ -609,7 +620,7 @@ signed short save_game_state(void)
 		filepos += bc__write(l_di, &filepos, 4);
 #endif
 
-		/* save the satus section 5952 bytes */
+		/* save the status section 5952 bytes */
 		filepos += bc__write(l_di, p_status_start, status_len);
 
 		/* check if enough bytes were written */
@@ -771,10 +782,14 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 			}
 		}
 
+		/* In the following line it would be more consistent to check only bit 0.
+		 * bit 1 is a flag which is set if the hero got the IN attribute bonus at the black eye at the Monolith (Einsiedlersee <-> Einsiedlersee, tevent135).
+		 * However, this should still be ok, as it should never happen that bit 0 is unset and bit 1 is set. */
+
 		if (!host_readbs(hero + HERO_START_GEAR)) {
 
 			startup_equipment(hero);
-			host_writeb(get_hero(hero_pos) + HERO_START_GEAR, 1);
+			host_writeb(get_hero(hero_pos) + HERO_START_GEAR, 1); /* it would be more consistent to set only bit 0 and leave the others untouched, see above. */
 
 			write_chr_temp(hero_pos);
 		}
@@ -805,7 +820,7 @@ void write_chr_temp(unsigned short hero_pos)
 		fname);
 
 	fd = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
-	bc__write(fd, (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos, SIZEOF_HERO);
+	bc__write(fd, (RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos, SIZEOF_HERO);
 	bc_close(fd);
 }
 

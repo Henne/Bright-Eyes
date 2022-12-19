@@ -106,7 +106,7 @@ void sub_ingame_timers(Bit32s);
 void sub_mod_timers(Bit32s);
 signed short get_free_mod_slot(void);
 void set_mod_slot(signed short, Bit32s, Bit8u*, signed char, signed char);
-void seg002_2f7a(Bit32s);
+void sub_heal_staffspell_timers(Bit32s);
 #if !defined(__BORLANDC__)
 void sub_light_timers(Bit32s);
 #endif
@@ -121,7 +121,7 @@ void passages_recalc(void);
 //static
 void passages_reset();
 void timewarp(Bit32s);
-void timewarp_until(Bit32s);
+void timewarp_until_time_of_day(Bit32s);
 void dec_splash(void);
 //static
 void draw_splash(signed short, signed short);
@@ -182,9 +182,17 @@ signed short get_first_hero_with_item_in_group(signed short, signed short);
 void sub_group_le(signed short);
 RealPt get_first_hero_available_in_group(void);
 RealPt get_second_hero_available_in_group(void);
-signed short count_heros_available(void);
+signed short count_heroes_available(void);
+#ifdef M302de_ORIGINAL_BUGFIX
+/* this function allows cleaner fixes for Original-Bug 15 */
+signed short count_heroes_available_ignore_npc(void);
+#endif
 signed short count_heroes_available_in_group(void);
-void seg002_57f1(void);
+#ifdef M302de_ORIGINAL_BUGFIX
+/* this function allows cleaner fixes for Original-Bug 12, 13, 14 and 15 */
+signed short count_heroes_available_in_group_ignore_npc(void);
+#endif
+void check_group(void);
 int schick_main(int, char **);
 RealPt schick_alloc_emu(Bit32u);
 signed short copy_protection(void);

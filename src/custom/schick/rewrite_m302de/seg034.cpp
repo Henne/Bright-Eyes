@@ -193,7 +193,7 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y1), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_X2), 21);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 10);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
@@ -209,7 +209,8 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 	do {
 		handle_input();
 
-		if ((ds_readws(ACTION) == 1) || (ds_readws(MOUSE2_EVENT) != 0)) {
+		if ((ds_readws(ACTION) == ACTION_ID_ESC) ||
+			(ds_readws(MOUSE2_EVENT) != 0)) {
 
 			/* cancel */
 
@@ -226,10 +227,10 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 
 		from_kbd = 0;
 
-		if ((ds_readws(ACTION) == 72) ||
-			(ds_readws(ACTION) == 80) ||
-			(ds_readws(ACTION) == 77) ||
-			(ds_readws(ACTION) == 75))
+		if ((ds_readws(ACTION) == ACTION_ID_UP) ||
+			(ds_readws(ACTION) == ACTION_ID_DOWN) ||
+			(ds_readws(ACTION) == ACTION_ID_RIGHT) ||
+			(ds_readws(ACTION) == ACTION_ID_LEFT))
 		{
 			from_kbd = 1;
 		} else {
@@ -240,44 +241,44 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 			if (((y_diff > 0) && (x_diff <= -10)) ||
 				((x_diff < 0) && (y_diff >= 5)))
 			{
-				ds_writew(ACTION, 80);
+				ds_writew(ACTION, ACTION_ID_DOWN);
 
 			} else if (((y_diff < 0) && (x_diff >= 10)) ||
 					((x_diff > 0) && (y_diff <= -5)))
 			{
-				ds_writew(ACTION, 72);
+				ds_writew(ACTION, ACTION_ID_UP);
 
 			} else if (((y_diff > 0) && (x_diff >= 10)) ||
 					((x_diff > 0) && (y_diff >= 5)))
 			{
-				ds_writew(ACTION, 77);
+				ds_writew(ACTION, ACTION_ID_RIGHT);
 
 			} else if (((y_diff < 0) && (x_diff <= -10)) ||
 					((x_diff < 0) && (y_diff <= -5)))
 			{
-				ds_writew(ACTION, 75);
+				ds_writew(ACTION, ACTION_ID_LEFT);
 			}
 		}
 
 		if (ds_readws(MOUSE1_EVENT1) != 0) {
-			ds_writew(ACTION, 28);
+			ds_writew(ACTION, ACTION_ID_RETURN);
 			ds_writew(MOUSE1_EVENT1, 0);
 		}
 
-		if (ds_readws(ACTION) == 77) {
+		if (ds_readws(ACTION) == ACTION_ID_RIGHT) {
 
 			if (seg034_000(x, y, host_readws(px), host_readws(py), 1, 0, max_range)) {
 				inc_ptr_ws(px);
 			}
-		} else if (ds_readws(ACTION) == 75) {
+		} else if (ds_readws(ACTION) == ACTION_ID_LEFT) {
 			if (seg034_000(x, y, host_readws(px), host_readws(py), -1, 0, max_range)) {
 				dec_ptr_ws(px);
 			}
-		} else if (ds_readws(ACTION) == 72) {
+		} else if (ds_readws(ACTION) == ACTION_ID_UP) {
 			if (seg034_000(x, y, host_readws(px), host_readws(py), 0, 1, max_range)) {
 				inc_ptr_ws(py);
 			}
-		} else if (ds_readws(ACTION) == 80) {
+		} else if (ds_readws(ACTION) == ACTION_ID_DOWN) {
 			if (seg034_000(x, y, host_readws(px), host_readws(py), 0, -1, max_range)) {
 				dec_ptr_ws(py);
 			}
@@ -325,7 +326,7 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 			FIG_set_gfx();
 		}
 
-	} while (ds_readws(ACTION) != 28);
+	} while (ds_readws(ACTION) != ACTION_ID_RETURN);
 
 	FIG_remove_from_list(ds_readbs(FIG_CB_SELECTOR_ID), 0);
 
@@ -458,7 +459,7 @@ void FIG_latecomers(void)
 			if (!host_readbs(p_mon + ENEMY_SHEET_ROUND_APPEAR)) {
 				/* let monster enter the fight */
 
-				if (!enemy_bit10(p_mon)) {
+				if (!enemy_scared(p_mon)) {
 
 					if (is_in_byte_array(host_readbs(p_mon + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
@@ -473,7 +474,7 @@ void FIG_latecomers(void)
 						host_writebs(p2 + 3, (signed char)x);
 						host_writebs(p2 + 4, (signed char)y);
 
-						l4 = ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p2 + 0x13));
+						l4 = ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p2 + FIGHTER_TWOFIELDED));
 
 						p3 = Real2Host(FIG_get_ptr((signed char)l4));
 
@@ -512,8 +513,8 @@ void FIG_latecomers(void)
 					FIG_make_visible(host_readbs(p_mon + ENEMY_SHEET_FIGHTER_ID));
 
 				} else {
-					/* set the enemy dead */
-					or_ptr_bs(p_mon + ENEMY_SHEET_STATUS1, 1);
+					/* scared enemies entering a fight are marked as dead. does this ever happen? */
+					or_ptr_bs(p_mon + ENEMY_SHEET_FLAGS1, 1); /* set 'dead' flag */
 				}
 			}
 		}
@@ -524,10 +525,12 @@ signed short FIG_move_pathlen(void)
 {
 	signed short i = 0;
 
+	/* count everything till the end marker -1 of the path */
 	while (ds_readbs(FIG_MOVE_PATHDIR + i) != -1) {
 		i++;
 	}
 
+	/* if the end marker -1 is followed by a -2, the available BP are not sufficient */
 	if (ds_readbs((FIG_MOVE_PATHDIR + 1) + i) == -2) {
 		return 99;
 	}
@@ -549,7 +552,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	signed short path_end;
 	signed short sel_x;
 	signed short sel_y;
-	signed short l4;
+	signed short target_reachable;
 	signed short curr_x;
 	signed short curr_y;
 	signed short fg_bak;
@@ -559,10 +562,10 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	signed short from_kbd;
 	signed short base_x = 9;
 	signed short base_y = 116;
-	signed char l12;
+	signed char cb_entry_bak;
 	signed char bp_cost;
-	signed char l14;
-	signed short l15;
+	signed char cb_entry_bak_escape;
+	signed short escape_dir; /* 0: no escape; 1: left; 2: down; 3: up. not compatible with the directions in the path! */
 	signed short mouse_cb_x;
 	signed short mouse_cb_y;
 
@@ -600,7 +603,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_Y2), 10);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_HEIGHT), 11);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WIDTH), 22);
-	ds_writeb((FIG_LIST_ELEM+FIGHTER_MONSTER), 0);
+	ds_writeb((FIG_LIST_ELEM+FIGHTER_IS_ENEMY), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_RELOAD), 0);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_WSHEET), -1);
 	ds_writeb((FIG_LIST_ELEM+FIGHTER_SHEET), -1);
@@ -620,10 +623,10 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 		curr_y = sel_y;
 		from_kbd = 0;
 
-		if ((ds_readws(ACTION) == 72) ||
-			(ds_readws(ACTION) == 80) ||
-			(ds_readws(ACTION) == 77) ||
-			(ds_readws(ACTION) == 75))
+		if ((ds_readws(ACTION) == ACTION_ID_UP) ||
+			(ds_readws(ACTION) == ACTION_ID_DOWN) ||
+			(ds_readws(ACTION) == ACTION_ID_RIGHT) ||
+			(ds_readws(ACTION) == ACTION_ID_LEFT))
 		{
 			from_kbd = 1;
 		} else {
@@ -634,29 +637,30 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			if ((mouse_cb_x != sel_x) || (mouse_cb_y != sel_y)) {
 
 				if ((mouse_cb_x >= -1) && (mouse_cb_x <= 24) && (mouse_cb_y >= -1) && (mouse_cb_y <= 24)) {
-					ds_writew(ACTION, 999);
+					ds_writew(ACTION, ACTION_ID_VOID);
 				}
 			}
 		}
 
 		if (ds_readws(MOUSE1_EVENT1) != 0) {
 			ds_writew(MOUSE1_EVENT1, 0);
-			ds_writew(ACTION, 28);
+			ds_writew(ACTION, ACTION_ID_RETURN);
 		}
 
-		if ((ds_readws(ACTION) == 77) && (sel_x < 23)) {
+		if ((ds_readws(ACTION) == ACTION_ID_RIGHT) && (sel_x < 23)) {
 			sel_x++;
-		} else if ((ds_readws(ACTION) == 75) && (sel_x >= 0)) {
+		} else if ((ds_readws(ACTION) == ACTION_ID_LEFT) && (sel_x >= 0)) {
 			sel_x--;
-		} else if ((ds_readws(ACTION) == 72) && (sel_y <= 23)) {
+		} else if ((ds_readws(ACTION) == ACTION_ID_UP) && (sel_y <= 23)) {
 			sel_y++;
-		} else if ((ds_readws(ACTION) == 80) && (sel_y >= 0)) {
+		} else if ((ds_readws(ACTION) == ACTION_ID_DOWN) && (sel_y >= 0)) {
 			sel_y--;
-		} else if (ds_readws(ACTION) == 999) {
+		} else if (ds_readws(ACTION) == ACTION_ID_VOID) {
 			sel_x = mouse_cb_x;
 			sel_y = mouse_cb_y;
 		}
 
+		/* treatment of the two visible corners of the map */
 		if ((sel_x < 0) && (sel_y < 0)) {
 			sel_x = 0;
 		}
@@ -697,72 +701,84 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			problem = 0;
 			bp_cost = 0;
 
-			if ((host_readws(px) != sel_x) || (host_readws(py) != sel_y)) {
+			if ((host_readws(px) != sel_x) || (host_readws(py) != sel_y)) { /* selected square is different from active hero position */
 
-				l15 = 0;
+				escape_dir = 0;
 
-				/* TODO: why not (sel_x > 23) ? */
+				/* (sel_x > 23) is missing as the right border of the map is not visible, so it cannot be used for escape (I guess...) */
 				if ((sel_x < 0) || (sel_y < 0) || (sel_y > 23)) {
+					/* active hero wants to escape over the border of the map */
 
+					/* reset (sel_x, sel_y) to the square at the border of the map. remember the direction of the escape */
 					if (sel_x < 0) {
 						sel_x = 0;
-						l15 = 1;
+						escape_dir = 1;
 					} else if (sel_y < 0) {
 						sel_y = 0;
-						l15 = 2;
+						escape_dir = 2;
 					} else {
 						sel_y = 23;
-						l15 = 3;
+						escape_dir = 3;
 					}
 
 					if ((get_cb_val(sel_x, sel_y) != 0) &&
 						((host_readws(px) != sel_x) || (host_readws(py) != sel_y)))
 					{
+						/* the reset square (sel_x, sel_y) is blocked and different from the position of the active hero */
 
-						problem = 3;
+						problem = 3; /* target square blocked */
 
-						if (l15 == 1) {
+						/* again reset (sel_x, sel_y) to the square beyond the border */
+						if (escape_dir == 1) {
 							sel_x = -1;
-						} else if (l15 == 2) {
+						} else if (escape_dir == 2) {
 							sel_y = -1;
 						} else {
+							/*  escape_dir == 3 */
 							sel_y = 24;
 						}
 
 					} else {
-						l14 = get_cb_val(sel_x, sel_y);
+						cb_entry_bak_escape = get_cb_val(sel_x, sel_y);
 					}
 				} else {
-					l12 = get_cb_val(sel_x, sel_y);
+					cb_entry_bak = get_cb_val(sel_x, sel_y);
 				}
 
 				if (problem != 3) {
 
-					if ((l15 != 0) && (host_readws(px) == sel_x) && (host_readws(py) == sel_y))
+					if ((escape_dir != 0) && (host_readws(px) == sel_x) && (host_readws(py) == sel_y))
 					{
+						/* active hero wants to escape over the border of the map and is already at the border. */
 						ds_writeb(FIG_MOVE_PATHDIR, -1);
 						bp_cost = 0;
 					} else {
-						FIG_set_cb_field(sel_y, sel_x, 124);
-						l4 = seg038(hero, hero_pos, host_readws(px), host_readws(py), 10);
+						FIG_set_cb_field(sel_y, sel_x, 124); /* target marker for FIG_find_path_to_target. The original content of this square has been backuped before in 'cb_entry_bak' or 'cb_entry_bak_escape'. */
+						target_reachable = FIG_find_path_to_target(hero, hero_pos, host_readws(px), host_readws(py), 10);
+						/* target_reachable = 1: there is a path of length < 50 to the target square; target_reachable = -1: there is no such path */
 						bp_cost = (signed char)FIG_move_pathlen();
+#if !defined(__BORLANDC__)
+						D1_INFO("x: %d, y: %d, target id: %d, reachable: %d, distance: %d\n", escape_dir?cb_entry_bak_escape:sel_x, sel_y, cb_entry_bak, target_reachable, bp_cost);
+#endif
 					}
 
-					if (l15 != 0) {
-						FIG_set_cb_field(sel_y, sel_x, l14);
+					if (escape_dir != 0) {
+						/* restore the original entry of the target square, which has been overwritten by the target marker. */
+						FIG_set_cb_field(sel_y, sel_x, cb_entry_bak_escape);
 
 						path_end = 0;
 						while (ds_readbs(FIG_MOVE_PATHDIR + path_end) != -1) {
 							path_end++;
 						}
 
-						if (l15 == 1) {
+						/* add the last escape step to the path */
+						if (escape_dir == 1) {
 							sel_x = -1;
 							if (host_readbs(hero + HERO_BP_LEFT) > bp_cost) {
 								ds_writeb((FIG_MOVE_PATHDIR + 0) + path_end, 2);
 								ds_writeb((FIG_MOVE_PATHDIR + 1) + path_end, -1);
 							}
-						} else if (l15 == 2) {
+						} else if (escape_dir == 2) {
 							sel_y = -1;
 							if (bp_cost < (host_readbs(hero + HERO_BP_LEFT) - 1)) {
 								ds_writeb((FIG_MOVE_PATHDIR + 0) + path_end, 1);
@@ -778,26 +794,50 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 						bp_cost++;
 					} else {
-						FIG_set_cb_field(sel_y, sel_x, l12);
+						/* restore the original entry of the target square, which has been overwritten by the target marker. */
+						FIG_set_cb_field(sel_y, sel_x, cb_entry_bak);
 					}
 
-					if (l12 >= 50) {
+					if (cb_entry_bak >= 50) {
+						problem = 3; /* target square blocked */
+#ifndef M302de_ORIGINAL_BUGFIX
+					} else if (cb_entry_bak >= 10) {
+						/* target square contains a monster (including the tail of a two-squares monster) */
+						if (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * (cb_entry_bak - 10 - (cb_entry_bak >= 30 ? 20 : 0)))) /* check 'dead' flag */
+						{
+							/* monster is not dead */
+							problem = 3;
+						}
+						/* Original-Bug:
+						 * If the target square contains a dead monster,
+						 * the checks for target_reachable and bp_cost below are not executed because of the "nested if" structure of the code.
+						 * This results in the incorrect message "ZIEL: 99 BP" if the target is pointing at a dead monster
+						 * which is not reachable within the available BP or not reachable at all. */
+					} else if (cb_entry_bak > 0) {
+						/* target square contains a hero */
+						if (!hero_dead(get_hero(cb_entry_bak - 1)) &&
+							!hero_unconscious(get_hero(cb_entry_bak - 1)) &&
+							(cb_entry_bak != hero_pos + 1))
+						{
+							/* hero is not dead, not unconscious, and not the active hero */
+							problem = 3;
+						}
+						/* Original-Bug:
+						 * If the target square contains a dead or unconscious hero different from the active hero,
+						 * the checks for target_reachable and bp_cost below are not executed because of the "nested if" structure of the code.
+						 * This results in the incorrect message "ZIEL: 99 BP" if the target is pointing at a dead/unconscious hero
+						 * which is not reachable within the available BP or not reachable at all. */
+#else
+						/* Bug fix:
+						 * flatten the nested if branches. */
+					} else if ((cb_entry_bak >= 10) && (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_FLAGS1) + SIZEOF_ENEMY_SHEET * (cb_entry_bak - 10 - (cb_entry_bak >= 30 ? 20 : 0))))) { /* check 'dead' flag */
+						/* target square contains a non-dead monster (including the tail of a two-squares monster) */
 						problem = 3;
-					} else if (l12 >= 10) {
-						/* l12 is a monster */
-						if (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * (l12 - 10 - (l12 >= 30 ? 20 : 0))))
-						{
-							problem = 3;
-						}
-					} else if (l12 >0) {
-
-						if (!hero_dead(get_hero(l12 - 1)) &&
-							!hero_unc(get_hero(l12 - 1)) &&
-							(l12 != hero_pos + 1))
-						{
-							problem = 3;
-						}
-					} else if (l4 == -1) {
+					} else if ((cb_entry_bak > 0) && (cb_entry_bak < 10) && !hero_dead(get_hero(cb_entry_bak - 1)) && !hero_unconscious(get_hero(cb_entry_bak - 1)) && (cb_entry_bak != hero_pos + 1)) {
+						/* target square contains a non-dead and non-unconscious hero different from the active hero */
+						problem = 3;
+#endif
+					} else if (target_reachable == -1) {
 						problem = 4;
 					} else if (host_readbs(hero + HERO_BP_LEFT) < bp_cost) {
 						problem = 2;
@@ -829,13 +869,13 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			set_textcolor(fg_bak, bg_bak);
 		}
 
-		if ((ds_readws(MOUSE2_EVENT) != 0) || (ds_readws(ACTION) == 1)) {
+		if ((ds_readws(MOUSE2_EVENT) != 0) || (ds_readws(ACTION) == ACTION_ID_ESC)) {
 			ds_writew(MOUSE2_EVENT, 0);
-			ds_writew(ACTION, 28);
+			ds_writew(ACTION, ACTION_ID_RETURN);
 			problem = 5;
 		}
 
-	} while (ds_readws(ACTION) != 28);
+	} while (ds_readws(ACTION) != ACTION_ID_RETURN);
 
 	get_textcolor(&fg_bak, &bg_bak);
 	set_textcolor(255, 0);

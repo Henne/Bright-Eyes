@@ -63,7 +63,7 @@ void rabies(RealPt hero, signed short hero_pos)
 		hero_pos++;
 	}
 
-	hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos;
+	hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos;
 	host_writeb(Real2Host(hero) + HERO_SEX, sex_bak);
 
 	if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
@@ -128,9 +128,11 @@ void rabies(RealPt hero, signed short hero_pos)
 
 				for (l_di = 0; l_di <= 6; l_di++) {
 
-					/* one of the other heros must pass CH+0 */
+					/* one of the other heroes must pass CH+0 */
 					if ((l_di != hero_pos) &&
 						(test_attrib(get_hero(l_di), ATTRIB_CH, 0) != 0))
+						/* Original-Bug: should be 'test_attrib(get_hero(l_di), ATTRIB_CH, 0) > 0'
+						 * (found by siebenstreich 2021-08-15) */
 					{
 						done = 1;
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -161,13 +163,13 @@ void rabies(RealPt hero, signed short hero_pos)
 					hero2 = get_hero(answer);
 
 					/* check that hero2 is a magic user */
-					if (host_readbs(hero2 + HERO_TYPE) >= 7) {
+					if (host_readbs(hero2 + HERO_TYPE) >= HERO_TYPE_WITCH) {
 
 						/* need 15 AE */
 						if (host_readws(hero2 + HERO_AE) >= 15) {
 
 							/* spell must succeed */
-							if (test_spell(hero2, 15, 0)) {
+							if (test_spell(hero2, SP_SANFTMUT, 0)) {
 
 								done = 1;
 
@@ -300,7 +302,7 @@ signed short init_memory(void)
 	ds_writed(MEM_SLOTS_MFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_WFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_MON,		(Bit32u)schick_alloc_emu(432));
-	ds_writed(HEROS,		(Bit32u)schick_alloc_emu(7 * SIZEOF_HERO));
+	ds_writed(HEROES,		(Bit32u)schick_alloc_emu(7 * SIZEOF_HERO));
 	ds_writed(DUNGEON_FIGHTS_BUF,		(Bit32u)schick_alloc_emu(630));
 	ds_writed(DUNGEON_DOORS_BUF,		(Bit32u)schick_alloc_emu(225));
 	ds_writed(DUNGEON_STAIRS_BUF,		(Bit32u)schick_alloc_emu(80));
@@ -417,15 +419,15 @@ void init_game_state(void)
 	ds_writew(Y_TARGET, 8);
 	ds_writeb(DIRECTION_BAK, 0);
 	ds_writeb(DIRECTION, 0);
-	ds_writeb(DUNGEON_INDEX, 0);
+	ds_writeb(DUNGEON_INDEX, DUNGEONS_NONE);
 
-	ds_writeb(CURRENT_TOWN_BAK, ds_writeb(CURRENT_TOWN, 1));
+	ds_writeb(CURRENT_TOWN_BAK, ds_writeb(CURRENT_TOWN, TOWNS_THORWAL));
 
 	ds_writew(TEXTBOX_WIDTH, 3);
 
 	/* timer */
 	ds_writed(DAY_TIMER, HOURS(24) - 1);
-	timewarp_until(1);
+	timewarp_until_time_of_day(1);
 	ds_writed(DAY_TIMER,  HOURS(8));
 	ds_writeb(DAY_OF_WEEK, 4);
 	ds_writeb(DAY_OF_MONTH, 17);
@@ -737,7 +739,7 @@ void call_gen(void)
 			(char*)RealMake(datseg, STR_GEN_EXE), (char*)RealMake(datseg, STR_GEN_EXE2),
 #endif
 			RealMake(datseg, STR_GEN_B),
-			ds_readws(GAME_MODE) == 2 ? RealMake(datseg, STR_GEN_A) : RealMake(datseg, STR_GEN_N),
+			ds_readws(GAME_MODE) == GAME_MODE_ADVANCED ? RealMake(datseg, STR_GEN_A) : RealMake(datseg, STR_GEN_N),
 			RealMake(datseg, STR_GEN_1), (RealPt)NULL);
 
 	refresh_screen_size();
@@ -790,7 +792,7 @@ void call_gen(void)
 		ds_writefp(BUFFER10_PTR, (RealPt)F_PADD(ds_readfp(FIG_FIGURE2_BUF), -16771));
 
 		ds_writed(DAY_TIMER, HOURS(24) - 1);
-		timewarp_until(1);
+		timewarp_until_time_of_day(1);
 		ds_writed(DAY_TIMER, HOURS(8));
 
 		ds_writeb(DAY_OF_WEEK, 4);

@@ -685,8 +685,8 @@ static int n_seg002(unsigned short offs)
 	case 0x2f7a: {
 		Bit32s val = CPU_Pop32();
 		CPU_Push32(val);
-		D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
-		seg002_2f7a(val);
+		D1_LOG("near sub_heal_staffspell_timers(fmin=%d);\n", val);
+		sub_heal_staffspell_timers(val);
 		return 1;
 	}
 	/* Callers: 4 */
@@ -706,7 +706,7 @@ static int n_seg002(unsigned short offs)
 	}
 	case 0x3230: {
 		/* input routines are called faster now,
-		   so heros would starve earlier if the cycles are to high */
+		   so heroes would starve earlier if the cycles are to high */
 		if (reg_eip == 0x1d7b || reg_eip == 0x1a4b)
 			return 0;
 
@@ -817,8 +817,8 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 2 */
 	case 0x573e: {
-		reg_ax = count_heros_available();
-		D1_LOG("count_heros_available() = %d;\n", reg_ax);
+		reg_ax = count_heroes_available();
+		D1_LOG("count_heroes_available() = %d;\n", reg_ax);
 		return 1;
 	}
 	/* Callers: 3 */
@@ -1243,8 +1243,8 @@ static int n_seg025(unsigned short offs)
 		return 1;
 	}
 	case 0xea9: {
-		D1_LOG("near turnaround();\n");
-		turnaround();
+		D1_LOG("near leave_location();\n");
+		leave_location();
 		return 1;
 	}
 	case 0x114a: {
@@ -1546,7 +1546,7 @@ static int n_seg032(unsigned offs)
 	case 0xa8: {
 		reg_ax = FIG_choose_next_hero();
 		D1_LOG("FIG_choose_next_hero() = %s\n",
-		schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO));
+		schick_getCharname(ds_readd(HEROES) + reg_ax * SIZEOF_HERO));
 		return 1;
 	}
 	/* Callers: 1 */
@@ -1574,13 +1574,13 @@ static int n_seg032(unsigned offs)
 	case 0x242: {
 		reg_ax = FIG_get_first_active_hero();
 		D1_LOG("near FIG_get_first_active_hero() = %s\n",
-			(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO) : "none");
+			(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(HEROES) + reg_ax * SIZEOF_HERO) : "none");
 		return 1;
 	}
 	/* Callers: 1 */
 	case 0x2db: {
-		reg_ax = seg032_02db();
-		D1_LOG("near seg032_02db() = %d\n", reg_ax);
+		reg_ax = FIG_all_heroes_escaped();
+		D1_LOG("near FIG_all_heroes_escaped() = %d\n", reg_ax);
 		return 1;
 	}
 	/* Callers: 1 */
@@ -1780,8 +1780,8 @@ static int n_seg036(unsigned offs)
 		Bit16u v = CPU_Pop16();
 		CPU_Push16(v);
 
-		reg_ax = KI_count_heros(v);
-		D1_LOG("KI_count_heros(%d); = %d\n", v, reg_ax);
+		reg_ax = KI_count_heroes(v);
+		D1_LOG("KI_count_heroes(%d); = %d\n", v, reg_ax);
 		return 1;
 	}
 	default:
@@ -1917,10 +1917,10 @@ static int n_seg038(unsigned offs)
 		Bit16s arg7 = CPU_Pop16();
 		Bit16s arg8 = CPU_Pop16();
 
-		D1_LOG("FIG_backtrack(%x, %d, %d, %d, %d, %d, %d, %d)\n",
+		D1_LOG("FIG_find_path_to_target_backtrack(%x, %d, %d, %d, %d, %d, %d, %d)\n",
 			in_ptr, x, y, arg4, arg5, arg6, arg7, arg8);
 
-		FIG_backtrack(Real2Host(in_ptr), x, y, arg4, (Bit8s)arg5,
+		FIG_find_path_to_target_backtrack(Real2Host(in_ptr), x, y, arg4, (Bit8s)arg5,
 							arg6, arg7, arg8);
 
 		CPU_Push16(arg8);
@@ -1938,8 +1938,8 @@ static int n_seg038(unsigned offs)
 		RealPt p = CPU_Pop32();
 		CPU_Push32(p);
 
-		reg_ax = FIG_count_smth((signed char*)Real2Host(p));
-		D1_LOG("FIG_count_smth(%x) = %d\n", p, reg_ax);
+		reg_ax = FIG_count_direction_changes_of_path((signed char*)Real2Host(p));
+		D1_LOG("FIG_count_direction_changes_of_path(%x) = %d\n", p, reg_ax);
 
 		return 1;
 	}
@@ -2209,8 +2209,8 @@ static int n_seg049(unsigned short offs)
 {
 	switch (offs) {
 	case 0x01da: {
-		GRP_sort_heros();
-		D1_LOG("near GRP_sort_heros()\n");
+		GRP_sort_heroes();
+		D1_LOG("near GRP_sort_heroes()\n");
 		return 1;
 	}
 	case 0x0224: {
@@ -2349,8 +2349,8 @@ static int n_seg054(unsigned short offs)
 			return 1;
 		}
 		case 0x0011: {
-			RealPt hero = get_first_busy_hero();
-			D1_LOG("get_first_busy_hero() = %s\n",
+			RealPt hero = get_first_brewing_hero();
+			D1_LOG("get_first_brewing_hero() = %s\n",
 				!hero ? "NULL" : schick_getCharname(hero));
 
 			reg_ax = RealOff(hero);
@@ -2539,8 +2539,8 @@ static int n_seg061(unsigned offs) {
 static int n_seg063(unsigned offs) {
 	switch (offs) {
 	case 0x0ad: {
-		D1_LOG("do_harbour()\n");
-		do_harbour();
+		D1_LOG("do_harbor()\n");
+		do_harbor();
 		return 1;
 	}
 	case 0x999: {
@@ -3585,8 +3585,8 @@ static int n_seg102(unsigned short offs)
 		Bit16s damage = CPU_Pop16();
 		CPU_Push16(damage);
 
-		D1_LOG("MON_do_damage(%d)\n", damage);
-		MON_do_damage(damage);
+		D1_LOG("MON_do_spell_damage(%d)\n", damage);
+		MON_do_spell_damage(damage);
 
 		return 1;
 	}
@@ -5292,8 +5292,8 @@ static int seg002(unsigned short offs) {
 		Bit32s v1 = CPU_Pop32();
 		CPU_Push32(v1);
 
-		D1_LOG("seg002_2f7a(v1=%d);\n", v1);
-		seg002_2f7a(v1);
+		D1_LOG("sub_heal_staffspell_timers(fmin=%d);\n", v1);
+		sub_heal_staffspell_timers(v1);
 
 		return 1;
 	}
@@ -5331,8 +5331,8 @@ static int seg002(unsigned short offs) {
 	case 0x3dbb: {
 		Bit32s time = CPU_Pop32();
 		CPU_Push32(time);
-		D1_LOG("timewarp_until(0x%x);\n", time);
-		timewarp_until(time);
+		D1_LOG("timewarp_until_time_of_day(0x%x);\n", time);
+		timewarp_until_time_of_day(time);
 		return 1;
 	}
 	case 0x3ebb: {
@@ -5610,7 +5610,7 @@ static int seg002(unsigned short offs) {
 		reg_ax = get_random_hero();
 
 		D1_LOG("get_random_hero(); -> %s\n",
-			schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO));
+			schick_getCharname(ds_readd(HEROES) + reg_ax * SIZEOF_HERO));
 		return 1;
 	}
 	case 0x51c2: {
@@ -5751,8 +5751,8 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x573e: {
-		reg_ax = count_heros_available();
-		D1_LOG("count_heros_available() = %d\n", reg_ax);
+		reg_ax = count_heroes_available();
+		D1_LOG("count_heroes_available() = %d\n", reg_ax);
 		return 1;
 	}
 	case 0x5799: {
@@ -5761,8 +5761,8 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x57f1: {
-		D1_LOG("seg002_57f1()\n");
-		seg002_57f1();
+		D1_LOG("check_group()\n");
+		check_group();
 		return 1;
 	}
 	case 0x5816: {
@@ -7065,8 +7065,8 @@ static int seg025(unsigned short offs) {
 		return 1;
 	}
 	case 0x25: {
-		D1_LOG("turnaround();\n");
-		turnaround();
+		D1_LOG("leave_location();\n");
+		leave_location();
 		return 1;
 	}
 	case 0x2a: {
@@ -7611,7 +7611,7 @@ static int seg032(unsigned short offs) {
 			reg_ax = FIG_get_first_active_hero();
 
 			D1_LOG("FIG_get_first_active_hero(); = %s\n",
-				(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO) : "none");
+				(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(HEROES) + reg_ax * SIZEOF_HERO) : "none");
 			return 1;
 		}
 		default:
@@ -7844,8 +7844,8 @@ static int seg038(unsigned short offs) {
 			Bit16s y_in = CPU_Pop16();
 			Bit16s a4 = CPU_Pop16();
 
-			reg_ax = seg038(Real2Host(in_ptr), a1, x_in, y_in, (Bit8s)a4);
-			D1_LOG("seg038(%x, %d, %d, %d, %d) = %d\n",
+			reg_ax = FIG_find_path_to_target(Real2Host(in_ptr), a1, x_in, y_in, (Bit8s)a4);
+			D1_LOG("FIG_find_path_to_target(%x, %d, %d, %d, %d) = %d\n",
 				in_ptr, a1, x_in, y_in, (Bit8s)a4, (Bit16s)reg_ax);
 
 			CPU_Push16(a4);
@@ -8031,8 +8031,8 @@ static int seg041(unsigned short offs) {
 		RealPt target = CPU_Pop32();
 		Bit16u flag = CPU_Pop16();
 
-		reg_ax = FIG_get_hero_melee_attack_damage(Real2Host(hero), Real2Host(target), flag);
-		D1_LOG("FIG_get_hero_melee_attack_damage(%s, %s); = %d\n",
+		reg_ax = FIG_get_hero_weapon_attack_damage(Real2Host(hero), Real2Host(target), flag);
+		D1_LOG("FIG_get_hero_weapon_attack_damage(%s, %s); = %d\n",
 			(char*)Real2Host(hero) + 0x10,
 			flag != 0 ? (char*)Real2Host(target) + 0x10 : "enemy",
 			reg_ax);
@@ -8110,8 +8110,8 @@ static int seg043(unsigned short offs) {
 		CPU_Push16(target);
 		CPU_Push32(monster);
 
-		D1_LOG("FIG_do_monster_action(%x, %d)\n", monster, target);
-		FIG_do_monster_action(monster, target);
+		D1_LOG("FIG_do_enemy_action(%x, %d)\n", monster, target);
+		FIG_do_enemy_action(monster, target);
 
 		return 1;
 	}
@@ -8362,8 +8362,8 @@ static int seg047(unsigned short offs) {
 		signed short val = CPU_Pop16();
 		CPU_Push16(val);
 
-		reg_ax = check_heros_KK(val);
-		D1_LOG("check_heros_KK(%d); = %d\n", val, reg_ax);
+		reg_ax = check_heroes_KK(val);
+		D1_LOG("check_heroes_KK(%d); = %d\n", val, reg_ax);
 
 		return 1;
 	}
@@ -8513,8 +8513,8 @@ static int seg049(unsigned short offs)
 {
 	switch(offs) {
 	case 0x20: {
-		D1_LOG("GRP_swap_heros()\n");
-		GRP_swap_heros();
+		D1_LOG("GRP_swap_heroes()\n");
+		GRP_swap_heroes();
 		return 1;
 	}
 	case 0x25: {
@@ -8554,8 +8554,8 @@ static int seg049(unsigned short offs)
 	case 0x43: {
 		RealPt p1 = CPU_Pop32();
 		RealPt p2 = CPU_Pop32();
-		reg_ax = GRP_compare_heros((void*)Real2Host(p1), (void*)Real2Host(p2));
-		D1_LOG("GRP_compare_heros() = %d\n", (signed short)reg_ax);
+		reg_ax = GRP_compare_heroes((void*)Real2Host(p1), (void*)Real2Host(p2));
+		D1_LOG("GRP_compare_heroes() = %d\n", (signed short)reg_ax);
 		CPU_Push32(p2);
 		CPU_Push32(p1);
 		return 1;
@@ -8774,8 +8774,8 @@ static int seg059(unsigned short offs)
 			return 1;
 		}
 		case 0x2f: {
-			D1_LOG("enter_ghostship()\n");
-			enter_ghostship();
+			D1_LOG("prolog_ghostship()\n");
+			prolog_ghostship();
 			return 1;
 		}
 		default: {
@@ -10387,8 +10387,8 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x70: {
-		D1_LOG("chest_stoned()\n");
-		chest_stoned();
+		D1_LOG("chest_petrified()\n");
+		chest_petrified();
 		return 1;
 	}
 	case 0x75: {
@@ -11269,7 +11269,7 @@ static int seg101(unsigned short offs) {
 		return 1;
 	}
 	case 0x5c: {
-		spell_paral();
+		spell_paralue();
 		return 1;
 	}
 	case 0x61: {
@@ -11396,7 +11396,7 @@ static int seg102(unsigned short offs)
 		return 1;
 	}
 	case 0x66: {
-		mspell_paral();
+		mspell_paralue();
 		return 1;
 	}
 	default:

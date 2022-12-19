@@ -31,6 +31,12 @@ Prequisites:
 *	a toolchain for building DOSBox (C++ compiler, SDL, SDL_Sound),
 	since atm no precompiled binaries are available.
 
+*	For checking the equivalence of the source code with the original
+	game:
+	Borland CPP 3.1 Compiler, including the Application Frameworks
+	(for example https://winworldpc.com/download/f7396558-9ba2-11e9-ab10-fa163e9022f0)
+	Make sure you own a copy of it!
+
 
 Configuration Hints for dosbox.conf :
 
@@ -60,7 +66,7 @@ M302de (Main V3.02 german CD - Version):
 	Usability:
 		* If a character has permanent damage LE max is red
 	Grammar:
-		* Gramar at "Ecliptifactus"
+		* Grammar at "Ecliptifactus"
 
 G105de (Generation V1.05 german CD - Version):
 		* avoid negative skill-/spell_attempts in novice mode
@@ -72,3 +78,92 @@ git-tree:	git://github.com/Henne/Bright-Eyes.git
 githhub:	https://github.com/Henne/Bright-Eyes
 Documentation:	http://freedsa.schattenkind.net
 Forum:		http://www.crystals-dsa-foren.de
+
+---
+
+Configuration hints for developers.
+
+For comparing the equivalence of the BrightEyes source code to the original game,
+the original compiler is needed, which is Borland CPP 3.1, including the
+Application Frameworks.
+It is the same version as the one at
+https://winworldpc.com/download/f7396558-9ba2-11e9-ab10-fa163e9022f0
+Make sure you own a valid license!
+
+Starting with the floppy disks, you can install the compiler as follows:
+https://www.crystals-dsa-foren.de/showthread.php?tid=5383&pid=166341#pid166341
+
+* Copy the content of all floppy disks into a common folder <all_disks>.
+* Create a folder <install> where you want the compiler to be installed.
+* Run dosbox and type
+	mount a <all_disks>
+	mount c <install>
+	a:
+	install
+* In the install process, unselect everything at "Windows Options", then
+  select "Start Installation".
+* After the installation, there will be a folder BORLANDC in <install>.
+  Copy the content of <install>/BORLANDC to
+  src/custom/drive_c/BORLANDC/
+  such that the compiler binary BCC.EXE is located at
+  src/custom/drive_c/BORLANDC/BIN/BCC.EXE
+
+For setting up the remaining framework, do the following:
+https://www.crystals-dsa-foren.de/showthread.php?tid=5383&pid=166290#pid166290
+
+* Make sure you have compiled BrightEyes once in the usual way:
+  make clean && ./autogen.sh && ./configure && make -j4
+
+* Copy the original SCHICKM.EXE from the German CD-Version V3.02
+  (size 556208 Bytes) to
+  src/custom/schick/rewrite_m302de/tools/
+
+* cd src/custom/schick/rewrite_m302de/tools/ && ./disassemble.sh
+  [ prerequisites: 'python' must be Python 3, 'ndisasm' disassembler is needed,
+  disassemble.sh must be executable ]
+  to partition the original SCHICKM.EXE into disassembled segments which
+  will be placed at
+  src/custom/schick/rewrite_m302de/temp/disasm_orig/
+
+Now a file seg***.cpp can be checked for binary compatibility by commenting out
+the corresponding line in
+src/custom/schick/rewrite_m302de/compile.bat
+and then running bc.sh like
+cd src/custom/schick/rewrite_m302de && ./tools/bc.sh
+
+To do a full check automatically when committing changes, add the following to
+.git/hooks/pre-commit
+(file must be made executable)
+
+#!/bin/sh
+
+# build with gcc
+g++ -v 2>/dev/null >/dev/null
+if [ $? -ne 0 ]; then
+    echo "g++ not installed";
+    exit 1
+fi
+
+#check it builds on this system
+echo "Host build check"
+make 2>lastbuild.log >/dev/null
+if [ $? -ne 0 ]; then
+    echo "Build failure";
+    exit 1
+fi
+
+#check no working files are damaged
+echo "DOS build check"
+
+BAK=$PWD
+cd src/custom/schick/rewrite_m302de/
+SDL_VIDEODRIVER=dummy ./tools/bc_ready.sh
+RETVAL=$?
+cd $BAK
+
+if [ $RETVAL -gt 0 ]; then
+    echo "Good files were broken";
+    exit 1
+fi
+
+exit 0

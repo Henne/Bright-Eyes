@@ -77,7 +77,7 @@ signed short LVL_select_skill(Bit8u *hero, signed short show_values)
 				sprintf((char*)Real2Host(ds_readd(DTP2)) + 50 * i,
 					format_str.a,
 					get_ttx(l1 + i + 48),
-					host_readbs(hero + l1 + i + HERO_TA_FIGHT));
+					host_readbs(hero + l1 + i + HERO_TALENTS));
 
 				ds_writed(RADIO_NAME_LIST + 4 * i, (Bit32u)((RealPt)ds_readd(DTP2) + 50 * i));
 			}
@@ -122,6 +122,7 @@ signed short LVL_select_skill(Bit8u *hero, signed short show_values)
  * \param   skill       skill
  */
 RealPt get_proper_hero(signed short skill)
+/* called from only a single position, namely test_skill(..), and only if game is in 'easy' mode and the tested skill is TA_SINNESSCHAERFE */
 {
 	signed short i;
 	signed short cur;
@@ -134,13 +135,14 @@ RealPt get_proper_hero(signed short skill)
 	retval = 0;
 #endif
 
-	hero_i = (RealPt)ds_readd(HEROS);
+	hero_i = (RealPt)ds_readd(HEROES);
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		if ((host_readbs(Real2Host(hero_i) + HERO_TYPE) != HERO_TYPE_NONE) &&
 			/* Check if in current group */
 			(host_readb(Real2Host(hero_i) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			/* Check hero is not dead */
+			/* TODO: potential Original-Bug: What if petrified / unconscious etc.? */
 			!hero_dead(Real2Host(hero_i))) {
 
 			/* add current and maximum attibute values */
@@ -150,7 +152,7 @@ RealPt get_proper_hero(signed short skill)
 				host_readbs(Real2Host(hero_i) + HERO_ATTRIB_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill)) +
 				host_readbs(Real2Host(hero_i) + HERO_ATTRIB + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
 				host_readbs(Real2Host(hero_i) + HERO_ATTRIB_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_TA_FIGHT + skill);
+				host_readbs(Real2Host(hero_i) + HERO_TALENTS + skill);
 
 			if (cur > max) {
 
@@ -176,22 +178,22 @@ RealPt get_proper_hero(signed short skill)
  *
  * \param   hero        hero which should be tested
  * \param   skill       the skill to test
- * \param   bonus       the modification
+ * \param   handicap    may be positive or negative. The higher the value, the harder the test.
  */
-signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
+signed short test_skill(Bit8u *hero, signed short skill, signed char handicap)
 {
 	signed short randval;
 	signed short e_skillval;
 
 	/* dont test for weapon skills */
-	if ((skill >= 7) && (skill <= 51)) {
+	if ((skill >= TA_SCHUSSWAFFEN) && (skill <= TA_SINNESSCHAERFE)) {
 
 #if !defined(__BORLANDC__)
-		D1_INFO("Talentprobe %s %+d: ", names_skill[skill], bonus);
+		D1_INFO("%s Talentprobe %s %+d (TaW %d)",(char*)(hero + HERO_NAME2), names_skill[skill], handicap, host_readbs(hero + HERO_TALENTS + skill));
 #endif
 
 		/* special test if skill is a range weapon skill */
-		if ((skill == 7) || (skill == 8)) {
+		if ((skill == TA_SCHUSSWAFFEN) || (skill == TA_WURFWAFFEN)) {
 
 			/* calculate range weapon base value */
 			e_skillval = (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KL)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KL)) +
@@ -199,9 +201,9 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 				host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))) / 4;
 
 			/* add skill value */
-			e_skillval += host_readbs(hero + HERO_TA_FIGHT + skill);
+			e_skillval += host_readbs(hero + HERO_TALENTS + skill);
 			/* sub handycap */
-			e_skillval -= bonus;
+			e_skillval -= handicap;
 
 			randval = random_schick(20);
 
@@ -235,8 +237,8 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 		}
 
 		/* automatically get hero with best senses in beginner mode */
-		if ((skill == 51) && (ds_readws(GAME_MODE) == 1)) {
-			hero = Real2Host(get_proper_hero(51));
+		if ((skill == TA_SINNESSCHAERFE) && (ds_readws(GAME_MODE) == GAME_MODE_BEGINNER)) {
+			hero = Real2Host(get_proper_hero(TA_SINNESSCHAERFE));
 
 #if defined(__BORLANDC__)
 			/* seems to have been debug stuff with conditional compilation */
@@ -245,9 +247,9 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 		}
 
 		/* do the test */
-		bonus -= host_readbs(hero + HERO_TA_FIGHT + skill);
+		handicap -= host_readbs(hero + HERO_TALENTS + skill);
 
-		return test_attrib3(hero, ds_readbs(SKILL_DESCRIPTIONS + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 1) + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 2) + skill * 4), bonus);
+		return test_attrib3(hero, ds_readbs(SKILL_DESCRIPTIONS + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 1) + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 2) + skill * 4), handicap);
 
 	}
 
@@ -262,7 +264,7 @@ signed short select_skill(void)
 {
 	signed short l_si = -1;
 	signed short nr_skills = 3;
-	/* available skills {44, 45, 46, -1, -1, -1} */
+	/* available skills {TA_HEILEN_GIFT, TA_HEILEN_KRANKHEITEN, TA_HEILEN_WUNDEN, -1, -1, -1} */
 	struct dummy2 a = *(struct dummy2*)(p_datseg + SELECT_SKILL_DEFAULTS);
 
 	/* add skills for special location */
@@ -283,10 +285,10 @@ signed short select_skill(void)
 	} else if (ds_readbs(LOCATION) == LOCATION_MARKET) {
 		a.a[nr_skills] = TA_AKROBATIK;
 		nr_skills++;
-		a.a[nr_skills] = TA_TASCHENDIEB;
+		a.a[nr_skills] = TA_TASCHENDIEBSTAHL;
 		nr_skills++;
 	} else if (ds_readbs(LOCATION) == LOCATION_MERCHANT) {
-		a.a[nr_skills] = TA_TASCHENDIEB;
+		a.a[nr_skills] = TA_TASCHENDIEBSTAHL;
 		nr_skills++;
 	}
 
@@ -306,10 +308,10 @@ signed short select_skill(void)
 	return l_si;
 }
 
-signed short use_skill(signed short hero_pos, signed char bonus, signed short skill)
+signed short use_skill(signed short hero_pos, signed char handicap, signed short skill)
 {
 	signed short l_si;
-	signed short l_di;
+	signed short le_damage;
 
 	signed short patient_pos;
 	signed short le;
@@ -330,7 +332,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 		load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
 		switch(skill) {
-		case 44 : {
+		case TA_HEILEN_GIFT: {
 			ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ttx(460));
@@ -355,13 +357,13 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
 						/* set patient timer */
-						host_writed(patient + HERO_HEAL_TIMER, 0x5460);
+						host_writed(patient + HERO_HEAL_TIMER, HOURS(4)); /* 4 hours */
 
-						if (test_skill(hero, TA_HEILEN_GIFT, bonus) > 0) {
+						if (test_skill(hero, TA_HEILEN_GIFT, handicap) > 0) {
 
-							timewarp(0x708);
+							timewarp(MINUTES(20));
 
-							if (test_skill(hero, TA_HEILEN_GIFT, ds_readbs(POISON_PRICES + 2 * poison) + bonus) > 0) {
+							if (test_skill(hero, TA_HEILEN_GIFT, ds_readbs(POISON_PRICES + 2 * poison) + handicap) > 0) {
 								/* success */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ttx(690),
@@ -370,8 +372,8 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 
-								host_writeb(patient + 0xd7 + 5 * poison, 0);
-								host_writeb(patient + 0xd6 + 5 * poison, 1);
+								host_writeb(patient + (HERO_POISON + 1) + 5 * poison, 0);
+								host_writeb(patient + HERO_POISON + 5 * poison, 1);
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ttx(692),
@@ -384,7 +386,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 										le = GUI_input(get_ttx(693), 2);
 									} while (le <= 0);
 
-									if ((l_si = test_skill(hero, TA_HEILEN_GIFT, le + bonus)) > 0) {
+									if ((l_si = test_skill(hero, TA_HEILEN_GIFT, le + handicap)) > 0) {
 
 										sprintf((char*)Real2Host(ds_readd(DTP2)),
 											(char*)get_ttx(691),
@@ -396,18 +398,20 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 										GUI_output(Real2Host(ds_readd(DTP2)));
 									} else {
-										l_di = 3;
+										/* skill test failed */
+										le_damage = 3;
 
-										if (host_readws(patient + 0x60) <= l_di) {
-											l_di = host_readws(patient + 0x60) - 1;
+										if (host_readws(patient + HERO_LE) <= le_damage) {
+											/* don't kill the patient: at least 1 LE should remain */
+											le_damage = host_readws(patient + HERO_LE) - 1;
 										}
 
-										sub_hero_le(patient, l_di);
+										sub_hero_le(patient, le_damage);
 
 										sprintf((char*)Real2Host(ds_readd(DTP2)),
 											(char*)get_ttx(694),
 											(char*)patient + HERO_NAME2,
-											l_di);
+											le_damage);
 
 										GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -437,7 +441,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 			}
 			break;
 		}
-		case 45 : {
+		case  TA_HEILEN_KRANKHEITEN : {
 			ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ttx(460));
@@ -445,11 +449,11 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 			if (patient_pos != -1) {
 				patient = get_hero(patient_pos);
 
-				skill_cure_disease(hero, patient, bonus, 0);
+				skill_cure_disease(hero, patient, handicap, 0);
 			}
 			break;
 		}
-		case 46 : {
+		case TA_HEILEN_WUNDEN : {
 			ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ttx(460));
@@ -458,7 +462,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 				patient = get_hero(patient_pos);
 				if (is_hero_healable(patient)) {
 
-					if (host_readws(patient + 0x60) >= host_readws(patient + 0x5e)) {
+					if (host_readws(patient + HERO_LE) >= host_readws(patient + HERO_LE_ORIG)) {
 						/* no need to heal */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ttx(461),
@@ -474,12 +478,12 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 					} else {
-						host_writed(patient + HERO_HEAL_TIMER, 0x1fa40L);
+						host_writed(patient + HERO_HEAL_TIMER, DAYS(1));
 
-						if (test_skill(hero, TA_HEILEN_WUNDEN, bonus) > 0) {
-							if (test_skill(hero, TA_HEILEN_WUNDEN, bonus) > 0) {
+						if (test_skill(hero, TA_HEILEN_WUNDEN, handicap) > 0) {
+							if (test_skill(hero, TA_HEILEN_WUNDEN, handicap) > 0) {
 
-								l_si = (host_readbs(hero + (HERO_TA_CRAFT+5)) > 1) ? host_readbs(hero + (HERO_TA_CRAFT+5)) : 1;
+								l_si = (host_readbs(hero + (HERO_TALENTS + TA_HEILEN_WUNDEN)) > 1) ? host_readbs(hero + (HERO_TALENTS + TA_HEILEN_WUNDEN)) : 1;
 
 								add_hero_le(patient, l_si);
 
@@ -491,38 +495,40 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 							} else {
-								l_di = 3;
+								/* skill test failed */
+								le_damage = 3;
 
-								if (host_readws(patient + 0x60) <= l_di) {
-									l_di = host_readws(patient + 0x60) - 1;
+								if (host_readws(patient + HERO_LE) <= le_damage) {
+									/* don't kill the patient: at least 1 LE should remain */
+									le_damage = host_readws(patient + HERO_LE) - 1;
 								}
 
-								sub_hero_le(patient, l_di);
+								sub_hero_le(patient, le_damage);
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ttx(694),
 									(char*)patient + HERO_NAME2,
-									l_di);
+									le_damage);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 
 								l_si = 0;
 
-								host_writed(patient + HERO_STAFFSPELL_TIMER, 0x1fa40L);
+								host_writed(patient + HERO_STAFFSPELL_TIMER, DAYS(1)); /* TODO: Why STAFFSPELL ?? */
 							}
 						} else {
 
 							if (random_schick(20) <= 7) {
-								/* infected */
+								/* 35% chance: infected with Wundfieber illness */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ttx(699),
 									(char*)hero + HERO_NAME2,
 									(char*)patient + HERO_NAME2);
 
-								host_writeb(patient + 0xb3, -1);
-								host_writeb(patient + 0xb4, 0);
+								host_writeb(patient + (HERO_ILLNESS + 5 * ILLNESS_TYPE_WUNDFIEBER), -1);
+								host_writeb(patient + (HERO_ILLNESS + 5 * ILLNESS_TYPE_WUNDFIEBER + 1), 0);
 							} else {
-								/* just failed */
+								/* 65% chance: just failed, no infection */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ttx(698),
 									(char*)hero + HERO_NAME2,
@@ -536,15 +542,15 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 			}
 			break;
 		}
-		case 9 : {
+		case TA_AKROBATIK : {
 
-			if (ds_readds((INGAME_TIMERS + 0x18)) > 0) {
+			if (ds_readds((INGAME_TIMERS + 4 * INGAME_TIMER_AKROBATIK)) > 0) {
 
 				GUI_output(get_tx(34));
 
 			} else {
 
-				if (test_skill(hero, TA_AKROBATIK, bonus) > 0) {
+				if (test_skill(hero, TA_AKROBATIK, handicap) > 0) {
 
 					money = random_interval(10, 200);
 
@@ -559,26 +565,26 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 					add_party_money(money);
 
-					ds_writed((INGAME_TIMERS + 0x18), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 4 * INGAME_TIMER_AKROBATIK), HOURS(8));
 					ds_writew(REQUEST_REFRESH, 1);
 				} else {
 					GUI_output(get_tx(36));
 
-					ds_writed((INGAME_TIMERS + 0x18), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 4 * INGAME_TIMER_AKROBATIK), HOURS(8));
 					l_si = -1;
 				}
 			}
 			break;
 		}
-		case 47 : {
+		case TA_MUSIZIEREN : {
 
-			if (ds_readds((INGAME_TIMERS + 0x1c)) > 0) {
+			if (ds_readds((INGAME_TIMERS + 4 * INGAME_TIMER_MUSIZIEREN)) > 0) {
 
 				GUI_output(get_tx(37));
 
 			} else {
 
-				if (test_skill(hero, TA_MUSIZIEREN, bonus) > 0) {
+				if (test_skill(hero, TA_MUSIZIEREN, handicap) > 0) {
 
 					money = random_interval(100, 300);
 
@@ -593,20 +599,20 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 					add_party_money(money);
 
-					ds_writed((INGAME_TIMERS + 0x1c), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 4 * INGAME_TIMER_MUSIZIEREN), HOURS(8));
 					ds_writew(REQUEST_REFRESH, 1);
 				} else {
 					GUI_output(get_tx(36));
 
-					ds_writed((INGAME_TIMERS + 0x1c), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 4 * INGAME_TIMER_MUSIZIEREN), HOURS(8));
 					l_si = -1;
 				}
 			}
 			break;
 		}
-		case 43 : {
+		case TA_FALSCHSPIEL : {
 
-			if (test_skill(hero, TA_FALSCHSPIEL, bonus) > 0) {
+			if (test_skill(hero, TA_FALSCHSPIEL, handicap) > 0) {
 
 				money = random_interval(500, 1000);
 
@@ -632,9 +638,9 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 			break;
 		}
-		case 49 : {
+		case TA_TASCHENDIEBSTAHL : {
 
-			if (test_skill(hero, TA_TASCHENDIEB, bonus) > 0) {
+			if (test_skill(hero, TA_TASCHENDIEBSTAHL, handicap) > 0) {
 
 				money = random_interval(500, 1000);
 
@@ -666,8 +672,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 			break;
 		}
-		case 32 : {
-			/* ALCHEMY */
+		case TA_ALCHIMIE : {
 			l_si = plan_alchemy(hero);
 			break;
 		}
@@ -681,7 +686,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 	return l_si;
 }
 
-signed short GUI_use_skill(signed short hero_pos, signed char bonus)
+signed short GUI_use_skill(signed short hero_pos, signed char handicap)
 {
 	signed short skill;
 	Bit8u *hero;
@@ -693,10 +698,10 @@ signed short GUI_use_skill(signed short hero_pos, signed char bonus)
 	}
 
 	skill = select_skill();
-	return use_skill(hero_pos, bonus, skill);
+	return use_skill(hero_pos, handicap, skill);
 }
 
-signed short GUI_use_skill2(signed short bonus, Bit8u *msg)
+signed short GUI_use_skill2(signed short handicap, Bit8u *msg)
 {
 	signed short hero_pos;
 	signed short skill;
@@ -709,12 +714,12 @@ signed short GUI_use_skill2(signed short bonus, Bit8u *msg)
 
 		hero_pos = select_hero_ok(msg);
 
-		if ((hero_pos != -1) && (hero_busy(get_hero(hero_pos)))) {
+		if ((hero_pos != -1) && (hero_brewing(get_hero(hero_pos)))) {
 			GUI_output(get_ttx(730));
 			hero_pos = -1;
 		}
 		if (hero_pos != -1) {
-			return use_skill(hero_pos, (signed char)bonus, skill);
+			return use_skill(hero_pos, (signed char)handicap, skill);
 		}
 	}
 

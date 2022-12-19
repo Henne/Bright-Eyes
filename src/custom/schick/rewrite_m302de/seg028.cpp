@@ -54,17 +54,17 @@ void prepare_dungeon_area(void)
 		set_var_to_zero();
 		ds_writew(CURRENT_ANI, -1);
 
-		l_si = (ds_readbs(DUNGEON_INDEX) == 1) ? ARCHIVE_FILE_SHIPSL_NVF :
-			(((ds_readbs(DUNGEON_INDEX) == 2) ||
-				(ds_readbs(DUNGEON_INDEX) == 7) ||
-				(ds_readbs(DUNGEON_INDEX) == 9) ||
-				(ds_readbs(DUNGEON_INDEX) == 11) ||
-				(ds_readbs(DUNGEON_INDEX) == 12) ||
-				(ds_readbs(DUNGEON_INDEX) == 13) ||
-				(ds_readbs(DUNGEON_INDEX) == 14) ||
-				(ds_readbs(DUNGEON_INDEX) == 15)) ? ARCHIVE_FILE_MARBLESL_NVF : ARCHIVE_FILE_STONESL_NVF);
+		l_si = (ds_readbs(DUNGEON_INDEX) == DUNGEONS_TOTENSCHIFF) ? ARCHIVE_FILE_SHIPSL_NVF :
+			(((ds_readbs(DUNGEON_INDEX) == DUNGEONS_VERFALLENE_HERBERGE) ||
+				(ds_readbs(DUNGEON_INDEX) == DUNGEONS_RUINE_DES_SCHWARZMAGIERS) ||
+				(ds_readbs(DUNGEON_INDEX) == DUNGEONS_KULTSTAETTE_DES_NAMENLOSEN) ||
+				(ds_readbs(DUNGEON_INDEX) == DUNGEONS_PIRATENHOEHLE) ||
+				(ds_readbs(DUNGEON_INDEX) == DUNGEONS_ZWERGENFESTE) ||
+				(ds_readbs(DUNGEON_INDEX) == DUNGEONS_VERLASSENE_MINE) ||
+				(ds_readbs(DUNGEON_INDEX) == DUNGEONS_ZWINGFESTE) ||
+				(ds_readbs(DUNGEON_INDEX) == DUNGEONS_HYGGELIKS_RUINE)) ? ARCHIVE_FILE_MARBLESL_NVF : ARCHIVE_FILE_STONESL_NVF);
 
-		ds_writeb(DUNGEON_TYPE, (l_si == ARCHIVE_FILE_SHIPSL_NVF) ? 0 : ((l_si == ARCHIVE_FILE_MARBLESL_NVF) ? 1 : 2));
+		ds_writeb(DUNGEON_GFX_STYLE, (l_si == ARCHIVE_FILE_SHIPSL_NVF) ? 0 : ((l_si == ARCHIVE_FILE_MARBLESL_NVF) ? 1 : 2));
 
 		handle = load_archive_file(l_si);
 		v1 = v2 = 0;
@@ -537,7 +537,7 @@ void save_npc(signed short index)
 
 	fd = load_archive_file(index | 0x8000);
 
-	bc__write(fd, (RealPt)ds_readd(HEROS) + 6 * SIZEOF_HERO, SIZEOF_HERO);
+	bc__write(fd, (RealPt)ds_readd(HEROES) + 6 * SIZEOF_HERO, SIZEOF_HERO);
 
 	bc_close(fd);
 }
