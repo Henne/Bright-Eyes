@@ -19,8 +19,6 @@ mkdir -p $DISDIR
 
 # COMPILATION with DOSBox
 
-#needs dosbox ndisasm diff head
-
 # copy all source files to DRIVE_C
 cp *.cpp *.h *.asm TLINK.RES ${DRIVE_C}/src
 cp -r AIL ${DRIVE_C}/src
@@ -28,7 +26,7 @@ cp -r AIL ${DRIVE_C}/src
 # copy c_ready.bat as compile.bat
 cp bc_ready.bat ${DRIVE_C}/src/compile.bat
 
-# run compile.bat in a DOSBox environment, needs an installes BCC.EXE there
+# run compile.bat in a DOSBox environment, needs an installed BCC.EXE there
 pushd ${DRIVE_C}
 dosbox -conf compile.conf
 popd
