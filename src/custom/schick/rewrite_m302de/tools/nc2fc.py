@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=ascii
 
 # Aendert die Arten der Funktionsaufrufe in NASM-Disassembler Listings
@@ -32,8 +32,18 @@ name = sys.argv[1]
 
 fname = string.rsplit(name, "/", 1)[1]
 
-infile = open(name, 'r')
-outfile = open(name + ".tmp", 'w')
+try:
+	infile = open(name, 'r')
+except:
+	print("Fehler: Datei " + name + " konnte nicht gelesen werden")
+	sys.exit(1)
+
+try:
+	outfile = open(name + ".tmp", 'w')
+except:
+	print("Fehler: Datei " + name + " konnte nicht zum Schreiben geoeffnet werden")
+	sys.exit(1)
+
 
 line = infile.readline()
 while line is not None and line != "":
@@ -41,7 +51,7 @@ while line is not None and line != "":
 	nopline = string.split(line, None, 2)
 	opcode = int(nopline[1][:2], 16)
 
-	# far call
+	# far call => replace it with an unlinked call
 	if opcode == 0x9a:
 		o = nopline[0]
 		o = o + "  "
