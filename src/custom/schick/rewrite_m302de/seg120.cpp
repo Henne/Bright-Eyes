@@ -516,7 +516,11 @@ void prepare_dirs(void)
 
 			cleanup_game();
 
-			bc_exit(0);
+#if !defined(__BORLANDC__)
+			D1_INFO("\nCHANGED BEHAVIOUR: For technical reasons Bright-Eyes must be started anew\n\n");
+			fflush(stdout);
+#endif
+			exit(0);
 		}
 	}
 

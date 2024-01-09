@@ -1564,7 +1564,15 @@ void handle_gui_input(void)
 
 		if ((ds_readw(BIOSKEY_EVENT) == 0x11) && (ds_readw(PREGAME_STATE) == 0)) {
 			cleanup_game();
+
+#if !defined(__BORLANDC__)
+		        D1_INFO("\nCHANGED BEHAVIOUR: For technical reasons Bright-Eyes must be started anew\n\n");
+
+			fflush(stdout);
+			exit(0);
+#else
 			bc_exit(0);
+#endif
 		}
 	}
 
@@ -1725,7 +1733,14 @@ void handle_input(void)
 
 		if ((ds_readw(BIOSKEY_EVENT) == 0x11) && (ds_readw(PREGAME_STATE) == 0)) {
 			cleanup_game();
+
+#if !defined(__BORLANDC__)
+			D1_INFO("\nCHANGED BEHAVIOUR: For technical reasons Bright-Eyes must be started anew\n\n");
+		        fflush(stdout);
+			exit(0);
+#else
 			bc_exit(0);
+#endif
 		}
 	}
 
@@ -1904,7 +1919,14 @@ void game_loop(void)
 		if (ds_readw(GAME_STATE) == GAME_STATE_VICTORY) {
 			show_outro();
 			cleanup_game();
+
+#if !defined(__BORLANDC__)
+			D1_INFO("\nCHANGED BEHAVIOUR: For technical reasons Bright-Eyes must be started anew\n\n");
+		        fflush(stdout);
+		        exit(0);
+#else
 			bc_exit(0);
+#endif
 		}
 	}
 }
@@ -5238,7 +5260,14 @@ int schick_main(int argc, char** argv)
 		if (ds_readw(CD_INIT_SUCCESSFUL) == 0) {
 			/* CD init failed */
 			cleanup_game();
+
+#if !defined(__BORLANDC__)
+			D1_INFO("CHANGED BEHAVIOUR: For technical reasons Bright-Eyes must be started anew\n");
+			fflush(stdout);
 			exit(0);
+#else
+			exit(0);
+#endif
 		}
 
 
@@ -5291,6 +5320,13 @@ int schick_main(int argc, char** argv)
 		} else {
 			cleanup_game();
 		}
+
+#if !defined(__BORLANDC__)
+		/* no call to exit(0) in original game */
+		D1_INFO("\nCHANGED BEHAVIOUR: For technical reasons Bright-Eyes must be started anew\n\n");
+		fflush(stdout);
+		exit(0);
+#endif
 
 	} else {
 		/* not enough memory */
