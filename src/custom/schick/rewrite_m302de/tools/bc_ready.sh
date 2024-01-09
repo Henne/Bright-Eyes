@@ -17,89 +17,38 @@ mkdir -p $OBJDIR
 mkdir -p $BINDIR
 mkdir -p $DISDIR
 
-USE_KVM="false"
+# COMPILATION with DOSBox
 
-#needs modprobe qemu-nbd ndisasm diff mount head
+#needs dosbox ndisasm diff head
 
-if [ "${USE_KVM}" = "true" ]; then
+# copy all source files to DRIVE_C
+cp *.cpp *.h *.asm TLINK.RES ${DRIVE_C}/src
+cp -r AIL ${DRIVE_C}/src
 
-	MOUNT="/mnt/compile"
-	DIR="${MOUNT}/BORLANDC/SCHICK"
-	DEVICE="/dev/nbd4"
+# copy c_ready.bat as compile.bat
+cp bc_ready.bat ${DRIVE_C}/src/compile.bat
 
-	# check nbd in loaded
-	out=$(lsmod | grep ^nbd);
-	if [ "${out}" = "" ]; then
-		echo "Lade nbd modul"
-		sudo modprobe nbd max_part=8
-	fi
+# run compile.bat in a DOSBox environment, needs an installes BCC.EXE there
+pushd ${DRIVE_C}
+dosbox -conf compile.conf
+popd
 
-	# assume device 0 can be used
-	sudo qemu-nbd --disconnect ${DEVICE}
-	sudo qemu-nbd --connect=${DEVICE} ~/qemu/BE-compile/hda.qcow2
-	sudo partprobe ${DEVICE}
+# cleanup
+rm -rf ${DRIVE_C}/src/*.cpp
+rm -rf ${DRIVE_C}/src/*.h
+rm -rf ${DRIVE_C}/src/*.asm
+rm -rf ${DRIVE_C}/src/TLINK.RES
+rm -rf ${DRIVE_C}/src/compile.bat
+rm -rf ${DRIVE_C}/src/AIL
 
-	#mounten
-	sudo mount ${DEVICE}p1 ${MOUNT} -t vfat -o rw,users
+# move all OBJ-files to OBJDIR
+mv ${DRIVE_C}/src/*.OBJ $OBJDIR 2>/dev/null
 
-	#cpp files kopieren
-	sudo rm -rf ${DIR}
-	sudo mkdir -p ${DIR}
-	sudo cp *.cpp *.h *.asm bc_ready.bat ${DIR}
-	sudo cp -r AIL ${DIR}
-	sync
+# move all OBJ-files to OBJDIR
+mv ${DRIVE_C}/src/*.EXE $DIR 2>/dev/null
+mv ${DRIVE_C}/src/*.MAP $DIR 2>/dev/null
 
-	#unmounten
-	sudo umount ${MOUNT}
-	sudo qemu-nbd --disconnect ${DEVICE}
-
-	#kompilieren
-	pushd ~/qemu/BE-compile/
-	./start.sh
-	popd
-	sync
-
-
-	sudo qemu-nbd --connect=${DEVICE} ${HDD_IMAGE}
-	sudo partprobe ${DEVICE}
-
-	#mounten
-	sudo mount ${DEVICE}p1 ${MOUNT} -t vfat -o ro,users,sync
-	#obj files zurueckkopieren
-	sudo cp ${DIR}/*.OBJ $OBJDIR
-	sync
-	sudo umount ${MOUNT}
-	#umounten
-	sudo qemu-nbd --disconnect ${DEVICE}
-else
-
-	# copy all source files to DRIVE_C
-	cp *.cpp *.h *.asm TLINK.RES ${DRIVE_C}/src
-	cp -r AIL ${DRIVE_C}/src
-
-	# copy c_ready.bat as compile.bat
-	cp bc_ready.bat ${DRIVE_C}/src/compile.bat
-
-	# run compile.bat in a DOSBox environment, needs an installes BCC.EXE there
-	pushd ${DRIVE_C}
-	dosbox -conf compile.conf
-	popd
-
-	# cleanup
-	rm -rf ${DRIVE_C}/src/*.cpp
-	rm -rf ${DRIVE_C}/src/*.h
-	rm -rf ${DRIVE_C}/src/*.asm
-	rm -rf ${DRIVE_C}/src/TLINK.RES
-	rm -rf ${DRIVE_C}/src/compile.bat
-	rm -rf ${DRIVE_C}/src/AIL
-
-	# move all OBJ-files to OBJDIR
-	mv ${DRIVE_C}/src/*.OBJ $OBJDIR 2>/dev/null
-
-	# move all OBJ-files to OBJDIR
-	mv ${DRIVE_C}/src/*.EXE $DIR 2>/dev/null
-	mv ${DRIVE_C}/src/*.MAP $DIR 2>/dev/null
-fi
+# VERIFICATION
 
 N=0
 GOOD=0
