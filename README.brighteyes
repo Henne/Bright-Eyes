@@ -26,10 +26,11 @@ Prequisites:
 	Make sure you own a copy of it.	DSA1 is no abandonware.)
 
 *	at least one newer computer with an operating system
-	like (Linux, BSD, MaxOS, Windows)
+	like (Linux, BSD, MacOS, Windows)
 
 *	a toolchain for building DOSBox (C++ compiler, SDL, SDL_Sound),
 	since atm no precompiled binaries are available.
+	For SDL, a subversion of 1.2 is needed. A suitable Debian package is libsdl1.2-dev
 
 *	For checking the equivalence of the source code with the original
 	game:
