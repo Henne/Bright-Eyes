@@ -1849,6 +1849,8 @@ void game_loop(void)
 		}
 
 		if (ds_readbs(CHECK_PARTY) != 0) {
+			/* check the party for active heroes.
+			 * If necessary, switch to another group or in fatal case: game over */
 
 			ds_writeb(CHECK_PARTY, 0);
 
@@ -1930,6 +1932,10 @@ void game_loop(void)
 }
 
 //static
+/*
+ *	This function does daily accounting stuff.
+ *	The CHECK_DISEASE flag is set here, indicating that the disease status should be updated. */
+
 void timers_daily(void)
 {
 	Bit8u *hero_i;
@@ -2759,6 +2765,7 @@ void set_mod_slot(signed short slot_no, Bit32s timer_value, Bit8u *ptr,
  * \param   fmin        five minutes
  *
  *	This function decrements the timers for the healing and staffspell timeouts.
+ *	Furthermore, the CHECK_POISON flag is set.
  */
 void sub_heal_staffspell_timers(Bit32s fmin)
 {
@@ -2805,6 +2812,11 @@ void sub_heal_staffspell_timers(Bit32s fmin)
 				}
 			}
 
+			/* Original-Bug:
+			 * Apparently, the following line is supposed to trigger poison_effect() every 5 minutes.
+			 * This won't work if the game does not jump back to game_loop() where poison_effect() is called.
+			 * Also, fmin > 1 triggers only one call of poison_effect().
+			 * Solution could be to move the poison_effect() call from game_loop() to do_timers() and timewarp(..). */
 			ds_writew(CHECK_POISON, 1);
 		}
 	}
@@ -2924,6 +2936,10 @@ void herokeeping(void)
 	if (ds_readw(GAME_STATE) != GAME_STATE_MAIN)
 		return;
 
+	/* The actual food consumption is done only if HEROKEEPING_FLAG is set.
+	 * This happens hourly in magical_chainmail_damage()
+	 * The flag is reset at the end of this function. */
+
 	/* for each hero ..*/
 	hero = get_hero(0);
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
@@ -2937,10 +2953,11 @@ void herokeeping(void)
 		{
 			/* Do the eating */
 
-			/* check for magic bread bag */
+			/* check for magic bread bag in the group */
 			if (get_first_hero_with_item_in_group(ITEM_MAGIC_BREADBAG, host_readbs(hero + HERO_GROUP_NO)) == -1) {
-				/* check if the hero has the food amulet */
+				/* if not, check if the hero has the food amulet */
 				if (get_item_pos(hero, ITEM_TRAVIA_AMULET) == -1) {
+					/* if not... */
 
 					/* eat if hunger > 90 % */
 					if (host_readbs(hero + HERO_HUNGER) > 90) {
@@ -2974,10 +2991,10 @@ void herokeeping(void)
 					if (host_readbs(hero + HERO_HUNGER) < 100) {
 						/* increase hunger value. FOOD_MOD is always 0 or 1 */
 						if (host_readbs(hero + HERO_HUNGER_TIMER) <= 0) {
-							/* increase more (2 or 1) */
+							/* increase more (FOOD_MOD == 0 -> increase by 2. FOOD_MOD == 1 -> increase by 0.) */
 							add_ptr_bs(hero + HERO_HUNGER, 2 / (ds_readbs(FOOD_MOD) * 2 + 1));
 						} else {
-							/* increase less (1 or 0) */
+							/* increase less (FOOD_MOD == 0 -> increase by 1. FOOD_MOD == 1 -> increase by 0.) */
 							add_ptr_bs(hero + HERO_HUNGER, 1 / (ds_readbs(FOOD_MOD) * 2 + 1));
 						}
 
@@ -3003,6 +3020,7 @@ void herokeeping(void)
 
 			/* Do the drinking */
 
+			/* check if someone in the group of the hero has the magic bread bag */
 			/* check for magic waterskin in group */
 			if ((get_first_hero_with_item_in_group(ITEM_MAGIC_WATERSKIN, host_readbs(hero + HERO_GROUP_NO)) == -1) &&
 				((host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
@@ -3052,9 +3070,11 @@ void herokeeping(void)
 							/* increase thirst counter food_mod is always 0 or 1 */
 							if (host_readbs(hero + HERO_HUNGER_TIMER) <= 0) {
 
+								/* increase more (FOOD_MOD == 0 -> increase by 4. FOOD_MOD == 1 -> increase by 1.) */
 								add_ptr_bs(hero + HERO_THIRST, 4 / (ds_readbs(FOOD_MOD) * 2 + 1));
 							} else {
 
+								/* increase less (FOOD_MOD == 0 -> increase by 2. FOOD_MOD == 1 -> increase by 0.) */
 								add_ptr_bs(hero + HERO_THIRST, 2 / (ds_readbs(FOOD_MOD) * 2 + 1));
 							}
 
@@ -3423,7 +3443,7 @@ void passages_reset(void)
 	Bit8u *p = p_datseg + SEA_ROUTES;
 
 #ifndef M302de_ORIGINAL_BUGFIX
-	/* Original-Bug 36: the loop operates only on the first  */
+	/* Original-Bug 36: the loop operates only on the first sea route (which is Thorwal-Prem) */
 	for (i = 0; i < NR_SEA_ROUTES; i++)
 #else
 	for (i = 0; i < NR_SEA_ROUTES; p += SIZEOF_SEA_ROUTE, i++)
@@ -3518,7 +3538,8 @@ void timewarp(Bit32s time)
 			herokeeping();
 			/* Original-Bug 39: Timers for 2nd encounter of the unicorn, Sphaerenriss in verfallene Herberge
 			 * and two timers for barrels with orc muck in the orc dungeon are not affected from passing in-game time.
-			 * Reason: They are present in do_timers(), but missing at this place. */
+			 * Reason: They are present in do_timers(), but missing at this place.
+			 * See https://www.crystals-dsa-foren.de/showthread.php?tid=5191&pid=146026#pid146026 */
 		}
 	}
 #else
@@ -3543,7 +3564,7 @@ void timewarp(Bit32s time)
 			}
 		}
 
-		/* barrels with orc muck in the orc dungeon */
+		/* timer for barrels with orc muck in the orc dungeon */
 		if (ds_readbs(DNG08_TIMER1) != 0) {
 			dec_ds_bs_post(DNG08_TIMER1);
 		}
@@ -3552,12 +3573,6 @@ void timewarp(Bit32s time)
 		}
 	}
 #endif
-
-	/* Original-Bug:
-	 * forgotten hourly timers: UNICORN_TIMER, DNG02_SPHERE_TIMER, DNG08_TIMER1, DNG08_TIMER2
-	 * see do_timers(..).
-	 * For a bugfix either add code here (and in timewarp_until_time_of_day(..)), or modify do_timers(..)
-	 * */
 
 	/* restore variables */
 	ds_writeb(FREEZE_TIMERS, 0);
@@ -3690,13 +3705,14 @@ void draw_splash(signed short hero_pos, signed short type)
 	}
 }
 
-
 /**
  * \brief   fast forward the ingame time to midnight
+ *          If it is precicely midnight, 1 full day will be passing.
  */
 void timewarp_until_midnight(void)
+	/* only called at a single place, at the Swafnild encounter in seg072.cpp */
 {
-	/* TODO: This doesn't look all correct to me... Have all timers been considered? Why not call timewarp_until_time_of_the_day(..)? */
+	/* TODO: This doesn't look all correct to me... Have all timers been considered? Why not call timewarp_until_time_of_day(..)? */
 	Bit32s ticks_left;
 	signed short td_bak;
 
@@ -3709,14 +3725,19 @@ void timewarp_until_midnight(void)
 	/* calculate the ticks left on this day */
 	ticks_left = (HOURS(24) - 1) - ds_readd(DAY_TIMER);
 
-	/* set the day timer to the last tick of this day */
+	/* Set the day timer to one tick before midnight.
+	 * Original-Bug: Hard setting the time skips events at a fixed time of the day, like getting sober at 10 o'clock. */
 	ds_writed(DAY_TIMER, (HOURS(24) - 1));
 
-	do_timers();
+	do_timers(); /* now it is precisely midnight */
 	sub_ingame_timers(ticks_left);
 	sub_mod_timers(ticks_left);
-	sub_heal_staffspell_timers(ticks_left / MINUTES(5));
+	sub_heal_staffspell_timers(ticks_left / MINUTES(5)); /* I think the rounding effects are indeed correct this time. More luck than reason... */ 
 	sub_light_timers(100); /* Original-Bug: why not sub_light_timers(ticks_left / MINUTES(15)) ?? */
+
+	/* Original-Bug: missing: magical_chainmail_damage();
+	 * Original-Bug 39: Timers for 2nd encounter of the unicorn, Sphaerenriss in verfallene Herberge
+	 * and two timers for barrels with orc muck in the orc dungeon are not affected from passing in-game time. */
 
 	/* restore the timer status */
 	ds_writew(TIMERS_DISABLED, td_bak);
