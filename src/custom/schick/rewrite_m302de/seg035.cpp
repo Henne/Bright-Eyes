@@ -112,8 +112,9 @@ void FIG_loot_monsters(void)
 		l_di = l3 = 0;
 
 		while (((l1 = host_readws(Real2Host(ds_readd(CURRENT_FIGHT)) + 2 * l_di + FIGHT_LOOT)) != 0) &&
-			/* ITEM 164 is "BONE WITH RUNES" */
-			(l_di < 30) && (l1 != 164))
+			(l_di < 30) && (l1 != ITEM_BONE_WITH_RUNE))
+			/* Apparently a quick "fix" for an unwanted bone with runes in fight THOR8,
+			 * see https://www.crystals-dsa-foren.de/showthread.php?tid=453&pid=172221#pid172221 */
 		{
 			strcpy(a[l_di++], (char*)Real2Host(GUI_name_plural(0, (Bit8u*)get_itemname(l1))));
 			l3++;
