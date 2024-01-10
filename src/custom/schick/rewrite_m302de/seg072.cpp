@@ -725,7 +725,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 /**
  * \brief   dialog logic for the informers swafnild and unicorn (2nd meeting)
  *
- * \param   informer    0 = treborn, 1 = unicorn
+ * \param   informer    0 = Swafnild, 1 = unicorn
  * \param   state       state of the dialog
  */
 void INF_swafnild_unicorn(signed short informer, signed short state)

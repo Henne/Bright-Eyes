@@ -606,7 +606,11 @@ void sea_travel(signed short passage, signed short dir)
 			ds_writew(PASSAGE_PIRATES_FLAG, 0);
 		}
 
-		/* CHECK_DISEASE is set to 1 each midnight in timers_daily() */
+		/* This looks dirty.
+		 * CHECK_DISEASE is set to 1 each midnight in timers_daily()
+		 * Usually, the disease_effect() function is called within game_loop(). But the game does not jump back to that function at this point,
+		 * which is probably the reason to replicate the disease_effect() call here.
+		 * Why the dependence on CHECK_PARTY? */
 		if (ds_readws(CHECK_DISEASE) != 0 && !ds_readbs(CHECK_PARTY)) {
 
 			disease_effect();

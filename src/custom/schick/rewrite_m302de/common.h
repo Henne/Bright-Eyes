@@ -919,7 +919,7 @@ enum {
 	GAME_STATE_UNKNOWN	= 2,
 	GAME_STATE_QUIT		= 3, /* ordinary quit */
 	GAME_STATE_TIMEUP	= 4, /* max. game time is up */
-	GAME_STATE_OUTRO	= 5, /* after (successfull) outro */
+	GAME_STATE_OUTRO	= 5, /* after (successful) outro */
 	GAME_STATE_FIGQUIT	= 7, /* quit game during fight */
 	GAME_STATE_VICTORY	= 99 /* final fight won (before outro) */
 };

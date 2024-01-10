@@ -804,7 +804,7 @@
 // ?4
 #define PAUSE_STRING                    (0x448a)    /* char[10]; "P A U S E" */
 #define NPC_LAST_FAREWELLCHECK          (0x4494)    /* unsigned char */
-#define CHECK_PARTY                     (0x4495)    /* char */
+#define CHECK_PARTY                     (0x4495)    /* char; indicates that the groups need to be checked if active heroes are available. set after a fight, at sub_hero_le (outside of a fight) and at hero_disappear(). check is done in game_loop() */
 #define FOOD_MOD                        (0x4496)    /* char */
 #define TRAVEL_HEROKEEPING              (0x4497)    /* unsigned char; {0,1} */
 #define FLOOR_FADE_PALETTE              (0x4498)    /* struct(3)[32]; struct{unsigned char r,g,b;} */
