@@ -30,7 +30,7 @@ fc = 0
 
 name = sys.argv[1]
 
-fname = string.rsplit(name, "/", 1)[1]
+fname = name.rsplit("/", 1)[1]
 
 try:
 	infile = open(name, 'r')
@@ -48,7 +48,7 @@ except:
 line = infile.readline()
 while line is not None and line != "":
 
-	nopline = string.split(line, None, 2)
+	nopline = line.split(None, 2)
 	opcode = int(nopline[1][:2], 16)
 
 	# far call => replace it with an unlinked call
@@ -69,7 +69,7 @@ while line is not None and line != "":
 			outfile.write(lines1)
 			continue
 
-		pushline = string.split(lines2, None, 2)
+		pushline = lines2.split(None, 2)
 		opcode = int(pushline[1][:2], 16)
 		if opcode == 0x0e:
 			lines3 = infile.readline()
@@ -136,6 +136,6 @@ infile.close()
 outfile.close()
 
 if nc > 0 or fc > 0:
-	print fname, "near = ", nc, " far =", fc, " changed"
+	print(fname, "near = ", nc, " far =", fc, " changed")
 else:
-	print fname
+	print(fname)
