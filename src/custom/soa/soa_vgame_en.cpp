@@ -431,7 +431,9 @@ static int seg001(unsigned short offs) {
 		return 0;
 	}
 	case 0xff1: {
-		return 0;
+		//SOA_INFO("update_mouse_cursor()\n");
+		update_mouse_cursor();
+		return 1;
 	}
 	case 0xff7: {
 		//SOA_INFO("refresh_screen_size()\n");
@@ -439,7 +441,9 @@ static int seg001(unsigned short offs) {
 		return 1;
 	}
 	case 0xffd: {
-		return 0;
+		//SOA_INFO("update_mouse_cursor1()\n");
+		update_mouse_cursor1();
+		return 1;
 	}
 	case 0x1021: {
 		//SOA_INFO("refresh_screen_size1()\n");
@@ -447,7 +451,9 @@ static int seg001(unsigned short offs) {
 		return 1;
 	}
 	case 0x109c: {
-		return 0;
+		//SOA_INFO("mouse_check_update()\n");
+		mouse_check_update();
+		return 1;
 	}
 	case 0x10f0: {
 		return 0;

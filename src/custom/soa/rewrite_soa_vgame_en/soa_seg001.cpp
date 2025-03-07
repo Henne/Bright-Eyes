@@ -43,10 +43,28 @@ signed short enter_sound_option(char *opts)
 	} while (1);
 }
 
+void update_mouse_cursor(void)
+{
+	update_mouse_cursor1();
+}
 
 void refresh_screen_size(void)
 {
 	refresh_screen_size1();
+}
+
+void update_mouse_cursor1(void)
+{
+	if (ds_readw(MOUSE_LOCKED) == 0) {
+
+		if  (ds_readw(MOUSE_REFRESH_FLAG) == 0) {
+			ds_writew(MOUSE_LOCKED, 1);
+			restore_mouse_bg();
+			ds_writew(MOUSE_LOCKED, 0);
+		}
+
+		dec_ds_ws(MOUSE_REFRESH_FLAG);
+	}
 }
 
 void refresh_screen_size1(void)
@@ -83,6 +101,30 @@ void refresh_screen_size1(void)
 			/* put lock */
 			ds_writew(MOUSE_LOCKED, 0);
 		}
+	}
+}
+
+void mouse_check_update(void)
+{
+	/* return if mouse was not moved and the cursor remains */
+	if ((ds_readw(MOUSE_MOVED) != 0) || (ds_readd(P_LAST_CURSOR) != ds_readd(P_CURRENT_CURSOR))) {
+
+		/* set new cursor */
+		ds_writed(P_LAST_CURSOR, ds_readd(P_CURRENT_CURSOR));
+
+		/* check if the new cursor is the default cursor */
+		if (Real2Host(ds_readd(P_CURRENT_CURSOR)) == (Bit8u*)p_datseg + DEFAULT_MOUSE_CURSOR) {
+			/* set cursor size 0x0 */
+			ds_writew(MOUSE_POINTER_OFFSETX, ds_writew(MOUSE_POINTER_OFFSETY, 0));
+		} else {
+			/* set cursor size 8x8 */
+			ds_writew(MOUSE_POINTER_OFFSETX, ds_writew(MOUSE_POINTER_OFFSETY, 8));
+		}
+
+		/* reset mouse was moved */
+		ds_writew(MOUSE_MOVED, 0);
+		update_mouse_cursor1();
+		refresh_screen_size1();
 	}
 }
 
