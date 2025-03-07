@@ -12,11 +12,9 @@
 #include "callback.h"
 #include "dos_inc.h"
 #include "soa.h"
+#else
+#include <stdlib.h>
 #endif
-
-//#include <stdlib.h>
-//#include <math.h>
-//#undef abs
 
 #include "vgame_en.h"
 
@@ -61,7 +59,11 @@ signed int random_soa(const signed int val)
 	/* update rand_seed */
 	ds_writew(RANDOM_SOA_SEED, retval);
 
+	/* Remark: Original a function is called, here is a macro used */
 	retval = abs(retval) % val;
+#if defined(__BORLANDC__)
+	asm { nop; nop; }
+#endif
 
 	return ++retval;
 }
@@ -71,6 +73,7 @@ signed int random_soa(const signed int val)
  */
 unsigned short is_in_word_array(const signed short val, signed short *p)
 {
+	/* Remark: Original val stays on the stack, here it's placed in register si */
 	while (*p >= 0) {
 		if (*p++ == val) return 1;
 	}
@@ -84,7 +87,7 @@ unsigned short is_in_word_array(const signed short val, signed short *p)
 unsigned short is_in_byte_array(const signed char val, signed char *p)
 {
 	int i;
-
+	/* Remark: Original val stays on the stack, here it's placed in register si */
 	for (i = 1; *p != -1; i++) {
 		if (*(p++) == val)
 			return i;
