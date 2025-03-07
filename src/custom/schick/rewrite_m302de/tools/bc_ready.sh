@@ -64,7 +64,7 @@ for i in ${OBJDIR}/*.OBJ; do
 	fi
 
 	# extract instructions
-	./tools/dump_obj $i >/dev/null
+	../../tools/dump_obj $i >/dev/null
 	# move the BIN-files to BINDIR
 	mv ${OBJDIR}/${PREFIX}.BIN $BINDIR
 

@@ -34,7 +34,7 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-./tools/dump_obj >/dev/null 2>/dev/null
+../../tools/dump_obj >/dev/null 2>/dev/null
 if [ $? -ne 255 ]; then
 	echo "Problems with dump_obj => Recompile Bright-Eyes"
 	exit 1
@@ -81,7 +81,7 @@ for i in ${OBJDIR}/*.OBJ; do
 
 	echo "$i -- $PREFIX"
 	# extract instructions
-	./tools/dump_obj $i >/dev/null
+	../../tools/dump_obj $i >/dev/null
 	# move the BIN-files to BINDIR
         mv ${OBJDIR}/${PREFIX}.BIN $BINDIR
 
