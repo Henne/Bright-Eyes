@@ -43,7 +43,8 @@ static int seg000(unsigned short offs) {
 		return 0;
 	}
 	case 0x0271: {
-		return 0;
+		SOA_INFO("bc_clrscr();\n");
+		return 1;
 	}
 	case 0x029a: {
 		return 0;
@@ -124,7 +125,13 @@ static int seg000(unsigned short offs) {
 		return 0;
 	}
 	case 0x187e: {
-		return 0;
+		Bit16u cmd = CPU_Pop16();
+		CPU_Push16(cmd);
+
+		Bit16s ret = bc_bioskey((Bit8u)cmd);
+		//SOA_LOG("bioskey(int=0x%x) = %x\n", cmd, ret);
+		reg_ax = ret;
+		return 1;
 	}
 	case 0x18bb: {
 		return 0;
@@ -222,6 +229,21 @@ static int seg000(unsigned short offs) {
 	case 0x206b: {
 		return 0;
 	}
+	case 0x20bd: {
+		RealPt dest = CPU_Pop32();
+		RealPt src = CPU_Pop32();
+		Bit16u n = CPU_Pop16();
+		CPU_Push16(n);
+		CPU_Push32(src);
+		CPU_Push32(dest);
+
+		RealPt ret;
+		ret = bc_memmove(dest, src, n);
+		SOA_INFO("memmove(%p, %p, %d) = %p\n", dest, src, n, dest);
+		reg_dx = RealSeg(ret);
+		reg_ax = RealOff(ret);
+		return 1;
+	}
 	case 0x210b: {
 		return 0;
 	}
@@ -250,7 +272,11 @@ static int seg000(unsigned short offs) {
 		return 0;
 	}
 	case 0x248a: {
-		return 0;
+		RealPt str = CPU_Pop32();
+		CPU_Push32(str);
+		reg_ax = bc_strlen(str);
+		SOA_INFO("strlen(%s) = %d\n", Real2Host(str), reg_ax);
+		return 1;
 	}
 	case 0x24a9: {
 		return 0;
@@ -340,10 +366,16 @@ static int seg001(unsigned short offs) {
 	case 0x005: {
 		return 0;
 	}
+	case 0x02b: {
+		return 0;
+	}
 	case 0x040: {
 		return 0;
 	}
 	case 0x107: {
+		return 0;
+	}
+	case 0x10e: {
 		return 0;
 	}
 	case 0x128: {
@@ -365,15 +397,22 @@ static int seg001(unsigned short offs) {
 		return 0;
 	}
 	case 0xb38: {
-		return 0;
+		RealPt opts = CPU_Pop32();
+		CPU_Push32(opts);
+		//SOA_INFO("enter_sound_option()\n");
+		reg_ax = enter_sound_option((char*)Real2Host(opts));
+		return 1;
 	}
 	case 0xb73: {
+		SOA_INFO("textbox_type_start()\n");
 		return 0;
 	}
 	case 0xb86: {
+		SOA_INFO("textbox_select_sound()\n");
 		return 0;
 	}
 	case 0xbfe: {
+
 		return 0;
 	}
 	case 0xdb8: {
@@ -515,13 +554,15 @@ static int seg001(unsigned short offs) {
 		return 0;
 	}
 	case 0x4493: {
-		return 0;
+		SOA_INFO("soa_intro(); skipped\n");
+		return 1;
 	}
 	case 0x49a1: {
 		// main function
 		return 0;
 	}
 	case 0x4a31: {
+		SOA_INFO("soa_init(); not skipped\n");
 		return 0;
 	}
 	case 0x4c62: {
@@ -578,13 +619,16 @@ static int seg002(unsigned short offs) {
 		return 0;
 	}
 	case 0x30b7: {
-		return 0;
+		draw_mouse_cursor();
+		return 1;
 	}
 	case 0x3175: {
-		return 0;
+		save_mouse_bg();
+		return 1;
 	}
 	case 0x3204: {
-		return 0;
+		restore_mouse_bg();
+		return 1;
 	}
 	case 0x327b: {
 		return 0;
@@ -596,6 +640,9 @@ static int seg002(unsigned short offs) {
 		return 0;
 	}
 	case 0x34b7: {
+		return 0;
+	}
+	case 0x3575: {
 		return 0;
 	}
 	case 0x36e7: {
@@ -684,7 +731,9 @@ static int seg002(unsigned short offs) {
 		return 0;
 	}
 	case 0x5278: {
-		return 0;
+		wait_for_keyboard();
+		SOA_INFO("wait_for_keyboard()\n");
+		return 1;
 	}
 	case 0x5292: {
 		return 0;
@@ -697,6 +746,9 @@ static int seg002(unsigned short offs) {
 		return 0;
 	}
 	case 0x54ce: {
+		return 0;
+	}
+	case 0x54ef: {
 		return 0;
 	}
 	case 0x58b7: {
@@ -739,14 +791,13 @@ static int seg002(unsigned short offs) {
 
 static int seg003(unsigned short offs) {
 	switch(offs) {
-	/*
-	case 0x0006: {
+	case 0x35ac: {
 		return 0;
 	}
-	*/
 	default: {
 		SOA_ERR("Uncatched call to %s:0x%04x\n", __func__, offs);
-		exit(1);
+//		exit(1);
+		return 0;
 	}
 	}
 }
@@ -1081,7 +1132,26 @@ static int seg010(unsigned short offs) {
 		// monastery menu: talk to principal
 		return 0;
 	}
+	case 0x31c3: {
+		return 0;
+	}
 	case 0x322c: {
+		return 0;
+	}
+	case 0x32df: {
+		//Leave
+		return 0;
+	}
+	case 0x357a: {
+		return 0;
+	}
+	case 0x35bd: {
+		return 0;
+	}
+	case 0x3634: {
+		return 0;
+	}
+	case 0x3828: {
 		return 0;
 	}
 	case 0x385b: {
@@ -1117,6 +1187,9 @@ static int seg011(unsigned short offs) {
 
 static int seg012(unsigned short offs) {
 	switch(offs) {
+	case 0x000c: {
+		return 0;
+	}
 	case 0x0025: {
 		return 0;
 	}
@@ -1126,13 +1199,18 @@ static int seg012(unsigned short offs) {
 	case 0x0271: {
 		return 0;
 	}
+	case 0x05c9: {
+		return 0;
+	}
 	case 0x069f: {
+		return 0;
+	}
+	case 0x0ac2: {
 		return 0;
 	}
 	default: {
 		SOA_ERR("Uncatched call to %s:0x%04x\n", __func__, offs);
-		//exit(1);
-		return 0;
+		exit(1);
 	}
 	}
 }

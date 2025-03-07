@@ -3,7 +3,7 @@
  *	Functions rewritten: 4/4 (complete)
  *
  *	Borlandified and identical
- *	Compiler:	Borland C++ 3.1
+ *	Compiler:	Borland C++ 2.0
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Y soa_seg008.cpp
  */
 

@@ -940,9 +940,9 @@ struct hero_struct {
 
 #define reloc_game (0)
 
+extern char ds[0x10];
 #define p_datseg (&ds[0x0000])
 #define datseg (_DS)
-#define ds (0)
 
 #define ds_readb(p)		(*(Bit8u*)(ds + p))
 #define ds_readw(p)		(*(Bit16u*)(ds + p))

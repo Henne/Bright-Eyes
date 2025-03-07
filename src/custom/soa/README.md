@@ -19,7 +19,7 @@ To verify everything runs as expected, the filesize is 185.356 bytes:
 
 
 ## Technical Information
-* was build with the famous Borland C++ compiler (v2.0)
+* was build with the famous Borland C++ compiler (v2.0, Memory Model Large, Dataseg != Stack)
 * doesn't use overlay technique as used in the much larger SCHICKM.EXE
 * doesn't have a single datafile (49 datafiles + 1 Savegame + 1 Executable)
 
