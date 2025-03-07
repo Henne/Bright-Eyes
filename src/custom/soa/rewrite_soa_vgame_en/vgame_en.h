@@ -6,7 +6,7 @@
  *	These functions will only work with the version mentioned above.
  */
 
-#if !defined VGAME_EN_H
+#ifndef VGAME_EN_H
 #define VGAME_EN_H
 
 #include <stdlib.h>
@@ -942,6 +942,7 @@ struct hero_struct {
 
 #define p_datseg (&ds[0x0000])
 #define datseg (_DS)
+#define ds (0)
 
 #define ds_readb(p)		(*(Bit8u*)(ds + p))
 #define ds_readw(p)		(*(Bit16u*)(ds + p))

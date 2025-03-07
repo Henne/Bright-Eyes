@@ -7,14 +7,17 @@
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Y soa_seg008.cpp
  */
 
-
+#if !defined(__BORLANDC__)
 #include "dosbox.h"
 #include "callback.h"
 #include "dos_inc.h"
-
-#include <stdlib.h>
-
 #include "soa.h"
+#endif
+
+//#include <stdlib.h>
+//#include <math.h>
+//#undef abs
+
 #include "vgame_en.h"
 
 #include "soa_seg008.h"
@@ -35,15 +38,15 @@ unsigned short _rotl(unsigned short op, unsigned char count) {
  */
 unsigned short random_interval(const unsigned short lo, const unsigned short hi)
 {
-	return lo + random_soa(hi - lo + 1) - 1;
+	return ((lo + random_soa(hi - lo + 1)) - 1);
 }
 
 /**
  * \brief   generates a u16 random number
  */
-unsigned short random_soa(const unsigned short val)
+signed int random_soa(const signed int val)
 {
-	signed short retval;
+	int retval;
 
 	if (val == 0) {
 		return 0;
@@ -56,9 +59,9 @@ unsigned short random_soa(const unsigned short val)
 	retval = _rotl(retval, 3);
 
 	/* update rand_seed */
-	ds_writew(RANDOM_SOA_SEED, __abs__(retval) + 1);
+	ds_writew(RANDOM_SOA_SEED, retval);
 
-	retval = __abs__(retval) % val;
+	retval = abs(retval) % val;
 
 	return ++retval;
 }
@@ -68,11 +71,8 @@ unsigned short random_soa(const unsigned short val)
  */
 unsigned short is_in_word_array(const signed short val, signed short *p)
 {
-	int i;
-
-	for (i = 1; *p >= 0; i++) {
-		if (*(p++) == val)
-			return i;
+	while (*p >= 0) {
+		if (*p++ == val) return 1;
 	}
 
 	return 0;

@@ -5,7 +5,7 @@
  *	to symbolic names of global variables.
  */
 
-#if !defined SOA_SYMBOLS_H
+#ifndef SOA_SYMBOLS_H
 #define SOA_SYMBOLS_H
 
 #define RANDOM_SOA_SEED		(0x5F76)

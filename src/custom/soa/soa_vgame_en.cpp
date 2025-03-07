@@ -154,10 +154,31 @@ static int seg000(unsigned short offs) {
 		return 0;
 	}
 	case 0x1cde: {
-		return 0;
+		Bit16u interruptno = CPU_Pop16();
+		CPU_Push16(interruptno);
+
+		RealPt p = bc_getvect((Bit8u)interruptno);
+		SOA_LOG("getvect(int=0x%x) = %x\n", interruptno, p);
+
+		reg_ax = RealOff(p);
+		reg_dx = RealSeg(p);
+
+		return 1;
 	}
 	case 0x1ced: {
-		return 0;
+		Bit16u interruptno = CPU_Pop16();
+		RealPt isr = CPU_Pop32();
+
+		SOA_LOG("setvect(int=0x%x, *isr=0x%x:0x%x)\n",
+			interruptno,
+			(unsigned short)(RealSeg(isr) - soa_relocation),
+			RealOff(isr));
+
+		bc_setvect((Bit8u)interruptno, isr);
+
+		CPU_Push32(isr);
+		CPU_Push16(interruptno);
+		return 1;
 	}
 	case 0x1d2f: {
 		return 0;
