@@ -20,6 +20,7 @@
 #include "vgame_en.h"
 
 #include "soa_seg000.h"
+#include "soa_seg001.h"
 
 #if !defined(__BORLANDC__)
 namespace SOA_VGAME_EN {
