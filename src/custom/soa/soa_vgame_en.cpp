@@ -434,13 +434,17 @@ static int seg001(unsigned short offs) {
 		return 0;
 	}
 	case 0xff7: {
-		return 0;
+		//SOA_INFO("refresh_screen_size()\n");
+		refresh_screen_size();
+		return 1;
 	}
 	case 0xffd: {
 		return 0;
 	}
 	case 0x1021: {
-		return 0;
+		//SOA_INFO("refresh_screen_size1()\n");
+		refresh_screen_size1();
+		return 1;
 	}
 	case 0x109c: {
 		return 0;
