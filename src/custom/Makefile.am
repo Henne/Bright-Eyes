@@ -4,4 +4,4 @@ SUBDIRS = schick schweif
 SUBDIRS += tools
 
 noinst_LIBRARIES = libcustom.a
-libcustom_a_SOURCES = custom.cpp custom_hooks.h
+libcustom_a_SOURCES = custom.cpp custom_hooks.h bcc.cpp

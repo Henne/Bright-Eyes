@@ -3,6 +3,8 @@
 
 #ifdef DOSBOX_CUSTOM
 
+bool check_bcc(char *, unsigned short , unsigned short, unsigned short);
+
 #ifdef DOSBOX_SCHICK_H
 /* prototypes for Execution operations */
 bool init_schick(char *, unsigned short, unsigned short, unsigned short);

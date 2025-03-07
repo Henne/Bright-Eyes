@@ -131,8 +131,6 @@ void schick_get_fname(char *dst, char *src) {
 //Returns true if the desired programm is started
 bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned short ip)
 {
-
-	char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
 	char fname[81];
 	int ver;
 
@@ -141,11 +139,6 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	if (strcmp(fname, "schickm.exe")
 			&& strcmp(fname, "bladem.exe")
 			&& strcmp(fname, "gen.exe")) return false;
-
-	/* Check CS:IP in the EXE-Header are 0:0
-	 * and the first executed instruction is mov dx,i16 */
-	if (_cs != 0 || ip != 0 || real_readb(reloc+_cs, ip) != 0xba)
-		return false;
 
 	/* Show CS:IP on the virtual machine and the pointer to 0:0 */
 	D1_TRAC("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", reloc, ip, MemBase);
@@ -156,14 +149,6 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	p_datseg_bak = p_datseg;
 	p_datseg = MemBase + PhysMake(datseg, 0);
 	D1_TRAC("Dseg: 0x%X\n", datseg);
-
-	/* Check if the start of the Datasegment is Borland C++ */
-	if (host_readd(p_datseg) != 0 ||
-		strcmp((char*)MemBase+PhysMake(datseg, 4), borsig)) {
-
-		D1_ERR("Kein Borland C++ Kompilat!\n");
-		return false;
-	}
 
 	/* check for the game program */
 	if (!strcmp(fname, "schickm.exe") || !strcmp(fname, "bladem.exe")) {

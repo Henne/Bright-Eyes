@@ -25,6 +25,9 @@ void custom_init_prog(char *name, Bit16u relocate, Bit16u init_cs, Bit16u init_i
 	if (custom_runs)
 		current->suspend();
 */
+	if (check_bcc(name, relocate, init_cs, init_ip) == false)
+		return;
+	/* from here on only Borland C++ executables are supported */
 
 	/* run all detectors */
 	if (init_schick(name, relocate, init_cs, init_ip)) {
