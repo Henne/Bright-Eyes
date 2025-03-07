@@ -12,10 +12,7 @@ DISORIG=${DIR}/disasm_orig
 DRIVE_C=${PWD}/../../drive_c
 
 rm -rf $OBJDIR/* $BINDIR/* $DISDIR/*
-
-mkdir -p $OBJDIR
-mkdir -p $BINDIR
-mkdir -p $DISDIR
+mkdir -p $OBJDIR $BINDIR $DISDIR
 
 # COMPILATION with DOSBox
 

@@ -150,6 +150,6 @@ for i in ${OUTDIR}/*.dis; do
 	#echo -n ${FNAME}
 
 	# postprocess the disasm file
-	python ./nc2fc.py $i
+	python3 ./nc2fc.py $i
 	mv ${i}.tmp ${i}
 done
