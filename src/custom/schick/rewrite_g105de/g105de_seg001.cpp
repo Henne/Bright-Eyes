@@ -1,3 +1,26 @@
+/*
+ *	Rewrite of DSA1 GEN v1.05_de functions of seg001 (cdrom)
+ *	Functions rewritten: 21/21 (complete)
+ *
+ *	Remarks:
+ *		The first part of this file is for inclusion in DOSBox.
+ *		Aim here is, that they work identical.
+ *
+ *		The second is a rewrite using the inline assembler of
+ *		Borland C++ 3.1. The aim is, to produce exactly the same
+ *		OPcodes like in the original. Seems to work. :)
+ *
+ *	MSCDEX:
+ *		In this segment are mostly calls to the MSCDEX-API.
+ *		It seems, that MSCDEX 2.1 is needed,
+ *		since function 0x10 (driver request) is called.
+ *		Further this code is written only on the first installed
+ *		CD-ROM drive.
+ *
+ *
+ */
+
+#if !defined(__BORLANDC__)
 #include "dosbox.h"
 #include "regs.h"
 #include "callback.h"
@@ -5,15 +28,34 @@
 
 #include "schick.h"
 
+#endif
+
 #include "g105de_seg000.h"
 #include "g105de_seg001.h"
 
 #define CDSEG (0xc83)
 
+#if !defined(__BORLANDC__)
 namespace G105de {
+#endif
 
-static unsigned short CD_has_drives() {
+static unsigned short CD_has_drives()
+{
+#if defined(__BORLANDC__)
+	/* al ==  0: return number of drive letters */
+	asm {
+		mov ax, 0x1500
+		xor bx, bx
+		int 0x2f
+		xor ax, ax
+		or  bx, bx
+		jz has_cd
+		inc ax
+	}
+has_cd:
 
+	return _AX;
+#else
 	reg_ax = 0x1500;
 	reg_bx = 0x0000;
 	CALLBACK_RunRealInt(0x2f);
@@ -22,53 +64,128 @@ static unsigned short CD_has_drives() {
 		return 0;
 
 	return 1;
+#endif
 }
 
-static unsigned short CD_count_drives() {
+static unsigned short CD_count_drives()
+{
+#if defined(__BORLANDC__)
+	asm {
+		mov ax, 0x1500
+		xor bx, bx
+		int 0x2f
+	}
+
+	return _BX;
+#else
 
 	reg_ax = 0x1500;
 	reg_bx = 0x0000;
 	CALLBACK_RunRealInt(0x2f);
 
 	return reg_bx;
+#endif
 }
 
-static unsigned short CD_get_first_drive() {
+static unsigned short CD_get_first_drive()
+{
+#if defined(__BORLANDC__)
+	asm {
+		mov ax, 0x1500
+		xor bx, bx
+		int 0x2f
+	}
+
+	return _CX;
+#else
 
 	reg_ax = 0x1500;
 	reg_bx = 0x0000;
 	CALLBACK_RunRealInt(0x2f);
 
 	return reg_cx;
+#endif
 }
 
-unsigned short CD_set_drive_no() {
+unsigned short CD_set_drive_no()
+{
 
-	if(CD_has_drives() == 0)
+	if (CD_has_drives() == 0)
 		return 0;
 
-	if(CD_count_drives() == 0)
+	if (CD_count_drives() == 0)
 		return 0;
 
 	ds_writew(0x246c, CD_get_first_drive());
 	return 1;
 }
 
-void CD_driver_request(RealPt req) {
+#if defined(__BORLANDC__)
+void CD_driver_request(driver_request *req)
+#else
+void CD_driver_request(RealPt req)
+#endif
+{
+#if defined(__BORLANDC__)
+	asm {
+		mov ax, 0x1510
+		mov cx, [0x246c]
+		les bx, req
+		int 0x2f
+	}
+#else
 	reg_ax = 0x1510;
 	reg_cx = ds_readw(0x246c);
 	CPU_SetSegGeneral(es, RealSeg(req));
 	reg_bx = RealOff(req);
 	CALLBACK_RunRealInt(0x2f);
+#endif
 }
 
-unsigned int CD_get_tod() {
+/* Borlandified and identical */
+/* TODO: check adresses of seg013 */
+static void CD_unused1(void)
+{
+	if (ds_readw(0x95) == 0)
+		return;
+#if defined(__BORLANDC__)
+	req[3].status = 0;
+	req[3].ptr = cd_buf1;
+	cd_buf1[252] = 0x0c;
+	CD_driver_request(&req[3]);
+#else
+	//DUMMY
+#endif
+}
+
+
+/**
+ * \brief   get time of day
+ *
+ * \return              clock ticks since midnight, the system time.
+ *
+ * \todo    produces a compiler warning and is a bit hacky
+ */
+/* Borlandified and identical */
+Bit32s CD_get_tod(void)
+{
+#if defined(__BORLANDC__)
+	asm {
+		mov ah, 0x0
+		int 0x1a
+		mov ax, dx
+		mov dx, cx
+		jmp near leave_tod
+	}
+leave_tod:
+#else
 	reg_ah = 0;
 	CALLBACK_RunRealInt(0x1a);
 	reg_ax = reg_dx;
 	reg_dx = reg_cx;
 
 	return (reg_dx << 16) | reg_ax;
+#endif
 }
 
 void seg001_00bb(unsigned short track_no)
@@ -208,4 +325,6 @@ bool seg001_0600()
 	return true;
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
