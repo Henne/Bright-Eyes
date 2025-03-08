@@ -33,9 +33,13 @@
 
 #endif
 
+#define RANDOM_GEN_SEED			(0x1fd6)    /* Bit16u */
+
 #define CD_AUDIO_TRACK                  (0x245a)    /* unsigned short */
 #define CD_AUDIO_TOD                    (0x2464)    /* unsigned long */
 #define CD_AUDIO_POS                    (0x2468)    /* unsigned long */
 #define CD_DRIVE_NO                     (0x246c)    /* unsigned short */
+
+#define RANDOM_GEN_SEED2		(0x458f)    /* Bit16u */
 
 #endif

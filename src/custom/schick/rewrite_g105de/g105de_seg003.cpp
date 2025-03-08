@@ -1,70 +1,94 @@
 /*
 	Rewrite of DSA1 Generator v1.05_de seg003 (random)
-	Functions rewritten: complete
+	Functions rewritten: 4/4 (complete)
 */
 
 #include <stdlib.h>
 
 #if !defined(__BORLANDC__)
 #include "schick.h"
-
-#include "g105de_seg003.h"
 #else
 #include "port.h"
-#include "seg003.h"
 #endif
+
+#include "symbols.h"
+
+#include "g105de_seg003.h"
 
 #if !defined(__BORLANDC__)
 namespace G105de {
 #endif
 
-static Bit16u rand_seed = 0x327b;
-
 #if !defined(__BORLANDC__)
 static inline
-unsigned short my_rol16(unsigned short op, unsigned char count) {
+unsigned short _rotl(unsigned short op, unsigned short count) {
 	return (op << count) | (op >> (16 - count));
 }
-#else
-#define my_rol16(op, count) _rotl(op, count)
 #endif
 
 /**
 	random_interval_gen - generates a u16 random number between lo and hi
 */
-unsigned short random_interval_gen(unsigned short lo, unsigned short hi) {
-
+/* Borlandified and identical */
+unsigned short random_interval_gen(unsigned short lo, unsigned short hi)
+{
 	return lo + random_gen(hi - lo + 1) - 1;
 }
 
 /**
 	random_gen - generates a u16 random number
 */
-unsigned short random_gen(short val) {
+/* Borlandified and nearly identical */
+int random_gen(const int val)
+{
+	int retval;
 
-	Bit16u si, ax;
-
-	if (val == 0)
+	if (val == 0) {
 		return 0;
+	}
 
-	si = rand_seed ^ ds_readw(0x458f);
-	ax = my_rol16(si, 2) + ds_readw(0x458f);
-	ax = ax ^ rand_seed;
-	si = my_rol16(ax, 3);
+	retval = ds_readw(RANDOM_GEN_SEED) ^ ds_readw(RANDOM_GEN_SEED2);
+	retval = _rotl(retval, 2);
+	retval = (retval + ds_readw(RANDOM_GEN_SEED2)) ^ ds_readw(RANDOM_GEN_SEED);
+	retval = _rotl(retval, 3);
 
-	rand_seed = si;		/* update rand_seed */
-	si = abs(si) % val;
+	/* update rand_seed */
+	ds_writew(RANDOM_GEN_SEED, abs(retval) + 1);
 
-	return si + 1;
+	retval = abs(retval) % val;
+#if defined(__BORLANDC__)
+	asm { db 0x90 }
+#endif
+
+	return ++retval;
 }
 
-unsigned short is_in_word_array(unsigned short val, Bit8u *p)
+/**
+ * \brief   checks if val is in a word array
+ */
+/* Borlandified and identical */
+int is_in_word_array(const int val, signed short *p)
 {
-
-	while (host_readw(p) != 0) {
-		if (host_readw(p) == val)
+	while (*p >= 0) {
+		if (*p++ == val) {
 			return 1;
-		p += 2;
+		}
+	}
+
+	return 0;
+}
+
+/**
+ * \brief   checks if val is in a byte array
+ */
+/* Borlandified and identical */
+int is_in_byte_array(const signed char val, signed char *p)
+{
+	int i;
+
+	for (i = 1; *p != -1; i++) {
+		if (*p++ == val)
+			return i;
 	}
 
 	return 0;

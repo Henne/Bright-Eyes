@@ -390,7 +390,7 @@ static int seg003(Bitu offs) {
 		CPU_Push32(p);
 		CPU_Push16(val);
 
-		reg_ax = is_in_word_array(val, MemBase + Real2Phys(p));
+		reg_ax = is_in_word_array(val, (signed short*)(MemBase + Real2Phys(p)));
 		D1_LOG("is_in_word_array(%x, %x); = %d\n", val, p, reg_ax);
 
 		return 1;

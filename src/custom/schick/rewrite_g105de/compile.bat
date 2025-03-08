@@ -22,7 +22,7 @@
 @REM -- here start the complete
 @REM BCC.EXE -mlarge -O- -c -Y SEG001.CPP
 @REM BCC.EXE -mlarge -O- -c -Y SEG002.CPP
-@REM BCC.EXE -mlarge -O- -c -Y SEG003.CPP
+@REM BCC.EXE -mlarge -O1 -c -1- -Y SEG003.CPP
 @REM BCC.EXE -mlarge -O- -c -Y SEG004.CPP
 @REM BCC.EXE -mlarge -O- -c -Y SEG005.CPP
 @REM BCC.EXE -mlarge -O- -c -Y SEG006.CPP

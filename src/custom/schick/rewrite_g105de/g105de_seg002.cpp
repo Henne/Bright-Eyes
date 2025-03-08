@@ -6049,7 +6049,7 @@ void inc_spell(Bit16u spell)
 
 		Bit8u *array = (Bit8u*)house_spells[hero.school];
 		/* and is a school spell */
-		if (is_in_word_array(spell, array))
+		if (is_in_word_array(spell, (signed short*)array))
 			max_incs = 3;
 	}
 
