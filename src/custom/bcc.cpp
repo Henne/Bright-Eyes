@@ -8,6 +8,25 @@ static const char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
 static const char tcsig[]  = "Turbo-C - Copyright (c) 1988 Borland Intl.";
 static const char tcpsig[]  = "Turbo C++ - Copyright 1990 Borland Intl.";
 
+
+/* Signature: strlen() BCC31:L */
+static const char s_strlen[] = {0x55, 0x8b, 0xec, 0x57, 0xc4, 0x7e, 0x06, 0x33,
+				0xc0, 0x3b, 0x46, 0x08, 0x75, 0x04, 0x3b, 0xc7,
+				0x74, 0x0a, 0xfc, 0xb9, 0xff, 0xff, 0xf2, 0xae,
+				0x91, 0xf7, 0xd0, 0x48, 0x5f, 0x5d, 0xcb};
+
+
+void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
+{
+	int i;
+	for (i = 0; i < 0xffff; i++) {
+		if (memcmp(p_cs + i, s_strlen, strlen(s_strlen)) == 0) {
+			fprintf(stderr, "Found strlen() at CS:0x%04x\n", i);
+		}
+	}
+
+}
+
 bool check_bcc(char *name, unsigned short reloc, unsigned short _cs, unsigned short _ip)
 {
 	Bit8u* p_datseg = NULL;
@@ -70,6 +89,8 @@ bool check_bcc(char *name, unsigned short reloc, unsigned short _cs, unsigned sh
 
 	fprintf(stderr, "Executable: %s, Compiler: %s\n", name, sig);
 	fprintf(stderr, "Executable: %s, Version: %d.%d Model %c!\n", name, version / 10, version % 10, model);
+
+	find_clib_signatures(p_cseg, p_datseg);
 
 	return true;
 }
