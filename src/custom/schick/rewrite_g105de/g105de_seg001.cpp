@@ -28,6 +28,8 @@
 
 #include "schick.h"
 
+#else
+#include "cda.h"
 #endif
 
 #include "symbols.h"
@@ -256,7 +258,7 @@ signed short CD_bioskey(signed short cmd)
 
 void seg001_0312()
 {
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
 		return;
 
 	real_writew(reloc_gen + CDSEG, 3, 0);
@@ -266,7 +268,7 @@ void seg001_0312()
 
 void seg001_033b()
 {
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
 		return;
 
 	seg001_0312();
@@ -277,7 +279,7 @@ void seg001_03a8()
 {
 	Bit16u v;
 
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
 		return;
 
 	real_writew(reloc_gen + CDSEG, 0x3b, 0);
@@ -308,17 +310,17 @@ void seg001_0465()
 	ds_writew(0x9b, 1);
 }
 
-bool seg001_0600()
+signed short seg001_0600()
 {
 	if (CD_set_drive_no() == 0)
-		return false;
+		return 0;
 
-	ds_writew(0x95, 1);
+	ds_writew(CD_INIT_SUCCESSFUL, 1);
 	/* CHECK_CD() would have been called here */
 	seg001_033b();
 	seg001_03a8();
 
-	return true;
+	return 1;
 }
 
 #if !defined(__BORLANDC__)
