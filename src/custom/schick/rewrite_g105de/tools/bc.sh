@@ -61,6 +61,7 @@ for i in g105de_*.h; do
 done
 
 cp compile.bat ${DRIVE_C}/src
+cp symbols.h ${DRIVE_C}/src
 
 # run compile.bat in a DOSBox environment, needs an installes BCC.EXE there
 # TODO: make this work from here

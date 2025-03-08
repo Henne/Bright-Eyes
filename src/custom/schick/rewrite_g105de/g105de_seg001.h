@@ -8,7 +8,7 @@ namespace G105de {
 	//static
 	void CD_driver_request(RealPt req);
 	//static
-	unsigned int CD_get_tod();
+	Bit32s CD_get_tod();
 	//static
 	void seg001_00bb(unsigned short);
 	//static

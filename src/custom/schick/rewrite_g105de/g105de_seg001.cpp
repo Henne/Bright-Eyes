@@ -30,6 +30,8 @@
 
 #endif
 
+#include "symbols.h"
+
 #include "g105de_seg000.h"
 #include "g105de_seg001.h"
 
@@ -116,7 +118,7 @@ unsigned short CD_set_drive_no()
 	if (CD_count_drives() == 0)
 		return 0;
 
-	ds_writew(0x246c, CD_get_first_drive());
+	ds_writew(CD_DRIVE_NO, CD_get_first_drive());
 	return 1;
 }
 
@@ -129,13 +131,13 @@ void CD_driver_request(RealPt req)
 #if defined(__BORLANDC__)
 	asm {
 		mov ax, 0x1510
-		mov cx, [0x246c]
+		mov cx, [CD_DRIVE_NO]
 		les bx, req
 		int 0x2f
 	}
 #else
 	reg_ax = 0x1510;
-	reg_cx = ds_readw(0x246c);
+	reg_cx = ds_readw(CD_DRIVE_NO);
 	CPU_SetSegGeneral(es, RealSeg(req));
 	reg_bx = RealOff(req);
 	CALLBACK_RunRealInt(0x2f);
@@ -146,7 +148,7 @@ void CD_driver_request(RealPt req)
 /* TODO: check adresses of seg013 */
 static void CD_unused1(void)
 {
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
 		return;
 #if defined(__BORLANDC__)
 	req[3].status = 0;
@@ -193,7 +195,7 @@ void seg001_00bb(unsigned short track_no)
 	unsigned int track_start, track_end;
 	unsigned int track_len, tmp;
 
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
 		return;
 
 	real_writew(reloc_gen + CDSEG, 0x8f, 0);
@@ -226,30 +228,24 @@ void seg001_00bb(unsigned short track_no)
 	real_writed(reloc_gen + CDSEG, 0x9e, track_len - 150);
 
 	CD_driver_request(RealMake(reloc_gen + CDSEG, 0x8c));
-	ds_writed(0x2468, ((track_len - 150) * 0x1234e) / 0x4b000);
-	ds_writed(0x2464, CD_get_tod());
+	ds_writed(CD_AUDIO_POS, ((track_len - 150) * 0x1234e) / 0x4b000);
+	ds_writed(CD_AUDIO_TOD, CD_get_tod());
 }
 
 static void seg001_02ba()
 {
-	signed int val;
-
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
 		return;
 
-	val = CD_get_tod();
-	val -= ds_readd(0x2464);
-
-	if (val < (signed int)ds_readd(0x2468))
+	if (CD_get_tod() - (Bit32s)ds_readd(CD_AUDIO_TOD) < (Bit32s)ds_readd(CD_AUDIO_POS))
 		return;
 
-	if (ds_readw(0x9b) != 1)
-		return;
-
-	seg001_0312();
-	seg001_0312();
-	seg001_00bb(ds_readw(0x245a));
-	ds_writew(0x9b, 1);
+	if (ds_readw(CD_AUDIO_REPEAT) == 1) {
+		seg001_0312();
+		seg001_0312();
+		seg001_00bb(ds_readw(CD_AUDIO_TRACK));
+		ds_writew(CD_AUDIO_REPEAT, 1);
+	}
 }
 
 signed short CD_bioskey(signed short cmd)
