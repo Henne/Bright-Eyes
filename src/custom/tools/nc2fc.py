@@ -78,7 +78,7 @@ while line is not None and line != "":
 				outfile.write(lines2)
 				continue
 
-			callline = string.split(lines3)
+			callline = lines3.split()
 
 			instruction = callline[1]
 			opcode = int(instruction[:2], 16)
@@ -94,8 +94,11 @@ while line is not None and line != "":
 					#calculate the absolute address
 					new_add = address + int(callline[0], 16) + 3
 
-					lo = new_add % 256
-					hi = new_add / 256
+					lo = int(new_add % 256)
+					hi = int(new_add / 256)
+
+					lo_s = hex(lo)[2:4].zfill(2).upper()
+					hi_s = hex(hi)[2:4].zfill(2).upper()
 
 					#create one output line
 
@@ -104,10 +107,7 @@ while line is not None and line != "":
 					o = o + "  "
 
 					#create opcode
-					o = o + "9A"
-					o = o + string.upper(hex(lo)[2:4].zfill(2))
-					o = o + string.upper(hex(hi)[2:4].zfill(2))
-					o = o + "0000        "
+					o = o + "9A" + lo_s + hi_s + "0000        "
 
 					#create assembly
 					o = o + "call 0x0:"

@@ -16,7 +16,7 @@ mkdir -p $OUTDIR
 
 err=0
 # check for the needed programs
-for prog in ndisasm head python; do
+for prog in ndisasm head python3; do
 	$prog --version >/dev/null 2>/dev/null
 	if [ $? -eq 127 ]; then
 		echo "ERROR: The program $prog is needed"
@@ -150,6 +150,6 @@ for i in ${OUTDIR}/*.dis; do
 	#echo -n ${FNAME}
 
 	# postprocess the disasm file
-	python3 ./nc2fc.py $i
+	python3 ../../../tools/nc2fc.py $i
 	mv ${i}.tmp ${i}
 done
