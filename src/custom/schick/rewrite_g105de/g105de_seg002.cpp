@@ -1528,7 +1528,11 @@ void read_soundcfg()
 void init_music(unsigned long size)
 {
 	form_xmid = gen_alloc(size);
+#if !defined(__BORLANDC__)
 	ds_writed(0x3f46, emu_gen_alloc(size));
+#else
+	ds_writed(0x3f46, (Bit32u)gen_alloc(size));
+#endif
 
 	if (form_xmid == NULL)
 		return;
@@ -7034,7 +7038,7 @@ void init_stuff()
 	dst_dst = ds_readd(0x47cb);
 }
 
-void *gen_alloc(unsigned long size)
+void* gen_alloc(unsigned long size)
 {
 	D1_INFO("HOST gen_alloc(%ld);\n", size);
 	return calloc(size, sizeof(char));

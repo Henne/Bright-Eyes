@@ -130,8 +130,12 @@ namespace G105de {
 	void alloc_buffers();
 	void init_colors();
 	void init_stuff();
-	void *gen_alloc(unsigned long);
+	void* gen_alloc(unsigned long);
+
+#if !defined(__BORLANDC__)
 	RealPt emu_gen_alloc(Bit32u);
+#endif
+
 #if !defined(__BORLANDC__)
 }
 #endif

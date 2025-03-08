@@ -64,6 +64,7 @@ cp compile.bat ${DRIVE_C}/src
 cp symbols.h ${DRIVE_C}/src
 cp cda.h ${DRIVE_C}/src
 cp port.h ${DRIVE_C}/src
+cp hero.h ${DRIVE_C}/src
 
 # run compile.bat in a DOSBox environment, needs an installes BCC.EXE there
 # TODO: make this work from here
