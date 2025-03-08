@@ -13,9 +13,6 @@ typedef signed long Bit32s;
 typedef Bit8u* RealPt;
 typedef Bit8u* PhysPt;
 
-typedef int bool;
-
-
 extern char ds[0xffff];
 #define p_datseg (&ds[0x0000])
 
@@ -45,9 +42,6 @@ extern char ds[0xffff];
 
 #define RealMake(seg, off) (void*)(seg << 4 + off)
 #define Real2Host(p) (p)
-
-#define false (0)
-#define true (1)
 
 #define bc_free(p) free(p)
 #define emu_gen_alloc(nelem) calloc(1, nelem)

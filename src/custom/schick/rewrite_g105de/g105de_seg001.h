@@ -2,6 +2,8 @@
 namespace G105de {
 #endif
 
+#include "port.h"
+
 //static
 unsigned short CD_set_drive_no();
 

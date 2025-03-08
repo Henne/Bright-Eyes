@@ -22,5 +22,4 @@ static inline void bc_randomize() { }
 
 #include <BIOS.H>
 
-
 #endif

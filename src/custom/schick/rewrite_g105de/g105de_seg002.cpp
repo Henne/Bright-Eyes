@@ -866,9 +866,9 @@ static const Bit16u ro_zero = 0;
 static struct struct_hero hero;
 
 /* DS:0x1a09 */
-static bool use_cda;
+static unsigned short use_cda;
 /* DS:0x1a0b */
-static bool eh_installed;
+static unsigned short eh_installed;
 /* DS:0x1a11 */
 static Bit8u *bg_buffer[MAX_PAGES];
 /* DS:0x1a3d */
@@ -1002,7 +1002,7 @@ static const struct mouse_action action_input[2] = {
 			{ 0, 0, 319, 199, 0x1c},
 			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 /* DS:0x1c77 */
-static bool bool_mode;
+static unsigned short bool_mode;
 /* DS:0x1c79 */
 static const struct mouse_action *action_page[MAX_PAGES] = {
 			(struct mouse_action*)&action_base,
@@ -1018,7 +1018,7 @@ static const struct mouse_action *action_page[MAX_PAGES] = {
 			(struct mouse_action*)&action_spells };
 
 /* DS:0x1ca5 */
-static bool need_refresh = true;
+static unsigned short need_refresh = 1;
 
 /* DS:0x1ca6 */
 struct type_bitmap {
@@ -1140,9 +1140,9 @@ static const struct struct_color pal_heads[32] = {
 };
 
 /* DS:0x2780 */
-static bool got_ch_bonus;
+static unsigned short got_ch_bonus;
 /* DS:0x2782 */
-static bool got_mu_bonus;
+static unsigned short got_mu_bonus;
 
 /* DS:0x3f2a */
 static Bit32s flen;
@@ -1491,7 +1491,7 @@ void read_soundcfg()
 	prepare_path(fname);
 
 
-	use_cda = false;
+	use_cda = 0;
 	ds_writew(0x1a07, 1);
 
 	fd = fopen(fname, "rb");
@@ -1512,12 +1512,12 @@ void read_soundcfg()
 #endif
 	if (port && load_driver(RealMake(datseg, 0x1dda), 3, host_readw((Bit8u*)&port))) {
 		/* disable audio-cd */
-		use_cda = false;
+		use_cda = 0;
 		return;
 	}
 
 	/* enable audio-cd */
-	use_cda = true;
+	use_cda = 1;
 	/* disable midi */
 	ds_writew(0x1a07, 1);
 
@@ -1571,16 +1571,16 @@ void stop_music()
 }
 
 #if !defined(__BORLANDC__)
-bool emu_load_seq(Bit16u sequence_num)
+unsigned short emu_load_seq(Bit16u sequence_num)
 {
 	CPU_Push16(sequence_num);
 	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1e7);
 	CPU_Pop16();
-	return reg_ax ? true : false;
+	return reg_ax ? 1 : 0;
 }
 #else
 
-bool load_seq(Bit16u sequence_num)
+unsigned short load_seq(Bit16u sequence_num)
 {
 	Bit8u *ptr;
 	Bit16u si, di, patch;
@@ -1588,7 +1588,7 @@ bool load_seq(Bit16u sequence_num)
 	fd_timbre = fd_open_datfile(35);
 
 	if (fd_timbre == NULL)
-		return false;
+		return 0;
 
 	ds_writew(0x3f5a, AIL_register_sequence(ds_readw(0x3f5c),
 		Real2Host(ds_readd(0x3f46)), sequence_num,
@@ -1596,7 +1596,7 @@ bool load_seq(Bit16u sequence_num)
 
 	if (ds_readw(0x3f5a) == 0xffff) {
 		fclose(fd_timbre);
-		return false;
+		return 0;
 	}
 
 	while (si = AIL_timbre_request(ds_readw(0x3f5c), ds_readw(0x3f5a)) != 0xffff)
@@ -1611,18 +1611,18 @@ bool load_seq(Bit16u sequence_num)
 		free(ptr);
 	}
 	fclose(fd_timbre);
-	return true;
+	return 1;
 
 }
 #endif
 
-bool play_sequence(Bit16u sequence_num)
+unsigned short play_sequence(Bit16u sequence_num)
 {
-	if (emu_load_seq(sequence_num) == false)
-		return false;
+	if (emu_load_seq(sequence_num) == 0)
+		return 0;
 
 	AIL_start_sequence(ds_readw(0x3f5c), sequence_num);
-	return true;
+	return 1;
 }
 
 Bit8u *get_timbre(Bit16u bank, Bit16u patch)
@@ -1643,27 +1643,27 @@ Bit8u *get_timbre(Bit16u bank, Bit16u patch)
 	return ptr;
 }
 
-bool call_load_file(Bit16u index)
+unsigned short call_load_file(Bit16u index)
 {
 	return load_file(index);
 }
 
-bool load_file(Bit16u index)
+unsigned short load_file(Bit16u index)
 {
 	FILE *fd;
 
 	fd = fd_open_datfile(index);
 
 	if (fd == NULL)
-		return false;
+		return 0;
 
 	fread(Real2Host(ds_readd(0x3f46)), 1, 32767, fd);
 	fclose(fd);
 
-	return true;
+	return 1;
 }
 
-bool load_driver(RealPt fname, Bit16u type, Bit16u port)
+unsigned short load_driver(RealPt fname, Bit16u type, Bit16u port)
 {
 	CPU_Push16(port);
 	CPU_Push16(type);
@@ -1672,7 +1672,7 @@ bool load_driver(RealPt fname, Bit16u type, Bit16u port)
 	CPU_Pop32();
 	CPU_Pop16();
 	CPU_Pop16();
-	return reg_ax ? true : false;
+	return reg_ax ? 1 : 0;
 }
 
 void play_midi(Bit16u index)
@@ -1859,7 +1859,7 @@ void mouse_do_enable(Bit16u val, RealPt ptr)
 	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
 				(Bit8u*)&p4, (Bit8u*)&p5);
 
-	eh_installed = true;
+	eh_installed = 1;
 }
 
 void mouse_do_disable()
@@ -1878,7 +1878,7 @@ void mouse_do_disable()
 	do_mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&v3,
 		(Bit8u*)&v4, (Bit8u*)&v5);
 
-	eh_installed = false;
+	eh_installed = 0;
 }
 
 /**
@@ -3461,9 +3461,9 @@ Bit16s gui_bool(Bit8u *msg)
 {
 	Bit16s retval;
 
-	bool_mode = true;
+	bool_mode = 1;
 	retval = gui_radio(msg, 2, texts[4], texts[5]);
-	bool_mode = false;
+	bool_mode = 0;
 
 	if (retval == 1)
 		return 1;
@@ -4186,7 +4186,7 @@ void fill_values()
 			/* Praios: MU + 1 */
 			hero.attribs[0].normal++;
 			hero.attribs[0].current++;
-			got_mu_bonus = true;
+			got_mu_bonus = 1;
 			break;
 		}
 		case 2 : {
@@ -4224,7 +4224,7 @@ void fill_values()
 			/* Tsa: CH + 1 */
 			hero.attribs[2].normal++;
 			hero.attribs[2].current++;
-			got_ch_bonus = true;
+			got_ch_bonus = 1;
 			break;
 		}
 		case 9 : {
@@ -4342,7 +4342,7 @@ void refresh_screen()
 			/* draw DMENGE.DAT or the typus name */
 			dst = Real2Phys(ds_readd(0x47d3)) + 0xa10;
 			if (hero.typus != 0) {
-				need_refresh = true;
+				need_refresh = 1;
 				copy_to_screen(Real2Phys(ds_readd(0x47b3)),
 					dst, 128, 184, 0);
 
@@ -4365,7 +4365,7 @@ void refresh_screen()
 				if (need_refresh) {
 					call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)),
 						16, 8, 143, 191, 0);
-					need_refresh = false;
+					need_refresh = 0;
 				}
 				wait_for_vsync();
 				set_palette(Real2Host(ds_readd(0x47a7)) + 0x5c02, 0 , 32);
@@ -4426,8 +4426,8 @@ void clear_hero() {
 
 	Bit16u i;
 
-	got_ch_bonus = false;
-	got_mu_bonus = false;
+	got_ch_bonus = 0;
+	got_mu_bonus = 0;
 
 	head_current = 0;
 	head_last = 0;
@@ -4668,7 +4668,7 @@ void spell_inc_novice(Bit16u spell)
 void select_typus()
 {
 	Bit8s old_typus, possible_types, ltmp2;
-	bool impossible;
+	unsigned short impossible;
 	Bit16s i, si, di;
 	struct type_bitmap t;
 
@@ -4695,7 +4695,7 @@ void select_typus()
 	possible_types = 0;
 
 	for (i = 1; i <= 12; i++) {
-		impossible = false;
+		impossible = 0;
 		for (si = 0; si < 4; si++) {
 			Bit8u req;
 
@@ -4706,11 +4706,11 @@ void select_typus()
 			if (req & 0x80) {
 				if (ltmp2 <= (req & 0x7f))
 					continue;
-				impossible = true;
+				impossible = 1;
 			} else {
 				if (req <= ltmp2)
 					continue;
-				impossible = true;
+				impossible = 1;
 			}
 		}
 
@@ -4794,8 +4794,8 @@ void select_typus()
 	}
 
 	/* reset boni falags */
-	got_ch_bonus = false;
-	got_mu_bonus = false;
+	got_ch_bonus = 0;
+	got_mu_bonus = 0;
 	fill_values();
 	return;
 }
@@ -4879,13 +4879,13 @@ void change_attribs()
 		if (got_mu_bonus) {
 			hero.attribs[0].normal--;
 			hero.attribs[0].current--;
-			got_mu_bonus = false;
+			got_mu_bonus = 0;
 		}
 		/* remove CH boni */
 		if (got_ch_bonus) {
 			hero.attribs[2].normal--;
 			hero.attribs[2].current--;
-			got_ch_bonus = false;
+			got_ch_bonus = 0;
 		}
 		ds_writew(0x11fe, 1);
 		refresh_screen();
