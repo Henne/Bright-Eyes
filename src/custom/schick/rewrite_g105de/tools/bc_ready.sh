@@ -152,8 +152,13 @@ for i in ${OBJDIR}/*.OBJ; do
 			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
 			if [ $DIFFLINES -ne 16 ]; then RETVAL=1; fi
 			 ;;
-		"SEG011")
+		"SEG006")
 			# AIL: dump_obj produces uncomparable files due to BSS
+			# exact 129 differing lines are allowed
+			# adresses in unalinged codesegment
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			echo $DIFFLINES
+			if [ $DIFFLINES -ne 129 ]; then RETVAL=1; fi
 			;;
 		"SEG013")
 			# AIL: dump_obj produces uncomparable files due to BSS

@@ -39,7 +39,9 @@ ndisasm -b16 -e $((0x03c6b + 0x0c00)) ${GAMEFILE} | head -n 11419 >${OUTDIR}/SEG
 ndisasm -b16 -e $((0x0b2db + 0x0c00)) ${GAMEFILE} | head -n 91 >${OUTDIR}/SEG003.dis
 ndisasm -b16 -e $((0x0b39c + 0x0c00)) ${GAMEFILE} | head -n 282 >${OUTDIR}/SEG004.dis
 ndisasm -b16 -e $((0x0b6b8 + 0x0c00)) ${GAMEFILE} | head -n 646 >${OUTDIR}/SEG005.dis
-ndisasm -b16 -e $((0x0bb2a + 0x0c00)) ${GAMEFILE} | head -n 1465 >${OUTDIR}/SEG006.dis
+#AIL-quirk: this object has 946 bytes of BCC data upfront
+#ndisasm -b16 -e $((0x0bb2a + 0x0c00)) ${GAMEFILE} | head -n 1465 >${OUTDIR}/SEG006.dis
+ndisasm -b16 -e $((0x0bb2a + 0x0c00 + 0x3b2)) ${GAMEFILE} | head -n 922 >${OUTDIR}/SEG006.dis
 
 for i in ${OUTDIR}/*.dis; do
 	#FNAME=${i##*/}
