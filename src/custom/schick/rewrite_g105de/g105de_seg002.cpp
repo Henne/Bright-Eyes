@@ -225,7 +225,7 @@ struct struct_reqs {
 };
 /* DS:0x03cf */
 static const struct_reqs reqs[13][4] = {
-	{ },
+	{ 0 },
 	{ {0, 12}, {4, 12}, {3, 12}, {7, 7}, },
 	{ {5, 12}, {4, 12}, {9, 7}, {2, 1}, },
 	{ {0, 13}, {6, 12}, {13, 0x80 | 4}, {2, 1}, },
@@ -244,7 +244,7 @@ static const struct_reqs reqs[13][4] = {
 /* DS:0x0437 */
 static const signed char skills[13][52] = {
 	/* DUMMY */
-	{},
+	{ 0},
 	/* Gaukler/ Jester*/
 	{
 		/* Kampf / Combat */
@@ -692,7 +692,7 @@ static const struct struct_house_mod house_mod[9] = {
 
 /* DS:0x0ba2 */
 static const unsigned short autoskills[13][25] = {
-	{ },
+	{0 },
 	{9, 11, 2, 47, 0, 8, 16, 9, 10, 11, 43, 34, 40,
 		13, 20, 24, 22, 46, 50, 15, 47, 12, 27, 23, 49},
 	{7, 5, 26, 26, 0, 30, 31, 28, 29, 13, 11, 17,
