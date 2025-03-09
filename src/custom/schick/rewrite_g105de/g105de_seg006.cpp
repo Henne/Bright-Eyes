@@ -1,3 +1,5 @@
+#if !defined(__BORLANDC__)
+
 #include "regs.h"
 #include "paging.h"
 #include "callback.h"
@@ -98,3 +100,4 @@ Bit16u AIL_sequence_status(Bit16u driver, Bit16u sequence)
 }
 
 }
+#endif
