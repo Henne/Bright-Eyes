@@ -21,10 +21,13 @@
 #include "g105de_seg004.h"
 #include "g105de_seg005.h"
 #include "g105de_seg006.h"
+#endif
 
+#if !defined(__BORLANDC__)
 namespace G105de {
-#else
+#endif
 
+#if defined(__BORLANDC__)
 #include "port.h"
 
 #include "seg001.h"
@@ -32,6 +35,7 @@ namespace G105de {
 #include "seg003.h"
 #include "seg004.h"
 #include "seg005.h"
+#include "seg006.h"
 #endif
 
 /** Keyboard Constants */
@@ -2832,7 +2836,7 @@ void do_draw_pic(Bit16u mode)
 
 	draw_mouse_ptr_wrapper();
 
-	draw_pic(dst, x, y, d1, d2, v1, v2, d3, d4, w, h, src, mode);
+	pic_copy(dst, x, y, d1, d2, v1, v2, d3, d4, w, h, src, mode);
 
 	call_mouse();
 

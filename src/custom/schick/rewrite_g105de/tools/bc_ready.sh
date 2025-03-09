@@ -147,10 +147,10 @@ for i in ${OBJDIR}/*.OBJ; do
 			#if [ $DIFFLINES -ne 1 ]; then RETVAL=1; fi
 			;;
 		"SEG005")
-			# exact 42 differing lines are allowed
+			# exact 15 differing lines are allowed
 			# adresses in unalinged codesegment
 			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 42 ]; then RETVAL=1; fi
+			if [ $DIFFLINES -ne 16 ]; then RETVAL=1; fi
 			 ;;
 		"SEG011")
 			# AIL: dump_obj produces uncomparable files due to BSS

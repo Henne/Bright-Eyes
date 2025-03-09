@@ -503,7 +503,7 @@ static int seg005(Bitu offs) {
 		D1_GFX("DrawPic(dst=0x%x, x=%d, y=%d, ..., v1=%d, v2=%d, w=%d, h=%d, src=0x%x, mode=%d);\n",
 			dst, x, y, width, height, v1, v2, src, mode);
 
-		draw_pic(Real2Phys(dst), x, y, d1, d2, width, height,
+		pic_copy(Real2Phys(dst), x, y, d1, d2, width, height,
 				d3, d4, v1, v2, Real2Phys(src), mode);
 		return 1;
 	}

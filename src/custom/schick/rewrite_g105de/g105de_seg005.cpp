@@ -58,7 +58,7 @@ void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, u
 	}
 }
 
-void draw_pic(PhysPt dst, Bit16u x, Bit16u y, Bit16u d1, Bit16u d2,
+void pic_copy(PhysPt dst, Bit16u x, Bit16u y, Bit16u d1, Bit16u d2,
 		Bit16u v1, Bit16u v2, Bit16u d3, Bit16u d4,
 		Bit16u w, Bit16u h, PhysPt src, Bit16u mode)
 {
