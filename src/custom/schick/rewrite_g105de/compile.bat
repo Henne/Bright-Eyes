@@ -21,12 +21,12 @@
 @REM
 @REM -- here start the complete
 @REM BCC.EXE -mlarge -O- -c -Y SEG001.CPP
-@REM BCC.EXE -mlarge -O- -c -Y SEG002.CPP
-@REM BCC.EXE -mlarge -O1 -c -1- -Y SEG003.CPP
-@REM BCC.EXE -mlarge -O- -c -Y SEG004.CPP
-@REM BCC.EXE -mlarge -O- -c -Y SEG005.CPP
-@REM BCC.EXE -mlarge -O- -c -Y SEG006.CPP
-@REM ..\BIN\TASM.EXE /os /z SEG013.asm SEG013.OBJ
+@REM BCC.EXE -mlarge -O- -c -j10 SEG002.CPP
+@REM BCC.EXE -mlarge -O1 -c -1- SEG003.CPP
+@REM TASM.EXE /os /z SEG004.asm SEG004.OBJ
+@REM TASM.EXE /os /z SEG005.asm SEG005.OBJ
+@REM TASM.EXE /m /w+ /ml /iAIL AIL\AIL.ASM SEG006.OBJ
+@REM TASM.EXE /os /z SEG007.asm SEG007.OBJ
 
 @REM examine the ouput and press anykey
 PAUSE
