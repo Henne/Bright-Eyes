@@ -409,7 +409,7 @@ unused_func06	endp
 
 _draw_h_spaced_dots proc	far
 
-ptr		= word ptr  6
+pptr		= word ptr  6
 count		= word ptr  08h
 color		= byte ptr  0ah
 space		= word ptr  0ch
@@ -423,7 +423,7 @@ space		= word ptr  0ch
 
 		mov	ax, 0A000h
 		mov	es, ax
-		mov	di, [bp+ptr]
+		mov	di, [bp+pptr]
 		mov	cx, [bp+count]
 		mov	al, [bp+color]
 
@@ -690,9 +690,9 @@ height		= word ptr  0Eh
 		push	si
 		push	di
 
-		mov	ax, [bp+pptr]
+		mov	ax, word ptr [bp+pptr]
 		mov	es, ax
-		mov	di, [bp+pptr+2]
+		mov	di, word ptr [bp+pptr+2]
 		mov	dx, [bp+height]
 		mov	bx, 320
 		sub	bx, [bp+p_width]
