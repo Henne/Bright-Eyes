@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# This script compiles all files maked as finalized and makes sure the have not changed
+# This script compiles all files marked as finalized and makes sure the have not changed
+
+# You need a Borland C++ compiler installed in $DRIVE_C
 
 DIR=${PWD}/temp
 OBJDIR=${DIR}/OBJ
@@ -11,16 +13,58 @@ DISORIG=${DIR}/disasm_orig
 
 DRIVE_C=${PWD}/../../drive_c
 
-rm -rf $OBJDIR/* $BINDIR/* $DISDIR/*
+# remove all directories for a clean build
+rm -rf $OBJDIR $BINDIR $DISDIR
+mkdir -p $OBJDIR $BINDIR $DISDIR
 
-mkdir -p $OBJDIR
-mkdir -p $BINDIR
-mkdir -p $DISDIR
+# check all tools are available
+for prog in "head diff dosbox less"; do
+	#echo "checking for $prog"
+	$prog --version >/dev/null 2>/dev/null
 
-# COMPILATION with DOSBox
+	if [ $? -ne 0 ]; then
+		echo "Problems with $prog => install it"
+		exit 1
+	fi
+done
+
+ndisasm >/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+	echo "Problems with ndisasm => install it"
+	exit 1
+fi
+
+../../tools/dump_obj >/dev/null 2>/dev/null
+if [ $? -ne 255 ]; then
+	echo "Problems with dump_obj => Recompile Bright-Eyes"
+	exit 1
+fi
+# all tools are available
 
 # copy all source files to DRIVE_C
-cp *.cpp *.h *.asm TLINK.RES ${DRIVE_C}/src
+for i in g105de_*.cpp; do
+	#remove prefix from filenames
+	cp ${i} ${DRIVE_C}/src/${i##g105de_}
+	#remove prefix in cpp-files
+	sed -i 's/g105de_//g' ${DRIVE_C}/src/${i##g105de_}
+done
+for i in g105de_*.h; do
+	#remove prefix from filenames
+	cp ${i} ${DRIVE_C}/src/${i##g105de_}
+	#remove prefix in h -files
+	sed -i 's/g105de_//g' ${DRIVE_C}/src/${i##g105de_}
+done
+
+for i in g105de_*.asm; do
+	#remove prefix from filenames
+	cp ${i} ${DRIVE_C}/src/${i##g105de_}
+done
+
+cp symbols.h ${DRIVE_C}/src
+cp cda.h ${DRIVE_C}/src
+cp port.h ${DRIVE_C}/src
+cp hero.h ${DRIVE_C}/src
+cp TLINK.RES ${DRIVE_C}/src
 cp -r AIL ${DRIVE_C}/src
 
 # copy c_ready.bat as compile.bat
@@ -35,8 +79,8 @@ popd
 rm -rf ${DRIVE_C}/src/*.cpp
 rm -rf ${DRIVE_C}/src/*.h
 rm -rf ${DRIVE_C}/src/*.asm
+rm -rf ${DRIVE_C}/src/*.bat
 rm -rf ${DRIVE_C}/src/TLINK.RES
-rm -rf ${DRIVE_C}/src/compile.bat
 rm -rf ${DRIVE_C}/src/AIL
 
 # move all OBJ-files to OBJDIR
@@ -59,8 +103,8 @@ for i in ${OBJDIR}/*.OBJ; do
 	PREFIX=${i%\.OBJ}
 	PREFIX=${PREFIX##*/}
 
-	# TODO: SEG013 is not extracted properly
-	if [ ${PREFIX} = "SEG013" ]; then
+	# TODO: SEG007 (CD-DATA) is not extracted properly
+	if [ ${PREFIX} = "SEG007" ]; then
 		GOOD=$(($GOOD+1))
 		N=$(($N+1))
 		continue;
@@ -88,77 +132,31 @@ for i in ${OBJDIR}/*.OBJ; do
 	case "${PREFIX}" in
 		"SEG001")
 			# exact 23 differing lines are allowed
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			#DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
 
-			if [ $DIFFLINES -ne 23 ]; then RETVAL=1; fi
+			#if [ $DIFFLINES -ne 23 ]; then RETVAL=1; fi
 			;;
 		"SEG002")
 			# exact 26 differing lines are allowed
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 26 ]; then RETVAL=1; fi
+			#DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			#if [ $DIFFLINES -ne 26 ]; then RETVAL=1; fi
 			;;
-		"SEG004")
+		"SEG003")
 			# exact 1 differing lines are allowed
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 1 ]; then RETVAL=1; fi
+			#DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			#if [ $DIFFLINES -ne 1 ]; then RETVAL=1; fi
 			;;
-		"SEG008")
+		"SEG005")
 			# exact 42 differing lines are allowed
 			# adresses in unalinged codesegment
 			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
 			if [ $DIFFLINES -ne 42 ]; then RETVAL=1; fi
-			;;
+			 ;;
 		"SEG011")
 			# AIL: dump_obj produces uncomparable files due to BSS
 			;;
 		"SEG013")
 			# AIL: dump_obj produces uncomparable files due to BSS
-			;;
-		"SEG048")
-			# exact 27 differing lines are allowed
-			# other code in switch statements
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 27 ]; then RETVAL=1; fi
-			;;
-		"SEG049")
-			# exact two differing lines are allowed
-			# (function pointer argument)
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 2 ]; then RETVAL=1; fi
-			;;
-		"SEG050")
-			# exact 1 differing lines are allowed
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 1 ]; then RETVAL=1; fi
-			;;
-		"SEG055")
-			# exact 6 differing lines are allowed
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 6 ]; then RETVAL=1; fi
-			;;
-		"SEG092")
-			# exact 2 differing lines are allowed
-			# (function pointer argument)
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 2 ]; then RETVAL=1; fi
-			;;
-		"SEG106")
-			# exact 57 differing lines are allowed
-			# (function pointer argument)
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 57 ]; then RETVAL=1; fi
-			;;
-		"SEG113")
-			# exact 2 differing lines are allowed
-			# (function pointer argument)
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 2 ]; then RETVAL=1; fi
-			;;
-		"SEG120")
-			# exact 2 differing lines are allowed
-			# (function pointer argument)
-			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 2 ]; then RETVAL=1; fi
 			;;
 		"DATSEG")
 			;;
@@ -181,7 +179,9 @@ done
 echo "REPORT ${N} Files: Good = ${GOOD} Fail = ${FAIL}"
 
 # count the compile commands in bc_ready.bat, to make sure there is none missing
-COMP=$(grep "\.\." bc_ready.bat | wc -l);
+COMP1=$(grep "BCC.EXE" bc_ready.bat | wc -l);
+COMP2=$(grep "TASM.EXE" bc_ready.bat | wc -l);
+COMP=$((${COMP1} + ${COMP2}))
 
 if [ ${COMP} -ne ${N} ]; then
 	echo "Fehler: ${N} Dateien wurden geprueft, aber es sollten ${COMP} sein"

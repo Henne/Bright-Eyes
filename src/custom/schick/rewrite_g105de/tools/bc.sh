@@ -41,11 +41,6 @@ if [ $? -ne 255 ]; then
 fi
 # all tools are available
 
-#rename *.cpp to *.c
-#for file in *.cpp; do
-#	cp "$file" "${file%%cpp}c"
-#done
-
 # copy all source files to DRIVE_C
 for i in g105de_*.cpp; do
 	#remove prefix from filenames
@@ -60,14 +55,22 @@ for i in g105de_*.h; do
 	sed -i 's/g105de_//g' ${DRIVE_C}/src/${i##g105de_}
 done
 
-cp compile.bat ${DRIVE_C}/src
+for i in g105de_*.asm; do
+	#remove prefix from filenames
+	cp ${i} ${DRIVE_C}/src/${i##g105de_}
+done
+
 cp symbols.h ${DRIVE_C}/src
 cp cda.h ${DRIVE_C}/src
 cp port.h ${DRIVE_C}/src
 cp hero.h ${DRIVE_C}/src
+cp TLINK.RES ${DRIVE_C}/src
+cp -r AIL ${DRIVE_C}/src
 
-# run compile.bat in a DOSBox environment, needs an installes BCC.EXE there
-# TODO: make this work from here
+# copy c_ready.bat as compile.bat
+cp compile.bat ${DRIVE_C}/src/compile.bat
+
+# run compile.bat in a DOSBox environment, needs an installed BCC.EXE there
 pushd ${DRIVE_C}
 dosbox -conf compile.conf
 popd
@@ -75,7 +78,10 @@ popd
 # cleanup
 rm -rf ${DRIVE_C}/src/*.cpp
 rm -rf ${DRIVE_C}/src/*.h
-rm -rf ${DRIVE_C}/src/compile.bat
+rm -rf ${DRIVE_C}/src/*.asm
+rm -rf ${DRIVE_C}/src/*.bat
+rm -rf ${DRIVE_C}/src/TLINK.RES
+rm -rf ${DRIVE_C}/src/AIL
 
 # move all OBJ-files to OBJDIR
 mv ${DRIVE_C}/src/*.OBJ $OBJDIR 2>/dev/null
@@ -85,7 +91,7 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-# disassemble all *.OBJ files
+# disassemble all *.OBJ files and show the diffs
 for i in ${OBJDIR}/*.OBJ; do
 
 	# extract the filename
