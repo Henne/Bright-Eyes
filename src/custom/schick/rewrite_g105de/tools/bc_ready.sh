@@ -146,6 +146,13 @@ for i in ${OBJDIR}/*.OBJ; do
 			#DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
 			#if [ $DIFFLINES -ne 1 ]; then RETVAL=1; fi
 			;;
+		"SEG004")
+			# exact 94 differing lines are allowed
+			# adresses in unalinged codesegment
+			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			echo $DIFFLINES
+			if [ $DIFFLINES -ne 94 ]; then RETVAL=1; fi
+			 ;;
 		"SEG005")
 			# exact 15 differing lines are allowed
 			# adresses in unalinged codesegment
