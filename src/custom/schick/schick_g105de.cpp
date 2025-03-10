@@ -208,7 +208,8 @@ static int seg000(Bitu offs) {
 			D1_LOG("bc_open(%s, %x)\n",
 				(char*)MemBase + Real2Phys(pathP), oflag);
 
-			return 0;
+			reg_ax = bc_open(pathP, oflag);
+			return 1;
 		}
 		case 0x2dd5: {
 			RealPt s1 = CPU_Pop32();
