@@ -1484,7 +1484,7 @@ void start_music(Bit16u track)
 {
 
 	if (!use_cda) {
-		if (ds_readw(0x1a07))
+		if (ds_readw(MIDI_DISABLED))
 			return;
 		play_midi(track);
 	} else {
