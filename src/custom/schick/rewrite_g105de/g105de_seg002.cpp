@@ -1156,7 +1156,7 @@ FILE *fd_timbre;
 
 /* DS:0x3f42 */
 void *snd_driver;
-void *form_xmid;
+//void *form_xmid;
 void *snd_ptr_unkn1;
 void *state_table;
 
@@ -1506,7 +1506,7 @@ void read_soundcfg()
 		bc__close(handle);
 
 #if !defined(__BORLANDC__)
-		/* Small hack: enable MIDI instead of CD-Audio */
+		/* Small hack: enable MIDI instead of CD-Audio, produces glich in attic ani */
 		D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&port));
 		if (port && load_driver(RealMake(datseg, 0x1dda), 3, host_readw((Bit8u*)&port))) {
 			/* disable audio-cd */
@@ -1526,18 +1526,12 @@ void read_soundcfg()
 
 void init_music(unsigned long size)
 {
-	form_xmid = gen_alloc(size);
-#if !defined(__BORLANDC__)
-	ds_writed(0x3f46, emu_gen_alloc(size));
-#else
-	ds_writed(0x3f46, (Bit32u)gen_alloc(size));
-#endif
+	ds_writed(FORM_XMID, emu_gen_alloc(size));
 
-	if (form_xmid == NULL)
-		return;
-
-	AIL_startup();
-	ds_writew(MIDI_DISABLED, 1);
+	if (ds_readd(FORM_XMID)) {
+		AIL_startup();
+		ds_writew(MIDI_DISABLED, 1);
+	}
 }
 
 void stop_music()
@@ -1564,8 +1558,8 @@ void stop_music()
 	if (state_table)
 		free(state_table);
 
-	if (form_xmid)
-		free(form_xmid);
+	if (ds_readd(FORM_XMID))
+		bc_free(ds_readd(FORM_XMID));
 
 	if (snd_driver)
 		free(snd_driver);
