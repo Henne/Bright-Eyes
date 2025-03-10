@@ -1155,10 +1155,10 @@ static Bit32s flen_left;
 FILE *fd_timbre;
 
 /* DS:0x3f42 */
-void *snd_driver;
+//void *snd_driver;
 //void *form_xmid;
-void *snd_ptr_unkn1;
-void *state_table;
+//void *snd_ptr_unkn1;
+//void *state_table;
 
 /* DS:0x3f5e */
 static Bit8u param_level;
@@ -1552,17 +1552,17 @@ void stop_music()
 
 
 	/* free the pointers at the host */
-	if (snd_ptr_unkn1)
-		free(snd_ptr_unkn1);
+	if (ds_readd(SND_PTR_UNKN1))
+		bc_free(ds_readd(SND_PTR_UNKN1));
 
-	if (state_table)
-		free(state_table);
+	if (ds_readd(STATE_TABLE))
+		bc_free(ds_readd(STATE_TABLE));
 
 	if (ds_readd(FORM_XMID))
 		bc_free(ds_readd(FORM_XMID));
 
-	if (snd_driver)
-		free(snd_driver);
+	if (ds_readd(SND_DRIVER))
+		bc_free(ds_readd(SND_DRIVER));
 
 	seg001_033b();
 }
