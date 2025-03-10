@@ -14,14 +14,15 @@
 
 #include "../schick.h"
 
+#include "g105de_seg006.h"
+#endif
+
 #include "g105de_seg000.h"
 #include "g105de_seg001.h"
 #include "g105de_seg002.h"
 #include "g105de_seg003.h"
 #include "g105de_seg004.h"
 #include "g105de_seg005.h"
-#include "g105de_seg006.h"
-#endif
 
 #if !defined(__BORLANDC__)
 namespace G105de {
@@ -32,13 +33,7 @@ namespace G105de {
 #if defined(__BORLANDC__)
 #include "port.h"
 
-#include "seg000.h"
-#include "seg001.h"
-#include "seg002.h"
-#include "seg003.h"
-#include "seg004.h"
-#include "seg005.h"
-#include "seg006.h"
+#include "AIL.H"
 #endif
 
 /** Keyboard Constants */
