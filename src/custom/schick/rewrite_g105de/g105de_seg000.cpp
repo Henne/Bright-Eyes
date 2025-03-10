@@ -87,16 +87,15 @@ Bit16s bc__close(Bit16u handle)
 }
 
 /* This create function is just a hack and gets replaced later by fopen() */
-Bit16s bc__create(Bit8u *pathP, Bit16u attr)
+Bit16s bc__create(RealPt pathP, Bit16u attrib)
 {
-	Bit16u handle;
+	CPU_Push16(attrib);
+	CPU_Push32(pathP);
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x212f);
+	CPU_Pop32();
+	CPU_Pop16();
 
-	if (!DOS_CreateFile((char*)pathP, attr, &handle))
-		return -1;
-
-	ds_writew(0x2298 + handle * 2, handle);
-
-	return handle;
+	return reg_ax;
 }
 
 

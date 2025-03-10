@@ -134,7 +134,7 @@ static int seg000(Bitu offs) {
 			CPU_Push16(attr);
 			CPU_Push32(pathP);
 
-			reg_ax = bc__create(MemBase + Real2Phys(pathP), attr);
+			reg_ax = bc__create(pathP, attr);
 			D1_LOG("bc__create(%s, %x) = %d\n",
 				(char*)MemBase + Real2Phys(pathP),
 				attr, reg_ax);

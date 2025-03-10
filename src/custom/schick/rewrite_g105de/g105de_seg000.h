@@ -11,7 +11,7 @@ void bc_clrscr();
 void bc_free(RealPt);
 Bit16s bc_close(Bit16u);
 Bit16s bc__close(Bit16u);
-Bit16s bc__create(Bit8u*, Bit16u);
+Bit16s bc__create(RealPt, Bit16u);
 Bit16s bc_open(RealPt, Bit16u);
 Bit16s bc_write(Bit16u, Bit8u*, Bit16u);
 
@@ -28,6 +28,7 @@ static inline void bc_randomize() { }
 #define bc__read _read
 #define bc_close close
 #define bc__close _close
+#define bc__creat _creat
 #define bc_open open
 
 #endif
