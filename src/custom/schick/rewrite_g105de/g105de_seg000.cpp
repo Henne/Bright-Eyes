@@ -70,6 +70,17 @@ void bc_free(RealPt ptr)
 	CPU_Pop32();
 }
 
+RealPt bc_calloc(Bit32s nelem, Bit32s size)
+{
+	CPU_Push32(size);
+	CPU_Push32(nelem);
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0x16c7);
+	CPU_Pop32();
+	CPU_Pop32();
+	
+	return RealMake(reg_dx, reg_ax);
+}
+
 Bit16s bc_close(Bit16u handle)
 {
 	CPU_Push16(handle);
