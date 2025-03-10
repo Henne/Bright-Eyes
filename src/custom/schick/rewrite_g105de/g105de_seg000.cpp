@@ -26,15 +26,17 @@ void bc__dos_setvect(Bit16s intno, RealPt ptr)
 	host_writed(MemBase + intno * 4, ptr);
 }
 
-Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
-
-	ds_writew(0x2298 + handle * 2, ds_readw(0x2298 + handle * 2) & 0xfdff);
-
-	if (!DOS_SeekFile(handle, &offset, whence))
-		return -1;
-
-	return offset;
-
+Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence)
+{
+	CPU_Push16(whence);
+	CPU_Push32(offset);
+	CPU_Push16(handle);
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0x072d);
+	CPU_Pop16();
+	CPU_Pop32();
+	CPU_Pop16();
+	
+	return (Bit32s)(reg_dx << 16) + reg_ax;
 }
 
 Bit16s bc__read(Bit16u handle, Bit8u *buf, Bit16u count) {

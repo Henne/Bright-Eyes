@@ -25,6 +25,7 @@ static inline void bc_randomize() { }
 #include <BIOS.H>
 
 #define bc_bioskey bioskey
+#define bc_lseek lseek
 #define bc__read _read
 #define bc_close close
 #define bc__close _close
