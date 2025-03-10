@@ -68,25 +68,22 @@ void bc_free(RealPt ptr)
 	CPU_Pop32();
 }
 
-Bit16s bc_close(Bit16u handle) {
+Bit16s bc_close(Bit16u handle)
+{
+	CPU_Push16(handle);
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x20bc);
+	CPU_Pop16();
 
-	if (handle >= ds_readw(0x2296))
-		return -1;
-
-	ds_writew(0x2298 + handle * 2, 0);
-
-	return bc__close(handle);
-
+	return reg_ax;
 }
 
-Bit16s bc__close(Bit16u handle) {
+Bit16s bc__close(Bit16u handle)
+{
+	CPU_Push16(handle);
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x20e4);
+	CPU_Pop16();
 
-	if (!DOS_CloseFile(handle))
-		return -1;
-
-	ds_writew(0x2298 + handle * 2, 0);
-
-	return 0;
+	return reg_ax;
 }
 
 /* This create function is just a hack and gets replaced later by fopen() */
@@ -102,6 +99,17 @@ Bit16s bc__create(Bit8u *pathP, Bit16u attr)
 	return handle;
 }
 
+
+Bit16s bc_open(RealPt fname, Bit16u attrib)
+{
+	CPU_Push16(attrib);
+	CPU_Push32(fname);
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x2655);
+	CPU_Pop32();
+	CPU_Pop16();
+
+	return reg_ax;
+}
 
 /* This write function is just a hackand gets replaced later by fwrite() */
 Bit16s bc_write(Bit16u handle, Bit8u *buf, Bit16u count)
