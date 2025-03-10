@@ -31,9 +31,7 @@ namespace G105de {
 # include "symbols.h"
 
 #if defined(__BORLANDC__)
-#include "port.h"
-
-#include "AIL.H"
+//#include "AIL.H"
 #endif
 
 /** Keyboard Constants */

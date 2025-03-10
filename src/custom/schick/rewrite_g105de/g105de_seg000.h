@@ -25,6 +25,8 @@ static inline void bc_randomize() { }
 #include <IO.H>
 #include <BIOS.H>
 
+#include "port.h"
+
 #define bc_bioskey bioskey
 #define bc_lseek lseek
 #define bc__read _read
@@ -34,5 +36,7 @@ static inline void bc_randomize() { }
 #define bc__close _close
 #define bc__creat _creat
 #define bc_open open
+
+RealPt emu_gen_alloc(Bit32u);
 
 #endif

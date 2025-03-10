@@ -42,10 +42,6 @@ extern char ds[0xffff];
 
 #define RealMake(seg, off) (void*)(seg << 4 + off)
 #define Real2Host(p) (p)
-
-#define bc_free(p) free(p)
-#define emu_gen_alloc(nelem) calloc(1, nelem)
-
 #endif
 
 #endif

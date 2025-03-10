@@ -12,6 +12,13 @@ void pic_copy(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bi
 void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height);
 unsigned short swap_u16(unsigned short val);
 void copy_to_screen(PhysPt, PhysPt, Bit16s, Bit16s, Bit16u);
+
+#if defined(__BORLANDC__)
+RealPt _normalize_ptr(RealPt);
+#else
+static inline RealPt _normalize_ptr(RealPt) { };
+#endif
+
 #if !defined(__BORLANDC__)
 }
 #endif
