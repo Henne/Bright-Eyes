@@ -23,6 +23,8 @@ namespace G105de {
 	void read_soundcfg();
 	void init_music(unsigned long);
 	void stop_music();
+	RealPt load_snd_driver(RealPt);
+	void unload_snd_driver();
 	unsigned short emu_load_seq(Bit16u);
 	unsigned short load_seq(Bit16u);
 	unsigned short play_sequence(Bit16u);

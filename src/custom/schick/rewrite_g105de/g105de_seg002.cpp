@@ -1551,6 +1551,36 @@ void stop_music()
 	seg001_033b();
 }
 
+RealPt load_snd_driver(RealPt fname)
+{
+	Bit32s size;
+	RealPt in_ptr;
+	RealPt norm_ptr;
+	Bit16s handle;
+
+	handle = bc_open(fname, 0x8001);
+
+	if (handle != -1) {
+		size = 16500;
+		ds_writed(SND_DRIVER, (Bit32s)emu_gen_alloc(size + 0x10));
+		in_ptr = (RealPt)((ds_readd(SND_DRIVER) + 0x0f) & 0xfff0ffff);
+		norm_ptr = _normalize_ptr(in_ptr);
+		bc__read(handle, (Bit8u*)Real2Host(norm_ptr), size);
+		bc__close(handle);
+		return norm_ptr;
+	} else {
+		return NULL;
+	}
+}
+
+void unload_snd_driver()
+{
+	if (ds_readd(SND_DRIVER)) {
+		bc_free((RealPt)ds_readd(SND_DRIVER));
+		ds_writed(SND_DRIVER, 0);
+	}
+}
+
 #if !defined(__BORLANDC__)
 unsigned short emu_load_seq(Bit16u sequence_num)
 {
