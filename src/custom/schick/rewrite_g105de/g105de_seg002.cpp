@@ -1534,22 +1534,8 @@ void init_music(unsigned long size)
 
 void stop_music()
 {
-
-/*	AIL_shutdown(NULL); */
 	AIL_shutdown(0);
 
-	/* free the pointers in the emu */
-	if (ds_readd(0x3f4a))
-		bc_free(RealMake(datseg, 0x3f4a));
-	if (ds_readd(0x3f4e))
-		bc_free(RealMake(datseg, 0x3f4e));
-	if (ds_readd(0x3f46))
-		bc_free(RealMake(datseg, 0x3f46));
-	if (ds_readd(0x3f42))
-		bc_free(RealMake(datseg, 0x3f42));
-
-
-	/* free the pointers at the host */
 	if (ds_readd(SND_PTR_UNKN1))
 		bc_free(ds_readd(SND_PTR_UNKN1));
 
