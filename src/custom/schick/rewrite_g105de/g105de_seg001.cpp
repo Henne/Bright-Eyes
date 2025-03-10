@@ -254,7 +254,7 @@ static void seg001_02ba()
 signed short CD_bioskey(signed short cmd)
 {
 	seg001_02ba();
-	return bioskey(cmd);
+	return bc_bioskey(cmd);
 }
 
 void seg001_0312()

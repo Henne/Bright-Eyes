@@ -92,7 +92,7 @@ static int seg000(Bitu offs) {
 			Bit16u v = CPU_Pop16();
 			CPU_Push16(v);
 
-			reg_ax = bioskey(v);
+			reg_ax = bc_bioskey(v);
 
 			D1_LOG("bioskey(%d); = %x\n", v, reg_ax);
 

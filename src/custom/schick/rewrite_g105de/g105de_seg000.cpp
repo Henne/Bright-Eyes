@@ -48,23 +48,12 @@ Bit16s bc__read(Bit16u handle, Bit8u *buf, Bit16u count) {
 	return (Bit16s)count;
 }
 
-signed short bioskey(signed short cmd) {
-	reg_ah = cmd &  0xff;
-	reg_al = 0;
-	CALLBACK_RunRealInt(0x16);
-
-	if (GETFLAG(ZF)) {
-		if (!(cmd & 1))
-			return reg_ax;
-
-		return 0;
-	} else {
-		if (!(cmd & 1))
-			return reg_ax;
-		if (reg_ax)
-			return reg_ax;
-		return -1;
-	}
+signed short bc_bioskey(signed short cmd)
+{
+	CPU_Push16(cmd);
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0x0f43);
+	CPU_Pop16();
+	return reg_ax;
 }
 
 void bc_clrscr()
