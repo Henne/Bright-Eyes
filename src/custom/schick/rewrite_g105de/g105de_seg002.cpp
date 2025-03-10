@@ -1494,48 +1494,39 @@ void start_music(Bit16u track)
 
 void read_soundcfg()
 {
-	FILE *fd;
-	char *fname;
+	Bit16s handle;
 	Bit16u port;
 
-	/* build the path to SOUND.CFG */
-	fname = get_pwd();
-	strncat(fname, "SOUND.CFG", 9);
-	prepare_path(fname);
-
-
 	use_cda = 0;
-	ds_writew(0x1a07, 1);
-
-	fd = fopen(fname, "rb");
-	free(fname);
-
-	if (fd == NULL) {
-#if !defined(__BORLANDC__)
-		D1_ERR("Failed to open %s\n", fname);
-#endif
-		return;
-	}
-
-	fread(&port, 2, sizeof(char), fd);
-	fclose(fd);
+	ds_writew(MIDI_DISABLED, 1);
 
 #if !defined(__BORLANDC__)
-	D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&port));
+	handle = bc_open(RealMake(datseg, STR_SOUND_CFG), 0x8001);
+#else
+	handle = bc_open("SOUND.CFG", 0x8001);
 #endif
-	if (port && load_driver(RealMake(datseg, 0x1dda), 3, host_readw((Bit8u*)&port))) {
-		/* disable audio-cd */
-		use_cda = 0;
-		return;
+
+	if (handle != -1) {
+		bc__read(handle, (Bit8u*)&port, 2);
+		bc__close(handle);
+
+#if !defined(__BORLANDC__)
+		/* Small hack: enable MIDI instead of CD-Audio */
+		D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&port));
+		if (port && load_driver(RealMake(datseg, 0x1dda), 3, host_readw((Bit8u*)&port))) {
+			/* disable audio-cd */
+			use_cda = 0;
+			return;
+		}
+#endif
+		/* enable audio-cd */
+		use_cda = 1;
+		/* disable midi */
+		ds_writew(MIDI_DISABLED, 1);
+
+		/* play audio-cd */
+		seg001_0600();
 	}
-
-	/* enable audio-cd */
-	use_cda = 1;
-	/* disable midi */
-	ds_writew(0x1a07, 1);
-
-	/* play audio-cd */
-	seg001_0600();
 }
 
 void init_music(unsigned long size)
