@@ -1474,6 +1474,12 @@ void BE_cleanup()
 
 #endif
 
+#if defined(__BORLANDC__)
+void dummy()
+{
+}
+#endif
+
 void start_music(Bit16u track)
 {
 
