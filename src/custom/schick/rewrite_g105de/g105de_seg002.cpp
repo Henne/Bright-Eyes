@@ -14,7 +14,7 @@
 
 #include "../schick.h"
 
-#include "g105de_seg006.h"
+
 #endif
 
 #include "g105de_seg000.h"
@@ -23,16 +23,13 @@
 #include "g105de_seg003.h"
 #include "g105de_seg004.h"
 #include "g105de_seg005.h"
+#include "g105de_seg006.h"
 
 #if !defined(__BORLANDC__)
 namespace G105de {
 #endif
 
 # include "symbols.h"
-
-#if defined(__BORLANDC__)
-//#include "AIL.H"
-#endif
 
 /** Keyboard Constants */
 static const unsigned short KEY_ESC = 0x01;
@@ -866,7 +863,7 @@ static const Bit16u ro_zero = 0;
 static struct struct_hero hero;
 
 /* DS:0x1a09 */
-static unsigned short use_cda;
+//static unsigned short use_cda;
 /* DS:0x1a0b */
 static unsigned short eh_installed;
 /* DS:0x1a11 */
@@ -1467,21 +1464,15 @@ void BE_cleanup()
 
 #endif
 
-#if defined(__BORLANDC__)
-void dummy()
-{
-}
-#endif
-
 void start_music(Bit16u track)
 {
 
-	if (!use_cda) {
-		if (ds_readw(MIDI_DISABLED))
-			return;
-		play_midi(track);
+	if (!ds_readw(USE_CDA)) {
+		if (ds_readw(MIDI_DISABLED) == 0) {
+			play_midi(track);
+		}
 	} else {
-		seg001_0465();
+		seg001_0465(track);
 	}
 }
 
@@ -1490,7 +1481,7 @@ void read_soundcfg()
 	Bit16s handle;
 	Bit16u port;
 
-	use_cda = 0;
+	ds_writew(USE_CDA, 0);
 	ds_writew(MIDI_DISABLED, 1);
 
 #if !defined(__BORLANDC__)
@@ -1508,14 +1499,12 @@ void read_soundcfg()
 		D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&port));
 		if (port && load_driver(RealMake(datseg, 0x1dda), 3, host_readw((Bit8u*)&port))) {
 			/* disable audio-cd */
-			use_cda = 0;
+			ds_writew(USE_CDA, 0);
 			return;
 		}
 #endif
-		/* enable audio-cd */
-		use_cda = 1;
-		/* disable midi */
-		ds_writew(MIDI_DISABLED, 1);
+		/* enable audio-cd, disable midi */
+		ds_writew(USE_CDA, ds_writew(MIDI_DISABLED, 1));
 
 		/* play audio-cd */
 		seg001_0600();

@@ -302,7 +302,7 @@ void seg001_03a8()
 
 }
 
-void seg001_0465()
+void seg001_0465(unsigned short track)
 {
 	seg001_0312();
 	seg001_0312();

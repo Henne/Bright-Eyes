@@ -292,8 +292,8 @@ static int seg001(Bitu offs) {
 		}
 		case 0x0465: {
 			D1_LOG("seg001_0465()\n");
-			seg001_0465();
-			return 1;
+			//seg001_0465();
+			return 0;
 		}
 		case 0x0600: {
 			D1_LOG("seg001_0600();\n");

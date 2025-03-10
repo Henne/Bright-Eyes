@@ -22,7 +22,7 @@ unsigned short CD_set_drive_no();
 
 	void seg001_03a8();
 
-	void seg001_0465();
+	void seg001_0465(unsigned short);
 
 	signed short seg001_0600();
 #if !defined(__BORLANDC__)
