@@ -27,6 +27,8 @@
 namespace G105de {
 #endif
 
+# include "symbols.h"
+
 #if defined(__BORLANDC__)
 #include "port.h"
 
@@ -1543,7 +1545,7 @@ void init_music(unsigned long size)
 		return;
 
 	AIL_startup();
-	ds_writew(0x1a07, 1);
+	ds_writew(MIDI_DISABLED, 1);
 }
 
 void stop_music()
@@ -1687,7 +1689,7 @@ unsigned short load_driver(RealPt fname, Bit16u type, Bit16u port)
 void play_midi(Bit16u index)
 {
 	/* Midi disabled */
-	if (ds_readw(0x1a07))
+	if (ds_readw(MIDI_DISABLED))
 		return;
 	if (host_readw(Real2Host(ds_readd(0x3f56)) + 2) != 3)
 		return;
@@ -1700,7 +1702,7 @@ void play_midi(Bit16u index)
 void stop_sequence()
 {
 	/* Midi disabled */
-	if (ds_readw(0x1a07))
+	if (ds_readw(MIDI_DISABLED))
 		return;
 	if (host_readw(Real2Host(ds_readd(0x3f56)) + 2) != 3)
 		return;
@@ -1712,7 +1714,7 @@ void stop_sequence()
 
 void restart_midi()
 {
-	if (ds_readw(0x1a07))
+	if (ds_readw(MIDI_DISABLED))
 		return;
 
 	if (host_readw(Real2Host(ds_readd(0x3f56)) + 2) != 3)
@@ -6900,7 +6902,7 @@ int main_gen(int argc, char **argv)
 		param_level = argv[2][0];
 
 	if ((argc > 3) && (argv[3][0] == '0')) {
-		ds_writew(0x1a07, 1);
+		ds_writew(MIDI_DISABLED, 1);
 		sound_off = 1;
 	};
 

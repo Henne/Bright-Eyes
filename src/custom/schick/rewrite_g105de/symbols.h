@@ -33,6 +33,11 @@
 
 #endif
 
+#define MIDI_DISABLED			(0x1a07)    /* signed short */
+#define USE_CDA				(0x1a09)    /* signed short */
+
+#define STR_SOUND_CFG			(0x1dd0)    /* char[9]; "SOUND.CFG" */
+
 #define RANDOM_GEN_SEED			(0x1fd6)    /* Bit16u */
 
 #define CD_AUDIO_TRACK                  (0x245a)    /* unsigned short */
