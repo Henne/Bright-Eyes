@@ -1524,7 +1524,7 @@ void read_soundcfg()
 
 void init_music(unsigned long size)
 {
-	ds_writed(FORM_XMID, emu_gen_alloc(size));
+	ds_writed(FORM_XMID, (Bit32s)emu_gen_alloc(size));
 
 	if (ds_readd(FORM_XMID)) {
 		AIL_startup();
@@ -1537,16 +1537,16 @@ void stop_music()
 	AIL_shutdown(0);
 
 	if (ds_readd(SND_PTR_UNKN1))
-		bc_free(ds_readd(SND_PTR_UNKN1));
+		bc_free((RealPt)ds_readd(SND_PTR_UNKN1));
 
 	if (ds_readd(STATE_TABLE))
-		bc_free(ds_readd(STATE_TABLE));
+		bc_free((RealPt)ds_readd(STATE_TABLE));
 
 	if (ds_readd(FORM_XMID))
-		bc_free(ds_readd(FORM_XMID));
+		bc_free((RealPt)ds_readd(FORM_XMID));
 
 	if (ds_readd(SND_DRIVER))
-		bc_free(ds_readd(SND_DRIVER));
+		bc_free((RealPt)ds_readd(SND_DRIVER));
 
 	seg001_033b();
 }
