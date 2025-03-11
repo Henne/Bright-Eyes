@@ -25,20 +25,16 @@ namespace G105de {
 	void stop_music();
 	RealPt load_snd_driver(RealPt);
 	void unload_snd_driver();
-	unsigned short emu_load_seq(Bit16u);
 	unsigned short load_seq(Bit16u);
 	unsigned short play_sequence(Bit16u);
-#if !defined(__BORLANDC__)
-	Bit8u *get_timbre(Bit16u, Bit16u);
-#else
 	RealPt get_timbre(Bit16u, Bit16u);
-#endif
 	unsigned short call_load_file(Bit16u);
 	unsigned short load_file(Bit16u);
 	void restart_midi();
 	unsigned short load_driver(RealPt, Bit16u, Bit16u);
 	void play_midi(Bit16u);
 	void stop_sequence();
+
 	void do_mouse_action(Bit8u*, Bit8u*, Bit8u*, Bit8u*, Bit8u*);
 	void mouse_enable();
 	void mouse_disable();

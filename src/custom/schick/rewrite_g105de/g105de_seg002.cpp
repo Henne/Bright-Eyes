@@ -1556,7 +1556,7 @@ RealPt load_snd_driver(RealPt fname)
 		in_ptr = ds_readd(SND_DRIVER) + 0x0f;
 		in_ptr &= 0xfffffff0;
 
-		/* The arguments of read are working, but not identical */		
+		/* The arguments of read are working, but not identical */
 		bc__read(handle, (Bit8u*)Real2Host(norm_ptr = _normalize_ptr(in_ptr)), size);
 		bc__close(handle);
 		return norm_ptr;
@@ -1574,12 +1574,11 @@ void unload_snd_driver()
 	}
 }
 
-#if defined(__BORLANDC__)
-unsigned short emu_load_seq(Bit16u sequence_num)
+unsigned short load_seq(Bit16u sequence_num)
 {
 	Bit16u patch;
 	RealPt ptr;
-	Bit16u si, di;
+	Bit16u si, di; // di = bank, si = patch
 
 	if ((ds_writew(HANDLE_TIMBRE, open_datfile(35))) != 0xffff) {
 
@@ -1590,16 +1589,20 @@ unsigned short emu_load_seq(Bit16u sequence_num)
 			while ((si = AIL_timbre_request(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE))) != 0xffff)
 			{
 				di = si >> 8;
-				
+
 				if ((ptr = get_timbre(di, patch = (si & 0xff))) != 0) {
 					/* ptr is passed differently */
 					AIL_install_timbre(ds_readw(SND_DRIVER_HANDLE), di, patch, ptr);
 					bc_free(ptr);
 				}
 			}
+#if defined(__BORLANDC__)
 			// PLACEHOLDER: next line should be used here instead of asm
 			//bc_close(ds_readw(HANDLE_TIMBRE));
 			asm {db 0x9a, 0xad, 0xde, 0x00, 0x00;  db 0x75, 0xff; nop};
+#else
+			bc_close(ds_readw(HANDLE_TIMBRE));
+#endif
 			return 1;
 		}
 		bc_close(ds_readw(HANDLE_TIMBRE));
@@ -1607,101 +1610,125 @@ unsigned short emu_load_seq(Bit16u sequence_num)
 
 	return 0;
 }
-#else
 
-unsigned short emu_load_seq(Bit16u sequence_num) {
-{
-	CPU_Push16(sequence_num);
-	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1e7);
-	CPU_Pop16();
-	return reg_ax ? 1 : 0;
-}
-
-unsigned short load_seq(Bit16u sequence_num)
-{
-	Bit8u *ptr;
-	Bit16u si, di, patch;
-
-	fd_timbre = fd_open_datfile(35);
-
-	if (fd_timbre == NULL)
-		return 0;
-
-	ds_writew(0x3f5a, AIL_register_sequence(ds_readw(0x3f5c),
-		Real2Host(ds_readd(0x3f46)), sequence_num,
-		Real2Host(ds_readd(0x3f4e)), NULL));
-
-	if (ds_readw(0x3f5a) == 0xffff) {
-		fclose(fd_timbre);
-		return 0;
-	}
-
-	while (si = AIL_timbre_request(ds_readw(0x3f5c), ds_readw(0x3f5a)) != 0xffff)
-	{
-		di = si << 8;
-		patch = si & 0xff;
-		ptr = get_timbre(di, patch);
-		if (ptr == NULL)
-			continue;
-
-		AIL_install_timbre(ds_readw(0x3f5c), di, patch, ptr);
-		free(ptr);
-	}
-	fclose(fd_timbre);
-	return 1;
-
-}
-#endif
-
+/* Borlandified and identical */
 unsigned short play_sequence(Bit16u sequence_num)
 {
-	if (emu_load_seq(sequence_num) == 0)
-		return 0;
+	if (load_seq(sequence_num) != 0) {
+		AIL_start_sequence(ds_readw(SND_DRIVER_HANDLE), sequence_num);
+		return 1;
+	}
 
-	AIL_start_sequence(ds_readw(0x3f5c), sequence_num);
-	return 1;
+	return 0;
 }
 
-Bit8u *get_timbre(Bit16u bank, Bit16u patch)
+RealPt get_timbre(Bit16u bank, Bit16u patch)
 {
-	Bit8u *ptr;
-	fseek(fd_timbre, ds_readd(0x3f36), SEEK_SET);
-	do {
-		fd_read_datfile(fd_timbre, p_datseg + 0x2476, 6);
-		if (ds_readb(0x2477) == 0xff)
-			return NULL;
-	} while (ds_readb(0x2477) != bank && ds_readb(0x2476) != patch);
+	RealPt timbre_ptr;
 
-	fseek(fd_timbre, ds_readd(0x3f36) + ds_readd(0x2478), SEEK_SET);
-	fd_read_datfile(fd_timbre, p_datseg + 0x2474, 2);
-	ptr = (Bit8u*)gen_alloc(ds_readw(0x2474));
-	host_writew(ptr, ds_readw(0x2474));
-	fd_read_datfile(fd_timbre, ptr + 2, ds_readw(0x2474) - 2);
-	return ptr;
+	bc_lseek(ds_readw(HANDLE_TIMBRE), ds_readd(GENDAT_OFFSET), SEEK_SET);
+
+	do {
+		read_datfile(ds_readw(HANDLE_TIMBRE), p_datseg + CURRENT_TIMBRE_PATCH, 6);
+
+		if (ds_readbs(CURRENT_TIMBRE_BANK) == -1)
+			return 0;
+
+	} while ((ds_readbs(CURRENT_TIMBRE_BANK) != bank) && (ds_readbs(CURRENT_TIMBRE_PATCH) != patch));
+//	Remark: In the executable the code produces an infinite loop and is:
+//	} while ((ds_readbs(CURRENT_TIMBRE_BANK) != bank) || (ds_readbs(CURRENT_TIMBRE_PATCH) != patch));
+
+	bc_lseek(ds_readw(HANDLE_TIMBRE), ds_readd(GENDAT_OFFSET) + ds_readd(CURRENT_TIMBRE_OFFSET), SEEK_SET);
+	read_datfile(ds_readw(HANDLE_TIMBRE), p_datseg + CURRENT_TIMBRE_LENGTH, 2);
+
+	timbre_ptr = emu_gen_alloc(ds_readw(CURRENT_TIMBRE_LENGTH));
+
+#if defined(__BORLANDC__)
+	read_datfile(ds_readw(HANDLE_TIMBRE),
+		Real2Host(timbre_ptr) + 2,
+		host_writew(Real2Host(timbre_ptr), ds_readw(CURRENT_TIMBRE_LENGTH)) - 2);
+#else
+	host_writew(Real2Host(timbre_ptr), ds_readw(CURRENT_TIMBRE_LENGTH));
+	read_datfile(ds_readw(HANDLE_TIMBRE),
+		Real2Host(timbre_ptr) + 2,
+		host_readw(Real2Host(timbre_ptr) - 2));
+#endif
+
+	return timbre_ptr;
 }
 
+/* Borlandified and identical */
 unsigned short call_load_file(Bit16u index)
 {
 	return load_file(index);
 }
 
+/* Borlandified and nearly identical */
 unsigned short load_file(Bit16u index)
 {
-	FILE *fd;
+	Bit16u handle;
 
-	fd = fd_open_datfile(index);
+	if ((handle = open_datfile(index)) != 0xffff) {
+		read_datfile(handle, Real2Host((RealPt)ds_readd(FORM_XMID)), 32767);
+		bc_close(handle);
+		return 1;
+	}
 
-	if (fd == NULL)
-		return 0;
-
-	fread(Real2Host(ds_readd(0x3f46)), 1, 32767, fd);
-	fclose(fd);
-
-	return 1;
+	return 0;
 }
 
 unsigned short load_driver(RealPt fname, Bit16u type, Bit16u port)
 {
+#if defined(__BORLANDC__)
+	if (port != 0 &&
+		((RealPt)ds_writed(0x3f52, (RealPt)load_snd_driver(fname))) &&
+		((ds_writew(SND_DRIVER_HANDLE, AIL_register_driver((RealPt)ds_readd(0x3f52)))) != 0xffff) &&
+		host_readw(Real2Host((RealPt)(ds_writed(0x3f56, (Bit32s)AIL_describe_driver(ds_readw(SND_DRIVER_HANDLE))))) + 2) == type)
+	{
+		if (port == 0xffff) {
+			port = host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x0c);
+		}
+
+		if (AIL_detect_device(ds_readw(SND_DRIVER_HANDLE), port,
+					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x0e),
+					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x10),
+					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x12)) != 0)
+		{
+			AIL_init_driver(ds_readw(SND_DRIVER_HANDLE), port,
+					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x0e),
+					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x10),
+					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x12));
+			if (type == 3) {
+				ds_writed(STATE_TABLE_SIZE, AIL_state_table_size(ds_readw(SND_DRIVER_HANDLE)));
+				ds_writed(STATE_TABLE, (Bit32u)gen_alloc(ds_readd(STATE_TABLE_SIZE)));
+				ds_writew(TIMBRE_CACHE_SIZE, AIL_default_timbre_cache_size(ds_readw(SND_DRIVER_HANDLE)));
+
+				if (ds_readw(TIMBRE_CACHE_SIZE) != 0) {
+					ds_writed(SND_PTR_UNKN1, (Bit32u)gen_alloc(ds_readw(TIMBRE_CACHE_SIZE)));
+				#if !defined(__BORLANDC__)
+					AIL_define_timbre_cache(ds_readw(SND_DRIVER_HANDLE),
+							(RealPt)ds_readd(SND_PTR_UNKN1),
+							ds_readw(TIMBRE_CACHE_SIZE));
+				#endif
+				}
+			}
+
+			ds_writew(MIDI_DISABLED, 0);
+			return 1;
+		} else {
+			#if !defined(__BORLANDC__)
+			infobox((char*)(p_datseg + STR_SOUNDHW_NOT_FOUND), 0);
+			ds_writew(MIDI_DISABLED, 1);
+			#else
+				asm {nop; nop; nop; nop}
+			#endif
+			return 0;
+		}
+	}
+
+	ds_writew(MIDI_DISABLED, 1);
+	return 0;
+#else
 	CPU_Push16(port);
 	CPU_Push16(type);
 	CPU_Push32(fname);
@@ -1710,48 +1737,44 @@ unsigned short load_driver(RealPt fname, Bit16u type, Bit16u port)
 	CPU_Pop16();
 	CPU_Pop16();
 	return reg_ax ? 1 : 0;
+#endif
 }
 
+/* Borlandified and identical */
 void play_midi(Bit16u index)
 {
-	/* Midi disabled */
-	if (ds_readw(MIDI_DISABLED))
-		return;
-	if (host_readw(Real2Host(ds_readd(0x3f56)) + 2) != 3)
-		return;
-
-	stop_sequence();
-	call_load_file(index);
-	play_sequence(0);
+	if ((ds_readw(MIDI_DISABLED) == 0) &&
+		(host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 2) == 3))
+	{
+		stop_sequence();
+		call_load_file(index);
+		play_sequence(0);
+	}
 }
 
+/* Borlandified and identical */
 void stop_sequence()
 {
-	/* Midi disabled */
-	if (ds_readw(MIDI_DISABLED))
-		return;
-	if (host_readw(Real2Host(ds_readd(0x3f56)) + 2) != 3)
-		return;
-
-	AIL_stop_sequence(ds_readw(0x3f5c), ds_readw(0x3f5a));
-	AIL_release_sequence_handle(ds_readw(0x3f5c), ds_readw(0x3f5a));
+	if ((ds_readw(MIDI_DISABLED) == 0) &&
+		(host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 2) == 3))
+	{
+		AIL_stop_sequence(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE));
+		AIL_release_sequence_handle(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE));
+	}
 }
 
-
+/* Borlandified and identical */
 void restart_midi()
 {
-	if (ds_readw(MIDI_DISABLED))
-		return;
-
-	if (host_readw(Real2Host(ds_readd(0x3f56)) + 2) != 3)
-		return;
-
-	if (AIL_sequence_status(ds_readw(0x3f5c), ds_readw(0x3f5a)) != 2)
-		return;
-
-	AIL_start_sequence(ds_readw(0x3f5c), ds_readw(0x3f5a));
+	if ((ds_readw(MIDI_DISABLED) == 0) &&
+		(host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 2) == 3) &&
+		(AIL_sequence_status(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE)) == 2))
+	{
+		AIL_start_sequence(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE));
+	}
 }
 
+#if 1
 /**
  * mouse_action -	does mouse programming
  * @p1:		function AX
@@ -2552,16 +2575,15 @@ static FILE * fd_open_datfile(Bit16u index)
 
 
 	offset = get_archive_offset(fnames_g105de[index], buf);
-	ds_writew(0x3f36, (unsigned short)offset);
+	ds_writed(GENDAT_OFFSET, offset);
 
-
-	if (offset == -1) {
+	if (ds_readd(GENDAT_OFFSET) == 0xffffffff) {
 		D1_ERR("FILE %s IS MISSING!", fnames_g105de[index]);
 		fclose(fd);
 		return NULL;
 	}
 
-	fseek(fd, offset, SEEK_SET);
+	fseek(fd, ds_readd(GENDAT_OFFSET), SEEK_SET);
 
 	return fd;
 
@@ -2570,12 +2592,12 @@ static FILE * fd_open_datfile(Bit16u index)
 static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
 {
 
-	if (len > flen_left)
-		len = (unsigned short)flen_left;
+	if (len > ds_readd(FLEN_LEFT))
+		len = (unsigned short)ds_readd(FLEN_LEFT);
 
 	len = fread(buf, 1, len, fd);
 
-	flen_left -= len;
+	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
 
 	return len;
 }
@@ -2732,26 +2754,26 @@ signed int process_nvf(struct nvf_desc *nvf) {
 }
 
 /* static */
-Bit32s get_archive_offset(const char *name, Bit8u *table) {
-
+Bit32s get_archive_offset(const char *name, Bit8u *table)
+{
 	Bit32s offset, length;
 	Bit16u i;
 
 	for (i = 0; i < 50; i++) {
 
 		/* check the filename */
-		if (strncmp((char*)name, (char*)table + i * 16, 12))
-			continue;
+		if (!strncmp((char*)name, (char*)table + i * 16, 12)) {
 
-		/* calculate offset and length */
-		offset = host_readd(table + i * 16 + 0x0c);
-		length = host_readd(table + (i + 1) * 16 + 0x0c) - offset;
+			/* calculate offset and length */
+			offset = host_readd(table + i * 16 + 0x0c);
+			length = host_readd(table + (i + 1) * 16 + 0x0c) - offset;
 
-		/* save length in 2 variables */
-		flen = length;
-		flen_left = length;
+			/* save length in 2 variables */
+			ds_writed(FLEN, length);
+			ds_writed(FLEN_LEFT, length);
 
-		return offset;
+			return offset;
+		}
 	}
 
 	return -1;
@@ -2759,20 +2781,19 @@ Bit32s get_archive_offset(const char *name, Bit8u *table) {
 
 Bit16u read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 {
-
-	if (len > flen_left)
-		len = (unsigned short)flen_left;
+	if (len > ds_readd(FLEN_LEFT))
+		len = (unsigned short)ds_readd(FLEN_LEFT);
 
 	len = bc__read(handle, buf, len);
 
-	flen_left -= len;
+	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
 
 	return len;
 }
 
 Bit32s get_filelength() {
 
-	return flen;
+	return ds_readd(FLEN);
 }
 
 Bit16u ret_zero1() {

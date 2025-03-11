@@ -37,6 +37,7 @@
 #define USE_CDA				(0x1a09)    /* signed short */
 
 #define STR_SOUND_CFG			(0x1dd0)    /* char[9]; "SOUND.CFG" */
+#define STR_SOUNDHW_NOT_FOUND		(0x1de4)    /* char[]; "SOUND HARDWARE NOT FOUND" */
 
 #define RANDOM_GEN_SEED			(0x1fd6)    /* Bit16u */
 
@@ -45,7 +46,18 @@
 #define CD_AUDIO_POS                    (0x2468)    /* unsigned long */
 #define CD_DRIVE_NO                     (0x246c)    /* unsigned short */
 
+#define CURRENT_TIMBRE_LENGTH		(0x2474)    /* Bit16u */
+#define CURRENT_TIMBRE_PATCH		(0x2476)    /* Bit8s */
+#define CURRENT_TIMBRE_BANK		(0x2477)    /* Bit8s */
+#define CURRENT_TIMBRE_OFFSET		(0x2478)    /* Bit32u */
+
+
+#define FLEN				(0x3f2a)    /* Bit32s */
+#define FLEN_LEFT			(0x3f2e)    /* Bit32s */
+#define GENDAT_OFFSET			(0x3f36)    /* Bit32s */
 #define HANDLE_TIMBRE			(0x3f3a)    /* Bit16s */
+#define TIMBRE_CACHE_SIZE		(0x3f3c)    /* Bit16s */
+#define STATE_TABLE_SIZE		(0x3f3e)    /* Bit32u */
 #define SND_DRIVER			(0x3f42)    /* RealPt */
 #define FORM_XMID			(0x3f46)    /* RealPt */
 #define SND_PTR_UNKN1			(0x3f4a)    /* RealPt */

@@ -748,6 +748,21 @@ int schick_nearcall_gen105(unsigned offs) {
 					stop_music();
 					return 1;
 				}
+				case 0x02d0: {
+					CPU_Pop16();
+					Bit16u bank = CPU_Pop16();
+					Bit16u patch = CPU_Pop16();
+					CPU_Push16(patch);
+					CPU_Push16(bank);
+
+					RealPt timbre_ptr = get_timbre(patch, bank);
+
+					D1_LOG("near get_timbre(%d, %d) = %p\n",
+							patch, bank, timbre_ptr);
+					reg_ax = RealOff(timbre_ptr);
+					reg_dx = RealSeg(timbre_ptr);
+					return 1;
+				}
 				case 0x389: {
 					CPU_Pop16();
 					Bit16u index = CPU_Pop16();

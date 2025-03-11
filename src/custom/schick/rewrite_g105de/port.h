@@ -16,9 +16,13 @@ typedef Bit8u* PhysPt;
 extern char ds[0xffff];
 #define p_datseg (&ds[0x0000])
 
-#define ds_readb(p) *(signed char*)(ds + p)
-#define ds_readw(p) *(signed short*)(ds + p)
-#define ds_readd(p) *(signed long*)(ds + p)
+#define ds_readb(p) *(unsigned char*)(ds + p)
+#define ds_readw(p) *(unsigned short*)(ds + p)
+#define ds_readd(p) *(unsigned long*)(ds + p)
+
+#define ds_readbs(p) *(signed char*)(ds + p)
+#define ds_readws(p) *(signed short*)(ds + p)
+#define ds_readds(p) *(signed long*)(ds + p)
 
 #define ds_writeb(p, d) *(unsigned char*)(ds + p) = d
 #define ds_writew(p, d) *(unsigned short*)(ds + p) = d
@@ -37,7 +41,7 @@ extern char ds[0xffff];
 #define host_readd(p) *(Bit32u*)(p)
 
 #define host_writeb(p, d)       (*(Bit8u*)(p) = d)
-#define host_writew(p, d)       (*(Bit16u*) = d)
+#define host_writew(p, d)       (*(Bit16u*)(p) = d)
 #define host_writed(p, d)       (*(Bit32u*)(p) = d)
 
 #define RealMake(seg, off) (void*)(seg << 4 + off)
