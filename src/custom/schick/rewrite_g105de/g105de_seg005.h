@@ -14,9 +14,9 @@ unsigned short swap_u16(unsigned short val);
 void copy_to_screen(PhysPt, PhysPt, Bit16s, Bit16s, Bit16u);
 
 #if defined(__BORLANDC__)
-RealPt _normalize_ptr(RealPt);
+RealPt _normalize_ptr(Bit32u);
 #else
-static inline RealPt _normalize_ptr(RealPt) { };
+static inline RealPt _normalize_ptr(Bit32u) { };
 #endif
 
 #if !defined(__BORLANDC__)

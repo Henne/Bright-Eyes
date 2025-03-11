@@ -14,7 +14,6 @@
 
 #include "../schick.h"
 
-
 #endif
 
 #include "g105de_seg000.h"
@@ -1464,6 +1463,7 @@ void BE_cleanup()
 
 #endif
 
+/* Borlandified and identical */
 void start_music(Bit16u track)
 {
 
@@ -1476,6 +1476,7 @@ void start_music(Bit16u track)
 	}
 }
 
+/* Borlandified and nearly identical */
 void read_soundcfg()
 {
 	Bit16s handle;
@@ -1487,6 +1488,7 @@ void read_soundcfg()
 #if !defined(__BORLANDC__)
 	handle = bc_open(RealMake(datseg, STR_SOUND_CFG), 0x8001);
 #else
+	/* This is checked in the following if statement */
 	handle = bc_open("SOUND.CFG", 0x8001);
 #endif
 
@@ -1511,16 +1513,16 @@ void read_soundcfg()
 	}
 }
 
+/* Borlandified and identical */
 void init_music(unsigned long size)
 {
-	ds_writed(FORM_XMID, (Bit32s)emu_gen_alloc(size));
-
-	if (ds_readd(FORM_XMID)) {
+	if (ds_writed(FORM_XMID, (Bit32s)emu_gen_alloc(size))) {
 		AIL_startup();
 		ds_writew(MIDI_DISABLED, 1);
 	}
 }
 
+/* Borlandified and identical */
 void stop_music()
 {
 	AIL_shutdown(0);
@@ -1540,21 +1542,22 @@ void stop_music()
 	seg001_033b();
 }
 
+/* Borlandified and nearly identical */
 RealPt load_snd_driver(RealPt fname)
 {
 	Bit32s size;
-	RealPt in_ptr;
 	RealPt norm_ptr;
+	Bit32u in_ptr;
 	Bit16s handle;
 
-	handle = bc_open(fname, 0x8001);
-
-	if (handle != -1) {
+	if ((handle = bc_open(fname, 0x8001)) != -1) {
 		size = 16500;
 		ds_writed(SND_DRIVER, (Bit32s)emu_gen_alloc(size + 0x10));
-		in_ptr = (RealPt)((ds_readd(SND_DRIVER) + 0x0f) & 0xfff0ffff);
-		norm_ptr = _normalize_ptr(in_ptr);
-		bc__read(handle, (Bit8u*)Real2Host(norm_ptr), size);
+		in_ptr = ds_readd(SND_DRIVER) + 0x0f;
+		in_ptr &= 0xfffffff0;
+
+		/* The arguments of read are working, but not identical */		
+		bc__read(handle, (Bit8u*)Real2Host(norm_ptr = _normalize_ptr(in_ptr)), size);
 		bc__close(handle);
 		return norm_ptr;
 	} else {
@@ -1562,6 +1565,7 @@ RealPt load_snd_driver(RealPt fname)
 	}
 }
 
+/* Borlandified and identical */
 void unload_snd_driver()
 {
 	if (ds_readd(SND_DRIVER)) {
@@ -1569,6 +1573,7 @@ void unload_snd_driver()
 		ds_writed(SND_DRIVER, 0);
 	}
 }
+#if 1
 
 #if !defined(__BORLANDC__)
 unsigned short emu_load_seq(Bit16u sequence_num)
@@ -7045,6 +7050,8 @@ RealPt emu_gen_alloc(Bit32u nelem)
 {
 	return bc_calloc(nelem, 1);
 }
+#endif
+
 #endif
 
 #if !defined(__BORLANDC__)

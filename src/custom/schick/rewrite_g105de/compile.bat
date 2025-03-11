@@ -20,8 +20,8 @@
 @REM option -Od can be enabled		(disable optimization)
 @REM
 @REM -- here start the complete
-@REM BCC.EXE -mlarge -O- -c -Y SEG001.CPP
-@REM BCC.EXE -mlarge -O- -c -j10 SEG002.CPP
+@REM BCC.EXE -mlarge -O- -c -j5 SEG001.CPP
+@REM BCC.EXE -mlarge -O -c -IAIL -j5 -2 SEG002.CPP
 @REM BCC.EXE -mlarge -O1 -c -1- SEG003.CPP
 @REM TASM.EXE /os /z SEG004.asm SEG004.OBJ
 @REM TASM.EXE /os /z SEG005.asm SEG005.OBJ
