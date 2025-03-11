@@ -45,10 +45,14 @@
 #define CD_AUDIO_POS                    (0x2468)    /* unsigned long */
 #define CD_DRIVE_NO                     (0x246c)    /* unsigned short */
 
+#define HANDLE_TIMBRE			(0x3f3a)    /* Bit16s */
 #define SND_DRIVER			(0x3f42)    /* RealPt */
 #define FORM_XMID			(0x3f46)    /* RealPt */
 #define SND_PTR_UNKN1			(0x3f4a)    /* RealPt */
 #define STATE_TABLE			(0x3f4e)    /* RealPt */
+
+#define SND_SEQUENCE			(0x3f5a)    /* Bit16s */
+#define SND_DRIVER_HANDLE		(0x3f5c)    /* Bit16s */
 
 #define RANDOM_GEN_SEED2		(0x458f)    /* Bit16u */
 

@@ -1573,17 +1573,49 @@ void unload_snd_driver()
 		ds_writed(SND_DRIVER, 0);
 	}
 }
-#if 1
 
-#if !defined(__BORLANDC__)
+#if defined(__BORLANDC__)
 unsigned short emu_load_seq(Bit16u sequence_num)
+{
+	Bit16u patch;
+	RealPt ptr;
+	Bit16u si, di;
+
+	if ((ds_writew(HANDLE_TIMBRE, open_datfile(35))) != 0xffff) {
+
+		if ((ds_writew(SND_SEQUENCE, AIL_register_sequence(ds_readw(SND_DRIVER_HANDLE),
+			(RealPt)ds_readd(FORM_XMID), sequence_num,
+			(RealPt)ds_readd(STATE_TABLE), NULL))) != 0xffff) {
+
+			while ((si = AIL_timbre_request(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE))) != 0xffff)
+			{
+				di = si >> 8;
+				
+				if ((ptr = get_timbre(di, patch = (si & 0xff))) != 0) {
+					/* ptr is passed differently */
+					AIL_install_timbre(ds_readw(SND_DRIVER_HANDLE), di, patch, ptr);
+					bc_free(ptr);
+				}
+			}
+			// PLACEHOLDER: next line should be used here instead of asm
+			//bc_close(ds_readw(HANDLE_TIMBRE));
+			asm {db 0x9a, 0xad, 0xde, 0x00, 0x00;  db 0x75, 0xff; nop};
+			return 1;
+		}
+		bc_close(ds_readw(HANDLE_TIMBRE));
+	}
+
+	return 0;
+}
+#else
+
+unsigned short emu_load_seq(Bit16u sequence_num) {
 {
 	CPU_Push16(sequence_num);
 	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1e7);
 	CPU_Pop16();
 	return reg_ax ? 1 : 0;
 }
-#else
 
 unsigned short load_seq(Bit16u sequence_num)
 {

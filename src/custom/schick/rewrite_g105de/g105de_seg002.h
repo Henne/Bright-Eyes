@@ -28,7 +28,11 @@ namespace G105de {
 	unsigned short emu_load_seq(Bit16u);
 	unsigned short load_seq(Bit16u);
 	unsigned short play_sequence(Bit16u);
+#if !defined(__BORLANDC__)
 	Bit8u *get_timbre(Bit16u, Bit16u);
+#else
+	RealPt get_timbre(Bit16u, Bit16u);
+#endif
 	unsigned short call_load_file(Bit16u);
 	unsigned short load_file(Bit16u);
 	void restart_midi();
