@@ -1218,7 +1218,7 @@ static unsigned short unkn4;
 static char *texts[300];
 
 /* DS:0x4591 */
-static unsigned short mouse_flag;
+//static unsigned short HAVE_MOUSE;
 
 /* DS:0x4595 */
 static unsigned short wo_var;
@@ -1228,9 +1228,9 @@ static unsigned short in_key_ascii;
 static unsigned short in_key_ext;
 
 /* DS:0x4621 */
-static unsigned short *mouse_p1;
+//static unsigned short *mouse_p1;
 /* DS:0x4625 */
-static unsigned short *mouse_p2;
+//static unsigned short *mouse_p2;
 
 /* DS:0x4669 */
 static char cursor_bak[256];
@@ -1956,43 +1956,51 @@ void interrupt mouse_isr(void)
 }
 #endif
 
-#if 1
+/* Borlandified and identical */
 void mouse_enable()
 {
 	Bit16u p1, p2, p3, p4, p5;
 
-	if (mouse_flag != 2)
-		return;
+	if (ds_readw(HAVE_MOUSE) == 2) {
 
-	/* initialize mouse */
-	p1 = 0;
+		/* initialize mouse */
+		p1 = 0;
 
-	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
-				(Bit8u*)&p4, (Bit8u*)&p5);
+		do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3, (Bit8u*)&p4, (Bit8u*)&p5);
 
-	if (p1 == 0)
-		mouse_flag = 0;
+		if (p1 == 0) {
+			ds_writew(HAVE_MOUSE, 0);
+		}
 
-	mouse_p2 = mouse_mask;
-	mouse_p1 = mouse_mask;
+#if defined(__BORLANDC__)
+		ds_writed(MOUSE_CURRENT_CURSOR, (Bit32u)(&p_datseg[MOUSE_MASK]));
+		ds_writed(MOUSE_LAST_CURSOR, (Bit32u)(&p_datseg[MOUSE_MASK]));
+#else
+		ds_writed(MOUSE_CURRENT_CURSOR, (Bit32u)RealMake(datseg, MOUSE_MASK));
+		ds_writed(MOUSE_LAST_CURSOR, (Bit32u)RealMake(datseg, MOUSE_MASK));
+#endif
 
-	if (mouse_flag != 2)
-		return;
+		if (ds_readws(HAVE_MOUSE) == 2) {
 
-	/* move cursor  to initial position */
-	p1 = 4;
-	p3 = ds_readw(0x124c);
-	p4 = ds_readw(0x124e);
+			/* move cursor  to initial position */
+			p1 = 4;
+			p3 = ds_readw(MOUSE_POSX);
+			p4 = ds_readw(MOUSE_POSY);
 
-	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
-				(Bit8u*)&p4, (Bit8u*)&p5);
-
-	mouse_do_enable(0x1f, RealMake(reloc_gen + 0x3c6, 0x68c));
+			do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3, (Bit8u*)&p4, (Bit8u*)&p5);
+#if defined(__BORLANDC__)
+			mouse_do_enable(0x1f, (RealPt)&mouse_isr);
+#else
+			mouse_do_enable(0x1f, RealMake(reloc_gen + 0x3c6, 0x68c));
+#endif
+		}
+	}
 }
 
+#if 1
 void mouse_disable()
 {
-	if (mouse_flag == 2)
+	if (ds_readw(HAVE_MOUSE) == 2)
 		mouse_do_disable();
 
 }
@@ -2118,12 +2126,12 @@ void mouse()
 void mouse_compare()
 {
 	/* these pointers never differ in gen */
-	if (ds_readw(0x1254) || mouse_p1 != mouse_p2) {
+	if (ds_readw(MOUSE_MOVED) || ds_readd(MOUSE_LAST_CURSOR) != ds_readd(MOUSE_CURRENT_CURSOR)) {
 
 		/* copy a pointer */
-		mouse_p1 = mouse_p2;
+		ds_writed(MOUSE_LAST_CURSOR, ds_readd(MOUSE_CURRENT_CURSOR));
 
-		if (mouse_mask == mouse_p2) {
+		if (RealMake(datseg, MOUSE_MASK) == (RealPt)ds_readd(MOUSE_CURRENT_CURSOR)) {
 			ds_writew(0x1258, 0);
 			ds_writew(0x1256, 0);
 		} else {
@@ -2177,7 +2185,7 @@ void handle_input()
 				ds_readw(0x124e),
 				ptr_def_action);
 
-		if (mouse_flag == 2) {
+		if (ds_readw(HAVE_MOUSE) == 2) {
 			for (i = 0; i < 15; i++)
 				wait_for_vsync();
 
@@ -2302,7 +2310,8 @@ void update_mouse_ptr()
 
 	p1 = Real2Phys(ds_readd(0x47cb));
 
-	src = &mouse_p2[16];
+//	src = &mouse_p2[16];
+	src = &((unsigned short*)(Real2Host(ds_readd(MOUSE_CURRENT_CURSOR))))[16];
 
 	di = ds_readw(0x124c) - ds_readw(0x1256);
 
@@ -7071,11 +7080,11 @@ int main_gen(int argc, char **argv)
 
 	init_video();
 
-	mouse_flag = 2;
+	ds_writew(HAVE_MOUSE, 2);
 
 	mouse_enable();
 
-	if (mouse_flag == 0)
+	if (ds_readws(HAVE_MOUSE) == 0)
 		ds_writews(MOUSE_REFRESH_FLAG, -2);
 
 	init_stuff();

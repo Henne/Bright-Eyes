@@ -15,6 +15,7 @@ typedef Bit8u* PhysPt;
 
 extern char ds[0xffff];
 #define p_datseg (&ds[0x0000])
+#define datseg (_DS)
 
 #define ds_readb(p) *(unsigned char*)(ds + p)
 #define ds_readw(p) *(unsigned short*)(ds + p)
@@ -60,7 +61,7 @@ extern char ds[0xffff];
 #define host_writews(p, d)       (*(Bit16s*)(p) = d)
 #define host_writeds(p, d)       (*(Bit32s*)(p) = d)
 
-#define RealMake(seg, off) (void*)(seg << 4 + off)
+#define RealMake(seg, off) ((RealPt)((seg << 4) + off))
 #define Real2Host(p) (p)
 #endif
 

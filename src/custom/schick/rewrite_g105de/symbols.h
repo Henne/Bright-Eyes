@@ -33,7 +33,7 @@
 
 #endif
 
-
+#define MOUSE_MASK			(0x1200)
 #define MOUSE_POSY_MIN			(0x1240)
 #define MOUSE_POSX_MIN			(0x1242)
 #define MOUSE_POSY_MAX			(0x1244)
@@ -80,8 +80,12 @@
 
 #define RANDOM_GEN_SEED2		(0x458f)    /* Bit16u */
 
+#define HAVE_MOUSE			(0x4591)    /* Bit16s */
+
 #define MOUSE1_EVENT1			(0x4597)    /* Bit16s */
 #define MOUSE2_EVENT			(0x4599)    /* Bit16s */
 #define MOUSE1_EVENT2			(0x459b)    /* Bit16s */
 
+#define MOUSE_LAST_CURSOR		(0x4621)
+#define MOUSE_CURRENT_CURSOR		(0x4625)
 #endif
