@@ -2085,19 +2085,48 @@ void mouse_move_cursor(unsigned short x, unsigned short y)
 	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3, (Bit8u*)&p4, (Bit8u*)&p5);
 }
 
-#if 1
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void mouse_unused2(unsigned short a1, unsigned short a2, unsigned short a3, unsigned short a4)
+{
+	unsigned short p1, p2, p3, p4, p5;
+
+	p1 = 9;
+	p2 = a1;
+	p3 = a2;
+	p4 = a3;
+	p5 = a4;
+
+	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3, (Bit8u*)&p4, (Bit8u*)&p5);
+}
+
+/* Borlandified and identical */
+void mouse_unused3(unsigned short a1)
+{
+	unsigned short p1, p2, p3, p4, p5;
+
+	p1 = 0x1d;
+	p2 = a1;
+
+	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3, (Bit8u*)&p4, (Bit8u*)&p5);
+}
+#endif
+
+/* Borlandified and identical */
 /* static */
 void update_mouse_cursor()
 {
 	update_mouse_cursor1();
 }
 
+/* Borlandified and identical */
 /* static */
 void call_mouse()
 {
 	mouse();
 }
 
+/* Borlandified and identical */
 /* static */
 void update_mouse_cursor1()
 {
@@ -2111,6 +2140,8 @@ void update_mouse_cursor1()
 		ds_dec_ws(MOUSE_REFRESH_FLAG);
 	}
 }
+
+#if 1
 
 /* static */
 void mouse()
