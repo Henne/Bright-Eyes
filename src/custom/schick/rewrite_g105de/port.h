@@ -35,13 +35,17 @@ extern char ds[0xffff];
 #define ds_writew(p, d) *(unsigned short*)(ds + p) = d
 #define ds_writed(p, d) *(unsigned long*)(ds + p) = d
 
-#define ds_dec_b(p)	*(unsigned char*)(ds + p)--
-#define ds_dec_w(p)	*(unsigned short*)(ds + p)--
-#define ds_dec_d(p)	*(unsigned long*)(ds + p)--
+#define ds_inc_b(p)	++*(unsigned char*)(ds + p)
+#define ds_inc_w(p)	++*(unsigned short*)(ds + p)
+#define ds_inc_d(p)	++*(unsigned long*)(ds + p)
 
-#define ds_inc_bs(p)	*(signed char*)(ds + p)++
-#define ds_inc_ws(p)	*(signed short*)(ds + p)++
-#define ds_inc_ds(p)	*(signed long*)(ds + p)++
+#define ds_dec_b(p)	--*(unsigned char*)(ds + p)
+#define ds_dec_w(p)	--*(unsigned short*)(ds + p)
+#define ds_dec_d(p)	--*(unsigned long*)(ds + p)
+
+#define ds_inc_bs(p)	++*(signed char*)(ds + p)
+#define ds_inc_ws(p)	++*(signed short*)(ds + p)
+#define ds_inc_ds(p)	++*(signed long*)(ds + p)
 
 #define ds_dec_bs(p)	--*((signed char*)(ds + p))
 #define ds_dec_ws(p)	--*((signed short*)(ds + p))
