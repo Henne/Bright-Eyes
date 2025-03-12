@@ -865,7 +865,7 @@ static struct struct_hero hero;
 /* DS:0x1a09 */
 //static unsigned short use_cda;
 /* DS:0x1a0b */
-static unsigned short eh_installed;
+//static unsigned short eh_installed;
 /* DS:0x1a11 */
 static Bit8u *bg_buffer[MAX_PAGES];
 /* DS:0x1a3d */
@@ -2042,7 +2042,7 @@ void mouse_do_enable(Bit16u val, RealPt ptr)
 	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
 				(Bit8u*)&p4, (Bit8u*)&p5);
 
-	eh_installed = 1;
+	ds_writew(MOUSE_HANDLER_INSTALLED, 1);
 }
 
 void mouse_do_disable()
@@ -2061,7 +2061,7 @@ void mouse_do_disable()
 	do_mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&v3,
 		(Bit8u*)&v4, (Bit8u*)&v5);
 
-	eh_installed = 0;
+	ds_writew(MOUSE_HANDLER_INSTALLED, 0);
 }
 
 /**
