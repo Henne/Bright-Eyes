@@ -2049,13 +2049,13 @@ void mouse_do_enable(Bit16u val, RealPt ptr)
 	ds_writew(MOUSE_HANDLER_INSTALLED, 1);
 }
 
-#if 1
+/* Borlandified and identical */
 void mouse_do_disable()
 {
 	Bit16u v1, v2, v3, v4, v5;
 
 	/* restore the old int 0x78 handler */
-	RealSetVec(0x78, ds_readd(0x3f32));
+	bc__dos_setvect(0x78, (INTCAST)ds_readd(IRQ78_BAK));
 
 	/* uninstall mouse event handler */
 	v1 = 0x0c;
@@ -2063,12 +2063,12 @@ void mouse_do_disable()
 	v4 = 0;
 	v5 = 0;
 
-	do_mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&v3,
-		(Bit8u*)&v4, (Bit8u*)&v5);
+	do_mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&v3, (Bit8u*)&v4, (Bit8u*)&v5);
 
 	ds_writew(MOUSE_HANDLER_INSTALLED, 0);
 }
 
+#if 1
 /**
  * mouse_move_cursor -	move the mouse cursor to a position
  * @x:	X - coordinate
