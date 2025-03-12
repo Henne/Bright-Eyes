@@ -16,7 +16,7 @@ void copy_to_screen(PhysPt, PhysPt, Bit16s, Bit16s, Bit16u);
 #if defined(__BORLANDC__)
 RealPt _normalize_ptr(Bit32u);
 #else
-static inline RealPt _normalize_ptr(Bit32u) { };
+static inline RealPt _normalize_ptr(Bit32u) { }
 #endif
 
 #if !defined(__BORLANDC__)
