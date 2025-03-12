@@ -1142,12 +1142,12 @@ static unsigned short got_ch_bonus;
 static unsigned short got_mu_bonus;
 
 /* DS:0x3f2a */
-static Bit32s flen;
+//static Bit32s FLEN;
 /* DS:0x3f2e */
-static Bit32s flen_left;
+//static Bit32s FLEN_LEFT;
 
 /* DS:0x3f3a */
-FILE *fd_timbre;
+//signed short HANDLE_TIMBRE;
 
 /* DS:0x3f42 */
 //void *snd_driver;
