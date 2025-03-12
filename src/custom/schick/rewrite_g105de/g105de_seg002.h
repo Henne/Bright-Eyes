@@ -40,9 +40,9 @@ namespace G105de {
 	void mouse_disable();
 	void mouse_do_enable(Bit16u, RealPt);
 	void mouse_do_disable();
-	void draw_mouse_ptr_wrapper();
+	void update_mouse_cursor();
 	void call_mouse();
-	void draw_mouse_ptr();
+	void update_mouse_cursor1();
 	void mouse();
 	void mouse_compare();
 	void handle_input();

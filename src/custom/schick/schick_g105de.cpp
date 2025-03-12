@@ -862,9 +862,8 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x09d1: {
 					CPU_Pop16();
 
-					draw_mouse_ptr_wrapper();
-					D1_LOG("draw_mouse_ptr_wrapper();\n");
-
+					update_mouse_cursor();
+					D1_LOG("update_mouse_cursor();\n");
 					return 1;
 				}
 				case 0x09db: {
@@ -878,8 +877,8 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x09e5: {
 					CPU_Pop16();
 
-					draw_mouse_ptr();
-					D1_LOG("draw_mouse_ptr();\n");
+					update_mouse_cursor1();
+					D1_LOG("update_mouse_cursor1();\n");
 
 					return 1;
 				}

@@ -1998,9 +1998,9 @@ void mouse_move_cursor(unsigned short x, unsigned short y) {
 }
 
 /* static */
-void draw_mouse_ptr_wrapper() {
-
-	draw_mouse_ptr();
+void update_mouse_cursor()
+{
+	update_mouse_cursor1();
 }
 
 /* static */
@@ -2010,7 +2010,7 @@ void call_mouse()
 }
 
 /* static */
-void draw_mouse_ptr()
+void update_mouse_cursor1()
 {
 	if (ds_readw(MOUSE_LOCKED) == 0) {
 
@@ -2077,7 +2077,7 @@ void mouse_compare()
 			ds_writew(0x1256, 8);
 		}
 		ds_writew(0x1254, 0);
-		draw_mouse_ptr();
+		update_mouse_cursor1();
 		mouse();
 	}
 }
@@ -2100,7 +2100,7 @@ void handle_input()
 
 		if ((in_key_ascii == 0x11) && !ds_readb(0x40b8)) {
 
-			draw_mouse_ptr_wrapper();
+			update_mouse_cursor();
 			mouse_disable();
 			stop_music();
 			restore_mouse_isr();
@@ -2209,7 +2209,7 @@ void decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
 	/* End of the tweaker section. */
 
 	dst_loc = dst + 320 * y + x;
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 
 	for (i = 0; i < height; dst_loc += 320, i++) {
 
@@ -2928,7 +2928,7 @@ void do_draw_pic(Bit16u mode)
 	src = Real2Phys(dst_src);
 	dst = Real2Phys(dst_dst);
 
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 
 	pic_copy(dst, x, y, d1, d2, v1, v2, d3, d4, w, h, src, mode);
 
@@ -2965,7 +2965,7 @@ Bit16u print_line(char *str)
 {
 	Bit16u lines = 1;
 
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 
 	lines = str_splitter(str);
 
@@ -2984,7 +2984,7 @@ void print_str(char *str, Bit16u x, Bit16u y)
 
 	i = 0;
 
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 
 	if (ds_readw(0x4789) == 1)
 		x = get_line_start_c(str, x, text_x_end);
@@ -3289,7 +3289,7 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 	Bit16s c;
 	unsigned char width;
 
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 	di = x;
 	pos = 0;
 
@@ -3498,7 +3498,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	upper_border += ro_zero;
 	text_y = upper_border + 7;
 
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 
 	src = Real2Phys(ds_readd(0x47cb));
 	src += upper_border * 320 + left_border;
@@ -3535,7 +3535,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	}
 
 	set_textcolor(fg, bg);
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 
 	dst = Real2Phys(ds_readd(0x47cb));
 	dst += upper_border * 320 + left_border;
@@ -3584,7 +3584,7 @@ void fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
 {
 	Bit16u i, x, y;
 
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 
 	/* unmark the old radio button, if any */
 	if (old_pos != -1) {
@@ -3642,7 +3642,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	lines_sum = lines_header + options;
 	upper_border = abs(200 - (lines_sum + 2) * 8) / 2;
 	text_y = upper_border + 7;
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 
 	/* save old background */
 	src = Real2Phys(ds_readd(0x47cb));
@@ -3751,7 +3751,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 		}
 	}
 
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 
 	ds_writew(0x124c, mx_bak);
 	ds_writew(0x1250, mx_bak);
@@ -3789,7 +3789,7 @@ void enter_name()
 
 	dst = Real2Phys(ds_readd(0x47cb) + 12 * 320 + 176);
 
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
 	enter_string(hero.name, 180, 12, 15, 1);
 	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
@@ -3858,7 +3858,7 @@ void change_sex()
 	} else {
 		dst = Real2Phys(ds_readd(0x47cb)) + 7 * 320 + 305;
 		src = Real2Phys(ds_readd(0x4769)) + hero.sex * 256;
-		draw_mouse_ptr_wrapper();
+		update_mouse_cursor();
 		copy_to_screen(src, dst, 16, 16, 0);
 		call_mouse();
 	}
@@ -4515,7 +4515,7 @@ void refresh_screen()
 		ds_writed(0x47c7, ds_readd(0x47cb));
 		dst = Real2Phys(ds_readd(0x47cb));
 		src = Real2Phys(ds_readd(0x47d3));
-		draw_mouse_ptr_wrapper();
+		update_mouse_cursor();
 		copy_to_screen(src, dst, 320, 200, 0);
 		call_mouse();
 	} else {
@@ -4624,7 +4624,7 @@ void new_values()
 		di = values[di - 1];
 		hero.attribs[di].current = bv1;
 		hero.attribs[di].normal = bv1;
-		draw_mouse_ptr_wrapper();
+		update_mouse_cursor();
 		refresh_screen();
 		call_mouse();
 	}
@@ -4662,7 +4662,7 @@ void new_values()
 		di = values[di - 1];
 		hero.attribs[di + 7].current = bv1;
 		hero.attribs[di + 7].normal = bv1;
-		draw_mouse_ptr_wrapper();
+		update_mouse_cursor();
 		refresh_screen();
 		call_mouse();
 	}
@@ -4874,7 +4874,7 @@ void select_typus()
 	ds_writew(0x11fe, 1);
 
 	load_typus(hero.typus);
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 16, 8, 143, 191, 0);
 	wait_for_vsync();
 	set_palette(Real2Host(ds_readd(0x47b3)) + 0x5c02, 0, 32);
@@ -6639,7 +6639,7 @@ void choose_typus()
 	}
 
 	load_typus(hero.typus);
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 16, 8, 143, 191, 0);
 	wait_for_vsync();
 	set_palette(Real2Host(ds_readd(0x47b3)) + 0x5c02, 0, 32);
@@ -7043,7 +7043,7 @@ int main_gen(int argc, char **argv)
 	call_mouse();
 	do_gen();
 	stop_music();
-	draw_mouse_ptr_wrapper();
+	update_mouse_cursor();
 	mouse_disable();
 	restore_mouse_isr();
 
