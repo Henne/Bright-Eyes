@@ -1902,6 +1902,60 @@ void do_mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5)
 #endif
 }
 
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void interrupt mouse_isr(void)
+{
+	signed short l_si = _AX;
+	signed short p1;
+	signed short p2;
+	signed short p3;
+	signed short p4;
+	signed short p5;
+	
+	if (ds_readws(MOUSE_LOCKED) == 0) {
+		if (l_si & 0x2) {
+			ds_writew(MOUSE1_EVENT2, 1);
+			ds_writew(MOUSE1_EVENT1, 1);
+		}
+		if (l_si & 0x8) {
+			ds_writew(MOUSE2_EVENT, 1);
+		}
+		if (l_si & 0x1) {
+			p1 = 3;
+			p3 = ds_readws(MOUSE_POSX);
+			p4 = ds_readws(MOUSE_POSY);
+			
+			do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3, (Bit8u*)&p4, (Bit8u*)&p5);
+
+			ds_writew(MOUSE_POSX, p3);
+			ds_writew(MOUSE_POSY, p4);
+			
+			if (ds_readws(MOUSE_POSX) > ds_readws(MOUSE_POSX_MAX)) {
+				ds_writew(MOUSE_POSX, ds_readws(MOUSE_POSX_MAX));
+			}
+			if (ds_readws(MOUSE_POSX) < ds_readws(MOUSE_POSX_MIN)) {
+				ds_writew(MOUSE_POSX, ds_readws(MOUSE_POSX_MIN));
+			}
+			if (ds_readws(MOUSE_POSY) < ds_readws(MOUSE_POSY_MIN)) {
+				ds_writew(MOUSE_POSY, ds_readws(MOUSE_POSY_MIN));
+			}
+			if (ds_readws(MOUSE_POSY) > ds_readws(MOUSE_POSY_MAX)) {
+				ds_writew(MOUSE_POSY, ds_readws(MOUSE_POSY_MAX));
+			}
+			
+			p1 = 4;
+			p3 = ds_readws(MOUSE_POSX);
+			p4 = ds_readws(MOUSE_POSY);
+			
+			do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3, (Bit8u*)&p4, (Bit8u*)&p5);
+			
+			ds_writew(MOUSE_MOVED, 1);
+		}
+	}
+}
+#endif
+
 #if 1
 void mouse_enable()
 {

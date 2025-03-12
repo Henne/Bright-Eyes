@@ -36,6 +36,9 @@ namespace G105de {
 	void stop_sequence();
 
 	void do_mouse_action(Bit8u*, Bit8u*, Bit8u*, Bit8u*, Bit8u*);
+#if defined(__BORLANDC__)
+	void interrupt mouse_isr(void);
+#endif
 	void mouse_enable();
 	void mouse_disable();
 	void mouse_do_enable(Bit16u, RealPt);

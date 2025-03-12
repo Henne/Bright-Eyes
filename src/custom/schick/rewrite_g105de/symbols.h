@@ -33,8 +33,17 @@
 
 #endif
 
+
+#define MOUSE_POSY_MIN			(0x1240)
+#define MOUSE_POSX_MIN			(0x1242)
+#define MOUSE_POSY_MAX			(0x1244)
+#define MOUSE_POSX_MAX			(0x1246)
 #define MOUSE_LOCKED			(0x1248)
 #define MOUSE_REFRESH_FLAG		(0x124a)    /* signed short */
+#define MOUSE_POSX			(0x124c)
+#define MOUSE_POSY			(0x124e)
+
+#define MOUSE_MOVED			(0x1254)
 
 #define MIDI_DISABLED			(0x1a07)    /* signed short */
 #define USE_CDA				(0x1a09)    /* signed short */
@@ -70,5 +79,9 @@
 #define SND_DRIVER_HANDLE		(0x3f5c)    /* Bit16s */
 
 #define RANDOM_GEN_SEED2		(0x458f)    /* Bit16u */
+
+#define MOUSE1_EVENT1			(0x4597)    /* Bit16s */
+#define MOUSE2_EVENT			(0x4599)    /* Bit16s */
+#define MOUSE1_EVENT2			(0x459b)    /* Bit16s */
 
 #endif
