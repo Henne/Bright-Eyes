@@ -3,6 +3,12 @@
 
 #if defined(__BORLANDC__)
 
+#ifdef __cplusplus
+#define INTCAST void interrupt (*)(...)
+#else
+#define INTCAST void interrupt (*)()
+#endif
+
 typedef unsigned char Bit8u;
 typedef signed char Bit8s;
 typedef unsigned short Bit16u;
@@ -63,6 +69,9 @@ extern char ds[0xffff];
 
 #define RealMake(seg, off) ((RealPt)((seg << 4) + off))
 #define Real2Host(p) (p)
+
+#else
+#define INTCAST RealPt
 #endif
 
 #endif
