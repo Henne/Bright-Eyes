@@ -2026,7 +2026,7 @@ void draw_mouse_ptr()
 /* static */
 void mouse()
 {
-	if (ds_readw(0x1248))
+	if (ds_readw(MOUSE_LOCKED))
 		return;
 
 	ds_inc_ws(MOUSE_REFRESH_FLAG);
@@ -2034,7 +2034,7 @@ void mouse()
 	if (ds_readws(MOUSE_REFRESH_FLAG) != 0)
 		return;
 
-	ds_writew(0x1248, 1);
+	ds_writew(MOUSE_LOCKED, 1);
 
 	if (ds_readw(0x124c) < ds_readw(0x1256))
 		ds_writew(0x124c, ds_readw(0x1256));
@@ -2057,7 +2057,7 @@ void mouse()
 
 	update_mouse_ptr();
 
-	ds_writew(0x1248, 0);
+	ds_writew(MOUSE_LOCKED, 0);
 }
 
 /* static */
