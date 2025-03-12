@@ -2005,6 +2005,22 @@ void mouse_disable()
 	}
 }
 
+#if defined(__BORLANDC__)
+/* Borlandified and nearly identical */
+void mouse_unused1(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4)
+{
+	unsigned short l_var;
+	host_writew(p1, 5);
+	do_mouse_action(p1, p2, p3, p4, (Bit8u*)&l_var);
+}
+
+/* Borlandified and identical */
+void mouse_call_isr()
+{
+	mouse_isr();
+}
+#endif
+
 #if 1
 void mouse_do_enable(Bit16u val, RealPt ptr)
 {
