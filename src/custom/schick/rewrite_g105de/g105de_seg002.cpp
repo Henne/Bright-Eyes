@@ -2068,19 +2068,24 @@ void mouse_do_disable()
 	ds_writew(MOUSE_HANDLER_INSTALLED, 0);
 }
 
-#if 1
 /**
  * mouse_move_cursor -	move the mouse cursor to a position
  * @x:	X - coordinate
  * @y:	Y - coordinate
  */
-void mouse_move_cursor(unsigned short x, unsigned short y) {
-	unsigned short v1 = 4;
-	unsigned short v2 = 0xdead;
+/* Borlandified and identical */
+void mouse_move_cursor(unsigned short x, unsigned short y)
+{
+	unsigned short p1, p2, p3, p4, p5;
 
-	do_mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&x, (Bit8u*)&y, (Bit8u*)&v2);
+	p1 = 4;
+	p3 = x;
+	p4 = y;
+
+	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3, (Bit8u*)&p4, (Bit8u*)&p5);
 }
 
+#if 1
 /* static */
 void update_mouse_cursor()
 {
