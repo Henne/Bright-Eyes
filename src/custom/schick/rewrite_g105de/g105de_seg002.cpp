@@ -2021,7 +2021,7 @@ void mouse_call_isr()
 }
 #endif
 
-#if 1
+/* Borlandified and identical */
 void mouse_do_enable(Bit16u val, RealPt ptr)
 {
 	Bit16u p1, p2, p3, p4, p5;
@@ -2029,22 +2029,27 @@ void mouse_do_enable(Bit16u val, RealPt ptr)
 	p1 = 0x0c;
 	p3 = val;
 
+#if !defined(__BORLANDC__)
 	p4 = 0x86a;
 	p5 = reloc_gen + 0x3c6;
+#else
+	p4 = (Bit16u)FP_OFF(mouse_isr);
+	p5 = (Bit16u)FP_SEG(mouse_isr);
+#endif
 
 	/* save adress of old IRQ 0x78 */
-	ds_writed(0x3f32, RealGetVec(0x78));
+	ds_writed(IRQ78_BAK, (Bit32u)bc__dos_getvect(0x78));
 
-	/* set new IRS 0x78 */
-	RealSetVec(0x78, ptr);
+	/* set new IRQ 0x78 */
+	bc__dos_setvect(0x78, (INTCAST)ptr);
 
 	/* set the new mouse event handler */
-	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
-				(Bit8u*)&p4, (Bit8u*)&p5);
+	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3, (Bit8u*)&p4, (Bit8u*)&p5);
 
 	ds_writew(MOUSE_HANDLER_INSTALLED, 1);
 }
 
+#if 1
 void mouse_do_disable()
 {
 	Bit16u v1, v2, v3, v4, v5;

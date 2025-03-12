@@ -67,6 +67,7 @@
 
 #define FLEN				(0x3f2a)    /* Bit32s */
 #define FLEN_LEFT			(0x3f2e)    /* Bit32s */
+#define IRQ78_BAK			(0x3f32)    /* RealPt */
 #define GENDAT_OFFSET			(0x3f36)    /* Bit32s */
 #define HANDLE_TIMBRE			(0x3f3a)    /* Bit16s */
 #define TIMBRE_CACHE_SIZE		(0x3f3c)    /* Bit16s */
