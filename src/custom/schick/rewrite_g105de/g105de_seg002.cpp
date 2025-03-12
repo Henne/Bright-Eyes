@@ -28,7 +28,8 @@
 namespace G105de {
 #endif
 
-# include "symbols.h"
+#include "port.h"
+#include "symbols.h"
 
 /** Keyboard Constants */
 static const unsigned short KEY_ESC = 0x01;

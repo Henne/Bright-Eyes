@@ -33,6 +33,9 @@
 
 #endif
 
+#define MOUSE_LOCKED			(0x1248)
+#define MOUSE_REFRESH_FLAG		(0x124a)    /* signed short */
+
 #define MIDI_DISABLED			(0x1a07)    /* signed short */
 #define USE_CDA				(0x1a09)    /* signed short */
 

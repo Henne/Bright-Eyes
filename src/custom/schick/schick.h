@@ -138,6 +138,13 @@ static inline Bit32u ds_writed(unsigned short offs, Bit32u val) {
 	return val;
 }
 
+static inline Bit16s ds_inc_ws(unsigned short offs) {
+	return ++*(Bit16s*)(p_datseg + offs);
+}
+
+static inline Bit16s ds_dec_ws(unsigned short offs) {
+	return --*(Bit16s*)(p_datseg + offs);
+}
 int schick_farcall_gen105(unsigned, unsigned);
 int schick_nearcall_gen105(unsigned);
 int schick_farcall_v302de(unsigned, unsigned);
