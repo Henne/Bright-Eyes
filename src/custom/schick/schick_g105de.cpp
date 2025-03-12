@@ -50,6 +50,9 @@ static int seg000(Bitu offs) {
 
 			return 1;
 		}
+		case 0x0509: {
+			return 0;
+		}
 		case 0x072d: {
 			Bit16u handle = CPU_Pop16();
 			Bit32s off = CPU_Pop32();
@@ -140,6 +143,9 @@ static int seg000(Bitu offs) {
 				attr, reg_ax);
 
 			return 1;
+		}
+		case 0x224a: {
+			return 0;
 		}
 		case 0x254e: {
 			RealPt dst = CPU_Pop32();
@@ -254,6 +260,9 @@ static int seg000(Bitu offs) {
 
 			return 1;
 		}
+		case 0x31b4: {
+			return 0;
+		}
 		case 0x360e: {
 			Bit16u handle = CPU_Pop16();
 			RealPt buf = CPU_Pop32();
@@ -274,7 +283,8 @@ static int seg000(Bitu offs) {
 			return 1;
 		}
 		default:
-			return 0;
+		D1_INFO("call %s:0x%x\n", __func__, offs);
+		return 0;
 	}
 }
 
@@ -301,6 +311,7 @@ static int seg001(Bitu offs) {
 			return 1;
 		}
 	default:
+		D1_INFO("call %s:0x%x\n", __func__, offs);
 		return 0;
 	}
 }
@@ -358,6 +369,7 @@ static int seg002(Bitu offs)
 			return 1;
 		}
 		default:
+		D1_INFO("call %s:0x%x\n", __func__, offs);
 			return 0;
 	}
 }
@@ -603,6 +615,7 @@ static int seg006(Bitu offs) {
 			return 1;
 		}
 	}
+	D1_INFO("call %s:0x%x\n", __func__, offs);
 	return 0;
 }
 
