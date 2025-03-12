@@ -1997,14 +1997,15 @@ void mouse_enable()
 	}
 }
 
-#if 1
+/* Borlandified and identical */
 void mouse_disable()
 {
-	if (ds_readw(HAVE_MOUSE) == 2)
+	if (ds_readw(HAVE_MOUSE) == 2) {
 		mouse_do_disable();
-
+	}
 }
 
+#if 1
 void mouse_do_enable(Bit16u val, RealPt ptr)
 {
 	Bit16u p1, p2, p3, p4, p5;
