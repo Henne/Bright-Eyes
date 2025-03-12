@@ -27,7 +27,7 @@ All versions are build with the Borland C++ compiler using Memory Model: LARGE.
 | ------- | ------ | ------- |
 | seg000  |      - | C-Lib Codesegment |
 | seg001  |     21 | CD-Audio Code |
-| seg002  |    112 | Charactergenerator (mostly everything) |
+| seg002  |    132 | Charactergenerator (mostly everything) |
 | seg003  |      4 | random number generator |
 | seg004  |      7 | PP20 decompressor (for compressed images) |
 | seg005  |     24 | Rasterlib (VGA) |
