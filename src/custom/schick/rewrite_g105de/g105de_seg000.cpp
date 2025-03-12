@@ -18,12 +18,19 @@ void bc_exit(Bit16u exitval)
 
 RealPt bc__dos_getvect(Bit16s intno)
 {
-	return host_readd(MemBase + intno * 4);
+	CPU_Push16(intno);
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0x0438);
+	CPU_Pop16();
+	return RealMake(reg_dx, reg_ax);
 }
 
 void bc__dos_setvect(Bit16s intno, RealPt ptr)
 {
-	host_writed(MemBase + intno * 4, ptr);
+	CPU_Push32(ptr);
+	CPU_Push16(intno);
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0x0447);
+	CPU_Pop16();
+	CPU_Pop32();
 }
 
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence)
