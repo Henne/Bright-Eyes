@@ -816,7 +816,7 @@ static unsigned short mouse_mask[32] = {
 
 
 /* DS:0x124a */
-static Bit16s mouse_var = -1;
+//static Bit16s MOUSE_REFRESH_FLAG = -1;
 
 /* DS:0x135e */
 static const struct mouse_action action_default[2] = {
@@ -1936,7 +1936,6 @@ void mouse_enable()
 	mouse_do_enable(0x1f, RealMake(reloc_gen + 0x3c6, 0x68c));
 }
 
-
 void mouse_disable()
 {
 	if (mouse_flag == 2)
@@ -2013,15 +2012,15 @@ void call_mouse()
 /* static */
 void draw_mouse_ptr()
 {
-	if (ds_readw(0x1248))
-		return;
+	if (ds_readw(MOUSE_LOCKED) == 0) {
 
-	if (mouse_var == 0) {
-		ds_writew(0x1248, 1);
-		do_draw_mouse_ptr();
-		ds_writew(0x1248, 0);
+		if (ds_readws(MOUSE_REFRESH_FLAG) == 0) {
+			ds_writew(MOUSE_LOCKED, 1);
+			do_draw_mouse_ptr();
+			ds_writew(MOUSE_LOCKED, 0);
+		}
+		ds_dec_ws(MOUSE_REFRESH_FLAG);
 	}
-	mouse_var--;
 }
 
 /* static */
@@ -2030,9 +2029,9 @@ void mouse()
 	if (ds_readw(0x1248))
 		return;
 
-	mouse_var++;
+	ds_inc_ws(MOUSE_REFRESH_FLAG);
 
-	if (mouse_var != 0)
+	if (ds_readws(MOUSE_REFRESH_FLAG) != 0)
 		return;
 
 	ds_writew(0x1248, 1);
@@ -7023,7 +7022,7 @@ int main_gen(int argc, char **argv)
 	mouse_enable();
 
 	if (mouse_flag == 0)
-		mouse_var = -2;
+		ds_writews(MOUSE_REFRESH_FLAG, -2);
 
 	init_stuff();
 
