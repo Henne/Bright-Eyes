@@ -1466,7 +1466,6 @@ void BE_cleanup()
 /* Borlandified and identical */
 void start_music(Bit16u track)
 {
-
 	if (!ds_readw(USE_CDA)) {
 		if (ds_readw(MIDI_DISABLED) == 0) {
 			play_midi(track);
@@ -1599,7 +1598,7 @@ unsigned short load_seq(Bit16u sequence_num)
 #if defined(__BORLANDC__)
 			// PLACEHOLDER: next line should be used here instead of asm
 			//bc_close(ds_readw(HANDLE_TIMBRE));
-			asm {db 0x9a, 0xad, 0xde, 0x00, 0x00;  db 0x75, 0xff; nop};
+			asm {db 0x75, 0xff};
 #else
 			bc_close(ds_readw(HANDLE_TIMBRE));
 #endif
@@ -1748,7 +1747,11 @@ void play_midi(Bit16u index)
 	{
 		stop_sequence();
 		call_load_file(index);
+#if !defined(__BORLANDC__)
 		play_sequence(0);
+#else
+	asm {nop; nop; nop; nop }
+#endif
 	}
 }
 
@@ -1774,7 +1777,6 @@ void restart_midi()
 	}
 }
 
-#if 1
 /**
  * mouse_action -	does mouse programming
  * @p1:		function AX
@@ -1787,8 +1789,9 @@ void restart_midi()
  * to call interrupts. We use the one of DOSBox, which means, that we
  * put the values in the emulated registers, instead in a structure.
  */
-void do_mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
-
+void do_mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5)
+{
+#if !defined(__BORLANDC__)
 	if ((signed short)host_readw(p1) < 0)
 		return;
 
@@ -1856,8 +1859,49 @@ void do_mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
 	reg_di = bdi;
 
 	return;
+#else
+	REGS myregs;
+	SREGS mysregs;
+
+	if (host_readws(p1) >= 0) {
+		myregs.x.ax = host_readw(p1);
+		myregs.x.bx = host_readw(p2);
+#if !defined(__BORLANDC__)
+		myregs.x.cx = host_readw(p3);
+#else
+		myregs.x.cx = 0xdead; asm {nop};
+#endif
+
+		switch (host_readws(p1)) {
+			case 0x9:	/* define Cursor in graphic mode */
+			case 0xc:	/* install event handler */
+			case 0x14:	/* swap event handler */
+			case 0x16:	/* save mouse state */
+			case 0x17:	/* load mouse state */
+				myregs.x.dx = host_readw(p4);
+				mysregs.es = host_readw(p5);
+				break;
+			case 0x10:	/* define screen region for update */
+				myregs.x.cx = host_readw(p2);
+				myregs.x.dx = host_readw(p3);
+				myregs.x.si = host_readw(p4);
+				myregs.x.di = host_readw(p5);
+				break;
+			default:
+				myregs.x.dx = host_readw(p4);
+		}
+
+		bc_int86x(0x33, &myregs, &myregs, &mysregs);
+
+		host_writew(p2, ((host_readw(p1) == 0x14) ? mysregs.es : myregs.x.bx));
+		host_writew(p1, myregs.x.ax);
+		host_writew(p3, myregs.x.cx);
+		host_writew(p4, myregs.x.dx);
+	}
+#endif
 }
 
+#if 1
 void mouse_enable()
 {
 	Bit16u p1, p2, p3, p4, p5;

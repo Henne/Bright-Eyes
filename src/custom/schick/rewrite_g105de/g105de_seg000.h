@@ -32,6 +32,7 @@ static inline void bc_randomize() { }
 #define bc__read _read
 #define bc_free	free
 #define bc_calloc calloc
+#define bc_int86x int86x
 #define bc_close close
 #define bc__close _close
 #define bc__creat _creat
