@@ -995,9 +995,10 @@ static const struct struct_chr_lookup chr_lookup[74] = {
 };
 
 /* DS:0x1c63 */
-static const struct mouse_action action_input[2] = {
-			{ 0, 0, 319, 199, 0x1c},
-			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
+//static const struct mouse_action ACTION_INPUT[2] = {
+//			{ 0, 0, 319, 199, 0x1c},
+//			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
+
 /* DS:0x1c77 */
 static unsigned short bool_mode;
 /* DS:0x1c79 */
@@ -3657,7 +3658,11 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 		retval = (Bit16u)atol(gen_ptr3);
 	} else {
-		action_table = (Bit8u*)&action_input;
+#if !defined(__BORLANDC__)
+		action_table = (Bit8u*)(p_datseg + ACTION_INPUT);
+#else
+		ds_WRITED(ACTION_TABLE, (Bit32u)&ds[ACTION_INPUT]);
+#endif
 		vsync_or_key(150 * lines);
 		action_table = NULL;
 	}
@@ -3825,7 +3830,11 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	ds_writew(0x4599, 0);
 
 	while (r5 == 0) {
-		action_table = (Bit8u*)&action_input;
+#if !defined(__BORLANDC__)
+		action_table = (Bit8u*)(p_datseg + ACTION_INPUT);
+#else
+		ds_WRITED(ACTION_TABLE, (Bit32u)&ds[ACTION_INPUT]);
+#endif
 		handle_input();
 		action_table = NULL;
 
