@@ -827,7 +827,7 @@ static const struct mouse_action action_default[2] = {
 static Bit8u* ptr_def_action = (Bit8u*)&action_default;
 
 /* DS:0x1276 */
-static Bit8u *action_table;
+//static Bit8u *ACTION_TABLE;
 
 /* DS:0x127a */
 static const struct mouse_action action_base[9] = {
@@ -2242,10 +2242,11 @@ void handle_input()
 		ds_writew(0x459b, 0);
 		si = 0;
 
-		if (action_table)
+		if ((RealPt)ds_readd(ACTION_TABLE))
 			si = get_mouse_action(ds_readw(0x124c),
 				ds_readw(0x124e),
-				action_table);
+				(Bit8u*)Real2Host(ds_readd(ACTION_TABLE)));
+				
 		if (si == 0 && ptr_def_action)
 			si = get_mouse_action(ds_readw(0x124c),
 				ds_readw(0x124e),
@@ -3659,12 +3660,12 @@ Bit16u infobox(char *msg, Bit16u digits)
 		retval = (Bit16u)atol(gen_ptr3);
 	} else {
 #if !defined(__BORLANDC__)
-		action_table = (Bit8u*)(p_datseg + ACTION_INPUT);
+		ds_writed(ACTION_TABLE,  RealMake(datseg, ACTION_INPUT));
 #else
-		ds_WRITED(ACTION_TABLE, (Bit32u)&ds[ACTION_INPUT]);
+		ds_writed(ACTION_TABLE, (Bit32u)&ds[ACTION_INPUT]);
 #endif
 		vsync_or_key(150 * lines);
-		action_table = NULL;
+		ds_writed(ACTION_TABLE, (RealPt)0);
 	}
 
 	set_textcolor(fg, bg);
@@ -3831,12 +3832,12 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	while (r5 == 0) {
 #if !defined(__BORLANDC__)
-		action_table = (Bit8u*)(p_datseg + ACTION_INPUT);
+		ds_writed(ACTION_TABLE,  RealMake(datseg, ACTION_INPUT));
 #else
-		ds_WRITED(ACTION_TABLE, (Bit32u)&ds[ACTION_INPUT]);
+		ds_writed(ACTION_TABLE, (Bit32u)&ds[ACTION_INPUT]);
 #endif
 		handle_input();
-		action_table = NULL;
+		ds_writed(ACTION_TABLE, (RealPt)0);
 
 		if (di != r6) {
 			fill_radio_button(r6, di, lines_header);
@@ -4042,7 +4043,7 @@ void do_gen()
 
 		ds_writed(ACTION_TABLE,  (Bit32u)ds_readd(ACTION_PAGE + 4 * ds_readws(GEN_PAGE)));
 		handle_input();
-		action_table = NULL;
+		ds_writed(ACTION_TABLE, (RealPt)0);
 
 		if (ds_readw(0x4599) || ds_readw(IN_KEY_EXT) == KEY_PGUP) {
 			/* print the menu for each page */
