@@ -110,5 +110,8 @@
 
 #define MOUSE_BACKBUFFER		(0x4669)
 
+#define BUFFER_TEXT			(0x4775)
+#define BUFFER_FONT6			(0x4779)
+
 #define VGA_MEMSTART			(0x47cb)     /* RealPt */
 #endif

@@ -2493,6 +2493,38 @@ void restore_mouse_bg()
 			mem_writeb(Real2Phys(vgaptr) + j, ds_readb(MOUSE_BACKBUFFER + 16 * i + j));
 }
 
+void load_font_and_text()
+{
+#if !defined(__BORLANDC__)
+	FILE *fd;
+	Bit32u len;
+
+	fd = fd_open_datfile(0x0e);
+	fd_read_datfile(fd, buffer_font6, 1000);
+	fclose(fd);
+
+	fd = fd_open_datfile(0x0f);
+	len = fd_read_datfile(fd, buffer_text, 64000);
+	fclose(fd);
+
+	split_textbuffer_host(texts, (char*)buffer_text, len);
+#else
+	Bit16s handle;
+	Bit32s len;
+
+	handle = open_datfile(14);
+	read_datfile(handle, (Bit8u*)Real2Host(ds_readd(BUFFER_FONT6)), 1000);
+	bc_close(handle);
+
+	handle = open_datfile(15);
+	len = read_datfile(handle, (Bit8u*)Real2Host(ds_readd(BUFFER_TEXT)), 64000);
+	bc_close(handle);
+
+	split_textbuffer(texts, (RealPt)ds_readd(BUFFER_TEXT), len);
+#endif
+}
+
+
 #if 1
 
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
@@ -2515,23 +2547,7 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 	}
 }
 
-void load_font_and_text()
-{
-	FILE *fd;
-	Bit32u len;
-
-	fd = fd_open_datfile(0x0e);
-	fd_read_datfile(fd, buffer_font6, 1000);
-	fclose(fd);
-
-	fd = fd_open_datfile(0x0f);
-	len = fd_read_datfile(fd, buffer_text, 64000);
-	fclose(fd);
-
-	split_textbuffer_host(texts, (char*)buffer_text, len);
-
-}
-
+#if !defined(__BORLANDC__)
 void split_textbuffer_host(char **dst, char *src, Bit32u len)
 {
 	Bit32u i = 0;
@@ -2547,6 +2563,7 @@ void split_textbuffer_host(char **dst, char *src, Bit32u len)
 		*dst++ = src + 1;
 	}
 }
+#endif
 
 void load_page(Bit16u page)
 {
@@ -2989,7 +3006,7 @@ Bit32s get_archive_offset(const char *name, Bit8u *table)
 	return -1;
 }
 
-Bit16u read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
+Bit16s read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 {
 	if (len > ds_readd(FLEN_LEFT))
 		len = (unsigned short)ds_readd(FLEN_LEFT);
