@@ -2361,34 +2361,18 @@ void unused_func1(RealPt in_ptr, Bit16s x, Bit16s y, Bit8s c1, Bit8s c2)
  * @mode:	if 2 copy pixels with the value 0
  *
 */
-void decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
-				Bit16u width, Bit16u height, Bit16u mode)
+/* Borlandified and identical */
+void decomp_rle(Bit8u *dst, Bit8u *src, Bit16s x, Bit16s y,
+				Bit16s width, Bit16s height, Bit16u mode)
 {
+	Bit16s i, j, k;
+	Bit8s val;
+	Bit8u n;
+	Bit8s pix;
 	Bit8u *dst_loc;
-	Bit16u i, j, n, k;
-	unsigned char val, pix;
 
-	/*
-	 * In Gen V1.05_de this function can an will be tweaked,
-	 * since the only argument which differs is src.
-	 *
-	 * To help the compiler optimizing, we set the arguments to the values,
-	 * we know they will have, so they can be threaten as constants.
-	 *
-	 * With GCC 4.4.5 and the default DOSBox settings (-O2),
-	 * the code of this function shrinked:
-	 * - on my x86_64 machine from 253 to 156 byte (62%).
-	 * - on my x86_32 machine from 276 to 180 byte (65%).
-	 */
-
-	y = x = 0;
-	width = 320;
-	height = 200;
-	mode = 0;
-
-	/* End of the tweaker section. */
-
-	dst_loc = dst + 320 * y + x;
+	dst_loc = dst;
+	dst_loc += 320 * y + x;
 	update_mouse_cursor();
 
 	for (i = 0; i < height; dst_loc += 320, i++) {
@@ -2397,19 +2381,17 @@ void decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
 
 		while (j < width) {
 
-			val = *src++;
-
-			if (val == 0x7f) {
+			if ((val = *(src++)) == 0x7f) {
 				n = *src++;
 				pix = *src++;
 
-				if (pix != 0 || mode != 2)
-					for (k = 0; k <= n; k++)
-						dst_loc[j + k] = pix;
+				if ((pix != 0) || (mode != 2))
+					for (k = 0; k < n; k++)
+						host_writeb(dst_loc + j + k, pix);
 				j += n;
 			} else {
-				if (val != 0 || mode != 2)
-					dst_loc[j] = val;
+				if ((val != 0) || (mode != 2))
+					host_writeb(dst_loc + j, val);
 				j++;
 			}
 		}
