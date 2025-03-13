@@ -1242,7 +1242,7 @@ static Bit8u *buffer_popup_dis;
 /* DS:0x4771 */
 static Bit8u *buffer_heads_dat;
 static Bit8u *buffer_text;
-static Bit8u *buffer_font6;
+//static Bit8u *buffer_font6;
 /* DS:0x477d */
 static Bit16u col_index;
 /* DS:0x477f */
@@ -1411,13 +1411,13 @@ void BE_cleanup()
 		buffer_text = NULL;
 	}
 
-	free(buffer_font6);
+	bc_free((RealPt)ds_readd(BUFFER_FONT6));
 
 	buffer_sex_dat = NULL;
 	buffer_popup_nvf = NULL;
 	buffer_heads_dat = NULL;
 	buffer_text = NULL;
-	buffer_font6 = NULL;
+	//buffer_font6 = NULL;
 
 	free(picbuf3);
 	free(picbuf2);
@@ -2501,7 +2501,7 @@ void load_font_and_text()
 	Bit32u len;
 
 	fd = fd_open_datfile(14);
-	fd_read_datfile(fd, buffer_font6, 1000);
+	fd_read_datfile(fd, (Bit8u*)Real2Host(ds_readd(BUFFER_FONT6)), 1000);
 	fclose(fd);
 
 	fd = fd_open_datfile(15);
@@ -2569,8 +2569,6 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 #endif
 
 
-#if 1
-
 void load_page(Bit16u page)
 {
 	Bit8u *ptr;
@@ -2611,6 +2609,7 @@ void load_page(Bit16u page)
 	}
 }
 
+#if 1
 
 void load_typus(Bit16u typus)
 {
@@ -3360,7 +3359,7 @@ void call_them_all(Bit16u v1, Bit16u v2, Bit16u x, Bit16u y) {
 	Bit32u bogus;
 
 	fill_smth();
-	fill_smth2(buffer_font6 + v1 * 8);
+	fill_smth2((Bit8u*)Real2Host(ds_readd(BUFFER_FONT6)) + v1 * 8);
 
 	gfx_ptr = get_gfx_ptr(x, y);
 	bogus = ret_zero();
@@ -7280,7 +7279,7 @@ void alloc_buffers()
 
 	buffer_text = (Bit8u*)gen_alloc(6000);
 
-	buffer_font6 = (Bit8u*)gen_alloc(592);
+	ds_writed(BUFFER_FONT6, (Bit32u)emu_gen_alloc(592));
 
 	load_font_and_text();
 
