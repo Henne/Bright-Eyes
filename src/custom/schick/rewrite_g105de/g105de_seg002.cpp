@@ -2321,7 +2321,35 @@ Bit16u get_mouse_action(Bit16s x, Bit16s y, Bit8u *act)
 	return 0;
 }
 
-#if 1
+#if defined(__BORLANDC__)
+/* Borlandified and nearly identical */
+void unused_func1(RealPt in_ptr, Bit16s x, Bit16s y, Bit8s c1, Bit8s c2)
+{
+	Bit8s val;
+	RealPt ptr;
+	Bit16s i, j;
+
+	update_mouse_cursor();
+
+	ptr = (RealPt)ds_readd(0x47cb);
+	ptr += 320 * y + x;
+
+	for (i = 0; i < c2; ptr+=320 , i++) {
+		for (j = 0; j < c1; j++) {
+			if ((val = *((Bit16s*)(in_ptr++))) != 0) {
+				host_writeb(Real2Host(ptr + j), val);
+			}
+		}
+	}
+#if !defined(__BORLANDC__)	
+	call_mouse();
+#else
+	asm {nop;}
+#endif
+}
+#endif
+
+
 /**
  * decomp_rle() - decompress a RLE compressed picture
  * @dst:	destination
@@ -2333,7 +2361,6 @@ Bit16u get_mouse_action(Bit16s x, Bit16s y, Bit8u *act)
  * @mode:	if 2 copy pixels with the value 0
  *
 */
-
 void decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
 				Bit16u width, Bit16u height, Bit16u mode)
 {
@@ -2391,6 +2418,7 @@ void decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
 	call_mouse();
 }
 
+#if 1
 /* static */
 void update_mouse_ptr()
 {
