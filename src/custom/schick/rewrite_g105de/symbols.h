@@ -45,13 +45,16 @@
 
 #define MOUSE_MOVED			(0x1254)
 
-#define PTR_ACTION_TABLE		(0x1276)
+#define ACTION_TABLE			(0x1276)    /* RealPt */
+
+#define GEN_PAGE			(0x1324)    /* signed short */
 
 #define MIDI_DISABLED			(0x1a07)    /* signed short */
 #define USE_CDA				(0x1a09)    /* signed short */
 #define MOUSE_HANDLER_INSTALLED		(0x1a0b)    /* signed short */
 
 #define ACTION_INPUT			(0x1c63)
+#define ACTION_PAGE			(0x1c79)    /* RealPt[11] */
 
 #define STR_SOUND_CFG			(0x1dd0)    /* char[9]; "SOUND.CFG" */
 #define STR_SOUNDHW_NOT_FOUND		(0x1de4)    /* char[]; "SOUND HARDWARE NOT FOUND" */

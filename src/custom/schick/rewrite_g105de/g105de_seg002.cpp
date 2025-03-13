@@ -854,7 +854,7 @@ static const struct mouse_action action_spells[4] = {
 			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 
 /* DS:0x1324 */
-static Bit16s gen_page;
+//static Bit16s GEN_PAGE;
 
 /* DS:0x1329 */
 static const Bit16u ro_zero = 0;
@@ -3953,11 +3953,11 @@ void change_head()
 	dst_x1 = 272;
 	dst_x2 = 303;
 
-	if (gen_page == 0) {
+	if (ds_readws(GEN_PAGE) == 0) {
 		dst_y1 = 8;
 		dst_y2 = 39;
 		do_draw_pic(0);
-	} else if (gen_page > 4) {
+	} else if (ds_readws(GEN_PAGE) > 4) {
 		dst_y1 = 4;
 		dst_y2 = 35;
 		do_draw_pic(0);
@@ -4040,13 +4040,13 @@ void do_gen()
 			ds_writew(0x11fe, 0);
 		}
 
-		action_table = (Bit8u*)action_page[gen_page];
+		ds_writed(ACTION_TABLE,  (Bit32u)ds_readd(ACTION_PAGE + 4 * ds_readws(GEN_PAGE)));
 		handle_input();
 		action_table = NULL;
 
 		if (ds_readw(0x4599) || ds_readw(IN_KEY_EXT) == KEY_PGUP) {
 			/* print the menu for each page */
-			switch(gen_page) {
+			switch(ds_readws(GEN_PAGE)) {
 				case 0: {
 					si = gui_radio((Bit8u*)texts[0x1c/4], 9,
 						texts[0x28 / 4],
@@ -4141,7 +4141,7 @@ void do_gen()
 		if (ds_readw(IN_KEY_EXT) == KEY_CTRL_F4)
 			enter_name();
 
-		if ((ds_readw(IN_KEY_EXT) == KEY_UP) && (gen_page == 0)) {
+		if ((ds_readw(IN_KEY_EXT) == KEY_UP) && (ds_readws(GEN_PAGE) == 0)) {
 			if (hero.typus == 0) {
 				infobox(texts[0x44 / 4], 0);
 			} else {
@@ -4154,7 +4154,7 @@ void do_gen()
 			}
 		}
 
-		if ((ds_readw(IN_KEY_EXT) == KEY_DOWN) && (gen_page == 0)) {
+		if ((ds_readw(IN_KEY_EXT) == KEY_DOWN) && (ds_readws(GEN_PAGE) == 0)) {
 			if (hero.typus == 0) {
 				infobox(texts[0x44 / 4], 0);
 			} else {
@@ -4173,24 +4173,25 @@ void do_gen()
 			} else {
 				ds_writew(0x11fe, 1);
 
-				if (((hero.typus >= 7) ? 10 : 4) > gen_page)
-					gen_page++;
-				else
-					gen_page = 0;
+				if (((hero.typus >= 7) ? 10 : 4) > ds_readws(GEN_PAGE)) {
+					ds_inc_ws(GEN_PAGE);
+				} else {
+					ds_writew(GEN_PAGE, 0);
+				}
 			}
 		}
 
 		if (ds_readw(IN_KEY_EXT) == KEY_LEFT) {
-			if ((Bit16s)gen_page > 0) {
+			if (ds_readws(GEN_PAGE) > 0) {
 				ds_writew(0x11fe, 1);
-				gen_page--;
+				ds_dec_ws(GEN_PAGE);
 			} else {
 				if (level != 1) {
 					if (hero.typus == 0) {
 						infobox(texts[0x120 / 4], 0);
 					} else {
 						ds_writew(0x11fe, 1);
-						gen_page = hero.typus < 7 ? 4 : 10;
+						ds_writew(GEN_PAGE, hero.typus < 7 ? 4 : 10);
 					}
 				}
 			}
@@ -4219,8 +4220,8 @@ void do_gen()
 					si = 10;
 				}
 			}
-			if (si != gen_page && (si < 5 || hero.typus >= 7)) {
-				gen_page = si;
+			if ((si != ds_readws(GEN_PAGE)) && (si < 5 || hero.typus >= 7)) {
+				ds_writews(GEN_PAGE, si);
 				ds_writew(0x11fe, 1);
 			}
 		}
@@ -4557,11 +4558,11 @@ void refresh_screen()
 
 	if (ds_readw(0x11fe)) {
 		ds_writed(0x47c7, ds_readd(0x47d3));
-		load_page(gen_page);
+		load_page(ds_readws(GEN_PAGE));
 		save_picbuf();
 
 		/* page with base values and hero is not male */
-		if (gen_page == 0 && hero.sex != 0) {
+		if ((ds_readws(GEN_PAGE) == 0) && (hero.sex != 0)) {
 
 			dst = Real2Phys(ds_readd(0x47d3)) + 7 * 320 + 305;
 			src = Real2Phys(ds_readd(0x4769) + hero.sex * 256);
@@ -4570,14 +4571,14 @@ void refresh_screen()
 		}
 
 		/* page with base values and level is advanced */
-		if (gen_page == 0 && level == 1) {
+		if ((ds_readws(GEN_PAGE) == 0) && (level == 1)) {
 			dst = Real2Phys(ds_readd(0x47d3)) + 178 * 320 + 284;
 			src = Real2Phys(ds_readd(0x4769) + 512);
 
 			copy_to_screen(src, dst, 20, 15, 0);
 		}
 		/* if the page is lower than 5 */
-		if (gen_page < 5) {
+		if (ds_readws(GEN_PAGE) < 5) {
 			/* draw DMENGE.DAT or the typus name */
 			dst = Real2Phys(ds_readd(0x47d3)) + 0xa10;
 			if (hero.typus != 0) {
@@ -4632,12 +4633,12 @@ void refresh_screen()
 			dst_dst = ds_readd(0x47d3);
 
 			/* draw the head */
-			if (gen_page == 0) {
+			if (ds_readws(GEN_PAGE) == 0) {
 				/* on the base page */
 				dst_y1 = 8;
 				dst_y2 = 39;
 				do_draw_pic(0);
-			} else if (gen_page > 4) {
+			} else if (ds_readws(GEN_PAGE) > 4) {
 				/* on the spell pages */
 				dst_y1 = 4;
 				dst_y2 = 35;
@@ -5292,7 +5293,7 @@ void save_picbuf()
 	x_1 = 0;
 
 	/* check on which page we are */
-	switch (gen_page) {
+	switch (ds_readws(GEN_PAGE)) {
 		/* main page */
 		case 0: {
 			/* name field */
@@ -5365,7 +5366,7 @@ void restore_picbuf(PhysPt ptr)
 	x_1 = 0;
 
 	/* check on which page we are */
-	switch (gen_page) {
+	switch (ds_readws(GEN_PAGE)) {
 		/* main page */
 		case 0: {
 			/* name field */
@@ -5463,7 +5464,7 @@ void print_values()
 	Bit16s i, pos;
 
 
-	switch (gen_page) {
+	switch (ds_readws(GEN_PAGE)) {
 
 		case 0: {
 			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
@@ -6095,7 +6096,7 @@ void select_skill()
 
 		ds_writew(0x1327, 0xffb0);
 
-		switch (gen_page) {
+		switch (ds_readws(GEN_PAGE)) {
 			case 1: {
 				group = gui_radio((Bit8u*)texts[93], 2,
 						texts[86], texts[87]);
@@ -6340,7 +6341,7 @@ void select_spell()
 
 		ds_writew(0x1327, 0xffa6);
 
-		switch (gen_page) {
+		switch (ds_readws(GEN_PAGE)) {
 			case 5: {
 				group = gui_radio((Bit8u*)texts[155], 3,
 						texts[157], texts[162],
