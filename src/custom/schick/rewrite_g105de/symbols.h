@@ -45,6 +45,7 @@
 
 #define MOUSE_MOVED			(0x1254)
 
+#define DEFAULT_ACTION			(0x1272)    /* RealPt */
 #define ACTION_TABLE			(0x1276)    /* RealPt */
 
 #define GEN_PAGE			(0x1324)    /* signed short */

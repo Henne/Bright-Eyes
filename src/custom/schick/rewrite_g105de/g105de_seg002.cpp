@@ -824,7 +824,7 @@ static const struct mouse_action action_default[2] = {
 			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 
 /* DS:0x1272 */
-static Bit8u* ptr_def_action = (Bit8u*)&action_default;
+//static Bit8u* DEFAULT_ACTION = (Bit8u*)&action_default;
 
 /* DS:0x1276 */
 //static Bit8u *ACTION_TABLE;
@@ -2247,10 +2247,10 @@ void handle_input()
 				ds_readw(0x124e),
 				(Bit8u*)Real2Host(ds_readd(ACTION_TABLE)));
 				
-		if (si == 0 && ptr_def_action)
+		if ((si == 0) && ((RealPt)ds_readd(DEFAULT_ACTION)))
 			si = get_mouse_action(ds_readw(0x124c),
 				ds_readw(0x124e),
-				ptr_def_action);
+				(Bit8u*)Real2Host(ds_readd(DEFAULT_ACTION)));
 
 		if (ds_readw(HAVE_MOUSE) == 2) {
 			for (i = 0; i < 15; i++)
