@@ -51,6 +51,8 @@ extern char ds[0xffff];
 #define ds_dec_ws(p)	--*((signed short*)(ds + p))
 #define ds_dec_ds(p)	--*((signed long*)(ds + p))
 
+#define ds_and_ws(p, d)	((*(signed short*)(ds + p)) &= d)
+
 #define mem_readb(p) *(signed char*)(p)
 #define mem_readw(p) *(signed short*)(p)
 #define mem_readd(p) *(signed long*)(p)
