@@ -2506,10 +2506,9 @@ void load_font_and_text()
 	len = read_datfile(handle, (Bit8u*)Real2Host(ds_readd(BUFFER_TEXT)), 64000);
 	bc_close(handle);
 
+	split_textbuffer((Bit8u*)p_datseg +TEXTS, (RealPt)ds_readd(BUFFER_TEXT), len);
 #if !defined(__BORLANDC__)
 	split_textbuffer_host(texts, (char*)Real2Host(ds_readd(BUFFER_TEXT)), len);
-#else
-	split_textbuffer((Bit8u*)&ds[TEXTS], (RealPt)ds_readd(BUFFER_TEXT), len);
 #endif
 }
 
@@ -2531,7 +2530,8 @@ void split_textbuffer_host(char **dst, char *src, Bit32u len)
 		}
 	}
 }
-#else
+#endif
+
 /* Borlandified and nearly identical */
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 {
@@ -2554,8 +2554,6 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 		}
 	}
 }
-#endif
-
 
 void load_page(Bit16u page)
 {

@@ -83,6 +83,11 @@ extern char ds[0xffff];
 
 #else
 #define INTCAST RealPt
+
+static inline Bit8s host_readbs(Bit8u* p)
+{
+	return (Bit8s)host_readb(p);
+}
 #endif
 
 #endif
