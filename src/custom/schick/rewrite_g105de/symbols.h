@@ -90,6 +90,8 @@
 
 #define MENU_TILES			(0x40b9)    /* Bit16s */
 
+#define TEXTS				(0x40d9)    /* RealPt array */
+
 #define RANDOM_GEN_SEED2		(0x458f)    /* Bit16u */
 
 #define WO_VAR				(0x4595)    /* Bit16u */

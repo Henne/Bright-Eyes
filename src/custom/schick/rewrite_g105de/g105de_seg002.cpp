@@ -2210,23 +2210,22 @@ void mouse_compare()
 	}
 }
 
+/* Borlandified and identical */
 void handle_input()
 {
-	Bit16u si, i;
+	Bit16s si, i;
 
-	si = 0;
-	ds_writew(IN_KEY_EXT, 0);
-	ds_writew(IN_KEY_ASCII, 0);
+	ds_writew(IN_KEY_ASCII, ds_writew(IN_KEY_EXT, si = 0));
 
 	if (CD_bioskey(1)) {
-		si = CD_bioskey(0);
-		ds_writew(IN_KEY_ASCII, si & 0xff);
-		si = si >> 8;
+
+		si = ((Bit16s)(ds_writew(IN_KEY_ASCII, CD_bioskey(0))) >> 8);
+		ds_and_ws(IN_KEY_ASCII, 0xff);
 
 		if (si == KEY_J)
 			si = KEY_Y;
 
-		if ((ds_readw(IN_KEY_ASCII) == 0x11) && !ds_readb(0x40b8)) {
+		if ((ds_readw(IN_KEY_ASCII) == 0x11) && !ds_readbs(0x40b8)) {
 
 			update_mouse_cursor();
 			mouse_disable();
@@ -2238,8 +2237,11 @@ void handle_input()
 		}
 	}
 
-	if (ds_readw(0x459b)) {
-		ds_writew(0x459b, 0);
+	if (ds_readw(MOUSE1_EVENT2) == 0) {
+		// Hm, ...
+		if (ds_readw(HAVE_MOUSE) == 0);
+	} else {
+		ds_writew(MOUSE1_EVENT2, 0);
 		si = 0;
 
 		if ((RealPt)ds_readd(ACTION_TABLE))
@@ -2265,7 +2267,11 @@ void handle_input()
 				si = 0;
 				ds_writew(MENU_TILES, 4);
 				ds_writew(0x4789, 1);
+#if !defined(__BORLANDC__)
 				infobox(texts[267], 0);
+#else
+				infobox((char*)Real2Host(ds_readd(TEXTS + 4 * 267)), 0);
+#endif
 				ds_writew(0x4789, 0);
 				ds_writew(MENU_TILES, 3);
 			}
@@ -2274,6 +2280,8 @@ void handle_input()
 	mouse_compare();
 	ds_writew(IN_KEY_EXT, si);
 }
+
+#if 1
 
 /* static */
 Bit16u get_mouse_action(Bit16u x, Bit16u y, Bit8u *act)
