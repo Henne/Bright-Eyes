@@ -53,7 +53,7 @@ namespace G105de {
 	void decomp_rle(Bit8u*, Bit8u*, Bit16s, Bit16s, Bit16s, Bit16s, Bit16u);
 	void draw_mouse_cursor();
 	void save_mouse_bg();
-	void do_draw_mouse_ptr();
+	void restore_mouse_bg();
 	void load_font_and_text();
 	void split_textbuffer(Bit8u*, RealPt, Bit32u);
 	void load_font_and_text_host();
