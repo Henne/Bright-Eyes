@@ -78,6 +78,7 @@ extern char ds[0xffff];
 #define host_writeds(p, d)       (*(Bit32s*)(p) = d)
 
 #define RealMake(seg, off) ((RealPt)((seg << 4) + off))
+#define Real2Phys(p) (p)
 #define Real2Host(p) (p)
 
 #else

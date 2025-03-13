@@ -937,8 +937,8 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x0db1: {
 					CPU_Pop16();
 
-					D1_LOG("update_mouse_ptr();\n");
-					update_mouse_ptr();
+					D1_LOG("draw_mouse_cursor();\n");
+					draw_mouse_cursor();
 
 					return 1;
 				}

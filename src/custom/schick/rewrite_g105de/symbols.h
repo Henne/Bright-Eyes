@@ -107,4 +107,6 @@
 
 #define MOUSE_LAST_CURSOR		(0x4621)
 #define MOUSE_CURRENT_CURSOR		(0x4625)
+
+#define VGA_MEMSTART			(0x47cb)     /* RealPt */
 #endif

@@ -2173,7 +2173,7 @@ void mouse()
 			ds_writew(0x125a, ds_readws(0x1256));
 			ds_writew(0x125c, ds_readws(0x1258));
 
-			update_mouse_ptr();
+			draw_mouse_cursor();
 
 			ds_writew(MOUSE_LOCKED, 0);
 		}
@@ -2400,44 +2400,42 @@ void decomp_rle(Bit8u *dst, Bit8u *src, Bit16s x, Bit16s y,
 	call_mouse();
 }
 
-#if 1
+/* Borlandified and nearly identical */
 /* static */
-void update_mouse_ptr()
+void draw_mouse_cursor()
 {
-	unsigned short *src;
-	PhysPt p1;
-	Bit16u v1, v2, v3, si, di;
-	Bit8s i, j;
+	Bit8s Y, X;
+	RealPt vgaptr;
+	signed short *mouse_cursor;
+	Bit16s rangeY;
+	register Bit16s mask; //si
+	register Bit16s rangeX; //di
+	Bit16s diffX;
+	Bit16s diffY;
 
-	p1 = Real2Phys(ds_readd(0x47cb));
+	vgaptr = (RealPt)ds_readd(VGA_MEMSTART);
+	mouse_cursor = (signed short*)Real2Host(ds_readd(MOUSE_CURRENT_CURSOR)) + (32 / 2);
 
-//	src = &mouse_p2[16];
-	src = &((unsigned short*)(Real2Host(ds_readd(MOUSE_CURRENT_CURSOR))))[16];
+	rangeX = ds_readw(0x124c) - ds_readw(0x1256);
+	rangeY = ds_readw(0x124e) - ds_readw(0x1258);
 
-	di = ds_readw(0x124c) - ds_readw(0x1256);
+	diffX = diffY = 16;
 
-	v1 = ds_readw(0x124e) - ds_readw(0x1258);
+	if (rangeX > 304) diffX = 320 - rangeX;
+	if (rangeY > 184) diffY = 200 - rangeY;
 
-	v2 = v3 = 16;
+	vgaptr += rangeY * 320 + rangeX;
 
-	if (di > 304)
-		v2 = 320 - di;
-
-	if (v1 > 184)
-		v3 = 200 - v1;
-
-	p1 += v1 * 320 + di;
-
-	for (i = 0; i < v3; p1 += 320, i++) {
-
-		si = *src++;
-
-		for (j = 0; j < v2; j++)
-			if ((0x8000 >> j) & si)
-				mem_writeb_inline(p1 + j, 0xff);
-
+	for (Y = 0; Y < diffY; Y++) {
+		mask = host_readw((Bit8u*)mouse_cursor++);
+		for (X = 0; X < diffX; X++)
+			if ((0x8000 >> X) & mask)
+				mem_writeb(Real2Phys(vgaptr) + X, 0xff);
+		vgaptr += 320;
 	}
 }
+
+#if 1
 
 /* static */
 void save_mouse_ptr()
