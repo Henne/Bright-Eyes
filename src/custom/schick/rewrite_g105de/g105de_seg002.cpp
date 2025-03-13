@@ -2141,45 +2141,45 @@ void update_mouse_cursor1()
 	}
 }
 
-#if 1
-
+/* Borlandified and identical */
 /* static */
 void mouse()
 {
-	if (ds_readw(MOUSE_LOCKED))
-		return;
+	if (ds_readw(MOUSE_LOCKED) == 0) {
 
-	ds_inc_ws(MOUSE_REFRESH_FLAG);
+		ds_inc_ws(MOUSE_REFRESH_FLAG);
 
-	if (ds_readws(MOUSE_REFRESH_FLAG) != 0)
-		return;
+		if (ds_readws(MOUSE_REFRESH_FLAG) == 0) {
 
-	ds_writew(MOUSE_LOCKED, 1);
+			ds_writew(MOUSE_LOCKED, 1);
 
-	if (ds_readw(0x124c) < ds_readw(0x1256))
-		ds_writew(0x124c, ds_readw(0x1256));
+			if (ds_readws(MOUSE_POSX) < ds_readws(0x1256))
+				ds_writew(0x124c, ds_readws(0x1256));
 
-	if (ds_readw(0x124c) > 315)
-		ds_writew(0x124c, 315);
+			if (ds_readws(MOUSE_POSX) > 315)
+				ds_writew(MOUSE_POSX, 315);
 
-	if (ds_readw(0x124e) < ds_readw(0x1258))
-		ds_writew(0x124e, ds_readw(0x1258));
+			if (ds_readws(MOUSE_POSY) < ds_readws(0x1258))
+				ds_writew(MOUSE_POSY, ds_readws(0x1258));
 
-	if (ds_readw(0x124e) > 195)
-		ds_writew(0x124e, 195);
+			if (ds_readws(MOUSE_POSY) > 195)
+				ds_writew(MOUSE_POSY, 195);
 
-	save_mouse_ptr();
+			save_mouse_ptr();
 
-	ds_writew(0x1250, ds_readw(0x124c));
-	ds_writew(0x1252, ds_readw(0x124e));
-	ds_writew(0x125a, ds_readw(0x1256));
-	ds_writew(0x125c, ds_readw(0x1258));
+			ds_writew(0x1250, ds_readws(MOUSE_POSX));
+			ds_writew(0x1252, ds_readws(MOUSE_POSY));
+			ds_writew(0x125a, ds_readws(0x1256));
+			ds_writew(0x125c, ds_readws(0x1258));
 
-	update_mouse_ptr();
+			update_mouse_ptr();
 
-	ds_writew(MOUSE_LOCKED, 0);
+			ds_writew(MOUSE_LOCKED, 0);
+		}
+	}
 }
 
+/* Borlandified and identical */
 /* static */
 void mouse_compare()
 {
@@ -2188,19 +2188,28 @@ void mouse_compare()
 
 		/* copy a pointer */
 		ds_writed(MOUSE_LAST_CURSOR, ds_readd(MOUSE_CURRENT_CURSOR));
-
+#if !defined(__BORLANDC__)
 		if (RealMake(datseg, MOUSE_MASK) == (RealPt)ds_readd(MOUSE_CURRENT_CURSOR)) {
-			ds_writew(0x1258, 0);
-			ds_writew(0x1256, 0);
+#else
+		if ((RealPt)(&ds[MOUSE_MASK]) == (RealPt)ds_readd(MOUSE_CURRENT_CURSOR)) {
+#endif
+			ds_writew(0x1256, ds_writew(0x1258, 0));
 		} else {
-			ds_writew(0x1258, 8);
-			ds_writew(0x1256, 8);
+			ds_writew(0x1256, ds_writew(0x1258, 8));
 		}
 		ds_writew(0x1254, 0);
 		update_mouse_cursor1();
+#if !defined(__BORLANDC__)
 		mouse();
+#else
+		// Sync BCC output
+		//mouse();
+		asm { nop; nop }
+#endif
 	}
 }
+
+#if 1
 
 void handle_input()
 {

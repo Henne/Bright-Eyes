@@ -25,12 +25,14 @@ static inline void bc_randomize() { }
 #include <IO.H>
 #include <BIOS.H>
 #include <DOS.H>
+#include <CONIO.H> // clrscr
 
 #include "port.h"
 
 #define bc__dos_getvect _dos_getvect
 #define bc__dos_setvect _dos_setvect
 #define bc_bioskey bioskey
+#define bc_clrscr clrscr
 #define bc_lseek lseek
 #define bc__read _read
 #define bc_free	free
