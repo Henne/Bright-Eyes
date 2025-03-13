@@ -945,8 +945,8 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x0e6a: {
 					CPU_Pop16();
 
-					D1_LOG("save_mouse_ptr();\n");
-					save_mouse_ptr();
+					D1_LOG("save_mouse_bg();\n");
+					save_mouse_bg();
 
 					return 1;
 				}

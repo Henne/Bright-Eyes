@@ -1234,7 +1234,7 @@ static char *texts[300];
 //static unsigned short *mouse_p2;
 
 /* DS:0x4669 */
-static char cursor_bak[256];
+//static char MOUSE_BACKBUFFER[256];
 /* DS:0x4769 */
 static Bit8u *buffer_sex_dat;
 static Bit8u *buffer_popup_nvf;
@@ -2166,7 +2166,7 @@ void mouse()
 			if (ds_readws(MOUSE_POSY) > 195)
 				ds_writew(MOUSE_POSY, 195);
 
-			save_mouse_ptr();
+			save_mouse_bg();
 
 			ds_writew(0x1250, ds_readws(MOUSE_POSX));
 			ds_writew(0x1252, ds_readws(MOUSE_POSY));
@@ -2435,35 +2435,36 @@ void draw_mouse_cursor()
 	}
 }
 
-#if 1
-
+/* Borlandified and identical */
 /* static */
-void save_mouse_ptr()
+void save_mouse_bg()
 {
-	PhysPt p;
-	Bit16u v6, v8, va, si, di, cx;
+	RealPt vgaptr;
+	Bit16s rangeX;
+	Bit16s rangeY;
+	Bit16s diffX;
+	Bit16s diffY;
+	Bit16s Y;
+	Bit16s X;
 
-	p = Real2Phys(ds_readd(0x47cb));
+	vgaptr = (RealPt)(ds_readd(VGA_MEMSTART));
 
-	/* X - Coordinate */
-	di = ds_readw(0x124c) - ds_readw(0x1256);
-	/* Y - Coordinate */
-	v6 = ds_readw(0x124e) - ds_readw(0x1258);
+	rangeX = ds_readw(0x124c) - ds_readw(0x1256);
+	rangeY = ds_readw(0x124e) - ds_readw(0x1258);
 
-	va = v8 = 16;
+	diffX = diffY = 16;
 
-	if (di > 304)
-		v8 = 320 - di;
+	if (rangeX > 304) diffX = 320 - rangeX;
+	if (rangeY > 184) diffY = 200 - rangeY;
 
-	if (v6 > 184)
-		va = 200 - v6;
+	vgaptr += rangeY * 320 + rangeX;
 
-	p += v6 *320 + di;
-
-	for (si = 0; si < va; p += 320, si++)
-		for (cx = 0; cx < v8; cx++)
-			cursor_bak[si * 16 + cx] = mem_readb_inline(p + cx);
+	for (Y = 0; Y < diffY; vgaptr += 320, Y++)
+		for (X = 0; X < diffX; X++)
+			ds_writeb(MOUSE_BACKBUFFER + 16 * Y + X, mem_readb(Real2Phys(vgaptr) + X));
 }
+
+#if 1
 
 /* static */
 void do_draw_mouse_ptr()
@@ -2488,7 +2489,7 @@ void do_draw_mouse_ptr()
 
 	for (i = 0; i < d_y; ptr += 320, i++)
 		for (j = 0; j < d_x; j++)
-			mem_writeb_inline(ptr + j, cursor_bak[i * 16 + j]);
+			mem_writeb(ptr + j, ds_readb(MOUSE_BACKBUFFER + 16 * i + j));
 }
 
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
