@@ -1223,9 +1223,9 @@ static char *texts[300];
 /* DS:0x4595 */
 static unsigned short wo_var;
 /* DS:0x459d */
-static unsigned short in_key_ascii;
+//static unsigned short IN_KEY_ASCII;
 /* DS:0x459f */
-static unsigned short in_key_ext;
+//static unsigned short IN_KEY_EXT;
 
 /* DS:0x4621 */
 //static unsigned short *mouse_p1;
@@ -2209,25 +2209,23 @@ void mouse_compare()
 	}
 }
 
-#if 1
-
 void handle_input()
 {
 	Bit16u si, i;
 
 	si = 0;
-	in_key_ext = 0;
-	in_key_ascii = 0;
+	ds_writew(IN_KEY_EXT, 0);
+	ds_writew(IN_KEY_ASCII, 0);
 
 	if (CD_bioskey(1)) {
 		si = CD_bioskey(0);
-		in_key_ascii = si & 0xff;
+		ds_writew(IN_KEY_ASCII, si & 0xff);
 		si = si >> 8;
 
 		if (si == KEY_J)
 			si = KEY_Y;
 
-		if ((in_key_ascii == 0x11) && !ds_readb(0x40b8)) {
+		if ((ds_readw(IN_KEY_ASCII) == 0x11) && !ds_readb(0x40b8)) {
 
 			update_mouse_cursor();
 			mouse_disable();
@@ -2272,7 +2270,7 @@ void handle_input()
 		}
 	}
 	mouse_compare();
-	in_key_ext = si;
+	ds_writew(IN_KEY_EXT, si);
 }
 
 /* static */
@@ -2992,9 +2990,9 @@ void vsync_or_key(Bit16u val)
 
 	for (i = 0; i < val; i++) {
 		handle_input();
-		if (in_key_ext || ds_readw(0x4599)) {
+		if (ds_readw(IN_KEY_EXT) || ds_readw(0x4599)) {
 			ds_writew(0x4599, 0);
-			in_key_ext = KEY_RET;
+			ds_writew(IN_KEY_EXT, KEY_RET);
 			return;
 		}
 		wait_for_vsync();
@@ -3444,25 +3442,25 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 				ds_readw(0x4597) == 0);
 
 			if (ds_readw(0x4597)) {
-				in_key_ascii = 0xd;
+				ds_writew(IN_KEY_ASCII, 0x0d);
 				ds_writew(0x459b, 0);
 				ds_writew(0x4597, 0);
 			} else {
-				in_key_ascii = CD_bioskey(0);
-				in_key_ext = in_key_ascii >> 8;
-				in_key_ascii = in_key_ascii & 0xff;
+				ds_writew(IN_KEY_ASCII, CD_bioskey(0));
+				ds_writew(IN_KEY_EXT, ds_readw(IN_KEY_ASCII) >> 8);
+				ds_writew(IN_KEY_ASCII, ds_readw(IN_KEY_ASCII) & 0xff);
 			}
-		} while (in_key_ext == 0 && in_key_ascii == 0);
+		} while ((ds_readw(IN_KEY_EXT) == 0) && (ds_readw(IN_KEY_ASCII) == 0));
 
-		c = in_key_ascii;
+		c = ds_readw(IN_KEY_ASCII);
 
 		if (c == 0xd)
 			continue;
 
-		if (in_key_ext == KEY_ESC) {
+		if (ds_readw(IN_KEY_EXT) == KEY_ESC) {
 			*dst = 0;
 			call_mouse();
-			in_key_ext = 0;
+			ds_writew(IN_KEY_EXT, 0);
 			return 1;
 		}
 		if (c == 8) {
@@ -3679,7 +3677,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	text_x_end = v4;
 
 	ds_writew(0x4789, 0);
-	in_key_ext = 0;
+	ds_writew(IN_KEY_EXT, 0);
 
 	return retval;
 }
@@ -3836,26 +3834,26 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 			r6 = di;
 		}
 		if (ds_readw(0x4599) != 0 ||
-			in_key_ext == KEY_ESC ||
-			in_key_ext == KEY_PGDOWN) {
+			ds_readw(IN_KEY_EXT) == KEY_ESC ||
+			ds_readw(IN_KEY_EXT) == KEY_PGDOWN) {
 			/* has the selection been canceled */
 			retval = -1;
 			r5 = 1;
 			ds_writew(0x4599, 0);
 		}
-		if (in_key_ext == KEY_RET) {
+		if (ds_readw(IN_KEY_EXT) == KEY_RET) {
 			/* has the return key been pressed */
 			retval = di;
 			r5 = 1;
 		}
-		if (in_key_ext == KEY_UP) {
+		if (ds_readw(IN_KEY_EXT) == KEY_UP) {
 			/* has the up key been pressed */
 			if (di == 1)
 				di = options;
 			else
 				di--;
 		}
-		if (in_key_ext == KEY_DOWN) {
+		if (ds_readw(IN_KEY_EXT) == KEY_DOWN) {
 			/* has the down key been pressed */
 			if (di == options)
 				di = 1;
@@ -3869,11 +3867,11 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 		}
 		/* is this a bool radiobox ? */
 		if (bool_mode) {
-			if (in_key_ext == KEY_Y) {
+			if (ds_readw(IN_KEY_EXT) == KEY_Y) {
 				/* has the 'j' key been pressed */
 				retval = 1;
 				r5 = 1;
-			} else if (in_key_ext == KEY_N) {
+			} else if (ds_readw(IN_KEY_EXT) == KEY_N) {
 				/* has the 'n' key been pressed */
 				retval = 2;
 				r5 = 1;
@@ -3905,7 +3903,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	text_x = bak1;
 	text_y = bak2;
 	text_x_end = bak3;
-	in_key_ext = 0;
+	ds_writew(IN_KEY_EXT, 0);
 
 	return retval;
 }
@@ -4037,7 +4035,7 @@ void do_gen()
 		handle_input();
 		action_table = NULL;
 
-		if (ds_readw(0x4599) || in_key_ext == KEY_PGUP) {
+		if (ds_readw(0x4599) || ds_readw(IN_KEY_EXT) == KEY_PGUP) {
 			/* print the menu for each page */
 			switch(gen_page) {
 				case 0: {
@@ -4058,7 +4056,7 @@ void do_gen()
 							!gui_bool((Bit8u*)texts[0x34 /4])) {
 							si = 0;
 						}
-						in_key_ext = 0;
+						ds_writew(IN_KEY_EXT, 0);
 						switch (si) {
 							case 1: {
 								enter_name();
@@ -4128,13 +4126,13 @@ void do_gen()
 			}
 		}
 
-		if (in_key_ext == KEY_CTRL_F3)
+		if (ds_readw(IN_KEY_EXT) == KEY_CTRL_F3)
 			change_sex();
 
-		if (in_key_ext == KEY_CTRL_F4)
+		if (ds_readw(IN_KEY_EXT) == KEY_CTRL_F4)
 			enter_name();
 
-		if (in_key_ext == KEY_UP && gen_page == 0) {
+		if ((ds_readw(IN_KEY_EXT) == KEY_UP) && (gen_page == 0)) {
 			if (hero.typus == 0) {
 				infobox(texts[0x44 / 4], 0);
 			} else {
@@ -4147,7 +4145,7 @@ void do_gen()
 			}
 		}
 
-		if (in_key_ext == KEY_DOWN && gen_page == 0) {
+		if ((ds_readw(IN_KEY_EXT) == KEY_DOWN) && (gen_page == 0)) {
 			if (hero.typus == 0) {
 				infobox(texts[0x44 / 4], 0);
 			} else {
@@ -4160,7 +4158,7 @@ void do_gen()
 			}
 		}
 
-		if (in_key_ext == KEY_RIGHT && level != 1) {
+		if ((ds_readw(IN_KEY_EXT) == KEY_RIGHT) && (level != 1)) {
 			if (hero.typus == 0) {
 				infobox(texts[0x120 / 4], 0);
 			} else {
@@ -4173,7 +4171,7 @@ void do_gen()
 			}
 		}
 
-		if (in_key_ext == KEY_LEFT) {
+		if (ds_readw(IN_KEY_EXT) == KEY_LEFT) {
 			if ((Bit16s)gen_page > 0) {
 				ds_writew(0x11fe, 1);
 				gen_page--;
@@ -4189,9 +4187,9 @@ void do_gen()
 			}
 		}
 
-		if (in_key_ext >= KEY_1 && in_key_ext <= KEY_5 &&
+		if ((ds_readw(IN_KEY_EXT) >= KEY_1) && (ds_readw(IN_KEY_EXT) <= KEY_5) &&
 			level == 2 && hero.typus) {
-			switch (in_key_ext) {
+			switch (ds_readw(IN_KEY_EXT)) {
 				case KEY_1: {
 					si = 0;
 					break;
@@ -6914,8 +6912,8 @@ void intro()
 
 	/* elevate the attic logo */
 	i = 4;
-	in_key_ext = 0;
-	while (cnt1 <= 100 && in_key_ext == 0) {
+	ds_writew(IN_KEY_EXT, 0);
+	while ((cnt1 <= 100) && (ds_readw(IN_KEY_EXT) == 0)) {
 		dst_x1 = 0;
 		dst_y1 = cnt2 + 60;
 		dst_x2 = 95;
@@ -6961,7 +6959,7 @@ void intro()
 			vsync_or_key(1);
 	}
 
-	if (in_key_ext == 0)
+	if (ds_readw(IN_KEY_EXT) == 0)
 		vsync_or_key(200);
 
 	/* load FANPRO.NVF */
