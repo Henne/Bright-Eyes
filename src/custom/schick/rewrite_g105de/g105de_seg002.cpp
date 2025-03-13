@@ -2281,13 +2281,13 @@ void handle_input()
 	ds_writew(IN_KEY_EXT, si);
 }
 
-#if 1
-
+/* Borlandified and nearly identical */
 /* static */
-Bit16u get_mouse_action(Bit16u x, Bit16u y, Bit8u *act)
+Bit16u get_mouse_action(Bit16s x, Bit16s y, Bit8u *act)
 {
-	struct mouse_action *ptr = (struct mouse_action*)act;
 	Bit16u i;
+#if !defined(__BORLANDC__)
+	struct mouse_action *ptr = (struct mouse_action*)act;
 
 	for (i = 0; ptr[i].action != 0xffff; i++) {
 
@@ -2302,10 +2302,26 @@ Bit16u get_mouse_action(Bit16u x, Bit16u y, Bit8u *act)
 
 		return ptr[i].action;
 	}
+#else
+	for (i = 0; host_readws(act + 10 * i) != -1; i++) {
+	
+		if (host_readws(act + 10 * i + 0) > x)
+			continue;
+		if (host_readws(act + 10 * i + 4) < x)
+			continue;
+		if (host_readws(act + 10 * i + 2) > y)
+			continue;
+		if (host_readws(act + 10 * i + 6) < y)
+			continue;
+
+		return host_readws(act + 10 * i + 8);			
+	}
+#endif
 
 	return 0;
 }
 
+#if 1
 /**
  * decomp_rle() - decompress a RLE compressed picture
  * @dst:	destination

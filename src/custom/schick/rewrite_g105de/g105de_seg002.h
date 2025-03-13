@@ -49,7 +49,7 @@ namespace G105de {
 	void mouse();
 	void mouse_compare();
 	void handle_input();
-	Bit16u get_mouse_action(Bit16u, Bit16u, Bit8u*);
+	Bit16u get_mouse_action(Bit16s, Bit16s, Bit8u*);
 	void decomp_rle(Bit8u*, Bit8u*, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
 	void update_mouse_ptr();
 	void save_mouse_ptr();
