@@ -90,6 +90,8 @@
 
 #define RANDOM_GEN_SEED2		(0x458f)    /* Bit16u */
 
+#define WO_VAR				(0x4595)    /* Bit16u */
+
 #define IN_KEY_ASCII			(0x459d)    /* Bit16s */
 #define IN_KEY_EXT			(0x459f)    /* Bit16s */
 

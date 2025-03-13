@@ -1222,7 +1222,7 @@ static char *texts[300];
 //static unsigned short HAVE_MOUSE;
 
 /* DS:0x4595 */
-static unsigned short wo_var;
+//static unsigned short WO_VAR;
 /* DS:0x459d */
 //static unsigned short IN_KEY_ASCII;
 /* DS:0x459f */
@@ -2257,7 +2257,7 @@ void handle_input()
 				wait_for_vsync();
 
 			if (ds_readw(0x459b) != 0) {
-				wo_var = 1;
+				ds_writew(WO_VAR, 1);
 				ds_writew(0x459b, 0);
 			}
 
