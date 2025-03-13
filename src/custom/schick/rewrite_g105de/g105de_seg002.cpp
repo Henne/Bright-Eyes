@@ -1241,7 +1241,7 @@ static Bit8u *buffer_popup_nvf;
 static Bit8u *buffer_popup_dis;
 /* DS:0x4771 */
 static Bit8u *buffer_heads_dat;
-static Bit8u *buffer_text;
+//static Bit8u *buffer_text;
 //static Bit8u *buffer_font6;
 /* DS:0x477d */
 static Bit16u col_index;
@@ -1406,9 +1406,8 @@ void BE_cleanup()
 	free(buffer_popup_nvf);
 	free(buffer_heads_dat);
 
-	if (buffer_text) {
-		free(buffer_text);
-		buffer_text = NULL;
+	if ((RealPt)ds_readd(BUFFER_TEXT)) {
+		bc_free((RealPt)ds_readd(BUFFER_TEXT));
 	}
 
 	bc_free((RealPt)ds_readd(BUFFER_FONT6));
@@ -1416,7 +1415,7 @@ void BE_cleanup()
 	buffer_sex_dat = NULL;
 	buffer_popup_nvf = NULL;
 	buffer_heads_dat = NULL;
-	buffer_text = NULL;
+	//buffer_text = NULL;
 	//buffer_font6 = NULL;
 
 	free(picbuf3);
@@ -2496,20 +2495,6 @@ void restore_mouse_bg()
 /* Borlandified and nearly identical */
 void load_font_and_text()
 {
-#if !defined(__BORLANDC__)
-	FILE *fd;
-	Bit32u len;
-
-	fd = fd_open_datfile(14);
-	fd_read_datfile(fd, (Bit8u*)Real2Host(ds_readd(BUFFER_FONT6)), 1000);
-	fclose(fd);
-
-	fd = fd_open_datfile(15);
-	len = fd_read_datfile(fd, buffer_text, 64000);
-	fclose(fd);
-
-	split_textbuffer_host(texts, (char*)buffer_text, len);
-#else
 	Bit16s handle;
 	Bit32s len;
 
@@ -2521,6 +2506,9 @@ void load_font_and_text()
 	len = read_datfile(handle, (Bit8u*)Real2Host(ds_readd(BUFFER_TEXT)), 64000);
 	bc_close(handle);
 
+#if !defined(__BORLANDC__)
+	split_textbuffer_host(texts, (char*)Real2Host(ds_readd(BUFFER_TEXT)), len);
+#else
 	split_textbuffer((Bit8u*)&ds[TEXTS], (RealPt)ds_readd(BUFFER_TEXT), len);
 #endif
 }
@@ -7277,7 +7265,7 @@ void alloc_buffers()
 
 	gen_ptr4 = (Bit8u*)gen_alloc(200);
 
-	buffer_text = (Bit8u*)gen_alloc(6000);
+	ds_writed(BUFFER_TEXT, (Bit32u)emu_gen_alloc(6000));
 
 	ds_writed(BUFFER_FONT6, (Bit32u)emu_gen_alloc(592));
 
