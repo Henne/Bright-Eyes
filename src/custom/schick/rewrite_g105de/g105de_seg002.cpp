@@ -2493,17 +2493,18 @@ void restore_mouse_bg()
 			mem_writeb(Real2Phys(vgaptr) + j, ds_readb(MOUSE_BACKBUFFER + 16 * i + j));
 }
 
+/* Borlandified and nearly identical */
 void load_font_and_text()
 {
 #if !defined(__BORLANDC__)
 	FILE *fd;
 	Bit32u len;
 
-	fd = fd_open_datfile(0x0e);
+	fd = fd_open_datfile(14);
 	fd_read_datfile(fd, buffer_font6, 1000);
 	fclose(fd);
 
-	fd = fd_open_datfile(0x0f);
+	fd = fd_open_datfile(15);
 	len = fd_read_datfile(fd, buffer_text, 64000);
 	fclose(fd);
 
@@ -2520,13 +2521,27 @@ void load_font_and_text()
 	len = read_datfile(handle, (Bit8u*)Real2Host(ds_readd(BUFFER_TEXT)), 64000);
 	bc_close(handle);
 
-	split_textbuffer(texts, (RealPt)ds_readd(BUFFER_TEXT), len);
+	split_textbuffer((Bit8u*)&ds[TEXTS], (RealPt)ds_readd(BUFFER_TEXT), len);
 #endif
 }
 
+#if !defined(__BORLANDC__)
+void split_textbuffer_host(char **dst, char *src, Bit32u len)
+{
+	Bit32u i = 0;
 
-#if 1
-
+	for (i = 0, *dst++ = src; i != len; src++, i++) {
+		/* continue if not the end of the string */
+		if (*src)
+			continue;
+		/* return if "\0\0" (never happens) */
+		if (*(src + 1) == 0)
+			return;
+		/* write the adress of the next string */
+		*dst++ = src + 1;
+	}
+}
+#else
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 {
 	Bit32u i = 0;
@@ -2546,24 +2561,12 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 		dst += 4;
 	}
 }
-
-#if !defined(__BORLANDC__)
-void split_textbuffer_host(char **dst, char *src, Bit32u len)
-{
-	Bit32u i = 0;
-
-	for (i = 0, *dst++ = src; i != len; src++, i++) {
-		/* continue if not the end of the string */
-		if (*src)
-			continue;
-		/* return if "\0\0" (never happens) */
-		if (*(src + 1) == 0)
-			return;
-		/* write the adress of the next string */
-		*dst++ = src + 1;
-	}
-}
 #endif
+
+
+#if 1
+
+
 
 void load_page(Bit16u page)
 {

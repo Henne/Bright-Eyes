@@ -979,9 +979,9 @@ int schick_nearcall_gen105(unsigned offs) {
 					D1_LOG("split_textbuffer(0x%x,0x%x,%d);\n",
 						p1, p2, p3);
 
-					split_textbuffer(MemBase + Real2Phys(p1), p2, p3);
+					//split_textbuffer(MemBase + Real2Phys(p1), p2, p3);
 
-					return 1;
+					return 0;
 				}
 				case 0x0f7c: {
 					CPU_Pop16();
