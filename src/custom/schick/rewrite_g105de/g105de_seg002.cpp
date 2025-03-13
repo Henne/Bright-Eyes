@@ -2532,41 +2532,44 @@ void split_textbuffer_host(char **dst, char *src, Bit32u len)
 
 	for (i = 0, *dst++ = src; i != len; src++, i++) {
 		/* continue if not the end of the string */
-		if (*src)
-			continue;
-		/* return if "\0\0" (never happens) */
-		if (*(src + 1) == 0)
-			return;
-		/* write the adress of the next string */
-		*dst++ = src + 1;
+		if (!*src) {
+
+			/* return if "\0\0" (never happens) */
+			if (!*(src + 1))
+				return;
+
+			/* write the adress of the next string */
+			*dst++ = src + 1;
+		}
 	}
 }
 #else
+/* Borlandified and nearly identical */
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 {
 	Bit32u i = 0;
 
-	host_writed(dst, src);
+	host_writed(dst, (Bit32u)src);
 	dst += 4;
 
 	for (; i != len; src++, i++) {
-		/* continue if not the ned of the string */
-		if (host_readb(Real2Host(src)) != 0)
-			continue;
-		/* return if "\0\0" (never happens) */
-		if (host_readb(Real2Host(src) + 1) == 0)
-			return;
-		/* write the adress of the next string */
-		host_writed(dst, src + 1);
-		dst += 4;
+		/* continue if not the end of the string */
+		if (!host_readbs(Real2Host(src))) {
+
+			/* return if "\0\0" (never happens) */
+			if (!host_readbs(Real2Host(src) + 1))
+				return;
+
+			/* write the adress of the next string */
+			host_writed(dst, (Bit32u)(src + 1));
+			dst += 4;
+		}
 	}
 }
 #endif
 
 
 #if 1
-
-
 
 void load_page(Bit16u page)
 {
