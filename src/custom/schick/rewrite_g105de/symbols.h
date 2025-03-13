@@ -88,6 +88,8 @@
 #define SND_SEQUENCE			(0x3f5a)    /* Bit16s */
 #define SND_DRIVER_HANDLE		(0x3f5c)    /* Bit16s */
 
+#define MENU_TILES			(0x40b9)    /* Bit16s */
+
 #define RANDOM_GEN_SEED2		(0x458f)    /* Bit16u */
 
 #define WO_VAR				(0x4595)    /* Bit16u */

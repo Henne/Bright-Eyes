@@ -1186,7 +1186,7 @@ static signed char head_current;
 static signed char head_typus;
 
 /* DS:0x40b9 */
-static unsigned short menu_tiles;
+//static unsigned short MENU_TILES;
 /* DS:0x40bb */
 static unsigned short left_border;
 /* DS:0x40bd */
@@ -2263,11 +2263,11 @@ void handle_input()
 
 			if (si == 0xfd) {
 				si = 0;
-				menu_tiles = 4;
+				ds_writew(MENU_TILES, 4);
 				ds_writew(0x4789, 1);
 				infobox(texts[267], 0);
 				ds_writew(0x4789, 0);
-				menu_tiles = 3;
+				ds_writew(MENU_TILES, 3);
 			}
 		}
 	}
@@ -3588,7 +3588,7 @@ void draw_popup_line(Bit16u line, Bit16u type)
 
 	src = Real2Phys(ds_readd(0x476d)) + popup_middle;
 	dst += 16;
-	for (i = 0; i < menu_tiles; dst += 32, i++)
+	for (i = 0; i < ds_readws(MENU_TILES); dst += 32, i++)
 		copy_to_screen(src, dst, 32, 8, 0);
 
 	src = Real2Phys(ds_readd(0x476d)) + popup_right;
@@ -3615,7 +3615,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	v3 = text_y;
 	v4 = text_x_end;
 
-	di = (menu_tiles + 1) * 32;
+	di = (ds_readws(MENU_TILES) + 1) * 32;
 	left_border = abs(320 - di) / 2 + ds_readw(0x1327);
 	text_x = abs(320 - di) / 2 + ds_readw(0x1327) + 5;
 	text_x_end = di - 10;
@@ -3768,10 +3768,10 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	bak1 = text_x;
 	bak2 = text_y;
 	bak3 = text_x_end;
-	r9 = (menu_tiles + 1) * 32;
+	r9 = (ds_readws(MENU_TILES) + 1) * 32;
 	left_border = (abs(320 - r9) / 2) + ds_readw(0x1327);
 	text_x = left_border + 5;
-	text_x_end = (menu_tiles + 1) * 32 - 10;
+	text_x_end = (ds_readws(MENU_TILES) + 1) * 32 - 10;
 	lines_header = str_splitter((char*)header);
 	lines_sum = lines_header + options;
 	upper_border = abs(200 - (lines_sum + 2) * 8) / 2;
@@ -7270,7 +7270,7 @@ void init_stuff()
 	fg_color[3] = 0xca;
 
 	/* number of menu tiles width */
-	menu_tiles = 3;
+	ds_writew(MENU_TILES, 3);
 
 	dst_dst = ds_readd(0x47cb);
 }
