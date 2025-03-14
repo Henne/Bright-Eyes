@@ -306,8 +306,8 @@ void seg001_0465(unsigned short track)
 {
 	seg001_0312();
 	seg001_0312();
-	ds_writew(0x245a, 4);
-	seg001_00bb(ds_readw(0x245a));
+	ds_writew(CD_AUDIO_TRACK, 4);
+	seg001_00bb(ds_readw(CD_AUDIO_TRACK));
 	ds_writew(0x9b, 1);
 }
 

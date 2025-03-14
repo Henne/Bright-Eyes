@@ -2154,7 +2154,7 @@ void mouse()
 			ds_writew(MOUSE_LOCKED, 1);
 
 			if (ds_readws(MOUSE_POSX) < ds_readws(0x1256))
-				ds_writew(0x124c, ds_readws(0x1256));
+				ds_writew(MOUSE_POSX, ds_readws(0x1256));
 
 			if (ds_readws(MOUSE_POSX) > 315)
 				ds_writew(MOUSE_POSX, 315);
@@ -2197,7 +2197,7 @@ void mouse_compare()
 		} else {
 			ds_writew(0x1256, ds_writew(0x1258, 8));
 		}
-		ds_writew(0x1254, 0);
+		ds_writew(MOUSE_MOVED, 0);
 		update_mouse_cursor1();
 #if !defined(__BORLANDC__)
 		mouse();
@@ -2244,22 +2244,22 @@ void handle_input()
 		si = 0;
 
 		if ((RealPt)ds_readd(ACTION_TABLE))
-			si = get_mouse_action(ds_readw(0x124c),
-				ds_readw(0x124e),
+			si = get_mouse_action(ds_readw(MOUSE_POSX),
+				ds_readw(MOUSE_POSY),
 				(Bit8u*)Real2Host(ds_readd(ACTION_TABLE)));
 				
 		if ((si == 0) && ((RealPt)ds_readd(DEFAULT_ACTION)))
-			si = get_mouse_action(ds_readw(0x124c),
-				ds_readw(0x124e),
+			si = get_mouse_action(ds_readw(MOUSE_POSX),
+				ds_readw(MOUSE_POSY),
 				(Bit8u*)Real2Host(ds_readd(DEFAULT_ACTION)));
 
 		if (ds_readw(HAVE_MOUSE) == 2) {
 			for (i = 0; i < 15; i++)
 				wait_for_vsync();
 
-			if (ds_readw(0x459b) != 0) {
+			if (ds_readw(MOUSE1_EVENT2) != 0) {
 				ds_writew(WO_VAR, 1);
-				ds_writew(0x459b, 0);
+				ds_writew(MOUSE1_EVENT2, 0);
 			}
 
 			if (si == 0xfd) {
@@ -2330,7 +2330,7 @@ void unused_func1(RealPt in_ptr, Bit16s x, Bit16s y, Bit8s c1, Bit8s c2)
 
 	update_mouse_cursor();
 
-	ptr = (RealPt)ds_readd(0x47cb);
+	ptr = (RealPt)ds_readd(VGA_MEMSTART);
 	ptr += 320 * y + x;
 
 	for (i = 0; i < c2; ptr+=320 , i++) {
@@ -2415,8 +2415,8 @@ void draw_mouse_cursor()
 	vgaptr = (RealPt)ds_readd(VGA_MEMSTART);
 	mouse_cursor = (signed short*)Real2Host(ds_readd(MOUSE_CURRENT_CURSOR)) + (32 / 2);
 
-	rangeX = ds_readw(0x124c) - ds_readw(0x1256);
-	rangeY = ds_readw(0x124e) - ds_readw(0x1258);
+	rangeX = ds_readw(MOUSE_POSX) - ds_readw(0x1256);
+	rangeY = ds_readw(MOUSE_POSY) - ds_readw(0x1258);
 
 	diffX = diffY = 16;
 
@@ -2448,8 +2448,8 @@ void save_mouse_bg()
 
 	vgaptr = (RealPt)(ds_readd(VGA_MEMSTART));
 
-	rangeX = ds_readw(0x124c) - ds_readw(0x1256);
-	rangeY = ds_readw(0x124e) - ds_readw(0x1258);
+	rangeX = ds_readw(MOUSE_POSX) - ds_readw(0x1256);
+	rangeY = ds_readw(MOUSE_POSY) - ds_readw(0x1258);
 
 	diffX = diffY = 16;
 
@@ -3036,8 +3036,8 @@ void vsync_or_key(Bit16u val)
 
 	for (i = 0; i < val; i++) {
 		handle_input();
-		if (ds_readw(IN_KEY_EXT) || ds_readw(0x4599)) {
-			ds_writew(0x4599, 0);
+		if (ds_readw(IN_KEY_EXT) || ds_readw(MOUSE2_EVENT)) {
+			ds_writew(MOUSE2_EVENT, 0);
 			ds_writew(IN_KEY_EXT, KEY_RET);
 			return;
 		}
@@ -3479,18 +3479,18 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 		print_chr(0x5f, di, y);
 	}
 	wait_for_keypress();
-	ds_writew(0x4597, 0);
+	ds_writew(MOUSE1_EVENT1, 0);
 
 	c = 0;
 	while (c != 0xd || pos == 0) {
 		do {
 			do {} while (CD_bioskey(1) == 0 &&
-				ds_readw(0x4597) == 0);
+				ds_readw(MOUSE1_EVENT1) == 0);
 
-			if (ds_readw(0x4597)) {
+			if (ds_readw(MOUSE1_EVENT1)) {
 				ds_writew(IN_KEY_ASCII, 0x0d);
-				ds_writew(0x459b, 0);
-				ds_writew(0x4597, 0);
+				ds_writew(MOUSE1_EVENT2, 0);
+				ds_writew(MOUSE1_EVENT1, 0);
 			} else {
 				ds_writew(IN_KEY_ASCII, CD_bioskey(0));
 				ds_writew(IN_KEY_EXT, ds_readw(IN_KEY_ASCII) >> 8);
@@ -3595,10 +3595,10 @@ void draw_popup_line(Bit16u line, Bit16u type)
 	Bit16u i, popup_right, popup_left, popup_middle;
 
 	/* This is a bit bogus */
-	dst = Real2Phys(ds_readd(0x47cb));
+	dst = Real2Phys(ds_readd(VGA_MEMSTART));
 
 	/* (line * 8 + y) * 320  + x */
-	dst = ((line * 8) + upper_border) * 320 + Real2Phys(ds_readd(0x47cb)) + left_border;
+	dst = ((line * 8) + upper_border) * 320 + Real2Phys(ds_readd(VGA_MEMSTART)) + left_border;
 
 	switch (type) {
 		case 0: {
@@ -3674,7 +3674,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	update_mouse_cursor();
 
-	src = Real2Phys(ds_readd(0x47cb));
+	src = Real2Phys(ds_readd(VGA_MEMSTART));
 	src += upper_border * 320 + left_border;
 	dst = Real2Phys(ds_readd(0x47d3));
 
@@ -3693,7 +3693,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	print_line(msg);
 
-	ds_writew(0x4599, 0);
+	ds_writew(MOUSE2_EVENT, 0);
 	call_mouse();
 
 	if (digits) {
@@ -3715,7 +3715,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	set_textcolor(fg, bg);
 	update_mouse_cursor();
 
-	dst = Real2Phys(ds_readd(0x47cb));
+	dst = Real2Phys(ds_readd(VGA_MEMSTART));
 	dst += upper_border * 320 + left_border;
 	src = Real2Phys(ds_readd(0x47d3));
 
@@ -3823,7 +3823,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	update_mouse_cursor();
 
 	/* save old background */
-	src = Real2Phys(ds_readd(0x47cb));
+	src = Real2Phys(ds_readd(VGA_MEMSTART));
 	src += upper_border * 320 + left_border;
 	dst = Real2Phys(ds_readd(0x47d3));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 2);
@@ -3856,23 +3856,23 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	va_end(arguments);
 
 	/* save and set mouse position */
-	mx_bak = ds_readw(0x124c);
-	my_bak = ds_readw(0x124e);
-	ds_writew(0x124c, left_border + 90);
+	mx_bak = ds_readw(MOUSE_POSX);
+	my_bak = ds_readw(MOUSE_POSY);
+	ds_writew(MOUSE_POSX, left_border + 90);
 	ds_writew(0x1250, left_border + 90);
 	r7 = (lines_header + 1) * 8 + upper_border;
 	r8 = r7;
-	ds_writew(0x124e, r8);
+	ds_writew(MOUSE_POSY, r8);
 	ds_writew(0x1252, r8);
-	mouse_move_cursor(ds_readw(0x124c), r8);
+	mouse_move_cursor(ds_readw(MOUSE_POSX), r8);
 
-	ds_writew(0x1246, left_border + r9 - 16);
-	ds_writew(0x1242, left_border);
-	ds_writew(0x1240, (lines_header + 1) * 8 + upper_border);
-	ds_writew(0x1244,
+	ds_writew(MOUSE_POSX_MAX, left_border + r9 - 16);
+	ds_writew(MOUSE_POSX_MIN, left_border);
+	ds_writew(MOUSE_POSY_MIN, (lines_header + 1) * 8 + upper_border);
+	ds_writew(MOUSE_POSY_MAX,
 		upper_border + options * 8 + (lines_header + 1) * 8 - 1);
 	call_mouse();
-	ds_writew(0x4599, 0);
+	ds_writew(MOUSE2_EVENT, 0);
 
 	while (r5 == 0) {
 #if !defined(__BORLANDC__)
@@ -3887,13 +3887,13 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 			fill_radio_button(r6, di, lines_header);
 			r6 = di;
 		}
-		if (ds_readw(0x4599) != 0 ||
+		if (ds_readw(MOUSE2_EVENT) != 0 ||
 			ds_readw(IN_KEY_EXT) == KEY_ESC ||
 			ds_readw(IN_KEY_EXT) == KEY_PGDOWN) {
 			/* has the selection been canceled */
 			retval = -1;
 			r5 = 1;
-			ds_writew(0x4599, 0);
+			ds_writew(MOUSE2_EVENT, 0);
 		}
 		if (ds_readw(IN_KEY_EXT) == KEY_RET) {
 			/* has the return key been pressed */
@@ -3914,9 +3914,9 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 			else
 				di++;
 		}
-		if (ds_readw(0x124e) != r8) {
+		if (ds_readw(MOUSE_POSY) != r8) {
 			/* ihas the mouse been moved */
-			r8 = ds_readw(0x124e);
+			r8 = ds_readw(MOUSE_POSY);
 			di = (r8 - r7) / 8 + 1;
 		}
 		/* is this a bool radiobox ? */
@@ -3935,19 +3935,19 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	update_mouse_cursor();
 
-	ds_writew(0x124c, mx_bak);
+	ds_writew(MOUSE_POSX, mx_bak);
 	ds_writew(0x1250, mx_bak);
-	ds_writew(0x124e, my_bak);
+	ds_writew(MOUSE_POSY, my_bak);
 	ds_writew(0x1252, my_bak);
 
-	ds_writew(0x1246, 319);
-	ds_writew(0x1242, 0);
-	ds_writew(0x1240, 0);
-	ds_writew(0x1244, 199);
+	ds_writew(MOUSE_POSX_MAX, 319);
+	ds_writew(MOUSE_POSX_MIN, 0);
+	ds_writew(MOUSE_POSY_MIN, 0);
+	ds_writew(MOUSE_POSY_MAX, 199);
 
 	mouse_move_cursor(mx_bak, my_bak);
 
-	dst = Real2Phys(ds_readd(0x47cb));
+	dst = Real2Phys(ds_readd(VGA_MEMSTART));
 	dst += upper_border * 320 + left_border;
 	src = Real2Phys(ds_readd(0x47d3));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 0);
@@ -3969,7 +3969,7 @@ void enter_name()
 {
 	PhysPt dst;
 
-	dst = Real2Phys(ds_readd(0x47cb) + 12 * 320 + 176);
+	dst = Real2Phys(ds_readd(VGA_MEMSTART) + 12 * 320 + 176);
 
 	update_mouse_cursor();
 	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
@@ -4038,7 +4038,7 @@ void change_sex()
 		ds_writew(0x11fe, 1);
 		return;
 	} else {
-		dst = Real2Phys(ds_readd(0x47cb)) + 7 * 320 + 305;
+		dst = Real2Phys(ds_readd(VGA_MEMSTART)) + 7 * 320 + 305;
 		src = Real2Phys(ds_readd(0x4769)) + hero.sex * 256;
 		update_mouse_cursor();
 		copy_to_screen(src, dst, 16, 16, 0);
@@ -4076,7 +4076,7 @@ void do_gen()
 		level = gui_radio((Bit8u*)texts[0], 2, texts[1], texts[2]);
 	}
 
-	ds_writew(0x4599, 1);
+	ds_writew(MOUSE2_EVENT, 1);
 
 	/* main loop */
 	while (!di) {
@@ -4089,7 +4089,7 @@ void do_gen()
 		handle_input();
 		ds_writed(ACTION_TABLE, (RealPt)0);
 
-		if (ds_readw(0x4599) || ds_readw(IN_KEY_EXT) == KEY_PGUP) {
+		if (ds_readw(MOUSE2_EVENT) || ds_readw(IN_KEY_EXT) == KEY_PGUP) {
 			/* print the menu for each page */
 			switch(ds_readws(GEN_PAGE)) {
 				case 0: {
@@ -4127,7 +4127,7 @@ void do_gen()
 							case 4: {
 								memset(&hero, 0, sizeof(hero));
 								clear_hero();
-								ds_writew(0x4599,
+								ds_writew(MOUSE2_EVENT,
 									1);
 								ds_writew(0x11fe,
 									1);
@@ -4648,7 +4648,7 @@ void refresh_screen()
 				}
 			} else {
 				if (need_refresh) {
-					call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)),
+					call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)),
 						16, 8, 143, 191, 0);
 					need_refresh = 0;
 				}
@@ -4690,13 +4690,13 @@ void refresh_screen()
 				do_draw_pic(0);
 			}
 
-			dst_dst = ds_readd(0x47cb);
+			dst_dst = ds_readd(VGA_MEMSTART);
 
 		}
 
 		print_values();
-		ds_writed(0x47c7, ds_readd(0x47cb));
-		dst = Real2Phys(ds_readd(0x47cb));
+		ds_writed(0x47c7, ds_readd(VGA_MEMSTART));
+		dst = Real2Phys(ds_readd(VGA_MEMSTART));
 		src = Real2Phys(ds_readd(0x47d3));
 		update_mouse_cursor();
 		copy_to_screen(src, dst, 320, 200, 0);
@@ -5058,7 +5058,7 @@ void select_typus()
 
 	load_typus(hero.typus);
 	update_mouse_cursor();
-	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 16, 8, 143, 191, 0);
+	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 16, 8, 143, 191, 0);
 	wait_for_vsync();
 	set_palette(Real2Host(ds_readd(0x47b3)) + 0x5c02, 0, 32);
 	call_mouse();
@@ -6823,7 +6823,7 @@ void choose_typus()
 
 	load_typus(hero.typus);
 	update_mouse_cursor();
-	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 16, 8, 143, 191, 0);
+	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 16, 8, 143, 191, 0);
 	wait_for_vsync();
 	set_palette(Real2Host(ds_readd(0x47b3)) + 0x5c02, 0, 32);
 	call_mouse();
@@ -7004,7 +7004,7 @@ void intro()
 		unkn2 = 60;
 		unkn3 = 95;
 		unkn4 = 159;
-		dst_dst = ds_readd(0x47cb);
+		dst_dst = ds_readd(VGA_MEMSTART);
 		do_draw_pic(3);
 		cnt1++;
 		cnt2--;
@@ -7036,7 +7036,7 @@ void intro()
 	process_nvf(&nvf);
 
 	/* clear screen */
-	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 0, 0, 319, 199, 0);
+	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 0, 0, 319, 199, 0);
 	wait_for_vsync();
 
 	/* set palette of FANPRO.NVF */
@@ -7070,7 +7070,7 @@ void intro()
 	process_nvf(&nvf);
 
 	/* clear screen */
-	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 0, 0, 319, 199, 0);
+	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 0, 0, 319, 199, 0);
 	wait_for_vsync();
 
 
@@ -7139,7 +7139,7 @@ void intro()
 	}
 
 	/* clear screen */
-	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 0, 0, 319, 199, 0);
+	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 0, 0, 319, 199, 0);
 
 	ds_writeb(0x40b8, 0);
 	return;
@@ -7231,7 +7231,7 @@ int main_gen(int argc, char **argv)
 	restore_mouse_isr();
 
 	if (ds_readw(0x3f60) != 0) {
-		call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 0, 0, 319, 199, 0);
+		call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 0, 0, 319, 199, 0);
 	} else {
 		exit_video();
 		bc_clrscr();
@@ -7250,7 +7250,7 @@ void alloc_buffers_emu()
 
 void alloc_buffers()
 {
-	ds_writed(0x47cb, RealMake(0xa000, 0x0));
+	ds_writed(VGA_MEMSTART, RealMake(0xa000, 0x0));
 	ds_writed(0x47c7, RealMake(0xa000, 0x0));
 
 	gen_ptr1 = (Bit8u*)gen_alloc(64108);
@@ -7316,7 +7316,7 @@ void init_stuff()
 	/* number of menu tiles width */
 	ds_writew(MENU_TILES, 3);
 
-	dst_dst = ds_readd(0x47cb);
+	dst_dst = ds_readd(VGA_MEMSTART);
 }
 
 void* gen_alloc(unsigned long size)
