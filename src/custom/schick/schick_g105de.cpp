@@ -430,9 +430,7 @@ static int seg004(Bitu offs) {
 			RealSeg(dst), RealOff(dst),
 			RealSeg(src), RealOff(src), len);
 
-		decomp_pp20(MemBase + Real2Phys(src),
-			MemBase + Real2Phys(dst),
-			MemBase + Real2Phys(src) + 8, len);
+		decomp_pp20(Real2Host(dst), Real2Host(src), len);
 
 		return 1;
 	}
@@ -1078,7 +1076,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					Bit32s retval;
-					retval = get_filelength();
+					retval = get_filelength(0);
 
 					reg_ax = retval & 0xffff;
 					reg_dx = (retval>>16) & 0xffff;

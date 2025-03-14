@@ -58,7 +58,7 @@ namespace G105de {
 	void split_textbuffer(Bit8u*, RealPt, Bit32u);
 	void load_font_and_text_host();
 	void split_textbuffer_host(char**, char*, Bit32u);
-	void load_page(Bit16u);
+	void load_page(Bit16s);
 	void load_typus(Bit16u);
 	void save_chr();
 	void read_common_files();
@@ -66,7 +66,7 @@ namespace G105de {
 	Bit32s get_archive_offset(const char*, Bit8u*);
 	Bit16u open_datfile(Bit16u);
 	Bit16s read_datfile(Bit16u, Bit8u*, Bit16u);
-	Bit32s get_filelength();
+	Bit32s get_filelength(Bit16s);
 	Bit16u ret_zero1();
 	void wait_for_keypress();
 	void error_msg(Bit8u*);

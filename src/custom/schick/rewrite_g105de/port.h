@@ -79,7 +79,7 @@ extern char ds[0xffff];
 
 #define RealMake(seg, off) ((RealPt)((seg << 4) + off))
 #define Real2Phys(p) (p)
-#define Real2Host(p) (p)
+#define Real2Host(p) ((Bit8u*)(p))
 
 #else
 #define INTCAST RealPt

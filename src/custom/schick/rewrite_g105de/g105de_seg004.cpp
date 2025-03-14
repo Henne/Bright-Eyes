@@ -110,7 +110,8 @@ int ppDecrunch(uint8 *src, uint8 *dest, uint8 *offset_lens,
   /* return (src == buf_src) ? 1 : 0; */
 }
 
-void decomp_pp20(Bit8u *src, Bit8u *dst, Bit8u *p3, unsigned int plen) {
+void decomp_pp20(Bit8u *dst, Bit8u *src, Bit32s plen)
+{
 	size_t unplen;
 
 	if (plen < 4)

@@ -2,7 +2,7 @@
 namespace G105de {
 #endif
 
-void decomp_pp20(Bit8u *dst, Bit8u *src_data, Bit8u *src, unsigned int len);
+void decomp_pp20(Bit8u*, Bit8u*, Bit32s);
 
 #if !defined(__BORLANDC__)
 }

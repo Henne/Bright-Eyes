@@ -2550,48 +2550,57 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 
 			/* write the adress of the next string */
 			host_writed(dst, (Bit32u)(src + 1));
+#if !defined(__BORLANDC__)
 			dst += 4;
+#else
+			asm {nop} // Sync-point
+#endif
 		}
 	}
 }
 
-void load_page(Bit16u page)
+/* Borlandified and identical */
+void load_page(Bit16s page)
 {
-	Bit8u *ptr;
-	FILE *fd;
+	RealPt ptr;
+	Bit16s handle;
 
 	if (page <= 10) {
 		/* check if this image is in the buffer */
-		if (bg_buffer[page]) {
-			decomp_rle(Real2Host(ds_readd(0x47d3)),
-				bg_buffer[page], 0, 0, 320, 200, 0);
+		if ((RealPt)ds_readd(BG_BUFFER + 4 * page)) {
+			decomp_rle(Real2Host(ds_readd(GEN_PTR1_DIS)),
+					Real2Host(ds_readd(BG_BUFFER + 4 * page)),
+					0, 0, 320, 200, 0);
 			return;
 		}
 
-		fd = fd_open_datfile(page);
-		ptr = (Bit8u*)gen_alloc(get_filelength());
-
-		if (ptr) {
-			bg_buffer[page] = ptr;
-			bg_len[page] = (unsigned short)get_filelength();
-			fd_read_datfile(fd, bg_buffer[page], bg_len[page]);
-			decomp_rle(Real2Host(ds_readd(0x47d3)),
-				bg_buffer[page], 0, 0, 320, 200, 0);
+		if (ptr = emu_gen_alloc(get_filelength(handle = open_datfile(page)))) {
+			ds_writed(BG_BUFFER + 4 * page, (Bit32u)ptr);
+			ds_writed(BG_LEN + 4 * page, get_filelength(handle));
+			read_datfile(handle,
+				Real2Host(ds_readd(BG_BUFFER + 4 * page)),
+				ds_readd(BG_LEN + 4 * page));
+			decomp_rle(Real2Host(ds_readd(GEN_PTR1_DIS)),
+					Real2Host(ds_readd(BG_BUFFER + 4 * page)),
+					0, 0, 320, 200, 0);
 		} else {
-			fd_read_datfile(fd, page_buffer, 64000);
-			decomp_rle(Real2Host(ds_readd(0x47d3)),
-				page_buffer, 0, 0, 320, 200, 0);
+			read_datfile(handle, Real2Host(ds_readd(PAGE_BUFFER)), 64000);
+			decomp_rle(Real2Host(ds_readd(GEN_PTR1_DIS)),
+				Real2Host(ds_readd(PAGE_BUFFER)),
+				0, 0, 320, 200, 0);
 		}
-		fclose(fd);
+		bc_close(handle);
+#if defined(__BORLANDC__)
+		asm {db 0xeb, 0x4b} // Sync-point
+#endif
 	} else {
 		/* this should not happen */
-		fd = fd_open_datfile(page);
-		fd_read_datfile(fd, Real2Host(ds_readd(0x47d3)) - 8,
-			64000);
-		fclose(fd);
-		decomp_pp20(Real2Host(ds_readd(0x47d3)) - 8,
-			Real2Host(ds_readd(0x47d3)),
-			NULL,  get_filelength());
+		handle = open_datfile(page);
+		read_datfile(handle, Real2Host(ds_readd(GEN_PTR1_DIS)) - 8, 64000);
+		bc_close(handle);
+		decomp_pp20(Real2Host(ds_readd(GEN_PTR1_DIS)),
+			Real2Host(ds_readd(GEN_PTR1_DIS)) - 8,
+			get_filelength(handle));
 	}
 }
 
@@ -2601,38 +2610,39 @@ void load_typus(Bit16u typus)
 {
 	Bit8u *ptr;
 	FILE *fd;
+	Bit16s handle;
 	Bit16u index;
 
 	index = typus + 19;
 
 	/* check if this image is in the buffer */
 	if (typus_buffer[typus]) {
-		decomp_pp20(typus_buffer[typus],
-			Real2Host(ds_readd(0x47b3)),
-			NULL, typus_len[typus]);
+		decomp_pp20(Real2Host(ds_readd(0x47b3)),
+				typus_buffer[typus],
+				typus_len[typus]);
 		return;
 	}
 
 	fd = fd_open_datfile(index);
-	ptr = (Bit8u*)gen_alloc(get_filelength());
+	ptr = (Bit8u*)gen_alloc(get_filelength(handle));
 
 	if (ptr != NULL) {
 		/* load the file into the typus buffer */
 		typus_buffer[typus] = ptr;
-		typus_len[typus] = get_filelength();
+		typus_len[typus] = get_filelength(handle);
 		fd_read_datfile(fd, typus_buffer[typus],
 			(unsigned short)typus_len[typus]);
-		decomp_pp20(typus_buffer[typus],
-			Real2Host(ds_readd(0x47b3)),
-			NULL, typus_len[typus]);
+		decomp_pp20(Real2Host(ds_readd(0x47b3)),
+			typus_buffer[typus],
+			typus_len[typus]);
 	} else {
 		/* load the file direct */
 		typus_buffer[typus] = ptr;
 		fd_read_datfile(fd, Real2Host(ds_readd(0x47d3)),
 			25000);
-		decomp_pp20(Real2Host(ds_readd(0x47d3)),
-			Real2Host(ds_readd(0x47b3)),
-			NULL, get_filelength());
+		decomp_pp20(Real2Host(ds_readd(0x47b3)),
+			Real2Host(ds_readd(0x47d3)),
+			get_filelength(handle));
 	}
 	fclose(fd);
 }
@@ -2834,8 +2844,9 @@ void read_common_files()
 	fd = fd_open_datfile(19);
 	len = fd_read_datfile(fd, Real2Host(ds_readd(0x476d)) - 8, 500);
 	fclose(fd);
-	decomp_pp20(Real2Host(ds_readd(0x476d)) - 8,
-		Real2Host(ds_readd(0x476d)), NULL, len);
+	decomp_pp20(Real2Host(ds_readd(0x476d)),
+		Real2Host(ds_readd(0x476d)) - 8,
+		len);
 
 	/* load SEX.DAT */
 	fd = fd_open_datfile(12);
@@ -2846,8 +2857,9 @@ void read_common_files()
 	fd = fd_open_datfile(32);
 	len = fd_read_datfile(fd, Real2Host(ds_readd(0x47a7)) - 8, 25000);
 	fclose(fd);
-	decomp_pp20(Real2Host(ds_readd(0x47a7)) - 8,
-		Real2Host(ds_readd(0x47a7)), NULL, len);
+	decomp_pp20(Real2Host(ds_readd(0x47a7)),
+		Real2Host(ds_readd(0x47a7)) - 8,
+		len);
 
 }
 
@@ -2946,7 +2958,7 @@ signed int process_nvf(struct nvf_desc *nvf) {
 		} else
 			retval = width * height;
 
-		decomp_pp20(src, (unsigned char*)nvf->dst, src + 4, p_size);
+		decomp_pp20((unsigned char*)nvf->dst, src, p_size);
 		break;
 
 	case 2: case 3: case 4: case 5:
@@ -3009,7 +3021,7 @@ Bit16s read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 	return len;
 }
 
-Bit32s get_filelength() {
+Bit32s get_filelength(Bit16s unused) {
 
 	return ds_readd(FLEN);
 }
@@ -7256,7 +7268,7 @@ void alloc_buffers()
 	gen_ptr1 = (Bit8u*)gen_alloc(64108);
 	gen_ptr1_dis = gen_ptr1 + 8;
 
-	page_buffer = (Bit8u*)gen_alloc(50000);
+	ds_writed(PAGE_BUFFER, (Bit32u)emu_gen_alloc(50000));
 
 	gen_ptr2 = (char*)gen_alloc(1524);
 	gen_ptr3 = gen_ptr2 + 1500;

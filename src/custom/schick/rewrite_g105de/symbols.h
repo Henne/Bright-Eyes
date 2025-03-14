@@ -56,6 +56,9 @@
 #define USE_CDA	                        (0x1a09)    /* signed short */
 #define MOUSE_HANDLER_INSTALLED         (0x1a0b)    /* signed short */
 
+#define BG_BUFFER                       (0x1a11)    /* RealPt[11] */
+#define BG_LEN                          (0x1a3d)    /* Bit32u[11] */
+
 #define ACTION_INPUT                    (0x1c63)
 #define ACTION_PAGE                     (0x1c79)    /* RealPt[11] */
 
@@ -116,4 +119,6 @@
 #define BUFFER_FONT6                    (0x4779)
 
 #define VGA_MEMSTART                    (0x47cb)     /* RealPt */
+#define PAGE_BUFFER			(0x47cf)     /* RealPt */
+#define GEN_PTR1_DIS			(0x47d3)     /* RealPt */
 #endif
