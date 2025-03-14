@@ -3,8 +3,10 @@
 *.o
 *.OBJ
 *.a
+# DOSBox files
 Makefile
 Makefile.in
+compile
 config.*
 configure
 depcomp
@@ -15,5 +17,16 @@ autom4te.cache
 aclocal.m4
 lastbuild.log
 src/dosbox
+# MSVC directories
+/visualc_2008/Debug
+/visualc_2008/Release
 /visualc_2017/Debug
 /visualc_2017/Release
+# DOSBox-custom related files
+*temp/
+*.EXE
+src/custom/tools/dump_obj
+src/custom/drive_c/BCC20/*
+src/custom/drive_c/BCC30/*
+src/custom/drive_c/BCC31/*
+
