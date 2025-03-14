@@ -421,7 +421,7 @@ static int seg004(Bitu offs) {
 	case 0xc: {
 		RealPt dst = CPU_Pop32();
 		RealPt src = CPU_Pop32();
-		unsigned int len = CPU_Pop32();
+		Bit32s len = CPU_Pop32();
 		CPU_Push32(len);
 		CPU_Push32(src);
 		CPU_Push32(dst);
@@ -430,7 +430,7 @@ static int seg004(Bitu offs) {
 			RealSeg(dst), RealOff(dst),
 			RealSeg(src), RealOff(src), len);
 
-		decomp_pp20(Real2Host(dst), Real2Host(src), len);
+		decomp_pp20(dst, Real2Host(src), len);
 
 		return 1;
 	}

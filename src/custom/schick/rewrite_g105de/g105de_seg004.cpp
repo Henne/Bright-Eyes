@@ -12,6 +12,10 @@
  *   - further detection based on code by Georg Hoermann
  */
 
+#if !defined(__BORLANDC__)
+#include <cstdlib>	// free()
+#endif
+
 #include "schick.h"
 
 namespace G105de {
@@ -110,7 +114,7 @@ int ppDecrunch(uint8 *src, uint8 *dest, uint8 *offset_lens,
   /* return (src == buf_src) ? 1 : 0; */
 }
 
-void decomp_pp20(Bit8u *dst, Bit8u *src, Bit32s plen)
+void decomp_pp20(RealPt dst, Bit8u *src, Bit32s plen)
 {
 	size_t unplen;
 
@@ -122,7 +126,17 @@ void decomp_pp20(Bit8u *dst, Bit8u *src, Bit32s plen)
 	if (unplen == 0) {
 		D1_ERR("PP20: No PP20 file\n");
 	}
-	ppDecrunch(&src[8],  dst, &src[4], plen - 12, unplen, src[plen -1]);
+#if defined(__BORLANDC__)
+	ppDecrunch(&src[8],  Real2Host(dst), &src[4], plen - 12, unplen, src[plen -1]);
+#else
+	// decompress into imediate buffer, since pointer dst can be emulated hardware
+	Bit8u* p_imm = (Bit8u*)calloc(unplen, 1);
+	Bit8u* p = p_imm;
+	PhysPt d_imm = Real2Phys(dst);
+	ppDecrunch(&src[8],  p_imm, &src[4], plen - 12, unplen, src[plen -1]);
+	for (size_t i = 0; i < unplen; i++) mem_writeb(d_imm++, *p++);
+	free(p_imm);
+#endif
 
 	return;
 }

@@ -2598,7 +2598,7 @@ void load_page(Bit16s page)
 		handle = open_datfile(page);
 		read_datfile(handle, Real2Host(ds_readd(GEN_PTR1_DIS)) - 8, 64000);
 		bc_close(handle);
-		decomp_pp20(Real2Host(ds_readd(GEN_PTR1_DIS)),
+		decomp_pp20((RealPt)ds_readd(GEN_PTR1_DIS),
 			Real2Host(ds_readd(GEN_PTR1_DIS)) - 8,
 			get_filelength(handle));
 	}
@@ -2625,8 +2625,8 @@ void load_typus(Bit16u typus)
 	index = typus + 19;
 
 	/* check if this image is in the buffer */
-	if (Real2Host(ds_readd(TYPUS_BUFFER + 4 * typus))) {
-		decomp_pp20(Real2Host(ds_readd(GEN_PTR5)),
+	if ((RealPt)ds_readd(TYPUS_BUFFER + 4 * typus)) {
+		decomp_pp20((RealPt)ds_readd(GEN_PTR5),
 			Real2Host(ds_readd(TYPUS_BUFFER + 4 * typus)),
 			ds_readd(TYPUS_LEN + 4 * typus));
 		return;
@@ -2639,13 +2639,13 @@ void load_typus(Bit16u typus)
 		read_datfile(handle,
 			Real2Host(ds_readd(TYPUS_BUFFER + 4 * typus)),
 			ds_readd(TYPUS_LEN + 4 * typus));
-		decomp_pp20(Real2Host(ds_readd(GEN_PTR5)),
+		decomp_pp20((RealPt)ds_readd(GEN_PTR5),
 			Real2Host(ds_readd(TYPUS_BUFFER + 4 * typus)),
 			ds_readd(TYPUS_LEN + 4 * typus));
 	} else {
 		/* load the file direct */
 		read_datfile(handle, Real2Host(ds_readd(GEN_PTR1_DIS)), 25000);
-		decomp_pp20(Real2Host(ds_readd(GEN_PTR5)),
+		decomp_pp20((RealPt)ds_readd(GEN_PTR5),
 			Real2Host(ds_readd(GEN_PTR1_DIS)),
 			get_filelength(handle));
 	}
@@ -2680,7 +2680,7 @@ void save_chr()
 	}
 	/* Load picture from nvf */
 	/* TODO: why not just copy? */
-	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
+	nvf.dst = (RealPt)ds_readd(0x47d3);
 	nvf.src = buffer_heads_dat;
 	nvf.no = head_current;
 	nvf.type = 0;
@@ -2851,7 +2851,7 @@ void read_common_files()
 	fd = fd_open_datfile(19);
 	len = fd_read_datfile(fd, Real2Host(ds_readd(0x476d)) - 8, 500);
 	fclose(fd);
-	decomp_pp20(Real2Host(ds_readd(0x476d)),
+	decomp_pp20((RealPt)ds_readd(0x476d),
 		Real2Host(ds_readd(0x476d)) - 8,
 		len);
 
@@ -2864,7 +2864,7 @@ void read_common_files()
 	fd = fd_open_datfile(32);
 	len = fd_read_datfile(fd, Real2Host(ds_readd(0x47a7)) - 8, 25000);
 	fclose(fd);
-	decomp_pp20(Real2Host(ds_readd(0x47a7)),
+	decomp_pp20((RealPt)ds_readd(0x47a7),
 		Real2Host(ds_readd(0x47a7)) - 8,
 		len);
 
@@ -2965,12 +2965,12 @@ signed int process_nvf(struct nvf_desc *nvf) {
 		} else
 			retval = width * height;
 
-		decomp_pp20((unsigned char*)nvf->dst, src, p_size);
+		decomp_pp20(nvf->dst, src, p_size);
 		break;
 
 	case 2: case 3: case 4: case 5:
 		/* RLE decompression */
-		decomp_rle((unsigned char*)nvf->dst, (unsigned char*)src, 0, 0, width, height, nvf->type);
+		decomp_rle(Real2Host(nvf->dst), (unsigned char*)src, 0, 0, width, height, nvf->type);
 		/* retval was originally neither set nor used here.
 			VC++2008 complains about an uninitialized variable
 			on a Debug build, so we fix this for debuggings sake */
@@ -2980,7 +2980,7 @@ signed int process_nvf(struct nvf_desc *nvf) {
 
 	default:
 		/* No decompression, just copy */
-		memmove(nvf->dst, src, (short)p_size);
+		memmove(Real2Host(nvf->dst), src, (short)p_size);
 		retval = p_size;
 	}
 
@@ -4003,7 +4003,7 @@ void change_head()
 	struct nvf_desc nvf;
 	signed short tmp;
 
-	nvf.dst = (char*)Real2Host(ds_readd(0x47a3));
+	nvf.dst = (RealPt)ds_readd(0x47a3);
 	nvf.src = buffer_heads_dat;
 	nvf.no = head_current;
 	nvf.type = 0;
@@ -4683,7 +4683,7 @@ void refresh_screen()
 			struct nvf_desc nvf;
 			signed short tmp;
 
-			nvf.dst = (char*)Real2Host(ds_readd(0x47a3));
+			nvf.dst = (RealPt)ds_readd(0x47a3);
 			nvf.src = buffer_heads_dat;
 			nvf.no = head_current;
 			nvf.type = 0;
@@ -6955,13 +6955,13 @@ void intro()
 	nvf.height = &tmp;
 
 	for (i = 7; i >= 0; i--) {
-		nvf.dst = (char*)Real2Host(ds_readd(0x47d3)) + i * 960 + 9600;
+		nvf.dst = (RealPt)ds_readd(0x47d3) + i * 960 + 9600;
 		nvf.no = i + 1;
 		process_nvf(&nvf);
 
 	}
 	/* set dst */
-	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
+	nvf.dst = (RealPt)ds_readd(0x47d3);
 	/* set no */
 	nvf.no = 0;
 	process_nvf(&nvf);
@@ -7045,7 +7045,7 @@ void intro()
 	flen = fd_read_datfile(fd, buffer_heads_dat, 20000);
 	fclose(fd);
 
-	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
+	nvf.dst = (RealPt)ds_readd(0x47d3);
 	nvf.src = buffer_heads_dat;
 	nvf.no = 0;
 	nvf.type = 0;
@@ -7079,7 +7079,7 @@ void intro()
 	fd_read_datfile(fd, buffer_heads_dat, 20000);
 	fclose(fd);
 
-	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
+	nvf.dst = (RealPt)ds_readd(0x47d3);
 	nvf.src = buffer_heads_dat;
 	nvf.no = 0;
 	nvf.type = 0;
@@ -7112,7 +7112,7 @@ void intro()
 	fd_read_datfile(fd, buffer_heads_dat, 20000);
 	fclose(fd);
 
-	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
+	nvf.dst = (RealPt)ds_readd(0x47d3);
 	nvf.src = buffer_heads_dat;
 	nvf.no = 0;
 	nvf.type = 0;
@@ -7310,6 +7310,10 @@ void alloc_buffers()
 
 	if (gen_ptr6_dis == NULL)
 		printf("\nMEMORY MALLOCATION ERROR!");
+#if !defined(__BORLANDC__)
+	memset(p_datseg + TYPUS_BUFFER, 0, 4 * 13);
+	memset(p_datseg + TYPUS_LEN, 0, 4 * 13);
+#endif
 }
 
 void init_colors()
