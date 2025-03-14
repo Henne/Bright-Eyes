@@ -2604,48 +2604,55 @@ void load_page(Bit16s page)
 	}
 }
 
-#if 1
+#if defined (__BORLANDC__)
+/* Borlandified and nearly identical */
+void read_datfile_to_buffer(Bit16s index, RealPt dst)
+{
+	Bit16s handle;
+	handle = open_datfile(index);
+	read_datfile(handle, Real2Host(dst), 64000);
+	bc_close(handle);
+}
+#endif
 
+/* Borlandified and identical */
 void load_typus(Bit16u typus)
 {
-	Bit8u *ptr;
-	FILE *fd;
-	Bit16s handle;
 	Bit16u index;
+	RealPt ptr;
+	Bit16s handle;
 
 	index = typus + 19;
 
 	/* check if this image is in the buffer */
-	if (typus_buffer[typus]) {
-		decomp_pp20(Real2Host(ds_readd(0x47b3)),
-				typus_buffer[typus],
-				typus_len[typus]);
+	if (Real2Host(ds_readd(TYPUS_BUFFER + 4 * typus))) {
+		decomp_pp20(Real2Host(ds_readd(GEN_PTR5)),
+			Real2Host(ds_readd(TYPUS_BUFFER + 4 * typus)),
+			ds_readd(TYPUS_LEN + 4 * typus));
 		return;
 	}
 
-	fd = fd_open_datfile(index);
-	ptr = (Bit8u*)gen_alloc(get_filelength(handle));
-
-	if (ptr != NULL) {
+	if (ptr = emu_gen_alloc(get_filelength(handle = open_datfile(index)))) {
 		/* load the file into the typus buffer */
-		typus_buffer[typus] = ptr;
-		typus_len[typus] = get_filelength(handle);
-		fd_read_datfile(fd, typus_buffer[typus],
-			(unsigned short)typus_len[typus]);
-		decomp_pp20(Real2Host(ds_readd(0x47b3)),
-			typus_buffer[typus],
-			typus_len[typus]);
+		ds_writed(TYPUS_BUFFER + 4 * typus, (Bit32u)ptr);
+		ds_writed(TYPUS_LEN + 4 * typus, get_filelength(handle));
+		read_datfile(handle,
+			Real2Host(ds_readd(TYPUS_BUFFER + 4 * typus)),
+			ds_readd(TYPUS_LEN + 4 * typus));
+		decomp_pp20(Real2Host(ds_readd(GEN_PTR5)),
+			Real2Host(ds_readd(TYPUS_BUFFER + 4 * typus)),
+			ds_readd(TYPUS_LEN + 4 * typus));
 	} else {
 		/* load the file direct */
-		typus_buffer[typus] = ptr;
-		fd_read_datfile(fd, Real2Host(ds_readd(0x47d3)),
-			25000);
-		decomp_pp20(Real2Host(ds_readd(0x47b3)),
-			Real2Host(ds_readd(0x47d3)),
+		read_datfile(handle, Real2Host(ds_readd(GEN_PTR1_DIS)), 25000);
+		decomp_pp20(Real2Host(ds_readd(GEN_PTR5)),
+			Real2Host(ds_readd(GEN_PTR1_DIS)),
 			get_filelength(handle));
 	}
-	fclose(fd);
+	bc_close(handle);
 }
+
+#if 1
 
 /**
  * save_chr() - save the hero the a CHR file

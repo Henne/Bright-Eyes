@@ -58,6 +58,8 @@
 
 #define BG_BUFFER                       (0x1a11)    /* RealPt[11] */
 #define BG_LEN                          (0x1a3d)    /* Bit32u[11] */
+#define TYPUS_BUFFER                    (0x1a69)    /* RealPt[13] */
+#define TYPUS_LEN                       (0x1a9d)    /* Bit32u[13] */
 
 #define ACTION_INPUT                    (0x1c63)
 #define ACTION_PAGE                     (0x1c79)    /* RealPt[11] */
@@ -118,7 +120,9 @@
 #define BUFFER_TEXT                     (0x4775)
 #define BUFFER_FONT6                    (0x4779)
 
+#define GEN_PTR5                        (0x47b3)     /* RealPt */
+
 #define VGA_MEMSTART                    (0x47cb)     /* RealPt */
-#define PAGE_BUFFER			(0x47cf)     /* RealPt */
-#define GEN_PTR1_DIS			(0x47d3)     /* RealPt */
+#define PAGE_BUFFER                     (0x47cf)     /* RealPt */
+#define GEN_PTR1_DIS                    (0x47d3)     /* RealPt */
 #endif
