@@ -68,8 +68,9 @@ static const unsigned char s_abs[] =
 
 void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
 {
-	int i = 0;
-	while (i < 0xffff) {
+	const long len = p_ds - p_cs;	/* Size in bytes of the area between CS and DS */
+	long i = 0;
+	while (i < len) {
 		if (memcmp(p_cs + i, s_strlen, sizeof(s_strlen)) == 0) {
 			fprintf(stderr, "Found strlen() at CS:0x%04x\n", i);
 			i += sizeof(s_strlen) - 1;
