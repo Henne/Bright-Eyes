@@ -38,8 +38,8 @@ void draw_mouse_cursor()
 	vgaptr = (RealPt)ds_readd(VGA_MEMSTART);
 	mouse_cursor = (signed short*)Real2Host(ds_readd(P_CURRENT_CURSOR)) + (32 / 2);
 
-	rangeX = ds_readw(0x05d7) - ds_readw(0x05e1);
-	rangeY = ds_readw(0x05d9) - ds_readw(0x05e3);
+	rangeX = ds_readw(MOUSE_POSX) - ds_readw(MOUSE_POINTER_OFFSETX);
+	rangeY = ds_readw(MOUSE_POSY) - ds_readw(MOUSE_POINTER_OFFSETY);
 	diffX = diffY = 16;
 
 	if (rangeX > 304) diffX = 320 - rangeX;
@@ -67,8 +67,8 @@ void save_mouse_bg()
 
 	vgaptr = (RealPt)ds_readd(VGA_MEMSTART);
 
-	rangeX = ds_readw(0x05d7) - ds_readw(0x05e1);
-	rangeY = ds_readw(0x05d9) - ds_readw(0x05e3);
+	rangeX = ds_readw(MOUSE_POSX) - ds_readw(MOUSE_POINTER_OFFSETX);
+	rangeY = ds_readw(MOUSE_POSY) - ds_readw(MOUSE_POINTER_OFFSETY);
 	diffX = diffY = 16;
 
 	if (rangeX > 304) diffX = 320 - rangeX;
@@ -93,8 +93,8 @@ void restore_mouse_bg()
 
 	vgaptr = (RealPt)ds_readd(VGA_MEMSTART);
 
-	rangeX = ds_readw(0x05db) - ds_readw(0x05e5);
-	rangeY = ds_readw(0x05dd) - ds_readw(0x05e7);
+	rangeX = ds_readw(MOUSE_POSX_BAK) - ds_readw(MOUSE_POINTER_OFFSETX_BAK);
+	rangeY = ds_readw(MOUSE_POSY_BAK) - ds_readw(MOUSE_POINTER_OFFSETY_BAK);
 	diffX = diffY = 16;
 
 	if (rangeX > 304) diffX = 320 - rangeX;
