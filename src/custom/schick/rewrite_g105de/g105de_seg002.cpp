@@ -854,7 +854,6 @@ static const struct mouse_action action_spells[4] = {
 /* DS:0x1329 */
 static const Bit16u ro_zero = 0;
 
-/* DS:0x132c */
 static struct struct_hero hero;
 
 //static unsigned short use_cda;
@@ -1220,7 +1219,6 @@ static inline char* get_text(Bit16s no) {
 //static unsigned short *mouse_p2;
 
 //static char MOUSE_BACKBUFFER[256];
-/* DS:0x4769 */
 //static Bit8u *buffer_sex_dat;
 //static Bit8u *buffer_popup_nvf;
 
@@ -1249,7 +1247,7 @@ static Bit8u *gen_ptr6_dis;
 //static Bit8u *buffer_dmenge_dat;
 
 static Bit8u *gen_ptr5;
-/* DS:0x47b7 */
+
 static Bit8u *gen_ptr4;
 //static char *gen_ptr3;
 //static char *gen_ptr2;
@@ -1278,17 +1276,17 @@ static char hero_out[1754];
 
 static inline void hero_writeb(unsigned off, char v)
 {
-	host_writeb((Bit8u*)hero_out + off - 0x132c, v);
+	host_writeb((Bit8u*)hero_out + off - HERO_NAME, v);
 }
 
 static inline void hero_writew(unsigned off, short v)
 {
-	host_writew((Bit8u*)hero_out + off - 0x132c, v);
+	host_writew((Bit8u*)hero_out + off - HERO_NAME, v);
 }
 
 static inline void hero_writed(unsigned off, int v)
 {
-	host_writed((Bit8u*)hero_out + off - 0x132c, v);
+	host_writed((Bit8u*)hero_out + off - HERO_NAME, v);
 }
 
 static void update_hero_out()
@@ -1300,7 +1298,7 @@ static void update_hero_out()
 	strncpy(hero_out, hero.name, 16);
 	strncpy(hero_out + 0x10, hero.alias, 16);
 
-	hero_writeb(0x134d, hero.typus);
+	hero_writeb(HERO_TYPUS, hero.typus);
 	hero_writeb(0x134e, hero.sex);
 	hero_writeb(0x134f, hero.height);
 	hero_writew(0x1350, hero.weight);
@@ -1326,7 +1324,7 @@ static void update_hero_out()
 	for (i = 0; i < 7; i++)
 		hero_writeb(0x139b + i, hero.pa[i]);
 
-	hero_writeb(0x13b4, hero.group);
+	hero_writeb(HERO_GROUP, hero.group);
 
 	for (i = 0; i < 52; i++)
 		hero_writeb(0x1434 + i, hero.skills[i]);
