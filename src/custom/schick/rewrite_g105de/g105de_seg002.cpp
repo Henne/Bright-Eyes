@@ -2162,14 +2162,14 @@ void mouse()
 
 			ds_writew(MOUSE_LOCKED, 1);
 
-			if (ds_readws(MOUSE_POSX) < ds_readws(0x1256))
-				ds_writew(MOUSE_POSX, ds_readws(0x1256));
+			if (ds_readws(MOUSE_POSX) < ds_readws(MOUSE_POINTER_OFFSETX))
+				ds_writew(MOUSE_POSX, ds_readws(MOUSE_POINTER_OFFSETX));
 
 			if (ds_readws(MOUSE_POSX) > 315)
 				ds_writew(MOUSE_POSX, 315);
 
-			if (ds_readws(MOUSE_POSY) < ds_readws(0x1258))
-				ds_writew(MOUSE_POSY, ds_readws(0x1258));
+			if (ds_readws(MOUSE_POSY) < ds_readws(MOUSE_POINTER_OFFSETY))
+				ds_writew(MOUSE_POSY, ds_readws(MOUSE_POINTER_OFFSETY));
 
 			if (ds_readws(MOUSE_POSY) > 195)
 				ds_writew(MOUSE_POSY, 195);
@@ -2178,8 +2178,8 @@ void mouse()
 
 			ds_writew(0x1250, ds_readws(MOUSE_POSX));
 			ds_writew(0x1252, ds_readws(MOUSE_POSY));
-			ds_writew(0x125a, ds_readws(0x1256));
-			ds_writew(0x125c, ds_readws(0x1258));
+			ds_writew(0x125a, ds_readws(MOUSE_POINTER_OFFSETX));
+			ds_writew(0x125c, ds_readws(MOUSE_POINTER_OFFSETY));
 
 			draw_mouse_cursor();
 
@@ -2202,9 +2202,9 @@ void mouse_compare()
 #else
 		if ((RealPt)(&ds[MOUSE_MASK]) == (RealPt)ds_readd(MOUSE_CURRENT_CURSOR)) {
 #endif
-			ds_writew(0x1256, ds_writew(0x1258, 0));
+			ds_writew(MOUSE_POINTER_OFFSETX, ds_writew(MOUSE_POINTER_OFFSETY, 0));
 		} else {
-			ds_writew(0x1256, ds_writew(0x1258, 8));
+			ds_writew(MOUSE_POINTER_OFFSETX, ds_writew(MOUSE_POINTER_OFFSETY, 8));
 		}
 		ds_writew(MOUSE_MOVED, 0);
 		update_mouse_cursor1();
@@ -2420,8 +2420,8 @@ void draw_mouse_cursor()
 	vgaptr = (RealPt)ds_readd(VGA_MEMSTART);
 	mouse_cursor = (signed short*)Real2Host(ds_readd(MOUSE_CURRENT_CURSOR)) + (32 / 2);
 
-	rangeX = ds_readw(MOUSE_POSX) - ds_readw(0x1256);
-	rangeY = ds_readw(MOUSE_POSY) - ds_readw(0x1258);
+	rangeX = ds_readw(MOUSE_POSX) - ds_readw(MOUSE_POINTER_OFFSETX);
+	rangeY = ds_readw(MOUSE_POSY) - ds_readw(MOUSE_POINTER_OFFSETY);
 
 	diffX = diffY = 16;
 
@@ -2453,8 +2453,8 @@ void save_mouse_bg()
 
 	vgaptr = (RealPt)(ds_readd(VGA_MEMSTART));
 
-	rangeX = ds_readw(MOUSE_POSX) - ds_readw(0x1256);
-	rangeY = ds_readw(MOUSE_POSY) - ds_readw(0x1258);
+	rangeX = ds_readw(MOUSE_POSX) - ds_readw(MOUSE_POINTER_OFFSETX);
+	rangeY = ds_readw(MOUSE_POSY) - ds_readw(MOUSE_POINTER_OFFSETY);
 
 	diffX = diffY = 16;
 

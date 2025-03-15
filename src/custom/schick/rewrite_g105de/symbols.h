@@ -46,6 +46,8 @@
 #define MOUSE_POSY                      (0x124e)
 
 #define MOUSE_MOVED                     (0x1254)
+#define MOUSE_POINTER_OFFSETX           (0x1256)
+#define MOUSE_POINTER_OFFSETY           (0x1258)
 
 #define DEFAULT_ACTION                  (0x1272)    /* RealPt */
 #define ACTION_TABLE                    (0x1276)    /* RealPt */
