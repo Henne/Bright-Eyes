@@ -141,6 +141,16 @@ Bit16s bc_open(RealPt fname, Bit16u attrib)
 	return reg_ax;
 }
 
+RealPt bc_strcat(RealPt dst, RealPt src)
+{
+	CPU_Push32(src);
+	CPU_Push32(dst);
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x2d96);
+	CPU_Pop32();
+	CPU_Pop32();
+	return RealMake(reg_dx, reg_ax);
+}
+
 RealPt bc_strcpy(RealPt dst, RealPt src)
 {
 	CPU_Push32(src);

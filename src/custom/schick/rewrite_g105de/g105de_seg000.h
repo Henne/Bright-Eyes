@@ -15,6 +15,7 @@ Bit16s bc__close(Bit16u);
 Bit16s bc__create(RealPt, Bit16u);
 RealPt bc_memcpy(RealPt, RealPt, Bit16s);
 Bit16s bc_open(RealPt, Bit16u);
+RealPt bc_strcat(RealPt, RealPt);
 RealPt bc_strcpy(RealPt, RealPt);
 RealPt bc_strncpy(RealPt, RealPt, Bit16s);
 Bit16s bc_write(Bit16u, Bit8u*, Bit16u);
@@ -46,6 +47,7 @@ static inline void bc_randomize() { }
 #define bc__creat _creat
 #define bc_memcpy memcpy
 #define bc_open open
+#define bc_strcat strcat
 #define bc_strcpy strcpy
 #define bc_strncpy strncpy
 
