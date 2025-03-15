@@ -1216,7 +1216,16 @@ static unsigned short unkn3;
 /* DS:0x40d7 */
 static unsigned short unkn4;
 
+/* DS:0x40d9 */
 static char *texts[300];
+
+#if !defined(__BORLANDC__)
+static inline char* get_text(Bit16s no) {
+	return texts[no];
+}
+#else
+#define get_text(no) ((char*)Real2Host(ds_readd(TEXTS + 4 * (no))))
+#endif
 
 /* DS:0x4591 */
 //static unsigned short HAVE_MOUSE;
@@ -2266,11 +2275,7 @@ void handle_input()
 				si = 0;
 				ds_writew(MENU_TILES, 4);
 				ds_writew(0x4789, 1);
-#if !defined(__BORLANDC__)
-				infobox(texts[267], 0);
-#else
-				infobox((char*)Real2Host(ds_readd(TEXTS + 4 * 267)), 0);
-#endif
+				infobox(get_text(267), 0);
 				ds_writew(0x4789, 0);
 				ds_writew(MENU_TILES, 3);
 			}
@@ -2506,7 +2511,7 @@ void load_font_and_text()
 	len = read_datfile(handle, (Bit8u*)Real2Host(ds_readd(BUFFER_TEXT)), 64000);
 	bc_close(handle);
 
-	split_textbuffer((Bit8u*)p_datseg +TEXTS, (RealPt)ds_readd(BUFFER_TEXT), len);
+	split_textbuffer((Bit8u*)p_datseg + TEXTS, (RealPt)ds_readd(BUFFER_TEXT), len);
 #if !defined(__BORLANDC__)
 	split_textbuffer_host(texts, (char*)Real2Host(ds_readd(BUFFER_TEXT)), len);
 #endif
@@ -2652,8 +2657,6 @@ void load_typus(Bit16u typus)
 	bc_close(handle);
 }
 
-#if 1
-
 /**
  * save_chr() - save the hero the a CHR file
  */
@@ -2662,20 +2665,21 @@ void save_chr()
 	struct nvf_desc nvf;
 	FILE *fd;
 	signed short tmp;
-	char *pwd;
 	char path[80];
+
+	char *pwd;
 	char filename[20];
 
 	Bit16u i;
 
 	/* check for typus */
 	if (hero.typus == 0) {
-		infobox(texts[0x120 / 4], 0);
+		infobox(get_text(72), 0);
 		return;
 	}
 	/* check for name */
 	if (hero.name[0] == 0) {
-		infobox(texts[0x120 / 4], 0);
+		infobox(get_text(72), 0);
 		return;
 	}
 	/* Load picture from nvf */
@@ -2695,7 +2699,7 @@ void save_chr()
 	hero.group = 1;
 
 	/* wanna save ? */
-	if (!gui_bool((Bit8u*)texts[3]))
+	if (!gui_bool((Bit8u*)get_text(3)))
 		return;
 
 	/* copy name to alias */
@@ -2732,7 +2736,7 @@ void save_chr()
 		/* Original-Bugfix: the file should be closed */
 		fclose(fd);
 
-		if (!gui_bool((Bit8u*)texts[0x414 / 4]))
+		if (!gui_bool((Bit8u*)get_text(261)))
 			return;
 	}
 
@@ -2770,6 +2774,8 @@ void save_chr()
 		error_msg(p_datseg + 0x1e09);
 	}
 }
+
+#if 1
 
 Bit16u open_datfile(Bit16u index)
 {
@@ -3761,7 +3767,7 @@ Bit16s gui_bool(Bit8u *msg)
 	Bit16s retval;
 
 	bool_mode = 1;
-	retval = gui_radio(msg, 2, texts[4], texts[5]);
+	retval = gui_radio(msg, 2, get_text(4), get_text(5));
 	bool_mode = 0;
 
 	if (retval == 1)
@@ -4092,7 +4098,7 @@ void do_gen()
 
 	/* ask for level */
 	while (level == -1) {
-		level = gui_radio((Bit8u*)texts[0], 2, texts[1], texts[2]);
+		level = gui_radio((Bit8u*)get_text(0), 2, get_text(1), get_text(2));
 	}
 
 	ds_writew(MOUSE2_EVENT, 1);
@@ -4112,21 +4118,15 @@ void do_gen()
 			/* print the menu for each page */
 			switch(ds_readws(GEN_PAGE)) {
 				case 0: {
-					si = gui_radio((Bit8u*)texts[0x1c/4], 9,
-						texts[0x28 / 4],
-						texts[0x2c / 4],
-						texts[0x3c / 4],
-						texts[0x20 / 4],
-						texts[0x38 / 4],
-						texts[0x30 / 4],
-						texts[0x418 / 4],
-						texts[0x24 / 4],
-						texts[0x408 / 4]);
+					si = gui_radio((Bit8u*)get_text(7), 9,
+						get_text(10), get_text(11), get_text(15),
+						get_text(8),  get_text(14), get_text(12),
+						get_text(262),get_text(9),  get_text(258));
 
 					if (si != -1) {
-						if (si >= 4 && si < 6 &&
-							hero.attribs[0].normal &&
-							!gui_bool((Bit8u*)texts[0x34 /4])) {
+						if ((si >= 4) && (si < 6) &&
+							(hero.attribs[0].normal) &&
+							!gui_bool((Bit8u*)get_text(13))) {
 							si = 0;
 						}
 						ds_writew(IN_KEY_EXT, 0);
@@ -4146,10 +4146,8 @@ void do_gen()
 							case 4: {
 								memset(&hero, 0, sizeof(hero));
 								clear_hero();
-								ds_writew(MOUSE2_EVENT,
-									1);
-								ds_writew(0x11fe,
-									1);
+								ds_writew(MOUSE2_EVENT,	1);
+								ds_writew(0x11fe, 1);
 								break;
 							}
 							case 5: {
@@ -4169,7 +4167,7 @@ void do_gen()
 								break;
 							}
 							case 9: {
-								if (gui_bool((Bit8u*)texts[0x40c / 4]))
+								if (gui_bool((Bit8u*)get_text(259)))
 									di = 1;
 								break;
 							}
@@ -4207,7 +4205,7 @@ void do_gen()
 
 		if ((ds_readw(IN_KEY_EXT) == KEY_UP) && (ds_readws(GEN_PAGE) == 0)) {
 			if (hero.typus == 0) {
-				infobox(texts[0x44 / 4], 0);
+				infobox(get_text(17), 0);
 			} else {
 				if (head_current < head_last) {
 					head_current++;
@@ -4220,7 +4218,7 @@ void do_gen()
 
 		if ((ds_readw(IN_KEY_EXT) == KEY_DOWN) && (ds_readws(GEN_PAGE) == 0)) {
 			if (hero.typus == 0) {
-				infobox(texts[0x44 / 4], 0);
+				infobox(get_text(17), 0);
 			} else {
 				if (head_current > head_first) {
 					head_current--;
@@ -4233,7 +4231,7 @@ void do_gen()
 
 		if ((ds_readw(IN_KEY_EXT) == KEY_RIGHT) && (level != 1)) {
 			if (hero.typus == 0) {
-				infobox(texts[0x120 / 4], 0);
+				infobox(get_text(72), 0);
 			} else {
 				ds_writew(0x11fe, 1);
 
@@ -4252,7 +4250,7 @@ void do_gen()
 			} else {
 				if (level != 1) {
 					if (hero.typus == 0) {
-						infobox(texts[0x120 / 4], 0);
+						infobox(get_text(72), 0);
 					} else {
 						ds_writew(0x11fe, 1);
 						ds_writew(GEN_PAGE, hero.typus < 7 ? 4 : 10);
@@ -4387,12 +4385,12 @@ void fill_values()
 			hero.staff_level = 1;
 			/* select mage school */
 			do {
-				hero.school = gui_radio((Bit8u*)texts[47], 9,
-							texts[48], texts[49],
-							texts[50], texts[51],
-							texts[52], texts[53],
-							texts[54], texts[55],
-							texts[56]) - 1;
+				hero.school = gui_radio((Bit8u*)get_text(47), 9,
+							get_text(48), get_text(49),
+							get_text(50), get_text(51),
+							get_text(52), get_text(53),
+							get_text(54), get_text(55),
+							get_text(56)) - 1;
 			} while (hero.school == -2);
 
 			/* add magic school modifications */
@@ -4411,9 +4409,9 @@ void fill_values()
 		/* get convertable increase attempts */
 		di = initial_conv_incs[hero.typus - 7];
 
-		if (di && level == 2 && gui_bool((Bit8u*)texts[269])) {
+		if (di && (level == 2) && gui_bool((Bit8u*)get_text(269))) {
 			/* create string */
-			sprintf(gen_ptr2, texts[270], di);
+			sprintf(gen_ptr2, get_text(270), di);
 
 			i = infobox(gen_ptr2, 1);
 
@@ -4429,7 +4427,7 @@ void fill_values()
 			} else {
 
 				/* create string */
-				sprintf(gen_ptr2, texts[271], di);
+				sprintf(gen_ptr2, get_text(271), di);
 
 				i = infobox(gen_ptr2, 1);
 				if (i > 0) {
@@ -4453,7 +4451,7 @@ void fill_values()
 	hero.ae = hero.ae_max = init_ae[hero.typus];
 
 	/* wanna change 10 spell_attempts against 1W6+2 AE ? */
-	if (hero.typus == 9 && level == 2 && gui_bool((Bit8u*)texts[268])) {
+	if ((hero.typus == 9) && (level == 2) && gui_bool((Bit8u*)get_text(268))) {
 		/* change spell_attempts */
 		hero.spell_incs -= 10;
 		hero.ae_max = random_interval_gen(3, 8) + hero.ae_max;
@@ -4647,34 +4645,25 @@ void refresh_screen()
 			dst = Real2Phys(ds_readd(0x47d3)) + 0xa10;
 			if (hero.typus != 0) {
 				need_refresh = 1;
-				copy_to_screen(Real2Phys(ds_readd(0x47b3)),
-					dst, 128, 184, 0);
+				copy_to_screen(Real2Phys(ds_readd(0x47b3)), dst, 128, 184, 0);
 
 				if (hero.sex != 0) {
 					char *p;
-					p = texts[0x43c / 4 + hero.typus];
-
-					print_str(p,
-						get_line_start_c(p, 16, 128),
-						184);
+					p = get_text(271 + hero.typus);
+					print_str(p, get_line_start_c(p, 16, 128), 184);
 				} else {
 					char *p;
-					p = texts[0x44 / 4 + hero.typus];
-
-					print_str(p,
-						get_line_start_c(p, 16, 128),
-						184);
+					p = get_text(17 + hero.typus);
+					print_str(p, get_line_start_c(p, 16, 128), 184);
 				}
 			} else {
 				if (need_refresh) {
-					call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)),
-						16, 8, 143, 191, 0);
+					call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 16, 8, 143, 191, 0);
 					need_refresh = 0;
 				}
 				wait_for_vsync();
 				set_palette(Real2Host(ds_readd(0x47a7)) + 0x5c02, 0 , 32);
-				copy_to_screen(Real2Phys(ds_readd(0x47a7)),
-					dst, 128, 184, 0);
+				copy_to_screen(Real2Phys(ds_readd(0x47a7)), dst, 128, 184, 0);
 			}
 		}
 		/* if hero has a typus */
@@ -4802,11 +4791,11 @@ void new_values()
 				continue;
 
 			values[bv2] = (signed char)i;
-			type_names[bv2] = texts[0x80 / 4 + i];
+			type_names[bv2] = get_text(32 + i);
 			bv2++;
 		}
 
-		sprintf(gen_ptr2, texts[46], bv1);
+		sprintf(gen_ptr2, get_text(46), bv1);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
@@ -4840,11 +4829,11 @@ void new_values()
 				continue;
 
 			values[bv2] = (signed char)i;
-			type_names[bv2] = texts[0x9c / 4 + i];
+			type_names[bv2] = get_text(39 + i);
 			bv2++;
 		}
 
-		sprintf(gen_ptr2, texts[46], bv1);
+		sprintf(gen_ptr2, get_text(46), bv1);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
@@ -4981,7 +4970,7 @@ void select_typus()
 
 	/* check if attribs have bee set */
 	if (hero.attribs[0].normal == 0) {
-		infobox(texts[265], 0);
+		infobox(get_text(265), 0);
 		return;
 	}
 	/* save the old typus */
@@ -5022,9 +5011,9 @@ void select_typus()
 			continue;
 
 		if (hero.sex)
-			type_names[possible_types] = texts[271 + i];
+			type_names[possible_types] = get_text(271 + i);
 		else
-			type_names[possible_types] = texts[17 + i];
+			type_names[possible_types] = get_text(17 + i);
 
 		t.t[possible_types] = (char)i;
 		possible_types++;
@@ -5034,15 +5023,15 @@ void select_typus()
 	if (possible_types == 0) {
 		if (can_change_attribs() == 0) {
 			/* totally messed up values */
-			infobox(texts[284], 0);
+			infobox(get_text(284), 0);
 			return;
 		} else {
-			infobox(texts[31], 0);
+			infobox(get_text(31), 0);
 			return;
 		}
 	}
 
-	di = gui_radio((Bit8u*)texts[30], possible_types,
+	di = gui_radio((Bit8u*)get_text(30), possible_types,
 			type_names[0],
 			type_names[1],
 			type_names[2],
@@ -5121,29 +5110,29 @@ Bit16u can_change_attribs()
 
 
 	for (i = 0; i < 7; i++) {
-		if (attrib_changed[i] != INC && hero.attribs[i].normal > 8)
+		if ((attrib_changed[i] != INC) && (hero.attribs[i].normal > 8))
 			pa_dec += 8 - hero.attribs[i].normal;
-		if (attrib_changed[i] != DEC && hero.attribs[i].normal < 13)
+		if ((attrib_changed[i] != DEC) && (hero.attribs[i].normal < 13))
 			pa_inc += 13 - hero.attribs[i].normal;
 	}
 
 	for (i = 7; i < 14; i++) {
-		if (attrib_changed[i] != INC && hero.attribs[i].normal > 2)
+		if ((attrib_changed[i] != INC) && (hero.attribs[i].normal > 2))
 			na_dec += 2 - hero.attribs[i].normal;
-		if (attrib_changed[i] != DEC && hero.attribs[i].normal < 8)
+		if ((attrib_changed[i] != DEC) && (hero.attribs[i].normal < 8))
 			na_inc += 8 - hero.attribs[i].normal;
 	}
 
 	D1_LOG("%d %d %d %d\n", pa_inc, pa_dec, na_inc, na_dec);
 
 	/* no values from positive attributes left */
-	if (pa_inc == 0 && pa_dec == 0)
+	if ((pa_inc == 0) && (pa_dec == 0))
 		return 0;
 
-	if (pa_inc == 0 && na_dec < 2)
+	if ((pa_inc == 0) && (na_dec < 2))
 		return 0;
 
-	if (na_inc < 2 && pa_dec == 0)
+	if ((na_inc < 2) && (pa_dec == 0))
 		return 0;
 
 	if (na_dec >= 2)
@@ -5165,17 +5154,17 @@ void change_attribs()
 
 	/* check if attributes have been set */
 	if (hero.attribs[0].normal == 0) {
-		infobox(texts[16], 0);
+		infobox(get_text(16), 0);
 		return;
 	}
 	/* check if changing is possible */
 	if (can_change_attribs() == 0) {
-		infobox(texts[266], 0);
+		infobox(get_text(266), 0);
 		return;
 	}
 	/* if typus != 0 */
 	if (hero.typus) {
-		if (!gui_bool((Bit8u*)texts[73]))
+		if (!gui_bool((Bit8u*)get_text(73)))
 			return;
 		/* set typus to 0 */
 		hero.typus = 0;
@@ -5197,14 +5186,14 @@ void change_attribs()
 	}
 	/* check again if changing is possible */
 	if (can_change_attribs() == 0) {
-		infobox(texts[266], 0);
+		infobox(get_text(266), 0);
 		return;
 	}
 	/* select a positive attribute to change */
 	ds_writew(0x1327, 0xffb0);
-	tmp2 = gui_radio((Bit8u*)texts[78], 7,
-			texts[32], texts[33], texts[34], texts[35],
-			texts[36], texts[37], texts[38]);
+	tmp2 = gui_radio((Bit8u*)get_text(78), 7,
+			get_text(32), get_text(33), get_text(34), get_text(35),
+			get_text(36), get_text(37), get_text(38));
 	ds_writew(0x1327, 0);
 
 	if (tmp2 == -1)
@@ -5214,7 +5203,7 @@ void change_attribs()
 	if (attrib_changed[tmp2] == 0) {
 		/* ask user if inc or dec */
 		ds_writew(0x1327, 0xffb0);
-		tmp3 = gui_radio((Bit8u*)NULL, 2, texts[75], texts[76]);
+		tmp3 = gui_radio((Bit8u*)NULL, 2, get_text(75), get_text(76));
 		ds_writew(0x1327, 0);
 
 		if (tmp3 == -1)
@@ -5226,7 +5215,7 @@ void change_attribs()
 	if (tmp3 == INC) {
 		/* increment */
 		if (hero.attribs[tmp2].normal == 13) {
-			infobox(texts[77], 0);
+			infobox(get_text(77), 0);
 			return;
 		}
 		c = 0;
@@ -5238,7 +5227,7 @@ void change_attribs()
 			c += 8 - hero.attribs[di].normal;
 		}
 		if (c < 2) {
-			infobox(texts[85], 0);
+			infobox(get_text(85), 0);
 			return;
 		}
 		/* increment positive attribute */
@@ -5253,10 +5242,10 @@ void change_attribs()
 		while (tmp1 != 2) {
 			/* ask which negative attribute to increment */
 			ds_writew(0x1327, 0xffb0);
-			si = gui_radio((Bit8u*)texts[80], 7,
-					texts[39], texts[40], texts[41],
-					texts[42], texts[43], texts[44],
-					texts[45]);
+			si = gui_radio((Bit8u*)get_text(80), 7,
+					get_text(39), get_text(40), get_text(41),
+					get_text(42), get_text(43), get_text(44),
+					get_text(45));
 			ds_writew(0x1327, 0);
 
 			if (si == -1)
@@ -5265,12 +5254,12 @@ void change_attribs()
 			si--;
 			/* check if this attribute has been decremented */
 			if (attrib_changed[si + 7] == DEC) {
-				infobox(texts[83], 0);
+				infobox(get_text(83), 0);
 				continue;
 			}
 			/* check if attribute can be incremented */
 			if (hero.attribs[si + 7].normal == 8) {
-				infobox(texts[77], 0);
+				infobox(get_text(77), 0);
 				continue;
 			}
 			/* increment the negative attribute */
@@ -5285,7 +5274,7 @@ void change_attribs()
 		/* decrement */
 		/* check if the positive attribute can be decremented */
 		if (hero.attribs[tmp2].normal == 8) {
-			infobox(texts[81], 0);
+			infobox(get_text(81), 0);
 			return;
 		}
 		c = 0;
@@ -5297,7 +5286,7 @@ void change_attribs()
 			c += hero.attribs[di].normal - 2;
 		}
 		if (c < 2) {
-			infobox(texts[84], 0);
+			infobox(get_text(84), 0);
 			return;
 		}
 		/* decrement positive attribute */
@@ -5312,10 +5301,10 @@ void change_attribs()
 		while (tmp1 != 2) {
 			/* ask which negative attribute to increment */
 			ds_writew(0x1327, 0xffb0);
-			si = gui_radio((Bit8u*)texts[79], 7,
-					texts[39], texts[40], texts[41],
-					texts[42], texts[43], texts[44],
-					texts[45]);
+			si = gui_radio((Bit8u*)get_text(79), 7,
+					get_text(39), get_text(40), get_text(41),
+					get_text(42), get_text(43), get_text(44),
+					get_text(45));
 			ds_writew(0x1327, 0);
 
 			if (si == -1)
@@ -5324,12 +5313,12 @@ void change_attribs()
 			si--;
 			/* check if this attribute has been incremented */
 			if (attrib_changed[si + 7] == INC) {
-				infobox(texts[82], 0);
+				infobox(get_text(82), 0);
 				continue;
 			}
 			/* check if attribute can be decremented */
 			if (hero.attribs[si + 7].normal == 2) {
-				infobox(texts[81], 0);
+				infobox(get_text(81), 0);
 				continue;
 			}
 			/* deccrement the negative attribute */
@@ -5408,8 +5397,7 @@ void save_picbuf()
 
 	if (x_1) {
 		p = Real2Phys(ds_readd(0x47d3)) + y_1 * 320 + x_1;
-		copy_to_screen(p, Real2Phys(ds_readd(0x479f)),
-			w_1, h_1, 2);
+		copy_to_screen(p, Real2Phys(ds_readd(0x479f)), w_1, h_1, 2);
 	}
 
 	p = Real2Phys(ds_readd(0x47d3)) + y_2 * 320 + x_2;
@@ -5544,16 +5532,16 @@ void print_values()
 				break;
 
 			/* print height */
-			sprintf(gen_ptr2, texts[0x118 / 4], hero.height);
+			sprintf(gen_ptr2, get_text(70), hero.height);
 			print_str(gen_ptr2, 205, 25);
 
 			/* print weight */
-			sprintf(gen_ptr2, texts[0x11c / 4], hero.weight);
+			sprintf(gen_ptr2, get_text(71), hero.weight);
 
 			print_str(gen_ptr2, 205, 37);
 
 			/* print god name */
-			print_str(texts[0xe0 / 4 + hero.god], 205, 49);
+			print_str(get_text(56 + hero.god), 205, 49);
 
 			/* print money */
 			make_valuta_str(gen_ptr2, hero.money);
@@ -6097,7 +6085,7 @@ void make_valuta_str(char *dst, unsigned int money)
 		money -= 10;
 	}
 
-	sprintf(dst, texts[0x114 / 4], d, s, money);
+	sprintf(dst, get_text(69), d, s, money);
 }
 
 void inc_skill(Bit16u skill, Bit16u max, char *msg)
@@ -6109,7 +6097,7 @@ void inc_skill(Bit16u skill, Bit16u max, char *msg)
 	}
 	/* we just have 3 tries to increment */
 	if (skill_incs[skill].tries == 3) {
-		infobox(texts[151], 0);
+		infobox(get_text(151), 0);
 		return;
 	}
 
@@ -6117,7 +6105,7 @@ void inc_skill(Bit16u skill, Bit16u max, char *msg)
 	hero.skill_incs--;
 	if (random_interval_gen(2, 12) > hero.skills[skill]) {
 		/* print sucess message */
-		infobox(texts[152], 0);
+		infobox(get_text(152), 0);
 		/* increment skill */
 		hero.skills[skill]++;
 		/* reset tries */
@@ -6138,7 +6126,7 @@ void inc_skill(Bit16u skill, Bit16u max, char *msg)
 		}
 	} else {
 		/* print failure message */
-		infobox(texts[153], 0);
+		infobox(get_text(153), 0);
 		/* increment try */
 		skill_incs[skill].tries++;
 	}
@@ -6154,7 +6142,7 @@ void select_skill()
 
 		/* check skill attempts */
 		if (hero.skill_incs == 0) {
-			infobox(texts[94], 0);
+			infobox(get_text(94), 0);
 			return;
 		}
 
@@ -6162,123 +6150,98 @@ void select_skill()
 
 		switch (ds_readws(GEN_PAGE)) {
 			case 1: {
-				group = gui_radio((Bit8u*)texts[93], 2,
-						texts[86], texts[87]);
+				group = gui_radio((Bit8u*)get_text(93), 2, get_text(86), get_text(87));
 				if (group == -1)
 					break;
 
 				switch (group) {
 					case 1: {
 						/* Fight */
-						skill = gui_radio((Bit8u*)texts[147],
+						skill = gui_radio((Bit8u*)get_text(147),
 								9,
-								texts[95],
-								texts[96],
-								texts[97],
-								texts[98],
-								texts[99],
-								texts[100],
-								texts[101],
-								texts[102],
-								texts[103]);
+								get_text(95), get_text(96), get_text(97),
+								get_text(98), get_text(99), get_text(100),
+								get_text(101), get_text(102), get_text(103));
 						skill--;
 
 						if (skill == -2)
 							break;
 
-						inc_skill(skill, 1, texts[148]);
+						inc_skill(skill, 1, get_text(148));
 
 						break;
 					}
 					case 2: {
 						/* body */
-						skill = gui_radio((Bit8u*)texts[147],
+						skill = gui_radio((Bit8u*)get_text(147),
 							10,
-							texts[104], texts[105],
-							texts[106], texts[107],
-							texts[108], texts[109],
-							texts[110], texts[111],
-							texts[112], texts[113]);
+							get_text(104), get_text(105),
+							get_text(106), get_text(107),
+							get_text(108), get_text(109),
+							get_text(110), get_text(111),
+							get_text(112), get_text(113));
 						skill--;
 
 						if (skill == -2)
 							break;
 
 						skill += 9;
-						inc_skill(skill, 2, texts[149]);
+						inc_skill(skill, 2, get_text(149));
 						break;
 					}
 				}
 				break;
 			}
 			case 2: {
-				group = gui_radio((Bit8u*)texts[93], 2,
-						texts[88], texts[89]);
+				group = gui_radio((Bit8u*)get_text(93), 2, get_text(88), get_text(89));
 				if (group == -1)
 					break;
 				switch (group) {
 					case 1: {
-						skill = gui_radio((Bit8u*)texts[147],
+						skill = gui_radio((Bit8u*)get_text(147),
 								7,
-								texts[114],
-								texts[115],
-								texts[116],
-								texts[117],
-								texts[118],
-								texts[119],
-								texts[120]);
+								get_text(114), get_text(115), get_text(116),
+								get_text(117), get_text(118), get_text(119),
+								get_text(120));
 						skill--;
 
 						if (skill == -2)
 							break;
 
 						skill += 19;
-						inc_skill(skill, 2, texts[149]);
+						inc_skill(skill, 2, get_text(149));
 						break;
 					}
 					case 2: {
-						skill = gui_radio((Bit8u*)texts[147],
+						skill = gui_radio((Bit8u*)get_text(147),
 								9,
-								texts[127],
-								texts[128],
-								texts[129],
-								texts[130],
-								texts[131],
-								texts[132],
-								texts[133],
-								texts[134],
-								texts[135]);
+								get_text(127), get_text(128), get_text(129),
+								get_text(130), get_text(131), get_text(132),
+								get_text(133), get_text(134), get_text(135));
 						skill--;
 
 						if (skill == -2)
 							break;
 
 						skill += 32;
-						inc_skill(skill, 3, texts[150]);
+						inc_skill(skill, 3, get_text(150));
 						break;
 					}
 				}
 				break;
 			}
 			case 3: {
-				group = gui_radio((Bit8u*)texts[93], 3,
-						texts[90], texts[91], texts[92]);
+				group = gui_radio((Bit8u*)get_text(93), 3, get_text(90), get_text(91), get_text(92));
 				if (group == -1)
 					break;
 
 				switch (group) {
 					case 1: {
-						skill = gui_radio((Bit8u*)texts[147],
+						skill = gui_radio((Bit8u*)get_text(147),
 								9,
-								texts[136],
-								texts[137],
-								texts[138],
-								texts[139],
-								texts[140],
-								texts[141],
-								texts[142],
-								texts[143],
-								texts[144]);
+								get_text(136), get_text(137), get_text(138),
+								get_text(139), get_text(140), get_text(141),
+								get_text(142), get_text(143), get_text(144));
 
 						skill--;
 
@@ -6286,18 +6249,14 @@ void select_skill()
 							break;
 
 						skill += 41;
-						inc_skill(skill, 2, texts[149]);
+						inc_skill(skill, 2, get_text(149));
 						break;
 					}
 					case 2: {
-						skill = gui_radio((Bit8u*)texts[147],
+						skill = gui_radio((Bit8u*)get_text(147),
 								6,
-								texts[121],
-								texts[122],
-								texts[123],
-								texts[124],
-								texts[125],
-								texts[126]);
+								get_text(121), get_text(122), get_text(123),
+								get_text(124), get_text(125), get_text(126));
 
 						skill--;
 
@@ -6305,14 +6264,14 @@ void select_skill()
 							break;
 
 						skill += 26;
-						inc_skill(skill, 2, texts[149]);
+						inc_skill(skill, 2, get_text(149));
 						break;
 					}
 					case 3: {
-						skill = gui_radio((Bit8u*)texts[147],
+						skill = gui_radio((Bit8u*)get_text(147),
 								2,
-								texts[145],
-								texts[146]);
+								get_text(145),
+								get_text(146));
 
 						skill--;
 
@@ -6320,7 +6279,7 @@ void select_skill()
 							break;
 
 						skill += 50;
-						inc_skill(skill, 1, texts[148]);
+						inc_skill(skill, 1, get_text(148));
 						break;
 					}
 				}
@@ -6337,13 +6296,13 @@ void inc_spell(Bit16u spell)
 	Bit16u max_incs = 1;
 
 	/* if typus == warlock and the origin of the spell is warlock */
-	if (hero.typus == 7 && spelltab[spell].origin == 3)
+	if ((hero.typus == 7) && (spelltab[spell].origin == 3))
 		max_incs = 2;
 	/* if typus == elf and the origin of the spell is elven */
-	if (hero.typus >= 10 && spelltab[spell].origin == 2)
+	if ((hero.typus >= 10) && (spelltab[spell].origin == 2))
 		max_incs = 2;
 	/* if typus == druid and the origin of the spell is druid */
-	if (hero.typus == 8 && spelltab[spell].origin == 0)
+	if ((hero.typus == 8) && (spelltab[spell].origin == 0))
 		max_incs = 2;
 	/* if typus == mage */
 	if (hero.typus == 9) {
@@ -6359,12 +6318,12 @@ void inc_spell(Bit16u spell)
 
 	/* all spell increments used for that spell */
 	if (spell_incs[spell].incs >= max_incs) {
-		infobox(texts[0x404 / 4], 0);
+		infobox(get_text(257), 0);
 		return;
 	}
 	/* all tries used for that spell */
 	if (spell_incs[spell].tries == 3) {
-		infobox(texts[0x25c / 4], 0);
+		infobox(get_text(151), 0);
 		return;
 	}
 
@@ -6373,7 +6332,7 @@ void inc_spell(Bit16u spell)
 
 	if (random_interval_gen(2, 12) > hero.spells[spell]) {
 		/* show success */
-		infobox(texts[0x260 / 4], 0);
+		infobox(get_text(152), 0);
 		/* increment spell value */
 		hero.spells[spell]++;
 		/* reset tries */
@@ -6382,7 +6341,7 @@ void inc_spell(Bit16u spell)
 		spell_incs[spell].incs++;
 	} else {
 		/* show failure */
-		infobox(texts[0x264 / 4], 0);
+		infobox(get_text(153), 0);
 		/* increment tries */
 		spell_incs[spell].tries++;
 	}
@@ -6398,7 +6357,7 @@ void select_spell()
 
 		/* check if we have spell attempts */
 		if (hero.spell_incs == 0) {
-			infobox(texts[94], 0);
+			infobox(get_text(94), 0);
 			ds_writew(0x1327, 0);
 			return;
 		}
@@ -6407,20 +6366,20 @@ void select_spell()
 
 		switch (ds_readws(GEN_PAGE)) {
 			case 5: {
-				group = gui_radio((Bit8u*)texts[155], 3,
-						texts[157], texts[162],
-						texts[158]);
+				group = gui_radio((Bit8u*)get_text(155), 3,
+						get_text(157), get_text(162),
+						get_text(158));
 				if (group == -1)
 					break;
 
 				switch (group) {
 					case 1: {
-						spell = gui_radio((Bit8u*)texts[156], 5,
-								texts[169],
-								texts[170],
-								texts[171],
-								texts[172],
-								texts[173]);
+						spell = gui_radio((Bit8u*)get_text(156), 5,
+								get_text(169),
+								get_text(170),
+								get_text(171),
+								get_text(172),
+								get_text(173));
 						spell--;
 						if (spell == -2)
 							break;
@@ -6429,12 +6388,12 @@ void select_spell()
 						break;
 					}
 					case 2: {
-						spell = gui_radio((Bit8u*)texts[156], 5,
-								texts[201],
-								texts[202],
-								texts[203],
-								texts[204],
-								texts[205]);
+						spell = gui_radio((Bit8u*)get_text(156), 5,
+								get_text(201),
+								get_text(202),
+								get_text(203),
+								get_text(204),
+								get_text(205));
 						spell--;
 						if (spell == -2)
 							break;
@@ -6443,13 +6402,13 @@ void select_spell()
 						break;
 					}
 					case 3: {
-						spell = gui_radio((Bit8u*)texts[156], 6,
-								texts[174],
-								texts[175],
-								texts[176],
-								texts[177],
-								texts[178],
-								texts[179]);
+						spell = gui_radio((Bit8u*)get_text(156), 6,
+								get_text(174),
+								get_text(175),
+								get_text(176),
+								get_text(177),
+								get_text(178),
+								get_text(179));
 						spell--;
 						if (spell == -2)
 							break;
@@ -6461,21 +6420,21 @@ void select_spell()
 				break;
 			}
 			case 6: {
-				group = gui_radio((Bit8u*)texts[155], 3,
-						texts[158], texts[159],
-						texts[160]);
+				group = gui_radio((Bit8u*)get_text(155), 3,
+						get_text(158), get_text(159),
+						get_text(160));
 				if (group == -1)
 					break;
 
 				switch (group) {
 					case 1: {
-						spell = gui_radio((Bit8u*)texts[156], 6,
-								texts[180],
-								texts[181],
-								texts[182],
-								texts[183],
-								texts[184],
-								texts[185]);
+						spell = gui_radio((Bit8u*)get_text(156), 6,
+								get_text(180),
+								get_text(181),
+								get_text(182),
+								get_text(183),
+								get_text(184),
+								get_text(185));
 
 						spell--;
 
@@ -6487,13 +6446,13 @@ void select_spell()
 						break;
 					}
 					case 2: {
-						spell = gui_radio((Bit8u*)texts[156], 6,
-								texts[186],
-								texts[187],
-								texts[188],
-								texts[189],
-								texts[190],
-								texts[191]);
+						spell = gui_radio((Bit8u*)get_text(156), 6,
+								get_text(186),
+								get_text(187),
+								get_text(188),
+								get_text(189),
+								get_text(190),
+								get_text(191));
 
 						spell--;
 
@@ -6505,10 +6464,10 @@ void select_spell()
 						break;
 					}
 					case 3: {
-						spell = gui_radio((Bit8u*)texts[156], 3,
-								texts[192],
-								texts[193],
-								texts[194]);
+						spell = gui_radio((Bit8u*)get_text(156), 3,
+								get_text(192),
+								get_text(193),
+								get_text(194));
 
 						spell--;
 
@@ -6524,21 +6483,21 @@ void select_spell()
 				break;
 			}
 			case 7: {
-				group = gui_radio((Bit8u*)texts[155], 3,
-						texts[161], texts[163],
-						texts[164]);
+				group = gui_radio((Bit8u*)get_text(155), 3,
+						get_text(161), get_text(163),
+						get_text(164));
 				if (group == -1)
 					break;
 
 				switch (group) {
 					case 1: {
-						spell = gui_radio((Bit8u*)texts[156], 6,
-								texts[195],
-								texts[196],
-								texts[197],
-								texts[198],
-								texts[199],
-								texts[200]);
+						spell = gui_radio((Bit8u*)get_text(156), 6,
+								get_text(195),
+								get_text(196),
+								get_text(197),
+								get_text(198),
+								get_text(199),
+								get_text(200));
 
 						spell--;
 
@@ -6550,14 +6509,14 @@ void select_spell()
 						break;
 					}
 					case 2: {
-						spell = gui_radio((Bit8u*)texts[156], 7,
-								texts[206],
-								texts[207],
-								texts[208],
-								texts[209],
-								texts[210],
-								texts[211],
-								texts[212]);
+						spell = gui_radio((Bit8u*)get_text(156), 7,
+								get_text(206),
+								get_text(207),
+								get_text(208),
+								get_text(209),
+								get_text(210),
+								get_text(211),
+								get_text(212));
 
 						spell--;
 
@@ -6569,9 +6528,9 @@ void select_spell()
 						break;
 					}
 					case 3: {
-						spell = gui_radio((Bit8u*)texts[156], 2,
-								texts[213],
-								texts[214]);
+						spell = gui_radio((Bit8u*)get_text(156), 2,
+								get_text(213),
+								get_text(214));
 
 						spell--;
 
@@ -6587,18 +6546,18 @@ void select_spell()
 				break;
 			}
 			case 8: {
-				group = gui_radio((Bit8u*)texts[155], 3,
-						texts[164], texts[86],
-						texts[166]);
+				group = gui_radio((Bit8u*)get_text(155), 3,
+						get_text(164), get_text(86),
+						get_text(166));
 				if (group == -1)
 					break;
 
 
 				switch (group) {
 					case 1: {
-						spell = gui_radio((Bit8u*)texts[156], 2,
-								texts[215],
-								texts[216]);
+						spell = gui_radio((Bit8u*)get_text(156), 2,
+								get_text(215),
+								get_text(216));
 
 						spell--;
 
@@ -6610,16 +6569,10 @@ void select_spell()
 						break;
 					}
 					case 2: {
-						spell = gui_radio((Bit8u*)texts[156], 9,
-								texts[217],
-								texts[218],
-								texts[219],
-								texts[220],
-								texts[221],
-								texts[222],
-								texts[223],
-								texts[224],
-								texts[225]);
+						spell = gui_radio((Bit8u*)get_text(156), 9,
+								get_text(217), get_text(218), get_text(219),
+								get_text(220), get_text(221), get_text(222),
+								get_text(223), get_text(224), get_text(225));
 
 						spell--;
 
@@ -6631,9 +6584,9 @@ void select_spell()
 						break;
 					}
 					case 3: {
-						spell = gui_radio((Bit8u*)texts[156], 2,
-								texts[226],
-								texts[227]);
+						spell = gui_radio((Bit8u*)get_text(156), 2,
+								get_text(226),
+								get_text(227));
 
 						spell--;
 
@@ -6649,15 +6602,15 @@ void select_spell()
 				/* TODO */
 			}
 			case 9: {
-				spell = gui_radio((Bit8u*)texts[156], 16,
-						texts[228], texts[229],
-						texts[230], texts[231],
-						texts[232], texts[233],
-						texts[234], texts[235],
-						texts[236], texts[237],
-						texts[238], texts[239],
-						texts[240], texts[241],
-						texts[242], texts[243]);
+				spell = gui_radio((Bit8u*)get_text(156), 16,
+						get_text(228), get_text(229),
+						get_text(230), get_text(231),
+						get_text(232), get_text(233),
+						get_text(234), get_text(235),
+						get_text(236), get_text(237),
+						get_text(238), get_text(239),
+						get_text(240), get_text(241),
+						get_text(242), get_text(243));
 				spell--;
 
 				if (spell == -2) {
@@ -6670,12 +6623,12 @@ void select_spell()
 				break;
 			}
 			case 10: {
-				spell = gui_radio((Bit8u*)texts[156], 10,
-						texts[244], texts[245],
-						texts[246], texts[247],
-						texts[248], texts[249],
-						texts[250], texts[251],
-						texts[252], texts[253]);
+				spell = gui_radio((Bit8u*)get_text(156), 10,
+						get_text(244), get_text(245),
+						get_text(246), get_text(247),
+						get_text(248), get_text(249),
+						get_text(250), get_text(251),
+						get_text(252), get_text(253));
 				spell--;
 
 				if (spell == -2) {
@@ -6700,14 +6653,14 @@ void choose_atpa()
 
 	do {
 		/* print menu with all melee weapons skills */
-		skill = gui_radio((Bit8u*)texts[78], 7,
-			texts[95], texts[96], texts[97], texts[98],
-			texts[99], texts[100], texts[101]) - 1;
+		skill = gui_radio((Bit8u*)get_text(78), 7,
+			get_text(95), get_text(96), get_text(97), get_text(98),
+			get_text(99), get_text(100), get_text(101)) - 1;
 
 		if (skill != 0xfffe) {
 			if (hero.skills[skill] > 0) {
-				increase = gui_radio((Bit8u*)texts[254], 2,
-					texts[75], texts[76]);
+				increase = gui_radio((Bit8u*)get_text(254), 2,
+					get_text(75), get_text(76));
 				if (increase != 0xffff) {
 					if (increase == 1) {
 						/* increase attack */
@@ -6719,7 +6672,7 @@ void choose_atpa()
 							hero.pa[skill]--;
 							refresh_screen();
 						} else {
-							infobox(texts[255], 0);
+							infobox(get_text(255), 0);
 						}
 					} else {
 						if (hero.skills[skill] >= 0 &&
@@ -6730,12 +6683,12 @@ void choose_atpa()
 							hero.pa[skill]++;
 							refresh_screen();
 						} else {
-							infobox(texts[256], 0);
+							infobox(get_text(256), 0);
 						}
 					}
 				}
 			} else {
-				infobox(texts[260], 0);
+				infobox(get_text(260), 0);
 			}
 		}
 
@@ -6756,7 +6709,7 @@ void choose_typus()
 	unsigned char randval;
 	char sex_bak;
 
-	if (!gui_bool((Bit8u*)texts[264]))
+	if (!gui_bool((Bit8u*)get_text(264)))
 		return;
 
 	if (hero.sex)
@@ -6765,13 +6718,13 @@ void choose_typus()
 	else
 		/* male tyuse names */
 		typus_names = 17;
-	choosen_typus = gui_radio((Bit8u*)texts[30], 12,
-				texts[typus_names + 1], texts[typus_names + 2],
-				texts[typus_names + 3], texts[typus_names + 4],
-				texts[typus_names + 5], texts[typus_names + 6],
-				texts[typus_names + 7], texts[typus_names + 8],
-				texts[typus_names + 9], texts[typus_names + 10],
-				texts[typus_names + 11], texts[typus_names + 12]);
+	choosen_typus = gui_radio((Bit8u*)get_text(30), 12,
+				get_text(typus_names + 1), get_text(typus_names + 2),
+				get_text(typus_names + 3), get_text(typus_names + 4),
+				get_text(typus_names + 5), get_text(typus_names + 6),
+				get_text(typus_names + 7), get_text(typus_names + 8),
+				get_text(typus_names + 9), get_text(typus_names + 10),
+				get_text(typus_names + 11), get_text(typus_names + 12));
 
 	if (choosen_typus == -1)
 		return;
