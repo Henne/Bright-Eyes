@@ -7,7 +7,7 @@ struct mouse_action {
 };
 
 struct nvf_desc {
-	Bit8u *src;
+	RealPt src;
 	RealPt dst;
 	signed short no;
 	signed char type;

@@ -1225,7 +1225,7 @@ static inline char* get_text(Bit16s no) {
 static Bit8u *buffer_sex_dat;
 static Bit8u *buffer_popup_nvf;
 static Bit8u *buffer_popup_dis;
-/* DS:0x4771 */
+
 static Bit8u *buffer_heads_dat;
 //static Bit8u *buffer_text;
 //static Bit8u *buffer_font6;
@@ -1389,7 +1389,7 @@ void BE_cleanup()
 
 	free(buffer_sex_dat);
 	free(buffer_popup_nvf);
-	free(buffer_heads_dat);
+	bc_free((RealPt)ds_readd(BUFFER_HEADS_DAT));
 
 	if ((RealPt)ds_readd(BUFFER_TEXT)) {
 		bc_free((RealPt)ds_readd(BUFFER_TEXT));
@@ -1399,7 +1399,7 @@ void BE_cleanup()
 
 	buffer_sex_dat = NULL;
 	buffer_popup_nvf = NULL;
-	buffer_heads_dat = NULL;
+	//buffer_heads_dat = NULL;
 	//buffer_text = NULL;
 	//buffer_font6 = NULL;
 
@@ -2661,7 +2661,7 @@ void save_chr()
 	/* Load picture from nvf */
 	/* TODO: why not just copy? */
 	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
-	nvf.src = buffer_heads_dat;
+	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 	nvf.no = head_current;
 	nvf.type = 0;
 	nvf.width = &tmp;
@@ -2826,7 +2826,7 @@ void read_common_files()
 
 	/* load HEADS.DAT */
 	fd = fd_open_datfile(11);
-	fd_read_datfile(fd, buffer_heads_dat, 64000);
+	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 64000);
 	fclose(fd);
 
 	/* load POPUP.NVF */
@@ -2875,11 +2875,11 @@ signed int process_nvf(struct nvf_desc *nvf) {
 	p_size = 0;
 	src = NULL;
 
-	nvf_type = *nvf->src;
+	nvf_type = host_readbs(Real2Host(nvf->src));
 	va = nvf_type & 0x80;
 	nvf_type &= 0x7f;
 
-	pics = host_readw(nvf->src + 1);
+	pics = host_readw(Real2Host(nvf->src) + 1);
 
 	if (nvf->no < 0)
 		nvf->no = 0;
@@ -2890,46 +2890,46 @@ signed int process_nvf(struct nvf_desc *nvf) {
 	switch (nvf_type) {
 
 	case 0x00:
-		width = host_readw(nvf->src + 3);
-		height = host_readw(nvf->src + 5);
+		width = host_readw(Real2Host(nvf->src) + 3);
+		height = host_readw(Real2Host(nvf->src) + 5);
 		p_size = height * width;
-		src =  nvf->src + nvf->no * p_size + 7;
+		src =  Real2Host(nvf->src) + nvf->no * p_size + 7;
 		break;
 
 	case 0x01:
 		offs = pics * 4 + 3;
 		for (i = 0; i < nvf->no; i++) {
-			width = host_readw(nvf->src + i * 4 + 3);
-			height = host_readw(nvf->src + i * 4 + 5);
+			width = host_readw(Real2Host(nvf->src) + i * 4 + 3);
+			height = host_readw(Real2Host(nvf->src) + i * 4 + 5);
 			offs += width * height;
 		}
 
-		width = host_readw(nvf->src + nvf->no * 4 + 3);
-		height = host_readw(nvf->src + nvf->no * 4 + 5);
+		width = host_readw(Real2Host(nvf->src) + nvf->no * 4 + 3);
+		height = host_readw(Real2Host(nvf->src) + nvf->no * 4 + 5);
 		p_size = width * height;
-		src = nvf->src + offs;
+		src = Real2Host(nvf->src) + offs;
 		break;
 
 	case 0x02:
-		width = host_readw(nvf->src + 3);
-		height = host_readw(nvf->src + 5);
+		width = host_readw(Real2Host(nvf->src) + 3);
+		height = host_readw(Real2Host(nvf->src) + 5);
 		offs = pics * 4 + 7;
 		for (i = 0; i < nvf->no; i++)
-			offs += host_readd(nvf->src + (i * 4) + 7);
+			offs += host_readd(Real2Host(nvf->src) + (i * 4) + 7);
 
-		p_size = host_readd(nvf->src + nvf->no * 4 + 7);
-		src = nvf->src + offs;
+		p_size = host_readd(Real2Host(nvf->src) + nvf->no * 4 + 7);
+		src = Real2Host(nvf->src) + offs;
 		break;
 
 	case 0x03:
 		offs = pics * 8 + 3;
 		for (i = 0; i < nvf->no; i++)
-			offs += host_readd(nvf->src  + (i * 8) + 7);
+			offs += host_readd(Real2Host(nvf->src)  + (i * 8) + 7);
 
-		width = host_readw(nvf->src + nvf->no * 8 + 3);
-		height = host_readw(nvf->src + nvf->no * 8 + 5);
-		p_size = host_readd(nvf->src + i * 8 + 7);
-		src = nvf->src + offs;
+		width = host_readw(Real2Host(nvf->src) + nvf->no * 8 + 3);
+		height = host_readw(Real2Host(nvf->src) + nvf->no * 8 + 5);
+		p_size = host_readd(Real2Host(nvf->src) + i * 8 + 7);
+		src = Real2Host(nvf->src) + offs;
 		break;
 	}
 
@@ -3986,7 +3986,7 @@ void change_head()
 	signed short tmp;
 
 	nvf.dst = (RealPt)ds_readd(0x47a3);
-	nvf.src = buffer_heads_dat;
+	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 	nvf.no = head_current;
 	nvf.type = 0;
 	nvf.width = &tmp;
@@ -4649,7 +4649,7 @@ void refresh_screen()
 			signed short tmp;
 
 			nvf.dst = (RealPt)ds_readd(0x47a3);
-			nvf.src = buffer_heads_dat;
+			nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 			nvf.no = head_current;
 			nvf.type = 0;
 			nvf.width = &tmp;
@@ -6875,10 +6875,10 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	fd_read_datfile(fd, buffer_heads_dat, 20000);
+	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
 	fclose(fd);
 
-	nvf.src = buffer_heads_dat;
+	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 	nvf.type = 0;
 	nvf.width = &tmp;
 	nvf.height = &tmp;
@@ -6971,11 +6971,11 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	flen = fd_read_datfile(fd, buffer_heads_dat, 20000);
+	flen = fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
 	fclose(fd);
 
 	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
-	nvf.src = buffer_heads_dat;
+	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 	nvf.no = 0;
 	nvf.type = 0;
 	nvf.width = &tmp;
@@ -6988,7 +6988,7 @@ void intro()
 	wait_for_vsync();
 
 	/* set palette of FANPRO.NVF */
-	set_palette(buffer_heads_dat + flen - 32*3, 0, 32);
+	set_palette(Real2Host(ds_readd(BUFFER_HEADS_DAT)) + flen - 32*3, 0, 32);
 
 	/* draw the picture */
 	dst_x1 = 60;
@@ -7005,11 +7005,11 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	fd_read_datfile(fd, buffer_heads_dat, 20000);
+	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
 	fclose(fd);
 
 	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
-	nvf.src = buffer_heads_dat;
+	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 	nvf.no = 0;
 	nvf.type = 0;
 	nvf.width = &tmp;
@@ -7038,11 +7038,11 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	fd_read_datfile(fd, buffer_heads_dat, 20000);
+	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
 	fclose(fd);
 
 	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
-	nvf.src = buffer_heads_dat;
+	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 	nvf.no = 0;
 	nvf.type = 0;
 	nvf.width = &tmp;
@@ -7217,7 +7217,7 @@ void alloc_buffers()
 
 	load_font_and_text();
 
-	buffer_heads_dat = (Bit8u*)gen_alloc(39000);
+	ds_writed(BUFFER_HEADS_DAT, (Bit32u)emu_gen_alloc(39000));
 
 	buffer_popup_nvf = (Bit8u*)gen_alloc(1673);
 	buffer_popup_dis = buffer_popup_nvf + 8;
