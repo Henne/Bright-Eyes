@@ -1246,7 +1246,7 @@ static Bit8u *picbuf2;
 static Bit8u *picbuf1;
 static Bit8u *gen_ptr6;
 static Bit8u *gen_ptr6_dis;
-static Bit8u *buffer_dmenge_dat;
+//static Bit8u *buffer_dmenge_dat;
 
 static Bit8u *gen_ptr5;
 /* DS:0x47b7 */
@@ -1405,7 +1405,7 @@ void BE_cleanup()
 	free(picbuf2);
 	free(picbuf1);
 	free(gen_ptr6);
-	free(buffer_dmenge_dat);
+	bc_free((RealPt)ds_readd(BUFFER_DMENGE_DAT));
 	free(gen_ptr5);
 	free(gen_ptr4);
 	bc_free((RealPt)ds_readd(GEN_PTR2));
@@ -1414,7 +1414,7 @@ void BE_cleanup()
 	picbuf2 = NULL;
 	picbuf1 = NULL;
 	gen_ptr6 = NULL;
-	buffer_dmenge_dat = NULL;
+	//buffer_dmenge_dat = NULL;
 	gen_ptr5 = NULL;
 	gen_ptr4 = NULL;
 	//gen_ptr2 = NULL;
@@ -2808,35 +2808,33 @@ void save_chr()
 #endif
 }
 
+/* Borlandified and nearly identical */
 void read_common_files()
 {
-	FILE *fd;
-	long len;
+	Bit16s handle; //si
+	Bit16s len; //di
 
 	/* load HEADS.DAT */
-	fd = fd_open_datfile(11);
-	len = fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 64000);
-	fclose(fd);
+	handle = open_datfile(11);
+	len = read_datfile(handle, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 64000);
+	bc_close(handle);
 
 	/* load POPUP.NVF */
-	fd = fd_open_datfile(19);
-	len = fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_POPUP)) - 8, 500);
-	fclose(fd);
+	handle = open_datfile(19);
+	len = read_datfile(handle, Real2Host(ds_readd(BUFFER_POPUP)) - 8, 500);
+	bc_close(handle);
 	decomp_pp20((RealPt)ds_readd(BUFFER_POPUP), Real2Host(ds_readd(BUFFER_POPUP)) - 8, len);
 
 	/* load SEX.DAT */
-	fd = fd_open_datfile(12);
-	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_SEX_DAT)), 900);
-	fclose(fd);
+	handle = open_datfile(12);
+	read_datfile(handle, Real2Host(ds_readd(BUFFER_SEX_DAT)), 900);
+	bc_close(handle);
 
 	/* load DMENGE.DAT */
-	fd = fd_open_datfile(32);
-	len = fd_read_datfile(fd, Real2Host(ds_readd(0x47a7)) - 8, 25000);
-	fclose(fd);
-	decomp_pp20((RealPt)ds_readd(0x47a7),
-		Real2Host(ds_readd(0x47a7)) - 8,
-		len);
-
+	handle = open_datfile(32);
+	len = read_datfile(handle, Real2Host(ds_readd(BUFFER_DMENGE_DAT)) - 8, 25000);
+	bc_close(handle);
+	decomp_pp20((RealPt)ds_readd(BUFFER_DMENGE_DAT), Real2Host(ds_readd(BUFFER_DMENGE_DAT)) - 8, len);
 }
 
 #if 1
@@ -4694,8 +4692,8 @@ void refresh_screen()
 					need_refresh = 0;
 				}
 				wait_for_vsync();
-				set_palette(Real2Host(ds_readd(0x47a7)) + 0x5c02, 0 , 32);
-				copy_to_screen(Real2Phys(ds_readd(0x47a7)), dst, 128, 184, 0);
+				set_palette(Real2Host(ds_readd(BUFFER_DMENGE_DAT)) + 0x5c02, 0 , 32);
+				copy_to_screen(Real2Phys(ds_readd(BUFFER_DMENGE_DAT)), dst, 128, 184, 0);
 			}
 		}
 		/* if hero has a typus */
@@ -7282,7 +7280,7 @@ void alloc_buffers()
 
 	gen_ptr5 = (Bit8u*)gen_alloc(23660);
 
-	buffer_dmenge_dat = (Bit8u*)gen_alloc(23660);
+	ds_writed(BUFFER_DMENGE_DAT, (Bit32u)emu_gen_alloc(23660));
 
 	picbuf1 = (Bit8u*)gen_alloc(800);
 
