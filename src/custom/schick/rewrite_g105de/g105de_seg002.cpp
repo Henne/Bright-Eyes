@@ -2684,7 +2684,7 @@ void save_chr()
 	}
 	/* Load picture from nvf */
 	/* TODO: why not just copy? */
-	nvf.dst = (RealPt)ds_readd(0x47d3);
+	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 	nvf.src = buffer_heads_dat;
 	nvf.no = head_current;
 	nvf.type = 0;
@@ -2694,7 +2694,7 @@ void save_chr()
 	process_nvf(&nvf);
 
 	/* copy picture to the character struct */
-	memcpy(&hero.pic, Real2Host(ds_readd(0x47d3)), 1024);
+	memcpy(&hero.pic, Real2Host(ds_readd(GEN_PTR1_DIS)), 1024);
 	/* put the hero in the first group */
 	hero.group = 1;
 
@@ -3701,7 +3701,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	src = Real2Phys(ds_readd(VGA_MEMSTART));
 	src += upper_border * 320 + left_border;
-	dst = Real2Phys(ds_readd(0x47d3));
+	dst = Real2Phys(ds_readd(GEN_PTR1_DIS));
 
 	copy_to_screen(src, dst, di, (lines + 2) * 8, 2);
 
@@ -3742,7 +3742,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	dst = Real2Phys(ds_readd(VGA_MEMSTART));
 	dst += upper_border * 320 + left_border;
-	src = Real2Phys(ds_readd(0x47d3));
+	src = Real2Phys(ds_readd(GEN_PTR1_DIS));
 
 	copy_to_screen(src, dst, di, (lines + 2) * 8, 0);
 	call_mouse();
@@ -3850,7 +3850,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	/* save old background */
 	src = Real2Phys(ds_readd(VGA_MEMSTART));
 	src += upper_border * 320 + left_border;
-	dst = Real2Phys(ds_readd(0x47d3));
+	dst = Real2Phys(ds_readd(GEN_PTR1_DIS));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 2);
 
 	/* draw popup */
@@ -3974,7 +3974,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	dst = Real2Phys(ds_readd(VGA_MEMSTART));
 	dst += upper_border * 320 + left_border;
-	src = Real2Phys(ds_readd(0x47d3));
+	src = Real2Phys(ds_readd(GEN_PTR1_DIS));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 0);
 	call_mouse();
 	set_textcolor(fg_bak, bg_bak);
@@ -4619,14 +4619,14 @@ void refresh_screen()
 	PhysPt src, dst;
 
 	if (ds_readw(0x11fe)) {
-		ds_writed(0x47c7, ds_readd(0x47d3));
+		ds_writed(0x47c7, ds_readd(GEN_PTR1_DIS));
 		load_page(ds_readws(GEN_PAGE));
 		save_picbuf();
 
 		/* page with base values and hero is not male */
 		if ((ds_readws(GEN_PAGE) == 0) && (hero.sex != 0)) {
 
-			dst = Real2Phys(ds_readd(0x47d3)) + 7 * 320 + 305;
+			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 7 * 320 + 305;
 			src = Real2Phys(ds_readd(0x4769) + hero.sex * 256);
 
 			copy_to_screen(src, dst, 16, 16, 0);
@@ -4634,7 +4634,7 @@ void refresh_screen()
 
 		/* page with base values and level is advanced */
 		if ((ds_readws(GEN_PAGE) == 0) && (level == 1)) {
-			dst = Real2Phys(ds_readd(0x47d3)) + 178 * 320 + 284;
+			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 178 * 320 + 284;
 			src = Real2Phys(ds_readd(0x4769) + 512);
 
 			copy_to_screen(src, dst, 20, 15, 0);
@@ -4642,10 +4642,10 @@ void refresh_screen()
 		/* if the page is lower than 5 */
 		if (ds_readws(GEN_PAGE) < 5) {
 			/* draw DMENGE.DAT or the typus name */
-			dst = Real2Phys(ds_readd(0x47d3)) + 0xa10;
+			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 0xa10;
 			if (hero.typus != 0) {
 				need_refresh = 1;
-				copy_to_screen(Real2Phys(ds_readd(0x47b3)), dst, 128, 184, 0);
+				copy_to_screen(Real2Phys(ds_readd(GEN_PTR5)), dst, 128, 184, 0);
 
 				if (hero.sex != 0) {
 					char *p;
@@ -4683,7 +4683,7 @@ void refresh_screen()
 			dst_src = ds_readd(0x47a3);
 			dst_x1 = 272;
 			dst_x2 = 303;
-			dst_dst = ds_readd(0x47d3);
+			dst_dst = ds_readd(GEN_PTR1_DIS);
 
 			/* draw the head */
 			if (ds_readws(GEN_PAGE) == 0) {
@@ -4705,7 +4705,7 @@ void refresh_screen()
 		print_values();
 		ds_writed(0x47c7, ds_readd(VGA_MEMSTART));
 		dst = Real2Phys(ds_readd(VGA_MEMSTART));
-		src = Real2Phys(ds_readd(0x47d3));
+		src = Real2Phys(ds_readd(GEN_PTR1_DIS));
 		update_mouse_cursor();
 		copy_to_screen(src, dst, 320, 200, 0);
 		call_mouse();
@@ -5068,7 +5068,7 @@ void select_typus()
 	update_mouse_cursor();
 	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 16, 8, 143, 191, 0);
 	wait_for_vsync();
-	set_palette(Real2Host(ds_readd(0x47b3)) + 0x5c02, 0, 32);
+	set_palette(Real2Host(ds_readd(GEN_PTR5)) + 0x5c02, 0, 32);
 	call_mouse();
 
 	if (hero.typus > 10)
@@ -5396,14 +5396,14 @@ void save_picbuf()
 	}
 
 	if (x_1) {
-		p = Real2Phys(ds_readd(0x47d3)) + y_1 * 320 + x_1;
+		p = Real2Phys(ds_readd(GEN_PTR1_DIS)) + y_1 * 320 + x_1;
 		copy_to_screen(p, Real2Phys(ds_readd(0x479f)), w_1, h_1, 2);
 	}
 
-	p = Real2Phys(ds_readd(0x47d3)) + y_2 * 320 + x_2;
+	p = Real2Phys(ds_readd(GEN_PTR1_DIS)) + y_2 * 320 + x_2;
 	copy_to_screen(p, Real2Phys(ds_readd(0x479b)), w_2, h_2, 2);
 
-	p = Real2Phys(ds_readd(0x47d3)) + y_3 * 320 + x_3;
+	p = Real2Phys(ds_readd(GEN_PTR1_DIS)) + y_3 * 320 + x_3;
 	copy_to_screen(p, Real2Phys(ds_readd(0x4797)), w_3, h_3, 2);
 }
 
@@ -6797,7 +6797,7 @@ void choose_typus()
 	update_mouse_cursor();
 	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 16, 8, 143, 191, 0);
 	wait_for_vsync();
-	set_palette(Real2Host(ds_readd(0x47b3)) + 0x5c02, 0, 32);
+	set_palette(Real2Host(ds_readd(GEN_PTR5)) + 0x5c02, 0, 32);
 	call_mouse();
 
 	if (hero.typus > 10)
@@ -6908,13 +6908,13 @@ void intro()
 	nvf.height = &tmp;
 
 	for (i = 7; i >= 0; i--) {
-		nvf.dst = (RealPt)ds_readd(0x47d3) + i * 960 + 9600;
+		nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS) + i * 960 + 9600;
 		nvf.no = i + 1;
 		process_nvf(&nvf);
 
 	}
 	/* set dst */
-	nvf.dst = (RealPt)ds_readd(0x47d3);
+	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 	/* set no */
 	nvf.no = 0;
 	process_nvf(&nvf);
@@ -6932,7 +6932,7 @@ void intro()
 		dst_y1 = 140;
 		dst_x2 = 207;
 		dst_y2 = 149;
-		dst_src = ds_readd(0x47d3) + i * 960 + 9600;
+		dst_src = ds_readd(GEN_PTR1_DIS) + i * 960 + 9600;
 		do_draw_pic(0);
 		vsync_or_key(20);
 	}
@@ -6945,13 +6945,13 @@ void intro()
 		dst_y1 = cnt2 + 60;
 		dst_x2 = 95;
 		dst_y2 = cnt1 + cnt2 + 59;
-		dst_dst = ds_readd(0x47d3);
-		dst_src = ds_readd(0x47d3);
+		dst_dst = ds_readd(GEN_PTR1_DIS);
+		dst_src = ds_readd(GEN_PTR1_DIS);
 		do_draw_pic(0);
 
 		if (cnt1 != 100) {
 
-			dst_src = ds_readd(0x47d3) + i * 960 + 9600;
+			dst_src = ds_readd(GEN_PTR1_DIS) + i * 960 + 9600;
 			if (cnt1 % 4 == 1)
 				i++;
 
@@ -6962,7 +6962,7 @@ void intro()
 			dst_y1 = 150;
 			dst_x2 = 95;
 			dst_y2 = 159;
-			dst_dst = ds_readd(0x47d3);
+			dst_dst = ds_readd(GEN_PTR1_DIS);
 			do_draw_pic(2);
 		}
 
@@ -6970,7 +6970,7 @@ void intro()
 		dst_y1 = 50;
 		dst_x2 = 207;
 		dst_y2 = 149;
-		dst_src = ds_readd(0x47d3);
+		dst_src = ds_readd(GEN_PTR1_DIS);
 
 		unkn1 = 0;
 		unkn2 = 60;
@@ -6998,7 +6998,7 @@ void intro()
 	flen = fd_read_datfile(fd, buffer_heads_dat, 20000);
 	fclose(fd);
 
-	nvf.dst = (RealPt)ds_readd(0x47d3);
+	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 	nvf.src = buffer_heads_dat;
 	nvf.no = 0;
 	nvf.type = 0;
@@ -7019,7 +7019,7 @@ void intro()
 	dst_y1 = 50;
 	dst_x2 = 259;
 	dst_y2 = 149;
-	dst_src = ds_readd(0x47d3);
+	dst_src = ds_readd(GEN_PTR1_DIS);
 	do_draw_pic(0);
 	vsync_or_key(200);
 
@@ -7032,7 +7032,7 @@ void intro()
 	fd_read_datfile(fd, buffer_heads_dat, 20000);
 	fclose(fd);
 
-	nvf.dst = (RealPt)ds_readd(0x47d3);
+	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 	nvf.src = buffer_heads_dat;
 	nvf.no = 0;
 	nvf.type = 0;
@@ -7053,7 +7053,7 @@ void intro()
 	dst_y1 = 0;
 	dst_x2 = 319;
 	dst_y2 = 99;
-	dst_src = ds_readd(0x47d3);
+	dst_src = ds_readd(GEN_PTR1_DIS);
 	do_draw_pic(0);
 
 	/* load GENTIT.DAT */
@@ -7065,7 +7065,7 @@ void intro()
 	fd_read_datfile(fd, buffer_heads_dat, 20000);
 	fclose(fd);
 
-	nvf.dst = (RealPt)ds_readd(0x47d3);
+	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 	nvf.src = buffer_heads_dat;
 	nvf.no = 0;
 	nvf.type = 0;
@@ -7079,13 +7079,13 @@ void intro()
 	dst_y1 = 110;
 	dst_x2 = 329;
 	dst_y2 = 159;
-	dst_src = ds_readd(0x47d3);
+	dst_src = ds_readd(GEN_PTR1_DIS);
 	do_draw_pic(0);
 
-	memcpy(Real2Host(ds_readd(0x47d3)) + 500, &pal_dsalogo, 96);
+	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)) + 500, &pal_dsalogo, 96);
 
-	pal_src = Real2Host(ds_readd(0x47d3)) + 500;
-	pal_dst = Real2Host(ds_readd(0x47d3));
+	pal_src = Real2Host(ds_readd(GEN_PTR1_DIS)) + 500;
+	pal_dst = Real2Host(ds_readd(GEN_PTR1_DIS));
 	memset(pal_dst, 0, 96);
 
 	for (i = 0; i < 64; i++) {
@@ -7098,10 +7098,10 @@ void intro()
 	print_str(version, 290, 190);
 	vsync_or_key(400);
 
-	memcpy(Real2Host(ds_readd(0x47d3)), &pal_dsalogo, 96);
+	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)), &pal_dsalogo, 96);
 
-	pal_src = Real2Host(ds_readd(0x47d3)) + 500;
-	pal_dst = Real2Host(ds_readd(0x47d3));
+	pal_src = Real2Host(ds_readd(GEN_PTR1_DIS)) + 500;
+	pal_dst = Real2Host(ds_readd(GEN_PTR1_DIS));
 	memset(pal_src, 0, 96);
 
 	for (i = 0; i < 64; i++) {
