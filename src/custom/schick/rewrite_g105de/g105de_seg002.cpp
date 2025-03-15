@@ -802,7 +802,6 @@ static const struct struct_color pal_genbg[32] = {
 /* DS:0x109a */
 static const unsigned char unused_ro1 = 0;
 
-/* DS:0x1200 */
 static unsigned short mouse_mask[32] = {
         0x7fff, 0x9fff, 0x87ff, 0xc1ff,
         0xc07f, 0xe01f, 0xe007, 0xf00f,
@@ -815,7 +814,6 @@ static unsigned short mouse_mask[32] = {
 };
 
 
-/* DS:0x124a */
 //static Bit16s MOUSE_REFRESH_FLAG = -1;
 
 /* DS:0x135e */
@@ -823,10 +821,8 @@ static const struct mouse_action action_default[2] = {
 			{ 0, 0, 319, 199, 0xfe},
 			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 
-/* DS:0x1272 */
 //static Bit8u* DEFAULT_ACTION = (Bit8u*)&action_default;
 
-/* DS:0x1276 */
 //static Bit8u *ACTION_TABLE;
 
 /* DS:0x127a */
@@ -853,7 +849,6 @@ static const struct mouse_action action_spells[4] = {
 			{ 0, 0, 319, 199, 0xfe},
 			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 
-/* DS:0x1324 */
 //static Bit16s GEN_PAGE;
 
 /* DS:0x1329 */
@@ -862,19 +857,13 @@ static const Bit16u ro_zero = 0;
 /* DS:0x132c */
 static struct struct_hero hero;
 
-/* DS:0x1a09 */
 //static unsigned short use_cda;
-/* DS:0x1a0b */
 //static unsigned short eh_installed;
-/* DS:0x1a11 */
-static Bit8u *bg_buffer[MAX_PAGES];
-/* DS:0x1a3d */
-static unsigned short bg_len[MAX_PAGES];
-/* DS:0x1a69 */
-static Bit8u *typus_buffer[MAX_TYPES];
-/* DS:0x1a9d */
-static long typus_len[MAX_TYPES];
-/* DS:0x1a7d */
+static Bit8u *bg_buffer[MAX_PAGES] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+static Bit32s bg_len[MAX_PAGES] =  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+static Bit8u *typus_buffer[MAX_TYPES] =  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+static Bit32s typus_len[MAX_TYPES] =  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 static const char fnames_g105de[][13] = { "GEN1.NVF",
 					"GEN2.NVF",
 					"GEN3.NVF",
@@ -912,6 +901,8 @@ static const char fnames_g105de[][13] = { "GEN1.NVF",
 					"FANPRO.NVF",
 					"SAMPLE.AD",
 					"MT32EMUL.XMI" };
+
+static const char* str_file_missing[] = { "FILE %s IS MISSING!" };
 
 struct struct_chr_lookup {
 	unsigned char chr, idx, width;
@@ -994,14 +985,13 @@ static const struct struct_chr_lookup chr_lookup[74] = {
 	{0xd9, 73, 5},
 };
 
-/* DS:0x1c63 */
 //static const struct mouse_action ACTION_INPUT[2] = {
 //			{ 0, 0, 319, 199, 0x1c},
 //			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 
 /* DS:0x1c77 */
 static unsigned short bool_mode;
-/* DS:0x1c79 */
+
 static const struct mouse_action *action_page[MAX_PAGES] = {
 			(struct mouse_action*)&action_base,
 			(struct mouse_action*)&action_skills,
@@ -1142,15 +1132,11 @@ static unsigned short got_ch_bonus;
 /* DS:0x2782 */
 static unsigned short got_mu_bonus;
 
-/* DS:0x3f2a */
 //static Bit32s FLEN;
-/* DS:0x3f2e */
 //static Bit32s FLEN_LEFT;
 
-/* DS:0x3f3a */
 //signed short HANDLE_TIMBRE;
 
-/* DS:0x3f42 */
 //void *snd_driver;
 //void *form_xmid;
 //void *snd_ptr_unkn1;
@@ -1185,7 +1171,6 @@ static signed char head_current;
 /* the typus for the heads e.G. all elves are 10 */
 static signed char head_typus;
 
-/* DS:0x40b9 */
 //static unsigned short MENU_TILES;
 /* DS:0x40bb */
 static unsigned short left_border;
@@ -1216,7 +1201,6 @@ static unsigned short unkn3;
 /* DS:0x40d7 */
 static unsigned short unkn4;
 
-/* DS:0x40d9 */
 static char *texts[300];
 
 #if !defined(__BORLANDC__)
@@ -1227,22 +1211,15 @@ static inline char* get_text(Bit16s no) {
 #define get_text(no) ((char*)Real2Host(ds_readd(TEXTS + 4 * (no))))
 #endif
 
-/* DS:0x4591 */
 //static unsigned short HAVE_MOUSE;
 
-/* DS:0x4595 */
 //static unsigned short WO_VAR;
-/* DS:0x459d */
 //static unsigned short IN_KEY_ASCII;
-/* DS:0x459f */
 //static unsigned short IN_KEY_EXT;
 
-/* DS:0x4621 */
 //static unsigned short *mouse_p1;
-/* DS:0x4625 */
 //static unsigned short *mouse_p2;
 
-/* DS:0x4669 */
 //static char MOUSE_BACKBUFFER[256];
 /* DS:0x4769 */
 static Bit8u *buffer_sex_dat;
@@ -1272,14 +1249,13 @@ static Bit8u *picbuf1;
 static Bit8u *gen_ptr6;
 static Bit8u *gen_ptr6_dis;
 static Bit8u *buffer_dmenge_dat;
-/* DS:0x47b3 */
+
 static Bit8u *gen_ptr5;
 /* DS:0x47b7 */
 static Bit8u *gen_ptr4;
 static char *gen_ptr3;
 static char *gen_ptr2;
 
-/* DS:0x47cf */
 Bit8u *page_buffer;
 
 /* DS:0x47d7 */

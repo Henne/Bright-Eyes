@@ -62,6 +62,8 @@
 #define BG_LEN                          (0x1a3d)    /* Bit32u[11] */
 #define TYPUS_BUFFER                    (0x1a69)    /* RealPt[13] */
 #define TYPUS_LEN                       (0x1a9d)    /* Bit32u[13] */
+#define FNAMES_G105de                   (0x1ad1)    /* RealPt[37] */
+#define STR_FILE_MISSING                (0x1b65)    /* char[19] */
 
 #define ACTION_INPUT                    (0x1c63)
 #define ACTION_PAGE                     (0x1c79)    /* RealPt[11] */
