@@ -173,17 +173,16 @@ RealPt bc_strncpy(RealPt dst, RealPt src, Bit16s n)
 	return RealMake(reg_dx, reg_ax);
 }
 
-/* This write function is just a hackand gets replaced later by fwrite() */
-Bit16s bc_write(Bit16u handle, Bit8u *buf, Bit16u count)
+Bit16s bc_write(Bit16s handle, RealPt buf, Bit16u n)
 {
-
-	if ((ds_readw(0x2298 + handle * 2) & 2))
-		return -1;
-
-	if (!DOS_WriteFile(handle, buf, &count))
-		return -1;
-
-	return (Bit16s)count;
+	CPU_Push16(n);
+	CPU_Push32(buf);
+	CPU_Push16(handle);
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x360e);
+	CPU_Pop16();
+	CPU_Pop32();
+	CPU_Pop16();
+	return (Bit16s)reg_ax;
 }
 
 }

@@ -73,20 +73,19 @@ static int seg000(Bitu offs) {
 			return 1;
 		}
 		case 0x07c5: {
-			Bit16u handle = CPU_Pop16();
+			Bit16s handle = CPU_Pop16();
 			RealPt buf = CPU_Pop32();
 			Bit16u len = CPU_Pop16();
 			CPU_Push16(len);
 			CPU_Push32(buf);
 			CPU_Push16(handle);
 
-			reg_ax = bc__read(handle, MemBase + Real2Phys(buf), len);
-			D1_LOG(
-			"_read(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d) = %d\n",
+			reg_ax = bc__read(handle, Real2Host(buf), len);
+			D1_LOG("_read(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d) = %d\n",
 				handle, RealSeg(buf), RealOff(buf),
 				len, reg_ax);
 
-			if (reg_ax != len)
+			if ((Bit16s)reg_ax != len)
 				D1_ERR("Error while reading\n");
 
 			return 1;
@@ -264,20 +263,20 @@ static int seg000(Bitu offs) {
 			return 0;
 		}
 		case 0x360e: {
-			Bit16u handle = CPU_Pop16();
+			Bit16s handle = CPU_Pop16();
 			RealPt buf = CPU_Pop32();
 			Bit16u len = CPU_Pop16();
 			CPU_Push16(len);
 			CPU_Push32(buf);
 			CPU_Push16(handle);
 
-			reg_ax = bc_write(handle, MemBase + Real2Phys(buf), len);
+			reg_ax = bc_write(handle, buf, len);
 			D1_LOG(
 			"bc_write(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d) = %d\n",
 				handle, RealSeg(buf), RealOff(buf),
 				len, reg_ax);
 
-			if (reg_ax != len)
+			if ((Bit16s)reg_ax != len)
 				D1_ERR("Error while writing\n");
 
 			return 1;

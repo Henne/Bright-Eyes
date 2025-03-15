@@ -7123,7 +7123,7 @@ int main_gen(int argc, char **argv)
 	}
 
 	if (argc > 1)
-		ds_writew(0x3f60, 1);
+		ds_writew(CALLED_WITH_ARGS, 1);
 
 	if (argc > 2)
 		param_level = argv[2][0];
@@ -7169,7 +7169,7 @@ int main_gen(int argc, char **argv)
 
 	start_music(33);
 
-	if (ds_readw(0x3f60) == 0) {
+	if (ds_readw(CALLED_WITH_ARGS) == 0) {
 		intro();
 		read_common_files();
 	}
@@ -7183,7 +7183,7 @@ int main_gen(int argc, char **argv)
 	mouse_disable();
 	restore_mouse_isr();
 
-	if (ds_readw(0x3f60) != 0) {
+	if (ds_readw(CALLED_WITH_ARGS) != 0) {
 		call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 0, 0, 319, 199, 0);
 	} else {
 		exit_video();

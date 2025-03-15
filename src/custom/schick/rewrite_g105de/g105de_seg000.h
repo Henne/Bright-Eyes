@@ -18,7 +18,7 @@ Bit16s bc_open(RealPt, Bit16u);
 RealPt bc_strcat(RealPt, RealPt);
 RealPt bc_strcpy(RealPt, RealPt);
 RealPt bc_strncpy(RealPt, RealPt, Bit16s);
-Bit16s bc_write(Bit16u, Bit8u*, Bit16u);
+Bit16s bc_write(Bit16s, RealPt, Bit16u);
 
 /* this will set an unused variable, so we put a dummy here */
 static inline void bc_randomize() { }
@@ -26,8 +26,9 @@ static inline void bc_randomize() { }
 
 #else __BORLANDC__
 
-#include <IO.H>
-#include <BIOS.H>
+#include <IO.H>     // lseek, _read, _close, _creat, open, write
+#include <STDLIB.H> // free, calloc (also in alloc.h)
+#include <BIOS.H>   // bioskey, int86x (also in dos.h)
 #include <DOS.H>
 #include <CONIO.H> // clrscr
 
@@ -50,6 +51,7 @@ static inline void bc_randomize() { }
 #define bc_strcat strcat
 #define bc_strcpy strcpy
 #define bc_strncpy strncpy
+#define bc_write write
 
 RealPt emu_gen_alloc(Bit32u);
 
