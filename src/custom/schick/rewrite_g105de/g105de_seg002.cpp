@@ -2809,6 +2809,39 @@ void save_chr()
 #endif
 }
 
+void read_common_files()
+{
+	FILE *fd;
+	long len;
+
+	/* load HEADS.DAT */
+	fd = fd_open_datfile(11);
+	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 64000);
+	fclose(fd);
+
+	/* load POPUP.NVF */
+	fd = fd_open_datfile(19);
+	len = fd_read_datfile(fd, Real2Host(ds_readd(0x476d)) - 8, 500);
+	fclose(fd);
+	decomp_pp20((RealPt)ds_readd(0x476d),
+		Real2Host(ds_readd(0x476d)) - 8,
+		len);
+
+	/* load SEX.DAT */
+	fd = fd_open_datfile(12);
+	fd_read_datfile(fd, Real2Host(ds_readd(0x4769)), 900);
+	fclose(fd);
+
+	/* load DMENGE.DAT */
+	fd = fd_open_datfile(32);
+	len = fd_read_datfile(fd, Real2Host(ds_readd(0x47a7)) - 8, 25000);
+	fclose(fd);
+	decomp_pp20((RealPt)ds_readd(0x47a7),
+		Real2Host(ds_readd(0x47a7)) - 8,
+		len);
+
+}
+
 #if 1
 
 Bit16u open_datfile(Bit16u index)
@@ -2877,38 +2910,6 @@ static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
 	return len;
 }
 
-void read_common_files()
-{
-	FILE *fd;
-	long len;
-
-	/* load HEADS.DAT */
-	fd = fd_open_datfile(11);
-	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 64000);
-	fclose(fd);
-
-	/* load POPUP.NVF */
-	fd = fd_open_datfile(19);
-	len = fd_read_datfile(fd, Real2Host(ds_readd(0x476d)) - 8, 500);
-	fclose(fd);
-	decomp_pp20((RealPt)ds_readd(0x476d),
-		Real2Host(ds_readd(0x476d)) - 8,
-		len);
-
-	/* load SEX.DAT */
-	fd = fd_open_datfile(12);
-	fd_read_datfile(fd, Real2Host(ds_readd(0x4769)), 900);
-	fclose(fd);
-
-	/* load DMENGE.DAT */
-	fd = fd_open_datfile(32);
-	len = fd_read_datfile(fd, Real2Host(ds_readd(0x47a7)) - 8, 25000);
-	fclose(fd);
-	decomp_pp20((RealPt)ds_readd(0x47a7),
-		Real2Host(ds_readd(0x47a7)) - 8,
-		len);
-
-}
 
 static inline unsigned int swap_u32(unsigned int v) {
 	return ((v >> 24) & 0xff) | ((v >> 16) & 0xff) << 8 |
