@@ -1164,9 +1164,8 @@ static signed char head_last;
 /* DS:0x40B5 */
 /* the index of the first head */
 static signed char head_first;
-/* DS:0x40B6 */
 /* the index of the current head */
-static signed char head_current;
+//static signed char head_current;
 /* DS:0x40B7 */
 /* the typus for the heads e.G. all elves are 10 */
 static signed char head_typus;
@@ -2662,7 +2661,7 @@ void save_chr()
 	/* TODO: why not just copy? */
 	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
-	nvf.no = head_current;
+	nvf.no = ds_readbs(HEAD_CURRENT);
 	nvf.type = 0;
 	nvf.width = &tmp;
 	nvf.height = &tmp;
@@ -3987,7 +3986,7 @@ void change_head()
 
 	nvf.dst = (RealPt)ds_readd(0x47a3);
 	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
-	nvf.no = head_current;
+	nvf.no = ds_readbs(HEAD_CURRENT);
 	nvf.type = 0;
 	nvf.width = &tmp;
 	nvf.height = &tmp;
@@ -4026,13 +4025,13 @@ void change_sex()
 	if (hero.typus) {
 		if (hero.sex != 0) {
 			/* To female */
-			head_current = head_first_female[head_typus];
+			ds_writeb(HEAD_CURRENT, head_first_female[head_typus]);
 			head_first = head_first_female[head_typus];
 			head_last = head_first_male[head_typus + 1] - 1;
 		} else {
 			/* To male */
 			tmp = head_first_male[head_typus];
-			head_current = tmp;
+			ds_writeb(HEAD_CURRENT, tmp);
 			head_first = tmp;
 			head_last = head_first_female[head_typus] - 1;
 		}
@@ -4183,10 +4182,10 @@ void do_gen()
 			if (hero.typus == 0) {
 				infobox(get_text(17), 0);
 			} else {
-				if (head_current < head_last) {
-					head_current++;
+				if (ds_readbs(HEAD_CURRENT) < head_last) {
+					ds_writeb(HEAD_CURRENT, ds_readbs(HEAD_CURRENT) + 1);
 				} else {
-					head_current = head_first;
+					ds_writeb(HEAD_CURRENT, head_first);
 				}
 				change_head();
 			}
@@ -4196,10 +4195,10 @@ void do_gen()
 			if (hero.typus == 0) {
 				infobox(get_text(17), 0);
 			} else {
-				if (head_current > head_first) {
-					head_current--;
+				if (ds_readbs(HEAD_CURRENT) > head_first) {
+					ds_writeb(HEAD_CURRENT, ds_readbs(HEAD_CURRENT) - 1);
 				} else {
-					head_current = head_last;
+					ds_writeb(HEAD_CURRENT, head_last);
 				}
 				change_head();
 			}
@@ -4650,7 +4649,8 @@ void refresh_screen()
 
 			nvf.dst = (RealPt)ds_readd(0x47a3);
 			nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
-			nvf.no = head_current;
+			nvf.no = ds_readb(HEAD_CURRENT);
+;
 			nvf.type = 0;
 			nvf.width = &tmp;
 			nvf.height = &tmp;
@@ -4698,7 +4698,7 @@ void clear_hero() {
 	got_ch_bonus = 0;
 	got_mu_bonus = 0;
 
-	head_current = 0;
+	ds_writeb(HEAD_CURRENT, 0);
 	head_last = 0;
 	head_first = 0;
 	head_typus = 0;
@@ -5053,11 +5053,11 @@ void select_typus()
 		head_typus = hero.typus;
 
 	if (hero.sex) {
-		head_current = head_first_female[head_typus];
+		ds_writeb(HEAD_CURRENT, head_first_female[head_typus]);
 		head_first = head_first_female[head_typus];
 		head_last = head_first_male[head_typus + 1] - 1;
 	} else {
-		head_current = head_first_male[head_typus];
+		ds_writeb(HEAD_CURRENT, head_first_male[head_typus]);
 		head_first = head_first_male[head_typus];
 		head_last = head_first_female[head_typus] - 1;
 	}
@@ -6782,11 +6782,11 @@ void choose_typus()
 		head_typus = hero.typus;
 
 	if (hero.sex) {
-		head_current = head_first_female[head_typus];
+		ds_writeb(HEAD_CURRENT, head_first_female[head_typus]);
 		head_first = head_first_female[head_typus];
 		head_last = head_first_male[head_typus + 1] - 1;
 	} else {
-		head_current = head_first_male[head_typus];
+		ds_writeb(HEAD_CURRENT, head_first_male[head_typus]);
 		head_first = head_first_male[head_typus];
 		head_last = head_first_female[head_typus] - 1;
 	}

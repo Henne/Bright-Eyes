@@ -99,6 +99,8 @@
 #define SND_SEQUENCE                    (0x3f5a)    /* Bit16s */
 #define SND_DRIVER_HANDLE               (0x3f5c)    /* Bit16s */
 
+#define HEAD_CURRENT                    (0x40b6)    /* Bit8s */
+
 #define MENU_TILES                      (0x40b9)    /* Bit16s */
 
 #define TEXTS                           (0x40d9)    /* RealPt[285] array */
