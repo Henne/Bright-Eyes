@@ -1120,15 +1120,12 @@ int schick_nearcall_gen105(unsigned offs) {
 				}
 				case 0x1d14: {
 					CPU_Pop16();
-					Bit16u v1 = CPU_Pop16();
-					Bit16u v2 = CPU_Pop16();
-					CPU_Push16(v2);
-					CPU_Push16(v1);
+					Bit32u v = CPU_Pop32();
+					CPU_Push32(v);
 
-					Bit32u retval;
-					retval = swap32(v1, v2);
+					Bit32u retval = swap_u32(v);
 
-					D1_INFO("swap32(%x, %x);\n", v1, v2);
+					D1_INFO("swap_u32(%x);\n", v);
 
 					reg_ax = retval & 0xffff;
 					reg_dx = (retval>>16) & 0xffff;

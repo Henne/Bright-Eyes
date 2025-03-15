@@ -18,6 +18,13 @@ typedef signed long Bit32s;
 
 typedef Bit8u* RealPt;
 typedef Bit8u* PhysPt;
+typedef Bit8u huge * HugePt;
+
+#define F_PADA(p, o) (*((HugePt*)p) += o)
+#define F_PADD(p, o) ((HugePt)(p) + o)
+#define F_PSUB(p1, p2) ((HugePt)(p1) - (HugePt)(p2))
+
+#define H_PADD(p, o) F_PADD(p, o)
 
 extern char ds[0xffff];
 #define p_datseg (&ds[0x0000])
@@ -87,6 +94,11 @@ extern char ds[0xffff];
 static inline Bit8s host_readbs(Bit8u* p)
 {
 	return (Bit8s)host_readb(p);
+}
+
+static inline Bit16s host_readws(Bit8u* p)
+{
+	return (Bit16s)host_readw(p);
 }
 #endif
 

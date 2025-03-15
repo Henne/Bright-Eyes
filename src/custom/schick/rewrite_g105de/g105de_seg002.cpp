@@ -2835,104 +2835,47 @@ void read_common_files()
 	decomp_pp20((RealPt)ds_readd(BUFFER_DMENGE_DAT), Real2Host(ds_readd(BUFFER_DMENGE_DAT)) - 8, len);
 }
 
-#if 1
-
-Bit16u open_datfile(Bit16u index)
+#if !defined(__BORLANDC__)
+#if 0
+static inline Bit32u swap_u32(Bit32u v)
 {
-	CPU_Push16(index);
-	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1af4);
-	CPU_Pop16();
-	return reg_ax;
-}
-
-static FILE * fd_open_datfile(Bit16u index)
-{
-	FILE *fd;
-	char *fname;
-	signed int offset;
-	Bit8u buf[800];
-
-
-	/* build the path to DSAGEN.DAT */
-	fname = get_pwd();
-	strncat(fname, "DSAGEN.DAT", 10);
-	prepare_path(fname);
-
-	fd = fopen(fname, "rb");
-
-	if (fd == NULL) {
-		D1_ERR("%s(): failed to open datafile at %s\n",
-			__func__, fname);
-		free(fname);
-		return NULL;
-	}
-	free(fname);
-
-	if (fread(buf, 1, 800, fd) != 800) {
-		D1_ERR("%s(): failed to read datafile\n", __func__);
-		fclose(fd);
-		return NULL;
-	}
-
-
-	offset = get_archive_offset(fnames_g105de[index], buf);
-	ds_writed(GENDAT_OFFSET, offset);
-
-	if (ds_readd(GENDAT_OFFSET) == 0xffffffff) {
-		D1_ERR("FILE %s IS MISSING!", fnames_g105de[index]);
-		fclose(fd);
-		return NULL;
-	}
-
-	fseek(fd, ds_readd(GENDAT_OFFSET), SEEK_SET);
-
-	return fd;
-
-}
-
-static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
-{
-
-	if (len > ds_readd(FLEN_LEFT))
-		len = (unsigned short)ds_readd(FLEN_LEFT);
-
-	len = fread(buf, 1, len, fd);
-
-	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
-
-	return len;
-}
-
-
-static inline unsigned int swap_u32(unsigned int v) {
 	return ((v >> 24) & 0xff) | ((v >> 16) & 0xff) << 8 |
-		((v >> 8) & 0xff) << 16 | (v&0xff) << 24;
+		((v >> 8) & 0xff) << 16 | (v & 0xff) << 24;
 
 }
+#endif
+#endif
 
-signed int process_nvf(struct nvf_desc *nvf) {
+
+signed int process_nvf(struct nvf_desc *nvf)
+{
+	Bit32s offs;
+	Bit16s pics;
+	Bit16s height;
+	Bit16s va;
+	Bit32s p_size;
+	Bit32s retval;
+	Bit8s nvf_type;
+
 	Bit8u *src;
-	int p_size;
-	int offs;
-	signed int retval;
-	short va;
-	short height;
-	short pics;
-	short width;
-	short i;
-	signed char nvf_type;
 
+	Bit16s width;
+	Bit16s i;
+#if 0
 	/* Fix: GCC warns about uninitialized values */
 	width = height = 0;
 	p_size = 0;
 	src = NULL;
+#endif
 
-	nvf_type = host_readbs(Real2Host(nvf->src));
-	va = nvf_type & 0x80;
+	va = (nvf_type = host_readbs(Real2Host(nvf->src))) & 0x80;
 	nvf_type &= 0x7f;
 
-	pics = host_readw(Real2Host(nvf->src) + 1);
-
+#if !defined(__BORLANDC__)
+	pics = host_readws(H_PADD(Real2Host(nvf->src), 1L));
+#else
+	pics = host_readws(Real2Host(H_PADD(nvf->src, 1L)));
+#endif
 	if (nvf->no < 0)
 		nvf->no = 0;
 
@@ -3024,6 +2967,74 @@ signed int process_nvf(struct nvf_desc *nvf) {
 	return retval;
 }
 
+#if 1
+
+Bit16u open_datfile(Bit16u index)
+{
+	CPU_Push16(index);
+	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1af4);
+	CPU_Pop16();
+	return reg_ax;
+}
+
+static FILE * fd_open_datfile(Bit16u index)
+{
+	FILE *fd;
+	char *fname;
+	signed int offset;
+	Bit8u buf[800];
+
+
+	/* build the path to DSAGEN.DAT */
+	fname = get_pwd();
+	strncat(fname, "DSAGEN.DAT", 10);
+	prepare_path(fname);
+
+	fd = fopen(fname, "rb");
+
+	if (fd == NULL) {
+		D1_ERR("%s(): failed to open datafile at %s\n",
+			__func__, fname);
+		free(fname);
+		return NULL;
+	}
+	free(fname);
+
+	if (fread(buf, 1, 800, fd) != 800) {
+		D1_ERR("%s(): failed to read datafile\n", __func__);
+		fclose(fd);
+		return NULL;
+	}
+
+
+	offset = get_archive_offset(fnames_g105de[index], buf);
+	ds_writed(GENDAT_OFFSET, offset);
+
+	if (ds_readd(GENDAT_OFFSET) == 0xffffffff) {
+		D1_ERR("FILE %s IS MISSING!", fnames_g105de[index]);
+		fclose(fd);
+		return NULL;
+	}
+
+	fseek(fd, ds_readd(GENDAT_OFFSET), SEEK_SET);
+
+	return fd;
+
+}
+
+static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
+{
+
+	if (len > ds_readd(FLEN_LEFT))
+		len = (unsigned short)ds_readd(FLEN_LEFT);
+
+	len = fread(buf, 1, len, fd);
+
+	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
+
+	return len;
+}
+
 /* static */
 Bit32s get_archive_offset(const char *name, Bit8u *table)
 {
@@ -3098,8 +3109,19 @@ void vsync_or_key(Bit16u val)
 	}
 }
 
-Bit32u swap32(Bit16u v1, Bit16u v2) {
-	return (swap_u16(v2) << 16 | swap_u16(v1));
+Bit32u swap_u32(Bit32u v)
+{
+	Bit32u u = 0;
+	D1_INFO("inval %x\n", v);
+	for (int i = 0; i < 2; i++) {
+		u |= v & 0xff;
+		u = u << 8;
+		v = v >> 8;
+	}
+	u |= v & 0xff;
+	D1_INFO("outval = %x\n", u);
+
+	return u;
 }
 
 void init_video()

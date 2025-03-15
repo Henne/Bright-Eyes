@@ -1,6 +1,10 @@
 #if !defined(__BORLANDC__)
 namespace G105de {
 
+typedef RealPt HugePt;
+
+static inline Bit8u* H_PADD(Bit8u *p, Bit32s o) { return p + o; }
+
 void bc_exit(Bit16u);
 RealPt bc__dos_getvect(Bit16s);
 void bc__dos_setvect(Bit16s, RealPt);
