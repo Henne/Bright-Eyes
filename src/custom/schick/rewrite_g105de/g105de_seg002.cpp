@@ -1221,9 +1221,8 @@ static inline char* get_text(Bit16s no) {
 
 //static char MOUSE_BACKBUFFER[256];
 /* DS:0x4769 */
-static Bit8u *buffer_sex_dat;
-static Bit8u *buffer_popup_nvf;
-static Bit8u *buffer_popup_dis;
+//static Bit8u *buffer_sex_dat;
+//static Bit8u *buffer_popup_nvf;
 
 static Bit8u *buffer_heads_dat;
 //static Bit8u *buffer_text;
@@ -1386,8 +1385,8 @@ void BE_cleanup()
 {
 	long sum = 0;
 
-	free(buffer_sex_dat);
-	free(buffer_popup_nvf);
+	bc_free((RealPt)ds_readd(BUFFER_SEX_DAT));
+	bc_free((RealPt)ds_readd(BUFFER_POPUP));
 	bc_free((RealPt)ds_readd(BUFFER_HEADS_DAT));
 
 	if ((RealPt)ds_readd(BUFFER_TEXT)) {
@@ -1396,8 +1395,8 @@ void BE_cleanup()
 
 	bc_free((RealPt)ds_readd(BUFFER_FONT6));
 
-	buffer_sex_dat = NULL;
-	buffer_popup_nvf = NULL;
+	//buffer_sex_dat = NULL;
+	//buffer_popup_nvf = NULL;
 	//buffer_heads_dat = NULL;
 	//buffer_text = NULL;
 	//buffer_font6 = NULL;
@@ -2816,20 +2815,18 @@ void read_common_files()
 
 	/* load HEADS.DAT */
 	fd = fd_open_datfile(11);
-	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 64000);
+	len = fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 64000);
 	fclose(fd);
 
 	/* load POPUP.NVF */
 	fd = fd_open_datfile(19);
-	len = fd_read_datfile(fd, Real2Host(ds_readd(0x476d)) - 8, 500);
+	len = fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_POPUP)) - 8, 500);
 	fclose(fd);
-	decomp_pp20((RealPt)ds_readd(0x476d),
-		Real2Host(ds_readd(0x476d)) - 8,
-		len);
+	decomp_pp20((RealPt)ds_readd(BUFFER_POPUP), Real2Host(ds_readd(BUFFER_POPUP)) - 8, len);
 
 	/* load SEX.DAT */
 	fd = fd_open_datfile(12);
-	fd_read_datfile(fd, Real2Host(ds_readd(0x4769)), 900);
+	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_SEX_DAT)), 900);
 	fclose(fd);
 
 	/* load DMENGE.DAT */
@@ -3687,15 +3684,15 @@ void draw_popup_line(Bit16u line, Bit16u type)
 		}
 	}
 
-	src = Real2Phys(ds_readd(0x476d)) + popup_left;
+	src = Real2Phys(ds_readd(BUFFER_POPUP)) + popup_left;
 	copy_to_screen(src, dst, 16, 8, 0);
 
-	src = Real2Phys(ds_readd(0x476d)) + popup_middle;
+	src = Real2Phys(ds_readd(BUFFER_POPUP)) + popup_middle;
 	dst += 16;
 	for (i = 0; i < ds_readws(MENU_TILES); dst += 32, i++)
 		copy_to_screen(src, dst, 32, 8, 0);
 
-	src = Real2Phys(ds_readd(0x476d)) + popup_right;
+	src = Real2Phys(ds_readd(BUFFER_POPUP)) + popup_right;
 	copy_to_screen(src, dst, 16, 8, 0);
 }
 
@@ -4099,7 +4096,7 @@ void change_sex()
 		return;
 	} else {
 		dst = Real2Phys(ds_readd(VGA_MEMSTART)) + 7 * 320 + 305;
-		src = Real2Phys(ds_readd(0x4769)) + hero.sex * 256;
+		src = Real2Phys(ds_readd(BUFFER_SEX_DAT)) + hero.sex * 256;
 		update_mouse_cursor();
 		copy_to_screen(src, dst, 16, 16, 0);
 		call_mouse();
@@ -4662,7 +4659,7 @@ void refresh_screen()
 		if ((ds_readws(GEN_PAGE) == 0) && (hero.sex != 0)) {
 
 			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 7 * 320 + 305;
-			src = Real2Phys(ds_readd(0x4769) + hero.sex * 256);
+			src = Real2Phys(ds_readd(BUFFER_SEX_DAT) + hero.sex * 256);
 
 			copy_to_screen(src, dst, 16, 16, 0);
 		}
@@ -4670,7 +4667,7 @@ void refresh_screen()
 		/* page with base values and level is advanced */
 		if ((ds_readws(GEN_PAGE) == 0) && (level == 1)) {
 			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 178 * 320 + 284;
-			src = Real2Phys(ds_readd(0x4769) + 512);
+			src = Real2Phys(ds_readd(BUFFER_SEX_DAT) + 512);
 
 			copy_to_screen(src, dst, 20, 15, 0);
 		}
@@ -7279,10 +7276,9 @@ void alloc_buffers()
 
 	ds_writed(BUFFER_HEADS_DAT, (Bit32u)emu_gen_alloc(39000));
 
-	buffer_popup_nvf = (Bit8u*)gen_alloc(1673);
-	buffer_popup_dis = buffer_popup_nvf + 8;
+	ds_writed(BUFFER_POPUP, (Bit32u)emu_gen_alloc(1673));
 
-	buffer_sex_dat = (Bit8u*)gen_alloc(812);
+	ds_writed(BUFFER_SEX_DAT, (Bit32u)emu_gen_alloc(812));
 
 	gen_ptr5 = (Bit8u*)gen_alloc(23660);
 

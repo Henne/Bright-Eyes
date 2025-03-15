@@ -136,7 +136,8 @@
 #define MOUSE_CURRENT_CURSOR            (0x4625)
 
 #define MOUSE_BACKBUFFER                (0x4669)
-
+#define BUFFER_SEX_DAT                  (0x4769)    /* RealPt SEX.DAT */
+#define BUFFER_POPUP                    (0x476d)    /* RealPt POPUP.NVF */
 #define BUFFER_HEADS_DAT                (0x4771)    /* RealPt (HEADS.DAT, Intro: ATTIC, FANPRO.NVF, DSALOGO.DAT, GENTIT.DAT) */
 #define BUFFER_TEXT                     (0x4775)
 #define BUFFER_FONT6                    (0x4779)
