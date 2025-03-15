@@ -141,6 +141,28 @@ Bit16s bc_open(RealPt fname, Bit16u attrib)
 	return reg_ax;
 }
 
+RealPt bc_strcpy(RealPt dst, RealPt src)
+{
+	CPU_Push32(src);
+	CPU_Push32(dst);
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x2dd5);
+	CPU_Pop32();
+	CPU_Pop32();
+	return RealMake(reg_dx, reg_ax);
+}
+
+RealPt bc_strncpy(RealPt dst, RealPt src, Bit16s n)
+{
+	CPU_Push16(n);
+	CPU_Push32(src);
+	CPU_Push32(dst);
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x2e55);
+	CPU_Pop32();
+	CPU_Pop32();
+	CPU_Pop16();
+	return RealMake(reg_dx, reg_ax);
+}
+
 /* This write function is just a hackand gets replaced later by fwrite() */
 Bit16s bc_write(Bit16u handle, Bit8u *buf, Bit16u count)
 {
