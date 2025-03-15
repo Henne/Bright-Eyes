@@ -78,6 +78,10 @@
 
 #define STR_SOUND_CFG                   (0x1dd0)    /* char[9]; "SOUND.CFG" */
 #define STR_SOUNDHW_NOT_FOUND           (0x1de4)    /* char[]; "SOUND HARDWARE NOT FOUND" */
+#define STR_CHR                         (0x1dfe)    /* char[5]; ".CHR" */
+
+#define STR_TEMP_DIR                    (0x1e03)    /* char[] */
+#define STR_SAVE_ERROR                  (0x1e09)    /* char[] */
 
 #define RANDOM_GEN_SEED                 (0x1fd6)    /* Bit16u */
 

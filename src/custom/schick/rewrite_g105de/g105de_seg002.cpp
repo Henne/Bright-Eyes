@@ -2635,51 +2635,70 @@ void load_typus(Bit16u typus)
 /**
  * save_chr() - save the hero the a CHR file
  */
+/* Borlandified and nearly identical */
 void save_chr()
 {
+	Bit16s tmpw;
+	Bit16s tmph;
+	char filename[20];
 	struct nvf_desc nvf;
-	FILE *fd;
-	signed short tmp;
 	char path[80];
 
-	char *pwd;
-	char filename[20];
+	Bit16s handle; //si
+	Bit16s i;      //di
 
-	Bit16u i;
+#if !defined(__BORLANDC__)
+	// write all hero changes to DS (intermediately)
+	update_hero_out();
+	memcpy(p_datseg + HERO_NAME, hero_out, 1754);
+#endif
 
 	/* check for typus */
-	if (hero.typus == 0) {
+	if (!ds_readbs(HERO_TYPUS)) {
 		infobox(get_text(72), 0);
 		return;
 	}
 	/* check for name */
-	if (hero.name[0] == 0) {
-		infobox(get_text(72), 0);
+	if (!ds_readbs(HERO_NAME + 0)) {
+		infobox(get_text(154), 0);
 		return;
 	}
+
 	/* Load picture from nvf */
 	/* TODO: why not just copy? */
 	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 	nvf.no = ds_readbs(HEAD_CURRENT);
 	nvf.type = 0;
-	nvf.width = &tmp;
-	nvf.height = &tmp;
+	nvf.width = &tmpw;
+	nvf.height = &tmph;
 
 	process_nvf(&nvf);
 
 	/* copy picture to the character struct */
-	memcpy(&hero.pic, Real2Host(ds_readd(GEN_PTR1_DIS)), 1024);
+#if !defined(__BORLANDC__)
+	bc_memcpy(RealMake(datseg, HERO_PIC), (RealPt)ds_readd(GEN_PTR1_DIS), 1024);
+#else
+	bc_memcpy(&ds[HERO_PIC], (RealPt)ds_readd(GEN_PTR1_DIS), 1024);
+#endif
+
 	/* put the hero in the first group */
+#if !defined(__BORLANDC__)
 	hero.group = 1;
+#endif
+	ds_writeb(HERO_GROUP, 1);
 
 	/* wanna save ? */
 	if (!gui_bool((Bit8u*)get_text(3)))
 		return;
-
 	/* copy name to alias */
 	/* TODO: should use strncpy() here */
-	strcpy(hero.alias, hero.name);
+#if !defined(__BORLANDC__)
+	bc_strcpy(RealMake(datseg, HERO_ALIAS), RealMake(datseg, HERO_NAME));
+#else
+	bc_strcpy(&ds[HERO_ALIAS], &ds[HERO_NAME]);
+#endif
+
 	/* copy name to buffer */
 	/* TODO: should use strncpy() here */
 #if !defined(__BORLANDC__)
@@ -2690,15 +2709,21 @@ void save_chr()
 
 	/* prepare filename */
 	for (i = 0; i < 8; i++) {
-		char c = host_readb(Real2Host((RealPt)ds_readd(GEN_PTR2) + i));
+		char c;
 		/* leave the loop if the string ends */
-		if (c == 0)
+		if (!host_readbs(Real2Host((RealPt)ds_readd(GEN_PTR2) + i)))
 			break;
-		if (isalnum(c))
-			continue;
-		/* replace non alphanumerical characters with underscore */
-		host_writeb(Real2Host((RealPt)ds_readd(GEN_PTR2)) + i, '_');
+		if (!isalnum(host_readbs(Real2Host((RealPt)ds_readd(GEN_PTR2) + i)))) {
+			/* replace non alphanumerical characters with underscore */
+			host_writeb(Real2Host((RealPt)ds_readd(GEN_PTR2)) + i, '_');
+		}
 	}
+
+
+#if !defined(__BORLANDC__)
+
+	FILE *fd;
+	char *pwd;
 
 	strncpy(filename, (char*)Real2Host(ds_readd(GEN_PTR2)), 8);
 	filename[8] = 0;
@@ -2732,7 +2757,7 @@ void save_chr()
 		fclose(fd);
 
 		/* save it to the TEMP dir if called from with arguments */
-		if (ds_readw(0x3f60) != 0) {
+		if (ds_readw(CALLED_WITH_ARGS) != 0) {
 			strcpy(path, "TEMP\\");
 			strcat(path, filename);
 
@@ -2751,8 +2776,37 @@ void save_chr()
 		}
 	} else {
 		/* should be replaced with infobox() */
-		error_msg(p_datseg + 0x1e09);
+		error_msg(p_datseg + STR_SAVE_ERROR);
 	}
+
+#else
+	bc_strncpy(filename, (char*)Real2Host(ds_readd(GEN_PTR2)), 8);
+	filename[8] = 0;
+	bc_strcat(filename, &ds[STR_CHR]);
+
+	if (((handle = bc_open(filename, 0x8001)) == -1) || gui_bool((Bit8u*)get_text(261))) {
+
+		handle = bc__creat(filename, 0);
+
+		if (handle != -1) {
+			bc_write(handle, &ds[HERO_NAME], 1754);
+			bc_close(handle);
+
+			if (ds_readw(CALLED_WITH_ARGS) == 0) return;
+
+			bc_strcpy(path, &ds[STR_TEMP_DIR]);
+			bc_strcat(path, filename);
+
+			if ((handle = bc__creat(path, 0)) != -1) {
+				bc_write(handle, &ds[HERO_NAME], 1754);
+				bc_close(handle);
+			}
+		} else {
+			/* should be replaced with infobox() */
+			error_msg(p_datseg + STR_SAVE_ERROR);
+		}
+	}
+#endif
 }
 
 #if 1

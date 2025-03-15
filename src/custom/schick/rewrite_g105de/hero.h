@@ -19,7 +19,7 @@ struct struct_hero {
 	char alias[16];
 	/* Offset 0x20 */
 	unsigned char items;
-	unsigned char typus;
+	signed char typus;
 	unsigned char sex;
 	unsigned char height;
 	unsigned short weight;
