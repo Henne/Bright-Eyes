@@ -54,6 +54,14 @@
 
 #define GEN_PAGE                        (0x1324)    /* signed short */
 
+/* struct hero */
+#define HERO_NAME                       (0x132c)    /* char[16] */
+#define HERO_ALIAS                      (0x133c)    /* char[16] */
+#define HERO_TYPUS                      (0x134d)    /* Bit8s */
+#define HERO_GROUP                      (0x13b4)    /* Bit8s */
+#define HERO_PIC                        (0x1606)    /* char[1024] */
+
+
 #define MIDI_DISABLED                   (0x1a07)    /* signed short */
 #define USE_CDA	                        (0x1a09)    /* signed short */
 #define MOUSE_HANDLER_INSTALLED         (0x1a0b)    /* signed short */
@@ -128,6 +136,9 @@
 #define BUFFER_FONT6                    (0x4779)
 
 #define GEN_PTR5                        (0x47b3)     /* RealPt */
+#define GEN_PTR4                        (0x47b7)     /* RealPt */
+#define GEN_PTR3                        (0x47bb)     /* RealPt */
+#define GEN_PTR2                        (0x47bf)     /* RealPt */
 
 #define VGA_MEMSTART                    (0x47cb)     /* RealPt */
 #define PAGE_BUFFER                     (0x47cf)     /* RealPt */

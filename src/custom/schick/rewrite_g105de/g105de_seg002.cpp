@@ -1252,8 +1252,8 @@ static Bit8u *buffer_dmenge_dat;
 static Bit8u *gen_ptr5;
 /* DS:0x47b7 */
 static Bit8u *gen_ptr4;
-static char *gen_ptr3;
-static char *gen_ptr2;
+//static char *gen_ptr3;
+//static char *gen_ptr2;
 
 Bit8u *page_buffer;
 
@@ -1409,7 +1409,7 @@ void BE_cleanup()
 	free(buffer_dmenge_dat);
 	free(gen_ptr5);
 	free(gen_ptr4);
-	free(gen_ptr2);
+	bc_free((RealPt)ds_readd(GEN_PTR2));
 
 	picbuf3 = NULL;
 	picbuf2 = NULL;
@@ -1418,7 +1418,7 @@ void BE_cleanup()
 	buffer_dmenge_dat = NULL;
 	gen_ptr5 = NULL;
 	gen_ptr4 = NULL;
-	gen_ptr2 = NULL;
+	//gen_ptr2 = NULL;
 
 	free(page_buffer);
 	free(gen_ptr1);
@@ -2682,20 +2682,25 @@ void save_chr()
 	strcpy(hero.alias, hero.name);
 	/* copy name to buffer */
 	/* TODO: should use strncpy() here */
-	strcpy(gen_ptr2, hero.name);
+#if !defined(__BORLANDC__)
+	bc_strcpy((RealPt)ds_readd(GEN_PTR2), RealMake(datseg, HERO_NAME));
+#else
+	bc_strcpy((RealPt)ds_readd(GEN_PTR2), &ds[HERO_NAME]);
+#endif
+
 	/* prepare filename */
 	for (i = 0; i < 8; i++) {
-		char c = gen_ptr2[i];
+		char c = host_readb(Real2Host((RealPt)ds_readd(GEN_PTR2) + i));
 		/* leave the loop if the string ends */
 		if (c == 0)
 			break;
 		if (isalnum(c))
 			continue;
 		/* replace non alphanumerical characters with underscore */
-		gen_ptr2[i] = '_';
+		host_writeb(Real2Host((RealPt)ds_readd(GEN_PTR2)) + i, '_');
 	}
 
-	strncpy(filename, gen_ptr2, 8);
+	strncpy(filename, (char*)Real2Host(ds_readd(GEN_PTR2)), 8);
 	filename[8] = 0;
 	strcat(filename, ".CHR");
 
@@ -3697,11 +3702,11 @@ Bit16u infobox(char *msg, Bit16u digits)
 	call_mouse();
 
 	if (digits) {
-		enter_string(gen_ptr3,
+		enter_string((char*)Real2Host(ds_readd(GEN_PTR3)),
 			abs(di - digits * 6) / 2 + left_border,
 			lines * 8 + upper_border - 2, digits, 0);
 
-		retval = (Bit16u)atol(gen_ptr3);
+		retval = (Bit16u)atol((char*)Real2Host(ds_readd(GEN_PTR3)));
 	} else {
 #if !defined(__BORLANDC__)
 		ds_writed(ACTION_TABLE,  RealMake(datseg, ACTION_INPUT));
@@ -4386,9 +4391,9 @@ void fill_values()
 
 		if (di && (level == 2) && gui_bool((Bit8u*)get_text(269))) {
 			/* create string */
-			sprintf(gen_ptr2, get_text(270), di);
+			sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(270), di);
 
-			i = infobox(gen_ptr2, 1);
+			i = infobox((char*)Real2Host(ds_readd(GEN_PTR2)), 1);
 
 			if (i > 0) {
 				/* spell attempts to skill attempts */
@@ -4402,9 +4407,9 @@ void fill_values()
 			} else {
 
 				/* create string */
-				sprintf(gen_ptr2, get_text(271), di);
+				sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(271), di);
 
-				i = infobox(gen_ptr2, 1);
+				i = infobox((char*)Real2Host(ds_readd(GEN_PTR2)), 1);
 				if (i > 0) {
 					if (i > di)
 						i = di;
@@ -4771,12 +4776,12 @@ void new_values()
 			bv2++;
 		}
 
-		sprintf(gen_ptr2, get_text(46), bv1);
+		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), bv1);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
 
-			di = gui_radio((Bit8u*)gen_ptr2,
+			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
 				bv2,
 				type_names[0],
 				type_names[1],
@@ -4809,12 +4814,12 @@ void new_values()
 			bv2++;
 		}
 
-		sprintf(gen_ptr2, get_text(46), bv1);
+		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), bv1);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
 
-			di = gui_radio((Bit8u*)gen_ptr2,
+			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
 				bv2,
 				type_names[0],
 				type_names[1],
@@ -5508,20 +5513,20 @@ void print_values()
 				break;
 
 			/* print height */
-			sprintf(gen_ptr2, get_text(70), hero.height);
-			print_str(gen_ptr2, 205, 25);
+			sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(70), hero.height);
+			print_str((char*)Real2Host(ds_readd(GEN_PTR2)), 205, 25);
 
 			/* print weight */
-			sprintf(gen_ptr2, get_text(71), hero.weight);
+			sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(71), hero.weight);
 
-			print_str(gen_ptr2, 205, 37);
+			print_str((char*)Real2Host(ds_readd(GEN_PTR2)), 205, 37);
 
 			/* print god name */
 			print_str(get_text(56 + hero.god), 205, 49);
 
 			/* print money */
-			make_valuta_str(gen_ptr2, hero.money);
-			print_str(gen_ptr2, 205, 61);
+			make_valuta_str((char*)Real2Host(ds_readd(GEN_PTR2)), hero.money);
+			print_str((char*)Real2Host(ds_readd(GEN_PTR2)), 205, 61);
 
 			/* print LE */
 			/* originally it was itoa() */
@@ -7206,8 +7211,8 @@ void alloc_buffers()
 
 	ds_writed(PAGE_BUFFER, (Bit32u)emu_gen_alloc(50000));
 
-	gen_ptr2 = (char*)gen_alloc(1524);
-	gen_ptr3 = gen_ptr2 + 1500;
+	ds_writed(GEN_PTR2, (Bit32u)emu_gen_alloc(1524));
+	ds_writed(GEN_PTR3, (RealPt)ds_readd(GEN_PTR2) + 1500);
 
 	gen_ptr4 = (Bit8u*)gen_alloc(200);
 
