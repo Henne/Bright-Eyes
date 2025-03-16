@@ -68,9 +68,9 @@ extern char ds[0xffff];
 #define mem_writew(p, d) *(unsigned short*)(p) = d
 #define mem_writed(p, d) *(unsigned long*)(p) = d
 
-#define host_readb(p) *(Bit8u*)(p)
-#define host_readw(p) *(Bit16u*)(p)
-#define host_readd(p) *(Bit32u*)(p)
+#define host_readb(p) (*(Bit8u*)(p))
+#define host_readw(p) (*(Bit16u*)(p))
+#define host_readd(p) (*(Bit32u*)(p))
 
 #define host_readbs(p) *(Bit8s*)(p)
 #define host_readws(p) *(Bit16s*)(p)
