@@ -1,13 +1,10 @@
 #if !defined(__BORLANDC__)
 namespace G105de {
 
-typedef RealPt HugePt;
-
-static inline Bit8u* H_PADD(Bit8u *p, Bit32s o) { return p + o; }
-
 void bc_exit(Bit16u);
 RealPt bc__dos_getvect(Bit16s);
 void bc__dos_setvect(Bit16s, RealPt);
+RealPt bc_F_PADD(RealPt, Bit32s);
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
 Bit16s bc__read(Bit16u, Bit8u*, Bit16u);
 signed short bc_bioskey(signed short);
@@ -40,6 +37,7 @@ static inline void bc_randomize() { }
 
 #define bc__dos_getvect _dos_getvect
 #define bc__dos_setvect _dos_setvect
+#define bc_F_PADD(p, v) ((HugePt)(p) + v)
 #define bc_bioskey bioskey
 #define bc_clrscr clrscr
 #define bc_lseek lseek

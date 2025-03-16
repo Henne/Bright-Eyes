@@ -33,6 +33,32 @@ void bc__dos_setvect(Bit16s intno, RealPt ptr)
 	CPU_Pop32();
 }
 
+RealPt bc_F_PADD(RealPt p, Bit32s v)
+{
+	CPU_Push16(reg_ax);
+	CPU_Push16(reg_dx);
+	CPU_Push16(reg_cx);
+	CPU_Push16(reg_bx);
+
+	reg_dx = RealSeg(p);
+	reg_ax = RealOff(p);
+	reg_cx = (v >> 16) & 0xffff;
+	reg_bx = v & 0xffff;
+		
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0x05d2);
+
+	RealPt r = RealMake(reg_dx, reg_ax);
+
+	//D1_INFO("bc_F_PADD(0x%08x, %d) = 0x%08x\n", p, v, r);
+
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop16();
+
+	return RealMake(reg_dx, reg_ax);
+}
+
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence)
 {
 	CPU_Push16(whence);

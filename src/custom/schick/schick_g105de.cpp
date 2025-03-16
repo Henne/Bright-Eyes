@@ -53,6 +53,16 @@ static int seg000(Bitu offs) {
 		case 0x0509: {
 			return 0;
 		}
+		case 0x05d2: {
+			RealPt p = RealMake(reg_dx, reg_ax);
+			Bit32s v = ((reg_cx) << 16) | reg_bx;
+			RealPt r = bc_F_PADD(p, v);
+
+			D1_LOG("bc_F_PADD(0x%08x, %d) = 0x%08x", p, v, r);
+			reg_dx = RealSeg(r);
+			reg_ax = RealOff(r);
+			return 1;
+		}
 		case 0x072d: {
 			Bit16u handle = CPU_Pop16();
 			Bit32s off = CPU_Pop32();

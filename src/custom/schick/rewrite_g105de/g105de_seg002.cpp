@@ -2870,12 +2870,8 @@ signed int process_nvf(struct nvf_desc *nvf)
 
 	va = (nvf_type = host_readbs(Real2Host(nvf->src))) & 0x80;
 	nvf_type &= 0x7f;
+	pics = host_readws(Real2Host(bc_F_PADD(nvf->src, 1L)));
 
-#if !defined(__BORLANDC__)
-	pics = host_readws(H_PADD(Real2Host(nvf->src), 1L));
-#else
-	pics = host_readws(Real2Host(H_PADD(nvf->src, 1L)));
-#endif
 	if (nvf->no < 0)
 		nvf->no = 0;
 
