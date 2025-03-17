@@ -54,6 +54,8 @@
 
 #define GEN_PAGE                        (0x1324)    /* signed short */
 
+#define USELESS_VARIABLE                (0x1326)    /* Bit8s */
+
 /* struct hero */
 #define HERO_NAME                       (0x132c)    /* char[16] */
 #define HERO_ALIAS                      (0x133c)    /* char[16] */
@@ -82,6 +84,8 @@
 
 #define STR_TEMP_DIR                    (0x1e03)    /* char[] */
 #define STR_SAVE_ERROR                  (0x1e09)    /* char[] */
+
+#define STR_DSAGEN_DAT                  (0x1fb0)    /* char[] */
 
 #define RANDOM_GEN_SEED                 (0x1fd6)    /* Bit16u */
 

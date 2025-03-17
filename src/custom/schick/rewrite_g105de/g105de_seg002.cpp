@@ -2963,72 +2963,43 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 	return retval;
 }
 
-#if 1
-
-Bit16u open_datfile(Bit16u index)
+/* Borlandified and identical */
+Bit16s open_datfile(Bit16u index)
 {
-	CPU_Push16(index);
-	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1af4);
-	CPU_Pop16();
-	return reg_ax;
-}
-
-static FILE * fd_open_datfile(Bit16u index)
-{
-	FILE *fd;
-	char *fname;
-	signed int offset;
 	Bit8u buf[800];
+	Bit16s handle;
 
+	bc_flushall();
 
-	/* build the path to DSAGEN.DAT */
-	fname = get_pwd();
-	strncat(fname, "DSAGEN.DAT", 10);
-	prepare_path(fname);
-
-	fd = fopen(fname, "rb");
-
-	if (fd == NULL) {
-		D1_ERR("%s(): failed to open datafile at %s\n",
-			__func__, fname);
-		free(fname);
-		return NULL;
-	}
-	free(fname);
-
-	if (fread(buf, 1, 800, fd) != 800) {
-		D1_ERR("%s(): failed to read datafile\n", __func__);
-		fclose(fd);
-		return NULL;
-	}
-
-
-	offset = get_archive_offset(fnames_g105de[index], buf);
-	ds_writed(GENDAT_OFFSET, offset);
-
-	if (ds_readd(GENDAT_OFFSET) == 0xffffffff) {
-		D1_ERR("FILE %s IS MISSING!", fnames_g105de[index]);
-		fclose(fd);
-		return NULL;
+#if defined(__BORLANDC__)
+	while ((handle = bc_open(&ds[STR_DSAGEN_DAT], 0x8001)) == -1)
+#else
+	while ((handle = bc_open(RealMake(datseg, STR_DSAGEN_DAT), 0x8001)) == -1)
+#endif
+	{
+#if defined(__BORLANDC__)
+		sprintf(Real2Host(ds_readd(GEN_PTR2)),
+			&ds[STR_FILE_MISSING],
+			ds_readd(FNAMES_G105de + 4 * index));
+#else
+		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)),
+			(const char*)(p_datseg + STR_FILE_MISSING),
+			Real2Host(ds_readd(FNAMES_G105de + 4 * index)));
+#endif
+		ds_writeb(USELESS_VARIABLE, 1);
+		infobox((char*)Real2Host(ds_readd(GEN_PTR2)), 0);
+		ds_writeb(USELESS_VARIABLE, 0);
 	}
 
-	fseek(fd, ds_readd(GENDAT_OFFSET), SEEK_SET);
+	bc__read(handle, buf, 800);
+	;
+	if ((Bit32s)(ds_writed(GENDAT_OFFSET, get_archive_offset((char*)Real2Host(ds_readd(FNAMES_G105de + 4* index)), buf))) != -1) {
+		bc_lseek(handle, ds_readd(GENDAT_OFFSET), 0);
+		return handle;
+	} else {
+		return 0;
+	}
 
-	return fd;
-
-}
-
-static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
-{
-
-	if (len > ds_readd(FLEN_LEFT))
-		len = (unsigned short)ds_readd(FLEN_LEFT);
-
-	len = fread(buf, 1, len, fd);
-
-	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
-
-	return len;
 }
 
 /* static */
@@ -3108,14 +3079,14 @@ void vsync_or_key(Bit16u val)
 Bit32u swap_u32(Bit32u v)
 {
 	Bit32u u = 0;
-	D1_INFO("inval %x\n", v);
+//	D1_INFO("inval %x\n", v);
 	for (int i = 0; i < 2; i++) {
 		u |= v & 0xff;
 		u = u << 8;
 		v = v >> 8;
 	}
 	u |= v & 0xff;
-	D1_INFO("outval = %x\n", u);
+//	D1_INFO("outval = %x\n", u);
 
 	return u;
 }
@@ -3134,6 +3105,71 @@ void exit_video()
 	/* restore old page */
 	set_video_page((unsigned char)ds_readw(0x47db));
 }
+
+#if 1
+
+
+#if !defined(__BORLANDC__)
+static FILE * fd_open_datfile(Bit16u index)
+{
+	FILE *fd;
+	char *fname;
+	signed int offset;
+	Bit8u buf[800];
+
+
+	/* build the path to DSAGEN.DAT */
+	fname = get_pwd();
+	strncat(fname, "DSAGEN.DAT", 10);
+	prepare_path(fname);
+
+	fd = fopen(fname, "rb");
+
+	if (fd == NULL) {
+		D1_ERR("%s(): failed to open datafile at %s\n",
+			__func__, fname);
+		free(fname);
+		return NULL;
+	}
+	free(fname);
+
+	if (fread(buf, 1, 800, fd) != 800) {
+		D1_ERR("%s(): failed to read datafile\n", __func__);
+		fclose(fd);
+		return NULL;
+	}
+
+
+	offset = get_archive_offset(fnames_g105de[index], buf);
+	ds_writed(GENDAT_OFFSET, offset);
+
+	if (ds_readd(GENDAT_OFFSET) == 0xffffffff) {
+		D1_ERR("FILE %s IS MISSING!", fnames_g105de[index]);
+		fclose(fd);
+		return NULL;
+	}
+
+	fseek(fd, ds_readd(GENDAT_OFFSET), SEEK_SET);
+
+	return fd;
+
+}
+
+
+static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
+{
+
+	if (len > ds_readd(FLEN_LEFT))
+		len = (unsigned short)ds_readd(FLEN_LEFT);
+
+	len = fread(buf, 1, len, fd);
+
+	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
+
+	return len;
+}
+#endif
+
 
 void draw_v_line(Bit16u x, Bit16u y1, Bit16u y2, Bit16u color)
 {
