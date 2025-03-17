@@ -7,8 +7,13 @@ struct mouse_action {
 };
 
 struct nvf_desc {
+#if !defined(__BORLANDC__)
 	RealPt dst;
 	RealPt src;
+#else
+	RealPt far dst;
+	RealPt far src;
+#endif
 	signed short no;
 	signed char type;
 	signed short *width;
@@ -62,7 +67,7 @@ namespace G105de {
 	void load_typus(Bit16u);
 	void save_chr();
 	void read_common_files();
-	signed int process_nvf(struct nvf_desc*);
+	Bit32s process_nvf(struct nvf_desc*);
 	Bit32s get_archive_offset(const char*, Bit8u*);
 	Bit16u open_datfile(Bit16u);
 	Bit16s read_datfile(Bit16u, Bit8u*, Bit16u);

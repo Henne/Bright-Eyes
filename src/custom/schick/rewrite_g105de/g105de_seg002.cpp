@@ -2846,8 +2846,8 @@ static inline Bit32u swap_u32(Bit32u v)
 #endif
 #endif
 
-
-signed int process_nvf(struct nvf_desc *nvf)
+/* Borlandified and far from identical, but works */
+Bit32s process_nvf(struct nvf_desc *nvf)
 {
 	Bit32s offs;
 	Bit16s pics;
@@ -2857,10 +2857,10 @@ signed int process_nvf(struct nvf_desc *nvf)
 	Bit32s retval;
 	Bit8s nvf_type;
 
-	Bit8u *src;
+	RealPt src;
 
-	Bit16s width;
-	Bit16s i;
+	Bit16s i;     // si
+	Bit16s width; // di
 #if 0
 	/* Fix: GCC warns about uninitialized values */
 	width = height = 0;
@@ -2881,79 +2881,81 @@ signed int process_nvf(struct nvf_desc *nvf)
 	switch (nvf_type) {
 
 	case 0x00:
-		width = host_readw(Real2Host(nvf->src) + 3);
-		height = host_readw(Real2Host(nvf->src) + 5);
-		p_size = height * width;
-		src =  Real2Host(nvf->src) + nvf->no * p_size + 7;
+		width = host_readws(Real2Host(bc_F_PADD(nvf->src, 3L)));
+		height = host_readws(Real2Host(bc_F_PADD(nvf->src, 5L)));
+		bc_memcpy(bc_F_PADD(nvf->dst, -8L), bc_F_PADD(bc_F_PADD(nvf->src, p_size * nvf->no), 7), p_size = height * width);
 		break;
-
 	case 0x01:
-		offs = pics * 4 + 3;
+		offs = pics * 4 + 3L;
 		for (i = 0; i < nvf->no; i++) {
-			width = host_readw(Real2Host(nvf->src) + i * 4 + 3);
-			height = host_readw(Real2Host(nvf->src) + i * 4 + 5);
+			width = host_readws(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, i * 4), 3L)));
+			height = host_readws(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, i * 4), 5L)));
 			offs += width * height;
 		}
 
-		width = host_readw(Real2Host(nvf->src) + nvf->no * 4 + 3);
-		height = host_readw(Real2Host(nvf->src) + nvf->no * 4 + 5);
+		width = host_readws(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, nvf->no * 4), 3L)));
+		height = host_readws(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, nvf->no * 4), 5L)));
 		p_size = width * height;
-		src = Real2Host(nvf->src) + offs;
+		bc_memcpy(bc_F_PADD(nvf->dst, -8L), bc_F_PADD(nvf->src, offs), p_size);
 		break;
 
 	case 0x02:
-		width = host_readw(Real2Host(nvf->src) + 3);
-		height = host_readw(Real2Host(nvf->src) + 5);
-		offs = pics * 4 + 7;
-		for (i = 0; i < nvf->no; i++)
-			offs += host_readd(Real2Host(nvf->src) + (i * 4) + 7);
+		width = host_readws(Real2Host(bc_F_PADD(nvf->src, 3L)));
+		height = host_readws(Real2Host(bc_F_PADD(nvf->src, 5L)));
+		offs = ((Bit32s)(pics * 4)) + 7L;
+		for (i = 0; i < nvf->no; i++) {
+			/* BCC adds here in offs = offs + value */
+			offs += (host_readd(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, i * 4), 7L))));
+		}
 
-		p_size = host_readd(Real2Host(nvf->src) + nvf->no * 4 + 7);
-		src = Real2Host(nvf->src) + offs;
+		p_size = host_readd(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, nvf->no * 4), 7L)));
+		bc_memcpy(bc_F_PADD(nvf->dst, -8L), bc_F_PADD(nvf->src, offs), p_size);
 		break;
 
 	case 0x03:
-		offs = pics * 8 + 3;
-		for (i = 0; i < nvf->no; i++)
-			offs += host_readd(Real2Host(nvf->src)  + (i * 8) + 7);
+		offs = pics * 8 + 3L;
+		for (i = 0; i < (Bit16s)nvf->no; i++) {
+			/* First two lines are not neccessary */
+#if !defined(__BORLANDC__)
+			width = host_readws(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, i * 8), 3L)));
+			height = host_readws(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, i * 8), 5L)));
+#else
+			// Sync-Point
+			height = host_readws(Real2Host(bc_F_PADD(nvf->src, i * 8)));
+			asm {nop; nop}
+#endif
+			/* BCC adds here in offs = offs + value */
+			offs += host_readd(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, i * 8), 7L)));
+		}
 
-		width = host_readw(Real2Host(nvf->src) + nvf->no * 8 + 3);
-		height = host_readw(Real2Host(nvf->src) + nvf->no * 8 + 5);
-		p_size = host_readd(Real2Host(nvf->src) + i * 8 + 7);
-		src = Real2Host(nvf->src) + offs;
+		// Selected picture nvf->no, and copy it to nvf->dst
+		width = host_readws(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, nvf->no * 8), 3L)));
+		height = host_readws(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, nvf->no * 8), 5L)));
+		p_size = host_readd(Real2Host(bc_F_PADD(bc_F_PADD(nvf->src, i * 8), 7L)));
+		bc_memcpy(bc_F_PADD(nvf->dst, -8L), bc_F_PADD(nvf->src, offs), p_size);
 		break;
 	}
 
-	switch (nvf->type) {
-
-	case 0:
+	if (!nvf->type) {
 		/* PP20 decompression */
-
 		if (va != 0) {
 			/* get size from unpacked picture */
-			retval = host_readd(src);
-			retval = host_readd(src + (retval - 4));
+			retval = host_readds(Real2Host(nvf->dst)) - 8L;
+			src = bc_F_PADD(nvf->dst, -8L);
+			/* BCC: uses F_PADA here */
+			src += (retval - 4L);
+			retval = host_readd(Real2Host(src));
 			retval = swap_u32(retval) >> 8;
 
-		} else
+		} else {
 			retval = width * height;
+		}
 
-		decomp_pp20(nvf->dst, src, p_size);
-		break;
+		decomp_pp20(nvf->dst, Real2Host(bc_F_PADD(nvf->dst, -8L)), p_size);
 
-	case 2: case 3: case 4: case 5:
-		/* RLE decompression */
-		decomp_rle(Real2Host(nvf->dst), (unsigned char*)src, 0, 0, width, height, nvf->type);
-		/* retval was originally neither set nor used here.
-			VC++2008 complains about an uninitialized variable
-			on a Debug build, so we fix this for debuggings sake */
-		/* Orig-Fix */
-		retval = p_size;
-		break;
-
-	default:
+	} else {
 		/* No decompression, just copy */
-		memmove(Real2Host(nvf->dst), src, (short)p_size);
+		memmove(Real2Host(nvf->dst), Real2Host(bc_F_PADD(nvf->dst, -8L)), (Bit16s)p_size);
 		retval = p_size;
 	}
 

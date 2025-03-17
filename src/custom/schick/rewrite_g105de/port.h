@@ -100,6 +100,11 @@ static inline Bit16s host_readws(Bit8u* p)
 {
 	return (Bit16s)host_readw(p);
 }
+
+static inline Bit32s host_readds(Bit8u* p)
+{
+	return (Bit32s)host_readd(p);
+}
 #endif
 
 #endif
