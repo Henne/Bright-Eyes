@@ -75,7 +75,7 @@ namespace G105de {
 	Bit16u ret_zero1();
 	void wait_for_keypress();
 	void error_msg(Bit8u*);
-	void vsync_or_key(Bit16u);
+	void vsync_or_key(Bit16s);
 	Bit32u swap_u32(Bit32u);
 	void init_video();
 	void exit_video();

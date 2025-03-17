@@ -3002,11 +3002,11 @@ Bit16s open_datfile(Bit16u index)
 
 }
 
+/* Borlandified and nearly identical */
 /* static */
 Bit32s get_archive_offset(const char *name, Bit8u *table)
 {
-	Bit32s offset, length;
-	Bit16u i;
+	Bit16s i;
 
 	for (i = 0; i < 50; i++) {
 
@@ -3014,20 +3014,19 @@ Bit32s get_archive_offset(const char *name, Bit8u *table)
 		if (!strncmp((char*)name, (char*)table + i * 16, 12)) {
 
 			/* calculate offset and length */
-			offset = host_readd(table + i * 16 + 0x0c);
-			length = host_readd(table + (i + 1) * 16 + 0x0c) - offset;
+			ds_writed(FLEN_LEFT, ds_writed(FLEN,
+				host_readd(table + (i + 1) * 16 + 0x0c) - host_readd(table + i * 16 + 0x0c)));
 
 			/* save length in 2 variables */
-			ds_writed(FLEN, length);
-			ds_writed(FLEN_LEFT, length);
 
-			return offset;
+			return host_readd(table + i * 16 + 0x0c);
 		}
 	}
 
 	return -1;
 }
 
+/* Borlandified and identical */
 Bit16s read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 {
 	if (len > ds_readd(FLEN_LEFT))
@@ -3035,20 +3034,27 @@ Bit16s read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 
 	len = bc__read(handle, buf, len);
 
+#if defined(__BORLANDC__)
+	*((Bit32s*)&ds[FLEN_LEFT]) -= len;
+	// return len is implicit here
+#else
 	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
-
 	return len;
+#endif
 }
 
+/* Borlandified and identical */
 Bit32s get_filelength(Bit16s unused) {
 
 	return ds_readd(FLEN);
 }
 
+/* Borlandified and identical */
 Bit16u ret_zero1() {
 	return 0;
 }
 
+/* Borlandified and identical */
 void wait_for_keypress()
 {
 	while (CD_bioskey(1)) {
@@ -3056,14 +3062,25 @@ void wait_for_keypress()
 	}
 }
 
+/* Borlandified and identical */
 void error_msg(Bit8u *msg)
 {
 	vsync_or_key(print_line((char*)msg) * 150);
 }
 
-void vsync_or_key(Bit16u val)
+#if defined(__BORLANDC__)
+/* unused */
+/* Borlandified and identical */
+Bit16s get_bioskey()
 {
-	Bit16u i;
+	return CD_bioskey(0);
+}
+#endif
+
+/* Borlandified and identical */
+void vsync_or_key(Bit16s val)
+{
+	Bit16s i;
 
 	for (i = 0; i < val; i++) {
 		handle_input();
@@ -3075,6 +3092,19 @@ void vsync_or_key(Bit16u val)
 		wait_for_vsync();
 	}
 }
+
+#if defined(__BORLANDC__)
+/* unused */
+/* Borlandified and identical */
+void unused_func09(Bit16s reps)
+{
+	Bit16s i;
+
+	for (i = 0; i < reps; i++) {
+		wait_for_vsync();
+	}
+}
+#endif
 
 Bit32u swap_u32(Bit32u v)
 {
