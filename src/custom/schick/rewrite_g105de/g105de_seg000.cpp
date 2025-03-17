@@ -144,6 +144,13 @@ Bit16s bc__create(RealPt pathP, Bit16u attrib)
 	return reg_ax;
 }
 
+Bit16s bc_flushall()
+{
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x224a);
+	return reg_ax;
+}
+
+
 RealPt bc_memcpy(RealPt dst, RealPt src, Bit16s n)
 {
 	CPU_Push16(n);

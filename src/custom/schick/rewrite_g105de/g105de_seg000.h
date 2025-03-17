@@ -14,6 +14,7 @@ RealPt bc_calloc(Bit32s, Bit32s);
 Bit16s bc_close(Bit16u);
 Bit16s bc__close(Bit16u);
 Bit16s bc__create(RealPt, Bit16u);
+Bit16s bc_flushall();
 RealPt bc_memcpy(RealPt, RealPt, Bit16s);
 Bit16s bc_open(RealPt, Bit16u);
 RealPt bc_strcat(RealPt, RealPt);
@@ -48,6 +49,7 @@ static inline void bc_randomize() { }
 #define bc_close close
 #define bc__close _close
 #define bc__creat _creat
+#define bc_flushall flushall
 #define bc_memcpy memcpy
 #define bc_open open
 #define bc_strcat strcat
