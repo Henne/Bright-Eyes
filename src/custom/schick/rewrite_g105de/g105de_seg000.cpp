@@ -123,7 +123,7 @@ RealPt bc_memcpy(RealPt dst, RealPt src, Bit16s n)
 	CPU_Push16(n);
 	CPU_Push32(src);
 	CPU_Push32(dst);
-	CALLBACK_RunRealFar(reloc_gen + 0, 0x212f);
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x254e);
 	CPU_Pop32();
 	CPU_Pop32();
 	CPU_Pop16();
