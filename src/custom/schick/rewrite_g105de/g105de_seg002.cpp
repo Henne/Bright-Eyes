@@ -1188,7 +1188,6 @@ static unsigned short dst_y1;
 static unsigned short dst_x2;
 /* DS:0x40cb */
 static unsigned short dst_y2;
-/* DS:0x40cd */
 //static RealPt dst_src;
 /* DS:0x40d1 */
 static unsigned short unkn1;
@@ -1242,8 +1241,7 @@ static Bit16u text_x;
 static Bit8u *picbuf3;
 static Bit8u *picbuf2;
 static Bit8u *picbuf1;
-static Bit8u *gen_ptr6;
-static Bit8u *gen_ptr6_dis;
+//static Bit8u *gen_ptr6;
 //static Bit8u *buffer_dmenge_dat;
 
 static Bit8u *gen_ptr5;
@@ -1402,7 +1400,7 @@ void BE_cleanup()
 	free(picbuf3);
 	free(picbuf2);
 	free(picbuf1);
-	free(gen_ptr6);
+	bc_free((RealPt)ds_readd(GEN_PTR6) - 8);
 	bc_free((RealPt)ds_readd(BUFFER_DMENGE_DAT));
 	free(gen_ptr5);
 	free(gen_ptr4);
@@ -1411,14 +1409,14 @@ void BE_cleanup()
 	picbuf3 = NULL;
 	picbuf2 = NULL;
 	picbuf1 = NULL;
-	gen_ptr6 = NULL;
+	//gen_ptr6 = NULL;
 	//buffer_dmenge_dat = NULL;
 	gen_ptr5 = NULL;
 	gen_ptr4 = NULL;
 	//gen_ptr2 = NULL;
 
 	free(page_buffer);
-	free(gen_ptr1);
+	bc_free(ds_readd(GEN_PTR1_DIS) - 8);
 
 	page_buffer = NULL;
 	gen_ptr1 = NULL;
@@ -4057,7 +4055,7 @@ void change_head()
 	struct nvf_desc nvf;
 	signed short tmp;
 
-	nvf.dst = (RealPt)ds_readd(0x47a3);
+	nvf.dst = (RealPt)ds_readd(GEN_PTR6);
 	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 	nvf.no = ds_readbs(HEAD_CURRENT);
 	nvf.type = 0;
@@ -4066,7 +4064,7 @@ void change_head()
 
 	process_nvf(&nvf);
 
-	ds_writed(DST_SRC, ds_readd(0x47a3));
+	ds_writed(DST_SRC, ds_readd(GEN_PTR6));
 
 	dst_x1 = 272;
 	dst_x2 = 303;
@@ -4720,7 +4718,7 @@ void refresh_screen()
 			struct nvf_desc nvf;
 			signed short tmp;
 
-			nvf.dst = (RealPt)ds_readd(0x47a3);
+			nvf.dst = (RealPt)ds_readd(GEN_PTR6);
 			nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 			nvf.no = ds_readb(HEAD_CURRENT);
 ;
@@ -4729,7 +4727,7 @@ void refresh_screen()
 			nvf.height = &tmp;
 			process_nvf(&nvf);
 
-			ds_writed(DST_SRC, ds_readd(0x47a3));
+			ds_writed(DST_SRC, ds_readd(GEN_PTR6));
 			dst_x1 = 272;
 			dst_x2 = 303;
 			dst_dst = ds_readd(GEN_PTR1_DIS);
@@ -7274,14 +7272,14 @@ void alloc_buffers()
 	ds_writed(VGA_MEMSTART, RealMake(0xa000, 0x0));
 	ds_writed(0x47c7, RealMake(0xa000, 0x0));
 
-	gen_ptr1 = (Bit8u*)gen_alloc(64108);
-	gen_ptr1_dis = gen_ptr1 + 8;
+	ds_writed(GEN_PTR1_DIS, (RealPt)emu_gen_alloc(64108) + 8);
 
 	ds_writed(PAGE_BUFFER, (Bit32u)emu_gen_alloc(50000));
 
 	ds_writed(GEN_PTR2, (Bit32u)emu_gen_alloc(1524));
 	ds_writed(GEN_PTR3, (RealPt)ds_readd(GEN_PTR2) + 1500);
 
+	// unused
 	gen_ptr4 = (Bit8u*)gen_alloc(200);
 
 	ds_writed(BUFFER_TEXT, (Bit32u)emu_gen_alloc(6000));
@@ -7306,10 +7304,9 @@ void alloc_buffers()
 
 	picbuf3 = (Bit8u*)gen_alloc(2800);
 
-	gen_ptr6 = (Bit8u*)gen_alloc(1100);
-	gen_ptr6_dis = gen_ptr6 + 8;
+	ds_writed(GEN_PTR6, (Bit32u)emu_gen_alloc(1100) + 8);
 
-	if (gen_ptr6_dis == NULL)
+	if (!(RealPt)ds_readd(GEN_PTR6))
 		printf("\nMEMORY MALLOCATION ERROR!");
 #if !defined(__BORLANDC__)
 	memset(p_datseg + TYPUS_BUFFER, 0, 4 * 13);
