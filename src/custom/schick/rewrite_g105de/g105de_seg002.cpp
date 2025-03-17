@@ -1189,7 +1189,7 @@ static unsigned short dst_x2;
 /* DS:0x40cb */
 static unsigned short dst_y2;
 /* DS:0x40cd */
-static RealPt dst_src;
+//static RealPt dst_src;
 /* DS:0x40d1 */
 static unsigned short unkn1;
 /* DS:0x40d3 */
@@ -3172,7 +3172,7 @@ void do_draw_pic(Bit16u mode)
 	w = d1 - x + 1;
 	h = d2 - y + 1;
 
-	src = Real2Phys(dst_src);
+	src = Real2Phys((RealPt)ds_readd(DST_SRC));
 	dst = Real2Phys(dst_dst);
 
 	update_mouse_cursor();
@@ -4066,7 +4066,7 @@ void change_head()
 
 	process_nvf(&nvf);
 
-	dst_src = ds_readd(0x47a3);
+	ds_writed(DST_SRC, ds_readd(0x47a3));
 
 	dst_x1 = 272;
 	dst_x2 = 303;
@@ -4729,7 +4729,7 @@ void refresh_screen()
 			nvf.height = &tmp;
 			process_nvf(&nvf);
 
-			dst_src = ds_readd(0x47a3);
+			ds_writed(DST_SRC, ds_readd(0x47a3));
 			dst_x1 = 272;
 			dst_x2 = 303;
 			dst_dst = ds_readd(GEN_PTR1_DIS);
@@ -6981,7 +6981,7 @@ void intro()
 		dst_y1 = 140;
 		dst_x2 = 207;
 		dst_y2 = 149;
-		dst_src = ds_readd(GEN_PTR1_DIS) + i * 960 + 9600;
+		ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS) + i * 960 + 9600);
 		do_draw_pic(0);
 		vsync_or_key(20);
 	}
@@ -6995,12 +6995,12 @@ void intro()
 		dst_x2 = 95;
 		dst_y2 = cnt1 + cnt2 + 59;
 		dst_dst = ds_readd(GEN_PTR1_DIS);
-		dst_src = ds_readd(GEN_PTR1_DIS);
+		ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
 		do_draw_pic(0);
 
 		if (cnt1 != 100) {
 
-			dst_src = ds_readd(GEN_PTR1_DIS) + i * 960 + 9600;
+			ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS) + i * 960 + 9600);
 			if (cnt1 % 4 == 1)
 				i++;
 
@@ -7019,7 +7019,7 @@ void intro()
 		dst_y1 = 50;
 		dst_x2 = 207;
 		dst_y2 = 149;
-		dst_src = ds_readd(GEN_PTR1_DIS);
+		ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
 
 		unkn1 = 0;
 		unkn2 = 60;
@@ -7068,7 +7068,7 @@ void intro()
 	dst_y1 = 50;
 	dst_x2 = 259;
 	dst_y2 = 149;
-	dst_src = ds_readd(GEN_PTR1_DIS);
+	ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
 	do_draw_pic(0);
 	vsync_or_key(200);
 
@@ -7102,7 +7102,7 @@ void intro()
 	dst_y1 = 0;
 	dst_x2 = 319;
 	dst_y2 = 99;
-	dst_src = ds_readd(GEN_PTR1_DIS);
+	ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
 	do_draw_pic(0);
 
 	/* load GENTIT.DAT */
@@ -7128,7 +7128,7 @@ void intro()
 	dst_y1 = 110;
 	dst_x2 = 329;
 	dst_y2 = 159;
-	dst_src = ds_readd(GEN_PTR1_DIS);
+	ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
 	do_draw_pic(0);
 
 	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)) + 500, &pal_dsalogo, 96);

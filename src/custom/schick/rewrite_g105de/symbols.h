@@ -117,6 +117,8 @@
 
 #define MENU_TILES                      (0x40b9)    /* Bit16s */
 
+#define DST_SRC                         (0x40cd)    /* RealPt */
+
 #define TEXTS                           (0x40d9)    /* RealPt[285] array */
 
 #define RANDOM_GEN_SEED2                (0x458f)    /* Bit16u */
