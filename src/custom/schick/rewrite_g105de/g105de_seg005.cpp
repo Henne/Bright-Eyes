@@ -42,7 +42,7 @@ void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors){
 			ptr[i*3], ptr[i*3+1], ptr[i*3+2]);
 }
 
-void draw_h_line(Bit16u offset, Bit16s count, Bit8u color)
+void draw_h_line(Bit16u offset, Bit16s count, Bit16u color)
 {
 	PhysPt ptr = Real2Phys(RealMake(0xa000, offset));
 	Bit16u i;
@@ -51,11 +51,13 @@ void draw_h_line(Bit16u offset, Bit16s count, Bit8u color)
 		mem_writeb(ptr + i, color);
 }
 
-void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, unsigned short space) {
-	unsigned short i;
+void draw_h_spaced_dots(Bit16u offset, Bit16u width, Bit16s color, Bit16u space)
+{
+	PhysPt ptr = Real2Phys(RealMake(0xa000, offset));
+	Bit16u i;
 
-	for (i = 0; i < count; i++) {
-		mem_writeb_inline(ptr, color);
+	for (i = 0; i < width; i++) {
+		mem_writeb(ptr, color);
 		ptr += space;
 	}
 }
