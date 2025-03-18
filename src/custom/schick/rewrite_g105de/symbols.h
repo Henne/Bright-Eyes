@@ -129,7 +129,10 @@
 #define DST_X2                          (0x40c9)    /* Bit16s */
 #define DST_Y2                          (0x40cb)    /* Bit16s */
 #define DST_SRC                         (0x40cd)    /* RealPt */
-
+#define UNKN1                           (0x40d1)    /* Bit16s */
+#define UNKN2                           (0x40d3)    /* Bit16s */
+#define UNKN3                           (0x40d5)    /* Bit16s */
+#define UNKN4                           (0x40d7)    /* Bit16s */
 #define TEXTS                           (0x40d9)    /* RealPt[285] array */
 
 #define RANDOM_GEN_SEED2                (0x458f)    /* Bit16u */

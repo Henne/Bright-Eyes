@@ -1186,14 +1186,10 @@ static signed short level;
 //static unsigned short dst_x2;
 //static unsigned short dst_y2;
 //static RealPt dst_src;
-/* DS:0x40d1 */
-static unsigned short unkn1;
-/* DS:0x40d3 */
-static unsigned short unkn2;
-/* DS:0x40d5 */
-static unsigned short unkn3;
-/* DS:0x40d7 */
-static unsigned short unkn4;
+//static unsigned short unkn1;
+//static unsigned short unkn2;
+//static unsigned short unkn3;
+//static unsigned short unkn4;
 
 static char *texts[300];
 
@@ -3210,10 +3206,10 @@ void do_draw_pic(Bit16u mode)
 	y = ds_readws(DST_Y1);
 	d1 = ds_readws(DST_X2);
 	d2 = ds_readws(DST_Y2);
-	v1 = unkn1;
-	v2 = unkn2;
-	d3 = unkn3;
-	d4 = unkn4;
+	v1 = ds_readws(UNKN1);
+	v2 = ds_readws(UNKN2);
+	d3 = ds_readws(UNKN3);
+	d4 = ds_readws(UNKN4);
 
 	w = d1 - x + 1;
 	h = d2 - y + 1;
@@ -7195,10 +7191,10 @@ void intro()
 		ds_writew(DST_Y2, 149);
 		ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
 
-		unkn1 = 0;
-		unkn2 = 60;
-		unkn3 = 95;
-		unkn4 = 159;
+		ds_writew(UNKN1, 0);
+		ds_writew(UNKN2, 60);
+		ds_writew(UNKN3, 95);
+		ds_writew(UNKN4, 159);
 		ds_writed(DST_DST, ds_readd(VGA_MEMSTART));
 		do_draw_pic(3);
 		cnt1++;
