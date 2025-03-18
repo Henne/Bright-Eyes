@@ -127,7 +127,7 @@
 #define DST_X1                          (0x40c5)    /* Bit16s */
 #define DST_Y1                          (0x40c7)    /* Bit16s */
 #define DST_X2                          (0x40c9)    /* Bit16s */
-
+#define DST_Y2                          (0x40cb)    /* Bit16s */
 #define DST_SRC                         (0x40cd)    /* RealPt */
 
 #define TEXTS                           (0x40d9)    /* RealPt[285] array */
