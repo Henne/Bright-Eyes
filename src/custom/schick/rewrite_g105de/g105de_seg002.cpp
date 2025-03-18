@@ -3168,6 +3168,52 @@ void exit_video()
 	set_video_page(ds_readw(0x47db));
 }
 
+#if defined(__BORLANDC__)
+/* unused EGA hardware io functions */
+
+/* Borlandified and identical */
+void ega_unused1(Bit8u val)
+{
+	outportb(0x3ce, 5);
+	outportb(0x3cf, val);
+}
+
+/* Borlandified and identical */
+void ega_unused2(Bit8u val)
+{
+	outportb(0x3c4, 2);
+	outportb(0x3c5, val);
+}
+
+/* Borlandified and identical */
+void ega_unused3(Bit8u val)
+{
+	outportb(0x3ce, 0);
+	outportb(0x3cf, val);
+}
+
+/* Borlandified and identical */
+void ega_unused4(Bit8u val)
+{
+	outportb(0x3ce, 1);
+	outportb(0x3cf, val);
+}
+
+/* Borlandified and identical */
+void ega_unused5(Bit8u val)
+{
+	outportb(0x3ce, 4);
+	outportb(0x3cf, val);
+}
+
+/* Borlandified and identical */
+void ega_unused6(Bit8u val)
+{
+	outportb(0x3ce, 8);
+	outportb(0x3cf, val);
+}
+#endif
+
 #if 1
 
 #if !defined(__BORLANDC__)
