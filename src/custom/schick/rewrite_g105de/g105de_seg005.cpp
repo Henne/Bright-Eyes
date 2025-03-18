@@ -137,6 +137,11 @@ void pic_copy(RealPt dst, Bit16u x, Bit16u y, Bit16u d1, Bit16u d2,
 	}
 }
 
+void save_rect(RealPt dst, RealPt src, Bit16s diffX, Bit16s diffY)
+{
+
+}
+
 void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height) {
 	unsigned short x;
 
