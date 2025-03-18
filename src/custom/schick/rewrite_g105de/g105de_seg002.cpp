@@ -3199,7 +3199,7 @@ void do_draw_pic(Bit16u mode)
 {
 	Bit16u x, y, d1, d2, v1, v2;
 	Bit16u d3, d4, w, h;
-	PhysPt dst, src;
+	RealPt dst, src;
 
 	x = dst_x1;
 	y = dst_y1;
@@ -3213,16 +3213,14 @@ void do_draw_pic(Bit16u mode)
 	w = d1 - x + 1;
 	h = d2 - y + 1;
 
-	src = Real2Phys((RealPt)ds_readd(DST_SRC));
-	dst = Real2Phys(dst_dst);
+	src = (RealPt)ds_readd(DST_SRC);
+	dst = dst_dst;
 
 	update_mouse_cursor();
 
 	pic_copy(dst, x, y, d1, d2, v1, v2, d3, d4, w, h, src, mode);
 
 	call_mouse();
-
-
 }
 
 void call_fill_rect_gen(PhysPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, Bit16u color)

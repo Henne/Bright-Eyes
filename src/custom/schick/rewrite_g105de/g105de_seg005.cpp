@@ -62,14 +62,14 @@ void draw_h_spaced_dots(Bit16u offset, Bit16u width, Bit16s color, Bit16u space)
 	}
 }
 
-void pic_copy(PhysPt dst, Bit16u x, Bit16u y, Bit16u d1, Bit16u d2,
+void pic_copy(RealPt dst, Bit16u x, Bit16u y, Bit16u d1, Bit16u d2,
 		Bit16u v1, Bit16u v2, Bit16u d3, Bit16u d4,
-		Bit16u w, Bit16u h, PhysPt src, Bit16u mode)
+		Bit16u w, Bit16u h, RealPt src, Bit16u mode)
 {
 	PhysPt d, s;
 
-	d = dst + y * 320 + x;
-	s = src;
+	d = Real2Phys(dst) + y * 320 + x;
+	s = Real2Phys(src);
 
 	switch (mode) {
 		/* this is not used in GEN */
