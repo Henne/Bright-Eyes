@@ -3271,12 +3271,36 @@ void call_fill_rect_gen(RealPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, 
 #endif
 }
 
-#if 1
-
+/* Borlandified and identical */
 void wait_for_vsync()
 {
+#if !defined(__BORLANDC__)
 	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x2024);
+#else
+	outportb(0x3d4, 0x11);
+	_AL = inportb(0x3d5);
+	_AH = 0;
+	_BX = _AX;
+	_BX &= 0xffdf;
+	outportb(0x3d4, 0x11);
+	outportb(0x3d5, _BL);
+
+	do {
+		_AL = inportb(0x3da);
+		_AH = 0;
+		_BX = _AX;
+	} while (_BX & 0x8);
+
+	do {
+		_AL = inportb(0x3da);
+		_AH = 0;
+		_BX = _AX;
+	} while (!(_BX & 0x8));
+
+#endif
 }
+
+#if 1
 
 /* static */
 void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
