@@ -142,10 +142,10 @@ void save_rect(Bit16u dst1, Bit16u dst2, RealPt src, Bit16s diffX, Bit16s diffY)
 
 }
 
-void fill_rect(RealPt ptr, unsigned char color, unsigned short width, unsigned short height)
+void fill_rect(Bit16u p_seg, Bit16u p_off, Bit16s color, Bit16s width, Bit16s height)
 {
-	PhysPt p = Real2Phys(ptr);
-	unsigned short x;
+	PhysPt p = Real2Phys(RealMake(p_seg, p_off));
+	Bit16s x;
 
 	for (; height; height--) {
 		for (x = 0; x < width; x++) {

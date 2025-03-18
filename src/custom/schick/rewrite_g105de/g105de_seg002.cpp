@@ -3249,13 +3249,26 @@ void unused_func12()
 	diffX = dx2 - x1 + 1;
 	//diffY = dy2 - y1 + 1;
 
+
 	save_rect(FP_SEG(dst), FP_OFF(dst), src, diffX, (diffY = dy2 - y1 + 1));
 }
 #endif
 
-void call_fill_rect_gen(PhysPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, Bit16u color)
+/* Borlandified and identical */
+void call_fill_rect_gen(RealPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, Bit16u color)
 {
-	fill_rect(ptr + y1 * 320 + x1, (unsigned char)color, x2 - x1 + 1, y2 - y1 + 1);
+	Bit16s width;
+	Bit16s height;
+
+	width = x2 - x1 + 1;
+	height = y2 - y1 + 1;
+	ptr += y1 * 320 + x1;
+
+#if defined(__BORLANDC__)
+	fill_rect(FP_SEG(ptr), FP_OFF(ptr), color, width, height);
+#else
+	fill_rect(RealSeg(ptr), RealOff(ptr), color, width, height);
+#endif
 }
 
 #if 1

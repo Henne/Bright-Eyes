@@ -10,7 +10,7 @@ void draw_h_line(Bit16u, Bit16s, Bit16u);
 void draw_h_spaced_dots(Bit16u, Bit16u, Bit16s, Bit16u);
 void pic_copy(RealPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, RealPt, Bit16u);
 void save_rect(Bit16u, Bit16u, RealPt, Bit16s, Bit16s);
-void fill_rect(RealPt, unsigned char, unsigned short, unsigned short);
+void fill_rect(Bit16u, Bit16u, Bit16s, Bit16s, Bit16s);
 unsigned short swap_u16(unsigned short val);
 void copy_to_screen(PhysPt, PhysPt, Bit16s, Bit16s, Bit16u);
 
