@@ -4777,7 +4777,7 @@ void refresh_screen()
 				}
 			} else {
 				if (need_refresh) {
-					call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 16, 8, 143, 191, 0);
+					call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
 					need_refresh = 0;
 				}
 				wait_for_vsync();
@@ -5186,7 +5186,7 @@ void select_typus()
 
 	load_typus(hero.typus);
 	update_mouse_cursor();
-	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 16, 8, 143, 191, 0);
+	call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
 	wait_for_vsync();
 	set_palette(Real2Host(ds_readd(GEN_PTR5)) + 0x5c02, 0, 32);
 	call_mouse();
@@ -6915,7 +6915,7 @@ void choose_typus()
 
 	load_typus(hero.typus);
 	update_mouse_cursor();
-	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 16, 8, 143, 191, 0);
+	call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
 	wait_for_vsync();
 	set_palette(Real2Host(ds_readd(GEN_PTR5)) + 0x5c02, 0, 32);
 	call_mouse();
@@ -7256,7 +7256,7 @@ void intro()
 	process_nvf(&nvf);
 
 	/* clear screen */
-	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 0, 0, 319, 199, 0);
+	call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 0, 0, 319, 199, 0);
 	wait_for_vsync();
 
 	/* set palette of FANPRO.NVF */
@@ -7290,7 +7290,7 @@ void intro()
 	process_nvf(&nvf);
 
 	/* clear screen */
-	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 0, 0, 319, 199, 0);
+	call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 0, 0, 319, 199, 0);
 	wait_for_vsync();
 
 
@@ -7359,7 +7359,7 @@ void intro()
 	}
 
 	/* clear screen */
-	call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 0, 0, 319, 199, 0);
+	call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 0, 0, 319, 199, 0);
 
 	ds_writeb(0x40b8, 0);
 	return;
@@ -7451,7 +7451,7 @@ int main_gen(int argc, char **argv)
 	restore_mouse_isr();
 
 	if (ds_readw(CALLED_WITH_ARGS) != 0) {
-		call_fill_rect_gen(Real2Phys(ds_readd(VGA_MEMSTART)), 0, 0, 319, 199, 0);
+		call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 0, 0, 319, 199, 0);
 	} else {
 		exit_video();
 		bc_clrscr();
