@@ -1182,8 +1182,7 @@ static signed short level;
 //static RealPt dst_dst;
 
 //static unsigned short dst_x1;
-/* DS:0x40c7 */
-static unsigned short dst_y1;
+//static unsigned short dst_y1;
 //static unsigned short dst_x2;
 /* DS:0x40cb */
 static unsigned short dst_y2;
@@ -3209,7 +3208,7 @@ void do_draw_pic(Bit16u mode)
 	Bit16s y;
 
 	x = ds_readws(DST_X1);
-	y = dst_y1;
+	y = ds_readws(DST_Y1);
 	d1 = ds_readws(DST_X2);
 	d2 = dst_y2;
 	v1 = unkn1;
@@ -4120,11 +4119,11 @@ void change_head()
 	ds_writew(DST_X2, 303);
 
 	if (ds_readws(GEN_PAGE) == 0) {
-		dst_y1 = 8;
+		ds_writew(DST_Y1, 8);
 		dst_y2 = 39;
 		do_draw_pic(0);
 	} else if (ds_readws(GEN_PAGE) > 4) {
-		dst_y1 = 4;
+		ds_writew(DST_Y1, 4);
 		dst_y2 = 35;
 		do_draw_pic(0);
 	}
@@ -4785,12 +4784,12 @@ void refresh_screen()
 			/* draw the head */
 			if (ds_readws(GEN_PAGE) == 0) {
 				/* on the base page */
-				dst_y1 = 8;
+				ds_writew(DST_Y1, 8);
 				dst_y2 = 39;
 				do_draw_pic(0);
 			} else if (ds_readws(GEN_PAGE) > 4) {
 				/* on the spell pages */
-				dst_y1 = 4;
+				ds_writew(DST_Y1, 4);
 				dst_y2 = 35;
 				do_draw_pic(0);
 			}
@@ -7154,7 +7153,7 @@ void intro()
 	/* glowing at the bottom */
 	for (i = 0; i < 4; i++) {
 		ds_writew(DST_X1, 112);
-		dst_y1 = 140;
+		ds_writew(DST_Y1, 140);
 		ds_writew(DST_X2, 207);
 		dst_y2 = 149;
 		ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS) + i * 960 + 9600);
@@ -7167,7 +7166,7 @@ void intro()
 	ds_writew(IN_KEY_EXT, 0);
 	while ((cnt1 <= 100) && (ds_readw(IN_KEY_EXT) == 0)) {
 		ds_writew(DST_X1, 0);
-		dst_y1 = cnt2 + 60;
+		ds_writew(DST_Y1, cnt2 + 60);
 		ds_writew(DST_X2, 95);
 		dst_y2 = cnt1 + cnt2 + 59;
 		ds_writed(DST_DST, ds_readd(GEN_PTR1_DIS));
@@ -7184,7 +7183,7 @@ void intro()
 				i = 4;
 
 			ds_writew(DST_X1, 0);
-			dst_y1 = 150;
+			ds_writew(DST_Y1, 150);
 			ds_writew(DST_X2, 95);
 			dst_y2 = 159;
 			ds_writed(DST_DST, ds_readd(GEN_PTR1_DIS));
@@ -7192,7 +7191,7 @@ void intro()
 		}
 
 		ds_writew(DST_X1, 112);
-		dst_y1 = 50;
+		ds_writew(DST_Y1, 50);
 		ds_writew(DST_X2, 207);
 		dst_y2 = 149;
 		ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
@@ -7241,7 +7240,7 @@ void intro()
 
 	/* draw the picture */
 	ds_writew(DST_X1, 60);
-	dst_y1 = 50;
+	ds_writew(DST_Y1, 50);
 	ds_writew(DST_X2, 259);
 	dst_y2 = 149;
 	ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
@@ -7275,7 +7274,7 @@ void intro()
 
 	/* draw DSALOGO.DAT */
 	ds_writew(DST_X1, 0);
-	dst_y1 = 0;
+	ds_writew(DST_Y1, 0);
 	ds_writew(DST_X2, 319);
 	dst_y2 = 99;
 	ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
@@ -7301,7 +7300,7 @@ void intro()
 
 	/* draw DSALOGO.DAT */
 	ds_writew(DST_X1, 10);
-	dst_y1 = 110;
+	ds_writew(DST_Y1, 110);
 	ds_writew(DST_X2, 329);
 	dst_y2 = 159;
 	ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
