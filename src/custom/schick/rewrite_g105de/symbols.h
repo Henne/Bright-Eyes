@@ -123,6 +123,7 @@
 
 #define MENU_TILES                      (0x40b9)    /* Bit16s */
 
+#define DST_DST                         (0x40c1)    /* RealPt => PhysPt*/
 #define DST_X1                          (0x40c5)    /* Bit16s */
 
 #define DST_SRC                         (0x40cd)    /* RealPt */

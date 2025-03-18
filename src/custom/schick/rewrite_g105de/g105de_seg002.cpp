@@ -1178,8 +1178,8 @@ static unsigned short upper_border;
 /* DS:0x40bf */
 static signed short level;
 
-/* DS:0x40c1 */
-static RealPt dst_dst;
+
+//static RealPt dst_dst;
 
 //static unsigned short dst_x1;
 /* DS:0x40c7 */
@@ -3222,7 +3222,7 @@ void do_draw_pic(Bit16u mode)
 	h = d2 - y + 1;
 
 	src = (RealPt)ds_readd(DST_SRC);
-	dst = dst_dst;
+	dst = (RealPt)ds_readd(DST_DST);
 
 	update_mouse_cursor();
 
@@ -4781,7 +4781,7 @@ void refresh_screen()
 			ds_writed(DST_SRC, ds_readd(GEN_PTR6));
 			ds_writew(DST_X1, 272);
 			dst_x2 = 303;
-			dst_dst = ds_readd(GEN_PTR1_DIS);
+			ds_writed(DST_DST, ds_readd(GEN_PTR1_DIS));
 
 			/* draw the head */
 			if (ds_readws(GEN_PAGE) == 0) {
@@ -4796,7 +4796,7 @@ void refresh_screen()
 				do_draw_pic(0);
 			}
 
-			dst_dst = ds_readd(VGA_MEMSTART);
+			ds_writed(DST_DST, ds_readd(VGA_MEMSTART));
 
 		}
 
@@ -7171,7 +7171,7 @@ void intro()
 		dst_y1 = cnt2 + 60;
 		dst_x2 = 95;
 		dst_y2 = cnt1 + cnt2 + 59;
-		dst_dst = ds_readd(GEN_PTR1_DIS);
+		ds_writed(DST_DST, ds_readd(GEN_PTR1_DIS));
 		ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
 		do_draw_pic(0);
 
@@ -7188,7 +7188,7 @@ void intro()
 			dst_y1 = 150;
 			dst_x2 = 95;
 			dst_y2 = 159;
-			dst_dst = ds_readd(GEN_PTR1_DIS);
+			ds_writed(DST_DST, ds_readd(GEN_PTR1_DIS));
 			do_draw_pic(2);
 		}
 
@@ -7202,7 +7202,7 @@ void intro()
 		unkn2 = 60;
 		unkn3 = 95;
 		unkn4 = 159;
-		dst_dst = ds_readd(VGA_MEMSTART);
+		ds_writed(DST_DST, ds_readd(VGA_MEMSTART));
 		do_draw_pic(3);
 		cnt1++;
 		cnt2--;
@@ -7516,7 +7516,7 @@ void init_stuff()
 	/* number of menu tiles width */
 	ds_writew(MENU_TILES, 3);
 
-	dst_dst = ds_readd(VGA_MEMSTART);
+	ds_writed(DST_DST, ds_readd(VGA_MEMSTART));
 }
 
 void* gen_alloc(unsigned long size)
