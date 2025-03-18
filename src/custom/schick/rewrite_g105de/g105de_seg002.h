@@ -85,7 +85,7 @@ namespace G105de {
 	Bit16u infobox(char*, Bit16u);
 	void call_fill_rect_gen(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
 	void wait_for_vsync();
-	void blit_smth3(PhysPt, Bit16u, Bit16u);
+	void blit_smth3(RealPt, Bit16s, Bit16s);
 	Bit16u print_line(char*);
 	void print_str(char *, Bit16u, Bit16u);
 	Bit16u str_splitter(char *);
@@ -96,7 +96,7 @@ namespace G105de {
 	void fill_smth2(Bit8u*);
 	RealPt get_gfx_ptr(Bit16u, Bit16u);
 	Bit16u ret_zero();
-	void call_blit_smth3(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u);
+	void call_blit_smth3(RealPt, Bit16u, Bit16u, Bit16u, Bit16u);
 	void set_textcolor(unsigned short, unsigned short);
 	void get_textcolor(Bit8u*, Bit8u*);
 	Bit16u get_str_width(char*);

@@ -148,6 +148,9 @@
 #define MOUSE2_EVENT                    (0x4599)    /* Bit16s */
 #define MOUSE1_EVENT2                   (0x459b)    /* Bit16s */
 
+#define ARRAY_1                         (0x45a1)    /* char[64] */
+#define ARRAY_2                         (0x45e1)    /* char[64] */
+
 #define MOUSE_LAST_CURSOR               (0x4621)
 #define MOUSE_CURRENT_CURSOR            (0x4625)
 

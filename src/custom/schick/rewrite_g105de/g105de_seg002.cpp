@@ -3300,20 +3300,25 @@ void wait_for_vsync()
 #endif
 }
 
-#if 1
-
+/* Borlandified and identical */
 /* static */
-void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
-
+void blit_smth3(RealPt ptr, Bit16s v1, Bit16s v2)
+{
 	Bit8u *src;
-	Bit16u i, j;
+	Bit16s i, j;
 
-	src = MemBase + PhysMake(datseg, 0x45e1);
+#if !defined(__BORLANDC__)
+	src = p_datseg + ARRAY_2;
+#else
+	src = &ds[ARRAY_2];
+#endif
 
 	for (i = 0; i < v1; src += 8 - v2, ptr += 320, i++)
 		for (j = 0; j < v2; src++, j++)
-			mem_writeb_inline(ptr + j, *src);
+			mem_writeb(Real2Phys(ptr) + j, *src);
 }
+
+#if 1
 
 /* static */
 Bit16u print_line(char *str)
@@ -3522,7 +3527,7 @@ unsigned char get_chr_info(unsigned char c, unsigned char *width) {
 /* static */
 void call_them_all(Bit16u v1, Bit16u v2, Bit16u x, Bit16u y) {
 
-	PhysPt gfx_ptr;
+	RealPt gfx_ptr;
 	Bit32u bogus;
 
 	fill_smth();
@@ -3531,7 +3536,7 @@ void call_them_all(Bit16u v1, Bit16u v2, Bit16u x, Bit16u y) {
 	gfx_ptr = get_gfx_ptr(x, y);
 	bogus = ret_zero();
 
-	call_blit_smth3(Real2Phys(gfx_ptr), 7, 0, 0, v2);
+	call_blit_smth3(gfx_ptr, 7, 0, 0, v2);
 }
 
 /* static */
@@ -3541,9 +3546,9 @@ void fill_smth() {
 	Bit16u i, j;
 
 	if (unused_ro1)
-		ptr = MemBase + PhysMake(datseg, 0x45a1);
+		ptr = MemBase + PhysMake(datseg, ARRAY_1);
 	else
-		ptr = MemBase + PhysMake(datseg, 0x45e1);
+		ptr = MemBase + PhysMake(datseg, ARRAY_2);
 
 	for (i = 0; i < 8; i++, ptr += 8)
 		for (j = 0; j < 8; j++)
@@ -3558,9 +3563,9 @@ void fill_smth2(Bit8u* ptr) {
 	Bit8u lv;
 
 	if (unused_ro1)
-		lp = MemBase + PhysMake(datseg, 0x45a1);
+		lp = MemBase + PhysMake(datseg, ARRAY_1);
 	else
-		lp = MemBase + PhysMake(datseg, 0x45e1);
+		lp = MemBase + PhysMake(datseg, ARRAY_2);
 
 	for (i = 0; i < 8; i++, lp += 8) {
 		lv = *ptr++;
@@ -3589,7 +3594,7 @@ Bit16u ret_zero() {
 }
 
 /* static */
-void call_blit_smth3(PhysPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
+void call_blit_smth3(RealPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
 	blit_smth3(dst, v1, v4);
 }
 
