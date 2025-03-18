@@ -9,7 +9,7 @@ void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors);
 void draw_h_line(Bit16u, Bit16s, Bit16u);
 void draw_h_spaced_dots(Bit16u, Bit16u, Bit16s, Bit16u);
 void pic_copy(RealPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, RealPt, Bit16u);
-void save_rect(RealPt, RealPt, Bit16s, Bit16s);
+void save_rect(Bit16u, Bit16u, RealPt, Bit16s, Bit16s);
 void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height);
 unsigned short swap_u16(unsigned short val);
 void copy_to_screen(PhysPt, PhysPt, Bit16s, Bit16s, Bit16u);

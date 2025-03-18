@@ -38,6 +38,7 @@ static inline void bc_randomize() { }
 
 #define bc__dos_getvect _dos_getvect
 #define bc__dos_setvect _dos_setvect
+#define bc_F_PADA(p, v) ((HugePt)(p) += (v))
 #define bc_F_PADD(p, v) ((HugePt)(p) + v)
 #define bc_bioskey bioskey
 #define bc_clrscr clrscr

@@ -3225,12 +3225,40 @@ void do_draw_pic(Bit16u mode)
 	call_mouse();
 }
 
-#if 1
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void unused_func12()
+{
+	Bit16s diffX;
+	Bit16s diffY;
+	Bit16s dx2;
+	Bit16s dy2;
+	RealPt src;
+	RealPt dst;
+
+	Bit16s x1 = ds_readws(DST_X1); // si
+	Bit16s y1 = ds_readws(DST_Y1); // di
+
+	dx2 = ds_readws(DST_X2);
+	dy2 = ds_readws(DST_Y2);
+	src = (RealPt)ds_readd(DST_SRC);
+	dst = (RealPt)ds_readd(DST_DST);
+
+	bc_F_PADA(dst, (Bit32s)(y1 * 320 + x1));
+
+	diffX = dx2 - x1 + 1;
+	//diffY = dy2 - y1 + 1;
+
+	save_rect(FP_SEG(dst), FP_OFF(dst), src, diffX, (diffY = dy2 - y1 + 1));
+}
+#endif
 
 void call_fill_rect_gen(PhysPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, Bit16u color)
 {
 	fill_rect(ptr + y1 * 320 + x1, (unsigned char)color, x2 - x1 + 1, y2 - y1 + 1);
 }
+
+#if 1
 
 void wait_for_vsync()
 {
