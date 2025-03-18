@@ -3193,13 +3193,21 @@ void draw_v_line(Bit16s x, Bit16s y1, Bit16s y2, Bit16u color)
 	draw_h_spaced_dots((offset = y1 * width + x), diffY, color, width);
 }
 
-#if 1
-
 void do_draw_pic(Bit16u mode)
 {
-	Bit16u x, y, d1, d2, v1, v2;
-	Bit16u d3, d4, w, h;
-	RealPt dst, src;
+	Bit16s d1;
+	Bit16s d2;
+	Bit16s v1;
+	Bit16s v2;
+	Bit16s d3;
+	Bit16s d4;
+	Bit16s w;
+	Bit16s h;
+	RealPt src;
+	RealPt dst;
+
+	Bit16s x;
+	Bit16s y;
 
 	x = dst_x1;
 	y = dst_y1;
@@ -3222,6 +3230,8 @@ void do_draw_pic(Bit16u mode)
 
 	call_mouse();
 }
+
+#if 1
 
 void call_fill_rect_gen(PhysPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, Bit16u color)
 {
