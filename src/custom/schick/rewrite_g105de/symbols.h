@@ -126,6 +126,8 @@
 #define DST_DST                         (0x40c1)    /* RealPt => PhysPt*/
 #define DST_X1                          (0x40c5)    /* Bit16s */
 
+#define DST_X2                          (0x40c9)    /* Bit16s */
+
 #define DST_SRC                         (0x40cd)    /* RealPt */
 
 #define TEXTS                           (0x40d9)    /* RealPt[285] array */
