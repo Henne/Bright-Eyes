@@ -1373,74 +1373,6 @@ static char *get_pwd() {
 
 	return path;
 }
-
-static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
-static FILE * fd_open_datfile(Bit16u);
-
-void BE_cleanup()
-{
-	long sum = 0;
-
-	bc_free((RealPt)ds_readd(BUFFER_SEX_DAT));
-	bc_free((RealPt)ds_readd(BUFFER_POPUP));
-	bc_free((RealPt)ds_readd(BUFFER_HEADS_DAT));
-
-	if ((RealPt)ds_readd(BUFFER_TEXT)) {
-		bc_free((RealPt)ds_readd(BUFFER_TEXT));
-	}
-
-	bc_free((RealPt)ds_readd(BUFFER_FONT6));
-
-	//buffer_sex_dat = NULL;
-	//buffer_popup_nvf = NULL;
-	//buffer_heads_dat = NULL;
-	//buffer_text = NULL;
-	//buffer_font6 = NULL;
-
-	free(picbuf3);
-	free(picbuf2);
-	free(picbuf1);
-	bc_free((RealPt)ds_readd(GEN_PTR6) - 8);
-	bc_free((RealPt)ds_readd(BUFFER_DMENGE_DAT));
-	free(gen_ptr5);
-	free(gen_ptr4);
-	bc_free((RealPt)ds_readd(GEN_PTR2));
-
-	picbuf3 = NULL;
-	picbuf2 = NULL;
-	picbuf1 = NULL;
-	//gen_ptr6 = NULL;
-	//buffer_dmenge_dat = NULL;
-	gen_ptr5 = NULL;
-	gen_ptr4 = NULL;
-	//gen_ptr2 = NULL;
-
-	free(page_buffer);
-	bc_free(ds_readd(GEN_PTR1_DIS) - 8);
-
-	page_buffer = NULL;
-	gen_ptr1 = NULL;
-
-	for (long i = 0; i < MAX_PAGES; i++) {
-		if (bg_buffer[i]) {
-			free(bg_buffer[i]);
-			bg_buffer[i] = NULL;
-		}
-		sum += bg_len[i];
-		bg_len[i] = 0;
-	}
-	for (long i = 0; i < MAX_TYPES; i++) {
-		if (typus_buffer[i]) {
-			free(typus_buffer[i]);
-			typus_buffer[i] = NULL;
-		}
-		sum += typus_len[i];
-		typus_len[i] = 0;
-	}
-	D1_INFO("Cleanup %ld bytes freed\n", sum);
-}
-#else
-
 #endif
 
 /* Borlandified and identical */
@@ -3215,68 +3147,6 @@ void ega_unused6(Bit8u val)
 #endif
 
 #if 1
-
-#if !defined(__BORLANDC__)
-static FILE * fd_open_datfile(Bit16u index)
-{
-	FILE *fd;
-	char *fname;
-	signed int offset;
-	Bit8u buf[800];
-
-
-	/* build the path to DSAGEN.DAT */
-	fname = get_pwd();
-	strncat(fname, "DSAGEN.DAT", 10);
-	prepare_path(fname);
-
-	fd = fopen(fname, "rb");
-
-	if (fd == NULL) {
-		D1_ERR("%s(): failed to open datafile at %s\n",
-			__func__, fname);
-		free(fname);
-		return NULL;
-	}
-	free(fname);
-
-	if (fread(buf, 1, 800, fd) != 800) {
-		D1_ERR("%s(): failed to read datafile\n", __func__);
-		fclose(fd);
-		return NULL;
-	}
-
-
-	offset = get_archive_offset(fnames_g105de[index], buf);
-	ds_writed(GENDAT_OFFSET, offset);
-
-	if (ds_readd(GENDAT_OFFSET) == 0xffffffff) {
-		D1_ERR("FILE %s IS MISSING!", fnames_g105de[index]);
-		fclose(fd);
-		return NULL;
-	}
-
-	fseek(fd, ds_readd(GENDAT_OFFSET), SEEK_SET);
-
-	return fd;
-
-}
-
-
-static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
-{
-
-	if (len > ds_readd(FLEN_LEFT))
-		len = (unsigned short)ds_readd(FLEN_LEFT);
-
-	len = fread(buf, 1, len, fd);
-
-	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
-
-	return len;
-}
-#endif
-
 
 void draw_v_line(Bit16u x, Bit16u y1, Bit16u y2, Bit16u color)
 {
@@ -7065,6 +6935,134 @@ void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16u col, Bit16u n)
 		}
 	}
 }
+
+#if !defined(__BORLANDC__)
+static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
+static FILE * fd_open_datfile(Bit16u);
+
+void BE_cleanup()
+{
+	long sum = 0;
+
+	bc_free((RealPt)ds_readd(BUFFER_SEX_DAT));
+	bc_free((RealPt)ds_readd(BUFFER_POPUP));
+	bc_free((RealPt)ds_readd(BUFFER_HEADS_DAT));
+
+	if ((RealPt)ds_readd(BUFFER_TEXT)) {
+		bc_free((RealPt)ds_readd(BUFFER_TEXT));
+	}
+
+	bc_free((RealPt)ds_readd(BUFFER_FONT6));
+
+	//buffer_sex_dat = NULL;
+	//buffer_popup_nvf = NULL;
+	//buffer_heads_dat = NULL;
+	//buffer_text = NULL;
+	//buffer_font6 = NULL;
+
+	free(picbuf3);
+	free(picbuf2);
+	free(picbuf1);
+	bc_free((RealPt)ds_readd(GEN_PTR6) - 8);
+	bc_free((RealPt)ds_readd(BUFFER_DMENGE_DAT));
+	free(gen_ptr5);
+	free(gen_ptr4);
+	bc_free((RealPt)ds_readd(GEN_PTR2));
+
+	picbuf3 = NULL;
+	picbuf2 = NULL;
+	picbuf1 = NULL;
+	//gen_ptr6 = NULL;
+	//buffer_dmenge_dat = NULL;
+	gen_ptr5 = NULL;
+	gen_ptr4 = NULL;
+	//gen_ptr2 = NULL;
+
+	free(page_buffer);
+	bc_free(ds_readd(GEN_PTR1_DIS) - 8);
+
+	page_buffer = NULL;
+	gen_ptr1 = NULL;
+
+	for (long i = 0; i < MAX_PAGES; i++) {
+		if (bg_buffer[i]) {
+			free(bg_buffer[i]);
+			bg_buffer[i] = NULL;
+		}
+		sum += bg_len[i];
+		bg_len[i] = 0;
+	}
+	for (long i = 0; i < MAX_TYPES; i++) {
+		if (typus_buffer[i]) {
+			free(typus_buffer[i]);
+			typus_buffer[i] = NULL;
+		}
+		sum += typus_len[i];
+		typus_len[i] = 0;
+	}
+	D1_INFO("Cleanup %ld bytes freed\n", sum);
+}
+
+static FILE * fd_open_datfile(Bit16u index)
+{
+	FILE *fd;
+	char *fname;
+	signed int offset;
+	Bit8u buf[800];
+
+
+	/* build the path to DSAGEN.DAT */
+	fname = get_pwd();
+	strncat(fname, "DSAGEN.DAT", 10);
+	prepare_path(fname);
+
+	fd = fopen(fname, "rb");
+
+	if (fd == NULL) {
+		D1_ERR("%s(): failed to open datafile at %s\n",
+			__func__, fname);
+		free(fname);
+		return NULL;
+	}
+	free(fname);
+
+	if (fread(buf, 1, 800, fd) != 800) {
+		D1_ERR("%s(): failed to read datafile\n", __func__);
+		fclose(fd);
+		return NULL;
+	}
+
+
+	offset = get_archive_offset(fnames_g105de[index], buf);
+	ds_writed(GENDAT_OFFSET, offset);
+
+	if (ds_readd(GENDAT_OFFSET) == 0xffffffff) {
+		D1_ERR("FILE %s IS MISSING!", fnames_g105de[index]);
+		fclose(fd);
+		return NULL;
+	}
+
+	fseek(fd, ds_readd(GENDAT_OFFSET), SEEK_SET);
+
+	return fd;
+
+}
+
+
+static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
+{
+
+	if (len > ds_readd(FLEN_LEFT))
+		len = (unsigned short)ds_readd(FLEN_LEFT);
+
+	len = fread(buf, 1, len, fd);
+
+	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
+
+	return len;
+}
+#endif
+
 
 /**
  *	intro() - play the intro
