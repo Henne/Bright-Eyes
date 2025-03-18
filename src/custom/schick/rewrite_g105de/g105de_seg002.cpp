@@ -3106,19 +3106,22 @@ void unused_func09(Bit16s reps)
 }
 #endif
 
+/* seems unused on available input values */
+/* Borlandified and identical */
 Bit32u swap_u32(Bit32u v)
 {
-	Bit32u u = 0;
-//	D1_INFO("inval %x\n", v);
-	for (int i = 0; i < 2; i++) {
-		u |= v & 0xff;
-		u = u << 8;
-		v = v >> 8;
-	}
-	u |= v & 0xff;
-//	D1_INFO("outval = %x\n", u);
+	Bit16u l1;
+	Bit16u l2;
+	Bit8u *p = (Bit8u*)&l2;
 
-	return u;
+	register Bit16u l_si;
+
+	host_writed(p, v); // write v to stack and access subvalues with l1 and l2
+	l_si = l2;
+	l2 = swap_u16(l1);
+	l1 = swap_u16(l_si);
+
+	return host_readd(p);
 }
 
 void init_video()
