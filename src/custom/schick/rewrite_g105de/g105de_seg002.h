@@ -79,7 +79,7 @@ namespace G105de {
 	Bit32u swap_u32(Bit32u);
 	void init_video();
 	void exit_video();
-	void draw_v_line(Bit16u, Bit16u, Bit16u, Bit16u);
+	void draw_v_line(Bit16s, Bit16s, Bit16s, Bit16u);
 	void do_draw_pic(Bit16u);
 	void draw_popup_line(Bit16u, Bit16u);
 	Bit16u infobox(char*, Bit16u);

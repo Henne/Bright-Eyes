@@ -3146,11 +3146,40 @@ void ega_unused6(Bit8u val)
 }
 #endif
 
-#if 1
-
-void draw_v_line(Bit16u x, Bit16u y1, Bit16u y2, Bit16u color)
+#if defined(__BORLANDC__)
+/* Borlandified and nearly identical */
+void unused_func11(Bit16s x1, Bit16s x2, Bit16s y, Bit16s color)
 {
-	Bit16u tmp, len, off;
+	Bit16s tmp;
+	Bit16s count;
+	Bit16s offset;
+	Bit16s width;
+
+	Bit16s l_si = x1;
+	Bit16s l_di = x2;
+	width = 320;
+
+	if (l_si > l_di) {
+		tmp = l_si;
+		l_si = l_di;
+		l_di = tmp;
+	}
+	
+	count = l_di - l_si + 1;
+	/* not very readable, but here the length of the function fits */
+	//offset = y * width + l_si;
+	draw_h_line((offset = y * width + l_si), count, color);
+}
+#endif
+
+/* Borlandified and nearly identical */
+
+void draw_v_line(Bit16s x, Bit16s y1, Bit16s y2, Bit16u color)
+{
+	Bit16s tmp;
+	Bit16s diffY;
+	Bit16s offset;
+	Bit16s width = 320;
 
 	if (y1 > y2) {
 		tmp = y2;
@@ -3158,12 +3187,13 @@ void draw_v_line(Bit16u x, Bit16u y1, Bit16u y2, Bit16u color)
 		y1 = tmp;
 	}
 
-	len = y2 - y1 + 1;
-	off = y1 * 320 + x;
-
-	draw_h_spaced_dots(PhysMake(0xa000, off), len,
-		(unsigned char)color, 320);
+	diffY = y2 - y1 + 1;
+	/* not very readable, but here the length of the function fits */
+	//offset = y1 * width + x;
+	draw_h_spaced_dots((offset = y1 * width + x), diffY, color, width);
 }
+
+#if 1
 
 void do_draw_pic(Bit16u mode)
 {
