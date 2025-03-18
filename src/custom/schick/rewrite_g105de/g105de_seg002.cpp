@@ -3124,23 +3124,51 @@ Bit32u swap_u32(Bit32u v)
 	return host_readd(p);
 }
 
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+Bit32u unused_func10(Bit32u v)
+{
+	Bit16u l1;
+	Bit16u l2;
+	Bit16u l_si;
+	Bit8u *p = (Bit8u*)&l2;
+
+	l_si = host_writed(p, v); // write v to stack and access subvalues with l1 and l2
+	l2 = l1;
+#if 0
+	l1 = l_si;
+#else
+	asm {db 0x8b, 0xc2, 0x90} // Sync-point: 5 bytes, 2 instructions
+#endif
+
+	return host_readd(p);
+}
+#endif
+
+/* Borlandified and identical */
 void init_video()
 {
+#if defined(__BORLANDC__)
+	struct struct_color l_white = *(struct_color*)&ds[STRUCT_COL_WHITE2];
+#else
+	struct struct_color l_white = *(struct_color*)(p_datseg + STRUCT_COL_WHITE2);
+#endif
+
 	/* set the video mode to 320x200 8bit */
 	set_video_mode(0x13);
-	set_color((Bit8u*)&col_white, 0xff);
+	set_color((Bit8u*)&l_white, 0xff);
 }
 
+/* Borlandified and identical */
 void exit_video()
 {
 	/* restore old mode */
-	set_video_mode((unsigned char)ds_readw(0x47dd));
+	set_video_mode(ds_readw(0x47dd));
 	/* restore old page */
-	set_video_page((unsigned char)ds_readw(0x47db));
+	set_video_page(ds_readw(0x47db));
 }
 
 #if 1
-
 
 #if !defined(__BORLANDC__)
 static FILE * fd_open_datfile(Bit16u index)

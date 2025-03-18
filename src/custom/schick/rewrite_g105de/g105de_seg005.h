@@ -1,8 +1,8 @@
 #if !defined(__BORLANDC__)
 namespace G105de {
 #endif
-void set_video_mode(unsigned char mode);
-void set_video_page(unsigned char mode);
+void set_video_mode(Bit16u mode);
+void set_video_page(Bit16u mode);
 void save_display_stat(RealPt);
 void set_color(Bit8u *ptr, unsigned char color);
 void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors);

@@ -75,6 +75,8 @@
 #define FNAMES_G105de                   (0x1ad1)    /* RealPt[37] */
 #define STR_FILE_MISSING                (0x1b65)    /* char[19] */
 
+#define STRUCT_COL_WHITE2               (0x1b79)    /* RGB */
+
 #define ACTION_INPUT                    (0x1c63)
 #define ACTION_PAGE                     (0x1c79)    /* RealPt[11] */
 

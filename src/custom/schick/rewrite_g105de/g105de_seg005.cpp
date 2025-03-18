@@ -16,11 +16,11 @@
 
 namespace G105de {
 
-void set_video_mode(unsigned char mode) {
+void set_video_mode(Bit16u mode) {
 	INT10_SetVideoMode(mode);
 }
 
-void set_video_page(unsigned char mode) {
+void set_video_page(Bit16u mode) {
 	INT10_SetActivePage(mode);
 }
 
