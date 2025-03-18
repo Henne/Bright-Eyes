@@ -3166,7 +3166,6 @@ void unused_func11(Bit16s x1, Bit16s x2, Bit16s y, Bit16s color)
 #endif
 
 /* Borlandified and nearly identical */
-
 void draw_v_line(Bit16s x, Bit16s y1, Bit16s y2, Bit16u color)
 {
 	Bit16s tmp;
@@ -3186,6 +3185,7 @@ void draw_v_line(Bit16s x, Bit16s y1, Bit16s y2, Bit16u color)
 	draw_h_spaced_dots((offset = y1 * width + x), diffY, color, width);
 }
 
+/* Borlandified and identical */
 void do_draw_pic(Bit16u mode)
 {
 	Bit16s d1;
@@ -3199,11 +3199,12 @@ void do_draw_pic(Bit16u mode)
 	RealPt src;
 	RealPt dst;
 
-	Bit16s x;
-	Bit16s y;
+	register Bit16s x;
+	register Bit16s y;
 
 	x = ds_readws(DST_X1);
 	y = ds_readws(DST_Y1);
+
 	d1 = ds_readws(DST_X2);
 	d2 = ds_readws(DST_Y2);
 	v1 = ds_readws(UNKN1);
