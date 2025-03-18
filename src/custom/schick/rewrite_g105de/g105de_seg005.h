@@ -6,7 +6,7 @@ void set_video_page(Bit16u mode);
 void save_display_stat(RealPt);
 void set_color(Bit8u *ptr, unsigned char color);
 void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors);
-void draw_h_line(PhysPt ptr, unsigned short count, unsigned char color);
+void draw_h_line(Bit16u, Bit16s, Bit8u);
 void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, unsigned short space);
 void pic_copy(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, PhysPt, Bit16u);
 void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height);
