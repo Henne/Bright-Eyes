@@ -178,4 +178,5 @@
 #define VGA_MEMSTART                    (0x47cb)     /* RealPt */
 #define PAGE_BUFFER                     (0x47cf)     /* RealPt */
 #define GEN_PTR1_DIS                    (0x47d3)     /* RealPt */
+#define RO_VAR                          (0x47e3)     /* RealPt */
 #endif

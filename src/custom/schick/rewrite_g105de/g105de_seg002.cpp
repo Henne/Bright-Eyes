@@ -1246,8 +1246,7 @@ static unsigned short wo_var2;
 /* DS:0x47d9 */
 static unsigned short wo_var3;
 
-/* DS:0x47e3 */
-static const Bit16u ro_var[7] = {0, 0, 0, 0, 0, 0, 0};
+//static const Bit16u ro_var[7] = {0, 0, 0, 0, 0, 0, 0};
 
 /* DS:0x47f3 */
 Bit8u *gen_ptr1;
@@ -3425,8 +3424,9 @@ Bit16u print_line(char *str)
 /* static */
 void print_str(char *str, Bit16u x, Bit16u y)
 {
-	Bit16u i, x_bak;
-	unsigned char c;
+	Bit16s i;
+	Bit16s x_bak;
+	Bit8u c;
 
 	i = 0;
 
@@ -3453,32 +3453,32 @@ void print_str(char *str, Bit16u x, Bit16u y)
 			}
 			case 0x7e: {
 				/* CRUFT */
-				if (x < ro_var[0]) {
-					x = ro_var[0];
+				if (x < ds_readw(RO_VAR + 0)) {
+					x = ds_readw(RO_VAR + 0);
 					continue;
 				}
-				if (x < ro_var[1]) {
-					x = ro_var[1];
+				if (x < ds_readw(RO_VAR + 1)) {
+					x = ds_readw(RO_VAR + 1);
 					continue;
 				}
-				if (x < ro_var[2]) {
-					x = ro_var[2];
+				if (x < ds_readw(RO_VAR + 2)) {
+					x = ds_readw(RO_VAR + 2);
 					continue;
 				}
-				if (x < ro_var[3]) {
-					x = ro_var[3];
+				if (x < ds_readw(RO_VAR + 3)) {
+					x = ds_readw(RO_VAR + 3);
 					continue;
 				}
-				if (x < ro_var[4]) {
-					x = ro_var[4];
+				if (x < ds_readw(RO_VAR + 4)) {
+					x = ds_readw(RO_VAR + 4);
 					continue;
 				}
-				if (x < ro_var[5]) {
-					x = ro_var[5];
+				if (x < ds_readw(RO_VAR + 5)) {
+					x = ds_readw(RO_VAR + 5);
 					continue;
 				}
-				if (x < ro_var[6]) {
-					x = ro_var[6];
+				if (x < ds_readw(RO_VAR + 6)) {
+					x = ds_readw(RO_VAR + 6);
 					continue;
 				}
 				break;
