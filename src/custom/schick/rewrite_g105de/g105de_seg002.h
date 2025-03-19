@@ -90,7 +90,7 @@ namespace G105de {
 	Bit16u print_line(char*);
 	void print_str(char *, Bit16s, Bit16s);
 	Bit16s print_chr(unsigned char, Bit16s, Bit16s);
-	unsigned char get_chr_info(unsigned char, Bit16s*);
+	Bit16s get_chr_info(unsigned char, Bit16s*);
 	void call_them_all(Bit16u, Bit16u, Bit16u, Bit16u);
 	void fill_smth();
 	void fill_smth2(Bit8u*);

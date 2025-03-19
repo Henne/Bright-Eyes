@@ -3483,19 +3483,21 @@ void print_str(char *str, Bit16s x, Bit16s y)
 	call_mouse();
 }
 
-#if 1
-
+/* Borlandified and nearly identical */
 Bit16s print_chr(unsigned char c, Bit16s x, Bit16s y)
 {
-
-	Bit16s idx;
 	Bit16s width;
+	Bit16s idx;
 
 	idx = get_chr_info(c, &width);
 
 	call_them_all(idx, width, x, y);
-
+#if !defined(__BORLANDC__)
 	return width;
+#else
+	// Sync-Point
+	asm { nop; }
+#endif
 }
 
 /**
@@ -3505,27 +3507,29 @@ Bit16s print_chr(unsigned char c, Bit16s x, Bit16s y)
  *
  * Returns the font index.
  */
-unsigned char get_chr_info(unsigned char c, Bit16s *width) {
+/* Borlandified and identical */
+Bit16s get_chr_info(unsigned char c, Bit16s *width)
+{
+	Bit16s i;
 
-	unsigned long i;
-
-	for (i = 0; i != 74; i++) {
+	for (i = 0; i != 222; i += 3) {
 		/* search for the character */
-		if (chr_lookup[i].chr != c)
-			continue;
+		if (ds_readb(CHR_LOOKUP + i + 0) == c) {
 
-		*width = chr_lookup[i].width;
-		return chr_lookup[i].idx;
+			*width = ds_readbs(CHR_LOOKUP + i + 2) & 0xff;
+			return ds_readbs(CHR_LOOKUP + i + 1) & 0xff;
+		}
 	}
 
 	if (c == 0x7e || c == 0xf0 || c == 0xf1 || c == 0xf2 || c == 0xf3) {
-		*width = 0;
-		return 0;
+		return *width = 0;
 	} else {
 		*width = 6;
 		return 0;
 	}
 }
+
+#if 1
 
 /* static */
 void call_them_all(Bit16u v1, Bit16u v2, Bit16u x, Bit16u y) {
