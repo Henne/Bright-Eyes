@@ -1223,8 +1223,7 @@ static Bit16u col_index;
 static Bit16u bg_color;
 /* DS:0x4781 */
 static Bit16u fg_color[6];
-/* DS:0x478d */
-static Bit16u text_x_end;
+//static Bit16u text_x_end;
 /* DS:0x478f */
 static Bit16u text_y;
 /* DS:0x4791 */
@@ -3420,7 +3419,7 @@ void print_str(char *str, Bit16u x, Bit16u y)
 	update_mouse_cursor();
 
 	if (ds_readw(0x4789) == 1)
-		x = get_line_start_c(str, x, text_x_end);
+		x = get_line_start_c(str, x, ds_readws(TEXT_X_END));
 
 	x_bak = x;
 
@@ -3432,7 +3431,7 @@ void print_str(char *str, Bit16u x, Bit16u y)
 
 				if (ds_readw(0x4789) == 1)
 					x = get_line_start_c(str + i,
-						text_x,	text_x_end);
+						text_x,	ds_readws(TEXT_X_END));
 				else
 					x = x_bak;
 				break;
@@ -3843,12 +3842,12 @@ Bit16u infobox(char *msg, Bit16u digits)
 	ds_writew(0x4789, 1);
 	v2 = text_x;
 	v3 = text_y;
-	v4 = text_x_end;
+	v4 = ds_readws(TEXT_X_END);
 
 	di = (ds_readws(MENU_TILES) + 1) * 32;
 	left_border = abs(320 - di) / 2 + ds_readw(0x1327);
 	text_x = abs(320 - di) / 2 + ds_readw(0x1327) + 5;
-	text_x_end = di - 10;
+	ds_writews(TEXT_X_END, di - 10);
 	lines = str_splitter(msg);
 
 	if (digits != 0)
@@ -3910,7 +3909,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	text_x = v2;
 	text_y = v3;
-	text_x_end = v4;
+	ds_writew(TEXT_X_END, v4);
 
 	ds_writew(0x4789, 0);
 	ds_writew(IN_KEY_EXT, 0);
@@ -3997,11 +3996,11 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	di = 1;
 	bak1 = text_x;
 	bak2 = text_y;
-	bak3 = text_x_end;
+	bak3 = ds_readws(TEXT_X_END);
 	r9 = (ds_readws(MENU_TILES) + 1) * 32;
 	left_border = (abs(320 - r9) / 2) + ds_readw(0x1327);
 	text_x = left_border + 5;
-	text_x_end = (ds_readws(MENU_TILES) + 1) * 32 - 10;
+	ds_writew(TEXT_X_END, (ds_readws(MENU_TILES) + 1) * 32 - 10);
 	lines_header = str_splitter((char*)header);
 	lines_sum = lines_header + options;
 	upper_border = abs(200 - (lines_sum + 2) * 8) / 2;
@@ -4142,7 +4141,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	text_x = bak1;
 	text_y = bak2;
-	text_x_end = bak3;
+	ds_writew(TEXT_X_END, bak3);
 	ds_writew(IN_KEY_EXT, 0);
 
 	return retval;

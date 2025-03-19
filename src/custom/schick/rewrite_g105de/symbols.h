@@ -161,6 +161,8 @@
 #define BUFFER_TEXT                     (0x4775)
 #define BUFFER_FONT6                    (0x4779)
 
+#define TEXT_X_END                      (0x478d)     /* Bit16s */
+
 #define GEN_PTR6                        (0x47a3)
 #define BUFFER_DMENGE_DAT               (0x47a7)     /* RealPt DMENGE.DAT */
 
