@@ -3419,10 +3419,9 @@ Bit16u print_line(char *str)
 	return lines;
 }
 
-#if 1
-
+/* Borlandified and identical */
 /* static */
-void print_str(char *str, Bit16u x, Bit16u y)
+void print_str(char *str, Bit16s x, Bit16s y)
 {
 	Bit16s i;
 	Bit16s x_bak;
@@ -3432,63 +3431,50 @@ void print_str(char *str, Bit16u x, Bit16u y)
 
 	update_mouse_cursor();
 
-	if (ds_readw(0x4789) == 1)
-		x = get_line_start_c(str, x, ds_readws(TEXT_X_END));
-
+	if (ds_readw(0x4789) == 1) x = get_line_start_c(str, x, ds_readws(TEXT_X_END));
 	x_bak = x;
 
 	while ((c = str[i++])) {
-		switch (c) {
-			case 0x0d: case 0x40: {
-				/* newline */
-				y += 7;
+		if ((c == 0x0d) || (c == 0x40)) {
+			/* newline */
+			y += 7;
 
-				if (ds_readw(0x4789) == 1)
-					x = get_line_start_c(str + i,
-						ds_readws(TEXT_X),
-						ds_readws(TEXT_X_END));
-				else
-					x = x_bak;
-				break;
+			x = (ds_readw(0x4789) == 1) ? get_line_start_c(str + i, ds_readws(TEXT_X), ds_readws(TEXT_X_END)) : x_bak;
+
+		} else if (c == 0x7e) {
+			/* CRUFT */
+			if (x < ds_readws(RO_VAR + 0)) {
+				x = ds_readw(RO_VAR + 0);
+				continue;
 			}
-			case 0x7e: {
-				/* CRUFT */
-				if (x < ds_readw(RO_VAR + 0)) {
-					x = ds_readw(RO_VAR + 0);
-					continue;
-				}
-				if (x < ds_readw(RO_VAR + 1)) {
-					x = ds_readw(RO_VAR + 1);
-					continue;
-				}
-				if (x < ds_readw(RO_VAR + 2)) {
-					x = ds_readw(RO_VAR + 2);
-					continue;
-				}
-				if (x < ds_readw(RO_VAR + 3)) {
-					x = ds_readw(RO_VAR + 3);
-					continue;
-				}
-				if (x < ds_readw(RO_VAR + 4)) {
-					x = ds_readw(RO_VAR + 4);
-					continue;
-				}
-				if (x < ds_readw(RO_VAR + 5)) {
-					x = ds_readw(RO_VAR + 5);
-					continue;
-				}
-				if (x < ds_readw(RO_VAR + 6)) {
-					x = ds_readw(RO_VAR + 6);
-					continue;
-				}
-				break;
-		}
-		case 0xf0: case 0xf1: case 0xf2: case 0xf3: {
+			if (x < ds_readws(RO_VAR + 2)) {
+				x = ds_readw(RO_VAR + 2);
+				continue;
+			}
+			if (x < ds_readws(RO_VAR + 4)) {
+				x = ds_readw(RO_VAR + 4);
+				continue;
+			}
+			if (x < ds_readws(RO_VAR + 6)) {
+				x = ds_readw(RO_VAR + 6);
+				continue;
+			}
+			if (x < ds_readws(RO_VAR + 8)) {
+				x = ds_readw(RO_VAR + 8);
+				continue;
+			}
+			if (x < ds_readws(RO_VAR + 10)) {
+				x = ds_readw(RO_VAR + 10);
+				continue;
+			}
+			if (x < ds_readws(RO_VAR + 12)) {
+				x = ds_readw(RO_VAR + 12);
+				continue;
+			}
+		} else if ((c == 0xf0) || (c == 0xf1) || (c == 0xf2) || (c == 0xf3)) {
 			/* change text color */
 			ds_writew(COL_INDEX, c - 0xf0);
-			break;
-		}
-		default:
+		} else {
 			/* print normal */
 			x += print_chr(c, x, y);
 		}
@@ -3497,9 +3483,12 @@ void print_str(char *str, Bit16u x, Bit16u y)
 	call_mouse();
 }
 
-Bit16u print_chr(unsigned char c, Bit16u x, Bit16u y) {
+#if 1
 
-	Bit16u idx;
+Bit16s print_chr(unsigned char c, Bit16s x, Bit16s y)
+{
+
+	Bit16s idx;
 	Bit16s width;
 
 	idx = get_chr_info(c, &width);

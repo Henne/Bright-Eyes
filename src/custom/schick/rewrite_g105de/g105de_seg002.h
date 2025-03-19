@@ -86,10 +86,10 @@ namespace G105de {
 	void call_fill_rect_gen(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
 	void wait_for_vsync();
 	void blit_smth3(RealPt, Bit16s, Bit16s);
-	Bit16u print_line(char*);
-	void print_str(char *, Bit16u, Bit16u);
 	Bit16u str_splitter(char *);
-	Bit16u print_chr(unsigned char, Bit16u, Bit16u);
+	Bit16u print_line(char*);
+	void print_str(char *, Bit16s, Bit16s);
+	Bit16s print_chr(unsigned char, Bit16s, Bit16s);
 	unsigned char get_chr_info(unsigned char, Bit16s*);
 	void call_them_all(Bit16u, Bit16u, Bit16u, Bit16u);
 	void fill_smth();
