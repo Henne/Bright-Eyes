@@ -3330,7 +3330,7 @@ Bit16u str_splitter(char *s)
 	char *tp;
 	Bit16u last_space, lines, l_width, l_width_max;
 	Bit16s i;
-	unsigned char c_width;
+	Bit16s c_width;
 
 	if (s == NULL || s == (char*)MemBase)
 		return 0;
@@ -3486,7 +3486,7 @@ void print_str(char *str, Bit16u x, Bit16u y)
 Bit16u print_chr(unsigned char c, Bit16u x, Bit16u y) {
 
 	Bit16u idx;
-	unsigned char width;
+	Bit16s width;
 
 	idx = get_chr_info(c, &width);
 
@@ -3502,7 +3502,7 @@ Bit16u print_chr(unsigned char c, Bit16u x, Bit16u y) {
  *
  * Returns the font index.
  */
-unsigned char get_chr_info(unsigned char c, unsigned char *width) {
+unsigned char get_chr_info(unsigned char c, Bit16s *width) {
 
 	unsigned long i;
 
@@ -3613,7 +3613,7 @@ void get_textcolor(Bit8u *p1, Bit8u *p2) {
 Bit16u get_str_width(char *str) {
 
 	Bit16u sum = 0;
-	unsigned char width;
+	Bit16s width;
 
 	while (*str) {
 		get_chr_info(*str++, &width);
@@ -3634,7 +3634,7 @@ Bit16u get_str_width(char *str) {
 Bit16u get_line_start_c(char *str, Bit16u x, Bit16u x_max) {
 
 	Bit16u sum = 0;
-	unsigned char width;
+	Bit16s width;
 
 	while (*str && *str != 0x40 && *str != 0x0d) {
 		get_chr_info(*str++, &width);
@@ -3647,7 +3647,7 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 {
 	Bit16u pos, di, si;
 	Bit16s c;
-	unsigned char width;
+	Bit16s width;
 
 	update_mouse_cursor();
 	di = x;

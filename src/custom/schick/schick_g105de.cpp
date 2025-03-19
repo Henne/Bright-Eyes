@@ -1263,17 +1263,16 @@ int schick_nearcall_gen105(unsigned offs) {
 					return 1;
 				}
 				case 0x2375: {
+					return 0;
 					CPU_Pop16();
 					Bit16u c = CPU_Pop16();
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
 					CPU_Push16(c);
 
-					reg_ax = get_chr_info((char)c,
-						MemBase + Real2Phys(ptr));
+					reg_ax = get_chr_info((char)c, (Bit16s*)(Real2Host(ptr)));
 
-					D1_LOG("get_chr_info(%c,%x); = %d\n",
-						c & 0xff, ptr, reg_ax);
+					D1_LOG("get_chr_info(%c,%x); = %d\n", c & 0xff, ptr, reg_ax);
 
 					return 1;
 				}
