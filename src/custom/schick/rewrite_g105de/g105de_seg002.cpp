@@ -3323,67 +3323,83 @@ void blit_smth3(RealPt ptr, Bit16s v1, Bit16s v2)
  *
  * Returns the number of lines the string needs.
  */
+/* Borlandified and nearly identical */
 /* static */
 Bit16u str_splitter(char *s)
 {
 	char *tp;
-	Bit16u last_space, lines, l_width, l_width_max;
-	Bit16s i;
+	Bit16s unknown_var1;
+	Bit16s lines;
 	Bit16s c_width;
+	Bit16s l_width;
 
-	if (s == NULL || s == (char*)MemBase)
-		return 0;
+	Bit16s last_space; //di
+	Bit16s i; //si
 
 	lines = 1;
-	l_width_max = text_x_end;
-
+#if defined(__BORLANDC__)
+	if (!s) {
+		return 0;
+	}
+#else
+	if (s == NULL || s == (char*)MemBase)
+		return 0;
+#endif
 
 	/* replace all CR and LF with spaces */
-	for (tp = s; *tp; tp++)
-		if (*tp == 0x0d || *tp == 0x0a)
+	for (tp = s; *tp; tp++) {
+		if (*tp == 0x0d || *tp == 0x0a) {
 			*tp = 0x20;
+		}
+	}
 
 	tp = s;
 
-	l_width = i = last_space = 0;
+	i = last_space = unknown_var1 = 0;
 
-	while (tp[i]) {
+	for (l_width = 0; tp[i] != 0; i++) {
+
 		get_chr_info(tp[i], &c_width);
 		l_width += c_width;
 
-		if (l_width >= l_width_max) {
-
-			if (last_space) {
-				tp[last_space] = 0xd;
-				tp += last_space;
+		if (l_width >= ds_readws(TEXT_X_END)) {
+			if (last_space != unknown_var1) {
+				tp[last_space] = 0x0d;
+				tp = tp + last_space;
 			} else {
-				tp[i] = 0xd;
-				tp += i + 1;
+				tp[i] = 0x0d;
+				tp = &tp[i + 1];
 			}
-
 			lines++;
-			l_width = last_space = i = 0;
+			unknown_var1 = i = last_space = l_width = 0;
 		}
 
-		/* remember the last i in last_space */
-		if (tp[i] == 0x20)
+		if (tp[i] == 0x20) {
 			last_space = i;
+		}
 
 		if (tp[i] == 0x40) {
+#if defined(__BORLANDC__)
 			tp += i + 1;
+			// Sync-Point
+			asm {db 0xff, 0x46, 0xe0;}
+			asm {db 0xff, 0x46, 0xe0;}
+#else
+			tp = &tp[i + 1];
+#endif
+
 			i = -1;
-			l_width = last_space = 0;
+			unknown_var1 = last_space = l_width = 0;
 			lines++;
 		}
-		i++;
 	}
 
-	if (l_width >= l_width_max) {
-		if (last_space) {
-			tp[last_space] = 0xd;
-			lines++;
+	if (l_width >= ds_readws(TEXT_X_END)) {
+		if (unknown_var1 == last_space) {
+			tp[i-1] = 0;
 		} else {
-			tp[i - 1] = 0;
+			tp[last_space] = 0x0d;
+			lines++;
 		}
 	}
 
