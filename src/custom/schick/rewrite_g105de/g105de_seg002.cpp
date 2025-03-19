@@ -3406,8 +3406,7 @@ Bit16u str_splitter(char *s)
 	return lines;
 }
 
-#if 1
-
+/* Borlandified and identical */
 /* static */
 Bit16u print_line(char *str)
 {
@@ -3423,6 +3422,8 @@ Bit16u print_line(char *str)
 
 	return lines;
 }
+
+#if 1
 
 /* static */
 void print_str(char *str, Bit16u x, Bit16u y)
