@@ -3624,19 +3624,23 @@ void call_blit_smth3(RealPt dst, Bit16s v1, Bit16s v2, Bit16s v3, Bit16s v4)
 	blit_smth3(dst, v1, v4);
 }
 
+/* Borlandified and identical */
+/* static */
+void set_textcolor(Bit16s fg, Bit16s bg)
+{
+	ds_writew(FG_COLOR + 0, fg);
+	ds_writew(BG_COLOR, bg);
+}
+
+/* Borlandified and identical */
+/* static */
+void get_textcolor(Bit16s *p_fg, Bit16s *p_bg)
+{
+	host_writew((Bit8u*)p_fg, ds_readw(FG_COLOR + 0));
+	host_writew((Bit8u*)p_bg, ds_readw(BG_COLOR));
+}
+
 #if 1
-
-/* static */
-void set_textcolor(Bit16s fg, Bit16s bg) {
-	ds_writew(FG_COLOR + 0, (Bit8u)fg);
-	ds_writew(BG_COLOR, (Bit8u)bg);
-}
-
-/* static */
-void get_textcolor(Bit16s *p_fg, Bit16s *p_bg) {
-	host_writew((Bit8u*)p_fg, (Bit8u)ds_readw(FG_COLOR + 0));
-	host_writew((Bit8u*)p_bg, (Bit8u)ds_readw(BG_COLOR));
-}
 
 Bit16u get_str_width(char *str) {
 
