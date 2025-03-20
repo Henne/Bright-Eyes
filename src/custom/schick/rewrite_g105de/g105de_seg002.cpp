@@ -3572,27 +3572,32 @@ void fill_smth()
 			host_writeb(Real2Host(ptr) + j, (unsigned char)ds_readws(BG_COLOR));
 }
 
-#if 1
-
+/* Borlandified and identical */
 /* static */
-void fill_smth2(Bit8u* ptr) {
+void fill_smth2(Bit8u* sptr) {
 
-	Bit8u *lp;
-	Bit16u i, j;
-	Bit8u lv;
+	RealPt ptr;
+	Bit16s i, j;
+	Bit8u mask;
 
 	if (ds_readb(MASK_SWITCH) != 0)
-		lp = MemBase + PhysMake(datseg, ARRAY_1);
+#if !defined(__BORLANDC__)
+		ptr = RealMake(datseg, ARRAY_1);
 	else
-		lp = MemBase + PhysMake(datseg, ARRAY_2);
+		ptr = RealMake(datseg, ARRAY_2);
+#else
+		ptr = &ds[ARRAY_1];
+	else
+		ptr = &ds[ARRAY_2];
+#endif
 
-	for (i = 0; i < 8; i++, lp += 8) {
-		lv = *ptr++;
+	for (i = 0; i < 8; ptr += 8, i++) {
+		mask = *sptr++;
 		for (j = 0; j < 8; j++) {
-			if (!((0x80 >> j) & lv))
-				continue;
-
-			host_writeb(lp + j, (unsigned char)ds_readws(FG_COLOR + 2 * ds_readw(COL_INDEX)));
+			if ((0x80 >> j) & mask) {
+				host_writeb(Real2Host(ptr) + j,
+					(unsigned char)ds_readws(FG_COLOR + 2 * ds_readw(COL_INDEX)));
+			}
 		}
 	}
 }
@@ -3606,6 +3611,8 @@ RealPt get_gfx_ptr(Bit16u x, Bit16u y, Bit16s* unused)
 
 	return start;
 }
+
+#if 1
 
 /* static */
 Bit16s ret_zero(Bit16s unused1, Bit16s unused2)
