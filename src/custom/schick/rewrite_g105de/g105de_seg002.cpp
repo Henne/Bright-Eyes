@@ -3640,11 +3640,27 @@ void get_textcolor(Bit16s *p_fg, Bit16s *p_bg)
 	host_writew((Bit8u*)p_bg, ds_readw(BG_COLOR));
 }
 
-#if 1
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+/* static */
+Bit16s count_linebreaks(Bit8u *ptr)
+{
+	Bit16s i = 0;
+	
+	while (*ptr) {
+		if (*ptr++ == 0x0d) {
+			i++;
+		}
+	}
 
-Bit16u get_str_width(char *str) {
+	return i;
+}
+#endif
 
-	Bit16u sum = 0;
+/* Borlandified and identical */
+Bit16s get_str_width(char *str)
+{
+	Bit16s sum = 0;
 	Bit16s width;
 
 	while (*str) {
@@ -3654,6 +3670,8 @@ Bit16u get_str_width(char *str) {
 
 	return sum;
 }
+
+#if 1
 
 /**
  * get_line_start_c() - calculates the start positon for a centered line

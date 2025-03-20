@@ -99,7 +99,7 @@ namespace G105de {
 	void call_blit_smth3(RealPt, Bit16s, Bit16s, Bit16s, Bit16s);
 	void set_textcolor(Bit16s, Bit16s);
 	void get_textcolor(Bit16s*, Bit16s*);
-	Bit16u get_str_width(char*);
+	Bit16s get_str_width(char*);
 	Bit16u get_line_start_c(char*, Bit16u, Bit16u);
 	Bit16u enter_string(char*, Bit16u, Bit16u, Bit16u, Bit16u);
 	Bit16s gui_bool(Bit8u*);
