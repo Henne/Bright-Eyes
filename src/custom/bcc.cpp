@@ -115,6 +115,11 @@ static const unsigned char s_fpadd[] =
 	 0xD3, 0x8A, 0xE8, 0xD3, 0xE8, 0x03, 0xD0, 0x8A,
 	 0xC5, 0x25, 0x0F, 0x00, 0xCB };
 
+/* Signature: exit() BCC31:ML */
+static const unsigned char s_exit[] =
+	{0x55, 0x8b, 0xec, 0x33, 0xc0, 0x50, 0x50, 0xff,
+	 0x76, 0x06, 0xe8, 0x9c, 0xff, 0x5d, 0xcb};
+
 void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
 {
 	const char outstring[] = "Found at CS:0x%04x Func: %20s Length: 0x%04x Versions: %s\n";
@@ -168,6 +173,10 @@ void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
 		if (memcmp(p_cs + i, s_fpadd, sizeof(s_fpadd)) == 0) {
 			fprintf(stderr, outstring, i, "F_PADD" , sizeof(s_fpadd), "BCC 2.0, 3.1");
 			i += sizeof(s_fpadd) - 1;
+		}
+		if (memcmp(p_cs + i, s_exit, sizeof(s_exit)) == 0) {
+			fprintf(stderr, outstring, i, "exit()" , sizeof(s_exit), "BCC 3.1");
+			i += sizeof(s_exit) - 1;
 		}
 
 		i++;
