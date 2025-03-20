@@ -799,8 +799,7 @@ static const struct struct_color pal_genbg[32] = {
 	{0x14, 0x00, 0x00},
 };
 
-/* DS:0x109a */
-static const unsigned char unused_ro1 = 0;
+//static const unsigned char MASK_SWITCH = 0;
 
 static unsigned short mouse_mask[32] = {
         0x7fff, 0x9fff, 0x87ff, 0xc1ff,
@@ -3552,7 +3551,7 @@ void fill_smth() {
 	Bit8u *ptr;
 	Bit16u i, j;
 
-	if (unused_ro1)
+	if (ds_readb(MASK_SWITCH) != 0)
 		ptr = MemBase + PhysMake(datseg, ARRAY_1);
 	else
 		ptr = MemBase + PhysMake(datseg, ARRAY_2);
@@ -3569,7 +3568,7 @@ void fill_smth2(Bit8u* ptr) {
 	Bit16u i, j;
 	Bit8u lv;
 
-	if (unused_ro1)
+	if (ds_readb(MASK_SWITCH) != 0)
 		lp = MemBase + PhysMake(datseg, ARRAY_1);
 	else
 		lp = MemBase + PhysMake(datseg, ARRAY_2);
