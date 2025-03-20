@@ -3602,28 +3602,29 @@ void fill_smth2(Bit8u* sptr) {
 	}
 }
 
+/* Borlandified and identical */
 /* static */
-RealPt get_gfx_ptr(Bit16u x, Bit16u y, Bit16s* unused)
+RealPt get_gfx_ptr(Bit16s x, Bit16s y, Bit16s* unused)
 {
 	RealPt start;
-
-	start = ds_readd(GFX_PTR) + 320 * y + x;
-
-	return start;
+	return start = (RealPt)ds_readd(GFX_PTR) + (y * 320 + x);
 }
 
-#if 1
-
+/* Borlandified and identical */
 /* static */
 Bit16s ret_zero(Bit16s unused1, Bit16s unused2)
 {
 	return 0;
 }
 
+/* Borlandified and identical */
 /* static */
-void call_blit_smth3(RealPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
+void call_blit_smth3(RealPt dst, Bit16s v1, Bit16s v2, Bit16s v3, Bit16s v4)
+{
 	blit_smth3(dst, v1, v4);
 }
+
+#if 1
 
 /* static */
 void set_textcolor(Bit16s fg, Bit16s bg) {

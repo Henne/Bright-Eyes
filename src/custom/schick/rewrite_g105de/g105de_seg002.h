@@ -94,9 +94,9 @@ namespace G105de {
 	void call_them_all(Bit16s, Bit16s, Bit16s, Bit16s);
 	void fill_smth();
 	void fill_smth2(Bit8u*);
-	RealPt get_gfx_ptr(Bit16u, Bit16u, Bit16s*);
+	RealPt get_gfx_ptr(Bit16s, Bit16s, Bit16s*);
 	Bit16s ret_zero(Bit16s, Bit16s);
-	void call_blit_smth3(RealPt, Bit16u, Bit16u, Bit16u, Bit16u);
+	void call_blit_smth3(RealPt, Bit16s, Bit16s, Bit16s, Bit16s);
 	void set_textcolor(Bit16s, Bit16s);
 	void get_textcolor(Bit16s*, Bit16s*);
 	Bit16u get_str_width(char*);
