@@ -905,7 +905,7 @@ static const char* str_file_missing[] = { "FILE %s IS MISSING!" };
 struct struct_chr_lookup {
 	unsigned char chr, idx, width;
 };
-/* DS:0x1b85 */
+
 static const struct struct_chr_lookup chr_lookup[74] = {
 	{0x20, 0, 6},
 	{0x41, 1, 6},
@@ -3902,7 +3902,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	draw_popup_line(lines + 1, 3);
 
 	get_textcolor((Bit16s*)&fg, (Bit16s*)&bg);
-	set_textcolor(0xff, 0xdf);
+	set_textcolor(0xff, 0xdf); // WHITE ON GREEN
 
 	print_line(msg);
 
@@ -4051,7 +4051,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	/* save and set text colors */
 	get_textcolor((Bit16s*)&fg_bak, (Bit16s*)&bg_bak);
-	set_textcolor(0xff, 0xdf);
+	set_textcolor(0xff, 0xdf); // WHITE ON GREEN
 
 	/* print header */
 	if (lines_header)
@@ -7411,7 +7411,7 @@ void intro()
 		set_palette(pal_dst, 0, 32);
 	}
 
-	set_textcolor(0xff, 0);
+	set_textcolor(0xff, 0x00); // WHITE ON BLACK
 	print_str(version, 290, 190);
 	vsync_or_key(400);
 
@@ -7592,17 +7592,17 @@ void init_colors()
 	set_palette((Bit8u*)col_misc, 0xc8, 3);
 	set_palette((Bit8u*)pal_genbg, 0x40, 0x20);
 	set_palette((Bit8u*)pal_heads, 0x20, 0x20);
-	set_textcolor(0xff, 0x0);
+	set_textcolor(0xff, 0x0); // WHITE ON BLACK
 }
 
 void init_stuff()
 {
 	init_colors();
 
-	/* these 3 variables are bogus */
-	ds_writew(FG_COLOR + 2, 0x00c8);
-	ds_writew(FG_COLOR + 4, 0x00c9);
-	ds_writew(FG_COLOR + 6, 0x00ca);
+	/* these 3 variables are different text colors */
+	ds_writew(FG_COLOR + 2, 0x0c8); // RED
+	ds_writew(FG_COLOR + 4, 0x0c9); // YELLOW
+	ds_writew(FG_COLOR + 6, 0x0ca); // BLUE
 
 	/* number of menu tiles width */
 	ds_writew(MENU_TILES, 3);
