@@ -100,7 +100,7 @@ namespace G105de {
 	void set_textcolor(Bit16s, Bit16s);
 	void get_textcolor(Bit16s*, Bit16s*);
 	Bit16s get_str_width(char*);
-	Bit16u get_line_start_c(char*, Bit16u, Bit16u);
+	Bit16s get_line_start_c(char*, Bit16s, Bit16s);
 	Bit16u enter_string(char*, Bit16u, Bit16u, Bit16u, Bit16u);
 	Bit16s gui_bool(Bit8u*);
 	void fill_radio_button(Bit16s, Bit16u, Bit16u);

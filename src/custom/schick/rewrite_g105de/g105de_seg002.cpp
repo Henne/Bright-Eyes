@@ -3671,8 +3671,6 @@ Bit16s get_str_width(char *str)
 	return sum;
 }
 
-#if 1
-
 /**
  * get_line_start_c() - calculates the start positon for a centered line
  * @str:	the string
@@ -3681,17 +3679,28 @@ Bit16s get_str_width(char *str)
  *
  * Returns the X coordinate where the strin must start.
  */
-Bit16u get_line_start_c(char *str, Bit16u x, Bit16u x_max) {
-
-	Bit16u sum = 0;
+/* Borlandified and identical */
+Bit16s get_line_start_c(char *str, Bit16s x, Bit16s x_max)
+{
 	Bit16s width;
 
-	while (*str && *str != 0x40 && *str != 0x0d) {
+	register Bit16s pos_x;	// si
+	register Bit16s val;	// di
+	
+	for (pos_x = 0; ((val = *str) && (val != 0x40) && (val != 0x0d)); )
+	{
 		get_chr_info(*str++, &width);
-		sum += width;
+		pos_x += width;
 	}
-	return (x_max - sum) / 2 + x ;
+
+	x_max -= pos_x;
+	x_max >>= 1;
+	x_max += x;
+	// readable: xmax = (x_max - pos_x) / 2 + x;
+	return x_max;
 }
+
+#if 0
 
 Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 {
