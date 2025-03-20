@@ -179,6 +179,7 @@
 #define GEN_PTR3                        (0x47bb)     /* RealPt */
 #define GEN_PTR2                        (0x47bf)     /* RealPt */
 
+#define GFX_PTR                         (0x47c7)     /* RealPt */
 #define VGA_MEMSTART                    (0x47cb)     /* RealPt */
 #define PAGE_BUFFER                     (0x47cf)     /* RealPt */
 #define GEN_PTR1_DIS                    (0x47d3)     /* RealPt */

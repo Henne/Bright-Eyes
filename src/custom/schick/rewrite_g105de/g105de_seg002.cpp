@@ -3607,7 +3607,7 @@ RealPt get_gfx_ptr(Bit16u x, Bit16u y, Bit16s* unused)
 {
 	RealPt start;
 
-	start = ds_readd(0x47c7) + 320 * y + x;
+	start = ds_readd(GFX_PTR) + 320 * y + x;
 
 	return start;
 }
@@ -4807,7 +4807,7 @@ void refresh_screen()
 	PhysPt src, dst;
 
 	if (ds_readw(0x11fe)) {
-		ds_writed(0x47c7, ds_readd(GEN_PTR1_DIS));
+		ds_writed(GFX_PTR, ds_readd(GEN_PTR1_DIS));
 		load_page(ds_readws(GEN_PAGE));
 		save_picbuf();
 
@@ -4892,7 +4892,7 @@ void refresh_screen()
 		}
 
 		print_values();
-		ds_writed(0x47c7, ds_readd(VGA_MEMSTART));
+		ds_writed(GFX_PTR, ds_readd(VGA_MEMSTART));
 		dst = Real2Phys(ds_readd(VGA_MEMSTART));
 		src = Real2Phys(ds_readd(GEN_PTR1_DIS));
 		update_mouse_cursor();
@@ -5708,7 +5708,7 @@ void print_values()
 	switch (ds_readws(GEN_PAGE)) {
 
 		case 0: {
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			/* print name */
 			print_str(hero.name, 180, 12);
@@ -5761,7 +5761,7 @@ void print_values()
 		}
 		case 1: {
 			/* SKILLS Page 1/3 */
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			/* print fight skills */
 			for (i = 0; i < 9; i++) {
@@ -5805,7 +5805,7 @@ void print_values()
 		}
 		case 2: {
 			/* SKILLS Page 2/3 */
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			/* print social skills */
 			for (i = 19; i < 26; i++) {
@@ -5850,7 +5850,7 @@ void print_values()
 		}
 		case 3: {
 			/* SKILLS Page 3/3 */
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			/* print craftmansship skills */
 			for (i = 41; i < 50; i++) {
@@ -5912,7 +5912,7 @@ void print_values()
 		}
 		case 4: {
 			/* ATPA Page */
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			/* Print base value  2x the same */
 			sprintf(tmp, "%d", hero.atpa);
@@ -5957,7 +5957,7 @@ void print_values()
 
 		case 5: {
 			/* Spells Page 1/6 */
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			for (i = 1; i < 6; i++) {
 				pos = i - 1;
@@ -6013,7 +6013,7 @@ void print_values()
 		}
 		case 6: {
 			/* Spells Page 2/6 */
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			for (i = 12; i <= 17; i++) {
 				pos = i - 12;
@@ -6069,7 +6069,7 @@ void print_values()
 		}
 		case 7: {
 			/* Spells Page 3/6 */
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			for (i = 27; i < 33; i++) {
 				pos = i - 27;
@@ -6127,7 +6127,7 @@ void print_values()
 		}
 		case 8: {
 			/* Spells Page 4/6 */
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			for (i = 47; i <= 48; i++) {
 				pos = i - 47;
@@ -6185,7 +6185,7 @@ void print_values()
 		}
 		case 9: {
 			/* Spells Page 5/6 */
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			for (i = 60; i < 76; i++) {
 				pos = i - 60;
@@ -6211,7 +6211,7 @@ void print_values()
 		}
 		case 10: {
 			/* Spells Page 6/6 */
-			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			for (i = 76; i < 86; i++) {
 				pos = i - 76;
@@ -7540,7 +7540,7 @@ void alloc_buffers_emu()
 void alloc_buffers()
 {
 	ds_writed(VGA_MEMSTART, RealMake(0xa000, 0x0));
-	ds_writed(0x47c7, RealMake(0xa000, 0x0));
+	ds_writed(GFX_PTR, RealMake(0xa000, 0x0));
 
 	ds_writed(GEN_PTR1_DIS, (RealPt)emu_gen_alloc(64108) + 8);
 
