@@ -1217,10 +1217,8 @@ static Bit8u *buffer_heads_dat;
 //static Bit8u *buffer_text;
 //static Bit8u *buffer_font6;
 //static Bit16u col_index;
-/* DS:0x477f */
-static Bit16u bg_color;
-/* DS:0x4781 */
-static Bit16u fg_color[6];
+//static Bit16u bg_color;
+//static Bit16u fg_color[6];
 //static Bit16u text_x_end;
 //static Bit16u text_y;
 //static Bit16u text_x;
@@ -2163,9 +2161,9 @@ void handle_input()
 			if (si == 0xfd) {
 				si = 0;
 				ds_writew(MENU_TILES, 4);
-				ds_writew(0x4789, 1);
+				ds_writew(FG_COLOR + 8, 1);
 				infobox(get_text(267), 0);
-				ds_writew(0x4789, 0);
+				ds_writew(FG_COLOR + 8, 0);
 				ds_writew(MENU_TILES, 3);
 			}
 		}
@@ -3430,7 +3428,7 @@ void print_str(char *str, Bit16s x, Bit16s y)
 
 	update_mouse_cursor();
 
-	if (ds_readw(0x4789) == 1) x = get_line_start_c(str, x, ds_readws(TEXT_X_END));
+	if (ds_readw(FG_COLOR + 8) == 1) x = get_line_start_c(str, x, ds_readws(TEXT_X_END));
 	x_bak = x;
 
 	while ((c = str[i++])) {
@@ -3438,7 +3436,7 @@ void print_str(char *str, Bit16s x, Bit16s y)
 			/* newline */
 			y += 7;
 
-			x = (ds_readw(0x4789) == 1) ? get_line_start_c(str + i, ds_readws(TEXT_X), ds_readws(TEXT_X_END)) : x_bak;
+			x = (ds_readw(FG_COLOR + 8) == 1) ? get_line_start_c(str + i, ds_readws(TEXT_X), ds_readws(TEXT_X_END)) : x_bak;
 
 		} else if (c == 0x7e) {
 			/* CRUFT */
@@ -3545,13 +3543,11 @@ void call_them_all(Bit16s v1, Bit16s v2, Bit16s x, Bit16s y)
 	call_blit_smth3(gfx_ptr, 7, (Bit16s)bogus, l2, v2);
 }
 
-#if 1
-
 /* static */
 void fill_smth()
 {
 	Bit8u *ptr;
-	Bit16u i, j;
+	Bit16s i, j;
 
 	if (ds_readb(MASK_SWITCH) != 0)
 		ptr = MemBase + PhysMake(datseg, ARRAY_1);
@@ -3560,8 +3556,10 @@ void fill_smth()
 
 	for (i = 0; i < 8; i++, ptr += 8)
 		for (j = 0; j < 8; j++)
-			host_writeb(ptr + j, (unsigned char)bg_color);
+			host_writeb(ptr + j, (unsigned char)ds_readws(BG_COLOR));
 }
+
+#if 1
 
 /* static */
 void fill_smth2(Bit8u* ptr) {
@@ -3581,7 +3579,7 @@ void fill_smth2(Bit8u* ptr) {
 			if (!((0x80 >> j) & lv))
 				continue;
 
-			host_writeb(lp + j, (unsigned char)fg_color[ds_readw(COL_INDEX)]);
+			host_writeb(lp + j, (unsigned char)ds_readws(FG_COLOR + 2 * ds_readw(COL_INDEX)));
 		}
 	}
 }
@@ -3608,15 +3606,15 @@ void call_blit_smth3(RealPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
 }
 
 /* static */
-void set_textcolor(unsigned short fg, unsigned short bg) {
-	fg_color[0] = fg;
-	bg_color = bg;
+void set_textcolor(Bit16s fg, Bit16s bg) {
+	ds_writew(FG_COLOR + 0, (Bit8u)fg);
+	ds_writew(BG_COLOR, (Bit8u)bg);
 }
 
 /* static */
-void get_textcolor(Bit8u *p1, Bit8u *p2) {
-	host_writew(p1, fg_color[0]);
-	host_writew(p2, bg_color);
+void get_textcolor(Bit16s *p_fg, Bit16s *p_bg) {
+	host_writew((Bit8u*)p_fg, (Bit8u)ds_readw(FG_COLOR + 0));
+	host_writew((Bit8u*)p_bg, (Bit8u)ds_readw(BG_COLOR));
 }
 
 Bit16u get_str_width(char *str) {
@@ -3844,12 +3842,12 @@ void draw_popup_line(Bit16u line, Bit16u type)
 Bit16u infobox(char *msg, Bit16u digits)
 {
 	PhysPt src, dst;
-	Bit16u bg, fg;
+	Bit16s bg, fg;
 	Bit16u retval, v2, v3, v4, i, lines;
 	Bit16s di;
 
 	retval = 0;
-	ds_writew(0x4789, 1);
+	ds_writew(FG_COLOR + 8, 1);
 	v2 = ds_readws(TEXT_X);
 	v3 = ds_readws(TEXT_Y);
 	v4 = ds_readws(TEXT_X_END);
@@ -3883,7 +3881,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	draw_popup_line(lines + 1, 3);
 
-	get_textcolor((Bit8u*)&fg, (Bit8u*)&bg);
+	get_textcolor((Bit16s*)&fg, (Bit16s*)&bg);
 	set_textcolor(0xff, 0xdf);
 
 	print_line(msg);
@@ -3921,7 +3919,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	ds_writew(TEXT_Y, v3);
 	ds_writew(TEXT_X_END, v4);
 
-	ds_writew(0x4789, 0);
+	ds_writew(FG_COLOR + 8, 0);
 	ds_writew(IN_KEY_EXT, 0);
 
 	return retval;
@@ -3995,7 +3993,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	Bit16u r3, r4, r5, r6, r7, r8, r9;
 	Bit16u my_bak, mx_bak;
 	Bit16u bak1, bak2, bak3;
-	Bit16u fg_bak, bg_bak;
+	Bit16s fg_bak, bg_bak;
 	Bit16u lines_header, lines_sum;
 	Bit16s retval;
 	Bit16u di;
@@ -4032,7 +4030,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	draw_popup_line(lines_sum + 1, 3);
 
 	/* save and set text colors */
-	get_textcolor((Bit8u*)&fg_bak, (Bit8u*)&bg_bak);
+	get_textcolor((Bit16s*)&fg_bak, (Bit16s*)&bg_bak);
 	set_textcolor(0xff, 0xdf);
 
 	/* print header */
@@ -7582,9 +7580,9 @@ void init_stuff()
 	init_colors();
 
 	/* these 3 variables are bogus */
-	fg_color[1] = 0xc8;
-	fg_color[2] = 0xc9;
-	fg_color[3] = 0xca;
+	ds_writew(FG_COLOR + 2, 0x00c8);
+	ds_writew(FG_COLOR + 4, 0x00c9);
+	ds_writew(FG_COLOR + 6, 0x00ca);
 
 	/* number of menu tiles width */
 	ds_writew(MENU_TILES, 3);

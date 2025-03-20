@@ -1320,8 +1320,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(p2);
 					CPU_Push32(p1);
 
-					get_textcolor(Real2Host(p1),
-						Real2Host(p2));
+					get_textcolor((Bit16s*)Real2Host(p1), (Bit16s*)Real2Host(p2));
 					D1_LOG("get_textcolor(%x, %x);\n", p1, p2);
 
 					return 1;

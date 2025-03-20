@@ -165,7 +165,8 @@
 #define BUFFER_FONT6                    (0x4779)
 
 #define COL_INDEX                       (0x477d)     /* Bit16s */
-
+#define BG_COLOR                        (0x477f)     /* Bit16s */
+#define FG_COLOR                        (0x4781)     /* Bit16s[6] */
 #define TEXT_X_END                      (0x478d)     /* Bit16s */
 #define TEXT_Y                          (0x478f)     /* Bit16s */
 #define TEXT_X                          (0x4791)     /* Bit16s */
