@@ -3528,26 +3528,28 @@ Bit16s get_chr_info(unsigned char c, Bit16s *width)
 	}
 }
 
-#if 1
-
+/* Borlandified and identical */
 /* static */
-void call_them_all(Bit16u v1, Bit16u v2, Bit16u x, Bit16u y) {
-
+void call_them_all(Bit16s v1, Bit16s v2, Bit16s x, Bit16s y)
+{
 	RealPt gfx_ptr;
-	Bit32u bogus;
+	Bit16s l2;
+	Bit32s bogus;
 
 	fill_smth();
 	fill_smth2((Bit8u*)Real2Host(ds_readd(BUFFER_FONT6)) + v1 * 8);
 
-	gfx_ptr = get_gfx_ptr(x, y);
-	bogus = ret_zero();
+	gfx_ptr = get_gfx_ptr(x, y, &l2);
+	bogus = (Bit32s)ret_zero(v2, l2);
 
-	call_blit_smth3(gfx_ptr, 7, 0, 0, v2);
+	call_blit_smth3(gfx_ptr, 7, (Bit16s)bogus, l2, v2);
 }
 
-/* static */
-void fill_smth() {
+#if 1
 
+/* static */
+void fill_smth()
+{
 	Bit8u *ptr;
 	Bit16u i, j;
 
@@ -3585,8 +3587,8 @@ void fill_smth2(Bit8u* ptr) {
 }
 
 /* static */
-RealPt get_gfx_ptr(Bit16u x, Bit16u y) {
-
+RealPt get_gfx_ptr(Bit16u x, Bit16u y, Bit16s* unused)
+{
 	RealPt start;
 
 	start = ds_readd(0x47c7) + 320 * y + x;
@@ -3595,7 +3597,8 @@ RealPt get_gfx_ptr(Bit16u x, Bit16u y) {
 }
 
 /* static */
-Bit16u ret_zero() {
+Bit16s ret_zero(Bit16s unused1, Bit16s unused2)
+{
 	return 0;
 }
 

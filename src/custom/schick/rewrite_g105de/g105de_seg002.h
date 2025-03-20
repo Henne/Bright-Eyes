@@ -91,11 +91,11 @@ namespace G105de {
 	void print_str(char *, Bit16s, Bit16s);
 	Bit16s print_chr(unsigned char, Bit16s, Bit16s);
 	Bit16s get_chr_info(unsigned char, Bit16s*);
-	void call_them_all(Bit16u, Bit16u, Bit16u, Bit16u);
+	void call_them_all(Bit16s, Bit16s, Bit16s, Bit16s);
 	void fill_smth();
 	void fill_smth2(Bit8u*);
-	RealPt get_gfx_ptr(Bit16u, Bit16u);
-	Bit16u ret_zero();
+	RealPt get_gfx_ptr(Bit16u, Bit16u, Bit16s*);
+	Bit16s ret_zero(Bit16s, Bit16s);
 	void call_blit_smth3(RealPt, Bit16u, Bit16u, Bit16u, Bit16u);
 	void set_textcolor(unsigned short, unsigned short);
 	void get_textcolor(Bit8u*, Bit8u*);
