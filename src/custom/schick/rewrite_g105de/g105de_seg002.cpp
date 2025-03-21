@@ -3700,6 +3700,7 @@ Bit16s get_line_start_c(char *str, Bit16s x, Bit16s x_max)
 	return x_max;
 }
 
+/* Borlandified and nearly identical */
 Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 {
 	Bit16s pos;
@@ -3791,7 +3792,11 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 
 			/* are we at the end of the input field */
 			if (pos == num) {
+#if !defined(__BORLANDC__)
 				dst--;
+#else
+				asm {nop;} // BCC Sync-point
+#endif
 				get_chr_info(*dst, &width);
 
 				di -= (zero != 0) ? width : 6;
@@ -3799,7 +3804,7 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 				pos--;
 			}
 
-			*dst++ = c & 0xff;
+			*dst++ = (Bit8u)c;
 			print_chr(0x20, di, y);
 			print_chr((Bit8u)c, di, y);
 			get_chr_info((Bit8u)c, &width);
@@ -3829,8 +3834,6 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 
 	return 0;
 }
-
-#if 1
 
 void draw_popup_line(Bit16u line, Bit16u type)
 {
@@ -3881,6 +3884,9 @@ void draw_popup_line(Bit16u line, Bit16u type)
 	src = Real2Phys(ds_readd(BUFFER_POPUP)) + popup_right;
 	copy_to_screen(src, dst, 16, 8, 0);
 }
+
+#if 1
+
 
 /**
  *	infobox() - draws and info- or enter_numberbox
