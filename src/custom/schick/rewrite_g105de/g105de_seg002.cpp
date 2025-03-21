@@ -3765,6 +3765,8 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 
 			di -= (zero != 0) ? width : 6;
 
+			print_chr(0x20, di, y);
+			print_chr(0x5f, di, y);
 		} else {
 			if (!(ds_readbs(0x1ff9 + c) & 0x0e) &&
 				(((Bit8u)c) != 0x84) && (((Bit8u)c) != 0x94) &&
@@ -3806,11 +3808,11 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 
 			pos++;
 
-			if (zero != 1 || pos == num)
-				continue;
+			if ((zero == 1) && (pos != num)) {
+				print_chr(0x20, di, y);
+				print_chr(0x5f, di, y);
+			}
 		}
-		print_chr(0x20, di, y);
-		print_chr(0x5f, di, y);
 	}
 
 	/* OK from here */
