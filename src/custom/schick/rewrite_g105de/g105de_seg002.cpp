@@ -3700,9 +3700,7 @@ Bit16s get_line_start_c(char *str, Bit16s x, Bit16s x_max)
 	return x_max;
 }
 
-#if 0
-
-Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
+Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 {
 	Bit16s pos;
 	Bit16s c;
@@ -3836,6 +3834,8 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 
 	return 0;
 }
+
+#if 0
 
 void draw_popup_line(Bit16u line, Bit16u type)
 {
