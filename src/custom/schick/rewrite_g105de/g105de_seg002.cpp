@@ -3897,8 +3897,6 @@ void draw_popup_line(Bit16s line, Bit16s type)
 #endif
 }
 
-#if 1
-
 /**
  *	infobox() - draws and info- or enter_numberbox
  *	@msg:		the message for the box
@@ -3908,10 +3906,18 @@ void draw_popup_line(Bit16s line, Bit16s type)
  */
 Bit16u infobox(char *msg, Bit16u digits)
 {
-	PhysPt src, dst;
-	Bit16s bg, fg;
-	Bit16u retval, v2, v3, v4, i, lines;
-	Bit16s di;
+	PhysPt src;
+	PhysPt dst;
+	Bit16s retval;
+	Bit16s fg;
+	Bit16s bg;
+	Bit16s v2;
+	Bit16s v3;
+	Bit16s v4;
+	Bit16s i;
+
+	Bit16s lines; // si
+	Bit16s di;    // di
 
 	retval = 0;
 	ds_writew(FG_COLOR + 8, 1);
@@ -3934,9 +3940,9 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	update_mouse_cursor();
 
-	src = Real2Phys(ds_readd(VGA_MEMSTART));
+	src = Real2Phys((RealPt)ds_readd(VGA_MEMSTART));
 	src += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
-	dst = Real2Phys(ds_readd(GEN_PTR1_DIS));
+	dst = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS));
 
 	copy_to_screen(src, dst, di, (lines + 2) * 8, 2);
 
@@ -3957,11 +3963,11 @@ Bit16u infobox(char *msg, Bit16u digits)
 	call_mouse();
 
 	if (digits) {
-		enter_string((char*)Real2Host(ds_readd(GEN_PTR3)),
+		enter_string((char*)Real2Host((RealPt)ds_readd(GEN_PTR3)),
 			abs(di - digits * 6) / 2 + ds_readws(LEFT_BORDER),
 			lines * 8 + ds_readws(UPPER_BORDER) - 2, digits, 0);
 
-		retval = (Bit16u)atol((char*)Real2Host(ds_readd(GEN_PTR3)));
+		retval = (Bit16u)atol((char*)Real2Host((RealPt)ds_readd(GEN_PTR3)));
 	} else {
 #if !defined(__BORLANDC__)
 		ds_writed(ACTION_TABLE,  RealMake(datseg, ACTION_INPUT));
@@ -3969,15 +3975,15 @@ Bit16u infobox(char *msg, Bit16u digits)
 		ds_writed(ACTION_TABLE, (Bit32u)&ds[ACTION_INPUT]);
 #endif
 		vsync_or_key(150 * lines);
-		ds_writed(ACTION_TABLE, (RealPt)0);
+		ds_writed(ACTION_TABLE, (Bit32u)((RealPt)0));
 	}
 
 	set_textcolor(fg, bg);
 	update_mouse_cursor();
 
-	dst = Real2Phys(ds_readd(VGA_MEMSTART));
+	dst = Real2Phys((RealPt)ds_readd(VGA_MEMSTART));
 	dst += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
-	src = Real2Phys(ds_readd(GEN_PTR1_DIS));
+	src = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS));
 
 	copy_to_screen(src, dst, di, (lines + 2) * 8, 0);
 	call_mouse();
@@ -3991,6 +3997,9 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	return retval;
 }
+
+
+#if 1
 
 /**
  * gui_bool() - displays a yes - no radio box
