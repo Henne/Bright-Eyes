@@ -3833,21 +3833,22 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 	return 0;
 }
 
-void draw_popup_line(Bit16u line, Bit16u type)
+/* Borlandified and nearly identical */
+void draw_popup_line(Bit16s line, Bit16s type)
 {
 	RealPt dst;
 	RealPt src;
 	Bit16s i;
 	Bit16s popup_right;
 
-	Bit16s popup_left;   // si
-	Bit16s popup_middle; // di
+	register Bit16s popup_left;   // si
+	register Bit16s popup_middle; // di
 
 	/* This is a bit bogus */
 	dst = (RealPt)ds_readd(VGA_MEMSTART);
 
 	/* (line * 8 + y) * 320  + x */
-	dst = ((line * 8) + ds_readws(UPPER_BORDER)) * 320 + ((RealPt)ds_readd(VGA_MEMSTART)) + ds_readw(LEFT_BORDER);
+	dst = ((RealPt)ds_readd(VGA_MEMSTART)) + 320 * (ds_readws(UPPER_BORDER) + 8 * line) +  ds_readw(LEFT_BORDER);
 
 	switch (type) {
 		case 0: {
@@ -3875,17 +3876,25 @@ void draw_popup_line(Bit16u line, Bit16u type)
 			break;
 		}
 	}
-
+#if defined(__BORLANDC__)
+	// BCC Sync-Point
+	copy_to_screen(Real2Phys(src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_left), Real2Phys(dst), 16, 8, 0);
+#else
 	src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_left;
 	copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 8, 0);
+#endif
 
 	src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_middle;
 	dst += 16;
 	for (i = 0; i < ds_readws(MENU_TILES); dst += 32, i++)
 		copy_to_screen(Real2Phys(src), Real2Phys(dst), 32, 8, 0);
-
+#if defined(__BORLANDC__)
+	// BCC Sync-Point
+	copy_to_screen(Real2Phys(src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_right), Real2Phys(dst), 16, 8, 0);
+#else
 	src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_right;
 	copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 8, 0);
+#endif
 }
 
 #if 1
