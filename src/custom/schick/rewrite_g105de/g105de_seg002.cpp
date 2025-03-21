@@ -3704,9 +3704,12 @@ Bit16s get_line_start_c(char *str, Bit16s x, Bit16s x_max)
 
 Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 {
-	Bit16u pos, di, si;
+	Bit16s pos;
 	Bit16s c;
 	Bit16s width;
+
+	Bit16s di;
+	register Bit16s si;
 
 	update_mouse_cursor();
 	di = x;
@@ -3727,15 +3730,13 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 	ds_writew(MOUSE1_EVENT1, 0);
 
 	c = 0;
-	while (c != 0xd || pos == 0) {
+	while ((c != 0xd) || (pos == 0)) {
 		do {
-			do {} while (CD_bioskey(1) == 0 &&
-				ds_readw(MOUSE1_EVENT1) == 0);
+			do {} while (!CD_bioskey(1) && ds_readw(MOUSE1_EVENT1) == 0);
 
 			if (ds_readw(MOUSE1_EVENT1)) {
 				ds_writew(IN_KEY_ASCII, 0x0d);
-				ds_writew(MOUSE1_EVENT2, 0);
-				ds_writew(MOUSE1_EVENT1, 0);
+				ds_writew(MOUSE1_EVENT1, ds_writew(MOUSE1_EVENT2, 0));
 			} else {
 				ds_writew(IN_KEY_ASCII, CD_bioskey(0));
 				ds_writew(IN_KEY_EXT, ds_readw(IN_KEY_ASCII) >> 8);
@@ -3822,15 +3823,17 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 		print_chr(0x5f, di, y);
 	}
 
-	if (zero == 0)
+	if (zero == 0) {
 		while (pos < num) {
 			print_chr(0x20, di, y);
 			di += 6;
 			pos++;
 		}
+	}
 
 	*dst = 0;
 	call_mouse();
+
 	return 0;
 }
 
