@@ -2909,7 +2909,7 @@ Bit16s open_datfile(Bit16u index)
 	}
 
 	bc__read(handle, buf, 800);
-	;
+
 	if ((Bit32s)(ds_writed(GENDAT_OFFSET, get_archive_offset((char*)Real2Host(ds_readd(FNAMES_G105de + 4* index)), buf))) != -1) {
 		bc_lseek(handle, ds_readd(GENDAT_OFFSET), 0);
 		return handle;
