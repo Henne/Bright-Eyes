@@ -3835,14 +3835,19 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 
 void draw_popup_line(Bit16u line, Bit16u type)
 {
-	PhysPt dst, src;
-	Bit16u i, popup_right, popup_left, popup_middle;
+	RealPt dst;
+	RealPt src;
+	Bit16s i;
+	Bit16s popup_right;
+
+	Bit16s popup_left;   // si
+	Bit16s popup_middle; // di
 
 	/* This is a bit bogus */
-	dst = Real2Phys(ds_readd(VGA_MEMSTART));
+	dst = (RealPt)ds_readd(VGA_MEMSTART);
 
 	/* (line * 8 + y) * 320  + x */
-	dst = ((line * 8) + ds_readws(UPPER_BORDER)) * 320 + Real2Phys((RealPt)ds_readd(VGA_MEMSTART)) + ds_readw(LEFT_BORDER);
+	dst = ((line * 8) + ds_readws(UPPER_BORDER)) * 320 + ((RealPt)ds_readd(VGA_MEMSTART)) + ds_readw(LEFT_BORDER);
 
 	switch (type) {
 		case 0: {
@@ -3871,20 +3876,19 @@ void draw_popup_line(Bit16u line, Bit16u type)
 		}
 	}
 
-	src = Real2Phys(ds_readd(BUFFER_POPUP)) + popup_left;
-	copy_to_screen(src, dst, 16, 8, 0);
+	src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_left;
+	copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 8, 0);
 
-	src = Real2Phys(ds_readd(BUFFER_POPUP)) + popup_middle;
+	src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_middle;
 	dst += 16;
 	for (i = 0; i < ds_readws(MENU_TILES); dst += 32, i++)
-		copy_to_screen(src, dst, 32, 8, 0);
+		copy_to_screen(Real2Phys(src), Real2Phys(dst), 32, 8, 0);
 
-	src = Real2Phys(ds_readd(BUFFER_POPUP)) + popup_right;
-	copy_to_screen(src, dst, 16, 8, 0);
+	src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_right;
+	copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 8, 0);
 }
 
 #if 1
-
 
 /**
  *	infobox() - draws and info- or enter_numberbox
