@@ -3736,9 +3736,8 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 				ds_writew(IN_KEY_ASCII, 0x0d);
 				ds_writew(MOUSE1_EVENT1, ds_writew(MOUSE1_EVENT2, 0));
 			} else {
-				ds_writew(IN_KEY_ASCII, CD_bioskey(0));
-				ds_writew(IN_KEY_EXT, ds_readw(IN_KEY_ASCII) >> 8);
-				ds_writew(IN_KEY_ASCII, ds_readw(IN_KEY_ASCII) & 0xff);
+				ds_writew(IN_KEY_EXT, (ds_writews(IN_KEY_ASCII, CD_bioskey(0))) >> 8);
+				ds_and_ws(IN_KEY_ASCII, 0xff);
 			}
 		} while ((ds_readw(IN_KEY_EXT) == 0) && (ds_readw(IN_KEY_ASCII) == 0));
 
@@ -3753,6 +3752,7 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 			ds_writew(IN_KEY_EXT, 0);
 			return 1;
 		}
+
 		if (c == 8) {
 			if (pos <= 0)
 				continue;
@@ -3763,15 +3763,13 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 			dst--;
 			get_chr_info(*dst, &width);
 
-			if (zero == 0)
-				di -= 6;
-			else
-				di -= width;
+			di -= (zero != 0) ? width : 6;
+
 		} else {
-			if (!(ds_readb(0x1ff9 + c) & 0x0e) &&
-				((c & 0xff) != 0x84) && ((c & 0xff) != 0x94) &&
-				((c & 0xff) != 0x81) && ((c & 0xff) != 0x8e) &&
-				((c & 0xff) != 0x99) && ((c & 0xff) != 0x9a) &&
+			if (!(ds_readbs(0x1ff9 + c) & 0x0e) &&
+				(((Bit8u)c) != 0x84) && (((Bit8u)c) != 0x94) &&
+				(((Bit8u)c) != 0x81) && (((Bit8u)c) != 0x8e) &&
+				(((Bit8u)c) != 0x99) && (((Bit8u)c) != 0x9a) &&
 				(c != 0x20) && (c != 0x2e))
 					continue;
 
@@ -3780,13 +3778,13 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 				c = toupper(c);
 
 			/* ae */
-			if (c == 0x84)
+			if ((Bit8u)c == 0x84)
 				c = (signed short)0xff8e;
 			/* oe */
-			if (c == 0x94)
+			if ((Bit8u)c == 0x94)
 				c = (signed short)0xff99;
 			/* ue */
-			if (c == 0x81)
+			if ((Bit8u)c == 0x81)
 				c = (signed short)0xff9a;
 
 			/* are we at the end of the input field */
@@ -3794,23 +3792,17 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 				dst--;
 				get_chr_info(*dst, &width);
 
-				if (zero != 0)
-					di -= width;
-				else
-					di -= 6;
+				di -= (zero != 0) ? width : 6;
 
 				pos--;
 			}
 
 			*dst++ = c & 0xff;
 			print_chr(0x20, di, y);
-			print_chr(c & 0xff, di, y);
-			get_chr_info(c & 0xff, &width);
+			print_chr((Bit8u)c, di, y);
+			get_chr_info((Bit8u)c, &width);
 
-			if (zero != 0)
-				di += width;
-			else
-				di += 6;
+			di += (zero != 0) ? width : 6;
 
 			pos++;
 
@@ -3821,6 +3813,7 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 		print_chr(0x5f, di, y);
 	}
 
+	/* OK from here */
 	if (zero == 0) {
 		while (pos < num) {
 			print_chr(0x20, di, y);
@@ -3835,7 +3828,7 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 	return 0;
 }
 
-#if 0
+#if 1
 
 void draw_popup_line(Bit16u line, Bit16u type)
 {
