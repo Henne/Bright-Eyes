@@ -1169,8 +1169,7 @@ static signed char head_first;
 static signed char head_typus;
 
 //static unsigned short MENU_TILES;
-/* DS:0x40bb */
-static unsigned short left_border;
+//static unsigned short left_border;
 /* DS:0x40bd */
 static unsigned short upper_border;
 
@@ -3844,7 +3843,7 @@ void draw_popup_line(Bit16u line, Bit16u type)
 	dst = Real2Phys(ds_readd(VGA_MEMSTART));
 
 	/* (line * 8 + y) * 320  + x */
-	dst = ((line * 8) + upper_border) * 320 + Real2Phys(ds_readd(VGA_MEMSTART)) + left_border;
+	dst = ((line * 8) + upper_border) * 320 + Real2Phys((RealPt)ds_readd(VGA_MEMSTART)) + ds_readw(LEFT_BORDER);
 
 	switch (type) {
 		case 0: {
@@ -3909,7 +3908,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	v4 = ds_readws(TEXT_X_END);
 
 	di = (ds_readws(MENU_TILES) + 1) * 32;
-	left_border = abs(320 - di) / 2 + ds_readw(0x1327);
+	ds_writew(LEFT_BORDER, abs(320 - di) / 2 + ds_readw(0x1327));
 	ds_writew(TEXT_X, abs(320 - di) / 2 + ds_readw(0x1327) + 5);
 	ds_writews(TEXT_X_END, di - 10);
 	lines = str_splitter(msg);
@@ -3924,7 +3923,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	update_mouse_cursor();
 
 	src = Real2Phys(ds_readd(VGA_MEMSTART));
-	src += upper_border * 320 + left_border;
+	src += upper_border * 320 + ds_readws(LEFT_BORDER);
 	dst = Real2Phys(ds_readd(GEN_PTR1_DIS));
 
 	copy_to_screen(src, dst, di, (lines + 2) * 8, 2);
@@ -3947,7 +3946,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	if (digits) {
 		enter_string((char*)Real2Host(ds_readd(GEN_PTR3)),
-			abs(di - digits * 6) / 2 + left_border,
+			abs(di - digits * 6) / 2 + ds_readws(LEFT_BORDER),
 			lines * 8 + upper_border - 2, digits, 0);
 
 		retval = (Bit16u)atol((char*)Real2Host(ds_readd(GEN_PTR3)));
@@ -3965,7 +3964,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	update_mouse_cursor();
 
 	dst = Real2Phys(ds_readd(VGA_MEMSTART));
-	dst += upper_border * 320 + left_border;
+	dst += upper_border * 320 + ds_readws(LEFT_BORDER);
 	src = Real2Phys(ds_readd(GEN_PTR1_DIS));
 
 	copy_to_screen(src, dst, di, (lines + 2) * 8, 0);
@@ -4015,7 +4014,7 @@ void fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
 
 	/* unmark the old radio button, if any */
 	if (old_pos != -1) {
-		y = left_border + 6;
+		y = ds_readws(LEFT_BORDER) + 6;
 
 		x = (offset + old_pos) * 8 + upper_border + 2;
 
@@ -4024,7 +4023,7 @@ void fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
 	}
 
 	/* mark the new radio button */
-	y = left_border + 6;
+	y = ds_readws(LEFT_BORDER) + 6;
 
 	x = (offset + new_pos) * 8 + upper_border + 2;
 
@@ -4062,8 +4061,8 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	bak2 = ds_readw(TEXT_Y);
 	bak3 = ds_readws(TEXT_X_END);
 	r9 = (ds_readws(MENU_TILES) + 1) * 32;
-	left_border = (abs(320 - r9) / 2) + ds_readw(0x1327);
-	ds_writew(TEXT_X, left_border + 5);
+	ds_writew(LEFT_BORDER, (abs(320 - r9) / 2) + ds_readw(0x1327));
+	ds_writew(TEXT_X, ds_readws(LEFT_BORDER) + 5);
 	ds_writew(TEXT_X_END, (ds_readws(MENU_TILES) + 1) * 32 - 10);
 	lines_header = str_splitter((char*)header);
 	lines_sum = lines_header + options;
@@ -4073,7 +4072,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	/* save old background */
 	src = Real2Phys(ds_readd(VGA_MEMSTART));
-	src += upper_border * 320 + left_border;
+	src += upper_border * 320 + ds_readws(LEFT_BORDER);
 	dst = Real2Phys(ds_readd(GEN_PTR1_DIS));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 2);
 
@@ -4107,16 +4106,16 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	/* save and set mouse position */
 	mx_bak = ds_readw(MOUSE_POSX);
 	my_bak = ds_readw(MOUSE_POSY);
-	ds_writew(MOUSE_POSX, left_border + 90);
-	ds_writew(0x1250, left_border + 90);
+	ds_writew(MOUSE_POSX, ds_readws(LEFT_BORDER) + 90);
+	ds_writew(0x1250, ds_readws(LEFT_BORDER) + 90);
 	r7 = (lines_header + 1) * 8 + upper_border;
 	r8 = r7;
 	ds_writew(MOUSE_POSY, r8);
 	ds_writew(0x1252, r8);
 	mouse_move_cursor(ds_readw(MOUSE_POSX), r8);
 
-	ds_writew(MOUSE_POSX_MAX, left_border + r9 - 16);
-	ds_writew(MOUSE_POSX_MIN, left_border);
+	ds_writew(MOUSE_POSX_MAX, ds_readws(LEFT_BORDER) + r9 - 16);
+	ds_writew(MOUSE_POSX_MIN, ds_readws(LEFT_BORDER));
 	ds_writew(MOUSE_POSY_MIN, (lines_header + 1) * 8 + upper_border);
 	ds_writew(MOUSE_POSY_MAX,
 		upper_border + options * 8 + (lines_header + 1) * 8 - 1);
@@ -4197,7 +4196,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	mouse_move_cursor(mx_bak, my_bak);
 
 	dst = Real2Phys(ds_readd(VGA_MEMSTART));
-	dst += upper_border * 320 + left_border;
+	dst += upper_border * 320 + ds_readws(LEFT_BORDER);
 	src = Real2Phys(ds_readd(GEN_PTR1_DIS));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 0);
 	call_mouse();
