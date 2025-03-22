@@ -4007,13 +4007,12 @@ Bit16s infobox(char *msg, Bit16s digits)
 }
 
 
-#if 1
-
 /**
  * gui_bool() - displays a yes - no radio box
  * @header:	the header of menu
  *
  */
+/* Borlandified and identical */
 Bit16s gui_bool(Bit8u *msg)
 {
 	Bit16s retval;
@@ -4027,6 +4026,8 @@ Bit16s gui_bool(Bit8u *msg)
 	else
 		return 0;
 }
+
+#if 1
 
 /**
  * fill_radio_button() - marks the active radio button
