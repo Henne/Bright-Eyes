@@ -4320,15 +4320,14 @@ void change_head()
 	}
 }
 
-#if 1
-
 /**
  * change_sex() - changes the sex of the hero
  *
  */
 void change_sex()
 {
-	PhysPt dst, src;
+	RealPt dst;
+	RealPt src;
 	signed char tmp;
 
 	/* change sex of the hero */
@@ -4351,13 +4350,15 @@ void change_sex()
 		ds_writew(0x11fe, 1);
 		return;
 	} else {
-		dst = Real2Phys(ds_readd(VGA_MEMSTART)) + 7 * 320 + 305;
-		src = Real2Phys(ds_readd(BUFFER_SEX_DAT)) + hero.sex * 256;
+		dst = (RealPt)ds_readd(VGA_MEMSTART) + 7 * 320 + 305;
+		src = (RealPt)ds_readd(BUFFER_SEX_DAT) + hero.sex * 256;
 		update_mouse_cursor();
-		copy_to_screen(src, dst, 16, 16, 0);
+		copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 16, 0);
 		call_mouse();
 	}
 }
+
+#if 1
 
 void do_gen()
 {
