@@ -4601,11 +4601,11 @@ void do_gen()
 
 void refresh_screen()
 {
-	struct nvf_desc nvf;
-	Bit16s width;
-	Bit16s height;
-	RealPt dst;
 	RealPt src;
+	RealPt dst;
+	Bit16s height;
+	Bit16s width;
+	struct nvf_desc nvf;
 
 	if (ds_readw(SCREEN_VAR)) {
 		ds_writed(GFX_PTR, ds_readd(GEN_PTR1_DIS));
@@ -4613,10 +4613,18 @@ void refresh_screen()
 		save_picbuf();
 
 		/* page with base values and hero is not male */
+#if !defined(__BORLANDC__)
 		if ((ds_readws(GEN_PAGE) == 0) && (hero.sex != 0)) {
+#else
+		if ((ds_readws(GEN_PAGE) == 0) && (ds_readbs(HERO_SEX) != 0)) {
+#endif
 
 			dst = (RealPt)ds_readd(GEN_PTR1_DIS) + 7 * 320 + 305;
-			src = (RealPt)ds_readd(BUFFER_SEX_DAT) + hero.sex * 256;
+#if !defined(__BORLANDC__)
+			src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 256 * hero.sex;
+#else
+			src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 256 * ds_readbs(HERO_SEX);
+#endif
 
 			copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 16, 0);
 		}
@@ -4624,15 +4632,25 @@ void refresh_screen()
 		/* page with base values and level is advanced */
 		if ((ds_readws(GEN_PAGE) == 0) && (ds_readws(LEVEL) == 1)) {
 			dst = (RealPt)ds_readd(GEN_PTR1_DIS) + 178 * 320 + 284;
+#if !defined(__BORLANDC__)
 			src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 512;
+#else
+			src = (RealPt)ds_readd(BUFFER_SEX_DAT); // BCC Sync-Point
+#endif
 
 			copy_to_screen(Real2Phys(src), Real2Phys(dst), 20, 15, 0);
 		}
 		/* if the page is lower than 5 */
 		if (ds_readws(GEN_PAGE) < 5) {
 			/* draw DMENGE.DAT or the typus name */
-			dst = (RealPt)ds_readd(GEN_PTR1_DIS) + 0xa10;
+#if !defined(__BORLANDC__)
+			dst = (RealPt)ds_readd(GEN_PTR1_DIS) + 8 * 320 + 16;
 			if (hero.typus != 0) {
+#else
+			dst = (RealPt)ds_readd(GEN_PTR1_DIS); // BCC Sync-Point
+			if (ds_readbs(HERO_TYPUS) != 0) {
+#endif
+
 				need_refresh = 1;
 				copy_to_screen(Real2Phys((RealPt)ds_readd(GEN_PTR5)), Real2Phys(dst), 128, 184, 0);
 
