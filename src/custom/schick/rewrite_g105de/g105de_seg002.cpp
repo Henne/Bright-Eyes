@@ -4601,7 +4601,11 @@ void do_gen()
 
 void refresh_screen()
 {
-	PhysPt src, dst;
+	struct nvf_desc nvf;
+	Bit16s width;
+	Bit16s height;
+	RealPt dst;
+	RealPt src;
 
 	if (ds_readw(SCREEN_VAR)) {
 		ds_writed(GFX_PTR, ds_readd(GEN_PTR1_DIS));
@@ -4611,26 +4615,26 @@ void refresh_screen()
 		/* page with base values and hero is not male */
 		if ((ds_readws(GEN_PAGE) == 0) && (hero.sex != 0)) {
 
-			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 7 * 320 + 305;
-			src = Real2Phys(ds_readd(BUFFER_SEX_DAT) + hero.sex * 256);
+			dst = (RealPt)ds_readd(GEN_PTR1_DIS) + 7 * 320 + 305;
+			src = (RealPt)ds_readd(BUFFER_SEX_DAT) + hero.sex * 256;
 
-			copy_to_screen(src, dst, 16, 16, 0);
+			copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 16, 0);
 		}
 
 		/* page with base values and level is advanced */
 		if ((ds_readws(GEN_PAGE) == 0) && (ds_readws(LEVEL) == 1)) {
-			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 178 * 320 + 284;
-			src = Real2Phys(ds_readd(BUFFER_SEX_DAT) + 512);
+			dst = (RealPt)ds_readd(GEN_PTR1_DIS) + 178 * 320 + 284;
+			src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 512;
 
-			copy_to_screen(src, dst, 20, 15, 0);
+			copy_to_screen(Real2Phys(src), Real2Phys(dst), 20, 15, 0);
 		}
 		/* if the page is lower than 5 */
 		if (ds_readws(GEN_PAGE) < 5) {
 			/* draw DMENGE.DAT or the typus name */
-			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 0xa10;
+			dst = (RealPt)ds_readd(GEN_PTR1_DIS) + 0xa10;
 			if (hero.typus != 0) {
 				need_refresh = 1;
-				copy_to_screen(Real2Phys(ds_readd(GEN_PTR5)), dst, 128, 184, 0);
+				copy_to_screen(Real2Phys((RealPt)ds_readd(GEN_PTR5)), Real2Phys(dst), 128, 184, 0);
 
 				if (hero.sex != 0) {
 					char *p;
@@ -4647,23 +4651,21 @@ void refresh_screen()
 					need_refresh = 0;
 				}
 				wait_for_vsync();
-				set_palette(Real2Host(ds_readd(BUFFER_DMENGE_DAT)) + 0x5c02, 0 , 32);
-				copy_to_screen(Real2Phys(ds_readd(BUFFER_DMENGE_DAT)), dst, 128, 184, 0);
+				set_palette(Real2Host((RealPt)ds_readd(BUFFER_DMENGE_DAT)) + 0x5c02, 0 , 32);
+				copy_to_screen(Real2Phys((RealPt)ds_readd(BUFFER_DMENGE_DAT)), Real2Phys(dst), 128, 184, 0);
 			}
 		}
 		/* if hero has a typus */
 		if (hero.typus != 0) {
 			/* draw the head */
-			struct nvf_desc nvf;
-			signed short tmp;
 
 			nvf.dst = (RealPt)ds_readd(GEN_PTR6);
 			nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 			nvf.no = ds_readb(HEAD_CURRENT);
 ;
 			nvf.type = 0;
-			nvf.width = &tmp;
-			nvf.height = &tmp;
+			nvf.width = &width;
+			nvf.height = &height;
 			process_nvf(&nvf);
 
 			ds_writed(DST_SRC, ds_readd(GEN_PTR6));
@@ -4690,10 +4692,10 @@ void refresh_screen()
 
 		print_values();
 		ds_writed(GFX_PTR, ds_readd(VGA_MEMSTART));
-		dst = Real2Phys(ds_readd(VGA_MEMSTART));
-		src = Real2Phys(ds_readd(GEN_PTR1_DIS));
+		dst = (RealPt)ds_readd(VGA_MEMSTART);
+		src = (RealPt)ds_readd(GEN_PTR1_DIS);
 		update_mouse_cursor();
-		copy_to_screen(src, dst, 320, 200, 0);
+		copy_to_screen(Real2Phys(src), Real2Phys(dst), 320, 200, 0);
 		call_mouse();
 	} else {
 		print_values();
