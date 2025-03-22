@@ -1122,10 +1122,8 @@ static const struct struct_color pal_heads[32] = {
 	{0x3c, 0x3c, 0x3c},
 };
 
-/* DS:0x2780 */
-static unsigned short got_ch_bonus;
-/* DS:0x2782 */
-static unsigned short got_mu_bonus;
+//static unsigned short got_ch_bonus;
+//static unsigned short got_mu_bonus;
 
 //static Bit32s FLEN;
 //static Bit32s FLEN_LEFT;
@@ -4747,8 +4745,8 @@ void clear_hero() {
 
 	Bit16u i;
 
-	got_ch_bonus = 0;
-	got_mu_bonus = 0;
+
+	ds_writew(GOT_MU_BONUS, ds_writew(GOT_CH_BONUS, 0));
 
 	ds_writeb(HEAD_CURRENT, 0);
 	ds_writeb(HEAD_LAST, 0);
@@ -5085,7 +5083,7 @@ void fill_values()
 			/* Praios: MU + 1 */
 			hero.attribs[0].normal++;
 			hero.attribs[0].current++;
-			got_mu_bonus = 1;
+			ds_writew(GOT_MU_BONUS, 1);
 			break;
 		}
 		case 2 : {
@@ -5123,7 +5121,7 @@ void fill_values()
 			/* Tsa: CH + 1 */
 			hero.attribs[2].normal++;
 			hero.attribs[2].current++;
-			got_ch_bonus = 1;
+			ds_writew(GOT_CH_BONUS, 1);
 			break;
 		}
 		case 9 : {
@@ -5328,12 +5326,12 @@ void select_typus()
 	/* save the old typus */
 	old_typus = hero.typus;
 	/* disable MU bonus */
-	if (got_mu_bonus) {
+	if (ds_readw(GOT_MU_BONUS)) {
 		hero.attribs[0].normal--;
 		hero.attribs[0].current--;
 	}
 	/* disable CH bonus */
-	if (got_ch_bonus) {
+	if (ds_readw(GOT_CH_BONUS)) {
 		hero.attribs[2].normal--;
 		hero.attribs[2].current--;
 	}
@@ -5401,11 +5399,11 @@ void select_typus()
 	 *	or the same typus is selected.
 	 */
 	if (di == -1 || t.t[di - 1] == old_typus) {
-		if (got_mu_bonus) {
+		if (ds_readw(GOT_MU_BONUS)) {
 			hero.attribs[0].normal++;
 			hero.attribs[0].current++;
 		}
-		if (got_ch_bonus) {
+		if (ds_readw(GOT_CH_BONUS)) {
 			hero.attribs[2].normal++;
 			hero.attribs[2].current++;
 		}
@@ -5439,8 +5437,7 @@ void select_typus()
 	}
 
 	/* reset boni flags */
-	got_ch_bonus = 0;
-	got_mu_bonus = 0;
+	ds_writew(GOT_MU_BONUS, ds_writew(GOT_CH_BONUS, 0));
 	fill_values();
 	return;
 }
@@ -5521,16 +5518,16 @@ void change_attribs()
 		/* set typus to 0 */
 		hero.typus = 0;
 		/* remove MU boni */
-		if (got_mu_bonus) {
+		if (ds_readw(GOT_MU_BONUS)) {
 			hero.attribs[0].normal--;
 			hero.attribs[0].current--;
-			got_mu_bonus = 0;
+			ds_writew(GOT_MU_BONUS, 0);
 		}
 		/* remove CH boni */
-		if (got_ch_bonus) {
+		if (ds_readw(GOT_CH_BONUS)) {
 			hero.attribs[2].normal--;
 			hero.attribs[2].current--;
-			got_ch_bonus = 0;
+			ds_writew(GOT_CH_BONUS, 0);
 		}
 		ds_writew(SCREEN_VAR, 1);
 		refresh_screen();

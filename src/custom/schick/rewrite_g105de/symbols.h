@@ -117,6 +117,8 @@
 #define CURRENT_TIMBRE_BANK             (0x2477)    /* Bit8s */
 #define CURRENT_TIMBRE_OFFSET           (0x2478)    /* Bit32u */
 
+#define GOT_CH_BONUS                    (0x2780)    /* Bit16s */
+#define GOT_MU_BONUS                    (0x2782)    /* Bit16s */
 
 #define FLEN                            (0x3f2a)    /* Bit32s */
 #define FLEN_LEFT                       (0x3f2e)    /* Bit32s */
