@@ -850,8 +850,7 @@ static const struct mouse_action action_spells[4] = {
 
 //static Bit16s GEN_PAGE;
 
-/* DS:0x1329 */
-static const Bit16u ro_zero = 0;
+//static const Bit16u ro_zero = 0;
 
 static struct struct_hero hero;
 
@@ -3934,7 +3933,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 		lines += 2;
 
 	ds_writew(UPPER_BORDER, (200 - (lines + 2) * 8) / 2);
-	ds_writew(UPPER_BORDER, ds_readws(UPPER_BORDER) + ro_zero);
+	ds_writew(UPPER_BORDER, ds_readws(UPPER_BORDER) + ds_readws(RO_ZERO));
 	ds_writew(TEXT_Y, ds_readws(UPPER_BORDER) + 7);
 
 	update_mouse_cursor();

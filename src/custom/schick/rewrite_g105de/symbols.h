@@ -59,6 +59,8 @@
 
 #define USELESS_VARIABLE                (0x1326)    /* Bit8s */
 
+#define RO_ZERO                         (0x1329)    /* Bit16s */
+
 /* struct hero */
 #define HERO_NAME                       (0x132c)    /* char[16] */
 #define HERO_ALIAS                      (0x133c)    /* char[16] */
