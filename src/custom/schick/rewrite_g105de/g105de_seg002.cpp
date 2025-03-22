@@ -3903,10 +3903,11 @@ void draw_popup_line(Bit16s line, Bit16s type)
  *
  *	if @digits is zero the function just delays.
  */
-Bit16u infobox(char *msg, Bit16u digits)
+/* Borlandified and nearly identical */
+Bit16s infobox(char *msg, Bit16s digits)
 {
-	PhysPt src;
-	PhysPt dst;
+	RealPt src;
+	RealPt dst;
 	Bit16s retval;
 	Bit16s fg;
 	Bit16s bg;
@@ -3929,20 +3930,25 @@ Bit16u infobox(char *msg, Bit16u digits)
 	ds_writews(TEXT_X_END, di - 10);
 	lines = str_splitter(msg);
 
+#if !defined(__BORLANDC__)
 	if (digits != 0)
 		lines += 2;
+#else
+	asm { db 0x6a, 0x00, 0x6a, 0x00, 0x6a, 0x00; nop;}
+	// BCC Sync-Point
+#endif
 
 	ds_writew(UPPER_BORDER, (200 - (lines + 2) * 8) / 2);
-	ds_writew(UPPER_BORDER, ds_readws(UPPER_BORDER) + ds_readws(RO_ZERO));
+	ds_add_ws(UPPER_BORDER, ds_readws(RO_ZERO));
 	ds_writew(TEXT_Y, ds_readws(UPPER_BORDER) + 7);
 
 	update_mouse_cursor();
 
-	src = Real2Phys((RealPt)ds_readd(VGA_MEMSTART));
+	src = (RealPt)ds_readd(VGA_MEMSTART);
 	src += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
-	dst = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS));
+	dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 
-	copy_to_screen(src, dst, di, (lines + 2) * 8, 2);
+	copy_to_screen(Real2Phys(src), Real2Phys(dst), di, (lines + 2) * 8, 2);
 
 	/* draw the popup box */
 	draw_popup_line(0, 0);
@@ -3962,8 +3968,8 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	if (digits) {
 		enter_string((char*)Real2Host((RealPt)ds_readd(GEN_PTR3)),
-			abs(di - digits * 6) / 2 + ds_readws(LEFT_BORDER),
-			lines * 8 + ds_readws(UPPER_BORDER) - 2, digits, 0);
+			ds_readws(LEFT_BORDER) + (di - digits * 6) / 2,
+			ds_readws(UPPER_BORDER) + 8 * lines - 2, digits, 0);
 
 		retval = (Bit16u)atol((char*)Real2Host((RealPt)ds_readd(GEN_PTR3)));
 	} else {
@@ -3979,14 +3985,19 @@ Bit16u infobox(char *msg, Bit16u digits)
 	set_textcolor(fg, bg);
 	update_mouse_cursor();
 
-	dst = Real2Phys((RealPt)ds_readd(VGA_MEMSTART));
+	dst = (RealPt)ds_readd(VGA_MEMSTART);
 	dst += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
-	src = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS));
+	src = (RealPt)ds_readd(GEN_PTR1_DIS);
 
-	copy_to_screen(src, dst, di, (lines + 2) * 8, 0);
+	copy_to_screen(Real2Phys(src), Real2Phys(dst), di, (lines + 2) * 8, 0);
 	call_mouse();
 
+#if !defined(__BORLANDC__)
 	ds_writew(TEXT_X, v2);
+#else
+	asm { db 0x6a, 0x00, 0x6a, 0x00;}
+	// BCC Sync-Point
+#endif
 	ds_writew(TEXT_Y, v3);
 	ds_writew(TEXT_X_END, v4);
 

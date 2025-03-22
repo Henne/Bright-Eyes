@@ -81,7 +81,6 @@ namespace G105de {
 	void exit_video();
 	void draw_v_line(Bit16s, Bit16s, Bit16s, Bit16u);
 	void do_draw_pic(Bit16u);
-	Bit16u infobox(char*, Bit16u);
 	void call_fill_rect_gen(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
 	void wait_for_vsync();
 	void blit_smth3(RealPt, Bit16s, Bit16s);
@@ -102,6 +101,7 @@ namespace G105de {
 	Bit16s get_line_start_c(char*, Bit16s, Bit16s);
 	Bit16s enter_string(char*, Bit16s, Bit16s, Bit16s, Bit16s);
 	void draw_popup_line(Bit16s, Bit16s);
+	Bit16s infobox(char*, Bit16s);
 	Bit16s gui_bool(Bit8u*);
 	void fill_radio_button(Bit16s, Bit16u, Bit16u);
 	Bit16s gui_radio(Bit8u *header, Bit8s pos, ...);
