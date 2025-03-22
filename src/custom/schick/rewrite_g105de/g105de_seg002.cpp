@@ -1001,8 +1001,7 @@ static const struct mouse_action *action_page[MAX_PAGES] = {
 			(struct mouse_action*)&action_spells,
 			(struct mouse_action*)&action_spells };
 
-/* DS:0x1ca5 */
-static unsigned short need_refresh = 1;
+//static unsigned short need_refresh = 1;
 
 /* DS:0x1ca6 */
 struct type_bitmap {
@@ -4651,7 +4650,7 @@ void refresh_screen()
 			if (ds_readbs(HERO_TYPUS) != 0) {
 #endif
 
-				need_refresh = 1;
+				ds_writeb(NEED_REFRESH, 1);
 				copy_to_screen(Real2Phys((RealPt)ds_readd(GEN_PTR5)), Real2Phys(dst), 128, 184, 0);
 
 				if (hero.sex != 0) {
@@ -4664,12 +4663,12 @@ void refresh_screen()
 					print_str(p, get_line_start_c(p, 16, 128), 184);
 				}
 			} else {
-				if (need_refresh) {
+				if (ds_readb(NEED_REFRESH)) {
 					call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
-					need_refresh = 0;
+					ds_writeb(NEED_REFRESH, 0);
 				}
 				wait_for_vsync();
-				set_palette(Real2Host((RealPt)ds_readd(BUFFER_DMENGE_DAT)) + 0x5c02, 0 , 32);
+				set_palette(Real2Host((RealPt)ds_readd(BUFFER_DMENGE_DAT)) + 128 * 184 + 2, 0 , 32);
 				copy_to_screen(Real2Phys((RealPt)ds_readd(BUFFER_DMENGE_DAT)), Real2Phys(dst), 128, 184, 0);
 			}
 		}
