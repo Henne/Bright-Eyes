@@ -4261,24 +4261,34 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	return retval;
 }
 
-#if 1
-
 /**
  * enter_name() - enter the name of a hero
  */
+/* Borlandified and identical */
 void enter_name()
 {
-	PhysPt dst;
+	RealPt dst;
 
-	dst = Real2Phys(ds_readd(VGA_MEMSTART) + 12 * 320 + 176);
+	dst = (RealPt)ds_readd(VGA_MEMSTART) + 12 * 320 + 176;
 
 	update_mouse_cursor();
-	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
+	copy_to_screen(Real2Phys((RealPt)ds_readd(0x479f)), Real2Phys(dst), 94, 8, 0);
+#if !defined(__BORLANDC__)
 	enter_string(hero.name, 180, 12, 15, 1);
-	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
+#else
+	enter_string(&ds[HERO_NAME], 180, 12, 15, 1);
+#endif
+	copy_to_screen(Real2Phys((RealPt)ds_readd(0x479f)), Real2Phys(dst), 94, 8, 0);
 	call_mouse();
+#if !defined(__BORLANDC__)
 	print_str(hero.name, 180, 12);
+#else
+	print_str(&ds[HERO_NAME], 180, 12);
+#endif
+
 }
+
+#if 1
 
 void change_head()
 {
