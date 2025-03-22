@@ -40,6 +40,8 @@
 
 #define MASK_SWITCH                     (0x109a)    /* Bit8s */
 
+#define SCREEN_VAR                      (0x11fe)    /* Bit16s */
+
 #define CHR_LOOKUP                      (0x1b85)
 #define MOUSE_MASK                      (0x1200)
 #define MOUSE_POSY_MIN                  (0x1240)

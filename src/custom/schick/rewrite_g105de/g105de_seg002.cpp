@@ -4342,7 +4342,7 @@ void change_sex()
 			ds_writeb(HEAD_FIRST, ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS))));
 			ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)) - 1);
 		}
-		ds_writew(0x11fe, 1);
+		ds_writew(SCREEN_VAR, 1);
 		return;
 	} else {
 		dst = (RealPt)ds_readd(VGA_MEMSTART) + 7 * 320 + 305;
@@ -4361,7 +4361,7 @@ void do_gen()
 
 	di = 0;
 
-	ds_writew(0x11fe, 1);
+	ds_writew(SCREEN_VAR, 1);
 
 	/* try to set the level from parameters */
 	switch (param_level) {
@@ -4389,9 +4389,9 @@ void do_gen()
 
 	/* main loop */
 	while (!di) {
-		if (ds_readw(0x11fe)) {
+		if (ds_readw(SCREEN_VAR)) {
 			refresh_screen();
-			ds_writew(0x11fe, 0);
+			ds_writew(SCREEN_VAR, 0);
 		}
 
 		ds_writed(ACTION_TABLE,  (Bit32u)ds_readd(ACTION_PAGE + 4 * ds_readws(GEN_PAGE)));
@@ -4431,7 +4431,7 @@ void do_gen()
 								memset(&hero, 0, sizeof(hero));
 								clear_hero();
 								ds_writew(MOUSE2_EVENT,	1);
-								ds_writew(0x11fe, 1);
+								ds_writew(SCREEN_VAR, 1);
 								break;
 							}
 							case 5: {
@@ -4517,7 +4517,7 @@ void do_gen()
 			if (hero.typus == 0) {
 				infobox(get_text(72), 0);
 			} else {
-				ds_writew(0x11fe, 1);
+				ds_writew(SCREEN_VAR, 1);
 
 				if (((hero.typus >= 7) ? 10 : 4) > ds_readws(GEN_PAGE)) {
 					ds_inc_ws(GEN_PAGE);
@@ -4529,14 +4529,14 @@ void do_gen()
 
 		if (ds_readw(IN_KEY_EXT) == KEY_LEFT) {
 			if (ds_readws(GEN_PAGE) > 0) {
-				ds_writew(0x11fe, 1);
+				ds_writew(SCREEN_VAR, 1);
 				ds_dec_ws(GEN_PAGE);
 			} else {
 				if (level != 1) {
 					if (hero.typus == 0) {
 						infobox(get_text(72), 0);
 					} else {
-						ds_writew(0x11fe, 1);
+						ds_writew(SCREEN_VAR, 1);
 						ds_writew(GEN_PAGE, hero.typus < 7 ? 4 : 10);
 					}
 				}
@@ -4568,7 +4568,7 @@ void do_gen()
 			}
 			if ((si != ds_readws(GEN_PAGE)) && (si < 5 || hero.typus >= 7)) {
 				ds_writews(GEN_PAGE, si);
-				ds_writew(0x11fe, 1);
+				ds_writew(SCREEN_VAR, 1);
 			}
 		}
 	}
@@ -4902,7 +4902,7 @@ void refresh_screen()
 {
 	PhysPt src, dst;
 
-	if (ds_readw(0x11fe)) {
+	if (ds_readw(SCREEN_VAR)) {
 		ds_writed(GFX_PTR, ds_readd(GEN_PTR1_DIS));
 		load_page(ds_readws(GEN_PAGE));
 		save_picbuf();
@@ -5043,7 +5043,7 @@ void new_values()
 
 	/* set variable if hero has a typus */
 	if (hero.typus)
-		ds_writew(0x11fe, 1);
+		ds_writew(SCREEN_VAR, 1);
 
 	/* save the name of the hero */
 	/* TODO strncpy() would be better here */
@@ -5065,7 +5065,7 @@ void new_values()
 
 	refresh_screen();
 
-	ds_writew(0x11fe, 0);
+	ds_writew(SCREEN_VAR, 0);
 
 	for (j = 0; j < 7; j++) {
 		bv1 = (unsigned char)random_interval_gen(8, 13);
@@ -5347,7 +5347,7 @@ void select_typus()
 
 	/* set new typus */
 	hero.typus = t.t[di - 1];
-	ds_writew(0x11fe, 1);
+	ds_writew(SCREEN_VAR, 1);
 
 	load_typus(hero.typus);
 	update_mouse_cursor();
@@ -5465,9 +5465,9 @@ void change_attribs()
 			hero.attribs[2].current--;
 			got_ch_bonus = 0;
 		}
-		ds_writew(0x11fe, 1);
+		ds_writew(SCREEN_VAR, 1);
 		refresh_screen();
-		ds_writew(0x11fe, 0);
+		ds_writew(SCREEN_VAR, 0);
 	}
 	/* check again if changing is possible */
 	if (can_change_attribs() == 0) {
@@ -7100,7 +7100,7 @@ void choose_typus()
 		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)) - 1);
 	}
 	fill_values();
-	ds_writew(0x11fe, 1);
+	ds_writew(SCREEN_VAR, 1);
 }
 
 void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
