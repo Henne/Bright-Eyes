@@ -1168,8 +1168,7 @@ static char *type_names[MAX_TYPES];
 //static unsigned short left_border;
 //static unsigned short upper_border;
 
-/* DS:0x40bf */
-static signed short level;
+//static signed short level;
 
 
 //static RealPt dst_dst;
@@ -4378,22 +4377,22 @@ void do_gen()
 	switch (ds_readws(PARAM_LEVEL)) {
 		case 'a': {
 			/* ADVANCED */
-			level = 2;
+			ds_writew(LEVEL, 2);
 			break;
 		}
 		case 'n': {
 			/* NOVICE */
-			level = 1;
+			ds_writew(LEVEL, 1);
 			break;
 		}
 		default: {
-			level = -1;
+			ds_writew(LEVEL, -1);
 		}
 	}
 
 	/* ask for level */
-	while (level == -1) {
-		level = gui_radio((Bit8u*)get_text(0), 2, get_text(1), get_text(2));
+	while (ds_readws(LEVEL) == -1) {
+		ds_writew(LEVEL, gui_radio((Bit8u*)get_text(0), 2, get_text(1), get_text(2)));
 	}
 
 	ds_writew(MOUSE2_EVENT, 1);
@@ -4524,7 +4523,7 @@ void do_gen()
 			}
 		}
 
-		if ((ds_readw(IN_KEY_EXT) == KEY_RIGHT) && (level != 1)) {
+		if ((ds_readw(IN_KEY_EXT) == KEY_RIGHT) && (ds_readw(LEVEL) != 1)) {
 			if (hero.typus == 0) {
 				infobox(get_text(72), 0);
 			} else {
@@ -4543,7 +4542,7 @@ void do_gen()
 				ds_writew(SCREEN_VAR, 1);
 				ds_dec_ws(GEN_PAGE);
 			} else {
-				if (level != 1) {
+				if (ds_readws(LEVEL) != 1) {
 					if (hero.typus == 0) {
 						infobox(get_text(72), 0);
 					} else {
@@ -4555,7 +4554,7 @@ void do_gen()
 		}
 
 		if ((ds_readw(IN_KEY_EXT) >= KEY_1) && (ds_readw(IN_KEY_EXT) <= KEY_5) &&
-			level == 2 && hero.typus) {
+			(ds_readws(LEVEL) == 2) && hero.typus) {
 			switch (ds_readw(IN_KEY_EXT)) {
 				case KEY_1: {
 					si = 0;
@@ -4706,7 +4705,7 @@ void fill_values()
 		/* get convertable increase attempts */
 		di = initial_conv_incs[hero.typus - 7];
 
-		if (di && (level == 2) && gui_bool((Bit8u*)get_text(269))) {
+		if (di && (ds_readws(LEVEL) == 2) && gui_bool((Bit8u*)get_text(269))) {
 			/* create string */
 			sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(270), di);
 
@@ -4748,7 +4747,7 @@ void fill_values()
 	hero.ae = hero.ae_max = init_ae[hero.typus];
 
 	/* wanna change 10 spell_attempts against 1W6+2 AE ? */
-	if ((hero.typus == 9) && (level == 2) && gui_bool((Bit8u*)get_text(268))) {
+	if ((hero.typus == 9) && (ds_readws(LEVEL) == 2) && gui_bool((Bit8u*)get_text(268))) {
 		/* change spell_attempts */
 		hero.spell_incs -= 10;
 		hero.ae_max = random_interval_gen(3, 8) + hero.ae_max;
@@ -4855,7 +4854,7 @@ void fill_values()
 	calc_at_pa();
 
 	/* if mode == novice */
-	if (level == 1) {
+	if (ds_readws(LEVEL) == 1) {
 		/* automatic increase skills */
 		i = 0;
 		while (hero.skill_incs > 0) {
@@ -4930,7 +4929,7 @@ void refresh_screen()
 		}
 
 		/* page with base values and level is advanced */
-		if ((ds_readws(GEN_PAGE) == 0) && (level == 1)) {
+		if ((ds_readws(GEN_PAGE) == 0) && (ds_readws(LEVEL) == 1)) {
 			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 178 * 320 + 284;
 			src = Real2Phys(ds_readd(BUFFER_SEX_DAT) + 512);
 
