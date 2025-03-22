@@ -83,6 +83,7 @@
 #define STRUCT_COL_WHITE2               (0x1b79)    /* RGB */
 
 #define ACTION_INPUT                    (0x1c63)
+#define BOOL_MODE                       (0x1c77)    /* Bit16s */
 #define ACTION_PAGE                     (0x1c79)    /* RealPt[11] */
 
 #define STR_SOUND_CFG                   (0x1dd0)    /* char[9]; "SOUND.CFG" */

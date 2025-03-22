@@ -986,8 +986,7 @@ static const struct struct_chr_lookup chr_lookup[74] = {
 //			{ 0, 0, 319, 199, 0x1c},
 //			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 
-/* DS:0x1c77 */
-static unsigned short bool_mode;
+//static unsigned short bool_mode;
 
 static const struct mouse_action *action_page[MAX_PAGES] = {
 			(struct mouse_action*)&action_base,
@@ -4019,9 +4018,9 @@ Bit16s gui_bool(Bit8u *msg)
 {
 	Bit16s retval;
 
-	bool_mode = 1;
+	ds_writew(BOOL_MODE, 1);
 	retval = gui_radio(msg, 2, get_text(4), get_text(5));
-	bool_mode = 0;
+	ds_writew(BOOL_MODE, 0);
 
 	if (retval == 1)
 		return 1;
@@ -4198,7 +4197,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 			di = (r8 - r7) / 8 + 1;
 		}
 		/* is this a bool radiobox ? */
-		if (bool_mode) {
+		if (ds_readw(BOOL_MODE)) {
 			if (ds_readw(IN_KEY_EXT) == KEY_Y) {
 				/* has the 'j' key been pressed */
 				retval = 1;
