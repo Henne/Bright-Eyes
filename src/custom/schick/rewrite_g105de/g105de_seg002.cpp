@@ -4364,6 +4364,7 @@ void change_sex()
 	}
 }
 
+/* Borlandified and identical */
 void do_gen()
 {
 	Bit16s si;
@@ -4598,8 +4599,6 @@ void do_gen()
 	}
 }
 
-#if 1
-
 /**
  * calc_at_pa() - calculate AT and PA values
  */
@@ -4655,6 +4654,9 @@ void calc_at_pa() {
 
 	}
 }
+
+#if 1
+
 
 /**
  * fill_values() - fills the values if typus is chosen
