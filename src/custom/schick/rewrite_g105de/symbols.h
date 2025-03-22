@@ -47,7 +47,8 @@
 #define MOUSE_REFRESH_FLAG              (0x124a)    /* signed short */
 #define MOUSE_POSX                      (0x124c)
 #define MOUSE_POSY                      (0x124e)
-
+#define MOUSE_POSX_BAK                  (0x1250)    /* Bit16s */
+#define MOUSE_POSY_BAK                  (0x1252)    /* Bit16s */
 #define MOUSE_MOVED                     (0x1254)
 #define MOUSE_POINTER_OFFSETX           (0x1256)
 #define MOUSE_POINTER_OFFSETY           (0x1258)

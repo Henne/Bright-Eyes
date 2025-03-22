@@ -2059,8 +2059,8 @@ void mouse()
 
 			save_mouse_bg();
 
-			ds_writew(0x1250, ds_readws(MOUSE_POSX));
-			ds_writew(0x1252, ds_readws(MOUSE_POSY));
+			ds_writew(MOUSE_POSX_BAK, ds_readws(MOUSE_POSX));
+			ds_writew(MOUSE_POSY_BAK, ds_readws(MOUSE_POSY));
 			ds_writew(0x125a, ds_readws(MOUSE_POINTER_OFFSETX));
 			ds_writew(0x125c, ds_readws(MOUSE_POINTER_OFFSETY));
 
@@ -2364,8 +2364,8 @@ void restore_mouse_bg()
 
 	vgaptr = (RealPt)ds_readd(VGA_MEMSTART);
 
-	rangeX = ds_readw(0x1250) - ds_readw(0x125a);
-	rangeY = ds_readw(0x1252) - ds_readw(0x125c);
+	rangeX = ds_readw(MOUSE_POSX_BAK) - ds_readw(0x125a);
+	rangeY = ds_readw(MOUSE_POSY_BAK) - ds_readw(0x125c);
 	diffX = diffY = 16;
 
 	if (rangeX > 304)
@@ -4159,11 +4159,11 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	mx_bak = ds_readw(MOUSE_POSX);
 	my_bak = ds_readw(MOUSE_POSY);
 	ds_writew(MOUSE_POSX, ds_readws(LEFT_BORDER) + 90);
-	ds_writew(0x1250, ds_readws(LEFT_BORDER) + 90);
+	ds_writew(MOUSE_POSX_BAK, ds_readws(LEFT_BORDER) + 90);
 	r7 = (lines_header + 1) * 8 + ds_readws(UPPER_BORDER);
 	r8 = r7;
 	ds_writew(MOUSE_POSY, r8);
-	ds_writew(0x1252, r8);
+	ds_writew(MOUSE_POSY_BAK, r8);
 	mouse_move_cursor(ds_readw(MOUSE_POSX), r8);
 
 	ds_writew(MOUSE_POSX_MAX, ds_readws(LEFT_BORDER) + r9 - 16);
@@ -4236,9 +4236,9 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	update_mouse_cursor();
 
 	ds_writew(MOUSE_POSX, mx_bak);
-	ds_writew(0x1250, mx_bak);
+	ds_writew(MOUSE_POSX_BAK, mx_bak);
 	ds_writew(MOUSE_POSY, my_bak);
-	ds_writew(0x1252, my_bak);
+	ds_writew(MOUSE_POSY_BAK, my_bak);
 
 	ds_writew(MOUSE_POSX_MAX, 319);
 	ds_writew(MOUSE_POSX_MIN, 0);
