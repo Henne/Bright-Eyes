@@ -4288,19 +4288,19 @@ void enter_name()
 
 }
 
-#if 1
-
+/* Borlandified and identical */
 void change_head()
 {
 	struct nvf_desc nvf;
-	signed short tmp;
+	Bit16s width;
+	Bit16s height;
 
 	nvf.dst = (RealPt)ds_readd(GEN_PTR6);
 	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 	nvf.no = ds_readbs(HEAD_CURRENT);
 	nvf.type = 0;
-	nvf.width = &tmp;
-	nvf.height = &tmp;
+	nvf.width = &width;
+	nvf.height = &height;
 
 	process_nvf(&nvf);
 
@@ -4319,6 +4319,8 @@ void change_head()
 		do_draw_pic(0);
 	}
 }
+
+#if 1
 
 /**
  * change_sex() - changes the sex of the hero
