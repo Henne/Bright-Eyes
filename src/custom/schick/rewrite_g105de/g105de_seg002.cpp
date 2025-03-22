@@ -4599,6 +4599,254 @@ void do_gen()
 	}
 }
 
+void refresh_screen()
+{
+	PhysPt src, dst;
+
+	if (ds_readw(SCREEN_VAR)) {
+		ds_writed(GFX_PTR, ds_readd(GEN_PTR1_DIS));
+		load_page(ds_readws(GEN_PAGE));
+		save_picbuf();
+
+		/* page with base values and hero is not male */
+		if ((ds_readws(GEN_PAGE) == 0) && (hero.sex != 0)) {
+
+			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 7 * 320 + 305;
+			src = Real2Phys(ds_readd(BUFFER_SEX_DAT) + hero.sex * 256);
+
+			copy_to_screen(src, dst, 16, 16, 0);
+		}
+
+		/* page with base values and level is advanced */
+		if ((ds_readws(GEN_PAGE) == 0) && (ds_readws(LEVEL) == 1)) {
+			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 178 * 320 + 284;
+			src = Real2Phys(ds_readd(BUFFER_SEX_DAT) + 512);
+
+			copy_to_screen(src, dst, 20, 15, 0);
+		}
+		/* if the page is lower than 5 */
+		if (ds_readws(GEN_PAGE) < 5) {
+			/* draw DMENGE.DAT or the typus name */
+			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 0xa10;
+			if (hero.typus != 0) {
+				need_refresh = 1;
+				copy_to_screen(Real2Phys(ds_readd(GEN_PTR5)), dst, 128, 184, 0);
+
+				if (hero.sex != 0) {
+					char *p;
+					p = get_text(271 + hero.typus);
+					print_str(p, get_line_start_c(p, 16, 128), 184);
+				} else {
+					char *p;
+					p = get_text(17 + hero.typus);
+					print_str(p, get_line_start_c(p, 16, 128), 184);
+				}
+			} else {
+				if (need_refresh) {
+					call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
+					need_refresh = 0;
+				}
+				wait_for_vsync();
+				set_palette(Real2Host(ds_readd(BUFFER_DMENGE_DAT)) + 0x5c02, 0 , 32);
+				copy_to_screen(Real2Phys(ds_readd(BUFFER_DMENGE_DAT)), dst, 128, 184, 0);
+			}
+		}
+		/* if hero has a typus */
+		if (hero.typus != 0) {
+			/* draw the head */
+			struct nvf_desc nvf;
+			signed short tmp;
+
+			nvf.dst = (RealPt)ds_readd(GEN_PTR6);
+			nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
+			nvf.no = ds_readb(HEAD_CURRENT);
+;
+			nvf.type = 0;
+			nvf.width = &tmp;
+			nvf.height = &tmp;
+			process_nvf(&nvf);
+
+			ds_writed(DST_SRC, ds_readd(GEN_PTR6));
+			ds_writew(DST_X1, 272);
+			ds_writew(DST_X2, 303);
+			ds_writed(DST_DST, ds_readd(GEN_PTR1_DIS));
+
+			/* draw the head */
+			if (ds_readws(GEN_PAGE) == 0) {
+				/* on the base page */
+				ds_writew(DST_Y1, 8);
+				ds_writew(DST_Y2, 39);
+				do_draw_pic(0);
+			} else if (ds_readws(GEN_PAGE) > 4) {
+				/* on the spell pages */
+				ds_writew(DST_Y1, 4);
+				ds_writew(DST_Y2, 35);
+				do_draw_pic(0);
+			}
+
+			ds_writed(DST_DST, ds_readd(VGA_MEMSTART));
+
+		}
+
+		print_values();
+		ds_writed(GFX_PTR, ds_readd(VGA_MEMSTART));
+		dst = Real2Phys(ds_readd(VGA_MEMSTART));
+		src = Real2Phys(ds_readd(GEN_PTR1_DIS));
+		update_mouse_cursor();
+		copy_to_screen(src, dst, 320, 200, 0);
+		call_mouse();
+	} else {
+		print_values();
+	}
+}
+
+#if 1
+
+/* static */
+void clear_hero() {
+
+	Bit16u i;
+
+	got_ch_bonus = 0;
+	got_mu_bonus = 0;
+
+	ds_writeb(HEAD_CURRENT, 0);
+	ds_writeb(HEAD_LAST, 0);
+	ds_writeb(HEAD_FIRST, 0);
+	ds_writeb(HEAD_TYPUS, 0);
+
+	for (i = 0; i < 14; i++)
+		attrib_changed[i] = 0;
+
+	for (i = 0; i < 86; i++) {
+		spell_incs[i].incs = 0;
+		spell_incs[i].tries = 0;
+	}
+	for (i = 0; i < 52; i++) {
+		skill_incs[i].tries = 0;
+		skill_incs[i].incs = 0;
+	}
+
+	hero.level = 1;
+}
+
+/**
+ * new_values() - roll out new attribute values
+ *
+ */
+void new_values()
+{
+	/* Original-Bugfix:	there once was a char[11],
+				which could not hold a char[16] */
+
+	char name_bak[17];
+	signed char values[8];
+	Bit16u di, i, j;
+	Bit8s bv1, bv2, bv3;
+
+	/* set variable if hero has a typus */
+	if (hero.typus)
+		ds_writew(SCREEN_VAR, 1);
+
+	/* save the name of the hero */
+	/* TODO strncpy() would be better here */
+	strcpy(name_bak, hero.name);
+
+	/* save the sex of the hero */
+	bv3 = hero.sex;
+
+	/* clear the hero */
+	memset(&hero, 0 , sizeof(hero));
+	clear_hero();
+
+	/* restore the sex of the hero */
+	hero.sex = bv3;
+
+	/* restore the name of the hero */
+	/* TODO strncpy() would be better here */
+	strcpy(hero.name, name_bak);
+
+	refresh_screen();
+
+	ds_writew(SCREEN_VAR, 0);
+
+	for (j = 0; j < 7; j++) {
+		bv1 = (unsigned char)random_interval_gen(8, 13);
+		bv2 = 0;
+
+		for (i = 0; i < 7; i++) {
+			if (hero.attribs[i].normal)
+				continue;
+
+			values[bv2] = (signed char)i;
+			type_names[bv2] = get_text(32 + i);
+			bv2++;
+		}
+
+		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), bv1);
+
+		do {
+			ds_writew(0x1327, 0xffb0);
+
+			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
+				bv2,
+				type_names[0],
+				type_names[1],
+				type_names[2],
+				type_names[3],
+				type_names[4],
+				type_names[5],
+				type_names[6]);
+
+			ds_writew(0x1327, 0);
+		} while (di == 0xffff);
+		di = values[di - 1];
+		hero.attribs[di].current = bv1;
+		hero.attribs[di].normal = bv1;
+		update_mouse_cursor();
+		refresh_screen();
+		call_mouse();
+	}
+
+	for (j = 0; j < 7; j++) {
+		bv1 = (signed char)random_interval_gen(2, 7);
+		bv2 = 0;
+
+		for (i = 0; i < 7; i++) {
+			if (hero.attribs[i + 7].normal)
+				continue;
+
+			values[bv2] = (signed char)i;
+			type_names[bv2] = get_text(39 + i);
+			bv2++;
+		}
+
+		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), bv1);
+
+		do {
+			ds_writew(0x1327, 0xffb0);
+
+			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
+				bv2,
+				type_names[0],
+				type_names[1],
+				type_names[2],
+				type_names[3],
+				type_names[4],
+				type_names[5],
+				type_names[6]);
+
+			ds_writew(0x1327, 0);
+		} while (di == 0xffff);
+		di = values[di - 1];
+		hero.attribs[di + 7].current = bv1;
+		hero.attribs[di + 7].normal = bv1;
+		update_mouse_cursor();
+		refresh_screen();
+		call_mouse();
+	}
+}
+
 /**
  * calc_at_pa() - calculate AT and PA values
  */
@@ -4654,9 +4902,6 @@ void calc_at_pa() {
 
 	}
 }
-
-#if 1
-
 
 /**
  * fill_values() - fills the values if typus is chosen
@@ -4925,252 +5170,6 @@ void fill_values()
 	}
 }
 
-
-void refresh_screen()
-{
-	PhysPt src, dst;
-
-	if (ds_readw(SCREEN_VAR)) {
-		ds_writed(GFX_PTR, ds_readd(GEN_PTR1_DIS));
-		load_page(ds_readws(GEN_PAGE));
-		save_picbuf();
-
-		/* page with base values and hero is not male */
-		if ((ds_readws(GEN_PAGE) == 0) && (hero.sex != 0)) {
-
-			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 7 * 320 + 305;
-			src = Real2Phys(ds_readd(BUFFER_SEX_DAT) + hero.sex * 256);
-
-			copy_to_screen(src, dst, 16, 16, 0);
-		}
-
-		/* page with base values and level is advanced */
-		if ((ds_readws(GEN_PAGE) == 0) && (ds_readws(LEVEL) == 1)) {
-			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 178 * 320 + 284;
-			src = Real2Phys(ds_readd(BUFFER_SEX_DAT) + 512);
-
-			copy_to_screen(src, dst, 20, 15, 0);
-		}
-		/* if the page is lower than 5 */
-		if (ds_readws(GEN_PAGE) < 5) {
-			/* draw DMENGE.DAT or the typus name */
-			dst = Real2Phys(ds_readd(GEN_PTR1_DIS)) + 0xa10;
-			if (hero.typus != 0) {
-				need_refresh = 1;
-				copy_to_screen(Real2Phys(ds_readd(GEN_PTR5)), dst, 128, 184, 0);
-
-				if (hero.sex != 0) {
-					char *p;
-					p = get_text(271 + hero.typus);
-					print_str(p, get_line_start_c(p, 16, 128), 184);
-				} else {
-					char *p;
-					p = get_text(17 + hero.typus);
-					print_str(p, get_line_start_c(p, 16, 128), 184);
-				}
-			} else {
-				if (need_refresh) {
-					call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
-					need_refresh = 0;
-				}
-				wait_for_vsync();
-				set_palette(Real2Host(ds_readd(BUFFER_DMENGE_DAT)) + 0x5c02, 0 , 32);
-				copy_to_screen(Real2Phys(ds_readd(BUFFER_DMENGE_DAT)), dst, 128, 184, 0);
-			}
-		}
-		/* if hero has a typus */
-		if (hero.typus != 0) {
-			/* draw the head */
-			struct nvf_desc nvf;
-			signed short tmp;
-
-			nvf.dst = (RealPt)ds_readd(GEN_PTR6);
-			nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
-			nvf.no = ds_readb(HEAD_CURRENT);
-;
-			nvf.type = 0;
-			nvf.width = &tmp;
-			nvf.height = &tmp;
-			process_nvf(&nvf);
-
-			ds_writed(DST_SRC, ds_readd(GEN_PTR6));
-			ds_writew(DST_X1, 272);
-			ds_writew(DST_X2, 303);
-			ds_writed(DST_DST, ds_readd(GEN_PTR1_DIS));
-
-			/* draw the head */
-			if (ds_readws(GEN_PAGE) == 0) {
-				/* on the base page */
-				ds_writew(DST_Y1, 8);
-				ds_writew(DST_Y2, 39);
-				do_draw_pic(0);
-			} else if (ds_readws(GEN_PAGE) > 4) {
-				/* on the spell pages */
-				ds_writew(DST_Y1, 4);
-				ds_writew(DST_Y2, 35);
-				do_draw_pic(0);
-			}
-
-			ds_writed(DST_DST, ds_readd(VGA_MEMSTART));
-
-		}
-
-		print_values();
-		ds_writed(GFX_PTR, ds_readd(VGA_MEMSTART));
-		dst = Real2Phys(ds_readd(VGA_MEMSTART));
-		src = Real2Phys(ds_readd(GEN_PTR1_DIS));
-		update_mouse_cursor();
-		copy_to_screen(src, dst, 320, 200, 0);
-		call_mouse();
-	} else {
-		print_values();
-	}
-}
-
-/* static */
-void clear_hero() {
-
-	Bit16u i;
-
-	got_ch_bonus = 0;
-	got_mu_bonus = 0;
-
-	ds_writeb(HEAD_CURRENT, 0);
-	ds_writeb(HEAD_LAST, 0);
-	ds_writeb(HEAD_FIRST, 0);
-	ds_writeb(HEAD_TYPUS, 0);
-
-	for (i = 0; i < 14; i++)
-		attrib_changed[i] = 0;
-
-	for (i = 0; i < 86; i++) {
-		spell_incs[i].incs = 0;
-		spell_incs[i].tries = 0;
-	}
-	for (i = 0; i < 52; i++) {
-		skill_incs[i].tries = 0;
-		skill_incs[i].incs = 0;
-	}
-
-	hero.level = 1;
-}
-
-/**
- * new_values() - roll out new attribute values
- *
- */
-void new_values()
-{
-	/* Original-Bugfix:	there once was a char[11],
-				which could not hold a char[16] */
-
-	char name_bak[17];
-	signed char values[8];
-	Bit16u di, i, j;
-	Bit8s bv1, bv2, bv3;
-
-	/* set variable if hero has a typus */
-	if (hero.typus)
-		ds_writew(SCREEN_VAR, 1);
-
-	/* save the name of the hero */
-	/* TODO strncpy() would be better here */
-	strcpy(name_bak, hero.name);
-
-	/* save the sex of the hero */
-	bv3 = hero.sex;
-
-	/* clear the hero */
-	memset(&hero, 0 , sizeof(hero));
-	clear_hero();
-
-	/* restore the sex of the hero */
-	hero.sex = bv3;
-
-	/* restore the name of the hero */
-	/* TODO strncpy() would be better here */
-	strcpy(hero.name, name_bak);
-
-	refresh_screen();
-
-	ds_writew(SCREEN_VAR, 0);
-
-	for (j = 0; j < 7; j++) {
-		bv1 = (unsigned char)random_interval_gen(8, 13);
-		bv2 = 0;
-
-		for (i = 0; i < 7; i++) {
-			if (hero.attribs[i].normal)
-				continue;
-
-			values[bv2] = (signed char)i;
-			type_names[bv2] = get_text(32 + i);
-			bv2++;
-		}
-
-		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), bv1);
-
-		do {
-			ds_writew(0x1327, 0xffb0);
-
-			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
-				bv2,
-				type_names[0],
-				type_names[1],
-				type_names[2],
-				type_names[3],
-				type_names[4],
-				type_names[5],
-				type_names[6]);
-
-			ds_writew(0x1327, 0);
-		} while (di == 0xffff);
-		di = values[di - 1];
-		hero.attribs[di].current = bv1;
-		hero.attribs[di].normal = bv1;
-		update_mouse_cursor();
-		refresh_screen();
-		call_mouse();
-	}
-
-	for (j = 0; j < 7; j++) {
-		bv1 = (signed char)random_interval_gen(2, 7);
-		bv2 = 0;
-
-		for (i = 0; i < 7; i++) {
-			if (hero.attribs[i + 7].normal)
-				continue;
-
-			values[bv2] = (signed char)i;
-			type_names[bv2] = get_text(39 + i);
-			bv2++;
-		}
-
-		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), bv1);
-
-		do {
-			ds_writew(0x1327, 0xffb0);
-
-			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
-				bv2,
-				type_names[0],
-				type_names[1],
-				type_names[2],
-				type_names[3],
-				type_names[4],
-				type_names[5],
-				type_names[6]);
-
-			ds_writew(0x1327, 0);
-		} while (di == 0xffff);
-		di = values[di - 1];
-		hero.attribs[di + 7].current = bv1;
-		hero.attribs[di + 7].normal = bv1;
-		update_mouse_cursor();
-		refresh_screen();
-		call_mouse();
-	}
-}
 
 /**
  * skill_inc_novice() - tries to increment a skill in novice mode
