@@ -4598,12 +4598,13 @@ void do_gen()
 	}
 }
 
+/* Borlandified and nearly identical */
 void refresh_screen()
 {
 	RealPt src;
 	RealPt dst;
-	Bit16s height;
 	Bit16s width;
+	Bit16s height;
 	struct nvf_desc nvf;
 
 	if (ds_readw(SCREEN_VAR)) {
@@ -4653,32 +4654,53 @@ void refresh_screen()
 				ds_writeb(NEED_REFRESH, 1);
 				copy_to_screen(Real2Phys((RealPt)ds_readd(GEN_PTR5)), Real2Phys(dst), 128, 184, 0);
 
+#if !defined(__BORLANDC__)
 				if (hero.sex != 0) {
-					char *p;
-					p = get_text(271 + hero.typus);
-					print_str(p, get_line_start_c(p, 16, 128), 184);
+					print_str(get_text(271 + hero.typus),
+						get_line_start_c(get_text(271 + hero.typus), 16, 128),
+						184);
 				} else {
-					char *p;
-					p = get_text(17 + hero.typus);
-					print_str(p, get_line_start_c(p, 16, 128), 184);
+					print_str(get_text(17 + hero.typus),
+						get_line_start_c(get_text(17 + hero.typus), 16, 128),
+						184);
 				}
+#else
+				if (ds_readbs(HERO_SEX) != 0) {
+					print_str(get_text(271 + ds_readbs(HERO_TYPUS)),
+						get_line_start_c(get_text(271 + ds_readbs(HERO_TYPUS)), 16, 128),
+						184);
+				} else {
+					print_str(get_text(17 + ds_readbs(HERO_TYPUS)),
+						get_line_start_c(get_text(17 + ds_readbs(HERO_TYPUS)), 16, 128),
+						184);
+				}
+#endif
 			} else {
 				if (ds_readb(NEED_REFRESH)) {
 					call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
+#if !defined(__BORLANDC__)
 					ds_writeb(NEED_REFRESH, 0);
+#else
+				asm { nop; } // BCC Sync-Point
+#endif
 				}
+
 				wait_for_vsync();
 				set_palette(Real2Host((RealPt)ds_readd(BUFFER_DMENGE_DAT)) + 128 * 184 + 2, 0 , 32);
 				copy_to_screen(Real2Phys((RealPt)ds_readd(BUFFER_DMENGE_DAT)), Real2Phys(dst), 128, 184, 0);
 			}
 		}
 		/* if hero has a typus */
+#if !defined(__BORLANDC__)
 		if (hero.typus != 0) {
+#else
+		if (ds_readbs(HERO_TYPUS) != 0) {
+#endif
 			/* draw the head */
 
 			nvf.dst = (RealPt)ds_readd(GEN_PTR6);
 			nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
-			nvf.no = ds_readb(HEAD_CURRENT);
+			nvf.no = ds_readbs(HEAD_CURRENT);
 ;
 			nvf.type = 0;
 			nvf.width = &width;
@@ -4708,8 +4730,7 @@ void refresh_screen()
 		}
 
 		print_values();
-		ds_writed(GFX_PTR, ds_readd(VGA_MEMSTART));
-		dst = (RealPt)ds_readd(VGA_MEMSTART);
+		dst = (RealPt)(ds_writed(GFX_PTR, ds_readd(VGA_MEMSTART)));
 		src = (RealPt)ds_readd(GEN_PTR1_DIS);
 		update_mouse_cursor();
 		copy_to_screen(Real2Phys(src), Real2Phys(dst), 320, 200, 0);
