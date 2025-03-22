@@ -16,6 +16,7 @@ Bit16s bc__close(Bit16u);
 Bit16s bc__create(RealPt, Bit16u);
 Bit16s bc_flushall();
 RealPt bc_memcpy(RealPt, RealPt, Bit16s);
+RealPt bc_memset(RealPt, Bit8s, Bit16u);
 Bit16s bc_open(RealPt, Bit16u);
 RealPt bc_strcat(RealPt, RealPt);
 RealPt bc_strcpy(RealPt, RealPt);
@@ -33,6 +34,7 @@ static inline void bc_randomize() { }
 #include <BIOS.H>   // bioskey, int86x (also in dos.h)
 #include <DOS.H>
 #include <CONIO.H> // clrscr
+#include <STRING.H> // memcpy, memset
 
 #include "port.h"
 
@@ -52,6 +54,7 @@ static inline void bc_randomize() { }
 #define bc__creat _creat
 #define bc_flushall flushall
 #define bc_memcpy memcpy
+#define bc_memset memset
 #define bc_open open
 #define bc_strcat strcat
 #define bc_strcpy strcpy

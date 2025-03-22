@@ -163,6 +163,18 @@ RealPt bc_memcpy(RealPt dst, RealPt src, Bit16s n)
 	return RealMake(reg_dx, reg_ax);
 }
 
+RealPt bc_memset(RealPt dst, Bit8s c, Bit16u n)
+{
+	CPU_Push16(n);
+	CPU_Push16(c);
+	CPU_Push32(dst);
+	CALLBACK_RunRealFar(reloc_gen + 0, 0x2596);
+	CPU_Pop32();
+	CPU_Pop16();
+	CPU_Pop16();
+	return dst;
+}
+
 Bit16s bc_open(RealPt fname, Bit16u attrib)
 {
 	CPU_Push16(attrib);
