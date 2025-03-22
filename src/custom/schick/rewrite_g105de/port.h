@@ -38,11 +38,11 @@ extern char ds[0xffff];
 #define ds_readws(p) *(signed short*)(ds + p)
 #define ds_readds(p) *(signed long*)(ds + p)
 
-#define ds_writeb(p, d) *(unsigned char*)(ds + p) = d
-#define ds_writew(p, d) *(unsigned short*)(ds + p) = d
-#define ds_writed(p, d) *(unsigned long*)(ds + p) = d
+#define ds_writeb(p, d) (*(unsigned char*)(ds + (p)) = (d))
+#define ds_writew(p, d) (*(unsigned short*)(ds +(p)) = (d))
+#define ds_writed(p, d) *(unsigned long*)(ds + (p)) = (d)
 
-#define ds_writews(p, d) *(signed short*)(ds + p) = d
+#define ds_writews(p, d) *(signed short*)(ds + (p)) = (d)
 
 #define ds_inc_b(p)	++*(unsigned char*)(ds + p)
 #define ds_inc_w(p)	++*(unsigned short*)(ds + p)
