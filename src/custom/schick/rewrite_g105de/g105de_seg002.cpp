@@ -4430,7 +4430,12 @@ void do_gen()
 							}
 							case 4: {
 								//memset(&hero, 0, sizeof(hero));
+#if !defined(__BORLANDC__)
 								memset(&hero, 0, 0x6da);
+								bc_memset(RealMake(datseg, HERO_NAME), 0, 0x6da);
+#else
+								bc_memset(&ds[HERO_NAME], 0, 0x6da);
+#endif
 								clear_hero();
 								ds_writew(MOUSE2_EVENT,	1);
 								ds_writew(SCREEN_VAR, 1);
