@@ -4322,38 +4322,48 @@ void change_head()
  * change_sex() - changes the sex of the hero
  *
  */
+/* Borlandified and identical */
 void change_sex()
 {
 	RealPt dst;
 	RealPt src;
 
 	/* change sex of the hero */
+#if !defined(__BORLANDC__)
 	hero.sex = hero.sex ^ 1;
+#endif
+	ds_xor_bs(HERO_SEX, 1);
 
 	/* hero has a typus */
+#if !defined(__BORLANDC__)
 	if (hero.typus) {
 		if (hero.sex != 0) {
+#else
+	if (ds_readb(HERO_TYPUS)) {
+		if (ds_readb(HERO_SEX) != 0) {
+#endif
 			/* To female */
-			ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
-			ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
-			ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS) + 1) - 1);
+			ds_writeb(HEAD_FIRST, ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readbs(HEAD_TYPUS))));
+			ds_writeb(HEAD_LAST, (Bit8s)(ds_readbs(HEAD_FIRST_MALE + ds_readbs(HEAD_TYPUS) + 1) - 1));
 		} else {
 			/* To male */
-			ds_writeb(HEAD_FIRST, ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS))));
-			ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)) - 1);
+			ds_writeb(HEAD_FIRST, ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_MALE + ds_readbs(HEAD_TYPUS))));
+			ds_writeb(HEAD_LAST, (Bit8s)(ds_readbs(HEAD_FIRST_FEMALE + ds_readbs(HEAD_TYPUS)) - 1));
 		}
 		ds_writew(SCREEN_VAR, 1);
 		return;
 	} else {
 		dst = (RealPt)ds_readd(VGA_MEMSTART) + 7 * 320 + 305;
-		src = (RealPt)ds_readd(BUFFER_SEX_DAT) + hero.sex * 256;
+#if !defined(__BORLANDC__)
+		src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 256 * hero.sex;
+#else
+		src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 256 * ds_readbs(HERO_SEX);
+#endif
 		update_mouse_cursor();
 		copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 16, 0);
 		call_mouse();
 	}
 }
-
-#if 1
 
 void do_gen()
 {
@@ -4573,6 +4583,8 @@ void do_gen()
 		}
 	}
 }
+
+#if 1
 
 /**
  * calc_at_pa() - calculate AT and PA values

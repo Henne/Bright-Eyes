@@ -62,6 +62,8 @@ extern char ds[0xffff];
 
 #define ds_and_ws(p, d)	((*(signed short*)(ds + p)) &= (d))
 #define ds_add_ws(p, d)	((*(signed short*)(ds + p)) += (d))
+#define ds_xor_bs(p, d)	((*(signed char*)(ds + p)) ^= (d))
+
 
 #define mem_readb(p) *(signed char*)(p)
 #define mem_readw(p) *(signed short*)(p)
@@ -113,6 +115,12 @@ static inline Bit16s ds_add_ws(Bit16s off, Bit16s v)
 {
 	return *(Bit16s*)(p_datseg + off) += v;
 }
+
+static inline Bit8s ds_xor_bs(Bit16s off, Bit8s v)
+{
+	return *(Bit8s*)(p_datseg + off) ^= v;
+}
+
 #endif
 
 #endif
