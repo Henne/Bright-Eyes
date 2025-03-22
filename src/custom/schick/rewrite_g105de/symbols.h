@@ -138,6 +138,8 @@
 
 #define CALLED_WITH_ARGS                (0x3f60)    /* Bit16s */
 
+#define ATTRIB_CHANGED                  (0x4076)    /* Bit8s */
+
 #define HEAD_LAST                       (0x40b4)    /* Bit8s */
 #define HEAD_FIRST                      (0x40b5)    /* Bit8s */
 #define HEAD_CURRENT                    (0x40b6)    /* Bit8s */

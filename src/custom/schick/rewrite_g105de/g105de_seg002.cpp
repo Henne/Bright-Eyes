@@ -1147,8 +1147,7 @@ struct inc_states {
 static struct inc_states spell_incs[86];
 /* DS:0x400e */
 static struct inc_states skill_incs[52];
-/* DS:0x4076 */
-static char attrib_changed[14];
+//static char attrib_changed[14];
 /* DS:0x4084 */
 static char *type_names[MAX_TYPES];
 
@@ -4754,7 +4753,7 @@ void clear_hero() {
 	ds_writeb(HEAD_TYPUS, 0);
 
 	for (i = 0; i < 14; i++)
-		attrib_changed[i] = 0;
+		ds_writeb(ATTRIB_CHANGED + i, 0);
 
 	for (i = 0; i < 86; i++) {
 		spell_incs[i].incs = 0;
@@ -5454,21 +5453,21 @@ Bit16u can_change_attribs()
 	na_dec = na_inc = pa_dec = pa_inc = 0;
 
 	for (i = 0; i < 14; i++)
-		D1_LOG("%d ", attrib_changed[i]);
+		D1_LOG("%d ", ds_readb(ATTRIB_CHANGED + i));
 	D1_LOG("\n");
 
 
 	for (i = 0; i < 7; i++) {
-		if ((attrib_changed[i] != INC) && (hero.attribs[i].normal > 8))
+		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (hero.attribs[i].normal > 8))
 			pa_dec += 8 - hero.attribs[i].normal;
-		if ((attrib_changed[i] != DEC) && (hero.attribs[i].normal < 13))
+		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (hero.attribs[i].normal < 13))
 			pa_inc += 13 - hero.attribs[i].normal;
 	}
 
 	for (i = 7; i < 14; i++) {
-		if ((attrib_changed[i] != INC) && (hero.attribs[i].normal > 2))
+		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (hero.attribs[i].normal > 2))
 			na_dec += 2 - hero.attribs[i].normal;
-		if ((attrib_changed[i] != DEC) && (hero.attribs[i].normal < 8))
+		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (hero.attribs[i].normal < 8))
 			na_inc += 8 - hero.attribs[i].normal;
 	}
 
@@ -5549,7 +5548,7 @@ void change_attribs()
 		return;
 	tmp2--;
 	/* get the modification type */
-	if (attrib_changed[tmp2] == 0) {
+	if (ds_readb(ATTRIB_CHANGED + tmp2) == 0) {
 		/* ask user if inc or dec */
 		ds_writew(0x1327, 0xffb0);
 		tmp3 = gui_radio((Bit8u*)NULL, 2, get_text(75), get_text(76));
@@ -5558,7 +5557,7 @@ void change_attribs()
 		if (tmp3 == -1)
 			return;
 	} else {
-		tmp3 = attrib_changed[tmp2];
+		tmp3 = ds_readb(ATTRIB_CHANGED + tmp2);
 	}
 
 	if (tmp3 == INC) {
@@ -5569,7 +5568,7 @@ void change_attribs()
 		}
 		c = 0;
 		for (di = 7; di < 14; di++) {
-			if (attrib_changed[di] == DEC)
+			if (ds_readb(ATTRIB_CHANGED + di) == DEC)
 				continue;
 			if (hero.attribs[di].normal >= 8)
 				continue;
@@ -5583,7 +5582,7 @@ void change_attribs()
 		hero.attribs[tmp2].current++;
 		hero.attribs[tmp2].normal++;
 
-		attrib_changed[tmp2] = INC;
+		ds_writeb(ATTRIB_CHANGED + tmp2,  INC);
 
 		refresh_screen();
 
@@ -5602,7 +5601,7 @@ void change_attribs()
 
 			si--;
 			/* check if this attribute has been decremented */
-			if (attrib_changed[si + 7] == DEC) {
+			if (ds_readb(ATTRIB_CHANGED + si + 7) == DEC) {
 				infobox(get_text(83), 0);
 				continue;
 			}
@@ -5613,7 +5612,7 @@ void change_attribs()
 			}
 			/* increment the negative attribute */
 			tmp1++;
-			attrib_changed[si + 7] = INC;
+			ds_writeb(ATTRIB_CHANGED + si + 7, INC);
 			hero.attribs[si + 7].normal++;
 			hero.attribs[si + 7].current++;
 
@@ -5628,7 +5627,7 @@ void change_attribs()
 		}
 		c = 0;
 		for (di = 7; di < 14; di++) {
-			if (attrib_changed[di] == INC)
+			if (ds_readb(ATTRIB_CHANGED + di) == INC)
 				continue;
 			if (hero.attribs[di].normal <= 2)
 				continue;
@@ -5642,7 +5641,7 @@ void change_attribs()
 		hero.attribs[tmp2].normal--;
 		hero.attribs[tmp2].current--;
 		/* mark this attribute as decremented */
-		attrib_changed[tmp2] = DEC;
+		ds_writeb(ATTRIB_CHANGED + tmp2, DEC);
 
 		refresh_screen();
 
@@ -5661,7 +5660,7 @@ void change_attribs()
 
 			si--;
 			/* check if this attribute has been incremented */
-			if (attrib_changed[si + 7] == INC) {
+			if (ds_readb(ATTRIB_CHANGED + si + 7) == INC) {
 				infobox(get_text(82), 0);
 				continue;
 			}
@@ -5674,7 +5673,7 @@ void change_attribs()
 			tmp1++;
 			hero.attribs[si + 7].normal--;
 			hero.attribs[si + 7].current--;
-			attrib_changed[si + 7] = DEC;
+			ds_writeb(ATTRIB_CHANGED + si + 7, DEC);
 
 			refresh_screen();
 		}
