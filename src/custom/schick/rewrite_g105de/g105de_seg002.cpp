@@ -3925,16 +3925,15 @@ Bit16u infobox(char *msg, Bit16u digits)
 	v3 = ds_readws(TEXT_Y);
 	v4 = ds_readws(TEXT_X_END);
 
-	di = (ds_readws(MENU_TILES) + 1) * 32;
-	ds_writew(LEFT_BORDER, abs(320 - di) / 2 + ds_readw(0x1327));
-	ds_writew(TEXT_X, abs(320 - di) / 2 + ds_readw(0x1327) + 5);
+	di = 32 * ds_readws(MENU_TILES) + 32;
+	ds_writew(TEXT_X, ds_writew(LEFT_BORDER, (320 - di) / 2 + ds_readw(0x1327)) + 5);
 	ds_writews(TEXT_X_END, di - 10);
 	lines = str_splitter(msg);
 
 	if (digits != 0)
 		lines += 2;
 
-	ds_writew(UPPER_BORDER, abs(200 - (lines + 2) * 8) / 2);
+	ds_writew(UPPER_BORDER, (200 - (lines + 2) * 8) / 2);
 	ds_writew(UPPER_BORDER, ds_readws(UPPER_BORDER) + ro_zero);
 	ds_writew(TEXT_Y, ds_readws(UPPER_BORDER) + 7);
 
