@@ -753,14 +753,14 @@ static unsigned short autospells[6][45] = {
 
 };
 
-/* DS:0x1048 */
-static const signed char head_first_male[12] = {	0, 0, 6, 12,
-							18, 24,	30, 36,
-							42, 48, 54, 62 };
-/* DS:0x1054 */
-static const signed char head_first_female[11] = {	0, 3, 9, 15,
-							21, 27, 34, 37,
-							46, 51, 58 };
+//static const signed char head_first_male[12] = {	0, 0, 6, 12,
+//							18, 24,	30, 36,
+//							42, 48, 54, 62 };
+//static const signed char head_first_female[11] = {	0, 3, 9, 15,
+//							21, 27, 34, 37,
+//
+//							46, 51, 58 };
+
 /* DS:0x113b */
 static struct struct_color pal_tmp[32];
 /* DS:0x119b */
@@ -1154,17 +1154,15 @@ static struct inc_states skill_incs[52];
 static char attrib_changed[14];
 /* DS:0x4084 */
 static char *type_names[MAX_TYPES];
-/* DS:0x40B4 */
+
 /* the index of the last head */
-static signed char head_last;
-/* DS:0x40B5 */
+//static signed char head_last;
 /* the index of the first head */
-static signed char head_first;
+//static signed char head_first;
 /* the index of the current head */
 //static signed char head_current;
-/* DS:0x40B7 */
 /* the typus for the heads e.G. all elves are 10 */
-static signed char head_typus;
+//static signed char head_typus;
 
 //static unsigned short MENU_TILES;
 //static unsigned short left_border;
@@ -4328,7 +4326,6 @@ void change_sex()
 {
 	RealPt dst;
 	RealPt src;
-	signed char tmp;
 
 	/* change sex of the hero */
 	hero.sex = hero.sex ^ 1;
@@ -4337,15 +4334,13 @@ void change_sex()
 	if (hero.typus) {
 		if (hero.sex != 0) {
 			/* To female */
-			ds_writeb(HEAD_CURRENT, head_first_female[head_typus]);
-			head_first = head_first_female[head_typus];
-			head_last = head_first_male[head_typus + 1] - 1;
+			ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
+			ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
+			ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS) + 1) - 1);
 		} else {
 			/* To male */
-			tmp = head_first_male[head_typus];
-			ds_writeb(HEAD_CURRENT, tmp);
-			head_first = tmp;
-			head_last = head_first_female[head_typus] - 1;
+			ds_writeb(HEAD_FIRST, ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS))));
+			ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)) - 1);
 		}
 		ds_writew(0x11fe, 1);
 		return;
@@ -4496,10 +4491,10 @@ void do_gen()
 			if (hero.typus == 0) {
 				infobox(get_text(17), 0);
 			} else {
-				if (ds_readbs(HEAD_CURRENT) < head_last) {
+				if (ds_readbs(HEAD_CURRENT) < ds_readb(HEAD_LAST)) {
 					ds_writeb(HEAD_CURRENT, ds_readbs(HEAD_CURRENT) + 1);
 				} else {
-					ds_writeb(HEAD_CURRENT, head_first);
+					ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST));
 				}
 				change_head();
 			}
@@ -4509,10 +4504,10 @@ void do_gen()
 			if (hero.typus == 0) {
 				infobox(get_text(17), 0);
 			} else {
-				if (ds_readbs(HEAD_CURRENT) > head_first) {
+				if (ds_readbs(HEAD_CURRENT) > ds_readb(HEAD_FIRST)) {
 					ds_writeb(HEAD_CURRENT, ds_readbs(HEAD_CURRENT) - 1);
 				} else {
-					ds_writeb(HEAD_CURRENT, head_last);
+					ds_writeb(HEAD_CURRENT, ds_readb(HEAD_LAST));
 				}
 				change_head();
 			}
@@ -5013,9 +5008,9 @@ void clear_hero() {
 	got_mu_bonus = 0;
 
 	ds_writeb(HEAD_CURRENT, 0);
-	head_last = 0;
-	head_first = 0;
-	head_typus = 0;
+	ds_writeb(HEAD_LAST, 0);
+	ds_writeb(HEAD_FIRST, 0);
+	ds_writeb(HEAD_TYPUS, 0);
 
 	for (i = 0; i < 14; i++)
 		attrib_changed[i] = 0;
@@ -5362,21 +5357,21 @@ void select_typus()
 	call_mouse();
 
 	if (hero.typus > 10)
-		head_typus = 10;
+		ds_writeb(HEAD_TYPUS, 0);
 	else
-		head_typus = hero.typus;
+		ds_writeb(HEAD_TYPUS, hero.typus);
 
 	if (hero.sex) {
-		ds_writeb(HEAD_CURRENT, head_first_female[head_typus]);
-		head_first = head_first_female[head_typus];
-		head_last = head_first_male[head_typus + 1] - 1;
+		ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
+		ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
+		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS) + 1) - 1);
 	} else {
-		ds_writeb(HEAD_CURRENT, head_first_male[head_typus]);
-		head_first = head_first_male[head_typus];
-		head_last = head_first_female[head_typus] - 1;
+		ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS)));
+		ds_writeb(HEAD_FIRST_MALE, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS)));
+		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)) - 1);
 	}
 
-	/* reset boni falags */
+	/* reset boni flags */
 	got_ch_bonus = 0;
 	got_mu_bonus = 0;
 	fill_values();
@@ -7091,18 +7086,18 @@ void choose_typus()
 	call_mouse();
 
 	if (hero.typus > 10)
-		head_typus = 10;
+		ds_writeb(HEAD_TYPUS, 10);
 	else
-		head_typus = hero.typus;
+		ds_writeb(HEAD_TYPUS, hero.typus);
 
 	if (hero.sex) {
-		ds_writeb(HEAD_CURRENT, head_first_female[head_typus]);
-		head_first = head_first_female[head_typus];
-		head_last = head_first_male[head_typus + 1] - 1;
+		ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
+		ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
+		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS) + 1) - 1);
 	} else {
-		ds_writeb(HEAD_CURRENT, head_first_male[head_typus]);
-		head_first = head_first_male[head_typus];
-		head_last = head_first_female[head_typus] - 1;
+		ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS)));
+		ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS)));
+		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)) - 1);
 	}
 	fill_values();
 	ds_writew(0x11fe, 1);

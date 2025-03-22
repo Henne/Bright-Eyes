@@ -35,6 +35,9 @@
 
 #endif
 
+#define HEAD_FIRST_MALE                 (0x1048)    /* Bit8u[12] : start indices in HEADS.DAT for each typus */
+#define HEAD_FIRST_FEMALE               (0x1054)    /* Bit8u[12] : start indices in HEADS.DAT for each typus */
+
 #define MASK_SWITCH                     (0x109a)    /* Bit8s */
 
 #define CHR_LOOKUP                      (0x1b85)
@@ -67,6 +70,7 @@
 #define HERO_ALIAS                      (0x133c)    /* char[16] */
 #define HERO_TYPUS                      (0x134d)    /* Bit8s */
 #define HERO_GROUP                      (0x13b4)    /* Bit8s */
+
 #define HERO_PIC                        (0x1606)    /* char[1024] */
 
 
@@ -126,7 +130,10 @@
 
 #define CALLED_WITH_ARGS                (0x3f60)    /* Bit16s */
 
+#define HEAD_LAST                       (0x40b4)    /* Bit8s */
+#define HEAD_FIRST                      (0x40b5)    /* Bit8s */
 #define HEAD_CURRENT                    (0x40b6)    /* Bit8s */
+#define HEAD_TYPUS                      (0x40b7)    /* Bit8s */
 
 #define MENU_TILES                      (0x40b9)    /* Bit16s */
 #define LEFT_BORDER                     (0x40bb)    /* Bit16s */
