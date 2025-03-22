@@ -4027,8 +4027,6 @@ Bit16s gui_bool(Bit8u *msg)
 		return 0;
 }
 
-#if 1
-
 /**
  * fill_radio_button() - marks the active radio button
  * @old_pos:	the position of the last active button (or -1)
@@ -4036,9 +4034,13 @@ Bit16s gui_bool(Bit8u *msg)
  * @offset:	the offset of the first radio line
  *
  */
-void fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
+/* Borlandified and identical */
+void fill_radio_button(Bit16s old_pos, Bit16s new_pos, Bit16s offset)
 {
-	Bit16u i, x, y;
+	Bit16s y;
+
+	Bit16s i;
+	Bit16s x;
 
 	update_mouse_cursor();
 
@@ -4046,7 +4048,7 @@ void fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
 	if (old_pos != -1) {
 		y = ds_readws(LEFT_BORDER) + 6;
 
-		x = (offset + old_pos) * 8 + ds_readws(UPPER_BORDER) + 2;
+		x = ds_readws(UPPER_BORDER) + (offset + old_pos) * 8 + 2;
 
 		for (i = 0; i < 4; i++)
 			draw_v_line(y + i, x, x + 3, 0xd8);
@@ -4055,7 +4057,7 @@ void fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
 	/* mark the new radio button */
 	y = ds_readws(LEFT_BORDER) + 6;
 
-	x = (offset + new_pos) * 8 + ds_readws(UPPER_BORDER) + 2;
+	x = ds_readws(UPPER_BORDER) + (offset + new_pos) * 8 + 2;
 
 	for (i = 0; i < 4; i++)
 		draw_v_line(y + i, x, x + 3, 0xd9);
@@ -4239,6 +4241,8 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	return retval;
 }
+
+#if 1
 
 /**
  * enter_name() - enter the name of a hero

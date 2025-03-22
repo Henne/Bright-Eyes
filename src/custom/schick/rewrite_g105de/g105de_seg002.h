@@ -103,7 +103,7 @@ namespace G105de {
 	void draw_popup_line(Bit16s, Bit16s);
 	Bit16s infobox(char*, Bit16s);
 	Bit16s gui_bool(Bit8u*);
-	void fill_radio_button(Bit16s, Bit16u, Bit16u);
+	void fill_radio_button(Bit16s, Bit16s, Bit16s);
 	Bit16s gui_radio(Bit8u *header, Bit8s pos, ...);
 	void enter_name();
 	void change_head();
