@@ -1138,8 +1138,8 @@ static unsigned short got_mu_bonus;
 //void *snd_ptr_unkn1;
 //void *state_table;
 
-/* DS:0x3f5e */
-static Bit8u param_level;
+
+//static Bit16s param_level;
 
 struct inc_states {
 	char tries;
@@ -4367,14 +4367,15 @@ void change_sex()
 
 void do_gen()
 {
-	Bit16s si, di;
+	Bit16s si;
+	Bit16s di;
 
 	di = 0;
 
 	ds_writew(SCREEN_VAR, 1);
 
 	/* try to set the level from parameters */
-	switch (param_level) {
+	switch (ds_readws(PARAM_LEVEL)) {
 		case 'a': {
 			/* ADVANCED */
 			level = 2;
@@ -4410,7 +4411,7 @@ void do_gen()
 
 		if (ds_readw(MOUSE2_EVENT) || ds_readw(IN_KEY_EXT) == KEY_PGUP) {
 			/* print the menu for each page */
-			switch(ds_readws(GEN_PAGE)) {
+			switch (ds_readws(GEN_PAGE)) {
 				case 0: {
 					si = gui_radio((Bit8u*)get_text(7), 9,
 						get_text(10), get_text(11), get_text(15),
@@ -7570,7 +7571,7 @@ int main_gen(int argc, char **argv)
 		ds_writew(CALLED_WITH_ARGS, 1);
 
 	if (argc > 2)
-		param_level = argv[2][0];
+		ds_writew(PARAM_LEVEL, argv[2][0]);
 
 	if ((argc > 3) && (argv[3][0] == '0')) {
 		ds_writew(MIDI_DISABLED, 1);

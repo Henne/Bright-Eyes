@@ -130,6 +130,7 @@
 
 #define SND_SEQUENCE                    (0x3f5a)    /* Bit16s */
 #define SND_DRIVER_HANDLE               (0x3f5c)    /* Bit16s */
+#define PARAM_LEVEL                     (0x3f5e)    /* Bit16s DE: {0, 'a', 'n'} */
 
 #define CALLED_WITH_ARGS                (0x3f60)    /* Bit16s */
 
