@@ -4074,38 +4074,52 @@ void fill_radio_button(Bit16s old_pos, Bit16s new_pos, Bit16s offset)
 Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 {
 	va_list arguments;
-
 	char *str;
-	PhysPt src, dst;
-	Bit16u r3, r4, r5, r6, r7, r8, r9;
-	Bit16u my_bak, mx_bak;
-	Bit16u bak1, bak2, bak3;
-	Bit16s fg_bak, bg_bak;
-	Bit16u lines_header, lines_sum;
+	Bit16s r3;
+	Bit16s r4;
+	Bit16s r5;
 	Bit16s retval;
-	Bit16u di;
-	Bit16u i;
+	Bit16s lines_sum;
+	Bit16s lines_header;
+	Bit16s r6;
+	Bit16s fg_bak;
+	Bit16s bg_bak;
+	Bit16s bak1;
+	Bit16s bak2;
+	Bit16s bak3;
+	PhysPt src;
+	PhysPt dst;
+	Bit16s mx_bak;
+	Bit16s my_bak;
+	Bit16s r7;
+	Bit16s r8;
+	Bit16s r9;
+
+	register Bit16s di;
+	register Bit16s i;
 
 	r5 = 0;
 	r6 = 0xffff;
+#if !defined(__BORLANDC__)
 	di = 1;
+#else
+	asm {nop;}
+#endif
 	bak1 = ds_readws(TEXT_X);
 	bak2 = ds_readw(TEXT_Y);
 	bak3 = ds_readws(TEXT_X_END);
-	r9 = (ds_readws(MENU_TILES) + 1) * 32;
-	ds_writew(LEFT_BORDER, (abs(320 - r9) / 2) + ds_readw(0x1327));
-	ds_writew(TEXT_X, ds_readws(LEFT_BORDER) + 5);
-	ds_writew(TEXT_X_END, (ds_readws(MENU_TILES) + 1) * 32 - 10);
+	r9 = 32 * ds_readws(MENU_TILES) + 32;
+	ds_writew(TEXT_X, ds_writew(LEFT_BORDER, ((320 - r9) / 2) + ds_readw(0x1327)) + 5);
+	ds_writew(TEXT_X_END, 32 * ds_readws(MENU_TILES) + 22);
 	lines_header = str_splitter((char*)header);
 	lines_sum = lines_header + options;
-	ds_writew(UPPER_BORDER, abs(200 - (lines_sum + 2) * 8) / 2);
-	ds_writew(TEXT_Y, ds_readw(UPPER_BORDER) + 7);
+	ds_writew(TEXT_Y, ds_writew(UPPER_BORDER, (200 - (lines_sum + 2) * 8) / 2) + 7);
 	update_mouse_cursor();
 
 	/* save old background */
-	src = Real2Phys(ds_readd(VGA_MEMSTART));
+	src = Real2Phys((RealPt)ds_readd(VGA_MEMSTART));
 	src += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
-	dst = Real2Phys(ds_readd(GEN_PTR1_DIS));
+	dst = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 2);
 
 	/* draw popup */
@@ -4113,7 +4127,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	for (i = 0; i < lines_header; i++)
 		draw_popup_line(i + 1, 1);
 	for (i = 0; options > i; i++)
-		draw_popup_line(i + lines_header + 1, 2);
+		draw_popup_line(lines_header + i + 1, 2);
 	draw_popup_line(lines_sum + 1, 3);
 
 	/* save and set text colors */
@@ -4125,11 +4139,17 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 		print_line((char*)header);
 
 	r3 = ds_readw(TEXT_X) + 8;
-	r4 = (lines_header + 1) * 8 + ds_readws(UPPER_BORDER);
+	r4 = ds_readws(UPPER_BORDER) + 8 * (lines_header + 1);
+
+	// Okay, till here */
 
 	/* print radio options */
 	va_start(arguments, options);
+#if !defined(__BORLANDC__)
 	for (i = 1; i <= options; r4 += 8, i++) {
+#else
+	for (i = 1; i <= options; i++) {
+#endif
 		str = va_arg(arguments, char*);
 		print_str(str, r3, r4);
 	}
@@ -4161,7 +4181,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 		ds_writed(ACTION_TABLE, (Bit32u)&ds[ACTION_INPUT]);
 #endif
 		handle_input();
-		ds_writed(ACTION_TABLE, (RealPt)0);
+		ds_writed(ACTION_TABLE, (Bit32u)((RealPt)0));
 
 		if (di != r6) {
 			fill_radio_button(r6, di, lines_header);
@@ -4227,9 +4247,9 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	mouse_move_cursor(mx_bak, my_bak);
 
-	dst = Real2Phys(ds_readd(VGA_MEMSTART));
+	dst = Real2Phys((RealPt)ds_readd(VGA_MEMSTART));
 	dst += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
-	src = Real2Phys(ds_readd(GEN_PTR1_DIS));
+	src = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 0);
 	call_mouse();
 	set_textcolor(fg_bak, bg_bak);
