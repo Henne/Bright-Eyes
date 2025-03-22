@@ -4419,7 +4419,11 @@ void do_gen()
 
 					if (si != -1) {
 						if ((si >= 4) && (si < 6) &&
+#if !defined(__BORLANDC__)
 							(hero.attribs[0].normal) &&
+#else
+							(ds_readbs(HERO_ATT0_NORMAL)) &&
+#endif
 							!gui_bool((Bit8u*)get_text(13))) {
 							si = 0;
 						}
@@ -4498,7 +4502,11 @@ void do_gen()
 			enter_name();
 
 		if ((ds_readw(IN_KEY_EXT) == KEY_UP) && (ds_readws(GEN_PAGE) == 0)) {
+#if !defined(__BORLANDC__)
 			if (hero.typus == 0) {
+#else
+			if (ds_readbs(HERO_TYPUS) == 0) {
+#endif
 				infobox(get_text(17), 0);
 			} else {
 				if (ds_readbs(HEAD_CURRENT) < ds_readb(HEAD_LAST)) {
@@ -4511,7 +4519,11 @@ void do_gen()
 		}
 
 		if ((ds_readw(IN_KEY_EXT) == KEY_DOWN) && (ds_readws(GEN_PAGE) == 0)) {
+#if !defined(__BORLANDC__)
 			if (hero.typus == 0) {
+#else
+			if (ds_readbs(HERO_TYPUS) == 0) {
+#endif
 				infobox(get_text(17), 0);
 			} else {
 				if (ds_readbs(HEAD_CURRENT) > ds_readb(HEAD_FIRST)) {
@@ -4524,12 +4536,20 @@ void do_gen()
 		}
 
 		if ((ds_readw(IN_KEY_EXT) == KEY_RIGHT) && (ds_readw(LEVEL) != 1)) {
+#if !defined(__BORLANDC__)
 			if (hero.typus == 0) {
+#else
+			if (ds_readbs(HERO_TYPUS) == 0) {
+#endif
 				infobox(get_text(72), 0);
 			} else {
 				ds_writew(SCREEN_VAR, 1);
 
+#if !defined(__BORLANDC__)
 				if (((hero.typus >= 7) ? 10 : 4) > ds_readws(GEN_PAGE)) {
+#else
+				if (((ds_readbs(HERO_TYPUS) >= 7) ? 10 : 4) > ds_readws(GEN_PAGE)) {
+#endif
 					ds_inc_ws(GEN_PAGE);
 				} else {
 					ds_writew(GEN_PAGE, 0);
@@ -4543,7 +4563,11 @@ void do_gen()
 				ds_dec_ws(GEN_PAGE);
 			} else {
 				if (ds_readws(LEVEL) != 1) {
+#if !defined(__BORLANDC__)
 					if (hero.typus == 0) {
+#else
+					if (ds_readbs(HERO_TYPUS) == 0) {
+#endif
 						infobox(get_text(72), 0);
 					} else {
 						ds_writew(SCREEN_VAR, 1);
@@ -4554,7 +4578,11 @@ void do_gen()
 		}
 
 		if ((ds_readw(IN_KEY_EXT) >= KEY_1) && (ds_readw(IN_KEY_EXT) <= KEY_5) &&
+#if !defined(__BORLANDC__)
 			(ds_readws(LEVEL) == 2) && hero.typus) {
+#else
+			(ds_readws(LEVEL) == 2) && ds_readbs(HERO_TYPUS)) {
+#endif
 			switch (ds_readw(IN_KEY_EXT)) {
 				case KEY_1: {
 					si = 0;
@@ -4576,7 +4604,12 @@ void do_gen()
 					si = 10;
 				}
 			}
+
+#if !defined(__BORLANDC__)
 			if ((si != ds_readws(GEN_PAGE)) && (si < 5 || hero.typus >= 7)) {
+#else
+			if ((si != ds_readws(GEN_PAGE)) && (si < 5 || ds_readbs(HERO_TYPUS) >= 7)) {
+#endif
 				ds_writews(GEN_PAGE, si);
 				ds_writew(SCREEN_VAR, 1);
 			}

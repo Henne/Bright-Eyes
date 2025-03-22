@@ -71,6 +71,7 @@
 #define HERO_NAME                       (0x132c)    /* char[16] */
 #define HERO_ALIAS                      (0x133c)    /* char[16] */
 #define HERO_TYPUS                      (0x134d)    /* Bit8s */
+#define HERO_ATT0_NORMAL                (0x1360)    /* Bit8s */
 #define HERO_SEX                        (0x134e)    /* Bit8s */
 #define HERO_GROUP                      (0x13b4)    /* Bit8s */
 
