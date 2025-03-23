@@ -4735,34 +4735,37 @@ void refresh_screen()
 	}
 }
 
-#if 1
-
+/* Borlandified and identical */
 /* static */
-void clear_hero() {
+void clear_hero()
+{
 
-	Bit16u i;
-
+	Bit16s i;
 
 	ds_writew(GOT_MU_BONUS, ds_writew(GOT_CH_BONUS, 0));
 
-	ds_writeb(HEAD_CURRENT, 0);
-	ds_writeb(HEAD_LAST, 0);
-	ds_writeb(HEAD_FIRST, 0);
-	ds_writeb(HEAD_TYPUS, 0);
+	ds_writeb(HEAD_TYPUS,
+		ds_writeb(HEAD_FIRST,
+		ds_writeb(HEAD_LAST,
+		ds_writeb(HEAD_CURRENT, 0))));
 
 	for (i = 0; i < 14; i++)
 		ds_writeb(ATTRIB_CHANGED + i, 0);
 
 	for (i = 0; i < 86; i++) {
-		ds_writeb(SPELL_INCS + 2 * i + 1, 0); // incs
-		ds_writeb(SPELL_INCS + 2 * i + 0, 0); // tries
+		ds_writeb(SPELL_INCS + 2 * i + 0,
+			ds_writeb(SPELL_INCS + 2 * i + 1, 0) );
 	}
 	for (i = 0; i < 52; i++) {
-		ds_writeb(SKILL_INCS + 2 * i + 0, 0); // tries
-		ds_writeb(SKILL_INCS + 2 * i + 1, 0); // incs
+		// tries + incs
+		ds_writeb(SKILL_INCS + 2 * i + 0,
+			ds_writeb(SKILL_INCS + 2 * i + 1, 0));
 	}
 
+#if !defined(__BORLANDC__)
 	hero.level = 1;
+#endif
+	ds_writeb(HERO_LEVEL, 1);
 }
 
 /**
@@ -4881,6 +4884,9 @@ void new_values()
 		call_mouse();
 	}
 }
+
+#if 1
+
 
 /**
  * calc_at_pa() - calculate AT and PA values
