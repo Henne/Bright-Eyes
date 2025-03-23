@@ -4778,6 +4778,7 @@ void clear_hero()
  * new_values() - roll out new attribute values
  *
  */
+/* Borlandified and nearly identical */
 void new_values()
 {
 	/* Original-Bugfix:	there once was a char[11],
@@ -4846,7 +4847,11 @@ void new_values()
 		unset_attribs = 0;
 
 		for (i = 0; i < 7; i++) {
+#if !defined(__BORLANDC__)
 			if (!hero.attribs[i].normal) {
+#else
+			if (!host_readbs(Real2Host(ds_ptr) + 3 * i)) {
+#endif
 				values[unset_attribs] = (signed char)i;
 				ds_writed(TYPE_NAMES + 4 * unset_attribs,  (Bit32u)get_text_real(32 + i));
 				unset_attribs++;
@@ -4873,20 +4878,37 @@ void new_values()
 		} while (di == -1);
 
 		di = values[di - 1];
+#if !defined(__BORLANDC__)
 		hero.attribs[di].current = randval;
 		hero.attribs[di].normal = randval;
+#else
+		host_writeb(3 * di + (Real2Host(ds_ptr) + 1), randval);
+		host_writeb(3 * di + (Real2Host(ds_ptr) + 0), randval);
+#endif
 
+#if !defined(__BORLANDC__)
 		update_mouse_cursor();
+#else
+		asm {db 0x03, 0xd8; } // BCC Sync-Point
+#endif
 		refresh_screen();
 		call_mouse();
 	}
-#if 1
+#if !defined(__BORLANDC__)
+	ds_ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * 7);
+#else
+	ds_ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * 7];
+#endif
 	for (j = 0; j < 7; j++) {
 		randval = (Bit8s)random_interval_gen(2, 7);
 		unset_attribs = 0;
 
 		for (i = 0; i < 7; i++) {
+#if !defined(__BORLANDC__)
 			if (!hero.attribs[i + 7].normal) {
+#else
+			if (!host_readbs(Real2Host(ds_ptr) + 3 * i)) {
+#endif
 				values[unset_attribs] = (signed char)i;
 				ds_writed(TYPE_NAMES + 4 * unset_attribs,  (Bit32u)get_text_real(39 + i));
 				unset_attribs++;
@@ -4913,18 +4935,25 @@ void new_values()
 		} while (di == -1);
 
 		di = values[di - 1];
+
+#if !defined(__BORLANDC__)
 		hero.attribs[di + 7].current = randval;
 		hero.attribs[di + 7].normal = randval;
+#else
+		host_writeb(3 * di + (Real2Host(ds_ptr) + 1), randval);
+		host_writeb(3 * di + (Real2Host(ds_ptr) + 0), randval);
+#endif
 
+#if !defined(__BORLANDC__)
 		update_mouse_cursor();
+#else
+		asm {db 0x03, 0xd8; } // BCC Sync-Point
+#endif
+
 		refresh_screen();
 		call_mouse();
 	}
-#endif
 }
-
-#if 1
-
 
 /**
  * calc_at_pa() - calculate AT and PA values
@@ -4981,6 +5010,8 @@ void calc_at_pa() {
 
 	}
 }
+
+#if 1
 
 /**
  * fill_values() - fills the values if typus is chosen
