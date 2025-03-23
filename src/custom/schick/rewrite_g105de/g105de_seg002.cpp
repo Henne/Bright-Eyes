@@ -4776,12 +4776,22 @@ void new_values()
 {
 	/* Original-Bugfix:	there once was a char[11],
 				which could not hold a char[16] */
-
+	RealPt ds_ptr;
+	Bit8s randval;
+	Bit8s unset_attribs;
+	Bit8s values[8];
+	Bit8s sex_bak;
+#if !defined(__BORLANDC__)
 	char name_bak[17];
-	signed char values[8];
-	Bit16u di, i, j;
-	Bit8s bv1, bv2, bv3;
+#else
+	char name_bak[10];
+#endif
+	Bit16s j;
+	Bit16s i;
 
+	Bit16s di;
+
+#if !defined(__BORLANDC__)
 	/* set variable if hero has a typus */
 	if (hero.typus)
 		ds_writew(SCREEN_VAR, 1);
@@ -4791,43 +4801,59 @@ void new_values()
 	strcpy(name_bak, hero.name);
 
 	/* save the sex of the hero */
-	bv3 = hero.sex;
+	sex_bak = hero.sex;
 
 	/* clear the hero */
-	memset(&hero, 0 , sizeof(hero));
+	memset(&hero, 0, sizeof(hero));
 	clear_hero();
 
 	/* restore the sex of the hero */
-	hero.sex = bv3;
+	hero.sex = sex_bak;
 
 	/* restore the name of the hero */
 	/* TODO strncpy() would be better here */
 	strcpy(hero.name, name_bak);
+#else
+	if (ds_readbs(HERO_TYPUS))
+		ds_writew(SCREEN_VAR, 1);
 
+	strcpy(name_bak, (char*)&ds[HERO_NAME]);
+	sex_bak = ds_readbs(HERO_SEX);
+	bc_memset(&ds[HERO_NAME], 0, 0x6da);
+	clear_hero();
+	ds_writeb(HERO_SEX, sex_bak);
+	strcpy((char*)&ds[HERO_NAME], name_bak);
+
+#endif
 	refresh_screen();
 
 	ds_writew(SCREEN_VAR, 0);
 
+#if !defined(__BORLANDC__)
+	ds_ptr = RealMake(datseg, HERO_ATT0_NORMAL);
+#else
+	ds_ptr = (RealPt)&ds[HERO_ATT0_NORMAL];
+#endif
+
 	for (j = 0; j < 7; j++) {
-		bv1 = (unsigned char)random_interval_gen(8, 13);
-		bv2 = 0;
+		randval = (Bit8s)random_interval_gen(8, 13);
+		unset_attribs = 0;
 
 		for (i = 0; i < 7; i++) {
-			if (hero.attribs[i].normal)
-				continue;
-
-			values[bv2] = (signed char)i;
-			type_names[bv2] = get_text(32 + i);
-			bv2++;
+			if (!hero.attribs[i].normal) {
+				values[unset_attribs] = (signed char)i;
+				type_names[unset_attribs] = get_text(32 + i);
+				unset_attribs++;
+			}
 		}
 
-		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), bv1);
+		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), randval);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
 
 			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
-				bv2,
+				unset_attribs,
 				type_names[0],
 				type_names[1],
 				type_names[2],
@@ -4837,35 +4863,37 @@ void new_values()
 				type_names[6]);
 
 			ds_writew(0x1327, 0);
-		} while (di == 0xffff);
+
+		} while (di == -1);
+
 		di = values[di - 1];
-		hero.attribs[di].current = bv1;
-		hero.attribs[di].normal = bv1;
+		hero.attribs[di].current = randval;
+		hero.attribs[di].normal = randval;
+
 		update_mouse_cursor();
 		refresh_screen();
 		call_mouse();
 	}
-
+#if 1
 	for (j = 0; j < 7; j++) {
-		bv1 = (signed char)random_interval_gen(2, 7);
-		bv2 = 0;
+		randval = (Bit8s)random_interval_gen(2, 7);
+		unset_attribs = 0;
 
 		for (i = 0; i < 7; i++) {
-			if (hero.attribs[i + 7].normal)
-				continue;
-
-			values[bv2] = (signed char)i;
-			type_names[bv2] = get_text(39 + i);
-			bv2++;
+			if (!hero.attribs[i + 7].normal) {
+				values[unset_attribs] = (signed char)i;
+				type_names[unset_attribs] = get_text(39 + i);
+				unset_attribs++;
+			}
 		}
 
-		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), bv1);
+		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), randval);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
 
 			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
-				bv2,
+				unset_attribs,
 				type_names[0],
 				type_names[1],
 				type_names[2],
@@ -4875,14 +4903,18 @@ void new_values()
 				type_names[6]);
 
 			ds_writew(0x1327, 0);
-		} while (di == 0xffff);
+
+		} while (di == -1);
+
 		di = values[di - 1];
-		hero.attribs[di + 7].current = bv1;
-		hero.attribs[di + 7].normal = bv1;
+		hero.attribs[di + 7].current = randval;
+		hero.attribs[di + 7].normal = randval;
+
 		update_mouse_cursor();
 		refresh_screen();
 		call_mouse();
 	}
+#endif
 }
 
 #if 1
