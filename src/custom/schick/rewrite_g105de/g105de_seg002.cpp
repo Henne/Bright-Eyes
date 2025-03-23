@@ -1143,8 +1143,7 @@ struct inc_states {
 	char incs;
 };
 
-/* DS:0x3f62 */
-static struct inc_states spell_incs[86];
+//static struct inc_states spell_incs[86];
 /* DS:0x400e */
 static struct inc_states skill_incs[52];
 //static char attrib_changed[14];
@@ -4756,8 +4755,8 @@ void clear_hero() {
 		ds_writeb(ATTRIB_CHANGED + i, 0);
 
 	for (i = 0; i < 86; i++) {
-		spell_incs[i].incs = 0;
-		spell_incs[i].tries = 0;
+		ds_writeb(SPELL_INCS + 2 * i + 1, 0); // incs
+		ds_writeb(SPELL_INCS + 2 * i + 0, 0); // tries
 	}
 	for (i = 0; i < 52; i++) {
 		skill_incs[i].tries = 0;
@@ -4970,8 +4969,8 @@ void fill_values()
 			hero.spells[i] = spells[hero.typus - 7][i];
 
 			/* set spell_incs and spell_tries to zero */
-			spell_incs[i].incs = 0;
-			spell_incs[i].tries = 0;
+			ds_writeb(SPELL_INCS + 2 * i + 1, 0); // incs
+			ds_writeb(SPELL_INCS + 2 * i + 0, 0); // tries
 		}
 		/* special mage values */
 		if (hero.typus == 9) {
@@ -5271,7 +5270,7 @@ void spell_inc_novice(Bit16u spell)
 
 	while (!done) {
 		/* leave the loop if 3 tries have been done */
-		if (spell_incs[spell].tries == 3) {
+		if (ds_readbs(SPELL_INCS + 2 * spell + 0) == 3) {
 			/* set the flag to leave this loop */
 			done++;
 			continue;
@@ -5291,12 +5290,13 @@ void spell_inc_novice(Bit16u spell)
 			hero.spells[spell]++;
 
 			/* set inc tries for this spell to zero */
-			spell_incs[spell].tries = 0;
+			ds_writeb(SPELL_INCS + 2 * spell + 0, 0);
 
 			/* set the flag to leave this loop */
 			done++;
-		} else
-			spell_incs[spell].tries++;
+		} else {
+			ds_inc_bs_post(SPELL_INCS + 2 * spell + 0);
+		}
 	}
 }
 
@@ -6665,12 +6665,12 @@ void inc_spell(Bit16u spell)
 	}
 
 	/* all spell increments used for that spell */
-	if (spell_incs[spell].incs >= max_incs) {
+	if (ds_readbs(SPELL_INCS + 2 * spell + 1) >= max_incs) {
 		infobox(get_text(257), 0);
 		return;
 	}
 	/* all tries used for that spell */
-	if (spell_incs[spell].tries == 3) {
+	if (ds_readbs(SPELL_INCS + 2 * spell + 0) == 3) {
 		infobox(get_text(151), 0);
 		return;
 	}
@@ -6684,14 +6684,14 @@ void inc_spell(Bit16u spell)
 		/* increment spell value */
 		hero.spells[spell]++;
 		/* reset tries */
-		spell_incs[spell].tries = 0;
+		ds_writebs(SPELL_INCS + 2 * spell + 0, 0);
 		/* increment incs */
-		spell_incs[spell].incs++;
+		ds_inc_bs_post(SPELL_INCS + 2 * spell + 1);
 	} else {
 		/* show failure */
 		infobox(get_text(153), 0);
 		/* increment tries */
-		spell_incs[spell].tries++;
+		ds_inc_bs_post(SPELL_INCS + 2 * spell + 0);
 	}
 
 	refresh_screen();
