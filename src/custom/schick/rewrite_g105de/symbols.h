@@ -137,7 +137,8 @@
 #define PARAM_LEVEL                     (0x3f5e)    /* Bit16s DE: {0, 'a', 'n'} */
 
 #define CALLED_WITH_ARGS                (0x3f60)    /* Bit16s */
-#define SPELL_INCS                      (0x3f62)    /* Bit16s */
+#define SPELL_INCS                      (0x3f62)    /* 2 * Bit8s */
+#define SKILL_INCS                      (0x400e)    /* 2 * Bit8s */
 
 #define ATTRIB_CHANGED                  (0x4076)    /* Bit8s */
 

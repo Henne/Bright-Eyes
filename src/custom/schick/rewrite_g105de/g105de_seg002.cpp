@@ -1144,8 +1144,7 @@ struct inc_states {
 };
 
 //static struct inc_states spell_incs[86];
-/* DS:0x400e */
-static struct inc_states skill_incs[52];
+//static struct inc_states skill_incs[52];
 //static char attrib_changed[14];
 /* DS:0x4084 */
 static char *type_names[MAX_TYPES];
@@ -4759,8 +4758,8 @@ void clear_hero() {
 		ds_writeb(SPELL_INCS + 2 * i + 0, 0); // tries
 	}
 	for (i = 0; i < 52; i++) {
-		skill_incs[i].tries = 0;
-		skill_incs[i].incs = 0;
+		ds_writeb(SKILL_INCS + 2 * i + 0, 0); // tries
+		ds_writeb(SKILL_INCS + 2 * i + 1, 0); // incs
 	}
 
 	hero.level = 1;
@@ -4955,8 +4954,8 @@ void fill_values()
 		hero.skills[i] = skills[hero.typus][i];
 
 		/* set skill_incs and skill_tries to zero */
-		skill_incs[i].incs = 0;
-		skill_incs[i].tries = 0;
+		ds_writeb(SKILL_INCS + 2 * i + 1, 0);
+		ds_writeb(SKILL_INCS + 2 * i + 0, 0);
 	}
 
 	/* set skill_attempts */
@@ -5219,7 +5218,7 @@ void skill_inc_novice(Bit16u skill)
 
 	while (!done) {
 		/* leave the loop if 3 tries have been done */
-		if (skill_incs[skill].tries == 3) {
+		if (ds_readbs(SKILL_INCS + 2 * skill + 0) == 3) {
 			/* set the flag to leave this loop */
 			done++;
 			continue;
@@ -5239,7 +5238,7 @@ void skill_inc_novice(Bit16u skill)
 			hero.skills[skill]++;
 
 			/* set inc tries for this skill to zero */
-			skill_incs[skill].tries = 0;
+			ds_writeb(SKILL_INCS + 2 * skill + 0, 0);
 
 			/* set the flag to leave this loop */
 			done++;
@@ -5254,7 +5253,7 @@ void skill_inc_novice(Bit16u skill)
 				hero.at[skill]++;
 		} else
 			/* inc tries for that skill */
-			skill_incs[skill].tries++;
+			ds_inc_bs_post(SKILL_INCS + 2 * skill + 0);
 	}
 }
 
@@ -6439,12 +6438,12 @@ void make_valuta_str(char *dst, unsigned int money)
 void inc_skill(Bit16u skill, Bit16u max, char *msg)
 {
 	/* no more increments than the maximum */
-	if (skill_incs[skill].incs >= max) {
+	if (ds_readbs(SKILL_INCS + 2 * skill + 1) >= max) {
 		infobox((char*)msg, 0);
 		return;
 	}
 	/* we just have 3 tries to increment */
-	if (skill_incs[skill].tries == 3) {
+	if (ds_readbs(SKILL_INCS + 2 * skill + 0) == 3) {
 		infobox(get_text(151), 0);
 		return;
 	}
@@ -6457,9 +6456,9 @@ void inc_skill(Bit16u skill, Bit16u max, char *msg)
 		/* increment skill */
 		hero.skills[skill]++;
 		/* reset tries */
-		skill_incs[skill].tries = 0;
+		ds_writeb(SKILL_INCS + 2 * skill + 0, 0);
 		/* increment skill increments */
-		skill_incs[skill].incs++;
+		ds_inc_bs_post(SKILL_INCS + 2 * skill + 1);
 
 		/* check if we have a melee attack skill */
 		if (skill <= 6) {
@@ -6476,7 +6475,7 @@ void inc_skill(Bit16u skill, Bit16u max, char *msg)
 		/* print failure message */
 		infobox(get_text(153), 0);
 		/* increment try */
-		skill_incs[skill].tries++;
+		ds_inc_bs_post(SKILL_INCS + 2 * skill + 0);
 	}
 
 	refresh_screen();
