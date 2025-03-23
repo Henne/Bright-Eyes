@@ -1146,7 +1146,7 @@ struct inc_states {
 //static struct inc_states spell_incs[86];
 //static struct inc_states skill_incs[52];
 //static char attrib_changed[14];
-static RealPt type_names[MAX_TYPES];
+//static RealPt type_names[MAX_TYPES];
 
 /* the index of the last head */
 //static signed char head_last;
@@ -4848,7 +4848,7 @@ void new_values()
 		for (i = 0; i < 7; i++) {
 			if (!hero.attribs[i].normal) {
 				values[unset_attribs] = (signed char)i;
-				type_names[unset_attribs] = get_text_real(32 + i);
+				ds_writed(TYPE_NAMES + 4 * unset_attribs,  (Bit32u)get_text_real(32 + i));
 				unset_attribs++;
 			}
 		}
@@ -4860,13 +4860,13 @@ void new_values()
 
 			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
 				unset_attribs,
-				(char*)Real2Host(type_names[0]),
-				(char*)Real2Host(type_names[1]),
-				(char*)Real2Host(type_names[2]),
-				(char*)Real2Host(type_names[3]),
-				(char*)Real2Host(type_names[4]),
-				(char*)Real2Host(type_names[5]),
-				(char*)Real2Host(type_names[6]));
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 0)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 1)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 2)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 3)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 4)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 5)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 6)));
 
 			ds_writew(0x1327, 0);
 
@@ -4888,7 +4888,7 @@ void new_values()
 		for (i = 0; i < 7; i++) {
 			if (!hero.attribs[i + 7].normal) {
 				values[unset_attribs] = (signed char)i;
-				type_names[unset_attribs] = get_text_real(39 + i);
+				ds_writed(TYPE_NAMES + 4 * unset_attribs,  (Bit32u)get_text_real(39 + i));
 				unset_attribs++;
 			}
 		}
@@ -4900,13 +4900,13 @@ void new_values()
 
 			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
 				unset_attribs,
-				(char*)Real2Host(type_names[0]),
-				(char*)Real2Host(type_names[1]),
-				(char*)Real2Host(type_names[2]),
-				(char*)Real2Host(type_names[3]),
-				(char*)Real2Host(type_names[4]),
-				(char*)Real2Host(type_names[5]),
-				(char*)Real2Host(type_names[6]));
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 0)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 1)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 2)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 3)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 4)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 5)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 6)));
 
 			ds_writew(0x1327, 0);
 
@@ -5402,10 +5402,12 @@ void select_typus()
 		if (impossible)
 			continue;
 
-		if (hero.sex)
-			type_names[possible_types] = get_text_real(271 + i);
-		else
-			type_names[possible_types] = get_text_real(17 + i);
+		if (hero.sex) {
+			ds_writed(TYPE_NAMES + 4 * possible_types, (Bit32u)get_text_real(271 + i));
+
+		} else {
+			ds_writed(TYPE_NAMES + 4 * possible_types, (Bit32u)get_text_real(17 + i));
+		}
 
 		t.t[possible_types] = (char)i;
 		possible_types++;
@@ -5424,18 +5426,18 @@ void select_typus()
 	}
 
 	di = gui_radio((Bit8u*)get_text(30), possible_types,
-			(char*)Real2Host(type_names[0]),
-			(char*)Real2Host(type_names[1]),
-			(char*)Real2Host(type_names[2]),
-			(char*)Real2Host(type_names[3]),
-			(char*)Real2Host(type_names[4]),
-			(char*)Real2Host(type_names[5]),
-			(char*)Real2Host(type_names[6]),
-			(char*)Real2Host(type_names[7]),
-			(char*)Real2Host(type_names[8]),
-			(char*)Real2Host(type_names[9]),
-			(char*)Real2Host(type_names[10]),
-			(char*)Real2Host(type_names[11]));
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  0)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  1)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  2)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  3)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  4)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  5)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  6)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  7)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  8)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  9)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 10)),
+			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 11)));
 
 	/*	restore attibute boni when selection is canceled
 	 *	or the same typus is selected.
