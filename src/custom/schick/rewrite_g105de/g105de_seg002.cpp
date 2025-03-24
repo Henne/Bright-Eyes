@@ -857,12 +857,14 @@ static const struct mouse_action action_spells[4] = {
 
 static struct struct_hero hero;
 
-//static unsigned short use_cda;
-//static unsigned short eh_installed;
+#if 0
+static unsigned short use_cda;
+static unsigned short eh_installed;
 static Bit8u *bg_buffer[MAX_PAGES] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 static Bit32s bg_len[MAX_PAGES] =  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 static Bit8u *typus_buffer[MAX_TYPES] =  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 static Bit32s typus_len[MAX_TYPES] =  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+#endif
 
 static const char fnames_g105de[][13] = { "GEN1.NVF",
 					"GEN2.NVF",
@@ -1229,7 +1231,7 @@ static Bit8u *picbuf1;
 //static char *gen_ptr3;
 //static char *gen_ptr2;
 
-Bit8u *page_buffer;
+//Bit8u *page_buffer;
 
 //static Bit16s wo_var2;
 //static Bit16s wo_var3;
@@ -2904,7 +2906,7 @@ Bit16s open_datfile(Bit16u index)
 
 	bc__read(handle, buf, 800);
 
-	if ((Bit32s)(ds_writed(GENDAT_OFFSET, get_archive_offset((char*)Real2Host(ds_readd(FNAMES_G105de + 4* index)), buf))) != -1) {
+	if ((Bit32s)(ds_writed(GENDAT_OFFSET, get_archive_offset((char*)Real2Host(ds_readd(FNAMES_G105de + 4 * index)), buf))) != -1) {
 		bc_lseek(handle, ds_readd(GENDAT_OFFSET), 0);
 		return handle;
 	} else {
@@ -7389,12 +7391,13 @@ void BE_cleanup()
 	//gen_ptr4 = NULL;
 	//gen_ptr2 = NULL;
 
-	free(page_buffer);
-	bc_free(ds_readd(GEN_PTR1_DIS) - 8);
+	bc_free((RealPt)ds_readd(PAGE_BUFFER));
+	bc_free((RealPt)ds_readd(GEN_PTR1_DIS) - 8);
 
-	page_buffer = NULL;
-	gen_ptr1 = NULL;
+	//page_buffer = NULL;
+	//gen_ptr1 = NULL;
 
+#if 0
 	for (long i = 0; i < MAX_PAGES; i++) {
 		if (bg_buffer[i]) {
 			free(bg_buffer[i]);
@@ -7412,6 +7415,7 @@ void BE_cleanup()
 		typus_len[i] = 0;
 	}
 	D1_INFO("Cleanup %ld bytes freed\n", sum);
+#endif
 }
 
 static FILE * fd_open_datfile(Bit16u index)
