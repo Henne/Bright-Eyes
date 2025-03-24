@@ -61,7 +61,7 @@ extern char ds[0xffff];
 #define ds_dec_ds(p)	(--*((signed long*)(ds + (p))))
 
 #define ds_add_bs(p, d)	((*(signed char*)(ds + p)) += (d))
-
+#define ds_sub_bs(p, d)	((*(signed char*)(ds + p)) -= (d))
 
 #define ds_and_ws(p, d)	((*(signed short*)(ds + p)) &= (d))
 #define ds_add_ws(p, d)	((*(signed short*)(ds + p)) += (d))
@@ -120,6 +120,11 @@ static inline Bit32s host_readds(Bit8u* p)
 static inline Bit16s ds_add_bs(Bit16s off, Bit8s v)
 {
 	return *(Bit8s*)(p_datseg + off) += v;
+}
+
+static inline Bit16s ds_sub_bs(Bit16s off, Bit8s v)
+{
+	return *(Bit8s*)(p_datseg + off) -= v;
 }
 
 static inline Bit16s ds_add_ws(Bit16s off, Bit16s v)
