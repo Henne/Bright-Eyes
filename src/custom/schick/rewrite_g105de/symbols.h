@@ -91,6 +91,11 @@
 #define HERO_GROUP                      (0x13b4)    /* Bit8s */
 
 #define HERO_SKILLS                     (0x1434)    /* Bit8s[52] */
+#define HERO_SKILL_INCS                 (0x1468)    /* Bit8s */
+#define HERO_SPELLS                     (0x1496)    /* Bit8s[86] */
+#define HERO_SPELL_INCS                 (0x14bf)    /* Bit8s */
+#define HERO_SPELL_SCHOOL               (0x14c0)    /* Bit8s */
+#define HERO_STAFF_LEVEL                (0x14c1)    /* Bit8s */
 
 #define HERO_PIC                        (0x1606)    /* char[1024] */
 

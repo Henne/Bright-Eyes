@@ -1305,12 +1305,12 @@ static void update_hero_out()
 
 	for (i = 0; i < 52; i++)
 		hero_writeb(HERO_SKILLS + i, hero.skills[i]);
-	hero_writeb(0x1468, hero.skill_incs);
+	hero_writeb(HERO_SKILL_INCS, hero.skill_incs);
 	for (i = 0; i < 86; i++)
 		hero_writeb(0x1469 + i, hero.spells[i]);
-	hero_writeb(0x14bf, hero.spell_incs);
-	hero_writeb(0x14c0, hero.school);
-	hero_writeb(0x14c1, hero.staff_level);
+	hero_writeb(HERO_SPELL_INCS, hero.spell_incs);
+	hero_writeb(HERO_SPELL_SCHOOL, hero.school);
+	hero_writeb(HERO_STAFF_LEVEL, hero.staff_level);
 
 	memcpy(hero_out + 0x2da, &hero.pic, 1024);
 }
