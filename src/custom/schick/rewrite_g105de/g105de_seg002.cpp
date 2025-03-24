@@ -1249,7 +1249,6 @@ static void update_hero_out()
 {
 	Bit16s i;
 
-	ds_writeb(HERO_SEX, hero.sex);
 	ds_writeb(HERO_HEIGHT, hero.height);
 	ds_writew(HERO_WEIGHT, hero.weight);
 	ds_writeb(HERO_GOD, hero.god);
@@ -4303,18 +4302,11 @@ void change_sex()
 	RealPt src;
 
 	/* change sex of the hero */
-#if !defined(__BORLANDC__)
-	hero.sex = hero.sex ^ 1;
-#endif
 	ds_xor_bs(HERO_SEX, 1);
 
 	/* hero has a typus */
 	if (ds_readb(HERO_TYPUS)) {
-#if !defined(__BORLANDC__)
-		if (hero.sex != 0) {
-#else
-		if (ds_readb(HERO_SEX) != 0) {
-#endif
+		if (ds_readbs(HERO_SEX) != 0) {
 			/* To female */
 			ds_writeb(HEAD_FIRST, ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readbs(HEAD_TYPUS))));
 			ds_writeb(HEAD_LAST, (Bit8s)(ds_readbs(HEAD_FIRST_MALE + ds_readbs(HEAD_TYPUS) + 1) - 1));
@@ -4327,11 +4319,7 @@ void change_sex()
 		return;
 	} else {
 		dst = (RealPt)ds_readd(VGA_MEMSTART) + 7 * 320 + 305;
-#if !defined(__BORLANDC__)
-		src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 256 * hero.sex;
-#else
 		src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 256 * ds_readbs(HERO_SEX);
-#endif
 		update_mouse_cursor();
 		copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 16, 0);
 		call_mouse();
@@ -4557,19 +4545,10 @@ void refresh_screen()
 		save_picbuf();
 
 		/* page with base values and hero is not male */
-#if !defined(__BORLANDC__)
-		if ((ds_readws(GEN_PAGE) == 0) && (hero.sex != 0)) {
-#else
 		if ((ds_readws(GEN_PAGE) == 0) && (ds_readbs(HERO_SEX) != 0)) {
-#endif
 
 			dst = (RealPt)ds_readd(GEN_PTR1_DIS) + 7 * 320 + 305;
-#if !defined(__BORLANDC__)
-			src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 256 * hero.sex;
-#else
 			src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 256 * ds_readbs(HERO_SEX);
-#endif
-
 			copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 16, 0);
 		}
 
@@ -4597,11 +4576,7 @@ void refresh_screen()
 				ds_writeb(NEED_REFRESH, 1);
 				copy_to_screen(Real2Phys((RealPt)ds_readd(GEN_PTR5)), Real2Phys(dst), 128, 184, 0);
 
-#if !defined(__BORLANDC__)
-				if (hero.sex != 0) {
-#else
 				if (ds_readbs(HERO_SEX) != 0) {
-#endif
 					print_str(get_text(271 + ds_readbs(HERO_TYPUS)),
 						get_line_start_c(get_text(271 + ds_readbs(HERO_TYPUS)), 16, 128),
 						184);
@@ -4740,14 +4715,14 @@ void new_values()
 	strcpy(name_bak, (char*)p_datseg + HERO_NAME);
 
 	/* save the sex of the hero */
-	sex_bak = hero.sex;
+	sex_bak = ds_readbs(HERO_SEX);
 
 	/* clear the hero */
 	memset(&hero, 0, sizeof(hero));
 	clear_hero();
 
 	/* restore the sex of the hero */
-	hero.sex = sex_bak;
+	ds_writeb(HERO_SEX, sex_bak);
 
 	/* restore the name of the hero */
 	/* TODO strncpy() would be better here */
@@ -5407,7 +5382,7 @@ void select_typus()
 		if (impossible)
 			continue;
 
-		if (hero.sex) {
+		if (ds_readbs(HERO_SEX)) {
 			ds_writed(TYPE_NAMES + 4 * possible_types, (Bit32u)get_text_real(271 + i));
 
 		} else {
@@ -5475,7 +5450,7 @@ void select_typus()
 	else
 		ds_writeb(HEAD_TYPUS, ds_readbs(HERO_TYPUS));
 
-	if (hero.sex) {
+	if (ds_readbs(HERO_SEX)) {
 		ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
 		ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
 		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS) + 1) - 1);
@@ -7109,7 +7084,7 @@ void choose_typus()
 	if (!gui_bool((Bit8u*)get_text(264)))
 		return;
 
-	if (hero.sex)
+	if (ds_readbs(HERO_SEX))
 		/* famale typus names */
 		typus_names = 271;
 	else
@@ -7128,10 +7103,10 @@ void choose_typus()
 
 	/* clear the hero area with saved name and sex */
 	strcpy(name_bak, hero.name);
-	sex_bak = hero.sex;
+	sex_bak = ds_readbs(HERO_SEX);
 	memset(&hero, 0, sizeof(hero));
 	clear_hero();
-	hero.sex = sex_bak;
+	ds_writeb(HERO_SEX, sex_bak);
 	strcpy(hero.name, name_bak);
 
 	/* set typus */
@@ -7202,7 +7177,7 @@ void choose_typus()
 	else
 		ds_writeb(HEAD_TYPUS, ds_readbs(HERO_TYPUS));
 
-	if (hero.sex) {
+	if (ds_readbs(HERO_SEX)) {
 		ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
 		ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
 		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS) + 1) - 1);
