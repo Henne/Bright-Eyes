@@ -1275,35 +1275,35 @@ static void update_hero_out()
 	strncpy(hero_out + 0x10, hero.alias, 16);
 
 	hero_writeb(HERO_TYPUS, hero.typus);
-	hero_writeb(0x134e, hero.sex);
-	hero_writeb(0x134f, hero.height);
-	hero_writew(0x1350, hero.weight);
-	hero_writeb(0x1352, hero.god);
-	hero_writeb(0x1353, hero.level);
-	hero_writed(0x1358, hero.money);
+	hero_writeb(HERO_SEX, hero.sex);
+	hero_writeb(HERO_HEIGHT, hero.height);
+	hero_writew(HERO_WEIGHT, hero.weight);
+	hero_writeb(HERO_GOD, hero.god);
+	hero_writeb(HERO_LEVEL, hero.level);
+	hero_writed(HERO_MONEY, hero.money);
 
 	for (i = 0; i < 14; i++) {
-		hero_writeb(0x1360 + i * 3 + 0, hero.attribs[i].normal);
-		hero_writeb(0x1360 + i * 3 + 1, hero.attribs[i].current);
-		hero_writeb(0x1360 + i * 3 + 2, hero.attribs[i].mod);
+		hero_writeb(HERO_ATT0_NORMAL + i * 3 + 0, hero.attribs[i].normal);
+		hero_writeb(HERO_ATT0_NORMAL + i * 3 + 1, hero.attribs[i].current);
+		hero_writeb(HERO_ATT0_NORMAL + i * 3 + 2, hero.attribs[i].mod);
 	}
 
-	hero_writew(0x138a, hero.le);
-	hero_writew(0x138c, hero.le_max);
-	hero_writew(0x138e, hero.ae);
-	hero_writew(0x1390, hero.ae_max);
-	hero_writeb(0x1392, hero.mr);
-	hero_writeb(0x1393, hero.atpa);
+	hero_writew(HERO_LE, hero.le);
+	hero_writew(HERO_LE_MAX, hero.le_max);
+	hero_writew(HERO_AE, hero.ae);
+	hero_writew(HERO_AE_MAX, hero.ae_max);
+	hero_writeb(HERO_MR, hero.mr);
+	hero_writeb(HERO_ATPA_BASE, hero.atpa);
 
 	for (i = 0; i < 7; i++)
-		hero_writeb(0x1394 + i, hero.at[i]);
+		hero_writeb(HERO_AT_WEAPON + i, hero.at[i]);
 	for (i = 0; i < 7; i++)
-		hero_writeb(0x139b + i, hero.pa[i]);
+		hero_writeb(HERO_PA_WEAPON + i, hero.pa[i]);
 
 	hero_writeb(HERO_GROUP, hero.group);
 
 	for (i = 0; i < 52; i++)
-		hero_writeb(0x1434 + i, hero.skills[i]);
+		hero_writeb(HERO_SKILLS + i, hero.skills[i]);
 	hero_writeb(0x1468, hero.skill_incs);
 	for (i = 0; i < 86; i++)
 		hero_writeb(0x1469 + i, hero.spells[i]);
@@ -5023,35 +5023,35 @@ void calc_at_pa()
 		res.quot++;
 	}
 
-	ds_writeb(0x1393, res.quot);
+	ds_writeb(HERO_ATPA_BASE, res.quot);
 
 	for (i = 0; i < 7; i++) {
 		/* Set base AT/PA value for each weapon */
-		ds_writeb(0x1394 + i, ds_writeb(0x139b + i, ds_readbs(0x1393)));
+		ds_writeb(HERO_AT_WEAPON + i, ds_writeb(HERO_PA_WEAPON + i, ds_readbs(HERO_ATPA_BASE)));
 
-		if (ds_readbs(0x1434 + i) < 0) {
-			tmp = __abs__(ds_readbs(0x1434 + i)) / 2;
+		if (ds_readbs(HERO_SKILLS + i) < 0) {
+			tmp = __abs__(ds_readbs(HERO_SKILLS + i)) / 2;
 
 			/* Calculate weapon AT value */
-			ds_writeb(0x1394 + i, ds_readbs(0x1394 + i) - tmp);
+			ds_writeb(HERO_AT_WEAPON + i, ds_readbs(HERO_AT_WEAPON + i) - tmp);
 
 			/* Calculate weapon PA value */
-			ds_writeb(0x139b + i, ds_readbs(0x139b + i) - tmp);
+			ds_writeb(HERO_PA_WEAPON + i, ds_readbs(HERO_PA_WEAPON + i) - tmp);
 
-			if (__abs__(ds_readbs(0x1434 + i)) != 2 * tmp) {
-				ds_dec_bs_post(0x139b + i);
+			if (__abs__(ds_readbs(HERO_SKILLS + i)) != 2 * tmp) {
+				ds_dec_bs_post(HERO_PA_WEAPON + i);
 			}
 		} else {
-			tmp = ds_readbs(0x1434 + i) / 2;
+			tmp = ds_readbs(HERO_SKILLS + i) / 2;
 
 			/* Calculate weapon AT value */
-			ds_writeb(0x1394 + i, ds_readbs(0x1394 + i) + tmp);
+			ds_writeb(HERO_AT_WEAPON + i, ds_readbs(HERO_AT_WEAPON + i) + tmp);
 
 			/* Calculate weapon PA value */
-			ds_writeb(0x139b + i, ds_readbs(0x139b + i) + tmp);
+			ds_writeb(HERO_PA_WEAPON + i, ds_readbs(HERO_PA_WEAPON + i) + tmp);
 
-			if (ds_readbs(0x1434 + i) != 2 * tmp) {
-				ds_inc_bs_post(0x1394 + i);
+			if (ds_readbs(HERO_SKILLS + i) != 2 * tmp) {
+				ds_inc_bs_post(HERO_AT_WEAPON + i);
 			}
 		}
 	}

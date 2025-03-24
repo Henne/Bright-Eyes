@@ -71,10 +71,26 @@
 #define HERO_NAME                       (0x132c)    /* char[16] */
 #define HERO_ALIAS                      (0x133c)    /* char[16] */
 #define HERO_TYPUS                      (0x134d)    /* Bit8s */
-#define HERO_LEVEL                      (0x1353)    /* Bit8s */
-#define HERO_ATT0_NORMAL                (0x1360)    /* Bit8s */
 #define HERO_SEX                        (0x134e)    /* Bit8s */
+#define HERO_HEIGHT                     (0x134f)    /* Bit8s */
+#define HERO_WEIGHT                     (0x1350)    /* Bit16s */
+#define HERO_GOD                        (0x1352)    /* Bit8s */
+#define HERO_LEVEL                      (0x1353)    /* Bit8s */
+#define HERO_MONEY                      (0x1358)    /* Bit32s */
+
+#define HERO_ATT0_NORMAL                (0x1360)    /* Bit8s */
+
+#define HERO_LE                         (0x138a)    /* Bit16s */
+#define HERO_LE_MAX                     (0x138c)    /* Bit16s */
+#define HERO_AE                         (0x138e)    /* Bit16s */
+#define HERO_AE_MAX                     (0x1390)    /* Bit16s */
+#define HERO_MR                         (0x1392)    /* Bit8s */
+#define HERO_ATPA_BASE                  (0x1393)    /* Bit8s */
+#define HERO_AT_WEAPON                  (0x1394)    /* Bit8s[7] */
+#define HERO_PA_WEAPON                  (0x139b)    /* Bit8s[7] */
 #define HERO_GROUP                      (0x13b4)    /* Bit8s */
+
+#define HERO_SKILLS                     (0x1434)    /* Bit8s[52] */
 
 #define HERO_PIC                        (0x1606)    /* char[1024] */
 
