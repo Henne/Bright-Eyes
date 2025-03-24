@@ -1249,7 +1249,6 @@ static void update_hero_out()
 {
 	Bit16s i;
 
-	ds_writew(HERO_WEIGHT, hero.weight);
 	ds_writeb(HERO_GOD, hero.god);
 	ds_writeb(HERO_LEVEL, hero.level);
 	ds_writed(HERO_MONEY, hero.money);
@@ -5077,7 +5076,7 @@ void fill_values()
 				height_range[ds_readbs(HERO_TYPUS)].max));
 
 	/* calculate weight i = (height - weight_mod) * 40 */
-	hero.weight = (ds_readb(HERO_HEIGHT) - weight_mod[ds_readbs(HERO_TYPUS)]) * 40;
+	ds_writew(HERO_WEIGHT, (ds_readb(HERO_HEIGHT) - weight_mod[ds_readbs(HERO_TYPUS)]) * 40);
 
 	/* roll out the money */
 	i = random_gen(20);
@@ -5907,7 +5906,7 @@ void print_values()
 			print_str((char*)Real2Host(ds_readd(GEN_PTR2)), 205, 25);
 
 			/* print weight */
-			sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(71), hero.weight);
+			sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(71), ds_readws(HERO_WEIGHT));
 
 			print_str((char*)Real2Host(ds_readd(GEN_PTR2)), 205, 37);
 
