@@ -1243,75 +1243,50 @@ Bit8u *gen_ptr1;
 Bit8u *gen_ptr1_dis;
 
 #if !defined(__BORLANDC__)
-/* New variables */
 
-/*	This is the buffer, where the hero is stored in little endian.
-	This is neccessary to support Big Endian machines.
-*/
-static char hero_out[1754];
-
-static inline void hero_writeb(unsigned off, char v)
-{
-	host_writeb((Bit8u*)hero_out + off - HERO_NAME, v);
-}
-
-static inline void hero_writew(unsigned off, short v)
-{
-	host_writew((Bit8u*)hero_out + off - HERO_NAME, v);
-}
-
-static inline void hero_writed(unsigned off, int v)
-{
-	host_writed((Bit8u*)hero_out + off - HERO_NAME, v);
-}
-
+// writes hero variables to DS
 static void update_hero_out()
 {
-	unsigned long i;
+	Bit16s i;
 
-	memset(hero_out, 0, 1754);
+	strncpy((char*)p_datseg + HERO_ALIAS, (char*)p_datseg + HERO_NAME, 16);
 
-	strncpy(hero_out, hero.name, 16);
-	strncpy(hero_out + 0x10, hero.alias, 16);
-
-	hero_writeb(HERO_TYPUS, hero.typus);
-	hero_writeb(HERO_SEX, hero.sex);
-	hero_writeb(HERO_HEIGHT, hero.height);
-	hero_writew(HERO_WEIGHT, hero.weight);
-	hero_writeb(HERO_GOD, hero.god);
-	hero_writeb(HERO_LEVEL, hero.level);
-	hero_writed(HERO_MONEY, hero.money);
+	ds_writeb(HERO_TYPUS, hero.typus);
+	ds_writeb(HERO_SEX, hero.sex);
+	ds_writeb(HERO_HEIGHT, hero.height);
+	ds_writew(HERO_WEIGHT, hero.weight);
+	ds_writeb(HERO_GOD, hero.god);
+	ds_writeb(HERO_LEVEL, hero.level);
+	ds_writed(HERO_MONEY, hero.money);
 
 	for (i = 0; i < 14; i++) {
-		hero_writeb(HERO_ATT0_NORMAL + i * 3 + 0, hero.attribs[i].normal);
-		hero_writeb(HERO_ATT0_NORMAL + i * 3 + 1, hero.attribs[i].current);
-		hero_writeb(HERO_ATT0_NORMAL + i * 3 + 2, hero.attribs[i].mod);
+		ds_writeb(HERO_ATT0_NORMAL + i * 3 + 0, hero.attribs[i].normal);
+		ds_writeb(HERO_ATT0_NORMAL + i * 3 + 1, hero.attribs[i].current);
+		ds_writeb(HERO_ATT0_NORMAL + i * 3 + 2, hero.attribs[i].mod);
 	}
 
-	hero_writew(HERO_LE, hero.le);
-	hero_writew(HERO_LE_MAX, hero.le_max);
-	hero_writew(HERO_AE, hero.ae);
-	hero_writew(HERO_AE_MAX, hero.ae_max);
-	hero_writeb(HERO_MR, hero.mr);
-	hero_writeb(HERO_ATPA_BASE, hero.atpa);
+	ds_writew(HERO_LE, hero.le);
+	ds_writew(HERO_LE_MAX, hero.le_max);
+	ds_writew(HERO_AE, hero.ae);
+	ds_writew(HERO_AE_MAX, hero.ae_max);
+	ds_writeb(HERO_MR, hero.mr);
+	ds_writeb(HERO_ATPA_BASE, hero.atpa);
 
 	for (i = 0; i < 7; i++)
-		hero_writeb(HERO_AT_WEAPON + i, hero.at[i]);
+		ds_writeb(HERO_AT_WEAPON + i, hero.at[i]);
 	for (i = 0; i < 7; i++)
-		hero_writeb(HERO_PA_WEAPON + i, hero.pa[i]);
+		ds_writeb(HERO_PA_WEAPON + i, hero.pa[i]);
 
-	hero_writeb(HERO_GROUP, hero.group);
+	ds_writeb(HERO_GROUP, hero.group);
 
 	for (i = 0; i < 52; i++)
-		hero_writeb(HERO_SKILLS + i, hero.skills[i]);
-	hero_writeb(HERO_SKILL_INCS, hero.skill_incs);
+		ds_writeb(HERO_SKILLS + i, hero.skills[i]);
+	ds_writeb(HERO_SKILL_INCS, hero.skill_incs);
 	for (i = 0; i < 86; i++)
-		hero_writeb(0x1469 + i, hero.spells[i]);
-	hero_writeb(HERO_SPELL_INCS, hero.spell_incs);
-	hero_writeb(HERO_SPELL_SCHOOL, hero.school);
-	hero_writeb(HERO_STAFF_LEVEL, hero.staff_level);
-
-	memcpy(hero_out + 0x2da, &hero.pic, 1024);
+		ds_writeb(0x1469 + i, hero.spells[i]);
+	ds_writeb(HERO_SPELL_INCS, hero.spell_incs);
+	ds_writeb(HERO_SPELL_SCHOOL, hero.school);
+	ds_writeb(HERO_STAFF_LEVEL, hero.staff_level);
 }
 
 
@@ -2558,7 +2533,6 @@ void save_chr()
 #if !defined(__BORLANDC__)
 	// write all hero changes to DS (intermediately)
 	update_hero_out();
-	memcpy(p_datseg + HERO_NAME, hero_out, 1754);
 #endif
 
 	/* check for typus */
@@ -2661,7 +2635,7 @@ void save_chr()
 	if (fd) {
 		/* write the CHR file to the current directory */
 		update_hero_out();
-		fwrite(hero_out, 1, 1754, fd);
+		fwrite(p_datseg + HERO_NAME, 1, 1754, fd);
 		fclose(fd);
 
 		/* save it to the TEMP dir if called from with arguments */
@@ -2678,7 +2652,7 @@ void save_chr()
 			pwd = NULL;
 
 			if (fd) {
-				fwrite(hero_out, 1, 1754, fd);
+				fwrite(p_datseg + HERO_NAME, 1, 1754, fd);
 				fclose(fd);
 			}
 		}
@@ -4275,14 +4249,14 @@ void enter_name()
 	update_mouse_cursor();
 	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), Real2Phys(dst), 94, 8, 0);
 #if !defined(__BORLANDC__)
-	enter_string(hero.name, 180, 12, 15, 1);
+	enter_string((char*)p_datseg + HERO_NAME, 180, 12, 15, 1);
 #else
 	enter_string(&ds[HERO_NAME], 180, 12, 15, 1);
 #endif
 	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), Real2Phys(dst), 94, 8, 0);
 	call_mouse();
 #if !defined(__BORLANDC__)
-	print_str(hero.name, 180, 12);
+	print_str((char*)p_datseg + HERO_NAME, 180, 12);
 #else
 	print_str(&ds[HERO_NAME], 180, 12);
 #endif
@@ -4809,7 +4783,7 @@ void new_values()
 
 	/* save the name of the hero */
 	/* TODO strncpy() would be better here */
-	strcpy(name_bak, hero.name);
+	strcpy(name_bak, (char*)p_datseg + HERO_NAME);
 
 	/* save the sex of the hero */
 	sex_bak = hero.sex;
@@ -4823,7 +4797,7 @@ void new_values()
 
 	/* restore the name of the hero */
 	/* TODO strncpy() would be better here */
-	strcpy(hero.name, name_bak);
+	strcpy((char*)p_datseg + HERO_NAME, name_bak);
 #else
 	if (ds_readbs(HERO_TYPUS))
 		ds_writew(SCREEN_VAR, 1);
