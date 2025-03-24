@@ -1232,10 +1232,8 @@ static Bit8u *gen_ptr4;
 
 Bit8u *page_buffer;
 
-/* DS:0x47d7 */
-static unsigned short wo_var2;
-/* DS:0x47d9 */
-static unsigned short wo_var3;
+//static Bit16s wo_var2;
+//static Bit16s wo_var3;
 
 //static const Bit16u ro_var[7] = {0, 0, 0, 0, 0, 0, 0};
 
@@ -7760,7 +7758,7 @@ int main_gen(int argc, char **argv)
 	if (sound_off == 0)
 		init_music(13000);
 
-	wo_var2 = ret_zero1();
+	ds_writew(WO_VAR2, ret_zero1());
 
 	set_mouse_isr();
 
@@ -7771,7 +7769,7 @@ int main_gen(int argc, char **argv)
 	alloc_buffers();
 	alloc_buffers_emu();
 
-	wo_var3 = 2;
+	ds_writew(WO_VAR3, 2);
 
 	init_video();
 
