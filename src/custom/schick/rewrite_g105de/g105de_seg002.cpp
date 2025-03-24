@@ -1264,7 +1264,7 @@ static void update_hero_out()
 		ds_writeb(HERO_SKILLS + i, hero.skills[i]);
 
 	for (i = 0; i < 86; i++)
-		ds_writeb(0x1469 + i, hero.spells[i]);
+		ds_writeb(HERO_SPELLS + i, hero.spells[i]);
 }
 
 
