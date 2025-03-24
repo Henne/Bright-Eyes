@@ -1217,15 +1217,12 @@ static inline RealPt get_text_real(Bit16s no) {
 //static Bit16u text_y;
 //static Bit16u text_x;
 
-/* DS:0x4797 */
-static Bit8u *picbuf3;
-static Bit8u *picbuf2;
+//static Bit8u *picbuf3;
+//static Bit8u *picbuf2;
 static Bit8u *picbuf1;
 //static Bit8u *gen_ptr6;
 //static Bit8u *buffer_dmenge_dat;
-
 //static Bit8u *gen_ptr5;
-
 //static Bit8u *gen_ptr4;
 //static char *gen_ptr3;
 //static char *gen_ptr2;
@@ -5873,11 +5870,11 @@ void save_picbuf()
 		copy_to_screen(p, Real2Phys(ds_readd(0x479f)), w_1, h_1, 2);
 	}
 
-	p = Real2Phys(ds_readd(GEN_PTR1_DIS)) + y_2 * 320 + x_2;
-	copy_to_screen(p, Real2Phys(ds_readd(0x479b)), w_2, h_2, 2);
+	p = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS)) + y_2 * 320 + x_2;
+	copy_to_screen(p, Real2Phys((RealPt)ds_readd(PICBUF2)), w_2, h_2, 2);
 
-	p = Real2Phys(ds_readd(GEN_PTR1_DIS)) + y_3 * 320 + x_3;
-	copy_to_screen(p, Real2Phys(ds_readd(0x4797)), w_3, h_3, 2);
+	p = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS)) + y_3 * 320 + x_3;
+	copy_to_screen(p, Real2Phys((RealPt)ds_readd(PICBUF3)), w_3, h_3, 2);
 }
 
 void restore_picbuf(PhysPt ptr)
@@ -5947,10 +5944,10 @@ void restore_picbuf(PhysPt ptr)
 	}
 
 	p = ptr + y_2 * 320 + x_2;
-	copy_to_screen(Real2Phys(ds_readd(0x479b)), p, w_2, h_2, 0);
+	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF2)), p, w_2, h_2, 0);
 
 	p = ptr + y_3 * 320 + x_3;
-	copy_to_screen(Real2Phys(ds_readd(0x4797)), p, w_3, h_3, 0);
+	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF3)), p, w_3, h_3, 0);
 }
 
 /**
@@ -7373,18 +7370,18 @@ void BE_cleanup()
 	//buffer_text = NULL;
 	//buffer_font6 = NULL;
 
-	free(picbuf3);
-	free(picbuf2);
-	free(picbuf1);
+	bc_free((RealPt)ds_readd(PICBUF3));
+	bc_free((RealPt)ds_readd(PICBUF2));
+	bc_free((RealPt)ds_readd(PICBUF1));
 	bc_free((RealPt)ds_readd(GEN_PTR6) - 8);
 	bc_free((RealPt)ds_readd(BUFFER_DMENGE_DAT));
 	bc_free((RealPt)ds_readd(GEN_PTR5));
 	bc_free((RealPt)ds_readd(GEN_PTR4));
 	bc_free((RealPt)ds_readd(GEN_PTR2));
 
-	picbuf3 = NULL;
-	picbuf2 = NULL;
-	picbuf1 = NULL;
+	//picbuf3 = NULL;
+	//picbuf2 = NULL;
+	//picbuf1 = NULL;
 	//gen_ptr6 = NULL;
 	//buffer_dmenge_dat = NULL;
 	//gen_ptr5 = NULL;
@@ -7854,9 +7851,9 @@ void alloc_buffers()
 
 	picbuf1 = (Bit8u*)gen_alloc(800);
 
-	picbuf2 = (Bit8u*)gen_alloc(2800);
+	ds_writed(PICBUF2, (Bit32u)emu_gen_alloc(2800));
 
-	picbuf3 = (Bit8u*)gen_alloc(2800);
+	ds_writed(PICBUF3, (Bit32u)emu_gen_alloc(2800));
 
 	ds_writed(GEN_PTR6, (Bit32u)emu_gen_alloc(1100) + 8);
 
