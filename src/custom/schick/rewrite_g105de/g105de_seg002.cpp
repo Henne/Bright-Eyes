@@ -1260,8 +1260,6 @@ static void update_hero_out()
 	for (i = 0; i < 7; i++)
 		ds_writeb(HERO_PA_WEAPON + i, hero.pa[i]);
 
-	ds_writeb(HERO_GROUP, hero.group);
-
 	for (i = 0; i < 52; i++)
 		ds_writeb(HERO_SKILLS + i, hero.skills[i]);
 	ds_writeb(HERO_SKILL_INCS, hero.skill_incs);
@@ -2548,9 +2546,6 @@ void save_chr()
 #endif
 
 	/* put the hero in the first group */
-#if !defined(__BORLANDC__)
-	hero.group = 1;
-#endif
 	ds_writeb(HERO_GROUP, 1);
 
 	/* wanna save ? */
