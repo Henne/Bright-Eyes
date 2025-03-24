@@ -616,14 +616,15 @@ static const signed char spells[6][86] = {
 		0, 1, -10, -6, -6, -10, 5, -10, -2, -6, },
 };
 
-/* DS:0x08df */
-static const unsigned short init_le[MAX_TYPES + 1] = {	0,
+#if 0
+static const Bit16s init_le[MAX_TYPES + 1] = {	0,
 						30, 30, 30, 30, 30, 40,
 						25, 30, 25, 25, 30, 25};
-/* DS:0x08f9 */
-static const unsigned short init_ae[MAX_TYPES + 1] = {	0,
+static const Bit16s init_ae[MAX_TYPES + 1] = {	0,
 						0, 0, 0, 0, 0, 0,
 						25, 25, 30, 25, 25, 25};
+#endif
+
 /* DS:0x0913 */
 struct minmax {
 	unsigned char min;
@@ -5157,10 +5158,10 @@ void fill_values()
 	}
 
 	/* set LE */
-	hero.le = hero.le_max = init_le[hero.typus];
+	hero.le = hero.le_max = ds_readws(INIT_LE + 2 * hero.typus);
 
 	/* set AE */
-	hero.ae = hero.ae_max = init_ae[hero.typus];
+	hero.ae = hero.ae_max = ds_readws(INIT_AE + 2 * hero.typus);
 
 	/* wanna change 10 spell_attempts against 1W6+2 AE ? */
 	if ((hero.typus == 9) && (ds_readws(LEVEL) == 2) && gui_bool((Bit8u*)get_text(268))) {

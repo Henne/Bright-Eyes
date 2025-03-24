@@ -35,6 +35,9 @@
 
 #endif
 
+#define INIT_LE                         (0x08df)    /* Bit16s[13] */
+#define INIT_AE                         (0x08f9)    /* Bit16s[13] */
+
 #define HEAD_FIRST_MALE                 (0x1048)    /* Bit8u[12] : start indices in HEADS.DAT for each typus */
 #define HEAD_FIRST_FEMALE               (0x1054)    /* Bit8u[12] : start indices in HEADS.DAT for each typus */
 
