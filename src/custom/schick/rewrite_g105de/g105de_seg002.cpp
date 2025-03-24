@@ -1255,8 +1255,6 @@ static void update_hero_out()
 		ds_writeb(HERO_ATT0_NORMAL + i * 3 + 2, hero.attribs[i].mod);
 	}
 
-	ds_writew(HERO_LE, hero.le);
-	ds_writew(HERO_LE_MAX, hero.le_max);
 	ds_writew(HERO_AE, hero.ae);
 	ds_writew(HERO_AE_MAX, hero.ae_max);
 	ds_writeb(HERO_MR, hero.mr);
@@ -4699,31 +4697,34 @@ void new_values()
 	if (ds_readbs(HERO_TYPUS))
 		ds_writew(SCREEN_VAR, 1);
 
-#if !defined(__BORLANDC__)
-
 	/* save the name of the hero */
 	/* TODO strncpy() would be better here */
+
+#if !defined(__BORLANDC__)
 	strcpy(name_bak, (char*)p_datseg + HERO_NAME);
+#else
+	strcpy(name_bak, (char*)&ds[HERO_NAME]);
+#endif
 
 	/* save the sex of the hero */
 	sex_bak = ds_readbs(HERO_SEX);
 
 	/* clear the hero */
+#if !defined(__BORLANDC__)
 	memset(&hero, 0, sizeof(hero));
+#else
+	bc_memset(&ds[HERO_NAME], 0, 0x6da);
+#endif
+
 	clear_hero();
 
-	/* restore the sex of the hero */
 	ds_writeb(HERO_SEX, sex_bak);
 
 	/* restore the name of the hero */
 	/* TODO strncpy() would be better here */
+#if !defined(__BORLANDC__)
 	strcpy((char*)p_datseg + HERO_NAME, name_bak);
 #else
-	strcpy(name_bak, (char*)&ds[HERO_NAME]);
-	sex_bak = ds_readbs(HERO_SEX);
-	bc_memset(&ds[HERO_NAME], 0, 0x6da);
-	clear_hero();
-	ds_writeb(HERO_SEX, sex_bak);
 	strcpy((char*)&ds[HERO_NAME], name_bak);
 #endif
 	refresh_screen();
@@ -5051,7 +5052,7 @@ void fill_values()
 	}
 
 	/* set LE */
-	hero.le = hero.le_max = ds_readws(INIT_LE + 2 * ds_readbs(HERO_TYPUS));
+	ds_writew(HERO_LE, ds_writews(HERO_LE_MAX, ds_readws(INIT_LE + 2 * ds_readbs(HERO_TYPUS))));
 
 	/* set AE */
 	hero.ae = hero.ae_max = ds_readws(INIT_AE + 2 * ds_readbs(HERO_TYPUS));
@@ -5912,7 +5913,7 @@ void print_values()
 
 			/* print LE */
 			/* originally it was itoa() */
-			sprintf(tmp, "%d", hero.le_max);
+			sprintf(tmp, "%d", ds_readws(HERO_LE_MAX));
 			print_str(tmp, 172, 164);
 
 			/* print AE */
@@ -5923,7 +5924,7 @@ void print_values()
 			/* print Endurance */
 			/* originally it was itoa() */
 			sprintf(tmp, "%d",
-				hero.le_max + hero.attribs[6].current);
+				ds_readws(HERO_LE_MAX) + hero.attribs[6].current);
 			print_str(tmp, 296, 164);
 
 			/* print MR */
