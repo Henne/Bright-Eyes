@@ -1265,8 +1265,6 @@ static void update_hero_out()
 
 	for (i = 0; i < 86; i++)
 		ds_writeb(0x1469 + i, hero.spells[i]);
-
-	ds_writeb(HERO_STAFF_LEVEL, hero.staff_level);
 }
 
 
@@ -4978,7 +4976,7 @@ void fill_values()
 		/* special mage values */
 		if (ds_readbs(HERO_TYPUS) == 9) {
 			/* set staff spell to level 1 */
-			hero.staff_level = 1;
+			ds_writeb(HERO_STAFF_LEVEL, 1);
 			/* select mage school */
 			do {
 				 ds_writebs(HERO_SPELL_SCHOOL,
