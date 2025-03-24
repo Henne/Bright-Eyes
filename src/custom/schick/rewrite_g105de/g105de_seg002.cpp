@@ -4958,10 +4958,14 @@ void new_values()
 /**
  * calc_at_pa() - calculate AT and PA values
  */
+/* Borlandified and identical */
 /* static */
-void calc_at_pa() {
-	Bit16u i;
-	Bit16s tmp, base;
+void calc_at_pa()
+{
+#if !defined(__BORLANDC__)
+	Bit16s i;
+	Bit16s tmp;
+	Bit16s base;
 
 	/* base = (GE + IN + KK) / 5 */
 	tmp = hero.attribs[5].normal + hero.attribs[6].normal +
@@ -5009,9 +5013,50 @@ void calc_at_pa() {
 		}
 
 	}
-}
+#else
+	div_t res; // BCC <STDLIB.H>
+	Bit16s tmp;
+	Bit16s i;
 
-#if 1
+	res = div(ds_readbs(0x136f) + ds_readbs(0x1372) + ds_readbs(0x136c), 5);
+	if (res.rem >= 3) {
+		res.quot++;
+	}
+
+	ds_writeb(0x1393, res.quot);
+
+	for (i = 0; i < 7; i++) {
+		/* Set base AT/PA value for each weapon */
+		ds_writeb(0x1394 + i, ds_writeb(0x139b + i, ds_readbs(0x1393)));
+
+		if (ds_readbs(0x1434 + i) < 0) {
+			tmp = __abs__(ds_readbs(0x1434 + i)) / 2;
+
+			/* Calculate weapon AT value */
+			ds_writeb(0x1394 + i, ds_readbs(0x1394 + i) - tmp);
+
+			/* Calculate weapon PA value */
+			ds_writeb(0x139b + i, ds_readbs(0x139b + i) - tmp);
+
+			if (__abs__(ds_readbs(0x1434 + i)) != 2 * tmp) {
+				ds_dec_bs_post(0x139b + i);
+			}
+		} else {
+			tmp = ds_readbs(0x1434 + i) / 2;
+
+			/* Calculate weapon AT value */
+			ds_writeb(0x1394 + i, ds_readbs(0x1394 + i) + tmp);
+
+			/* Calculate weapon PA value */
+			ds_writeb(0x139b + i, ds_readbs(0x139b + i) + tmp);
+
+			if (ds_readbs(0x1434 + i) != 2 * tmp) {
+				ds_inc_bs_post(0x1394 + i);
+			}
+		}
+	}
+#endif
+}
 
 /**
  * fill_values() - fills the values if typus is chosen
@@ -5280,6 +5325,7 @@ void fill_values()
 	}
 }
 
+#if 1
 
 /**
  * skill_inc_novice() - tries to increment a skill in novice mode
