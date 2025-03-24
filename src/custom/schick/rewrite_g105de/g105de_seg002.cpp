@@ -799,7 +799,8 @@ static const struct struct_color pal_genbg[32] = {
 	{0x14, 0x00, 0x00},
 };
 
-//static const unsigned char MASK_SWITCH = 0;
+#if 0
+static const unsigned char MASK_SWITCH = 0;
 
 static unsigned short mouse_mask[32] = {
         0x7fff, 0x9fff, 0x87ff, 0xc1ff,
@@ -811,7 +812,7 @@ static unsigned short mouse_mask[32] = {
         0x0fe0, 0x07f0, 0x0778, 0x023c,
         0x001c, 0x0008, 0x0000, 0x0000,
 };
-
+#endif
 
 //static Bit16s MOUSE_REFRESH_FLAG = -1;
 
@@ -899,7 +900,7 @@ static const char fnames_g105de[][13] = { "GEN1.NVF",
 					"SAMPLE.AD",
 					"MT32EMUL.XMI" };
 
-static const char* str_file_missing[] = { "FILE %s IS MISSING!" };
+//static const char* str_file_missing[] = { "FILE %s IS MISSING!" };
 
 struct struct_chr_lookup {
 	unsigned char chr, idx, width;
@@ -987,7 +988,7 @@ static const struct struct_chr_lookup chr_lookup[74] = {
 //			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 
 //static unsigned short bool_mode;
-
+#if 0
 static const struct mouse_action *action_page[MAX_PAGES] = {
 			(struct mouse_action*)&action_base,
 			(struct mouse_action*)&action_skills,
@@ -1000,7 +1001,7 @@ static const struct mouse_action *action_page[MAX_PAGES] = {
 			(struct mouse_action*)&action_spells,
 			(struct mouse_action*)&action_spells,
 			(struct mouse_action*)&action_spells };
-
+#endif
 //static unsigned short need_refresh = 1;
 
 /* DS:0x1ca6 */
@@ -1206,7 +1207,7 @@ static inline RealPt get_text_real(Bit16s no) {
 //static Bit8u *buffer_sex_dat;
 //static Bit8u *buffer_popup_nvf;
 
-static Bit8u *buffer_heads_dat;
+//static Bit8u *buffer_heads_dat;
 //static Bit8u *buffer_text;
 //static Bit8u *buffer_font6;
 //static Bit16u col_index;
@@ -1463,6 +1464,7 @@ void unload_snd_driver()
 	}
 }
 
+/* Borlandified and nearly identical */
 unsigned short load_seq(Bit16u sequence_num)
 {
 	Bit16u patch;
@@ -1511,6 +1513,7 @@ unsigned short play_sequence(Bit16u sequence_num)
 	return 0;
 }
 
+/* Borlandified and nearly identical */
 RealPt get_timbre(Bit16u bank, Bit16u patch)
 {
 	RealPt timbre_ptr;
@@ -1566,6 +1569,7 @@ unsigned short load_file(Bit16u index)
 	return 0;
 }
 
+/* Borlandified and nearly identical */
 unsigned short load_driver(RealPt fname, Bit16u type, Bit16u port)
 {
 #if defined(__BORLANDC__)
@@ -1609,7 +1613,7 @@ unsigned short load_driver(RealPt fname, Bit16u type, Bit16u port)
 			infobox((char*)(p_datseg + STR_SOUNDHW_NOT_FOUND), 0);
 			ds_writew(MIDI_DISABLED, 1);
 			#else
-				asm {nop; nop; nop; nop}
+				asm {nop; nop; nop; nop} // BCC Sync-point
 			#endif
 			return 0;
 		}
@@ -1679,6 +1683,7 @@ void restart_midi()
  * to call interrupts. We use the one of DOSBox, which means, that we
  * put the values in the emulated registers, instead in a structure.
  */
+/* Borlandified and nearly identical */
 void do_mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5)
 {
 #if !defined(__BORLANDC__)
@@ -2091,9 +2096,8 @@ void mouse_compare()
 #if !defined(__BORLANDC__)
 		mouse();
 #else
-		// Sync BCC output
 		//mouse();
-		asm { nop; nop }
+		asm { nop; nop } // BCC Sync-point
 #endif
 	}
 }
@@ -2228,7 +2232,7 @@ void unused_func1(RealPt in_ptr, Bit16s x, Bit16s y, Bit8s c1, Bit8s c2)
 #if !defined(__BORLANDC__)	
 	call_mouse();
 #else
-	asm {nop;}
+	asm {nop;} // BCC Sync-point
 #endif
 }
 #endif
@@ -2954,13 +2958,14 @@ Bit16s read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 }
 
 /* Borlandified and identical */
-Bit32s get_filelength(Bit16s unused) {
-
+Bit32s get_filelength(Bit16s unused)
+{
 	return ds_readd(FLEN);
 }
 
 /* Borlandified and identical */
-Bit16u ret_zero1() {
+Bit16u ret_zero1()
+{
 	return 0;
 }
 
@@ -4097,7 +4102,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	register Bit16s i;
 
 	r5 = 0;
-	r6 = 0xffff;
+	r6 = -1;
 #if !defined(__BORLANDC__)
 	di = 1;
 #else
