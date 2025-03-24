@@ -1249,8 +1249,6 @@ static void update_hero_out()
 {
 	Bit16s i;
 
-	strncpy((char*)p_datseg + HERO_ALIAS, (char*)p_datseg + HERO_NAME, 16);
-
 	ds_writeb(HERO_TYPUS, hero.typus);
 	ds_writeb(HERO_SEX, hero.sex);
 	ds_writeb(HERO_HEIGHT, hero.height);
