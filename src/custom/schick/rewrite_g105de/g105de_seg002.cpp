@@ -1255,8 +1255,6 @@ static void update_hero_out()
 		ds_writeb(HERO_ATT0_NORMAL + i * 3 + 2, hero.attribs[i].mod);
 	}
 
-	ds_writeb(HERO_ATPA_BASE, hero.atpa);
-
 	for (i = 0; i < 7; i++)
 		ds_writeb(HERO_AT_WEAPON + i, hero.at[i]);
 	for (i = 0; i < 7; i++)
@@ -4869,7 +4867,7 @@ void calc_at_pa()
 		base++;
 
 	/* save AT/PA base value */
-	hero.atpa = (signed char)base;
+	ds_writeb(HERO_ATPA_BASE, (signed char)base);
 
 	for (i = 0; i < 7; i++) {
 		/* set the weapon values to base */
@@ -6087,9 +6085,9 @@ void print_values()
 			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			/* Print base value  2x the same */
-			sprintf(tmp, "%d", hero.atpa);
+			sprintf(tmp, "%d", ds_readbs(HERO_ATPA_BASE));
 			print_str(tmp, 231, 30);
-			sprintf(tmp, "%d", hero.atpa);
+			sprintf(tmp, "%d", ds_readbs(HERO_ATPA_BASE));
 			print_str(tmp, 268, 30);
 
 			for (i = 0; i < 7; i++) {
@@ -7026,7 +7024,7 @@ void choose_atpa()
 					if (increase == 1) {
 						/* increase attack */
 						if (hero.skills[skill] >= 0 &&
-							hero.pa[skill] > hero.atpa) {
+							hero.pa[skill] > ds_readbs(HERO_ATPA_BASE)) {
 							/* inc AT */
 							hero.at[skill]++;
 							/* dec PA */
@@ -7037,7 +7035,7 @@ void choose_atpa()
 						}
 					} else {
 						if (hero.skills[skill] >= 0 &&
-							hero.at[skill] > hero.atpa) {
+							hero.at[skill] > ds_readbs(HERO_ATPA_BASE)) {
 							/* dec AT */
 							hero.at[skill]--;
 							/* inc PA */
