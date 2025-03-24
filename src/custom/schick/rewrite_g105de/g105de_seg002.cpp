@@ -4269,13 +4269,13 @@ void enter_name()
 	dst = (RealPt)ds_readd(VGA_MEMSTART) + 12 * 320 + 176;
 
 	update_mouse_cursor();
-	copy_to_screen(Real2Phys((RealPt)ds_readd(0x479f)), Real2Phys(dst), 94, 8, 0);
+	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), Real2Phys(dst), 94, 8, 0);
 #if !defined(__BORLANDC__)
 	enter_string(hero.name, 180, 12, 15, 1);
 #else
 	enter_string(&ds[HERO_NAME], 180, 12, 15, 1);
 #endif
-	copy_to_screen(Real2Phys((RealPt)ds_readd(0x479f)), Real2Phys(dst), 94, 8, 0);
+	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), Real2Phys(dst), 94, 8, 0);
 	call_mouse();
 #if !defined(__BORLANDC__)
 	print_str(hero.name, 180, 12);
@@ -5866,8 +5866,8 @@ void save_picbuf()
 	}
 
 	if (x_1) {
-		p = Real2Phys(ds_readd(GEN_PTR1_DIS)) + y_1 * 320 + x_1;
-		copy_to_screen(p, Real2Phys(ds_readd(0x479f)), w_1, h_1, 2);
+		p = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS)) + y_1 * 320 + x_1;
+		copy_to_screen(p, Real2Phys((RealPt)ds_readd(PICBUF1)), w_1, h_1, 2);
 	}
 
 	p = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS)) + y_2 * 320 + x_2;
@@ -5939,8 +5939,7 @@ void restore_picbuf(PhysPt ptr)
 
 	if (x_1) {
 		p = ptr + y_1 * 320 + x_1;
-		copy_to_screen(Real2Phys(ds_readd(0x479f)),
-			p, w_1, h_1, 0);
+		copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), p, w_1, h_1, 0);
 	}
 
 	p = ptr + y_2 * 320 + x_2;
