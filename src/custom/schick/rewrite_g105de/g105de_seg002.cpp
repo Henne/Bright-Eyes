@@ -1249,7 +1249,6 @@ static void update_hero_out()
 {
 	Bit16s i;
 
-	ds_writeb(HERO_LEVEL, hero.level);
 	ds_writed(HERO_MONEY, hero.money);
 
 	for (i = 0; i < 14; i++) {
@@ -4671,9 +4670,6 @@ void clear_hero()
 			ds_writeb(SKILL_INCS + 2 * i + 1, 0));
 	}
 
-#if !defined(__BORLANDC__)
-	hero.level = 1;
-#endif
 	ds_writeb(HERO_LEVEL, 1);
 }
 
@@ -5086,7 +5082,7 @@ void fill_values()
 				host_readw(ptr + si * 6 + 4)) * 10;
 
 	/* calculate MR  = (KL + SI + Level) / 3 - 2 * AG */
-	hero.mr = (hero.attribs[1].normal + hero.attribs[0].normal + hero.level) / 3 -
+	hero.mr = (hero.attribs[1].normal + hero.attribs[0].normal + ds_readbs(HERO_LEVEL)) / 3 -
 		hero.attribs[7].normal * 2;
 	/* add typus MR Modificator */
 	hero.mr += mr_mod[ds_readbs(HERO_TYPUS)];
