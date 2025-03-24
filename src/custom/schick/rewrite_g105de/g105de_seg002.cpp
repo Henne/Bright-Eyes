@@ -1337,7 +1337,7 @@ void read_soundcfg()
 		bc__close(handle);
 
 #if !defined(__BORLANDC__)
-		/* Small hack: enable MIDI instead of CD-Audio, produces glich in attic ani */
+		/* Small hack: enable MIDI instead of CD-Audio */
 		D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&port));
 		if (port && load_driver(RealMake(datseg, 0x1dda), 3, host_readw((Bit8u*)&port))) {
 			/* disable audio-cd */
@@ -1543,11 +1543,11 @@ unsigned short load_driver(RealPt fname, Bit16u type, Bit16u port)
 					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x12));
 			if (type == 3) {
 				ds_writed(STATE_TABLE_SIZE, AIL_state_table_size(ds_readw(SND_DRIVER_HANDLE)));
-				ds_writed(STATE_TABLE, (Bit32u)gen_alloc(ds_readd(STATE_TABLE_SIZE)));
+				ds_writed(STATE_TABLE, (Bit32u)emu_gen_alloc(ds_readd(STATE_TABLE_SIZE)));
 				ds_writew(TIMBRE_CACHE_SIZE, AIL_default_timbre_cache_size(ds_readw(SND_DRIVER_HANDLE)));
 
 				if (ds_readw(TIMBRE_CACHE_SIZE) != 0) {
-					ds_writed(SND_PTR_UNKN1, (Bit32u)gen_alloc(ds_readw(TIMBRE_CACHE_SIZE)));
+					ds_writed(SND_PTR_UNKN1, (Bit32u)emu_gen_alloc(ds_readw(TIMBRE_CACHE_SIZE)));
 				#if !defined(__BORLANDC__)
 					AIL_define_timbre_cache(ds_readw(SND_DRIVER_HANDLE),
 							(RealPt)ds_readd(SND_PTR_UNKN1),
@@ -4095,7 +4095,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 #if !defined(__BORLANDC__)
 	for (i = 1; i <= options; r4 += 8, i++) {
 #else
-	for (i = 1; i <= options; i++) {
+	for (i = 1; i <= options; i++) { // BCC Sync-Point
 #endif
 		str = va_arg(arguments, char*);
 		print_str(str, r3, r4);
