@@ -1255,7 +1255,6 @@ static void update_hero_out()
 		ds_writeb(HERO_ATT0_NORMAL + i * 3 + 2, hero.attribs[i].mod);
 	}
 
-	ds_writeb(HERO_MR, hero.mr);
 	ds_writeb(HERO_ATPA_BASE, hero.atpa);
 
 	for (i = 0; i < 7; i++)
@@ -5079,10 +5078,10 @@ void fill_values()
 				host_readw(ptr + si * 6 + 4)) * 10);
 
 	/* calculate MR  = (KL + SI + Level) / 3 - 2 * AG */
-	hero.mr = (hero.attribs[1].normal + hero.attribs[0].normal + ds_readbs(HERO_LEVEL)) / 3 -
-		hero.attribs[7].normal * 2;
+	ds_writeb(HERO_MR,
+		(hero.attribs[1].normal + hero.attribs[0].normal + ds_readbs(HERO_LEVEL)) / 3 -	hero.attribs[7].normal * 2);
 	/* add typus MR Modificator */
-	hero.mr += mr_mod[ds_readbs(HERO_TYPUS)];
+	ds_add_bs(HERO_MR, mr_mod[ds_readbs(HERO_TYPUS)]);
 
 	/* roll out god */
 	ds_writeb(HERO_GOD, random_gen(12));
@@ -5927,7 +5926,7 @@ void print_values()
 
 			/* print MR */
 			/* originally it was itoa() */
-			sprintf(tmp, "%d", hero.mr);
+			sprintf(tmp, "%d", ds_readbs(HERO_MR));
 			print_str(tmp, 232, 184);
 
 			break;
