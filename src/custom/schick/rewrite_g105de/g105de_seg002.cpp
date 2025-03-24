@@ -1177,7 +1177,7 @@ struct inc_states {
 //static unsigned short unkn3;
 //static unsigned short unkn4;
 
-static char *texts[300];
+//static char *texts[300];
 
 #if !defined(__BORLANDC__)
 /* usage: output */
@@ -2397,12 +2397,12 @@ void load_font_and_text()
 
 	split_textbuffer((Bit8u*)p_datseg + TEXTS, (RealPt)ds_readd(BUFFER_TEXT), len);
 #if !defined(__BORLANDC__)
-	split_textbuffer_host(texts, (char*)Real2Host(ds_readd(BUFFER_TEXT)), len);
+//	split_textbuffer_host(texts, (char*)Real2Host(ds_readd(BUFFER_TEXT)), len);
 #endif
 }
 
 #if !defined(__BORLANDC__)
-void split_textbuffer_host(char **dst, char *src, Bit32u len)
+static void split_textbuffer_host(char **dst, char *src, Bit32u len)
 {
 	Bit32u i = 0;
 

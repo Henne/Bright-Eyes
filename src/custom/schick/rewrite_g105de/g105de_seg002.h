@@ -62,7 +62,6 @@ namespace G105de {
 	void load_font_and_text();
 	void split_textbuffer(Bit8u*, RealPt, Bit32u);
 	void load_font_and_text_host();
-	void split_textbuffer_host(char**, char*, Bit32u);
 	void load_page(Bit16s);
 	void load_typus(Bit16u);
 	void save_chr();
