@@ -75,7 +75,7 @@
 #define HERO_ALIAS                      (0x133c)    /* char[16] */
 #define HERO_TYPUS                      (0x134d)    /* Bit8s */
 #define HERO_SEX                        (0x134e)    /* Bit8s */
-#define HERO_HEIGHT                     (0x134f)    /* Bit8s */
+#define HERO_HEIGHT                     (0x134f)    /* Bit8u */
 #define HERO_WEIGHT                     (0x1350)    /* Bit16s */
 #define HERO_GOD                        (0x1352)    /* Bit8s */
 #define HERO_LEVEL                      (0x1353)    /* Bit8s */
