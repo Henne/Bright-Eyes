@@ -1249,7 +1249,6 @@ static void update_hero_out()
 {
 	Bit16s i;
 
-	ds_writeb(HERO_GOD, hero.god);
 	ds_writeb(HERO_LEVEL, hero.level);
 	ds_writed(HERO_MONEY, hero.money);
 
@@ -5093,10 +5092,10 @@ void fill_values()
 	hero.mr += mr_mod[ds_readbs(HERO_TYPUS)];
 
 	/* roll out god */
-	hero.god = (unsigned char)random_gen(12);
+	ds_writeb(HERO_GOD, random_gen(12));
 
 	/* add gods boni */
-	switch (hero.god) {
+	switch (ds_readbs(HERO_GOD)) {
 		case 1 : {
 			/* Praios: MU + 1 */
 			hero.attribs[0].normal++;
@@ -5911,7 +5910,7 @@ void print_values()
 			print_str((char*)Real2Host(ds_readd(GEN_PTR2)), 205, 37);
 
 			/* print god name */
-			print_str(get_text(56 + hero.god), 205, 49);
+			print_str(get_text(56 + ds_readbs(HERO_GOD)), 205, 49);
 
 			/* print money */
 			make_valuta_str((char*)Real2Host(ds_readd(GEN_PTR2)), hero.money);
