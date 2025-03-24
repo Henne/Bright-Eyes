@@ -754,13 +754,14 @@ static unsigned short autospells[6][45] = {
 
 };
 
-//static const signed char head_first_male[12] = {	0, 0, 6, 12,
-//							18, 24,	30, 36,
-//							42, 48, 54, 62 };
-//static const signed char head_first_female[11] = {	0, 3, 9, 15,
-//							21, 27, 34, 37,
-//
-//							46, 51, 58 };
+#if 0
+static const signed char head_first_male[12] = {	0, 0, 6, 12,
+							18, 24,	30, 36,
+							42, 48, 54, 62 };
+static const signed char head_first_female[11] = {	0, 3, 9, 15,
+							21, 27, 34, 37,
+							46, 51, 58 };
+#endif
 
 /* DS:0x113b */
 static struct struct_color pal_tmp[32];
