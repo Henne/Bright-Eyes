@@ -1224,9 +1224,9 @@ static Bit8u *picbuf1;
 //static Bit8u *gen_ptr6;
 //static Bit8u *buffer_dmenge_dat;
 
-static Bit8u *gen_ptr5;
+//static Bit8u *gen_ptr5;
 
-static Bit8u *gen_ptr4;
+//static Bit8u *gen_ptr4;
 //static char *gen_ptr3;
 //static char *gen_ptr2;
 
@@ -7378,8 +7378,8 @@ void BE_cleanup()
 	free(picbuf1);
 	bc_free((RealPt)ds_readd(GEN_PTR6) - 8);
 	bc_free((RealPt)ds_readd(BUFFER_DMENGE_DAT));
-	free(gen_ptr5);
-	free(gen_ptr4);
+	bc_free((RealPt)ds_readd(GEN_PTR5));
+	bc_free((RealPt)ds_readd(GEN_PTR4));
 	bc_free((RealPt)ds_readd(GEN_PTR2));
 
 	picbuf3 = NULL;
@@ -7387,8 +7387,8 @@ void BE_cleanup()
 	picbuf1 = NULL;
 	//gen_ptr6 = NULL;
 	//buffer_dmenge_dat = NULL;
-	gen_ptr5 = NULL;
-	gen_ptr4 = NULL;
+	//gen_ptr5 = NULL;
+	//gen_ptr4 = NULL;
 	//gen_ptr2 = NULL;
 
 	free(page_buffer);
@@ -7834,7 +7834,7 @@ void alloc_buffers()
 	ds_writed(GEN_PTR3, (RealPt)ds_readd(GEN_PTR2) + 1500);
 
 	// unused
-	gen_ptr4 = (Bit8u*)gen_alloc(200);
+	ds_writed(GEN_PTR4, (Bit32u)emu_gen_alloc(200));
 
 	ds_writed(BUFFER_TEXT, (Bit32u)emu_gen_alloc(6000));
 
@@ -7848,7 +7848,7 @@ void alloc_buffers()
 
 	ds_writed(BUFFER_SEX_DAT, (Bit32u)emu_gen_alloc(812));
 
-	gen_ptr5 = (Bit8u*)gen_alloc(23660);
+	ds_writed(GEN_PTR5, (Bit32u)emu_gen_alloc(23660));
 
 	ds_writed(BUFFER_DMENGE_DAT, (Bit32u)emu_gen_alloc(23660));
 
