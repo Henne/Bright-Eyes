@@ -1252,7 +1252,6 @@ static void update_hero_out()
 	for (i = 0; i < 14; i++) {
 		ds_writeb(HERO_ATT0_NORMAL  + i * 3, hero.attribs[i].normal);
 		ds_writeb(HERO_ATT0_CURRENT + i * 3, hero.attribs[i].current);
-		ds_writeb(HERO_ATT0_MOD     + i * 3, hero.attribs[i].mod);
 	}
 }
 
@@ -7265,6 +7264,29 @@ void BE_cleanup()
 	//page_buffer = NULL;
 	//gen_ptr1 = NULL;
 
+	// missed ones
+	if (ds_readd(SND_PTR_UNKN1))
+		bc_free((RealPt)ds_readd(SND_PTR_UNKN1));
+	if (ds_readd(STATE_TABLE))
+		bc_free((RealPt)ds_readd(STATE_TABLE));
+	if (ds_readd(SND_DRIVER))
+		bc_free((RealPt)ds_readd(SND_DRIVER));
+	if (ds_readd(FORM_XMID))
+		bc_free((RealPt)ds_readd(FORM_XMID));
+
+	for (int i = 0; i < MAX_PAGES; i++) {
+		if (ds_readd(BG_BUFFER + 4 * i)) {
+			bc_free((RealPt)ds_readd(BG_BUFFER + 4 * i));
+		}
+	}
+
+	for (int i = 0; i < MAX_TYPES; i++) {
+		if (ds_readd(TYPUS_BUFFER + 4 * i)) {
+			bc_free((RealPt)ds_readd(TYPUS_BUFFER + 4 * i));
+		}
+	}
+
+
 #if 0
 	for (long i = 0; i < MAX_PAGES; i++) {
 		if (bg_buffer[i]) {
@@ -7637,7 +7659,7 @@ int main_gen(int argc, char **argv)
 	save_display_stat(RealMake(datseg, 0x47db));
 
 	alloc_buffers();
-	alloc_buffers_emu();
+	//alloc_buffers_emu();
 
 	ds_writew(WO_VAR3, 2);
 
@@ -7722,7 +7744,7 @@ void alloc_buffers()
 
 	ds_writed(BUFFER_DMENGE_DAT, (Bit32u)emu_gen_alloc(23660));
 
-	picbuf1 = (Bit8u*)gen_alloc(800);
+	ds_writed(PICBUF1, (Bit32u)emu_gen_alloc(800));
 
 	ds_writed(PICBUF2, (Bit32u)emu_gen_alloc(2800));
 
@@ -7764,18 +7786,11 @@ void init_stuff()
 	ds_writed(DST_DST, ds_readd(VGA_MEMSTART));
 }
 
-void* gen_alloc(unsigned long size)
-{
-	D1_INFO("HOST gen_alloc(%ld);\n", size);
-	return calloc(size, sizeof(char));
-}
-
-#if !defined(__BORLANDC__)
 RealPt emu_gen_alloc(Bit32u nelem)
 {
+	D1_INFO("EMU gen_alloc(%ld);\n", nelem);
 	return bc_calloc(nelem, 1);
 }
-#endif
 
 #endif
 
