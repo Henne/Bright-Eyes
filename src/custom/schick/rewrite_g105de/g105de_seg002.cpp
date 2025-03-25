@@ -1314,7 +1314,7 @@ void start_music(Bit16u track)
 void read_soundcfg()
 {
 	Bit16s handle;
-	Bit16u port;
+	Bit16u port; // This has to be unsigned
 
 	ds_writew(USE_CDA, 0);
 	ds_writew(MIDI_DISABLED, 1);
@@ -1323,7 +1323,7 @@ void read_soundcfg()
 	handle = bc_open(RealMake(datseg, STR_SOUND_CFG), 0x8001);
 #else
 	/* This is checked in the following if statement */
-	handle = bc_open("SOUND.CFG", 0x8001);
+	handle = bc_open((char*)&ds[STR_SOUND_CFG], 0x8001);
 #endif
 
 	if (handle != -1) {
@@ -1502,9 +1502,9 @@ unsigned short call_load_file(Bit16u index)
 /* Borlandified and nearly identical */
 unsigned short load_file(Bit16u index)
 {
-	Bit16u handle;
+	Bit16s handle;
 
-	if ((handle = open_datfile(index)) != 0xffff) {
+	if ((handle = open_datfile(index)) != -1) {
 		read_datfile(handle, Real2Host((RealPt)ds_readd(FORM_XMID)), 32767);
 		bc_close(handle);
 		return 1;
