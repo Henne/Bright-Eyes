@@ -1332,7 +1332,7 @@ void read_soundcfg()
 /* Borlandified and identical */
 void init_music(unsigned long size)
 {
-	if (ds_writed(FORM_XMID, (Bit32s)emu_gen_alloc(size))) {
+	if (ds_writed(FORM_XMID, (Bit32s)gen_alloc(size))) {
 		AIL_startup();
 		ds_writew(MIDI_DISABLED, 1);
 	}
@@ -1368,7 +1368,7 @@ RealPt load_snd_driver(RealPt fname)
 
 	if ((handle = bc_open(fname, 0x8001)) != -1) {
 		size = 16500;
-		ds_writed(SND_DRIVER, (Bit32s)emu_gen_alloc(size + 0x10));
+		ds_writed(SND_DRIVER, (Bit32s)gen_alloc(size + 0x10));
 		in_ptr = ds_readd(SND_DRIVER) + 0x0f;
 		in_ptr &= 0xfffffff0;
 
@@ -1459,7 +1459,7 @@ RealPt get_timbre(Bit16u bank, Bit16u patch)
 	bc_lseek(ds_readw(HANDLE_TIMBRE), ds_readd(GENDAT_OFFSET) + ds_readd(CURRENT_TIMBRE_OFFSET), SEEK_SET);
 	read_datfile(ds_readw(HANDLE_TIMBRE), p_datseg + CURRENT_TIMBRE_LENGTH, 2);
 
-	timbre_ptr = emu_gen_alloc(ds_readw(CURRENT_TIMBRE_LENGTH));
+	timbre_ptr = gen_alloc(ds_readw(CURRENT_TIMBRE_LENGTH));
 
 #if defined(__BORLANDC__)
 	read_datfile(ds_readw(HANDLE_TIMBRE),
@@ -1519,11 +1519,11 @@ unsigned short load_driver(RealPt fname, Bit16u type, Bit16u port)
 					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x12));
 			if (type == 3) {
 				ds_writed(STATE_TABLE_SIZE, AIL_state_table_size(ds_readw(SND_DRIVER_HANDLE)));
-				ds_writed(STATE_TABLE, (Bit32u)emu_gen_alloc(ds_readd(STATE_TABLE_SIZE)));
+				ds_writed(STATE_TABLE, (Bit32u)gen_alloc(ds_readd(STATE_TABLE_SIZE)));
 				ds_writew(TIMBRE_CACHE_SIZE, AIL_default_timbre_cache_size(ds_readw(SND_DRIVER_HANDLE)));
 
 				if (ds_readw(TIMBRE_CACHE_SIZE) != 0) {
-					ds_writed(SND_PTR_UNKN1, (Bit32u)emu_gen_alloc(ds_readw(TIMBRE_CACHE_SIZE)));
+					ds_writed(SND_PTR_UNKN1, (Bit32u)gen_alloc(ds_readw(TIMBRE_CACHE_SIZE)));
 				#if !defined(__BORLANDC__)
 					AIL_define_timbre_cache(ds_readw(SND_DRIVER_HANDLE),
 							(RealPt)ds_readd(SND_PTR_UNKN1),
@@ -2382,6 +2382,7 @@ void load_page(Bit16s page)
 
 	if (page <= 10) {
 		/* check if this image is in the buffer */
+		//D1_INFO("%s(BG_BUFFER %d = 0x%08x)\n", __func__, page, ds_readd(BG_BUFFER + 4 * page));
 		if ((RealPt)ds_readd(BG_BUFFER + 4 * page)) {
 			decomp_rle(Real2Host(ds_readd(GEN_PTR1_DIS)),
 					Real2Host(ds_readd(BG_BUFFER + 4 * page)),
@@ -2389,7 +2390,7 @@ void load_page(Bit16s page)
 			return;
 		}
 
-		if (ptr = emu_gen_alloc(get_filelength(handle = open_datfile(page)))) {
+		if (ptr = gen_alloc(get_filelength(handle = open_datfile(page)))) {
 			ds_writed(BG_BUFFER + 4 * page, (Bit32u)ptr);
 			ds_writed(BG_LEN + 4 * page, get_filelength(handle));
 			read_datfile(handle,
@@ -2440,6 +2441,7 @@ void load_typus(Bit16u typus)
 	index = typus + 19;
 
 	/* check if this image is in the buffer */
+	//D1_INFO("%s(TYPUS_BUFFER %d = 0x%08x)\n", __func__, typus, ds_readd(TYPUS_BUFFER + 4 * typus));
 	if ((RealPt)ds_readd(TYPUS_BUFFER + 4 * typus)) {
 		decomp_pp20((RealPt)ds_readd(GEN_PTR5),
 			Real2Host(ds_readd(TYPUS_BUFFER + 4 * typus)),
@@ -2447,9 +2449,10 @@ void load_typus(Bit16u typus)
 		return;
 	}
 
-	if (ptr = emu_gen_alloc(get_filelength(handle = open_datfile(index)))) {
+	if (ptr = gen_alloc(get_filelength(handle = open_datfile(index)))) {
 		/* load the file into the typus buffer */
 		ds_writed(TYPUS_BUFFER + 4 * typus, (Bit32u)ptr);
+		//D1_INFO("%s(ptr = 0x%08x TYPUS_BUFFER = 0x%08x)\n", ptr, ds_readd(TYPUS_BUFFER));
 		ds_writed(TYPUS_LEN + 4 * typus, get_filelength(handle));
 		read_datfile(handle,
 			Real2Host(ds_readd(TYPUS_BUFFER + 4 * typus)),
@@ -7270,27 +7273,6 @@ void BE_cleanup()
 			bc_free((RealPt)ds_readd(TYPUS_BUFFER + 4 * i));
 		}
 	}
-
-
-#if 0
-	for (long i = 0; i < MAX_PAGES; i++) {
-		if (bg_buffer[i]) {
-			free(bg_buffer[i]);
-			bg_buffer[i] = NULL;
-		}
-		sum += bg_len[i];
-		bg_len[i] = 0;
-	}
-	for (long i = 0; i < MAX_TYPES; i++) {
-		if (typus_buffer[i]) {
-			free(typus_buffer[i]);
-			typus_buffer[i] = NULL;
-		}
-		sum += typus_len[i];
-		typus_len[i] = 0;
-	}
-	D1_INFO("Cleanup %ld bytes freed\n", sum);
-#endif
 }
 
 static FILE * fd_open_datfile(Bit16u index)
@@ -7703,39 +7685,39 @@ void alloc_buffers()
 	ds_writed(VGA_MEMSTART, RealMake(0xa000, 0x0));
 	ds_writed(GFX_PTR, RealMake(0xa000, 0x0));
 
-	ds_writed(GEN_PTR1_DIS, (RealPt)emu_gen_alloc(64108) + 8);
+	ds_writed(GEN_PTR1_DIS, (RealPt)gen_alloc(64108) + 8);
 
-	ds_writed(PAGE_BUFFER, (Bit32u)emu_gen_alloc(50000));
+	ds_writed(PAGE_BUFFER, (Bit32u)gen_alloc(50000));
 
-	ds_writed(GEN_PTR2, (Bit32u)emu_gen_alloc(1524));
+	ds_writed(GEN_PTR2, (Bit32u)gen_alloc(1524));
 	ds_writed(GEN_PTR3, (RealPt)ds_readd(GEN_PTR2) + 1500);
 
 	// unused
-	ds_writed(GEN_PTR4, (Bit32u)emu_gen_alloc(200));
+	ds_writed(GEN_PTR4, (Bit32u)gen_alloc(200));
 
-	ds_writed(BUFFER_TEXT, (Bit32u)emu_gen_alloc(6000));
+	ds_writed(BUFFER_TEXT, (Bit32u)gen_alloc(6000));
 
-	ds_writed(BUFFER_FONT6, (Bit32u)emu_gen_alloc(592));
+	ds_writed(BUFFER_FONT6, (Bit32u)gen_alloc(592));
 
 	load_font_and_text();
 
-	ds_writed(BUFFER_HEADS_DAT, (Bit32u)emu_gen_alloc(39000));
+	ds_writed(BUFFER_HEADS_DAT, (Bit32u)gen_alloc(39000));
 
-	ds_writed(BUFFER_POPUP, (Bit32u)emu_gen_alloc(1673));
+	ds_writed(BUFFER_POPUP, (Bit32u)gen_alloc(1673));
 
-	ds_writed(BUFFER_SEX_DAT, (Bit32u)emu_gen_alloc(812));
+	ds_writed(BUFFER_SEX_DAT, (Bit32u)gen_alloc(812));
 
-	ds_writed(GEN_PTR5, (Bit32u)emu_gen_alloc(23660));
+	ds_writed(GEN_PTR5, (Bit32u)gen_alloc(23660));
 
-	ds_writed(BUFFER_DMENGE_DAT, (Bit32u)emu_gen_alloc(23660));
+	ds_writed(BUFFER_DMENGE_DAT, (Bit32u)gen_alloc(23660));
 
-	ds_writed(PICBUF1, (Bit32u)emu_gen_alloc(800));
+	ds_writed(PICBUF1, (Bit32u)gen_alloc(800));
 
-	ds_writed(PICBUF2, (Bit32u)emu_gen_alloc(2800));
+	ds_writed(PICBUF2, (Bit32u)gen_alloc(2800));
 
-	ds_writed(PICBUF3, (Bit32u)emu_gen_alloc(2800));
+	ds_writed(PICBUF3, (Bit32u)gen_alloc(2800));
 
-	ds_writed(GEN_PTR6, (Bit32u)emu_gen_alloc(1100) + 8);
+	ds_writed(GEN_PTR6, (Bit32u)gen_alloc(1100) + 8);
 
 	if (!(RealPt)ds_readd(GEN_PTR6))
 		printf("\nMEMORY MALLOCATION ERROR!");
@@ -7771,10 +7753,12 @@ void init_stuff()
 	ds_writed(DST_DST, ds_readd(VGA_MEMSTART));
 }
 
-RealPt emu_gen_alloc(Bit32u nelem)
+RealPt gen_alloc(Bit32u nelem)
 {
-	D1_INFO("EMU gen_alloc(%ld);\n", nelem);
-	return bc_calloc(nelem, 1);
+	RealPt p = (RealPt)0;
+	p = bc_calloc(nelem, 1);
+	//D1_INFO("EMU gen_alloc(%ld) = 0x%08x;\n", nelem, p);
+	return p;
 }
 
 #endif

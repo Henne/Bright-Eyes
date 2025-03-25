@@ -1731,8 +1731,8 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 					Bit32u  nelem = CPU_Pop32();
 
-					ret = emu_gen_alloc(nelem);
-					D1_LOG("emu_gen_alloc(%d) = %x\n",
+					ret = gen_alloc(nelem);
+					D1_LOG("gen_alloc(%d) = %x\n",
 						nelem, ret);
 					reg_ax = RealOff(ret);
 					reg_dx = RealSeg(ret);
