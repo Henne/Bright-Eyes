@@ -4653,11 +4653,7 @@ void new_values()
 	/* save the name of the hero */
 	/* TODO strncpy() would be better here */
 
-#if !defined(__BORLANDC__)
 	strcpy(name_bak, (char*)p_datseg + HERO_NAME);
-#else
-	strcpy(name_bak, (char*)&ds[HERO_NAME]);
-#endif
 
 	/* save the sex of the hero */
 	sex_bak = ds_readbs(HERO_SEX);
@@ -4675,11 +4671,9 @@ void new_values()
 
 	/* restore the name of the hero */
 	/* TODO strncpy() would be better here */
-#if !defined(__BORLANDC__)
+
 	strcpy((char*)p_datseg + HERO_NAME, name_bak);
-#else
-	strcpy((char*)&ds[HERO_NAME], name_bak);
-#endif
+
 	refresh_screen();
 
 	ds_writew(SCREEN_VAR, 0);
@@ -7045,12 +7039,9 @@ void choose_typus()
 		return;
 
 	/* clear the hero area with saved name and sex */
-#if !defined(__BORLANDC__)
 	strcpy(name_bak, (char*)p_datseg + HERO_NAME);
-#else
-	strcpy(name_bak, (char*)&ds[HERO_NAME]);
-#endif
 	sex_bak = ds_readbs(HERO_SEX);
+
 #if !defined(__BORLANDC__)
 	bc_memset(RealMake(datseg, HERO_NAME), 0, 0x6da);
 #else
@@ -7058,11 +7049,8 @@ void choose_typus()
 #endif
 	clear_hero();
 	ds_writeb(HERO_SEX, sex_bak);
-#if !defined(__BORLANDC__)
+
 	strcpy((char*)p_datseg + HERO_NAME, name_bak);
-#else
-	strcpy((char*)&ds[HERO_NAME], name_bak);
-#endif
 
 	/* set typus */
 	ds_writeb(HERO_TYPUS, (unsigned char)choosen_typus);

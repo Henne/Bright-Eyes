@@ -27,7 +27,7 @@ typedef Bit8u huge * HugePt;
 #define H_PADD(p, o) F_PADD(p, o)
 
 extern char ds[0xffff];
-#define p_datseg (&ds[0x0000])
+#define p_datseg ((Bit8u*)(&ds[0x0000]))
 #define datseg (_DS)
 
 #define ds_readb(p) *(unsigned char*)(ds + p)
