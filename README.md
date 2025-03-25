@@ -71,5 +71,4 @@ Links:
 
 git-tree:	git://github.com/Henne/Bright-Eyes.git
 githhub:	https://github.com/Henne/Bright-Eyes
-Documentation:	http://freedsa.schattenkind.net
-Forum:		http://www.crystals-dsa-foren.de
+Forum:		https://www.crystals-dsa-foren.de
