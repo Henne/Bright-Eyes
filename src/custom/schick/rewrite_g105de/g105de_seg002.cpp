@@ -4935,8 +4935,11 @@ void calc_at_pa()
  */
 void fill_values()
 {
+	Bit16s i;
+	Bit16s v1;
+	Bit16s v2;
 	Bit8u *ptr;
-	Bit16u i;
+
 	Bit16u si, di;
 
 	/* fill skill values */
@@ -5143,7 +5146,7 @@ void fill_values()
 		/* automatic increase skills */
 		i = 0;
 		while (ds_readbs(HERO_SKILL_INCS) > 0) {
-			skill_inc_novice(autoskills[ds_readbs(HERO_TYPUS)][i++]);
+			skill_inc_novice(v1 = autoskills[ds_readbs(HERO_TYPUS)][i++]);
 		}
 
 		si = 0;
