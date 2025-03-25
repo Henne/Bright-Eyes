@@ -42,7 +42,9 @@ extern char ds[0xffff];
 #define ds_writew(p, d) (*(unsigned short*)(ds +(p)) = (d))
 #define ds_writed(p, d) *(unsigned long*)(ds + (p)) = (d)
 
+#define ds_writebs(p, d) (*(signed char*)(ds + (p)) = (d))
 #define ds_writews(p, d) *(signed short*)(ds + (p)) = (d)
+#define ds_writeds(p, d) (*(signed long*)(ds + (p)) = (d))
 
 #define ds_inc_b(p)	(++*(unsigned char*)(ds + (p)))
 #define ds_inc_w(p)	(++*(unsigned short*)(ds + (p)))
