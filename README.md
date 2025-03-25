@@ -64,11 +64,13 @@ M302de (Main V3.02 german CD - Version):
 		* Gramar at "Ecliptifactus"
 
 G105de (Generation V1.05 german CD - Version):
-		* avoid negative skill-/spell_attempts in novice mode
+	* avoid negative skill-/spell_attempts in novice mode
+    * has MIDI support
+    * works again correctly
 
 
 Links:
 
-git-tree:	git://github.com/Henne/Bright-Eyes.git
-githhub:	https://github.com/Henne/Bright-Eyes
-Forum:		https://www.crystals-dsa-foren.de
+* git-tree:	git://github.com/Henne/Bright-Eyes.git
+* githhub:	https://github.com/Henne/Bright-Eyes
+* Forum:		https://www.crystals-dsa-foren.de
