@@ -855,7 +855,7 @@ static const struct mouse_action action_spells[4] = {
 
 //static const Bit16u ro_zero = 0;
 
-static struct struct_hero hero;
+//static struct struct_hero hero;
 
 #if 0
 static unsigned short use_cda;
@@ -1223,7 +1223,7 @@ static inline RealPt get_text_real(Bit16s no) {
 
 //static Bit8u *picbuf3;
 //static Bit8u *picbuf2;
-static Bit8u *picbuf1;
+//static Bit8u *picbuf1;
 //static Bit8u *gen_ptr6;
 //static Bit8u *buffer_dmenge_dat;
 //static Bit8u *gen_ptr5;
@@ -1238,24 +1238,10 @@ static Bit8u *picbuf1;
 
 //static const Bit16u ro_var[7] = {0, 0, 0, 0, 0, 0, 0};
 
-/* DS:0x47f3 */
-Bit8u *gen_ptr1;
-Bit8u *gen_ptr1_dis;
+//Bit8u *gen_ptr1;
+//Bit8u *gen_ptr1_dis;
 
 #if !defined(__BORLANDC__)
-
-// writes hero variables to DS
-static void update_hero_out()
-{
-	Bit16s i;
-
-	for (i = 0; i < 14; i++) {
-		ds_writeb(HERO_ATT0_NORMAL  + i * 3, hero.attribs[i].normal);
-		ds_writeb(HERO_ATT0_CURRENT + i * 3, hero.attribs[i].current);
-	}
-}
-
-
 static void prepare_path(char *p)
 {
 	while (*p) {
@@ -2496,11 +2482,6 @@ void save_chr()
 	Bit16s handle; //si
 	Bit16s i;      //di
 
-#if !defined(__BORLANDC__)
-	// write all hero changes to DS (intermediately)
-	update_hero_out();
-#endif
-
 	/* check for typus */
 	if (!ds_readbs(HERO_TYPUS)) {
 		infobox(get_text(72), 0);
@@ -2597,7 +2578,6 @@ void save_chr()
 
 	if (fd) {
 		/* write the CHR file to the current directory */
-		update_hero_out();
 		fwrite(p_datseg + HERO_NAME, 1, 1754, fd);
 		fclose(fd);
 
@@ -4336,11 +4316,7 @@ void do_gen()
 
 					if (si != -1) {
 						if ((si >= 4) && (si < 6) &&
-#if !defined(__BORLANDC__)
-							(hero.attribs[0].normal) &&
-#else
 							(ds_readbs(HERO_ATT0_NORMAL)) &&
-#endif
 							!gui_bool((Bit8u*)get_text(13))) {
 							si = 0;
 						}
@@ -4361,7 +4337,6 @@ void do_gen()
 							case 4: {
 								//memset(&hero, 0, sizeof(hero));
 #if !defined(__BORLANDC__)
-								memset(&hero, 0, 0x6da);
 								bc_memset(RealMake(datseg, HERO_NAME), 0, 0x6da);
 #else
 								bc_memset(&ds[HERO_NAME], 0, 0x6da);
@@ -4686,7 +4661,7 @@ void new_values()
 
 	/* clear the hero */
 #if !defined(__BORLANDC__)
-	memset(&hero, 0, sizeof(hero));
+	bc_memset(RealMake(datseg, HERO_NAME), 0, 0x6da);
 #else
 	bc_memset(&ds[HERO_NAME], 0, 0x6da);
 #endif
@@ -4717,11 +4692,9 @@ void new_values()
 		unset_attribs = 0;
 
 		for (i = 0; i < 7; i++) {
-#if !defined(__BORLANDC__)
-			if (!hero.attribs[i].normal) {
-#else
+			// NORMAL
 			if (!host_readbs(Real2Host(ds_ptr) + 3 * i)) {
-#endif
+                                // not initialized attribute
 				values[unset_attribs] = (signed char)i;
 				ds_writed(TYPE_NAMES + 4 * unset_attribs,  (Bit32u)get_text_real(32 + i));
 				unset_attribs++;
@@ -4748,13 +4721,9 @@ void new_values()
 		} while (di == -1);
 
 		di = values[di - 1];
-#if !defined(__BORLANDC__)
-		hero.attribs[di].current = randval;
-		hero.attribs[di].normal = randval;
-#else
-		host_writeb(3 * di + (Real2Host(ds_ptr) + 1), randval);
-		host_writeb(3 * di + (Real2Host(ds_ptr) + 0), randval);
-#endif
+		/* write randval to the selected positive attribute */
+		host_writeb(3 * di + (Real2Host(ds_ptr) + 1), randval); // CURRENT
+		host_writeb(3 * di + (Real2Host(ds_ptr) + 0), randval); // NORMAL
 
 #if !defined(__BORLANDC__)
 		update_mouse_cursor();
@@ -4774,11 +4743,8 @@ void new_values()
 		unset_attribs = 0;
 
 		for (i = 0; i < 7; i++) {
-#if !defined(__BORLANDC__)
-			if (!hero.attribs[i + 7].normal) {
-#else
+			// NORMAL
 			if (!host_readbs(Real2Host(ds_ptr) + 3 * i)) {
-#endif
 				values[unset_attribs] = (signed char)i;
 				ds_writed(TYPE_NAMES + 4 * unset_attribs,  (Bit32u)get_text_real(39 + i));
 				unset_attribs++;
@@ -4806,13 +4772,9 @@ void new_values()
 
 		di = values[di - 1];
 
-#if !defined(__BORLANDC__)
-		hero.attribs[di + 7].current = randval;
-		hero.attribs[di + 7].normal = randval;
-#else
-		host_writeb(3 * di + (Real2Host(ds_ptr) + 1), randval);
-		host_writeb(3 * di + (Real2Host(ds_ptr) + 0), randval);
-#endif
+		/* write randval to the selected negative attribute */
+		host_writeb(3 * di + (Real2Host(ds_ptr) + 1), randval); // CURRENT
+		host_writeb(3 * di + (Real2Host(ds_ptr) + 0), randval); // NORMAL
 
 #if !defined(__BORLANDC__)
 		update_mouse_cursor();
@@ -4838,8 +4800,9 @@ void calc_at_pa()
 	Bit16s base;
 
 	/* base = (GE + IN + KK) / 5 */
-	tmp = hero.attribs[5].normal + hero.attribs[6].normal +
-		hero.attribs[4].normal ;
+	tmp = ds_readbs(HERO_ATT0_NORMAL + 3 * 5)
+		 + ds_readbs(HERO_ATT0_NORMAL + 3 * 6)
+		 + ds_readbs(HERO_ATT0_NORMAL + 3 * 4);
 	base = tmp / 5;
 
 	/* round up if neccessary */
@@ -5058,7 +5021,8 @@ void fill_values()
 
 	/* calculate MR  = (KL + SI + Level) / 3 - 2 * AG */
 	ds_writeb(HERO_MR,
-		(hero.attribs[1].normal + hero.attribs[0].normal + ds_readbs(HERO_LEVEL)) / 3 -	hero.attribs[7].normal * 2);
+		(ds_readbs(HERO_ATT0_NORMAL + 3 * 1) + ds_readbs(HERO_ATT0_NORMAL + 3 * 0) + ds_readbs(HERO_LEVEL)) / 3
+		 - 2 * ds_readbs(HERO_ATT0_NORMAL + 3 * 7));
 	/* add typus MR Modificator */
 	ds_add_bs(HERO_MR, mr_mod[ds_readbs(HERO_TYPUS)]);
 
@@ -5069,8 +5033,8 @@ void fill_values()
 	switch (ds_readbs(HERO_GOD)) {
 		case 1 : {
 			/* Praios: MU + 1 */
-			hero.attribs[0].normal++;
-			hero.attribs[0].current++;
+			ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * 0);
+			ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * 0);
 			ds_writew(GOT_MU_BONUS, 1);
 			break;
 		}
@@ -5107,8 +5071,8 @@ void fill_values()
 		}
 		case 8 : {
 			/* Tsa: CH + 1 */
-			hero.attribs[2].normal++;
-			hero.attribs[2].current++;
+			ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * 2);
+			ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * 2);
 			ds_writew(GOT_CH_BONUS, 1);
 			break;
 		}
@@ -5308,8 +5272,8 @@ void select_typus()
 	old_typus = -1;
 	t = empty_bitmap;
 
-	/* check if attribs have bee set */
-	if (hero.attribs[0].normal == 0) {
+	/* check if attribs have been set */
+	if (ds_readbs(HERO_ATT0_NORMAL + 3 * 0) == 0) {
 		infobox(get_text(265), 0);
 		return;
 	}
@@ -5317,13 +5281,13 @@ void select_typus()
 	old_typus = ds_readbs(HERO_TYPUS);
 	/* disable MU bonus */
 	if (ds_readw(GOT_MU_BONUS)) {
-		hero.attribs[0].normal--;
-		hero.attribs[0].current--;
+		ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * 0);
+		ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * 0);
 	}
 	/* disable CH bonus */
 	if (ds_readw(GOT_CH_BONUS)) {
-		hero.attribs[2].normal--;
-		hero.attribs[2].current--;
+		ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * 2);
+		ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * 2);
 	}
 	possible_types = 0;
 
@@ -5332,8 +5296,7 @@ void select_typus()
 		for (si = 0; si < 4; si++) {
 			Bit8u req;
 
-			ltmp2 = hero.attribs[reqs[i][si].attrib].normal;
-
+			ltmp2 = ds_readbs(HERO_ATT0_NORMAL + 3 * reqs[i][si].attrib);
 			req = reqs[i][si].requirement;
 
 			if (req & 0x80) {
@@ -5392,12 +5355,12 @@ void select_typus()
 	 */
 	if (di == -1 || t.t[di - 1] == old_typus) {
 		if (ds_readw(GOT_MU_BONUS)) {
-			hero.attribs[0].normal++;
-			hero.attribs[0].current++;
+			ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * 0);
+			ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * 0);
 		}
 		if (ds_readw(GOT_CH_BONUS)) {
-			hero.attribs[2].normal++;
-			hero.attribs[2].current++;
+			ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * 2);
+			ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * 2);
 		}
 		return;
 	}
@@ -5451,17 +5414,17 @@ Bit16u can_change_attribs()
 
 
 	for (i = 0; i < 7; i++) {
-		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (hero.attribs[i].normal > 8))
-			pa_dec += 8 - hero.attribs[i].normal;
-		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (hero.attribs[i].normal < 13))
-			pa_inc += 13 - hero.attribs[i].normal;
+		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (ds_readbs(HERO_ATT0_NORMAL + 3 * i) > 8))
+			pa_dec += 8 - ds_readbs(HERO_ATT0_NORMAL + 3 * i);
+		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (ds_readbs(HERO_ATT0_NORMAL + 3 * i) < 13))
+			pa_inc += 13 - ds_readbs(HERO_ATT0_NORMAL + 3 * i);
 	}
 
 	for (i = 7; i < 14; i++) {
-		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (hero.attribs[i].normal > 2))
-			na_dec += 2 - hero.attribs[i].normal;
-		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (hero.attribs[i].normal < 8))
-			na_inc += 8 - hero.attribs[i].normal;
+		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (ds_readbs(HERO_ATT0_NORMAL + 3 * i) > 2))
+			na_dec += 2 - ds_readbs(HERO_ATT0_NORMAL + 3 * i);
+		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (ds_readbs(HERO_ATT0_NORMAL + 3 * i) < 8))
+			na_inc += 8 - ds_readbs(HERO_ATT0_NORMAL + 3 * i);
 	}
 
 	D1_LOG("%d %d %d %d\n", pa_inc, pa_dec, na_inc, na_dec);
@@ -5494,7 +5457,7 @@ void change_attribs()
 	Bit8u c;
 
 	/* check if attributes have been set */
-	if (hero.attribs[0].normal == 0) {
+	if (ds_readbs(HERO_ATT0_NORMAL + 3 * 0) == 0) {
 		infobox(get_text(16), 0);
 		return;
 	}
@@ -5511,14 +5474,14 @@ void change_attribs()
 		ds_writeb(HERO_TYPUS, 0);
 		/* remove MU boni */
 		if (ds_readw(GOT_MU_BONUS)) {
-			hero.attribs[0].normal--;
-			hero.attribs[0].current--;
+			ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * 0);
+			ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * 0);
 			ds_writew(GOT_MU_BONUS, 0);
 		}
 		/* remove CH boni */
 		if (ds_readw(GOT_CH_BONUS)) {
-			hero.attribs[2].normal--;
-			hero.attribs[2].current--;
+			ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * 2);
+			ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * 2);
 			ds_writew(GOT_CH_BONUS, 0);
 		}
 		ds_writew(SCREEN_VAR, 1);
@@ -5555,7 +5518,7 @@ void change_attribs()
 
 	if (tmp3 == INC) {
 		/* increment */
-		if (hero.attribs[tmp2].normal == 13) {
+		if (ds_readbs(HERO_ATT0_NORMAL + 3 * tmp2) == 13) {
 			infobox(get_text(77), 0);
 			return;
 		}
@@ -5563,17 +5526,17 @@ void change_attribs()
 		for (di = 7; di < 14; di++) {
 			if (ds_readb(ATTRIB_CHANGED + di) == DEC)
 				continue;
-			if (hero.attribs[di].normal >= 8)
+			if (ds_readbs(HERO_ATT0_NORMAL + 3 * di) >= 8)
 				continue;
-			c += 8 - hero.attribs[di].normal;
+			c += 8 - ds_readbs(HERO_ATT0_NORMAL + 3 * di);
 		}
 		if (c < 2) {
 			infobox(get_text(85), 0);
 			return;
 		}
 		/* increment positive attribute */
-		hero.attribs[tmp2].current++;
-		hero.attribs[tmp2].normal++;
+		ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * tmp2);
+		ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * tmp2);
 
 		ds_writeb(ATTRIB_CHANGED + tmp2,  INC);
 
@@ -5599,22 +5562,23 @@ void change_attribs()
 				continue;
 			}
 			/* check if attribute can be incremented */
-			if (hero.attribs[si + 7].normal == 8) {
+			if (ds_readbs(HERO_ATT0_NORMAL + 3 * (si + 7)) == 8) {
 				infobox(get_text(77), 0);
 				continue;
 			}
 			/* increment the negative attribute */
 			tmp1++;
 			ds_writeb(ATTRIB_CHANGED + si + 7, INC);
-			hero.attribs[si + 7].normal++;
-			hero.attribs[si + 7].current++;
+
+			ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * (si + 7));
+			ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * (si + 7));
 
 			refresh_screen();
 		}
 	} else {
 		/* decrement */
 		/* check if the positive attribute can be decremented */
-		if (hero.attribs[tmp2].normal == 8) {
+		if (ds_readbs(HERO_ATT0_NORMAL + 3 * tmp2) == 8) {
 			infobox(get_text(81), 0);
 			return;
 		}
@@ -5622,17 +5586,18 @@ void change_attribs()
 		for (di = 7; di < 14; di++) {
 			if (ds_readb(ATTRIB_CHANGED + di) == INC)
 				continue;
-			if (hero.attribs[di].normal <= 2)
+			if (ds_readbs(HERO_ATT0_NORMAL + 3 * di) <= 2)
 				continue;
-			c += hero.attribs[di].normal - 2;
+			c += ds_readbs(HERO_ATT0_NORMAL + 3 * di) - 2;
 		}
 		if (c < 2) {
 			infobox(get_text(84), 0);
 			return;
 		}
 		/* decrement positive attribute */
-		hero.attribs[tmp2].normal--;
-		hero.attribs[tmp2].current--;
+		ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * tmp2);
+		ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * tmp2);
+
 		/* mark this attribute as decremented */
 		ds_writeb(ATTRIB_CHANGED + tmp2, DEC);
 
@@ -5658,14 +5623,16 @@ void change_attribs()
 				continue;
 			}
 			/* check if attribute can be decremented */
-			if (hero.attribs[si + 7].normal == 2) {
+			if (ds_readbs(HERO_ATT0_NORMAL + 3 * (si + 7)) == 2) {
 				infobox(get_text(81), 0);
 				continue;
 			}
 			/* deccrement the negative attribute */
 			tmp1++;
-			hero.attribs[si + 7].normal--;
-			hero.attribs[si + 7].current--;
+
+			ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * (si + 7));
+			ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * (si + 7));
+
 			ds_writeb(ATTRIB_CHANGED + si + 7, DEC);
 
 			refresh_screen();
@@ -5827,19 +5794,18 @@ void restore_picbuf(PhysPt ptr)
 void print_attribs()
 {
 	char buf[10];
-	Bit16u i;
+	Bit16s i;
 
 	for (i = 0; i < 14; i++) {
 		/* don't print 0s */
-		if (hero.attribs[i].normal == 0)
-			continue;
+		if (ds_readbs(HERO_ATT0_NORMAL + 3 * i) != 0) {
 
-		/* convert value to string with itoa() */
-		sprintf(buf, "%d", hero.attribs[i].normal);
+			/* convert value to string with itoa() */
+			sprintf(buf, "%d", ds_readbs(HERO_ATT0_NORMAL + 3 * i));
 
-		/* print it */
-		print_str(buf, ds_readw(i * 4 + 0x105f),
-			ds_readw(i * 4 + 0x1061));
+			/* print it */
+			print_str(buf, ds_readw(i * 4 + 0x105f), ds_readw(i * 4 + 0x1061));
+		}
 	}
 }
 
@@ -5862,7 +5828,11 @@ void print_values()
 			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
 
 			/* print name */
-			print_str(hero.name, 180, 12);
+#if !defined(__BORLANDC__)
+			print_str((char*)p_datseg + HERO_NAME, 180, 12);
+#else
+			print_str((char*)&ds[HERO_NAME], 180, 12);
+#endif
 
 			/* print attributes */
 			print_attribs();
@@ -5900,7 +5870,7 @@ void print_values()
 			/* print Endurance */
 			/* originally it was itoa() */
 			sprintf(tmp, "%d",
-				ds_readws(HERO_LE_MAX) + hero.attribs[6].current);
+				ds_readws(HERO_LE_MAX) + ds_readbs(HERO_ATT0_CURRENT + 3 * 6));
 			print_str(tmp, 296, 164);
 
 			/* print MR */
@@ -6091,8 +6061,9 @@ void print_values()
 			}
 
 			/* calc range base value (KL+GE+KK)/4 */
-			pos = (hero.attribs[1].normal + hero.attribs[4].normal +
-				hero.attribs[6].normal) / 4;
+			pos = (ds_readbs(HERO_ATT0_NORMAL + 3 * 1)
+				 + ds_readbs(HERO_ATT0_NORMAL + 3 * 4)
+				 + ds_readbs(HERO_ATT0_NORMAL + 3 * 6)) / 4;
 
 			/* print missle weapon value */
 			sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + 7 + pos));
@@ -7058,6 +7029,7 @@ void choose_typus()
 	else
 		/* male tyuse names */
 		typus_names = 17;
+
 	choosen_typus = gui_radio((Bit8u*)get_text(30), 12,
 				get_text(typus_names + 1), get_text(typus_names + 2),
 				get_text(typus_names + 3), get_text(typus_names + 4),
@@ -7070,12 +7042,24 @@ void choose_typus()
 		return;
 
 	/* clear the hero area with saved name and sex */
-	strcpy(name_bak, hero.name);
+#if !defined(__BORLANDC__)
+	strcpy(name_bak, (char*)p_datseg + HERO_NAME);
+#else
+	strcpy(name_bak, (char*)&ds[HERO_NAME]);
+#endif
 	sex_bak = ds_readbs(HERO_SEX);
-	memset(&hero, 0, sizeof(hero));
+#if !defined(__BORLANDC__)
+	bc_memset(RealMake(datseg, HERO_NAME), 0, 0x6da);
+#else
+	bc_memset(&ds[HERO_NAME], 0, 0x6da);
+#endif
 	clear_hero();
 	ds_writeb(HERO_SEX, sex_bak);
-	strcpy(hero.name, name_bak);
+#if !defined(__BORLANDC__)
+	strcpy((char*)p_datseg + HERO_NAME, name_bak);
+#else
+	strcpy((char*)&ds[HERO_NAME], name_bak);
+#endif
 
 	/* set typus */
 	ds_writeb(HERO_TYPUS, (unsigned char)choosen_typus);
@@ -7088,8 +7072,8 @@ void choose_typus()
 		if (randval > 8)
 			randval--;
 
-		hero.attribs[i].normal = randval;
-		hero.attribs[i].current = randval;
+		ds_writeb(HERO_ATT0_NORMAL + 3 * i, randval);
+		ds_writeb(HERO_ATT0_CURRENT + 3 * i, randval);
 	}
 
 	/* roll out bad attribute values */
@@ -7100,8 +7084,8 @@ void choose_typus()
 		if (randval < 7)
 			randval++;
 
-		hero.attribs[i + 7].normal = randval;
-		hero.attribs[i + 7].current = randval;
+		ds_writeb(HERO_ATT0_NORMAL + 3 * (i + 7), randval);
+		ds_writeb(HERO_ATT0_CURRENT + 3 * (i + 7), randval);
 	}
 
 	/* adjust typus attribute requirements */
@@ -7118,18 +7102,19 @@ void choose_typus()
 
 		if (randval & 0x80) {
 			/* attribute upper bound */
-			if (hero.attribs[ta].normal <= (randval & 0x7f))
+			if (ds_readbs(HERO_ATT0_NORMAL + 3 * ta) <= (randval & 0x7f))
 				continue;
 
-			hero.attribs[ta].current = randval & 0x7f;
-			hero.attribs[ta].normal = randval & 0x7f;
+
+			ds_writeb(HERO_ATT0_CURRENT + 3 * ta, randval & 0x7f);
+			ds_writeb(HERO_ATT0_NORMAL + 3 * ta, randval & 0x7f);
 		} else {
 			/* attribute lower bound */
-			if (hero.attribs[ta].normal >= randval)
+			if (ds_readbs(HERO_ATT0_NORMAL + 3 * ta) >= randval)
 				continue;
 
-			hero.attribs[ta].current = randval;
-			hero.attribs[ta].normal = randval;
+			ds_writeb(HERO_ATT0_CURRENT + 3 * ta, randval);
+			ds_writeb(HERO_ATT0_NORMAL + 3 * ta, randval);
 		}
 	}
 
