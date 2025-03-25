@@ -1250,9 +1250,9 @@ static void update_hero_out()
 	Bit16s i;
 
 	for (i = 0; i < 14; i++) {
-		ds_writeb(HERO_ATT0_NORMAL + i * 3 + 0, hero.attribs[i].normal);
-		ds_writeb(HERO_ATT0_NORMAL + i * 3 + 1, hero.attribs[i].current);
-		ds_writeb(HERO_ATT0_NORMAL + i * 3 + 2, hero.attribs[i].mod);
+		ds_writeb(HERO_ATT0_NORMAL  + i * 3, hero.attribs[i].normal);
+		ds_writeb(HERO_ATT0_CURRENT + i * 3, hero.attribs[i].current);
+		ds_writeb(HERO_ATT0_MOD     + i * 3, hero.attribs[i].mod);
 	}
 }
 
@@ -4889,7 +4889,7 @@ void calc_at_pa()
 	Bit16s tmp;
 	Bit16s i;
 
-	res = div(ds_readbs(0x136f) + ds_readbs(0x1372) + ds_readbs(0x136c), 5);
+	res = div(ds_readbs(HERO_ATT_IN_NORMAL) + ds_readbs(HERO_ATT_KK_NORMAL) + ds_readbs(HERO_ATT_GE_NORMAL), 5);
 	if (res.rem >= 3) {
 		res.quot++;
 	}

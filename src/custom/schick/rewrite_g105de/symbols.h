@@ -82,6 +82,18 @@
 #define HERO_MONEY                      (0x1358)    /* Bit32s */
 
 #define HERO_ATT0_NORMAL                (0x1360)    /* Bit8s */
+#define HERO_ATT0_CURRENT               (0x1361)    /* Bit8s */
+#define HERO_ATT0_MOD                   (0x1362)    /* Bit8s */
+
+/* Single values used in GEN */
+#define HERO_ATT_KL_NORMAL              (0x1363)    /* Bit8s */
+#define HERO_ATT_CH_NORMAL              (0x1366)    /* Bit8s */
+#define HERO_ATT_CH_CURRENT             (0x1367)    /* Bit8s */
+#define HERO_ATT_GE_NORMAL              (0x136c)    /* Bit8s */
+#define HERO_ATT_IN_NORMAL              (0x136f)    /* Bit8s */
+#define HERO_ATT_KK_NORMAL              (0x1372)    /* Bit8s */
+#define HERO_ATT_KK_CURRENT             (0x1373)    /* Bit8s */
+#define HERO_ATT_AG_NORMAL              (0x1375)    /* Bit8s */
 
 #define HERO_LE                         (0x138a)    /* Bit16s */
 #define HERO_LE_MAX                     (0x138c)    /* Bit16s */
