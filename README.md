@@ -2,7 +2,8 @@
 
 
 
-This is a fork of DOSBox 0.74 with customiziations for "Das schwarze Auge - Die Schicksalsklinge" (aka "Realms of Arkania - Blade of Destiny").
+This is a fork of DOSBox 0.74 with customiziations for "Das schwarze Auge - Die Schicksalsklinge"
+(aka "Realms of Arkania - Blade of Destiny").
 
 The projects goal is to make that game runnable on newer computers,
 with focus on:
@@ -26,7 +27,7 @@ Prequisites:
 	Make sure you own a copy of it.	DSA1 is no abandonware.)
 
 *	at least one newer computer with an operating system
-	like (Linux, BSD, MaxOS, Windows)
+	like (Linux, BSD, MacOS, Windows)
 
 *	a toolchain for building DOSBox (C++ compiler, SDL, SDL_Sound),
 	since atm no precompiled binaries are available.
