@@ -64,9 +64,9 @@ M302de (Main V3.02 german CD - Version):
 		* Gramar at "Ecliptifactus"
 
 G105de (Generation V1.05 german CD - Version):
-	* avoid negative skill-/spell_attempts in novice mode
-    * has MIDI support
-    * works again correctly
+* avoid negative skill-/spell_attempts in novice mode
+* has MIDI support
+* works again correctly
 
 
 Links:
