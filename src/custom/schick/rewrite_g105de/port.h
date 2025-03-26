@@ -104,6 +104,8 @@ extern char ds[0xffff];
 #else
 #define INTCAST RealPt
 
+#define __abs__(v) abs(v)
+
 static inline Bit8s host_readbs(Bit8u* p)
 {
 	return (Bit8s)host_readb(p);

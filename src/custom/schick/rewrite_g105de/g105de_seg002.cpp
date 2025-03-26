@@ -4791,64 +4791,12 @@ void new_values()
 /* static */
 void calc_at_pa()
 {
-#if !defined(__BORLANDC__)
-	Bit16s i;
-	Bit16s tmp;
-	Bit16s base;
-
-	/* base = (GE + IN + KK) / 5 */
-	tmp = ds_readbs(HERO_ATT0_NORMAL + 3 * 5)
-		 + ds_readbs(HERO_ATT0_NORMAL + 3 * 6)
-		 + ds_readbs(HERO_ATT0_NORMAL + 3 * 4);
-	base = tmp / 5;
-
-	/* round up if neccessary */
-	if ((tmp % 5) >= 3)
-		base++;
-
-	/* save AT/PA base value */
-	ds_writeb(HERO_ATPA_BASE, (signed char)base);
-
-	for (i = 0; i < 7; i++) {
-		/* set the weapon values to base */
-		ds_writebs(HERO_PA_WEAPON + i, (signed char)base);
-		ds_writebs(HERO_AT_WEAPON + i, (signed char)base);
-
-		if (ds_readbs(HERO_SKILLS + i) < 0) {
-			/* calculate ATPA for negative weapon skill */
-			tmp = abs(ds_readbs(HERO_SKILLS + i)) / 2;
-
-			/* sub skill / 2 from AT */
-			ds_sub_bs(HERO_AT_WEAPON + i, tmp);
-
-			/* sub skill / 2 from PA */
-			ds_sub_bs(HERO_PA_WEAPON + i, tmp);
-
-			/* if skill % 2, then decrement PA */
-			if (abs(ds_readbs(HERO_SKILLS + i)) != tmp * 2)
-				ds_dec_bs_post(HERO_PA_WEAPON + i);
-		} else {
-			/* calculate ATPA for positive weapon skill */
-			tmp = abs(ds_readbs(HERO_SKILLS + i)) / 2;
-
-			/* add skill / 2 to AT */
-			ds_add_bs(HERO_AT_WEAPON + i, tmp);
-
-			/* add skill / 2 to PA */
-			ds_add_bs(HERO_PA_WEAPON + i, tmp);
-
-			/* if skill % 2, then increment AT */
-			if (ds_readbs(HERO_SKILLS + i) != tmp * 2)
-				ds_inc_bs_post(HERO_AT_WEAPON + i);
-		}
-
-	}
-#else
 	div_t res; // BCC <STDLIB.H>
 	Bit16s tmp;
 	Bit16s i;
 
 	res = div(ds_readbs(HERO_ATT_IN_NORMAL) + ds_readbs(HERO_ATT_KK_NORMAL) + ds_readbs(HERO_ATT_GE_NORMAL), 5);
+	/* round up if neccessary */
 	if (res.rem >= 3) {
 		res.quot++;
 	}
@@ -4872,6 +4820,7 @@ void calc_at_pa()
 				ds_dec_bs_post(HERO_PA_WEAPON + i);
 			}
 		} else {
+			/* calculate ATPA for positive weapon skill */
 			tmp = ds_readbs(HERO_SKILLS + i) / 2;
 
 			/* Calculate weapon AT value */
@@ -4885,7 +4834,6 @@ void calc_at_pa()
 			}
 		}
 	}
-#endif
 }
 
 /**
