@@ -234,7 +234,8 @@ static const struct_reqs reqs[13][4] = {
 	{ {5, 12}, {4, 13}, {10, 0x80 | 4}, {2, 1}, },
 	{ {5, 13}, {4, 13}, {10, 0x80 | 4}, {2, 1}, },
 };
-/* DS:0x0437 */
+
+#if 0
 static const signed char skills[13][52] = {
 	/* DUMMY */
 	{ 0},
@@ -443,8 +444,9 @@ static const signed char skills[13][52] = {
 		2, 5
 	}
 };
+#endif
 
-/* DS:0x06db */
+#if 0
 static const signed char spells[6][86] = {
 	/* Hexer/ Warlock*/
 	{
@@ -615,6 +617,7 @@ static const signed char spells[6][86] = {
 		/* Veränderung / Transmutation */
 		0, 1, -10, -6, -6, -10, 5, -10, -2, -6, },
 };
+#endif
 
 #if 0
 static const Bit16s init_le[MAX_TYPES + 1] = {	0,
@@ -652,10 +655,13 @@ static const signed char mr_mod[13] = {
 	2, 2, 2, 3, 4, 3
 };
 
-/* DS:0x0a85 */
-static const unsigned char initial_skill_incs[12] = {
+#if 0
+static const unsigned char initial_skill_incs[13] = {
+	0,
 	20, 20, 20, 20, 20, 20, 20, 20, 15, 20, 20, 20
 };
+#endif
+
 /* DS:0x0a91 */
 static const signed char initial_spell_incs[6] = {
 	25, 25, 40, 20, 20, 20
@@ -4847,30 +4853,41 @@ void fill_values()
 	Bit16s v2;
 	Bit8u *ptr;
 
-	Bit16u si, di;
+	Bit16s si, di;
 
 	/* fill skill values */
+#if !defined(__BORLANDC__)
 	for (i = 0; i < 52; i++) {
-		ds_writebs(HERO_SKILLS + i, skills[ds_readbs(HERO_TYPUS)][i]);
+#else
+	for (i = 0; i < 52; ) { // BCC Sync-Point
+#endif
+		//ds_writebs(HERO_SKILLS + i, skills[ds_readbs(HERO_TYPUS)][i]);
+		ds_writebs(HERO_SKILLS + i, ds_readbs(SKILLS + 52 * ds_readbs(HERO_TYPUS) + i));
 
 		/* set skill_incs and skill_tries to zero */
-		ds_writeb(SKILL_INCS + 2 * i + 1, 0);
-		ds_writeb(SKILL_INCS + 2 * i + 0, 0);
+		ds_writeb(SKILL_INCS + 0 + 2 * i, ds_writebs((SKILL_INCS + 1) + (2 * i), 0));
 	}
 
 	/* set skill_attempts */
-	ds_writeb(HERO_SKILL_INCS, initial_skill_incs[ds_readbs(HERO_TYPUS) - 1]);
+	//ds_writeb(HERO_SKILL_INCS, initial_skill_incs[ds_readbs(HERO_TYPUS) - 1]);
+	ds_writeb(HERO_SKILL_INCS, ds_readbs(INITIAL_SKILL_INCS + ds_readbs(HERO_TYPUS)));
 
 	/* do magic user init */
 	if (ds_readbs(HERO_TYPUS) >= 7) {
 		/* fill initial spell values */
+#if !defined(__BORLANDC__)
 		for (i = 0; i < 86; i++) {
-			ds_writebs(HERO_SPELLS + i, spells[ds_readbs(HERO_TYPUS) - 7][i]);
+#else
+		for (i = 0; i < 86; ) { // BCC Sync-Point
+#endif
+			//ds_writebs(HERO_SPELLS + i, spells[ds_readbs(HERO_TYPUS) - 7][i]);
+			ds_writebs(HERO_SPELLS + i, ds_readbs(SPELLS + 86 * (ds_readbs(HERO_TYPUS) - 7) + i));
 
 			/* set spell_incs and spell_tries to zero */
-			ds_writeb(SPELL_INCS + 2 * i + 1, 0); // incs
-			ds_writeb(SPELL_INCS + 2 * i + 0, 0); // tries
+			// tries, incs
+			ds_writeb(SPELL_INCS + 2 * i + 0, ds_writeb(SPELL_INCS + 2 * i + 1, 0));
 		}
+
 		/* special mage values */
 		if (ds_readbs(HERO_TYPUS) == 9) {
 			/* set staff spell to level 1 */
