@@ -5226,28 +5226,31 @@ void skill_inc_novice(Bit16s skill)
  *
  *
  */
-void spell_inc_novice(Bit16u spell)
+/* Borlandified and identical */
+void spell_inc_novice(Bit16s spell)
 {
-	Bit16u done = 0;
+	Bit16s done = 0;
 
 	while (!done) {
 		/* leave the loop if 3 tries have been done */
 		if (ds_readbs(SPELL_INCS + 2 * spell + 0) == 3) {
-			/* set the flag to leave this loop */
-			done++;
+			done = 1;
 			continue;
 		}
 
-		/* Original-Bugfix: add check if skill_attempts are left */
-		if (ds_readbs(HERO_SPELL_INCS) == 0) {
-			done++;
-			continue;
-		}
+#if !defined(__BORLANDC__)
+			/* Original-Bugfix: add check if skill_attempts are left */
+			if (ds_readbs(HERO_SPELL_INCS) == 0) {
+				done = 1;
+				continue;
+			}
+#endif
 		/* decrement counter for spell increments */
 		ds_dec_bs_post(HERO_SPELL_INCS);
 
 		/* check if the test is passed */
-		if (random_interval_gen(2, 12) > ds_readbs(HERO_SPELLS + spell)) {
+		if ((Bit16s)random_interval_gen(2, 12) > ds_readbs(HERO_SPELLS + spell)) {
+
 			/* increment spell */
 			ds_inc_bs_post(HERO_SPELLS + spell);
 
@@ -5255,14 +5258,12 @@ void spell_inc_novice(Bit16u spell)
 			ds_writeb(SPELL_INCS + 2 * spell + 0, 0);
 
 			/* set the flag to leave this loop */
-			done++;
+			done = 1;
 		} else {
 			ds_inc_bs_post(SPELL_INCS + 2 * spell + 0);
 		}
 	}
 }
-
-#if 1
 
 #define INC (1)
 #define DEC (2)
@@ -5405,6 +5406,10 @@ void select_typus()
 	fill_values();
 	return;
 }
+
+#if 1
+
+
 
 /**
  * can_change_attribs() - checks if attribute changes are possible
