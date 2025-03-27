@@ -5274,142 +5274,150 @@ void spell_inc_novice(Bit16s spell)
  */
 void select_typus()
 {
-	Bit8s old_typus, possible_types, ltmp2;
+	Bit8s old_typus;
+	Bit8s possible_types;
+	Bit8s ltmp2;
+	RealPt ptr;
+	Bit16s i;
 	unsigned short impossible;
-	Bit16s i, si, di;
+
+	register Bit16s di;
+	register Bit16s si;
+
+
 	struct type_bitmap t;
 
 	old_typus = -1;
 	t = empty_bitmap;
 
 	/* check if attribs have been set */
-	if (ds_readbs(HERO_ATT0_NORMAL + 3 * 0) == 0) {
-		infobox(get_text(265), 0);
-		return;
-	}
-	/* save the old typus */
-	old_typus = ds_readbs(HERO_TYPUS);
-	/* disable MU bonus */
-	if (ds_readw(GOT_MU_BONUS)) {
-		ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * 0);
-		ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * 0);
-	}
-	/* disable CH bonus */
-	if (ds_readw(GOT_CH_BONUS)) {
-		ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * 2);
-		ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * 2);
-	}
-	possible_types = 0;
+	if (ds_readbs(HERO_ATT0_NORMAL + 3 * 0) != 0) {
 
-	for (i = 1; i <= 12; i++) {
-		impossible = 0;
-		for (si = 0; si < 4; si++) {
-			Bit8u req;
+		/* save the old typus */
+		old_typus = ds_readbs(HERO_TYPUS);
+		/* disable MU bonus */
+		if (ds_readw(GOT_MU_BONUS)) {
+			ds_writebs(HERO_ATT0_CURRENT + 3 * 0,
+				ds_writebs(HERO_ATT0_NORMAL + 3 * 0,
+					ds_readbs(HERO_ATT0_NORMAL + 3 * 0) - 1));
+		}
+		/* disable CH bonus */
+		if (ds_readw(GOT_CH_BONUS)) {
+			ds_writebs(HERO_ATT0_CURRENT + 3 * 2,
+				ds_writebs(HERO_ATT0_NORMAL + 3 * 2,
+					ds_readbs(HERO_ATT0_NORMAL + 3 * 2) - 1));
+		}
+		possible_types = 0;
 
-			ltmp2 = ds_readbs(HERO_ATT0_NORMAL + 3 * reqs[i][si].attrib);
-			req = reqs[i][si].requirement;
+		for (i = 1; i <= 12; i++) {
+			impossible = 0;
+			for (si = 0; si < 4; si++) {
+				Bit8u req;
 
-			if (req & 0x80) {
-				if (ltmp2 <= (req & 0x7f))
-					continue;
-				impossible = 1;
+				ltmp2 = ds_readbs(HERO_ATT0_NORMAL + 3 * reqs[i][si].attrib);
+				req = reqs[i][si].requirement;
+
+				if (req & 0x80) {
+					if (ltmp2 <= (req & 0x7f))
+						continue;
+					impossible = 1;
+				} else {
+					if (req <= ltmp2)
+						continue;
+					impossible = 1;
+				}
+			}
+
+			if (impossible)
+				continue;
+
+			if (ds_readbs(HERO_SEX)) {
+				ds_writed(TYPE_NAMES + 4 * possible_types, (Bit32u)get_text_real(271 + i));
+
 			} else {
-				if (req <= ltmp2)
-					continue;
-				impossible = 1;
+				ds_writed(TYPE_NAMES + 4 * possible_types, (Bit32u)get_text_real(17 + i));
+			}
+
+			t.t[possible_types] = (char)i;
+			possible_types++;
+
+		}
+
+		if (possible_types == 0) {
+			if (can_change_attribs() == 0) {
+				/* totally messed up values */
+				infobox(get_text(284), 0);
+				return;
+			} else {
+				infobox(get_text(31), 0);
+				return;
 			}
 		}
 
-		if (impossible)
-			continue;
+		di = gui_radio((Bit8u*)get_text(30), possible_types,
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  0)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  1)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  2)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  3)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  4)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  5)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  6)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  7)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  8)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  9)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 10)),
+				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 11)));
+
+		/*	restore attibute boni when selection is canceled
+		 *	or the same typus is selected.
+		 */
+		if (di == -1 || t.t[di - 1] == old_typus) {
+			if (ds_readw(GOT_MU_BONUS)) {
+				ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * 0);
+				ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * 0);
+			}
+			if (ds_readw(GOT_CH_BONUS)) {
+				ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * 2);
+				ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * 2);
+			}
+			return;
+		}
+
+		/* set new typus */
+		ds_writeb(HERO_TYPUS, t.t[di - 1]);
+		ds_writew(SCREEN_VAR, 1);
+
+		load_typus(ds_readbs(HERO_TYPUS));
+		update_mouse_cursor();
+		call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
+		wait_for_vsync();
+		set_palette(Real2Host(ds_readd(GEN_PTR5)) + 0x5c02, 0, 32);
+		call_mouse();
+
+		if (ds_readbs(HERO_TYPUS) > 10)
+			ds_writeb(HEAD_TYPUS, 0);
+		else
+			ds_writeb(HEAD_TYPUS, ds_readbs(HERO_TYPUS));
 
 		if (ds_readbs(HERO_SEX)) {
-			ds_writed(TYPE_NAMES + 4 * possible_types, (Bit32u)get_text_real(271 + i));
-
+			ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
+			ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
+			ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS) + 1) - 1);
 		} else {
-			ds_writed(TYPE_NAMES + 4 * possible_types, (Bit32u)get_text_real(17 + i));
+			ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS)));
+			ds_writeb(HEAD_FIRST_MALE, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS)));
+			ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)) - 1);
 		}
 
-		t.t[possible_types] = (char)i;
-		possible_types++;
-
-	}
-
-	if (possible_types == 0) {
-		if (can_change_attribs() == 0) {
-			/* totally messed up values */
-			infobox(get_text(284), 0);
-			return;
-		} else {
-			infobox(get_text(31), 0);
-			return;
-		}
-	}
-
-	di = gui_radio((Bit8u*)get_text(30), possible_types,
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  0)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  1)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  2)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  3)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  4)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  5)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  6)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  7)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  8)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 *  9)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 10)),
-			(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 11)));
-
-	/*	restore attibute boni when selection is canceled
-	 *	or the same typus is selected.
-	 */
-	if (di == -1 || t.t[di - 1] == old_typus) {
-		if (ds_readw(GOT_MU_BONUS)) {
-			ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * 0);
-			ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * 0);
-		}
-		if (ds_readw(GOT_CH_BONUS)) {
-			ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * 2);
-			ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * 2);
-		}
-		return;
-	}
-
-	/* set new typus */
-	ds_writeb(HERO_TYPUS, t.t[di - 1]);
-	ds_writew(SCREEN_VAR, 1);
-
-	load_typus(ds_readbs(HERO_TYPUS));
-	update_mouse_cursor();
-	call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
-	wait_for_vsync();
-	set_palette(Real2Host(ds_readd(GEN_PTR5)) + 0x5c02, 0, 32);
-	call_mouse();
-
-	if (ds_readbs(HERO_TYPUS) > 10)
-		ds_writeb(HEAD_TYPUS, 0);
-	else
-		ds_writeb(HEAD_TYPUS, ds_readbs(HERO_TYPUS));
-
-	if (ds_readbs(HERO_SEX)) {
-		ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
-		ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
-		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS) + 1) - 1);
+		/* reset boni flags */
+		ds_writew(GOT_MU_BONUS, ds_writew(GOT_CH_BONUS, 0));
+		fill_values();
 	} else {
-		ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS)));
-		ds_writeb(HEAD_FIRST_MALE, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS)));
-		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)) - 1);
+		infobox((char*)get_text(256), 0);
 	}
-
-	/* reset boni flags */
-	ds_writew(GOT_MU_BONUS, ds_writew(GOT_CH_BONUS, 0));
-	fill_values();
-	return;
 }
 
 #if 1
-
-
 
 /**
  * can_change_attribs() - checks if attribute changes are possible
