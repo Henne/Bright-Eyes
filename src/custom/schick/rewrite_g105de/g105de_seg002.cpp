@@ -5165,58 +5165,60 @@ void fill_values()
 	}
 }
 
-#if 1
-
 /**
  * skill_inc_novice() - tries to increment a skill in novice mode
  * @skill:	the skill which should be incremented
  *
  *
  */
-void skill_inc_novice(Bit16u skill)
+/* Borlandified and identical */
+void skill_inc_novice(Bit16s skill)
 {
-	Bit16u done = 0;
+	Bit16s done = 0;
 
 	while (!done) {
 		/* leave the loop if 3 tries have been done */
 		if (ds_readbs(SKILL_INCS + 2 * skill + 0) == 3) {
 			/* set the flag to leave this loop */
-			done++;
-			continue;
-		}
+			done = 1;
+#if !defined(__BORLANDC__)
+		} else
 
 		/* Original-Bugfix: add check if skill_attempts are left */
 		if (ds_readbs(HERO_SKILL_INCS) == 0) {
 			done++;
-			continue;
+#endif
+		} else {
+			/* decrement counter for skill increments */
+			ds_dec_bs_post(HERO_SKILL_INCS);
+
+			/* check if the test is passed */
+			if ((Bit16s)random_interval_gen(2, 12) > ds_readbs(HERO_SKILLS + skill)) {
+				/* increment skill */
+				ds_inc_bs_post(HERO_SKILLS + skill);
+
+				/* set inc tries for this skill to zero */
+				ds_writeb(SKILL_INCS + 2 * skill + 0, 0);
+
+				/* set the flag to leave this loop */
+				done = 1;
+
+				if (skill <= 6) {
+
+					/* set increment the lower AT/PA value */
+					if (ds_readbs(HERO_AT_WEAPON + skill) > ds_readbs(HERO_PA_WEAPON + skill))
+						ds_inc_bs_post(HERO_PA_WEAPON + skill);
+					else
+						ds_inc_bs_post(HERO_AT_WEAPON + skill);
+				}
+			} else {
+				/* inc tries for that skill */
+				ds_inc_bs_post(SKILL_INCS + 2 * skill + 0);
+			}
 		}
-		/* decrement counter for skill increments */
-		ds_dec_bs_post(HERO_SKILL_INCS);
-
-		/* check if the test is passed */
-		if (random_interval_gen(2, 12) > ds_readbs(HERO_SKILLS + skill)) {
-			/* increment skill */
-			ds_inc_bs_post(HERO_SKILLS + skill);
-
-			/* set inc tries for this skill to zero */
-			ds_writeb(SKILL_INCS + 2 * skill + 0, 0);
-
-			/* set the flag to leave this loop */
-			done++;
-
-			if (skill > 6)
-				continue;
-
-			/* set increment the lower AT/PA value */
-			if (ds_readbs(HERO_AT_WEAPON + skill) > ds_readbs(HERO_PA_WEAPON + skill))
-				ds_inc_bs_post(HERO_PA_WEAPON + skill);
-			else
-				ds_inc_bs_post(HERO_AT_WEAPON + skill);
-		} else
-			/* inc tries for that skill */
-			ds_inc_bs_post(SKILL_INCS + 2 * skill + 0);
 	}
 }
+
 
 /**
  * spell_inc_novice() - tries to increment a spell in novice mode
@@ -5259,6 +5261,8 @@ void spell_inc_novice(Bit16u spell)
 		}
 	}
 }
+
+#if 1
 
 #define INC (1)
 #define DEC (2)

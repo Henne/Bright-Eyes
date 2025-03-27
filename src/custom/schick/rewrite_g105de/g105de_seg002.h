@@ -113,7 +113,7 @@ namespace G105de {
 	void refresh_screen();
 	void clear_hero();
 	void new_values();
-	void skill_inc_novice(Bit16u);
+	void skill_inc_novice(Bit16s);
 	void spell_inc_novice(Bit16u);
 	void select_typus();
 	Bit16u can_change_attribs();
