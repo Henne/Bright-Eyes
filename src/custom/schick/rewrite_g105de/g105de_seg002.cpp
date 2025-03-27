@@ -5265,9 +5265,6 @@ void spell_inc_novice(Bit16s spell)
 	}
 }
 
-#define INC (1)
-#define DEC (2)
-
 /**
  * select_typus() - select a possible typus with current attribute values
  *
@@ -5429,57 +5426,67 @@ void select_typus()
 	}
 }
 
-#if 1
+#define INC (1)
+#define DEC (2)
 
 /**
  * can_change_attribs() - checks if attribute changes are possible
  *
  */
-Bit16u can_change_attribs()
+/* Borlandified and nearly identical */
+Bit16s can_change_attribs()
 {
-	Bit16u i;
-	Bit16s pa_inc, pa_dec, na_inc, na_dec;
+	Bit16s na_inc;
+	volatile Bit16s na_dec;
+	Bit8u* p;
+	Bit16s i;
+	Bit16s pa_inc;
+	Bit16s pa_dec;
 
-	na_dec = na_inc = pa_dec = pa_inc = 0;
+	pa_inc = 0;
+	pa_dec = 0;
+	na_inc = 0;
+	na_dec = 0;
 
+#if !defined(__BORLANDC__)
 	for (i = 0; i < 14; i++)
 		D1_LOG("%d ", ds_readb(ATTRIB_CHANGED + i));
 	D1_LOG("\n");
+#endif
 
 
 	for (i = 0; i < 7; i++) {
-		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (ds_readbs(HERO_ATT0_NORMAL + 3 * i) > 8))
-			pa_dec += 8 - ds_readbs(HERO_ATT0_NORMAL + 3 * i);
-		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (ds_readbs(HERO_ATT0_NORMAL + 3 * i) < 13))
-			pa_inc += 13 - ds_readbs(HERO_ATT0_NORMAL + 3 * i);
+		p = p_datseg + HERO_ATT0_NORMAL + 3 * i;
+
+		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (host_readbs(p) > 8))
+			pa_dec += 8 - host_readbs(p);
+		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (host_readbs(p) < 13))
+			pa_inc += 13 - host_readbs(p);
 	}
 
 	for (i = 7; i < 14; i++) {
-		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (ds_readbs(HERO_ATT0_NORMAL + 3 * i) > 2))
-			na_dec += 2 - ds_readbs(HERO_ATT0_NORMAL + 3 * i);
-		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (ds_readbs(HERO_ATT0_NORMAL + 3 * i) < 8))
-			na_inc += 8 - ds_readbs(HERO_ATT0_NORMAL + 3 * i);
+		p = p_datseg + HERO_ATT0_NORMAL + 3 * i;
+		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (host_readbs(p) > 2))
+			na_dec += 2 - host_readbs(p);
+		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (host_readbs(p) < 8))
+#if !defined(__BORLANDC__)
+			na_inc += 8 - host_readbs(p);
+#else
+			asm { db 0x0b, 0xc9; nop; } // BCC Sync-Point
+#endif
 	}
 
+#if !defined(__BORLANDC__)
 	D1_LOG("%d %d %d %d\n", pa_inc, pa_dec, na_inc, na_dec);
+#endif
 
 	/* no values from positive attributes left */
-	if ((pa_inc == 0) && (pa_dec == 0))
-		return 0;
+	if (((pa_inc == 0) && (pa_dec == 0)) ||
+	    ((pa_inc == 0) && (na_dec < 2))  ||
+	    ((na_inc < 2) && (pa_dec == 0))  ||
+	   ((na_dec < 2) && (na_inc < 2)))  return 0;
 
-	if ((pa_inc == 0) && (na_dec < 2))
-		return 0;
-
-	if ((na_inc < 2) && (pa_dec == 0))
-		return 0;
-
-	if (na_dec >= 2)
-		return 1;
-
-	if (na_inc >= 2)
-		return 1;
-
-	return 0;
+	return 1;
 }
 
 /**
@@ -5676,6 +5683,8 @@ void change_attribs()
 
 #undef INC
 #undef DEC
+
+#if 1
 
 void save_picbuf()
 {
