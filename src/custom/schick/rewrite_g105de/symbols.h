@@ -35,13 +35,24 @@
 
 #endif
 
+#define SCHOOL_TAB                      (0x03ab)    /* Bit16s[9][2] */
 #define SKILLS                          (0x0437)    /* Bit8s[13][52] */
 #define SPELLS                          (0x06db)    /* Bit8s[6][86] */
 
 #define INIT_LE                         (0x08df)    /* Bit16s[13] */
 #define INIT_AE                         (0x08f9)    /* Bit16s[13] */
 
+#define HEIGHT_RANGE                    (0x0913)    /* Bit8u[13]. */
+#define WEIGHT_MOD                      (0x092d)    /* Bit8u[13] */
+#define MR_MOD                          (0x093a)    /* Bit8s[13] */
+
+#define MONEY_TAB                       (0x0a51)    /* RealPt[13] */
 #define INITIAL_SKILL_INCS              (0x0a84)    /* Bit8s[13] */
+#define INITIAL_SPELL_INCS              (0x0a91)    /* Bit8s[6] */
+#define INITIAL_CONV_INCS               (0x0a97)    /* Bit8s[6] */
+#define HOUSE_MOD                       (0x0a9d)    /* struct house_mode[9] */
+#define AUTOSKILLS                      (0x0ba2)    /* Bit16s[13][90] */
+#define AUTOSPELLS                      (0x0ee0)    /* */
 
 #define HEAD_FIRST_MALE                 (0x1048)    /* Bit8u[12] : start indices in HEADS.DAT for each typus */
 #define HEAD_FIRST_FEMALE               (0x1054)    /* Bit8u[12] : start indices in HEADS.DAT for each typus */
