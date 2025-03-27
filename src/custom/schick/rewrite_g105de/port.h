@@ -62,6 +62,7 @@ extern char ds[0xffff];
 #define ds_dec_ws(p)	(--*((signed short*)(ds + (p))))
 #define ds_dec_ds(p)	(--*((signed long*)(ds + (p))))
 
+#define ds_and_bs(p, d)	((*(signed char*)(ds + p)) &= (d))
 #define ds_add_bs(p, d)	((*(signed char*)(ds + p)) += (d))
 #define ds_sub_bs(p, d)	((*(signed char*)(ds + p)) -= (d))
 

@@ -36,6 +36,7 @@
 #endif
 
 #define SCHOOL_TAB                      (0x03ab)    /* Bit16s[9][2] */
+#define REQS                            (0x03cf)    /* */
 #define SKILLS                          (0x0437)    /* Bit8s[13][52] */
 #define SPELLS                          (0x06db)    /* Bit8s[6][86] */
 
@@ -144,10 +145,13 @@
 
 #define STRUCT_COL_WHITE2               (0x1b79)    /* RGB */
 
-#define NEED_REFRESH                    (0x1ca5)    /* Bit8s {0,1} */
 #define ACTION_INPUT                    (0x1c63)
 #define BOOL_MODE                       (0x1c77)    /* Bit16s */
 #define ACTION_PAGE                     (0x1c79)    /* RealPt[11] */
+
+#define NEED_REFRESH                    (0x1ca5)    /* Bit8s {0,1} */
+#define TYPE_BITMAP                     (0x1ca6)    /* Bit8[13] */
+#define STR_VERSION                     (0x1cd3)    /* char[6] */
 
 #define STR_SOUND_CFG                   (0x1dd0)    /* char[9]; "SOUND.CFG" */
 #define STR_SOUNDHW_NOT_FOUND           (0x1de4)    /* char[]; "SOUND HARDWARE NOT FOUND" */
