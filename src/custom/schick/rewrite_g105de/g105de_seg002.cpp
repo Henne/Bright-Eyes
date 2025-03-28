@@ -5744,13 +5744,23 @@ void change_attribs()
 #undef INC
 #undef DEC
 
+/* Borlandified and nearly identical */
 void save_picbuf()
 {
-	PhysPt p;
-	Bit16u x_1, x_2, x_3;
-	Bit16u y_1, y_2, y_3;
-	Bit16u w_1, w_2, w_3;
-	Bit16u h_1, h_2, h_3;
+	RealPt p;
+	Bit16s x_3;
+	Bit16s y_1;
+	Bit16s y_2;
+	Bit16s y_3;
+	Bit16s w_1;
+	Bit16s w_2;
+	Bit16s w_3;
+	Bit16s h_1;
+	Bit16s h_2;
+	Bit16s h_3;
+
+	register Bit16s x_1;
+	register Bit16s x_2;
 
 	x_1 = 0;
 
@@ -5805,20 +5815,26 @@ void save_picbuf()
 	}
 
 	if (x_1) {
-		p = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS)) + y_1 * 320 + x_1;
-		copy_to_screen(p, Real2Phys((RealPt)ds_readd(PICBUF1)), w_1, h_1, 2);
+		p = (RealPt)ds_readd(GEN_PTR1_DIS) + y_1 * 320 + x_1;
+		copy_to_screen(Real2Phys(p), Real2Phys((RealPt)ds_readd(PICBUF1)), w_1, h_1, 2);
 	}
 
-	p = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS)) + y_2 * 320 + x_2;
-	copy_to_screen(p, Real2Phys((RealPt)ds_readd(PICBUF2)), w_2, h_2, 2);
-
-	p = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS)) + y_3 * 320 + x_3;
-	copy_to_screen(p, Real2Phys((RealPt)ds_readd(PICBUF3)), w_3, h_3, 2);
+	p = (RealPt)ds_readd(GEN_PTR1_DIS) + y_2 * 320 + x_2;
+	copy_to_screen(Real2Phys(p), Real2Phys((RealPt)ds_readd(PICBUF2)), w_2, h_2, 2);
+#if !defined(__BORLANDC__)
+	p = (RealPt)ds_readd(GEN_PTR1_DIS) + y_3 * 320 + x_3;
+	copy_to_screen(Real2Phys(p), Real2Phys((RealPt)ds_readd(PICBUF3)), w_3, h_3, 2);
+#else
+	// BCC Sync-Point
+	//p -= y_2 * 320 + x_2; // revert to GEN_PTR1_DIS
+	p += y_3 ; // add offset
+	copy_to_screen(Real2Phys(p), Real2Phys((RealPt)ds_readd(PICBUF3)), w_3, h_3, 2);
+	asm { nop; nop; nop; nop; db 0x6a, 0x02; db 0x6a, 0x02;};
+#endif
 }
 
-#if 1
-
-
+/* Borlandified and nearly identical */
+/* TODO: check if PhysPt can be replaced with RealPt */
 void restore_picbuf(PhysPt ptr)
 {
 	PhysPt p;
@@ -5887,9 +5903,18 @@ void restore_picbuf(PhysPt ptr)
 	p = ptr + y_2 * 320 + x_2;
 	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF2)), p, w_2, h_2, 0);
 
+#if !defined(__BORLANDC__)
 	p = ptr + y_3 * 320 + x_3;
 	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF3)), p, w_3, h_3, 0);
+#else
+	// BCC Sync-Point
+	p += y_3 ; // add offset
+	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF3)), p, w_3, h_3, 0);
+	asm { nop; nop; nop; nop; db 0x6a, 0x02; db 0x6a, 0x02;};
+#endif
 }
+
+#if 1
 
 /**
  * print_attribs() -	print the attribute values
