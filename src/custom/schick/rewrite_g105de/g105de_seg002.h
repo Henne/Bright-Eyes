@@ -119,7 +119,7 @@ namespace G105de {
 	Bit16s can_change_attribs();
 	void change_attribs();
 	void save_picbuf();
-	void restore_picbuf(PhysPt);
+	void restore_picbuf(RealPt);
 	void print_attribs();
 	void print_values();
 	void make_valuta_str(char *, unsigned int);

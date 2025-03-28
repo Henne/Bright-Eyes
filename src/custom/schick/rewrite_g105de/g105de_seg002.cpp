@@ -5834,10 +5834,9 @@ void save_picbuf()
 }
 
 /* Borlandified and nearly identical */
-/* TODO: check if PhysPt can be replaced with RealPt */
-void restore_picbuf(PhysPt ptr)
+void restore_picbuf(RealPt ptr)
 {
-	PhysPt p;
+	RealPt p;
 	Bit16u x_1, x_2, x_3;
 	Bit16u y_1, y_2, y_3;
 	Bit16u w_1, w_2, w_3;
@@ -5897,20 +5896,20 @@ void restore_picbuf(PhysPt ptr)
 
 	if (x_1) {
 		p = ptr + y_1 * 320 + x_1;
-		copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), p, w_1, h_1, 0);
+		copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), Real2Phys(p), w_1, h_1, 0);
 	}
 
 	p = ptr + y_2 * 320 + x_2;
-	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF2)), p, w_2, h_2, 0);
+	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF2)), Real2Phys(p), w_2, h_2, 0);
 
 #if !defined(__BORLANDC__)
 	p = ptr + y_3 * 320 + x_3;
-	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF3)), p, w_3, h_3, 0);
+	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF3)), Real2Phys(p), w_3, h_3, 0);
 #else
 	// BCC Sync-Point
 	p += y_3 ; // add offset
-	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF3)), p, w_3, h_3, 0);
-	asm { nop; nop; nop; nop; db 0x6a, 0x02; db 0x6a, 0x02;};
+	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF3)), Real2Phys(p), w_3, h_3, 0);
+	asm { nop; nop; nop; nop; nop; nop;};
 #endif
 }
 
@@ -5954,7 +5953,7 @@ void print_values()
 	switch (ds_readws(GEN_PAGE)) {
 
 		case 0: {
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			/* print name */
 #if !defined(__BORLANDC__)
@@ -6011,7 +6010,7 @@ void print_values()
 		}
 		case 1: {
 			/* SKILLS Page 1/3 */
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			/* print fight skills */
 			for (i = 0; i < 9; i++) {
@@ -6055,7 +6054,7 @@ void print_values()
 		}
 		case 2: {
 			/* SKILLS Page 2/3 */
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			/* print social skills */
 			for (i = 19; i < 26; i++) {
@@ -6100,7 +6099,7 @@ void print_values()
 		}
 		case 3: {
 			/* SKILLS Page 3/3 */
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			/* print craftmansship skills */
 			for (i = 41; i < 50; i++) {
@@ -6162,7 +6161,7 @@ void print_values()
 		}
 		case 4: {
 			/* ATPA Page */
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			/* Print base value  2x the same */
 			sprintf(tmp, "%d", ds_readbs(HERO_ATPA_BASE));
@@ -6208,7 +6207,7 @@ void print_values()
 
 		case 5: {
 			/* Spells Page 1/6 */
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			for (i = 1; i < 6; i++) {
 				pos = i - 1;
@@ -6264,7 +6263,7 @@ void print_values()
 		}
 		case 6: {
 			/* Spells Page 2/6 */
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			for (i = 12; i <= 17; i++) {
 				pos = i - 12;
@@ -6320,7 +6319,7 @@ void print_values()
 		}
 		case 7: {
 			/* Spells Page 3/6 */
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			for (i = 27; i < 33; i++) {
 				pos = i - 27;
@@ -6378,7 +6377,7 @@ void print_values()
 		}
 		case 8: {
 			/* Spells Page 4/6 */
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			for (i = 47; i <= 48; i++) {
 				pos = i - 47;
@@ -6436,7 +6435,7 @@ void print_values()
 		}
 		case 9: {
 			/* Spells Page 5/6 */
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			for (i = 60; i < 76; i++) {
 				pos = i - 60;
@@ -6462,7 +6461,7 @@ void print_values()
 		}
 		case 10: {
 			/* Spells Page 6/6 */
-			restore_picbuf(Real2Phys(ds_readd(GFX_PTR)));
+			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			for (i = 76; i < 86; i++) {
 				pos = i - 76;
