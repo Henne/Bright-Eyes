@@ -5913,29 +5913,38 @@ void restore_picbuf(RealPt ptr)
 #endif
 }
 
-#if 1
-
 /**
  * print_attribs() -	print the attribute values
  *
  */
+/* Borlandified and nearly identical */
 void print_attribs()
 {
+	Bit8u* p;
 	char buf[10];
+
 	Bit16s i;
 
-	for (i = 0; i < 14; i++) {
+	p = p_datseg + HERO_ATT0_NORMAL;
+
+	for (i = 0; i < 14; p += 3, i++) {
 		/* don't print 0s */
-		if (ds_readbs(HERO_ATT0_NORMAL + 3 * i) != 0) {
-
+		if (host_readbs(p) != 0) {
+#if !defined(__BORLANDC__)
 			/* convert value to string with itoa() */
-			sprintf(buf, "%d", ds_readbs(HERO_ATT0_NORMAL + 3 * i));
-
+			sprintf(buf, "%d", host_readbs(p));
 			/* print it */
-			print_str(buf, ds_readw(i * 4 + 0x105f), ds_readw(i * 4 + 0x1061));
+			print_str(buf, ds_readws(ATTRIB_COORDS_X + i * 4), ds_readws(ATTRIB_COORDS_Y + i * 4));
+#else
+			/* print it */
+			print_str(itoa(host_readbs(p), buf, 10),
+				ds_readws(ATTRIB_COORDS_X + i * 4),
+				ds_readws(ATTRIB_COORDS_Y + i * 4));
+#endif
 		}
 	}
 }
+
 
 /**
  * print_values() - print the values of the character
@@ -6488,6 +6497,10 @@ void print_values()
 
 	}
 }
+
+
+#if 1
+
 
 /**
  *	make_valuta_str	-	makes a valuta string
