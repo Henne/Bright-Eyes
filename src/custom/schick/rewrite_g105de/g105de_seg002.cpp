@@ -5492,43 +5492,60 @@ Bit16s can_change_attribs()
 /**
  * change_attribs() - change attributes
  */
+/* Borlandified and nearly identical */
 void change_attribs()
 {
-	Bit16s tmp1, tmp2, tmp3, si, di;
-	Bit8u c;
+	Bit16s tmp1;
+	volatile Bit16s tmp2;
+	volatile Bit16s tmp3;
+	Bit8u* ptr1;
+	Bit8u* ptr2;
+	Bit8s c;
+
+	Bit16s si;
+	Bit16s di;
 
 	/* check if attributes have been set */
-	if (ds_readbs(HERO_ATT0_NORMAL + 3 * 0) == 0) {
+	if (!ds_readbs(HERO_ATT0_NORMAL + 3 * 0)) {
 		infobox(get_text(16), 0);
 		return;
 	}
 	/* check if changing is possible */
-	if (can_change_attribs() == 0) {
+	if (!can_change_attribs()) {
 		infobox(get_text(266), 0);
 		return;
 	}
 	/* if typus != 0 */
 	if (ds_readbs(HERO_TYPUS)) {
+
 		if (!gui_bool((Bit8u*)get_text(73)))
 			return;
+
 		/* set typus to 0 */
 		ds_writeb(HERO_TYPUS, 0);
+
 		/* remove MU boni */
 		if (ds_readw(GOT_MU_BONUS)) {
-			ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * 0);
-			ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * 0);
+			ds_writeb(HERO_ATT0_CURRENT + 3 * 0,
+				ds_writebs(HERO_ATT0_NORMAL + 3 * 0,
+					ds_readbs(HERO_ATT0_NORMAL + 3 * 0) - 1));
 			ds_writew(GOT_MU_BONUS, 0);
 		}
 		/* remove CH boni */
 		if (ds_readw(GOT_CH_BONUS)) {
-			ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * 2);
-			ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * 2);
+			ds_writeb(HERO_ATT0_CURRENT + 3 * 2,
+				ds_writebs(HERO_ATT0_NORMAL + 3 * 2,
+					ds_readbs(HERO_ATT0_NORMAL + 3 * 2) - 1));
 			ds_writew(GOT_CH_BONUS, 0);
 		}
 		ds_writew(SCREEN_VAR, 1);
 		refresh_screen();
 		ds_writew(SCREEN_VAR, 0);
+#if defined(__BORLANDC__)
+		asm { db 0xeb, 0x03; db 0xe9, 0x6c, 0x03; } // BCC Sync-Point
+#endif
 	}
+
 	/* check again if changing is possible */
 	if (can_change_attribs() == 0) {
 		infobox(get_text(266), 0);
@@ -5545,7 +5562,7 @@ void change_attribs()
 		return;
 	tmp2--;
 	/* get the modification type */
-	if (ds_readb(ATTRIB_CHANGED + tmp2) == 0) {
+	if (!ds_readbs(ATTRIB_CHANGED + tmp2)) {
 		/* ask user if inc or dec */
 		ds_writew(0x1327, 0xffb0);
 		tmp3 = gui_radio((Bit8u*)NULL, 2, get_text(75), get_text(76));
@@ -5554,30 +5571,40 @@ void change_attribs()
 		if (tmp3 == -1)
 			return;
 	} else {
-		tmp3 = ds_readb(ATTRIB_CHANGED + tmp2);
+		tmp3 = ds_readbs(ATTRIB_CHANGED + tmp2);
 	}
+
+	ptr1 = p_datseg + HERO_ATT0_NORMAL + 3 * tmp2;
 
 	if (tmp3 == INC) {
 		/* increment */
-		if (ds_readbs(HERO_ATT0_NORMAL + 3 * tmp2) == 13) {
+		if (host_readbs(ptr1) == 13) {
 			infobox(get_text(77), 0);
 			return;
 		}
 		c = 0;
 		for (di = 7; di < 14; di++) {
-			if (ds_readb(ATTRIB_CHANGED + di) == DEC)
-				continue;
-			if (ds_readbs(HERO_ATT0_NORMAL + 3 * di) >= 8)
-				continue;
-			c += 8 - ds_readbs(HERO_ATT0_NORMAL + 3 * di);
+			if (ds_readb(ATTRIB_CHANGED + di) != DEC) {
+				ptr2 = p_datseg + HERO_ATT0_NORMAL + 3 * di;
+				if (host_readbs(ptr2) < 8) {
+					c += 8 - host_readbs(ptr2);
+				}
+			}
 		}
 		if (c < 2) {
 			infobox(get_text(85), 0);
 			return;
 		}
 		/* increment positive attribute */
-		ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * tmp2);
+		//ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * tmp2);
+		//ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * tmp2);
+#if !defined(__BORLANDC__)
+		host_writebs(ptr1, host_writebs(ptr1 + 1, host_readbs(ptr1 + 1) + 1));
+#else
+		//ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * tmp2);
 		ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * tmp2);
+		asm { db 0x8b, 0x5e, 0xfc; }; // BCC Sync-Point
+#endif
 
 		ds_writeb(ATTRIB_CHANGED + tmp2,  INC);
 
@@ -5585,16 +5612,17 @@ void change_attribs()
 
 		tmp1 = 0;
 		while (tmp1 != 2) {
-			/* ask which negative attribute to increment */
-			ds_writew(0x1327, 0xffb0);
-			si = gui_radio((Bit8u*)get_text(80), 7,
-					get_text(39), get_text(40), get_text(41),
-					get_text(42), get_text(43), get_text(44),
-					get_text(45));
-			ds_writew(0x1327, 0);
+		
+			do {
+				/* ask which negative attribute to increment */
+				ds_writew(0x1327, 0xffb0);
+				si = gui_radio((Bit8u*)get_text(80), 7,
+						get_text(39), get_text(40), get_text(41),
+						get_text(42), get_text(43), get_text(44),
+						get_text(45));
+				ds_writew(0x1327, 0);
 
-			if (si == -1)
-				continue;
+			} while (si == -1);
 
 			si--;
 			/* check if this attribute has been decremented */
@@ -5602,42 +5630,62 @@ void change_attribs()
 				infobox(get_text(83), 0);
 				continue;
 			}
+			ptr1 = p_datseg + HERO_ATT_AG_NORMAL + 3 * si;
 			/* check if attribute can be incremented */
-			if (ds_readbs(HERO_ATT0_NORMAL + 3 * (si + 7)) == 8) {
+			if (host_readbs(ptr1) == 8) {
 				infobox(get_text(77), 0);
-				continue;
+			} else {
+				/* increment the negative attribute */
+				tmp1++;
+				ds_writeb(ATTRIB_CHANGED + si + 7, INC);
+
+#if !defined(__BORLANDC__)
+				host_writeb(ptr1,
+					host_writebs(ptr1 + 1,
+						host_readbs(ptr1 + 1) + 1));
+#else
+				ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * (si + 7));
+				//ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * (si + 7)); // BCC Sync-Point
+				asm { db 0xe8, 0xad, 0xde; db 0x83, 0x7e, 0x80, 0x80;}
+#endif
+
+				refresh_screen();
 			}
-			/* increment the negative attribute */
-			tmp1++;
-			ds_writeb(ATTRIB_CHANGED + si + 7, INC);
-
-			ds_inc_bs_post(HERO_ATT0_NORMAL + 3 * (si + 7));
-			ds_inc_bs_post(HERO_ATT0_CURRENT + 3 * (si + 7));
-
-			refresh_screen();
 		}
 	} else {
 		/* decrement */
 		/* check if the positive attribute can be decremented */
-		if (ds_readbs(HERO_ATT0_NORMAL + 3 * tmp2) == 8) {
+		if (host_readbs(ptr1) == 8) {
 			infobox(get_text(81), 0);
 			return;
 		}
 		c = 0;
 		for (di = 7; di < 14; di++) {
-			if (ds_readb(ATTRIB_CHANGED + di) == INC)
-				continue;
-			if (ds_readbs(HERO_ATT0_NORMAL + 3 * di) <= 2)
-				continue;
-			c += ds_readbs(HERO_ATT0_NORMAL + 3 * di) - 2;
+			if (ds_readb(ATTRIB_CHANGED + di) != INC) {
+				ptr2 = p_datseg + HERO_ATT0_NORMAL + 3 * di;
+				if (host_readbs(ptr2) > 2) {
+#if !defined(__BORLANDC__)
+					c += host_readbs(ptr2) - 2;
+#else
+					c = host_readbs(ptr2) - 2; // BCC Sync-Point
+#endif
+				}
+			}
 		}
 		if (c < 2) {
 			infobox(get_text(84), 0);
 			return;
 		}
 		/* decrement positive attribute */
-		ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * tmp2);
-		ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * tmp2);
+		//ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * tmp2);
+		//ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * tmp2);
+#if !defined(__BORLANDC__)
+		host_writeb(ptr1,
+			host_writebs(ptr1 + 1,
+				host_readbs(ptr1 + 1) - 1));
+#else
+		host_writebs(ptr1 + 1, host_readbs(ptr1 + 1) - 1); // BCC Sync-point
+#endif
 
 		/* mark this attribute as decremented */
 		ds_writeb(ATTRIB_CHANGED + tmp2, DEC);
@@ -5646,16 +5694,17 @@ void change_attribs()
 
 		tmp1 = 0;
 		while (tmp1 != 2) {
-			/* ask which negative attribute to increment */
-			ds_writew(0x1327, 0xffb0);
-			si = gui_radio((Bit8u*)get_text(79), 7,
-					get_text(39), get_text(40), get_text(41),
-					get_text(42), get_text(43), get_text(44),
-					get_text(45));
-			ds_writew(0x1327, 0);
 
-			if (si == -1)
-				continue;
+			do {
+				/* ask which negative attribute to increment */
+				ds_writew(0x1327, 0xffb0);
+				si = gui_radio((Bit8u*)get_text(79), 7,
+						get_text(39), get_text(40), get_text(41),
+						get_text(42), get_text(43), get_text(44),
+						get_text(45));
+				ds_writew(0x1327, 0);
+			} while (si == -1);
+
 
 			si--;
 			/* check if this attribute has been incremented */
@@ -5663,16 +5712,27 @@ void change_attribs()
 				infobox(get_text(82), 0);
 				continue;
 			}
+				
+			ptr1 = p_datseg + HERO_ATT_AG_NORMAL + 3 * si;
+			
 			/* check if attribute can be decremented */
-			if (ds_readbs(HERO_ATT0_NORMAL + 3 * (si + 7)) == 2) {
+			if (host_readbs(ptr1) == 2) {
 				infobox(get_text(81), 0);
 				continue;
 			}
-			/* deccrement the negative attribute */
+			/* decrement the negative attribute */
 			tmp1++;
 
-			ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * (si + 7));
-			ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * (si + 7));
+			//ds_dec_bs_post(HERO_ATT0_NORMAL + 3 * (si + 7));
+			//ds_dec_bs_post(HERO_ATT0_CURRENT + 3 * (si + 7));
+
+#if !defined(__BORLANDC__)
+			host_writebs(ptr1,
+				host_writebs(ptr1 + 1,
+					host_readbs(ptr1 + 1) - 1));
+#else
+			host_writebs(ptr1 + 1, host_readbs(ptr1 + 1) - 1); // BCC Sync-Point
+#endif
 
 			ds_writeb(ATTRIB_CHANGED + si + 7, DEC);
 
@@ -5683,8 +5743,6 @@ void change_attribs()
 
 #undef INC
 #undef DEC
-
-#if 1
 
 void save_picbuf()
 {
@@ -5757,6 +5815,9 @@ void save_picbuf()
 	p = Real2Phys((RealPt)ds_readd(GEN_PTR1_DIS)) + y_3 * 320 + x_3;
 	copy_to_screen(p, Real2Phys((RealPt)ds_readd(PICBUF3)), w_3, h_3, 2);
 }
+
+#if 1
+
 
 void restore_picbuf(PhysPt ptr)
 {

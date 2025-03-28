@@ -122,6 +122,12 @@ static inline Bit32s host_readds(Bit8u* p)
 	return (Bit32s)host_readd(p);
 }
 
+static inline Bit8s host_writebs(Bit8u* p, Bit8s val)
+{
+	return (*(Bit8s*)(p) = val);
+}
+
+
 static inline Bit16s ds_add_bs(Bit16s off, Bit8s v)
 {
 	return *(Bit8s*)(p_datseg + off) += v;
