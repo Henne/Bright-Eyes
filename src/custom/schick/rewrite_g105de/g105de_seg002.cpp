@@ -6605,162 +6605,158 @@ void inc_skill(Bit16s skill, Bit16s max, char *msg)
 
 void select_skill()
 {
-	Bit16s skill, group;
+	Bit16s skill;
+	Bit16s group;
 
 	do {
 
 		/* check skill attempts */
-		if (ds_readbs(HERO_SKILL_INCS) == 0) {
+		if (!ds_readbs(HERO_SKILL_INCS)) {
 			infobox(get_text(94), 0);
+			ds_writew(0x1327, 0x0);
 			return;
 		}
 
 		ds_writew(0x1327, 0xffb0);
 
 		switch (ds_readws(GEN_PAGE)) {
-			case 1: {
-				group = gui_radio((Bit8u*)get_text(93), 2, get_text(86), get_text(87));
-				if (group == -1)
-					break;
+		case 1: {
+			group = gui_radio((Bit8u*)get_text(93), 2, get_text(86), get_text(87));
+			if (group != -1) {
+#if !defined(__BORLANDC__)
+				switch (group)
+#else
+				switch (_AX)
+#endif
+				{
+				case 1: {
+					/* Fight */
+					skill = gui_radio((Bit8u*)get_text(147),
+						9,
+						get_text(95), get_text(96), get_text(97),
+						get_text(98), get_text(99), get_text(100),
+						get_text(101), get_text(102), get_text(103)) - 1;
 
-				switch (group) {
-					case 1: {
-						/* Fight */
-						skill = gui_radio((Bit8u*)get_text(147),
-								9,
-								get_text(95), get_text(96), get_text(97),
-								get_text(98), get_text(99), get_text(100),
-								get_text(101), get_text(102), get_text(103));
-						skill--;
-
-						if (skill == -2)
-							break;
-
+					if (skill != -2) {
 						inc_skill(skill, 1, get_text(148));
-
-						break;
 					}
-					case 2: {
-						/* body */
-						skill = gui_radio((Bit8u*)get_text(147),
-							10,
-							get_text(104), get_text(105),
-							get_text(106), get_text(107),
-							get_text(108), get_text(109),
-							get_text(110), get_text(111),
-							get_text(112), get_text(113));
-						skill--;
+					break;
+				}
+				case 2: {
+					/* Body */
+					skill = gui_radio((Bit8u*)get_text(147),
+						10,
+						get_text(104), get_text(105),
+						get_text(106), get_text(107),
+						get_text(108), get_text(109),
+						get_text(110), get_text(111),
+						get_text(112), get_text(113)) - 1;
 
-						if (skill == -2)
-							break;
-
+					if (skill != -2) {
 						skill += 9;
 						inc_skill(skill, 2, get_text(149));
-						break;
 					}
-				}
-				break;
-			}
-			case 2: {
-				group = gui_radio((Bit8u*)get_text(93), 2, get_text(88), get_text(89));
-				if (group == -1)
 					break;
-				switch (group) {
-					case 1: {
-						skill = gui_radio((Bit8u*)get_text(147),
-								7,
-								get_text(114), get_text(115), get_text(116),
-								get_text(117), get_text(118), get_text(119),
-								get_text(120));
-						skill--;
+				}
+				}
+			}
+			break;
+		}
+		case 2: {
+			group = gui_radio((Bit8u*)get_text(93), 2, get_text(88), get_text(89));
+			if (group != -1) {
+#if !defined(__BORLANDC__)
+				switch (group)
+#else
+				switch (_AX)
+#endif
+				{
+				case 1: {
+					skill = gui_radio((Bit8u*)get_text(147),
+							7,
+							get_text(114), get_text(115), get_text(116),
+							get_text(117), get_text(118), get_text(119),
+							get_text(120)) - 1;
 
-						if (skill == -2)
-							break;
-
+					if (skill != -2) {
 						skill += 19;
 						inc_skill(skill, 2, get_text(149));
-						break;
 					}
-					case 2: {
-						skill = gui_radio((Bit8u*)get_text(147),
-								9,
-								get_text(127), get_text(128), get_text(129),
-								get_text(130), get_text(131), get_text(132),
-								get_text(133), get_text(134), get_text(135));
-						skill--;
+					break;
+				}
+				case 2: {
+					skill = gui_radio((Bit8u*)get_text(147),
+							9,
+							get_text(127), get_text(128), get_text(129),
+							get_text(130), get_text(131), get_text(132),
+							get_text(133), get_text(134), get_text(135)) - 1;
 
-						if (skill == -2)
-							break;
-
+					if (skill != -2) {
 						skill += 32;
 						inc_skill(skill, 3, get_text(150));
-						break;
 					}
-				}
-				break;
-			}
-			case 3: {
-				group = gui_radio((Bit8u*)get_text(93), 3, get_text(90), get_text(91), get_text(92));
-				if (group == -1)
 					break;
-
-				switch (group) {
+				}
+				}
+			}
+			break;
+		}
+		case 3: {
+			group = gui_radio((Bit8u*)get_text(93), 3, get_text(90), get_text(91), get_text(92));
+			if (group != -1) {
+#if !defined(__BORLANDC__)
+				switch (group)
+#else
+				switch (_AX)
+#endif
+				{
 					case 1: {
 						skill = gui_radio((Bit8u*)get_text(147),
-								9,
-								get_text(136), get_text(137), get_text(138),
-								get_text(139), get_text(140), get_text(141),
-								get_text(142), get_text(143), get_text(144));
+							9,
+							get_text(136), get_text(137), get_text(138),
+							get_text(139), get_text(140), get_text(141),
+							get_text(142), get_text(143), get_text(144)) - 1;
 
-						skill--;
-
-						if (skill == -2)
-							break;
-
-						skill += 41;
-						inc_skill(skill, 2, get_text(149));
+						if (skill != -2) {
+							skill += 41;
+							inc_skill(skill, 2, get_text(149));
+						}
 						break;
 					}
 					case 2: {
 						skill = gui_radio((Bit8u*)get_text(147),
-								6,
-								get_text(121), get_text(122), get_text(123),
-								get_text(124), get_text(125), get_text(126));
+							6,
+							get_text(121), get_text(122), get_text(123),
+							get_text(124), get_text(125), get_text(126)) - 1;
 
-						skill--;
-
-						if (skill == -2)
-							break;
-
-						skill += 26;
-						inc_skill(skill, 2, get_text(149));
+						if (skill != -2) {
+							skill += 26;
+							inc_skill(skill, 2, get_text(149));
+						}
 						break;
 					}
 					case 3: {
 						skill = gui_radio((Bit8u*)get_text(147),
-								2,
-								get_text(145),
-								get_text(146));
+							2,
+							get_text(145),
+							get_text(146)) - 1;
 
-						skill--;
-
-						if (skill == -2)
-							break;
-
-						skill += 50;
-						inc_skill(skill, 1, get_text(148));
+						if (skill != -2) {
+							skill += 50;
+							inc_skill(skill, 1, get_text(148));
+						}
 						break;
 					}
+				}
 				}
 				break;
 			}
 		}
+
 		ds_writew(0x1327, 0);
 
 	} while (group != -1);
 }
-
-#if 1
 
 void inc_spell(Bit16u spell)
 {
@@ -6819,6 +6815,9 @@ void inc_spell(Bit16u spell)
 
 	refresh_screen();
 }
+
+#if 1
+
 
 void select_spell()
 {
