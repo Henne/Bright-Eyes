@@ -5950,13 +5950,16 @@ void print_attribs()
  * print_values() - print the values of the character
  *
  */
+/* Borlandified and identical */
 void print_values()
 {
 	char tmp[4];
-	const Bit16u align_left = 222;
-	const Bit16u align_right = 302;
-	Bit16u width;
-	Bit16s i, pos;
+	Bit16s width;
+	Bit16s align_left = 222;
+	Bit16s align_right = 302;
+
+	register Bit16s i;
+	register Bit16s pos;
 
 
 	switch (ds_readws(GEN_PAGE)) {
@@ -5965,18 +5968,13 @@ void print_values()
 			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			/* print name */
-#if !defined(__BORLANDC__)
 			print_str((char*)p_datseg + HERO_NAME, 180, 12);
-#else
-			print_str((char*)&ds[HERO_NAME], 180, 12);
-#endif
 
 			/* print attributes */
 			print_attribs();
 
-			/* break if no typus */
-			if (ds_readbs(HERO_TYPUS) == 0)
-				break;
+			/* return if no typus */
+			if (ds_readbs(HERO_TYPUS) == 0)	return;
 
 			/* print height */
 			sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(70), ds_readb(HERO_HEIGHT));
@@ -5994,6 +5992,7 @@ void print_values()
 			make_valuta_str((char*)Real2Host(ds_readd(GEN_PTR2)), ds_readds(HERO_MONEY));
 			print_str((char*)Real2Host(ds_readd(GEN_PTR2)), 205, 61);
 
+#if !defined(__BORLANDC__)
 			/* print LE */
 			/* originally it was itoa() */
 			sprintf(tmp, "%d", ds_readws(HERO_LE_MAX));
@@ -6014,50 +6013,65 @@ void print_values()
 			/* originally it was itoa() */
 			sprintf(tmp, "%d", ds_readbs(HERO_MR));
 			print_str(tmp, 232, 184);
-
+#else
+			/* print LE */
+			print_str(itoa(ds_readws(HERO_LE_MAX), tmp, 10), 172, 164);
+			/* print AE */
+			print_str(itoa(ds_readws(HERO_AE_MAX), tmp, 10), 221, 164);
+			/* print Endurance */
+			print_str(itoa(ds_readws(HERO_LE_MAX) + ds_readbs(HERO_ATT0_CURRENT + 3 * 6), tmp, 10), 296, 164);
+			/* print MR */
+			print_str(itoa(ds_readbs(HERO_MR), tmp, 10), 232, 184);
+#endif
 			break;
 		}
 		case 1: {
 			/* SKILLS Page 1/3 */
+#if defined(__BORLANDC__)
+			asm { db 0xe9, 0x85, 0x0a}; // BCC Sync-Point
+			// a 7-Byte Multi Byte NOP :-)
+			//asm { db 0x0f, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00; }; // BCC Sync-Point
+#endif
 			restore_picbuf((RealPt)ds_readd(GFX_PTR));
+
 
 			/* print fight skills */
 			for (i = 0; i < 9; i++) {
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + i));
+#else
+				itoa(ds_readbs(HERO_SKILLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (i & 1)
-					/* print in right column */
-					print_str(tmp, align_right - width,
-						(abs(i) / 2) * 12 + 42);
-				else
-					/* print in left column */
-					print_str(tmp, align_left - width,
-						(abs(i) / 2) * 12 + 42);
+				// i & 1 = right column else left column
+				print_str(tmp, ((i & 1) ? align_right - width : align_left - width), (i / 2) * 12 + 42);
 			}
 
 			/* print body skills */
 			for (i = 9; i < 19; i++) {
 				pos = i - 9;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + i));
+#else
+				itoa(ds_readbs(HERO_SKILLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, align_right - width,
-						(abs(pos) / 2) * 12 + 119);
-				else
-					/* print in left column */
-					print_str(tmp, align_left - width,
-						(abs(pos) / 2) * 12 + 119);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? align_right - width : align_left - width), (pos / 2) * 12 + 119);
 			}
 
 			/* remaining attempts for skills */
 			/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 			sprintf(tmp, "%d", ds_readbs(HERO_SKILL_INCS));
 			print_str(tmp, 271, 184);
+#else
+			print_str(itoa(ds_readbs(HERO_SKILL_INCS), tmp, 10), 271, 184);
+#endif
 
 			break;
 		}
@@ -6069,41 +6083,40 @@ void print_values()
 			for (i = 19; i < 26; i++) {
 				pos = i - 19;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + i));
+#else
+				itoa(ds_readbs(HERO_SKILLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, align_right - width,
-						(abs(pos) / 2) * 12 + 42);
-				else
-					/* print in left column */
-					print_str(tmp, align_left - width,
-						(abs(pos) / 2) * 12 + 42);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? align_right - width : align_left - width), (pos / 2) * 12 + 42);
 			}
 
 			/* print lore skills */
 			for (i = 32; i < 41; i++) {
 				pos = i - 32;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + i));
+#else
+				itoa(ds_readbs(HERO_SKILLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, align_right - width,
-						(abs(pos) / 2) * 12 + 113);
-				else
-					/* print in left column */
-					print_str(tmp, align_left - width,
-						(abs(pos) / 2) * 12 + 113);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? align_right - width : align_left - width), (pos / 2) * 12 + 113);
 			}
 
 			/* remaining attempts for skills */
 			/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 			sprintf(tmp, "%d", ds_readbs(HERO_SKILL_INCS));
 			print_str(tmp, 271, 184);
-
+#else
+			print_str(itoa(ds_readbs(HERO_SKILL_INCS), tmp, 10), 271, 184);
+#endif
 			break;
 		}
 		case 3: {
@@ -6114,58 +6127,57 @@ void print_values()
 			for (i = 41; i < 50; i++) {
 				pos = i - 41;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + i));
+#else
+				itoa(ds_readbs(HERO_SKILLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, align_right - width,
-						(abs(pos) / 2) * 12 + 42);
-				else
-					/* print in left column */
-					print_str(tmp, align_left - width,
-						(abs(pos) / 2) * 12 + 42);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? align_right - width : align_left - width), (pos / 2) * 12 + 42);
+
 			}
 
 			/* print nature skills */
 			for (i = 26; i < 32; i++) {
 				pos = i - 26;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + i));
+#else
+				itoa(ds_readbs(HERO_SKILLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, align_right - width,
-						(abs(pos) / 2) * 12 + 119);
-				else
-					/* print in left column */
-					print_str(tmp, align_left - width,
-						(abs(pos) / 2) * 12 + 119);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? align_right - width : align_left - width), (pos / 2) * 12 + 119);
+
 			}
 
 			/* print intuition skills */
 			for (i = 50; i < 52; i++) {
 				pos = i - 50;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + i));
+#else
+				itoa(ds_readbs(HERO_SKILLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, align_right - width,
-						(abs(pos) / 2) * 12 + 170);
-				else
-					/* print in left column */
-					print_str(tmp, align_left - width,
-						(abs(pos) / 2) * 12 + 170);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? align_right - width : align_left - width), (pos / 2) * 12 + 170);
 			}
 
 			/* remaining attempts for skills */
 			/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 			sprintf(tmp, "%d", ds_readbs(HERO_SKILL_INCS));
 			print_str(tmp, 271, 184);
-
+#else
+			print_str(itoa(ds_readbs(HERO_SKILL_INCS), tmp, 10), 271, 184);
+#endif
 			break;
 		}
 		case 4: {
@@ -6173,28 +6185,40 @@ void print_values()
 			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			/* Print base value  2x the same */
+#if !defined(__BORLANDC__)
 			sprintf(tmp, "%d", ds_readbs(HERO_ATPA_BASE));
 			print_str(tmp, 231, 30);
 			sprintf(tmp, "%d", ds_readbs(HERO_ATPA_BASE));
 			print_str(tmp, 268, 30);
+#else
+			print_str(itoa(ds_readbs(HERO_ATPA_BASE), tmp, 10), 231, 30);
+			print_str(itoa(ds_readbs(HERO_ATPA_BASE), tmp, 10), 268, 30);
+#endif
 
 			for (i = 0; i < 7; i++) {
 				/* print AT value */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_AT_WEAPON + i));
-
-				print_str(tmp, 237 - get_str_width(tmp),
-					i * 12 + 48);
+#else
+				itoa(ds_readbs(HERO_AT_WEAPON + i), tmp, 10);
+#endif
+				print_str(tmp, 237 - get_str_width(tmp), i * 12 + 48);
 
 				/* print PA value */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_PA_WEAPON + i));
-
-				print_str(tmp, 274 - get_str_width(tmp),
-					i * 12 + 48);
+#else
+				itoa(ds_readbs(HERO_PA_WEAPON + i), tmp, 10);
+#endif
+				print_str(tmp, 274 - get_str_width(tmp), i * 12 + 48);
 
 				/* print skill value */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + i));
-				print_str(tmp, 315 - get_str_width(tmp),
-					i * 12 + 48);
+#else
+				itoa(ds_readbs(HERO_SKILLS + i), tmp, 10);
+#endif
+				print_str(tmp, 315 - get_str_width(tmp), i * 12 + 48);
 			}
 
 			/* calc range base value (KL+GE+KK)/4 */
@@ -6202,14 +6226,16 @@ void print_values()
 				 + ds_readbs(HERO_ATT0_NORMAL + 3 * 4)
 				 + ds_readbs(HERO_ATT0_NORMAL + 3 * 6)) / 4;
 
-			/* print missle weapon value */
-			sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + 7 + pos));
-
+			/* print missle and thrown weapon values */
+#if !defined(__BORLANDC__)
+			sprintf(tmp, "%d", pos + ds_readbs(HERO_SKILLS + 7));
 			print_str(tmp, 231, 144);
-
-			/* print thrown weapon value */
-			sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + 8 + pos));
+			sprintf(tmp, "%d", pos + ds_readbs(HERO_SKILLS + 8));
 			print_str(tmp, 231, 156);
+#else
+			print_str(itoa(pos + ds_readbs(HERO_SKILLS + 7), tmp, 10), 231, 144);
+			print_str(itoa(pos + ds_readbs(HERO_SKILLS + 8), tmp, 10), 231, 156);
+#endif
 
 			break;
 		}
@@ -6221,53 +6247,51 @@ void print_values()
 			for (i = 1; i < 6; i++) {
 				pos = i - 1;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 42);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 42);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 42);
+
 			}
 			for (i = 33; i < 38; i++) {
 				pos = i - 33;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 95);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 95);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 95);
 			}
 			for (i = 6; i <= 11; i++) {
 				pos = i - 6;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 146);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 146);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 146);
 			}
 
 			/* print spell attempts */
+#if !defined(__BORLANDC__)
 			sprintf(tmp, "%d", ds_readbs(HERO_SPELL_INCS));
 			print_str(tmp, 217, 184);
-
+#else
+			print_str(itoa(ds_readbs(HERO_SPELL_INCS), tmp, 10), 217, 184);
+#endif
 			break;
 		}
 		case 6: {
@@ -6277,53 +6301,52 @@ void print_values()
 			for (i = 12; i <= 17; i++) {
 				pos = i - 12;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 42);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 42);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 42);
 			}
 			for (i = 18; i < 24; i++) {
 				pos = i - 18;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + i));
+#if !defined(__BORLANDC__)
+				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 95);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 95);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 95);
+
 			}
 			for (i = 24; i < 27; i++) {
 				pos = i - 24;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d", ds_readbs(HERO_SKILLS + i));
+#if !defined(__BORLANDC__)
+				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 146);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 146);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 148);
+
 			}
 
 			/* print spell attempts */
+#if !defined(__BORLANDC__)
 			sprintf(tmp, "%d", ds_readbs(HERO_SPELL_INCS));
 			print_str(tmp, 217, 184);
-
+#else
+			print_str(itoa(ds_readbs(HERO_SPELL_INCS), tmp, 10), 217, 184);
+#endif
 			break;
 		}
 		case 7: {
@@ -6333,55 +6356,52 @@ void print_values()
 			for (i = 27; i < 33; i++) {
 				pos = i - 27;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 42);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 42);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 42);
 			}
 
 			for (i = 38; i < 45; i++) {
 				pos = i - 38;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 95);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 95);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 95);
 			}
 
 			for (i = 45; i <= 46; i++) {
 				pos = i - 45;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 160);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 160);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 160);
 			}
 
 			/* print spell attempts */
+#if !defined(__BORLANDC__)
 			sprintf(tmp, "%d", ds_readbs(HERO_SPELL_INCS));
 			print_str(tmp, 217, 184);
-
+#else
+			print_str(itoa(ds_readbs(HERO_SPELL_INCS), tmp, 10), 217, 184);
+#endif
 			break;
 		}
 		case 8: {
@@ -6391,55 +6411,52 @@ void print_values()
 			for (i = 47; i <= 48; i++) {
 				pos = i - 47;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 42);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 42);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 42);
 			}
 
 			for (i = 49; i < 58; i++) {
 				pos = i - 49;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 71);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 71);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 71);
 			}
 
 			for (i = 58; i < 60; i++) {
 				pos = i - 58;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 148);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 148);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 148);
 			}
 
 			/* print spell attempts */
+#if !defined(__BORLANDC__)
 			sprintf(tmp, "%d", ds_readbs(HERO_SPELL_INCS));
 			print_str(tmp, 217, 184);
-
+#else
+			print_str(itoa(ds_readbs(HERO_SPELL_INCS), tmp, 10), 217, 184);
+#endif
 			break;
 		}
 		case 9: {
@@ -6449,23 +6466,24 @@ void print_values()
 			for (i = 60; i < 76; i++) {
 				pos = i - 60;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 42);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 42);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 42);
 			}
 
 			/* print spell attempts */
+#if !defined(__BORLANDC__)
 			sprintf(tmp, "%d", ds_readbs(HERO_SPELL_INCS));
 			print_str(tmp, 217, 184);
-
+#else
+			print_str(itoa(ds_readbs(HERO_SPELL_INCS), tmp, 10), 217, 184);
+#endif
 			break;
 		}
 		case 10: {
@@ -6475,32 +6493,29 @@ void print_values()
 			for (i = 76; i < 86; i++) {
 				pos = i - 76;
 				/* originally it was itoa() */
+#if !defined(__BORLANDC__)
 				sprintf(tmp, "%d", ds_readbs(HERO_SPELLS + i));
+#else
+				itoa(ds_readbs(HERO_SPELLS + i), tmp, 10);
+#endif
 				width = get_str_width(tmp);
 
-				if (pos & 1)
-					/* print in right column */
-					print_str(tmp, 302 - width,
-						(abs(pos) / 2) * 12 + 42);
-				else
-					/* print in left column */
-					print_str(tmp, 157 - width,
-						(abs(pos) / 2) * 12 + 42);
+				// pos & 1 = right column else left column
+				print_str(tmp, ((pos & 1) ? 302 - width : 157 - width), (pos / 2) * 12 + 42);
+
 			}
 
 			/* print spell attempts */
+#if !defined(__BORLANDC__)
 			sprintf(tmp, "%d", ds_readbs(HERO_SPELL_INCS));
 			print_str(tmp, 217, 184);
-
+#else
+			print_str(itoa(ds_readbs(HERO_SPELL_INCS), tmp, 10), 217, 184);
+#endif
 			break;
 		}
-
 	}
 }
-
-
-#if 1
-
 
 /**
  *	make_valuta_str	-	makes a valuta string
@@ -6509,7 +6524,7 @@ void print_values()
  *
  *	This funcion is buggy.
  */
-void make_valuta_str(char *dst, unsigned int money)
+void make_valuta_str(char *dst, Bit32s money)
 {
 	/* Orig-BUG: d can overflow  on D > 65536*/
 	unsigned short d = 0;
@@ -6539,6 +6554,8 @@ void make_valuta_str(char *dst, unsigned int money)
 
 	sprintf(dst, get_text(69), d, s, money);
 }
+
+#if 1
 
 void inc_skill(Bit16u skill, Bit16u max, char *msg)
 {

@@ -122,7 +122,7 @@ namespace G105de {
 	void restore_picbuf(RealPt);
 	void print_attribs();
 	void print_values();
-	void make_valuta_str(char *, unsigned int);
+	void make_valuta_str(char *, Bit32s);
 	void inc_skill(Bit16u, Bit16u, char*);
 	void select_skill();
 	void inc_spell(Bit16u);
