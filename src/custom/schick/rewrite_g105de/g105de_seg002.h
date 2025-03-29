@@ -125,7 +125,7 @@ namespace G105de {
 	void make_valuta_str(char *, Bit32s);
 	void inc_skill(Bit16s, Bit16s, char*);
 	void select_skill();
-	void inc_spell(Bit16u);
+	void inc_spell(Bit16s);
 	void select_spell();
 	void choose_atpa();
 	void choose_typus();

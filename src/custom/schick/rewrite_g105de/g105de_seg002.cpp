@@ -84,7 +84,6 @@ struct struct_spelltab {
 	signed char cost;
 };
 
-/* DS:0x0158 */
 static const struct struct_spelltab spelltab[87] = {
 	{ 0, 0, 0, 0, 0},
 	{ 0, 1, 5, 2, -1},
@@ -216,7 +215,7 @@ static const struct struct_school_tab school_tab[] = {
 struct struct_reqs {
 	unsigned char attrib, requirement;
 };
-/* DS:0x03cf */
+
 static const struct_reqs reqs[13][4] = {
 	{ 0 },
 	{ {0, 12}, {4, 12}, {3, 12}, {7, 7}, },
@@ -1025,7 +1024,6 @@ static const struct mouse_action *action_page[MAX_PAGES] = {
 #endif
 //static unsigned short need_refresh = 1;
 
-/* DS:0x1ca6 */
 struct type_bitmap {
 	char t[13];
 };
@@ -5288,9 +5286,9 @@ void select_typus()
 	old_typus = -1;
 	
 #if !defined(__BORLANDC__)	
-	t = *(struct type_bitmap*)(p_datseg + 0x1ca6);
+	t = *(struct type_bitmap*)(p_datseg + TYPE_BITMAP);
 #else
-	t = *(struct type_bitmap*)&ds[0x1ca6];
+	t = *(struct type_bitmap*)&ds[TYPE_BITMAP];
 #endif
 
 	/* check if attribs have been set */
@@ -6758,28 +6756,29 @@ void select_skill()
 	} while (group != -1);
 }
 
-void inc_spell(Bit16u spell)
+/* Borlandified and identical */
+void inc_spell(Bit16s spell)
 {
-	Bit16u max_incs = 1;
+	Bit16s max_incs = 1;
 
 	/* if typus == warlock and the origin of the spell is warlock */
-	if ((ds_readbs(HERO_TYPUS) == 7) && (spelltab[spell].origin == 3))
+	//if ((ds_readbs(HERO_TYPUS) == 7) && (spelltab[spell].origin == 3))
+	if ((ds_readbs(HERO_TYPUS) == 7) && (ds_readbs(SPELL_TAB + 5 * spell) == 3))
 		max_incs = 2;
 	/* if typus == elf and the origin of the spell is elven */
-	if ((ds_readbs(HERO_TYPUS) >= 10) && (spelltab[spell].origin == 2))
+	if ((ds_readbs(HERO_TYPUS) >= 10) && (ds_readbs(SPELL_TAB + 5 * spell) == 2))
 		max_incs = 2;
 	/* if typus == druid and the origin of the spell is druid */
-	if ((ds_readbs(HERO_TYPUS) == 8) && (spelltab[spell].origin == 0))
+	if ((ds_readbs(HERO_TYPUS) == 8) && (ds_readbs(SPELL_TAB + 5 * spell) == 0))
 		max_incs = 2;
 	/* if typus == mage */
 	if (ds_readbs(HERO_TYPUS) == 9) {
 		/* and the origin of the spell is mage */
-		if (spelltab[spell].origin == 1)
+		if (ds_readbs(SPELL_TAB + 5 * spell) == 1)
 			max_incs = 2;
 
-		Bit8u *array = (Bit8u*)house_spells[ds_readbs(HERO_SPELL_SCHOOL)];
 		/* and is a school spell */
-		if (is_in_word_array(spell, (signed short*)array))
+		if (is_in_word_array(spell, (signed short*)Real2Host(ds_readd(HOUSE_SPELLS +  4 * ds_readbs(HERO_SPELL_SCHOOL)))))
 			max_incs = 3;
 	}
 
@@ -6787,17 +6786,23 @@ void inc_spell(Bit16u spell)
 	if (ds_readbs(SPELL_INCS + 2 * spell + 1) >= max_incs) {
 		infobox(get_text(257), 0);
 		return;
+
 	}
 	/* all tries used for that spell */
 	if (ds_readbs(SPELL_INCS + 2 * spell + 0) == 3) {
 		infobox(get_text(151), 0);
+#if !defined(__BORLANDC__)
 		return;
+#else
+		// Fool the BCC a bit with a handcoded return
+		asm { db 0xeb, 0x60; }
+#endif
 	}
 
 	/* decrement spell attempts */
 	ds_dec_bs_post(HERO_SPELL_INCS);
 
-	if (random_interval_gen(2, 12) > ds_readbs(HERO_SPELLS + spell)) {
+	if ((Bit16s)random_interval_gen(2, 12) > ds_readbs(HERO_SPELLS + spell)) {
 		/* show success */
 		infobox(get_text(152), 0);
 		/* increment spell value */
@@ -6817,7 +6822,6 @@ void inc_spell(Bit16u spell)
 }
 
 #if 1
-
 
 void select_spell()
 {
