@@ -123,7 +123,7 @@ namespace G105de {
 	void print_attribs();
 	void print_values();
 	void make_valuta_str(char *, Bit32s);
-	void inc_skill(Bit16u, Bit16u, char*);
+	void inc_skill(Bit16s, Bit16s, char*);
 	void select_skill();
 	void inc_spell(Bit16u);
 	void select_spell();

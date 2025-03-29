@@ -6524,6 +6524,7 @@ void print_values()
  *
  *	This funcion is buggy.
  */
+/* Borlandified and identical */
 void make_valuta_str(char *dst, Bit32s money)
 {
 	/* Orig-BUG: d can overflow  on D > 65536*/
@@ -6552,12 +6553,11 @@ void make_valuta_str(char *dst, Bit32s money)
 		money -= 10;
 	}
 
-	sprintf(dst, get_text(69), d, s, money);
+	sprintf(dst, get_text(69), d, s, (Bit16s)money);
 }
 
-#if 1
-
-void inc_skill(Bit16u skill, Bit16u max, char *msg)
+/* Borlandified and nearly identical */
+void inc_skill(Bit16s skill, Bit16s max, char *msg)
 {
 	/* no more increments than the maximum */
 	if (ds_readbs(SKILL_INCS + 2 * skill + 1) >= max) {
@@ -6572,7 +6572,7 @@ void inc_skill(Bit16u skill, Bit16u max, char *msg)
 
 	/* decrement total number of skill inc tries */
 	ds_dec_bs_post(HERO_SKILL_INCS);
-	if (random_interval_gen(2, 12) > ds_readbs(HERO_SKILLS + skill)) {
+	if ((Bit16s)random_interval_gen(2, 12) > ds_readbs(HERO_SKILLS + skill)) {
 		/* print sucess message */
 		infobox(get_text(152), 0);
 		/* increment skill */
@@ -6759,6 +6759,8 @@ void select_skill()
 
 	} while (group != -1);
 }
+
+#if 1
 
 void inc_spell(Bit16u spell)
 {
