@@ -7735,19 +7735,23 @@ void interrupt timer_isr(void)
 }
 #endif
 
-#if 1
-
+/* Borlandified and identical */
 void set_timer_isr()
 {
 	/* save adress of the old ISR */
-	ds_writed(0x247c, RealGetVec(0x1c));
+	ds_writed(0x247c, (Bit32u)bc__dos_getvect(0x1c));
+#if !defined(__BORLANDC__)
 	/* set a the new one */
 	RealSetVec(0x1c, RealMake(reloc_gen + 0x3c6, 0x72b3));
+#else
+	bc__dos_setvect(0x1c, (INTCAST)timer_isr);
+#endif
 }
 
+/* Borlandified and identical */
 void restore_timer_isr()
 {
-	RealSetVec(0x1c, ds_readd(0x247c));
+	bc__dos_setvect(0x1c, (INTCAST)ds_readd(0x247c));
 }
 
 int main_gen(int argc, char **argv)
@@ -7834,6 +7838,8 @@ int main_gen(int argc, char **argv)
 	/* to make MSVC happy */
 	return 0;
 }
+
+#if 1
 
 void alloc_buffers_emu()
 {
