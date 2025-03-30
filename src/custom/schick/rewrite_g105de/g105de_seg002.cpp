@@ -6821,16 +6821,16 @@ void inc_spell(Bit16s spell)
 	refresh_screen();
 }
 
-#if 1
-
+/* Borlandified and identical */
 void select_spell()
 {
-	Bit16s group, spell;
+	Bit16s group;
+	Bit16s spell;
 
 	do {
 
 		/* check if we have spell attempts */
-		if (ds_readbs(HERO_SPELL_INCS) == 0) {
+		if (!ds_readbs(HERO_SPELL_INCS)) {
 			infobox(get_text(94), 0);
 			ds_writew(0x1327, 0);
 			return;
@@ -6840,25 +6840,30 @@ void select_spell()
 
 		switch (ds_readws(GEN_PAGE)) {
 			case 5: {
-				group = gui_radio((Bit8u*)get_text(155), 3,
+				group = gui_radio((Bit8u*)get_text(155),
+						3,
 						get_text(157), get_text(162),
 						get_text(158));
-				if (group == -1)
-					break;
-
-				switch (group) {
+				if (group != -1) {
+#if !defined(__BORLANDC__)
+				switch (group)
+#else
+				switch (_AX)
+#endif
+				{
 					case 1: {
-						spell = gui_radio((Bit8u*)get_text(156), 5,
+						spell = gui_radio((Bit8u*)get_text(156),
+								5,
 								get_text(169),
 								get_text(170),
 								get_text(171),
 								get_text(172),
-								get_text(173));
-						spell--;
-						if (spell == -2)
-							break;
-						spell++;
-						inc_spell(spell);
+								get_text(173)) - 1;
+
+						if (spell != -2) {
+							spell++;
+							inc_spell(spell);
+						}
 						break;
 					}
 					case 2: {
@@ -6867,12 +6872,12 @@ void select_spell()
 								get_text(202),
 								get_text(203),
 								get_text(204),
-								get_text(205));
-						spell--;
-						if (spell == -2)
-							break;
-						spell += 33;
-						inc_spell(spell);
+								get_text(205)) - 1;
+
+						if (spell != -2) {
+							spell += 33;
+							inc_spell(spell);
+						}
 						break;
 					}
 					case 3: {
@@ -6882,14 +6887,14 @@ void select_spell()
 								get_text(176),
 								get_text(177),
 								get_text(178),
-								get_text(179));
-						spell--;
-						if (spell == -2)
-							break;
-						spell += 6;
-						inc_spell(spell);
+								get_text(179)) - 1;
+						if (spell != -2) {
+							spell += 6;
+							inc_spell(spell);
+						}
 						break;
 					}
+				}
 				}
 				break;
 			}
@@ -6897,10 +6902,14 @@ void select_spell()
 				group = gui_radio((Bit8u*)get_text(155), 3,
 						get_text(158), get_text(159),
 						get_text(160));
-				if (group == -1)
-					break;
+				if (group != -1) {
 
-				switch (group) {
+#if !defined(__BORLANDC__)
+				switch (group)
+#else
+				switch (_AX)
+#endif
+				{
 					case 1: {
 						spell = gui_radio((Bit8u*)get_text(156), 6,
 								get_text(180),
@@ -6908,15 +6917,12 @@ void select_spell()
 								get_text(182),
 								get_text(183),
 								get_text(184),
-								get_text(185));
+								get_text(185)) - 1;
 
-						spell--;
-
-						if (spell == -2)
-							break;
-
-						spell += 12;
-						inc_spell(spell);
+						if (spell != -2) {
+							spell += 12;
+							inc_spell(spell);
+						}
 						break;
 					}
 					case 2: {
@@ -6926,44 +6932,42 @@ void select_spell()
 								get_text(188),
 								get_text(189),
 								get_text(190),
-								get_text(191));
+								get_text(191)) - 1;
 
-						spell--;
-
-						if (spell == -2)
-							break;
-
-						spell += 18;
-						inc_spell(spell);
+						if (spell != -2) {
+							spell += 18;
+							inc_spell(spell);
+						}
 						break;
 					}
 					case 3: {
 						spell = gui_radio((Bit8u*)get_text(156), 3,
 								get_text(192),
 								get_text(193),
-								get_text(194));
+								get_text(194)) - 1;
 
-						spell--;
-
-						if (spell == -2)
-							break;
-
-						spell += 24;
-						inc_spell(spell);
+						if (spell != -2) {
+							spell += 24;
+							inc_spell(spell);
+						}
 						break;
 					}
 				}
-
+				}
 				break;
 			}
 			case 7: {
 				group = gui_radio((Bit8u*)get_text(155), 3,
 						get_text(161), get_text(163),
 						get_text(164));
-				if (group == -1)
-					break;
+				if (group != -1) {
 
-				switch (group) {
+#if !defined(__BORLANDC__)
+				switch (group)
+#else
+				switch (_AX)
+#endif
+				{
 					case 1: {
 						spell = gui_radio((Bit8u*)get_text(156), 6,
 								get_text(195),
@@ -6971,15 +6975,12 @@ void select_spell()
 								get_text(197),
 								get_text(198),
 								get_text(199),
-								get_text(200));
+								get_text(200)) - 1;
 
-						spell--;
-
-						if (spell == -2)
-							break;
-
-						spell += 27;
-						inc_spell(spell);
+						if (spell != -2) {
+							spell += 27;
+							inc_spell(spell);
+						}
 						break;
 					}
 					case 2: {
@@ -6990,90 +6991,79 @@ void select_spell()
 								get_text(209),
 								get_text(210),
 								get_text(211),
-								get_text(212));
+								get_text(212)) - 1;
 
-						spell--;
-
-						if (spell == -2)
-							break;
-
-						spell += 38;
-						inc_spell(spell);
+						if (spell != -2) {
+							spell += 38;
+							inc_spell(spell);
+						}
 						break;
 					}
 					case 3: {
 						spell = gui_radio((Bit8u*)get_text(156), 2,
 								get_text(213),
-								get_text(214));
+								get_text(214)) - 1;
 
-						spell--;
-
-						if (spell == -2)
-							break;
-
-						spell += 45;
-						inc_spell(spell);
+						if (spell != -2) {
+							spell += 45;
+							inc_spell(spell);
+						}
 						break;
 					}
 				}
-
+				}
 				break;
 			}
 			case 8: {
 				group = gui_radio((Bit8u*)get_text(155), 3,
 						get_text(164), get_text(86),
 						get_text(166));
-				if (group == -1)
-					break;
+				if (group != -1) {
 
-
-				switch (group) {
+#if !defined(__BORLANDC__)
+				switch (group)
+#else
+				switch (_AX)
+#endif
+				{
 					case 1: {
 						spell = gui_radio((Bit8u*)get_text(156), 2,
 								get_text(215),
-								get_text(216));
+								get_text(216)) - 1;
 
-						spell--;
-
-						if (spell == -2)
-							break;
-
-						spell += 47;
-						inc_spell(spell);
+						if (spell != -2) {
+							spell += 47;
+							inc_spell(spell);
+						}
 						break;
 					}
 					case 2: {
 						spell = gui_radio((Bit8u*)get_text(156), 9,
 								get_text(217), get_text(218), get_text(219),
 								get_text(220), get_text(221), get_text(222),
-								get_text(223), get_text(224), get_text(225));
+								get_text(223), get_text(224), get_text(225)) - 1;
 
-						spell--;
-
-						if (spell == -2)
-							break;
-
-						spell += 49;
-						inc_spell(spell);
+						if (spell != -2) {
+							spell += 49;
+							inc_spell(spell);
+						}
 						break;
 					}
 					case 3: {
 						spell = gui_radio((Bit8u*)get_text(156), 2,
 								get_text(226),
-								get_text(227));
+								get_text(227)) - 1;
 
-						spell--;
 
-						if (spell == -2)
-							break;
-
-						spell += 58;
-						inc_spell(spell);
+						if (spell != -2) {
+							spell += 58;
+							inc_spell(spell);
+						}
 						break;
 					}
 				}
+				}
 				break;
-				/* TODO */
 			}
 			case 9: {
 				spell = gui_radio((Bit8u*)get_text(156), 16,
@@ -7084,16 +7074,14 @@ void select_spell()
 						get_text(236), get_text(237),
 						get_text(238), get_text(239),
 						get_text(240), get_text(241),
-						get_text(242), get_text(243));
-				spell--;
+						get_text(242), get_text(243)) - 1;
 
-				if (spell == -2) {
+				if (spell != -2) {
+					spell += 60;
+					inc_spell(spell);
+				} else {
 					group = -1;
-					break;
 				}
-
-				spell += 60;
-				inc_spell(spell);
 				break;
 			}
 			case 10: {
@@ -7102,22 +7090,24 @@ void select_spell()
 						get_text(246), get_text(247),
 						get_text(248), get_text(249),
 						get_text(250), get_text(251),
-						get_text(252), get_text(253));
-				spell--;
+						get_text(252), get_text(253)) - 1;
 
-				if (spell == -2) {
+				if (spell != -2) {
+					spell += 76;
+					inc_spell(spell);
+				} else {
 					group = -1;
-					break;
 				}
-
-				spell += 76;
-				inc_spell(spell);
 				break;
 			}
 		}
+
 		ds_writew(0x1327, 0);
+
 	} while (group != -1);
 }
+
+#if 1
 
 void choose_atpa()
 {
