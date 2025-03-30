@@ -7332,15 +7332,35 @@ void choose_typus()
 	ds_writew(SCREEN_VAR, 1);
 }
 
-#if 1
-
-void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
+/* Borlandified and nearly identical, but works correctly */
+void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16s n)
 {
-	struct struct_color *d = (struct struct_color*)dst;
-	struct struct_color *s = (struct struct_color*)src;
-	Bit16u i;
+//	struct struct_color *d = (struct struct_color*)dst;
+//	struct struct_color *s = (struct struct_color*)src;
+	Bit16s i;
 
 	for (i = 0; i < n; i++) {
+		/* RED */
+		if (host_readbs(src + 3 * i + 0) < host_readbs(dst + 3 * i + 0)) {
+			host_dec_bs(dst + 3 * i + 0);
+		} else if (host_readbs(src + 3 * i + 0) > host_readbs(dst + 3 * i + 0)) {
+			host_inc_bs(dst + 3 * i + 0);
+		}
+
+		/* GREEN */
+		if (host_readbs(src + 3 * i + 1) < host_readbs(dst + 3 * i + 1)) {
+			host_dec_bs(dst + 3 * i + 1);
+		} else if (host_readbs(src + 3 * i + 1) > host_readbs(dst + 3 * i + 1)) {
+			host_inc_bs(dst + 3 * i + 1);
+		}
+		
+		/* BLUE */
+		if (host_readbs(src + 3 * i + 2) < host_readbs(dst + 3 * i + 2)) {
+			host_dec_bs(dst + 3 * i + 2);
+		} else if (host_readbs(src + 3 * i + 2) > host_readbs(dst + 3 * i + 2)) {
+			host_inc_bs(dst + 3 * i + 2);
+		}
+#if 0
 		if (s[i].r < d[i].r) {
 			d[i].r--;
 		} else {
@@ -7361,13 +7381,14 @@ void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
 			if (s[i].b > d[i].b)
 				d[i].b++;
 		}
+#endif
 	}
 }
 
-void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16u col, Bit16u n)
+void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16s col, Bit16s n)
 {
-	Bit16u i;
-	Bit16u si;
+	Bit16s i;
+	Bit16s si;
 
 	si = 0x40 - col;
 
@@ -7391,6 +7412,9 @@ void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16u col, Bit16u n)
 		}
 	}
 }
+
+#if 1
+
 
 #if !defined(__BORLANDC__)
 static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);

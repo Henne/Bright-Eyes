@@ -129,8 +129,8 @@ namespace G105de {
 	void select_spell();
 	void choose_atpa();
 	void choose_typus();
-	void pal_fade_out(Bit8u*, Bit8u*, Bit16u);
-	void pal_fade_in(Bit8u*, Bit8u*, Bit16u, Bit16u);
+	void pal_fade_out(Bit8u*, Bit8u*, Bit16s);
+	void pal_fade_in(Bit8u*, Bit8u*, Bit16s, Bit16s);
 	void intro();
 	void set_mouse_isr();
 	void restore_mouse_isr();

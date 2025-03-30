@@ -98,6 +98,9 @@ extern char ds[0xffff];
 #define host_writews(p, d)       (*(Bit16s*)(p) = d)
 #define host_writeds(p, d)       (*(Bit32s*)(p) = d)
 
+#define host_inc_bs(p)		((*(Bit8s*)(p))++)
+#define host_dec_bs(p)		((*(Bit8s*)(p))--)
+
 #define RealMake(seg, off) ((RealPt)((seg << 4) + off))
 #define Real2Phys(p) (p)
 #define Real2Host(p) ((Bit8u*)(p))
@@ -127,6 +130,15 @@ static inline Bit8s host_writebs(Bit8u* p, Bit8s val)
 	return (*(Bit8s*)(p) = val);
 }
 
+static inline Bit8s host_inc_bs(Bit8u* p)
+{
+	return ++(*(Bit8s*)(p));
+}
+
+static inline Bit8s host_dec_bs(Bit8u* p)
+{
+	return --(*(Bit8s*)(p));
+}
 
 static inline Bit16s ds_add_bs(Bit16s off, Bit8s v)
 {
