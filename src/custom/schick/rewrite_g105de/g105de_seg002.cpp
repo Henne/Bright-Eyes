@@ -7175,29 +7175,26 @@ void choose_atpa()
 	ds_writew(0x1327, 0);
 }
 
-#if 1
-
 /**
  * choose_typus() - choose a typus manually
  *
  */
+/* Borlandified and far from identical */
 void choose_typus()
 {
+	Bit16s choosen_typus;
+	Bit16s randval;
+	Bit8s sex_bak;
+	RealPt ptr;
 	char name_bak[20];
-	unsigned short i, typus_names;
-	signed short choosen_typus;
-	unsigned char randval;
-	char sex_bak;
+
+	Bit16s i;
+	Bit16s typus_names;
 
 	if (!gui_bool((Bit8u*)get_text(264)))
 		return;
-
-	if (ds_readbs(HERO_SEX))
-		/* famale typus names */
-		typus_names = 271;
-	else
-		/* male tyuse names */
-		typus_names = 17;
+	/* female or male typus names */
+	typus_names = (ds_readbs(HERO_SEX) ? 271 : 17);
 
 	choosen_typus = gui_radio((Bit8u*)get_text(30), 12,
 				get_text(typus_names + 1), get_text(typus_names + 2),
@@ -7227,57 +7224,82 @@ void choose_typus()
 	/* set typus */
 	ds_writeb(HERO_TYPUS, (unsigned char)choosen_typus);
 
-	/* roll out good attribute values */
+#if !defined(__BORLANDC__)
+	ptr = RealMake(datseg, HERO_ATT0_NORMAL);
+#else
+	ptr = (RealPt)&ds[HERO_ATT0_NORMAL];
+#endif
+
+	/* roll out positive attribute values */
 	for (i = 0; i < 7; i ++) {
 
-		randval = (unsigned char)random_interval_gen(8, 13);
+		randval = (Bit16s)random_interval_gen(8, 13);
 
 		if (randval > 8)
 			randval--;
 
-		ds_writeb(HERO_ATT0_NORMAL + 3 * i, randval);
-		ds_writeb(HERO_ATT0_CURRENT + 3 * i, randval);
+		host_writeb(((3 * i) + (Real2Host(ptr) + 0)),
+			host_writebs(((3 * i) + (Real2Host(ptr) + 1)), randval));
 	}
 
-	/* roll out bad attribute values */
+#if !defined(__BORLANDC__)
+	ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * 7);
+#else
+	ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * 7];
+#endif
+
+	/* roll out negative attribute values */
 	for (i = 0; i < 7; i ++) {
 
-		randval = (unsigned char)random_interval_gen(2, 7);
+		randval = (Bit16s)random_interval_gen(2, 7);
 
 		if (randval < 7)
+#if !defined(__BORLANDC__)
 			randval++;
+#else
+			asm { db 0x0f, 0x1f, 0x40, 0x00; } // BCC Sync-Point
+#endif
 
-		ds_writeb(HERO_ATT0_NORMAL + 3 * (i + 7), randval);
-		ds_writeb(HERO_ATT0_CURRENT + 3 * (i + 7), randval);
+		host_writeb(((3 * i) + (Real2Host(ptr) + 0)),
+			host_writebs(((3 * i) + (Real2Host(ptr) + 1)), randval));
 	}
 
 	/* adjust typus attribute requirements */
 	for (i = 0; i < 4; i++) {
 		Bit8u ta;
 		/* calc pointer to attribute */
-		ta = reqs[choosen_typus][i].attrib;
+		//ta = reqs[choosen_typus][i].attrib;
+#if !defined(__BORLANDC__)
+		ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + 0x3cf));
+#else
+		ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + 0x3cf)];
+#endif
 
 		/* get the required value */
-		randval = reqs[choosen_typus][i].requirement;
+		//randval = reqs[choosen_typus][i].requirement;
+		randval = ds_readb(8 * choosen_typus + 2 * i + 0x3d0);
 
-		if (randval == 1)
-			continue;
+		if (randval != 1) {
 
-		if (randval & 0x80) {
-			/* attribute upper bound */
-			if (ds_readbs(HERO_ATT0_NORMAL + 3 * ta) <= (randval & 0x7f))
-				continue;
-
-
-			ds_writeb(HERO_ATT0_CURRENT + 3 * ta, randval & 0x7f);
-			ds_writeb(HERO_ATT0_NORMAL + 3 * ta, randval & 0x7f);
-		} else {
-			/* attribute lower bound */
-			if (ds_readbs(HERO_ATT0_NORMAL + 3 * ta) >= randval)
-				continue;
-
-			ds_writeb(HERO_ATT0_CURRENT + 3 * ta, randval);
-			ds_writeb(HERO_ATT0_NORMAL + 3 * ta, randval);
+			if (randval & 0x80) {
+				/* attribute upper bound */
+				if (host_readbs(Real2Host(ptr)) > (randval & 0x7f)) {
+#if !defined(__BORLANDC__)
+					host_writeb(Real2Host(ptr),
+						host_writebs(Real2Host(ptr) + 1, randval & 0x7f));
+#else
+			//		host_writeb(Real2Host(ptr),
+			//			host_writeb(Real2Host(ptr) + 1, randval);
+					asm {db 0x66, 0x90; db 0x0f,0x1f,0x00; } // BCC Sync-Point
+#endif
+				}
+			} else {
+				/* attribute lower bound */
+				if (host_readbs(Real2Host(ptr)) < randval) {
+					host_writeb(Real2Host(ptr),
+						host_writebs(Real2Host(ptr) + 1, randval));
+				}
+			}
 		}
 	}
 
@@ -7288,23 +7310,29 @@ void choose_typus()
 	set_palette(Real2Host(ds_readd(GEN_PTR5)) + 0x5c02, 0, 32);
 	call_mouse();
 
-	if (ds_readbs(HERO_TYPUS) > 10)
-		ds_writeb(HEAD_TYPUS, 10);
-	else
-		ds_writeb(HEAD_TYPUS, ds_readbs(HERO_TYPUS));
+
+	ds_writeb(HEAD_TYPUS, (ds_readbs(HERO_TYPUS) > 10 ? 10 : ds_readbs(HERO_TYPUS)));
 
 	if (ds_readbs(HERO_SEX)) {
-		ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
-		ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)));
-		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS) + 1) - 1);
+#if !defined(__BORLANDC__)
+		ds_writeb(HEAD_FIRST,
+			ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + ds_readbs(HEAD_TYPUS))));
+#else
+		ds_writeb(HEAD_FIRST,
+			ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_FEMALE + (Bit8s)_AL)));
+#endif
+
+		ds_writebs(HEAD_LAST, ds_readbs(HEAD_FIRST_MALE + ds_readbs(HEAD_TYPUS) + 1) - 1);
 	} else {
-		ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS)));
-		ds_writeb(HEAD_FIRST, ds_readb(HEAD_FIRST_MALE + ds_readb(HEAD_TYPUS)));
-		ds_writeb(HEAD_LAST, ds_readb(HEAD_FIRST_FEMALE + ds_readb(HEAD_TYPUS)) - 1);
+		ds_writeb(HEAD_FIRST,
+			ds_writeb(HEAD_CURRENT, ds_readb(HEAD_FIRST_MALE + ds_readbs(HEAD_TYPUS))));
+		ds_writebs(HEAD_LAST, ds_readbs(HEAD_FIRST_FEMALE + ds_readbs(HEAD_TYPUS)) - 1);
 	}
 	fill_values();
 	ds_writew(SCREEN_VAR, 1);
 }
+
+#if 1
 
 void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
 {
