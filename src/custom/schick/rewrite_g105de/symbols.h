@@ -64,6 +64,8 @@
 
 #define MASK_SWITCH                     (0x109a)    /* Bit8s */
 
+#define PAL_TMP                         (0x113b)    /* RGB[32] */
+
 #define SCREEN_VAR                      (0x11fe)    /* Bit16s */
 
 #define CHR_LOOKUP                      (0x1b85)
@@ -155,7 +157,9 @@
 
 #define NEED_REFRESH                    (0x1ca5)    /* Bit8s {0,1} */
 #define TYPE_BITMAP                     (0x1ca6)    /* Bit8[13] */
-#define STR_VERSION                     (0x1cd3)    /* char[6] */
+#define STR_VERSION                     (0x1cb3)    /* char[6] */
+#define PAL_ATTIC                       (0x1cb9)    /* RGB[16] */
+#define PAL_DSALOGO                     (0x1ce9)    /* RGB[32] */
 
 #define STR_SOUND_CFG                   (0x1dd0)    /* char[9]; "SOUND.CFG" */
 #define STR_SOUNDHW_NOT_FOUND           (0x1de4)    /* char[]; "SOUND HARDWARE NOT FOUND" */

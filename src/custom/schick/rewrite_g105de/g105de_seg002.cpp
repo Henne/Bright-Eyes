@@ -7550,36 +7550,35 @@ static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
 /**
  *	intro() - play the intro
  */
+/* Borlandified and nearly identical, but works correctly */
 void intro()
 {
-	struct nvf_desc nvf;
-	signed short tmp;
-
-	FILE *fd;
-	Bit8u *pal_dst, *pal_src;
-	Bit16u flen;
-	Bit16s i;
-	Bit8u cnt1;
+	Bit8s cnt1;
 	Bit8s cnt2;
+	Bit16s width;
+	Bit16s height;
+	Bit16s flen;
+	Bit8u* pal_src;
+	Bit8u* pal_dst;
+	struct nvf_desc nvf;
+
+	Bit16s i;
+	Bit16s handle;
 
 	ds_writeb(IN_INTRO, 1);
 
 	/* load ATTIC */
-	fd = fd_open_datfile(18);
-	if (fd == NULL) {
-		D1_ERR("Failed to open\n");
-		exit(0);
-	}
-	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
-	fclose(fd);
+	handle = open_datfile(18);
+	read_datfile(handle, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
+	bc_close(handle);
 
 	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
 	nvf.type = 0;
-	nvf.width = &tmp;
-	nvf.height = &tmp;
+	nvf.width = &width;
+	nvf.height = &height;
 
 	for (i = 7; i >= 0; i--) {
-		nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS) + i * 960 + 9600;
+		nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS) + i * 960L + 9600;
 		nvf.no = i + 1;
 		process_nvf(&nvf);
 
@@ -7592,7 +7591,7 @@ void intro()
 
 	wait_for_vsync();
 
-	set_palette((Bit8u*)&pal_attic, 0, 16);
+	set_palette((Bit8u*)p_datseg + PAL_ATTIC, 0, 16);
 
 	cnt1 = 1;
 	cnt2 = 99;
@@ -7603,7 +7602,7 @@ void intro()
 		ds_writew(DST_Y1, 140);
 		ds_writew(DST_X2, 207);
 		ds_writew(DST_Y2, 149);
-		ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS) + i * 960 + 9600);
+		ds_writed(DST_SRC, (Bit32u)(i* 960 + (RealPt)ds_readd(GEN_PTR1_DIS) +  9600));
 		do_draw_pic(0);
 		vsync_or_key(20);
 	}
@@ -7615,14 +7614,13 @@ void intro()
 		ds_writew(DST_X1, 0);
 		ds_writew(DST_Y1, cnt2 + 60);
 		ds_writew(DST_X2, 95);
-		ds_writew(DST_Y2, cnt1 + cnt2 + 59);
-		ds_writed(DST_DST, ds_readd(GEN_PTR1_DIS));
-		ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
+		ds_writew(DST_Y2, cnt2 + cnt1 + 59);
+		ds_writed(DST_SRC, ds_writed(DST_DST, ds_readd(GEN_PTR1_DIS)));
 		do_draw_pic(0);
 
 		if (cnt1 != 100) {
 
-			ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS) + i * 960 + 9600);
+			ds_writed(DST_SRC, (Bit32u)((RealPt)ds_readd(GEN_PTR1_DIS) + i * 960 + 9600));
 			if (cnt1 % 4 == 1)
 				i++;
 
@@ -7661,20 +7659,16 @@ void intro()
 		vsync_or_key(200);
 
 	/* load FANPRO.NVF */
-	fd = fd_open_datfile(34);
-	if (fd == NULL) {
-		D1_ERR("Failed to open\n");
-		exit(0);
-	}
-	flen = fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
-	fclose(fd);
+	handle = open_datfile(34);
+	flen = read_datfile(handle, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
+	bc_close(handle);
 
-	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
-	nvf.no = 0;
 	nvf.type = 0;
-	nvf.width = &tmp;
-	nvf.height = &tmp;
+	nvf.width = &width;
+	nvf.height = &height;
+	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
+	nvf.no = 0;
 
 	process_nvf(&nvf);
 
@@ -7695,20 +7689,16 @@ void intro()
 	vsync_or_key(200);
 
 	/* load DSALOGO.DAT */
-	fd = fd_open_datfile(16);
-	if (fd == NULL) {
-		D1_ERR("Failed to open\n");
-		exit(0);
-	}
-	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
-	fclose(fd);
+	handle = open_datfile(16);
+	read_datfile(handle, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
+	bc_close(handle);
 
-	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
-	nvf.no = 0;
 	nvf.type = 0;
-	nvf.width = &tmp;
-	nvf.height = &tmp;
+	nvf.width = &width;
+	nvf.height = &height;
+	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
+	nvf.no = 0;
 
 	process_nvf(&nvf);
 
@@ -7717,7 +7707,7 @@ void intro()
 	wait_for_vsync();
 
 
-	set_palette((Bit8u*)pal_tmp, 0, 32);
+	set_palette((Bit8u*)p_datseg + PAL_TMP, 0, 32);
 
 	/* draw DSALOGO.DAT */
 	ds_writew(DST_X1, 0);
@@ -7728,20 +7718,16 @@ void intro()
 	do_draw_pic(0);
 
 	/* load GENTIT.DAT */
-	fd = fd_open_datfile(17);
-	if (fd == NULL) {
-		D1_ERR("Failed to open\n");
-		exit(0);
-	}
-	fd_read_datfile(fd, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
-	fclose(fd);
+	handle = open_datfile(17);
+	read_datfile(handle, Real2Host(ds_readd(BUFFER_HEADS_DAT)), 20000);
+	bc_close(handle);
 
-	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 	nvf.src = (RealPt)ds_readd(BUFFER_HEADS_DAT);
-	nvf.no = 0;
 	nvf.type = 0;
-	nvf.width = &tmp;
-	nvf.height = &tmp;
+	nvf.width = &width;
+	nvf.height = &height;
+	nvf.dst = (RealPt)ds_readd(GEN_PTR1_DIS);
+	nvf.no = 0;
 
 	process_nvf(&nvf);
 
@@ -7753,10 +7739,16 @@ void intro()
 	ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
 	do_draw_pic(0);
 
-	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)) + 500, &pal_dsalogo, 96);
+	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)) + 500, p_datseg + PAL_DSALOGO, 96);
 
+#if !defined(__BORLANDC__)
 	pal_src = Real2Host(ds_readd(GEN_PTR1_DIS)) + 500;
 	pal_dst = Real2Host(ds_readd(GEN_PTR1_DIS));
+#else
+	
+	pal_src = (pal_dst = Real2Host(ds_readd(GEN_PTR1_DIS))) + 500;
+	//asm { db 0x66, 0x90; db 0x66, 0x90; };
+#endif
 	memset(pal_dst, 0, 96);
 
 	for (i = 0; i < 64; i++) {
@@ -7766,14 +7758,20 @@ void intro()
 	}
 
 	set_textcolor(0xff, 0x00); // WHITE ON BLACK
-	print_str(version, 290, 190);
+	print_str((char*)p_datseg + STR_VERSION, 290, 190);
 	vsync_or_key(400);
 
-	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)), &pal_dsalogo, 96);
+	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)), p_datseg + PAL_DSALOGO, 96);
 
+#if !defined(__BORLANDC__)
 	pal_src = Real2Host(ds_readd(GEN_PTR1_DIS)) + 500;
 	pal_dst = Real2Host(ds_readd(GEN_PTR1_DIS));
-	memset(pal_src, 0, 96);
+#else
+	
+	pal_src = (pal_dst = Real2Host(ds_readd(GEN_PTR1_DIS))) + 500;
+	asm { db 0x66, 0x90; db 0x66, 0x90; };
+#endif
+	memset(Real2Host(ds_readd(GEN_PTR1_DIS)) + 500, 0, 96);
 
 	for (i = 0; i < 64; i++) {
 		pal_fade_out(pal_dst, pal_src, 32);
