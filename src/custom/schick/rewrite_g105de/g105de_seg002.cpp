@@ -7107,11 +7107,11 @@ void select_spell()
 	} while (group != -1);
 }
 
-#if 1
-
+/* Borlandified and identical */
 void choose_atpa()
 {
-	Bit16u skill, increase;
+	Bit16s skill;
+	Bit16s increase;
 
 	ds_writew(0x1327, 0xffb0);
 
@@ -7121,11 +7121,15 @@ void choose_atpa()
 			get_text(95), get_text(96), get_text(97), get_text(98),
 			get_text(99), get_text(100), get_text(101)) - 1;
 
-		if (skill != 0xfffe) {
-			if (ds_readbs(HERO_SKILLS + skill) > 0) {
+		if (skill != -2) {
+			if (ds_readbs(HERO_SKILLS + skill) <= 0) {
+				infobox(get_text(260), 0);
+			} else {
+
 				increase = gui_radio((Bit8u*)get_text(254), 2,
 					get_text(75), get_text(76));
-				if (increase != 0xffff) {
+
+				if (increase != -1) {
 					if (increase == 1) {
 						/* increase attack */
 						if (ds_readbs(HERO_SKILLS + skill) >= 0 &&
@@ -7151,15 +7155,15 @@ void choose_atpa()
 						}
 					}
 				}
-			} else {
-				infobox(get_text(260), 0);
 			}
 		}
 
-	} while (skill != 0xfffe);
+	} while (skill != -2);
 
 	ds_writew(0x1327, 0);
 }
+
+#if 1
 
 /**
  * choose_typus() - choose a typus manually
