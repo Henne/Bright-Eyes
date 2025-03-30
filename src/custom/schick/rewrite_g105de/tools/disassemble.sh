@@ -35,7 +35,7 @@ fi
 # generate a disassembly for each segment
 ndisasm -b16 -e $((0x00000 + 0x0c00)) ${GAMEFILE} | head -n 6088 >${OUTDIR}/SEG000.dis
 ndisasm -b16 -e $((0x03649 + 0x0c00)) ${GAMEFILE} | head -n 618 >${OUTDIR}/SEG001.dis
-ndisasm -b16 -e $((0x03c6b + 0x0c00)) ${GAMEFILE} | head -n 11419 >${OUTDIR}/SEG002.dis
+ndisasm -b16 -e $((0x03c60 + 0x0c00)) ${GAMEFILE} | head -n 11430 >${OUTDIR}/SEG002.dis
 ndisasm -b16 -e $((0x0b2db + 0x0c00)) ${GAMEFILE} | head -n 91 >${OUTDIR}/SEG003.dis
 ndisasm -b16 -e $((0x0b39c + 0x0c00)) ${GAMEFILE} | head -n 282 >${OUTDIR}/SEG004.dis
 ndisasm -b16 -e $((0x0b6b8 + 0x0c00)) ${GAMEFILE} | head -n 646 >${OUTDIR}/SEG005.dis

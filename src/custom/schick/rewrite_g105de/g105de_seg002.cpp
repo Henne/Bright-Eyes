@@ -1256,6 +1256,20 @@ static inline RealPt get_text_real(Bit16s no) {
 //Bit8u *gen_ptr1;
 //Bit8u *gen_ptr1_dis;
 
+#if defined(__BORLANDC__)
+/* A little quirk here:
+ * This Segment starts at offset 0x0005 with some overlapping code from CD-Audio (5 Bytes).
+ * To get the correct code we start at offset 0x0000 with some alignement code
+ * to obtain correct alignment and the correct adresses from the switch jump-tables.
+ */
+void dummy0()
+{
+	asm {nop; };
+}
+void dummy()
+{
+}
+#endif
 
 /* Borlandified and identical */
 void start_music(Bit16u track)
