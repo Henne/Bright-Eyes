@@ -779,8 +779,8 @@ static const signed char head_first_female[11] = {	0, 3, 9, 15,
 							46, 51, 58 };
 #endif
 
-/* DS:0x113b */
-static struct struct_color pal_tmp[32];
+//static struct struct_color pal_tmp[32];
+
 /* DS:0x119b */
 static const struct struct_color pal_genbg[32] = {
 	{0x00, 0x00, 0x00},
@@ -1029,9 +1029,8 @@ struct type_bitmap {
 };
 struct type_bitmap empty_bitmap;
 
-/* DS:0x1cb3 */
-static char version[] = "V1.05";
-/* DS:0x1cb9 */
+//static char version[] = "V1.05";
+#if 0
 static const struct struct_color pal_attic[16] = {
 	{0x00, 0x00, 0x00},
 	{0x24, 0x24, 0x3c},
@@ -1050,7 +1049,7 @@ static const struct struct_color pal_attic[16] = {
 	{0x28, 0x28, 0x3c},
 	{0x20, 0x26, 0x3c},
 };
-/* DS:0x1ce9 */
+
 static const struct struct_color pal_dsalogo[32] = {
 	{0x00, 0x00, 0x00},
 	{0x38, 0x38, 0x38},
@@ -1085,6 +1084,7 @@ static const struct struct_color pal_dsalogo[32] = {
 	{0x14, 0x00, 0x00},
 	{0x3c, 0x3c, 0x3c},
 };
+#endif
 /* DS:0x1d49 */
 static const struct struct_color col_white = { 0x3f, 0x3f, 0x3f };
 /* DS:0x1d4c */
@@ -7266,18 +7266,18 @@ void choose_typus()
 
 	/* adjust typus attribute requirements */
 	for (i = 0; i < 4; i++) {
-		Bit8u ta;
+		//Bit8u ta;
 		/* calc pointer to attribute */
 		//ta = reqs[choosen_typus][i].attrib;
 #if !defined(__BORLANDC__)
-		ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + 0x3cf));
+		ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + 0x03cf));
 #else
-		ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + 0x3cf)];
+		ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + 0x03cf)];
 #endif
 
 		/* get the required value */
 		//randval = reqs[choosen_typus][i].requirement;
-		randval = ds_readb(8 * choosen_typus + 2 * i + 0x3d0);
+		randval = ds_readb(8 * choosen_typus + 2 * i + 0x03d0);
 
 		if (randval != 1) {
 
@@ -7416,13 +7416,8 @@ void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16s col, Bit16s n)
 }
 
 #if !defined(__BORLANDC__)
-static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
-static FILE * fd_open_datfile(Bit16u);
-
 void BE_cleanup()
 {
-	long sum = 0;
-
 	bc_free((RealPt)ds_readd(BUFFER_SEX_DAT));
 	bc_free((RealPt)ds_readd(BUFFER_POPUP));
 	bc_free((RealPt)ds_readd(BUFFER_HEADS_DAT));
@@ -7484,65 +7479,6 @@ void BE_cleanup()
 			bc_free((RealPt)ds_readd(TYPUS_BUFFER + 4 * i));
 		}
 	}
-}
-
-static FILE * fd_open_datfile(Bit16u index)
-{
-	FILE *fd;
-	char *fname;
-	signed int offset;
-	Bit8u buf[800];
-
-
-	/* build the path to DSAGEN.DAT */
-	fname = get_pwd();
-	strncat(fname, "DSAGEN.DAT", 10);
-	prepare_path(fname);
-
-	fd = fopen(fname, "rb");
-
-	if (fd == NULL) {
-		D1_ERR("%s(): failed to open datafile at %s\n",
-			__func__, fname);
-		free(fname);
-		return NULL;
-	}
-	free(fname);
-
-	if (fread(buf, 1, 800, fd) != 800) {
-		D1_ERR("%s(): failed to read datafile\n", __func__);
-		fclose(fd);
-		return NULL;
-	}
-
-
-	offset = get_archive_offset(fnames_g105de[index], buf);
-	ds_writed(GENDAT_OFFSET, offset);
-
-	if (ds_readd(GENDAT_OFFSET) == 0xffffffff) {
-		D1_ERR("FILE %s IS MISSING!", fnames_g105de[index]);
-		fclose(fd);
-		return NULL;
-	}
-
-	fseek(fd, ds_readd(GENDAT_OFFSET), SEEK_SET);
-
-	return fd;
-
-}
-
-
-static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
-{
-
-	if (len > ds_readd(FLEN_LEFT))
-		len = (unsigned short)ds_readd(FLEN_LEFT);
-
-	len = fread(buf, 1, len, fd);
-
-	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
-
-	return len;
 }
 #endif
 
