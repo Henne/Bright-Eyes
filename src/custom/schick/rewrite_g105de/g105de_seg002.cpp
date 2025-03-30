@@ -3007,7 +3007,7 @@ Bit32u unused_func10(Bit32u v)
 #endif
 
 /* Borlandified and identical */
-void init_video()
+void init_video(Bit16s unused)
 {
 #if defined(__BORLANDC__)
 	struct struct_color l_white = *(struct_color*)&ds[STRUCT_COL_WHITE2];
@@ -7754,16 +7754,18 @@ void restore_timer_isr()
 	bc__dos_setvect(0x1c, (INTCAST)ds_readd(0x247c));
 }
 
+/* Borlandified and nearly identical */
 int main_gen(int argc, char **argv)
 {
-	Bit16u sound_off = 0;
+	Bit16s sound_off = 0;
 
-
+#if !defined(__BORLANDC__)
 	if (sizeof(struct struct_hero) != 0x6da) {
 		D1_ERR("Error: sizeof(struct_hero) == 0x%lx != 0x6da\n",
 			sizeof(struct struct_hero));
 		exit(1);
 	}
+#endif
 
 	if (argc > 1)
 		ds_writew(CALLED_WITH_ARGS, 1);
@@ -7787,14 +7789,17 @@ int main_gen(int argc, char **argv)
 
 	bc_randomize();
 
-	save_display_stat(RealMake(datseg, 0x47db));
+#if !defined(__BORLANDC__)
+	save_display_stat(RealMake(datseg, DISPLAY_PAGE_BAK));
+#else
+	save_display_stat(p_datseg + DISPLAY_PAGE_BAK);
+#endif
 
 	alloc_buffers();
-	//alloc_buffers_emu();
 
 	ds_writew(WO_VAR3, 2);
 
-	init_video();
+	init_video(2);
 
 	ds_writew(HAVE_MOUSE, 2);
 
@@ -7833,10 +7838,11 @@ int main_gen(int argc, char **argv)
 		bc_clrscr();
 	}
 
+#if !defined(__BORLANDC__)
 	BE_cleanup();
-
 	/* to make MSVC happy */
 	return 0;
+#endif
 }
 
 #if 1

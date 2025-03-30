@@ -76,7 +76,7 @@ namespace G105de {
 	void error_msg(Bit8u*);
 	void vsync_or_key(Bit16s);
 	Bit32u swap_u32(Bit32u);
-	void init_video();
+	void init_video(Bit16s);
 	void exit_video();
 	void draw_v_line(Bit16s, Bit16s, Bit16s, Bit16u);
 	void do_draw_pic(Bit16u);

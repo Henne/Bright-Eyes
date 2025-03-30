@@ -60,6 +60,7 @@ static inline void bc_randomize() { }
 #define bc_strcpy strcpy
 #define bc_strncpy strncpy
 #define bc_write write
+#define bc_randomize randomize
 
 RealPt emu_gen_alloc(Bit32u);
 
