@@ -1530,7 +1530,7 @@ unsigned short load_driver(RealPt fname, Bit16u type, Bit16u port)
 			infobox((char*)(p_datseg + STR_SOUNDHW_NOT_FOUND), 0);
 			ds_writew(MIDI_DISABLED, 1);
 			#else
-				asm {nop; nop; nop; nop} // BCC Sync-point
+				asm {nop; } // BCC Sync-point
 			#endif
 			return 0;
 		}
@@ -1558,11 +1558,7 @@ void play_midi(Bit16u index)
 	{
 		stop_sequence();
 		call_load_file(index);
-#if !defined(__BORLANDC__)
 		play_sequence(0);
-#else
-	asm {nop; nop; nop; nop }
-#endif
 	}
 }
 
