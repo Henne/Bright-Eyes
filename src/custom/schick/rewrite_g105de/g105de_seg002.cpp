@@ -1256,44 +1256,6 @@ static inline RealPt get_text_real(Bit16s no) {
 //Bit8u *gen_ptr1;
 //Bit8u *gen_ptr1_dis;
 
-#if !defined(__BORLANDC__)
-static void prepare_path(char *p)
-{
-	while (*p) {
-#if defined (WIN32)
-		if (*p == '/')
-			*p = '\\';
-#else
-		if (*p == '\\')
-			*p = '/';
-#endif
-		p++;
-	}
-}
-
-/**
- * get_pwd() -  get the path to the current directory
- *
- * This must be freed after use.
- * WARNING: Does only work on mounted drives
- */
-static char *get_pwd() {
-
-	char *path = (char*)calloc(2048, sizeof(char));
-
-	if (path == NULL)
-		return NULL;
-
-	Bit8u drive = DOS_GetDefaultDrive();
-	localDrive *dr = dynamic_cast<localDrive*>(Drives[drive]);
-	dr->GetSystemFilename((char*)path, "");
-	strcat(path, "/");
-	strcat(path, Drives[drive]->curdir);
-	strcat(path, "/");
-
-	return path;
-}
-#endif
 
 /* Borlandified and identical */
 void start_music(Bit16u track)
@@ -2484,6 +2446,46 @@ void load_typus(Bit16u typus)
 	}
 	bc_close(handle);
 }
+
+#if !defined(__BORLANDC__)
+static void prepare_path(char *p)
+{
+	while (*p) {
+#if defined (WIN32)
+		if (*p == '/')
+			*p = '\\';
+#else
+		if (*p == '\\')
+			*p = '/';
+#endif
+		p++;
+	}
+}
+
+/**
+ * get_pwd() -  get the path to the current directory
+ *
+ * This must be freed after use.
+ * WARNING: Does only work on mounted drives
+ */
+static char *get_pwd() {
+
+	char *path = (char*)calloc(2048, sizeof(char));
+
+	if (path == NULL)
+		return NULL;
+
+	Bit8u drive = DOS_GetDefaultDrive();
+	localDrive *dr = dynamic_cast<localDrive*>(Drives[drive]);
+	dr->GetSystemFilename((char*)path, "");
+	strcat(path, "/");
+	strcat(path, Drives[drive]->curdir);
+	strcat(path, "/");
+
+	return path;
+}
+#endif
+
 
 /**
  * save_chr() - save the hero the a CHR file
