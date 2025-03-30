@@ -7385,6 +7385,7 @@ void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16s n)
 	}
 }
 
+/* Borlandified and nearly identical, but works correctly */
 void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16s col, Bit16s n)
 {
 	Bit16s i;
@@ -7393,28 +7394,26 @@ void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16s col, Bit16s n)
 	si = 0x40 - col;
 
 	for (i = 0; i < n; i++) {
-		if (host_readb(src + 3 * i) >= si) {
-			if (host_readb(src + i * 3) > host_readb(dst + i * 3))
-				host_writeb(dst + 3 * i,
-					host_readb(dst + 3 * i) + 1);
+
+		/* RED */
+		if (host_readbs(src + 3 * i + 0) >= si) {
+			if (host_readbs(src + i * 3 + 0) > host_readbs(dst + i * 3 + 0))
+				host_inc_bs(dst + 3 * i + 0);
 		}
 
-		if (host_readb(src + 3 * i + 1) >= si) {
-			if (host_readb(src + i * 3 + 1) > host_readb(dst + i * 3 + 1))
-				host_writeb(dst + 3 * i + 1,
-					host_readb(dst + 3 * i + 1) + 1);
+		/* GREEN */
+		if (host_readbs(src + 3 * i + 1) >= si) {
+			if (host_readbs(src + i * 3 + 1) > host_readbs(dst + i * 3 + 1))
+				host_inc_bs(dst + 3 * i + 1);
 		}
 
-		if (host_readb(src + 3 * i + 2) >= si) {
-			if (host_readb(src + i * 3 + 2) > host_readb(dst + i * 3 + 2))
-				host_writeb(dst + 3 * i + 2,
-					host_readb(dst + 3 * i + 2) + 1);
+		/* BLUE */
+		if (host_readbs(src + 3 * i + 2) >= si) {
+			if (host_readbs(src + i * 3 + 2) > host_readbs(dst + i * 3 + 2))
+				host_inc_bs(dst + 3 * i + 2);
 		}
 	}
 }
-
-#if 1
-
 
 #if !defined(__BORLANDC__)
 static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
@@ -7788,6 +7787,8 @@ void intro()
 	ds_writeb(IN_INTRO, 0);
 	return;
 }
+
+#if 1
 
 void set_mouse_isr()
 {
