@@ -7845,24 +7845,18 @@ int main_gen(int argc, char **argv)
 #endif
 }
 
-#if 1
-
-void alloc_buffers_emu()
-{
-	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x7446);
-}
-
+/* Borlandified and nearly identical, but works correctly */
 void alloc_buffers()
 {
-	ds_writed(VGA_MEMSTART, RealMake(0xa000, 0x0));
-	ds_writed(GFX_PTR, RealMake(0xa000, 0x0));
+	ds_writed(GFX_PTR,
+		ds_writed(VGA_MEMSTART, (Bit32u)RealMake(0xa000, 0x0)));
 
-	ds_writed(GEN_PTR1_DIS, (RealPt)gen_alloc(64108) + 8);
+	ds_writed(GEN_PTR1_DIS, (Bit32u)((RealPt)gen_alloc(64108) + 8));
 
 	ds_writed(PAGE_BUFFER, (Bit32u)gen_alloc(50000));
 
 	ds_writed(GEN_PTR2, (Bit32u)gen_alloc(1524));
-	ds_writed(GEN_PTR3, (RealPt)ds_readd(GEN_PTR2) + 1500);
+	ds_writed(GEN_PTR3, (Bit32u)((RealPt)ds_readd(GEN_PTR2) + 1500));
 
 	// unused
 	ds_writed(GEN_PTR4, (Bit32u)gen_alloc(200));
@@ -7875,13 +7869,13 @@ void alloc_buffers()
 
 	ds_writed(BUFFER_HEADS_DAT, (Bit32u)gen_alloc(39000));
 
-	ds_writed(BUFFER_POPUP, (Bit32u)gen_alloc(1673));
+	ds_writed(BUFFER_POPUP, (Bit32u)(gen_alloc(1673) + 8));
 
 	ds_writed(BUFFER_SEX_DAT, (Bit32u)gen_alloc(812));
 
-	ds_writed(GEN_PTR5, (Bit32u)gen_alloc(23660));
+	ds_writed(GEN_PTR5, (Bit32u)(gen_alloc(23660) + 8));
 
-	ds_writed(BUFFER_DMENGE_DAT, (Bit32u)gen_alloc(23660));
+	ds_writed(BUFFER_DMENGE_DAT, (Bit32u)(gen_alloc(23660) + 8));
 
 	ds_writed(PICBUF1, (Bit32u)gen_alloc(800));
 
@@ -7889,15 +7883,16 @@ void alloc_buffers()
 
 	ds_writed(PICBUF3, (Bit32u)gen_alloc(2800));
 
-	ds_writed(GEN_PTR6, (Bit32u)gen_alloc(1100) + 8);
+	//ds_writed(GEN_PTR6, (Bit32u)(gen_alloc(1100) + 8));
 
-	if (!(RealPt)ds_readd(GEN_PTR6))
-		printf("\nMEMORY MALLOCATION ERROR!");
-#if !defined(__BORLANDC__)
-	memset(p_datseg + TYPUS_BUFFER, 0, 4 * 13);
-	memset(p_datseg + TYPUS_LEN, 0, 4 * 13);
+	if (!(RealPt)(ds_writed(GEN_PTR6, (Bit32u)(gen_alloc(1100) + 8))))
+		printf((char*)p_datseg + STR_MALLOC_ERROR);
+#if defined(__BORLANDC__)
+	asm { db 0x66, 0x90;};
 #endif
 }
+
+#if 1
 
 void init_colors()
 {

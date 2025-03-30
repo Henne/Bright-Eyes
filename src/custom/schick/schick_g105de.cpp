@@ -1708,7 +1708,6 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 					D1_INFO("alloc_buffers();\n");
 					alloc_buffers();
-					alloc_buffers_emu();
 
 					return 1;
 				}

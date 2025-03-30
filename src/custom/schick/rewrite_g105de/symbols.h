@@ -170,6 +170,7 @@
 #define STR_SAVE_ERROR                  (0x1e09)    /* char[] */
 
 #define STR_DSAGEN_DAT                  (0x1fb0)    /* char[] */
+#define STR_MALLOC_ERROR                (0x1fbb)    /* char[] */
 
 #define RANDOM_GEN_SEED                 (0x1fd6)    /* Bit16u */
 

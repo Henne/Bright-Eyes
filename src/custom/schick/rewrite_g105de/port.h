@@ -101,7 +101,7 @@ extern char ds[0xffff];
 #define host_inc_bs(p)		((*(Bit8s*)(p))++)
 #define host_dec_bs(p)		((*(Bit8s*)(p))--)
 
-#define RealMake(seg, off) ((RealPt)((seg << 4) + off))
+#define RealMake(seg, off) ((RealPt)(MK_FP(seg, off)))
 #define Real2Phys(p) (p)
 #define Real2Host(p) ((Bit8u*)(p))
 
