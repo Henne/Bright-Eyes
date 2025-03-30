@@ -3024,9 +3024,9 @@ void init_video(Bit16s unused)
 void exit_video()
 {
 	/* restore old mode */
-	set_video_mode(ds_readw(0x47dd));
+	set_video_mode(ds_readw(DISPLAY_MODE_BAK));
 	/* restore old page */
-	set_video_page(ds_readw(0x47db));
+	set_video_page(ds_readw(DISPLAY_PAGE_BAK));
 }
 
 #if defined(__BORLANDC__)
@@ -5329,17 +5329,17 @@ void select_typus()
 
 				//ltmp2 = ds_readbs(HERO_ATT0_NORMAL + 3 * reqs[i][si].attrib);
 #if !defined(__BORLANDC__)
-				ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * ds_readb(REQS + 8 * i + 2 * si));
+				ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * ds_readb(REQ_ATTRIB + 8 * i + 2 * si));
 #else
-				ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * ds_readb(REQS + 8 * i + 2 * si)];
+				ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * ds_readb(REQ_ATTRIB + 8 * i + 2 * si)];
 #endif
 				ltmp2 = host_readbs(Real2Host(ptr));
 
-				if ((ds_readbs(REQS + 1 + 8 * i + 2 * si) & 0x80) != 0) {
-					if (ltmp2 > (ds_readb(REQS + 1 + 8 * i + 2 * si) & 0x7f))
+				if ((ds_readbs(REQ_ATTRIB + 1 + 8 * i + 2 * si) & 0x80) != 0) {
+					if (ltmp2 > (ds_readb(REQ_ATTRIB + 1 + 8 * i + 2 * si) & 0x7f))
 						impossible = 1;
 				} else {
-					if (ds_readb(REQS + 1 + 8 * i + 2 * si) > ltmp2)
+					if (ds_readb(REQ_ATTRIB + 1 + 8 * i + 2 * si) > ltmp2)
 						impossible = 1;
 				}
 			}
@@ -7270,14 +7270,14 @@ void choose_typus()
 		/* calc pointer to attribute */
 		//ta = reqs[choosen_typus][i].attrib;
 #if !defined(__BORLANDC__)
-		ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + 0x03cf));
+		ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + REQ_ATTRIB));
 #else
-		ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + 0x03cf)];
+		ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + REQ_ATTRIB)];
 #endif
 
 		/* get the required value */
 		//randval = reqs[choosen_typus][i].requirement;
-		randval = ds_readb(8 * choosen_typus + 2 * i + 0x03d0);
+		randval = ds_readb(8 * choosen_typus + 2 * i + REQ_REQUIREMENT);
 
 		if (randval != 1) {
 
@@ -7739,7 +7739,7 @@ void interrupt timer_isr(void)
 void set_timer_isr()
 {
 	/* save adress of the old ISR */
-	ds_writed(0x247c, (Bit32u)bc__dos_getvect(0x1c));
+	ds_writed(TIMER_ISR_BAK, (Bit32u)bc__dos_getvect(0x1c));
 #if !defined(__BORLANDC__)
 	/* set a the new one */
 	RealSetVec(0x1c, RealMake(reloc_gen + 0x3c6, 0x72b3));
@@ -7751,7 +7751,7 @@ void set_timer_isr()
 /* Borlandified and identical */
 void restore_timer_isr()
 {
-	bc__dos_setvect(0x1c, (INTCAST)ds_readd(0x247c));
+	bc__dos_setvect(0x1c, (INTCAST)ds_readd(TIMER_ISR_BAK));
 }
 
 /* Borlandified and nearly identical */
