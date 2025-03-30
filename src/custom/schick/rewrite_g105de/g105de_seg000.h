@@ -10,7 +10,7 @@ Bit16s bc__read(Bit16u, Bit8u*, Bit16u);
 signed short bc_bioskey(signed short);
 void bc_clrscr();
 void bc_free(RealPt);
-RealPt bc_calloc(Bit32s, Bit32s);
+RealPt bc_farcalloc(Bit32s, Bit32s);
 Bit16s bc_close(Bit16u);
 Bit16s bc__close(Bit16u);
 Bit16s bc__create(RealPt, Bit16u);
@@ -35,6 +35,7 @@ static inline void bc_randomize() { }
 #include <DOS.H>
 #include <CONIO.H> // clrscr
 #include <STRING.H> // memcpy, memset
+#include <MALLOC.H>  // farcalloc
 
 #include "port.h"
 
@@ -47,7 +48,7 @@ static inline void bc_randomize() { }
 #define bc_lseek lseek
 #define bc__read _read
 #define bc_free	free
-#define bc_calloc calloc
+#define bc_farcalloc farcalloc
 #define bc_int86x int86x
 #define bc_close close
 #define bc__close _close

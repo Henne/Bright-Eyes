@@ -1306,7 +1306,7 @@ void read_soundcfg()
 #if !defined(__BORLANDC__)
 		/* Small hack: enable MIDI instead of CD-Audio */
 		D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&port));
-		if (port && load_driver(RealMake(datseg, 0x1dda), 3, host_readw((Bit8u*)&port))) {
+		if (port && load_driver(RealMake(datseg, STR_SOUND_ADV), 3, host_readw((Bit8u*)&port))) {
 			/* disable audio-cd */
 			ds_writew(USE_CDA, 0);
 			return;
@@ -7892,19 +7892,19 @@ void alloc_buffers()
 #endif
 }
 
-#if 1
-
+/* Borlandified and identical */
 void init_colors()
 {
-	set_palette((Bit8u*)&col_black, 0x00, 1);
-	set_palette((Bit8u*)&col_white, 0xff, 1);
-	set_palette((Bit8u*)col_popup, 0xd8, 8);
-	set_palette((Bit8u*)col_misc, 0xc8, 3);
-	set_palette((Bit8u*)pal_genbg, 0x40, 0x20);
-	set_palette((Bit8u*)pal_heads, 0x20, 0x20);
+	set_palette((Bit8u*)p_datseg + PAL_COL_BLACK, 0x00, 1);
+	set_palette((Bit8u*)p_datseg + PAL_COL_WHITE, 0xff, 1);
+	set_palette((Bit8u*)p_datseg + PAL_POPUP, 0xd8, 8);
+	set_palette((Bit8u*)p_datseg + PAL_MISC, 0xc8, 3);
+	set_palette((Bit8u*)p_datseg + PAL_GENBG, 0x40, 0x20);
+	set_palette((Bit8u*)p_datseg + PAL_HEADS, 0x20, 0x20);
 	set_textcolor(0xff, 0x0); // WHITE ON BLACK
 }
 
+/* Borlandified and identical */
 void init_stuff()
 {
 	init_colors();
@@ -7922,13 +7922,8 @@ void init_stuff()
 
 RealPt gen_alloc(Bit32u nelem)
 {
-	RealPt p = (RealPt)0;
-	p = bc_calloc(nelem, 1);
-	//D1_INFO("EMU gen_alloc(%ld) = 0x%08x;\n", nelem, p);
-	return p;
+	return (RealPt)bc_farcalloc(nelem, 1);
 }
-
-#endif
 
 #if !defined(__BORLANDC__)
 }

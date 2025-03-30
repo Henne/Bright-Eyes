@@ -66,6 +66,7 @@
 #define MASK_SWITCH                     (0x109a)    /* Bit8s */
 
 #define PAL_TMP                         (0x113b)    /* RGB[32] */
+#define PAL_GENBG                       (0x119b)    /* RGB[32] */
 
 #define SCREEN_VAR                      (0x11fe)    /* Bit16s */
 
@@ -161,11 +162,15 @@
 #define STR_VERSION                     (0x1cb3)    /* char[6] */
 #define PAL_ATTIC                       (0x1cb9)    /* RGB[16] */
 #define PAL_DSALOGO                     (0x1ce9)    /* RGB[32] */
-
+#define PAL_COL_WHITE                   (0x1d49)    /* RGB[1] */
+#define PAL_COL_BLACK                   (0x1d4c)    /* RGB[1] */
+#define PAL_POPUP                       (0x1d4f)    /* RGB[8] */
+#define PAL_MISC                        (0x1d67)    /* RGB[3] */
+#define PAL_HEADS                       (0x1d70)    /* RGB[32] */
 #define STR_SOUND_CFG                   (0x1dd0)    /* char[9]; "SOUND.CFG" */
+#define STR_SOUND_ADV                   (0x1dda)    /* char[]; "SOUND.ADV */
 #define STR_SOUNDHW_NOT_FOUND           (0x1de4)    /* char[]; "SOUND HARDWARE NOT FOUND" */
 #define STR_CHR                         (0x1dfe)    /* char[5]; ".CHR" */
-
 #define STR_TEMP_DIR                    (0x1e03)    /* char[] */
 #define STR_SAVE_ERROR                  (0x1e09)    /* char[] */
 

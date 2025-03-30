@@ -103,7 +103,7 @@ void bc_free(RealPt ptr)
 	CPU_Pop32();
 }
 
-RealPt bc_calloc(Bit32s nelem, Bit32s size)
+RealPt bc_farcalloc(Bit32s nelem, Bit32s size)
 {
 	CPU_Push32(size);
 	CPU_Push32(nelem);
