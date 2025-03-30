@@ -208,7 +208,7 @@
 #define HEAD_FIRST                      (0x40b5)    /* Bit8s */
 #define HEAD_CURRENT                    (0x40b6)    /* Bit8s */
 #define HEAD_TYPUS                      (0x40b7)    /* Bit8s */
-
+#define IN_INTRO                        (0x40b8)    /* Bit8s */
 #define MENU_TILES                      (0x40b9)    /* Bit16s */
 #define LEFT_BORDER                     (0x40bb)    /* Bit16s */
 #define UPPER_BORDER                    (0x40bd)    /* Bit16s */

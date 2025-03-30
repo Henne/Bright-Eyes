@@ -2030,7 +2030,7 @@ void handle_input()
 		if (si == KEY_J)
 			si = KEY_Y;
 
-		if ((ds_readw(IN_KEY_ASCII) == 0x11) && !ds_readbs(0x40b8)) {
+		if ((ds_readw(IN_KEY_ASCII) == 0x11) && !ds_readbs(IN_INTRO)) {
 
 			update_mouse_cursor();
 			mouse_disable();
@@ -7511,7 +7511,7 @@ void intro()
 	Bit8u cnt1;
 	Bit8s cnt2;
 
-	ds_writeb(0x40b8, 1);
+	ds_writeb(IN_INTRO, 1);
 
 	/* load ATTIC */
 	fd = fd_open_datfile(18);
@@ -7733,7 +7733,7 @@ void intro()
 	/* clear screen */
 	call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 0, 0, 319, 199, 0);
 
-	ds_writeb(0x40b8, 0);
+	ds_writeb(IN_INTRO, 0);
 	return;
 }
 
@@ -7772,7 +7772,7 @@ int main_gen(int argc, char **argv)
 		sound_off = 1;
 	};
 
-	ds_writeb(0x40b8, 1);
+	ds_writeb(IN_INTRO, 1);
 
 	if (sound_off == 0)
 		init_music(13000);
