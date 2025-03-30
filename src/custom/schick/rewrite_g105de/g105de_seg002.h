@@ -132,8 +132,11 @@ namespace G105de {
 	void pal_fade_out(Bit8u*, Bit8u*, Bit16s);
 	void pal_fade_in(Bit8u*, Bit8u*, Bit16s, Bit16s);
 	void intro();
-	void set_mouse_isr();
-	void restore_mouse_isr();
+#if defined(__BORLANDC__)
+	void interrupt timer_isr(void);
+#endif
+	void set_timer_isr();
+	void restore_timer_isr();
 	int main_gen(int argc, char **argv);
 	void alloc_buffers_emu();
 	void alloc_buffers();

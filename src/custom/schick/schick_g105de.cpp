@@ -355,8 +355,8 @@ static int seg002(Bitu offs)
 			return 1;
 		}
 		case 0x730b: {
-			D1_LOG("restore_mouse_isr();\n");
-			restore_mouse_isr();
+			D1_LOG("restore_timer_isr();\n");
+			restore_timer_isr();
 
 			return 1;
 		}
@@ -1685,16 +1685,16 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x72e7: {
 					CPU_Pop16();
 
-					D1_LOG("set_mouse_isr();\n");
-					set_mouse_isr();
+					D1_LOG("set_timer_isr();\n");
+					set_timer_isr();
 
 					return 1;
 				}
 				case 0x730b: {
 					CPU_Pop16();
 
-					D1_LOG("restore_mouse_isr();\n");
-					restore_mouse_isr();
+					D1_LOG("restore_timer_isr();\n");
+					restore_timer_isr();
 
 					return 1;
 				}

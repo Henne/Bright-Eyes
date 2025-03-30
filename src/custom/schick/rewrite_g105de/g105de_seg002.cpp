@@ -2035,7 +2035,7 @@ void handle_input()
 			update_mouse_cursor();
 			mouse_disable();
 			stop_music();
-			restore_mouse_isr();
+			restore_timer_isr();
 			exit_video();
 			bc_clrscr();
 			exit(0);
@@ -7722,9 +7722,22 @@ void intro()
 	return;
 }
 
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void interrupt timer_isr(void)
+{
+	ds_inc_ws(RANDOM_GEN_SEED2);
+	if (ds_readws(RANDOM_GEN_SEED2) < 0)
+		ds_writews(RANDOM_GEN_SEED2, 0);
+	restart_midi();
+	asm {pushf };
+	((void far (*)(void))ds_readd(TIMER_ISR_BAK))();
+}
+#endif
+
 #if 1
 
-void set_mouse_isr()
+void set_timer_isr()
 {
 	/* save adress of the old ISR */
 	ds_writed(0x247c, RealGetVec(0x1c));
@@ -7732,7 +7745,7 @@ void set_mouse_isr()
 	RealSetVec(0x1c, RealMake(reloc_gen + 0x3c6, 0x72b3));
 }
 
-void restore_mouse_isr()
+void restore_timer_isr()
 {
 	RealSetVec(0x1c, ds_readd(0x247c));
 }
@@ -7766,7 +7779,7 @@ int main_gen(int argc, char **argv)
 
 	ds_writew(WO_VAR2, ret_zero1());
 
-	set_mouse_isr();
+	set_timer_isr();
 
 	bc_randomize();
 
@@ -7807,7 +7820,7 @@ int main_gen(int argc, char **argv)
 	stop_music();
 	update_mouse_cursor();
 	mouse_disable();
-	restore_mouse_isr();
+	restore_timer_isr();
 
 	if (ds_readw(CALLED_WITH_ARGS) != 0) {
 		call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 0, 0, 319, 199, 0);

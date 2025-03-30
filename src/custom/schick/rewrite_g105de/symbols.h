@@ -181,6 +181,7 @@
 #define CURRENT_TIMBRE_PATCH            (0x2476)    /* Bit8s */
 #define CURRENT_TIMBRE_BANK             (0x2477)    /* Bit8s */
 #define CURRENT_TIMBRE_OFFSET           (0x2478)    /* Bit32u */
+#define TIMER_ISR_BAK                   (0x247c)    /* RealPt */
 
 #define GOT_CH_BONUS                    (0x2780)    /* Bit16s */
 #define GOT_MU_BONUS                    (0x2782)    /* Bit16s */
