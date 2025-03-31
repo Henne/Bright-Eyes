@@ -155,10 +155,6 @@ int schick_nearcall_gen105(unsigned);
 int schick_farcall_v302de(unsigned, unsigned);
 int schick_nearcall_v302de(unsigned);
 
-namespace G105de {
-void BE_cleanup();
-}
-
 int schick_get_version(char *);
 int schick_is_en();
 

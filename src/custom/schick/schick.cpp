@@ -240,7 +240,6 @@ void exit_schick(unsigned char exit)
 	}
 
 	if (gen) {
-		G105de::BE_cleanup();
 		gen--;
 		reloc_gen = 0;
 	}

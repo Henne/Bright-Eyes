@@ -11,7 +11,7 @@
 #include "paging.h"
 #include "callback.h"
 #include "../../../dos/drives.h"
-
+#include "../../custom_hooks.h"
 #include "../schick.h"
 
 #endif
@@ -7427,69 +7427,186 @@ void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16s col, Bit16s n)
 }
 
 #if !defined(__BORLANDC__)
-void BE_cleanup()
+static void BE_cleanup()
 {
-	bc_free((RealPt)ds_readd(BUFFER_SEX_DAT));
-	bc_free((RealPt)ds_readd(BUFFER_POPUP));
-	bc_free((RealPt)ds_readd(BUFFER_HEADS_DAT));
+	Bit32s before = DB_get_conv_mem();
+	RealPt ptr;
 
-	if ((RealPt)ds_readd(BUFFER_TEXT)) {
-		bc_free((RealPt)ds_readd(BUFFER_TEXT));
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(BUFFER_SEX_DAT)) != 0) {
+		D1_INFO("Free BUFFER_SEX_DAT\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(BUFFER_SEX_DAT, 0);
 	}
 
-	bc_free((RealPt)ds_readd(BUFFER_FONT6));
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
 
-	//buffer_sex_dat = NULL;
-	//buffer_popup_nvf = NULL;
-	//buffer_heads_dat = NULL;
-	//buffer_text = NULL;
-	//buffer_font6 = NULL;
+	if ((ptr = (RealPt)ds_readd(BUFFER_POPUP) - 8) != 0) {
+		D1_INFO("Free BUFFER_POPUP\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(BUFFER_POPUP, 0);
+	}
 
-	bc_free((RealPt)ds_readd(PICBUF3));
-	bc_free((RealPt)ds_readd(PICBUF2));
-	bc_free((RealPt)ds_readd(PICBUF1));
-	bc_free((RealPt)ds_readd(GEN_PTR6) - 8);
-	bc_free((RealPt)ds_readd(BUFFER_DMENGE_DAT));
-	bc_free((RealPt)ds_readd(GEN_PTR5));
-	bc_free((RealPt)ds_readd(GEN_PTR4));
-	bc_free((RealPt)ds_readd(GEN_PTR2));
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
 
-	//picbuf3 = NULL;
-	//picbuf2 = NULL;
-	//picbuf1 = NULL;
-	//gen_ptr6 = NULL;
-	//buffer_dmenge_dat = NULL;
-	//gen_ptr5 = NULL;
-	//gen_ptr4 = NULL;
-	//gen_ptr2 = NULL;
+	if ((ptr = (RealPt)ds_readd(BUFFER_HEADS_DAT)) != 0) {
+		D1_INFO("Free BUFFER_HEADS_DAT\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(BUFFER_HEADS_DAT, 0);
+	}
 
-	bc_free((RealPt)ds_readd(PAGE_BUFFER));
-	bc_free((RealPt)ds_readd(GEN_PTR1_DIS) - 8);
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
 
-	//page_buffer = NULL;
-	//gen_ptr1 = NULL;
+	if ((ptr = (RealPt)ds_readd(BUFFER_TEXT)) != 0) {
+		D1_INFO("Free BUFFER_TEXT\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(BUFFER_TEXT, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(BUFFER_FONT6)) != 0) {
+		D1_INFO("Free BUFFER_FONT6\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(BUFFER_FONT6, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(PICBUF3)) != 0) {
+		D1_INFO("Free PICBUF3\t\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(PICBUF3, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(PICBUF2)) != 0) {
+		D1_INFO("Free PICBUF2\t\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(PICBUF2, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+	
+	if ((ptr = (RealPt)ds_readd(PICBUF1)) != 0) {
+		D1_INFO("Free PICBUF1\t\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(PICBUF1, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(GEN_PTR6) - 8) != 0) {
+		D1_INFO("Free GEN_PTR6\t\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(GEN_PTR6, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(BUFFER_DMENGE_DAT) - 8) != 0) {
+		D1_INFO("Free BUFFER_DMENGE_DAT\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(BUFFER_DMENGE_DAT, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(GEN_PTR5) - 8) != 0) {
+		D1_INFO("Free GEN_PTR5\t\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(GEN_PTR5, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(GEN_PTR4)) != 0) {
+		D1_INFO("Free GEN_PTR4\t\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(GEN_PTR4, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(GEN_PTR2)) != 0) {
+		D1_INFO("Free GEN_PTR2\t\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(GEN_PTR2, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(PAGE_BUFFER)) != 0) {
+		D1_INFO("Free PAGE_BUFFER\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(PAGE_BUFFER, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(GEN_PTR1_DIS) - 8) != 0) {
+		D1_INFO("Free GEN_PTR1_DIS\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(GEN_PTR1_DIS, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
 
 	// missed ones
-	if (ds_readd(SND_PTR_UNKN1))
-		bc_free((RealPt)ds_readd(SND_PTR_UNKN1));
-	if (ds_readd(STATE_TABLE))
-		bc_free((RealPt)ds_readd(STATE_TABLE));
-	if (ds_readd(SND_DRIVER))
-		bc_free((RealPt)ds_readd(SND_DRIVER));
-	if (ds_readd(FORM_XMID))
-		bc_free((RealPt)ds_readd(FORM_XMID));
+	if ((ptr = (RealPt)ds_readd(SND_PTR_UNKN1)) != 0) {
+		D1_INFO("Free SND_PTR_UNKN1\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(SND_PTR_UNKN1, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(STATE_TABLE)) != 0) {
+		D1_INFO("Free STATE_TABLE\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(STATE_TABLE, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(SND_DRIVER)) != 0) {
+		D1_INFO("Free SND_DRIVER\t\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(SND_DRIVER, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
+
+	if ((ptr = (RealPt)ds_readd(FORM_XMID)) != 0) {
+		D1_INFO("Free FORM_XMID\t\t 0x%08x\n", ptr);
+		bc_free(ptr);
+		ds_writed(FORM_XMID, 0);
+	}
+
+	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
 
 	for (int i = 0; i < MAX_PAGES; i++) {
-		if (ds_readd(BG_BUFFER + 4 * i)) {
-			bc_free((RealPt)ds_readd(BG_BUFFER + 4 * i));
+		if ((ptr = ds_readd(BG_BUFFER + 4 * i)) != 0) {
+			D1_INFO("Free BG_BUFFER[%02d]\t\t 0x%08x\n", i, ptr);
+			bc_free(ptr);
+			ds_writed(BG_BUFFER + 4 * i, 0);
 		}
 	}
 
 	for (int i = 0; i < MAX_TYPES; i++) {
-		if (ds_readd(TYPUS_BUFFER + 4 * i)) {
-			bc_free((RealPt)ds_readd(TYPUS_BUFFER + 4 * i));
+		if ((ptr = ds_readd(TYPUS_BUFFER + 4 * i)) != 0) {
+			D1_INFO("Free TYPUS_BUFFER[%02d]\t\t 0x%08x\n", i, ptr);
+			bc_free(ptr);
+			ds_writed(TYPUS_BUFFER + 4 * i, 0);
 		}
 	}
+
+	Bit32s after = DB_get_conv_mem();
+
+	D1_INFO("%s() free mem = %d freed = %d\n", __func__, DB_get_conv_mem(), after - before);
+
 }
 #endif
 
@@ -7794,7 +7911,17 @@ int main_gen(int argc, char **argv)
 
 	save_display_stat(RealMake(datseg, DISPLAY_PAGE_BAK));
 
+#if !defined(__BORLANDC__)
+	Bit32s free = 0;
+	D1_INFO("%s() free mem = %d\n", __func__, free = DB_get_conv_mem());
+#endif
+
 	alloc_buffers();
+
+#if !defined(__BORLANDC__)
+	Bit32s aa = DB_get_conv_mem();
+	D1_INFO("%s() free mem = %d allocated = %d\n", __func__, DB_get_conv_mem(), free - aa);
+#endif
 
 	ds_writew(WO_VAR3, 2);
 
@@ -7839,6 +7966,7 @@ int main_gen(int argc, char **argv)
 
 #if !defined(__BORLANDC__)
 	BE_cleanup();
+
 	/* to make MSVC happy */
 	return 0;
 #endif
@@ -7850,7 +7978,7 @@ void alloc_buffers()
 	ds_writed(GFX_PTR,
 		ds_writed(VGA_MEMSTART, (Bit32u)RealMake(0xa000, 0x0)));
 
-	ds_writed(GEN_PTR1_DIS, (Bit32u)((RealPt)gen_alloc(64108) + 8));
+	ds_writed(GEN_PTR1_DIS, (Bit32u)(gen_alloc(64108) + 8));
 
 	ds_writed(PAGE_BUFFER, (Bit32u)gen_alloc(50000));
 
