@@ -33,8 +33,8 @@ namespace G105de {
 	unsigned short load_seq(Bit16s);
 	unsigned short play_sequence(Bit16s);
 	RealPt get_timbre(Bit16s, Bit16s);
-	unsigned short call_load_file(Bit16u);
-	unsigned short load_file(Bit16u);
+	unsigned short call_load_file(Bit16s);
+	unsigned short load_file(Bit16s);
 	void restart_midi();
 	unsigned short load_driver(RealPt, Bit16u, Bit16u);
 	void play_midi(Bit16u);

@@ -1474,13 +1474,13 @@ RealPt get_timbre(Bit16s bank, Bit16s patch)
 }
 
 /* Borlandified and identical */
-unsigned short call_load_file(Bit16u index)
+unsigned short call_load_file(Bit16s index)
 {
 	return load_file(index);
 }
 
-/* Borlandified and nearly identical */
-unsigned short load_file(Bit16u index)
+/* Borlandified and nearly identical, but works */
+unsigned short load_file(Bit16s index)
 {
 	Bit16s handle;
 
