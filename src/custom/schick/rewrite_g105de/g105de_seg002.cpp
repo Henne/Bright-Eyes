@@ -1294,7 +1294,7 @@ void start_music(Bit16u track)
 	}
 }
 
-/* Borlandified and nearly identical */
+/* Borlandified and identical */
 void read_soundcfg()
 {
 	Bit16s handle;
@@ -1303,21 +1303,14 @@ void read_soundcfg()
 	ds_writew(USE_CDA, 0);
 	ds_writew(MIDI_DISABLED, 1);
 
-#if !defined(__BORLANDC__)
-	handle = bc_open(RealMake(datseg, STR_SOUND_CFG), 0x8001);
-#else
-	/* This is checked in the following if statement */
-	handle = bc_open((char*)&ds[STR_SOUND_CFG], 0x8001);
-#endif
-
-	if (handle != -1) {
+	if ((handle = bc_open(RealMake(datseg, STR_SOUND_CFG), 0x8001)) != -1) {
 		bc__read(handle, (Bit8u*)&port, 2);
 		bc__close(handle);
 
 #if !defined(__BORLANDC__)
 		/* Small hack: enable MIDI instead of CD-Audio */
-		D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&port));
-		if (port && load_driver(RealMake(datseg, STR_SOUND_ADV), 3, host_readw((Bit8u*)&port))) {
+		D1_INFO("MIDI port 0x%x\n", port);
+		if ((port != 0) && (load_driver(RealMake(datseg, STR_SOUND_ADV), 3, port))) {
 			/* disable audio-cd */
 			ds_writew(USE_CDA, 0);
 			return;
@@ -4878,7 +4871,7 @@ void calc_at_pa()
  * fill_values() - fills the values if typus is chosen
  *
  */
- /* Borlandified and nearly identical */
+/* Borlandified and nearly identical */
 void fill_values()
 {
 	Bit16s i;
