@@ -1689,7 +1689,7 @@ void do_mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5)
 #if !defined(__BORLANDC__)
 		myregs.x.cx = host_readw(p3);
 #else
-		myregs.x.cx = 0xdead; asm {nop};
+		myregs.x.cx = 0xdead; asm {nop}; // BCC Sync-Point
 #endif
 
 		switch (host_readws(p1)) {
@@ -1791,13 +1791,8 @@ void mouse_enable()
 			ds_writew(HAVE_MOUSE, 0);
 		}
 
-#if defined(__BORLANDC__)
-		ds_writed(MOUSE_CURRENT_CURSOR, (Bit32u)(&p_datseg[MOUSE_MASK]));
-		ds_writed(MOUSE_LAST_CURSOR, (Bit32u)(&p_datseg[MOUSE_MASK]));
-#else
 		ds_writed(MOUSE_CURRENT_CURSOR, (Bit32u)RealMake(datseg, MOUSE_MASK));
 		ds_writed(MOUSE_LAST_CURSOR, (Bit32u)RealMake(datseg, MOUSE_MASK));
-#endif
 
 		if (ds_readws(HAVE_MOUSE) == 2) {
 
@@ -1836,7 +1831,8 @@ void mouse_unused1(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4)
 /* Borlandified and identical */
 void mouse_call_isr()
 {
-	mouse_isr();
+	//mouse_isr();
+	asm {pushf; push cs; nop; }; // BCC Sync-Point
 }
 #endif
 
@@ -2008,22 +2004,18 @@ void mouse_compare()
 		/* copy a pointer */
 		ds_writed(MOUSE_LAST_CURSOR, ds_readd(MOUSE_CURRENT_CURSOR));
 #if !defined(__BORLANDC__)
-		if (RealMake(datseg, MOUSE_MASK) == (RealPt)ds_readd(MOUSE_CURRENT_CURSOR)) {
+		if (RealMake(datseg, MOUSE_MASK) == (RealPt)ds_readd(MOUSE_CURRENT_CURSOR))
 #else
-		if ((RealPt)(&ds[MOUSE_MASK]) == (RealPt)ds_readd(MOUSE_CURRENT_CURSOR)) {
+		if ((RealPt)(&ds[MOUSE_MASK]) == (RealPt)ds_readd(MOUSE_CURRENT_CURSOR))
 #endif
+		{
 			ds_writew(MOUSE_POINTER_OFFSETX, ds_writew(MOUSE_POINTER_OFFSETY, 0));
 		} else {
 			ds_writew(MOUSE_POINTER_OFFSETX, ds_writew(MOUSE_POINTER_OFFSETY, 8));
 		}
 		ds_writew(MOUSE_MOVED, 0);
 		update_mouse_cursor1();
-#if !defined(__BORLANDC__)
 		mouse();
-#else
-		//mouse();
-		asm { nop; nop } // BCC Sync-point
-#endif
 	}
 }
 
@@ -2064,12 +2056,12 @@ void handle_input()
 		if ((RealPt)ds_readd(ACTION_TABLE))
 			si = get_mouse_action(ds_readw(MOUSE_POSX),
 				ds_readw(MOUSE_POSY),
-				(Bit8u*)Real2Host(ds_readd(ACTION_TABLE)));
+				(struct mouse_action*)Real2Host(ds_readd(ACTION_TABLE)));
 				
 		if ((si == 0) && ((RealPt)ds_readd(DEFAULT_ACTION)))
 			si = get_mouse_action(ds_readw(MOUSE_POSX),
 				ds_readw(MOUSE_POSY),
-				(Bit8u*)Real2Host(ds_readd(DEFAULT_ACTION)));
+				(struct mouse_action*)Real2Host(ds_readd(DEFAULT_ACTION)));
 
 		if (ds_readw(HAVE_MOUSE) == 2) {
 			for (i = 0; i < 15; i++)
@@ -2096,40 +2088,23 @@ void handle_input()
 
 /* Borlandified and nearly identical */
 /* static */
-Bit16u get_mouse_action(Bit16s x, Bit16s y, Bit8u *act)
+Bit16u get_mouse_action(Bit16s x, Bit16s y, struct mouse_action *act)
 {
-	Bit16u i;
-#if !defined(__BORLANDC__)
-	struct mouse_action *ptr = (struct mouse_action*)act;
-
-	for (i = 0; ptr[i].action != 0xffff; i++) {
-
-		if (ptr[i].x1 > x)
-			continue;
-		if (ptr[i].x2 < x)
-			continue;
-		if (ptr[i].y1 > y)
-			continue;
-		if (ptr[i].y2 < y)
-			continue;
-
-		return ptr[i].action;
-	}
-#else
-	for (i = 0; host_readws(act + 10 * i) != -1; i++) {
+	Bit16s i;
 	
-		if (host_readws(act + 10 * i + 0) > x)
+	for (i = 0; act[i].x1 != -1; i++) {
+
+		if (act[i].x1 > x)
 			continue;
-		if (host_readws(act + 10 * i + 4) < x)
+		if (act[i].x2 < x)
 			continue;
-		if (host_readws(act + 10 * i + 2) > y)
+		if (act[i].y1 > y)
 			continue;
-		if (host_readws(act + 10 * i + 6) < y)
+		if (act[i].y2 < y)
 			continue;
 
-		return host_readws(act + 10 * i + 8);			
+		return act[i].action;
 	}
-#endif
 
 	return 0;
 }
@@ -2213,7 +2188,7 @@ void decomp_rle(Bit8u *dst, Bit8u *src, Bit16s x, Bit16s y,
 	call_mouse();
 }
 
-/* Borlandified and nearly identical */
+/* Borlandified and nearly identical, but works correct */
 /* static */
 void draw_mouse_cursor()
 {
@@ -2221,10 +2196,12 @@ void draw_mouse_cursor()
 	RealPt vgaptr;
 	signed short *mouse_cursor;
 	Bit16s rangeY;
-	register Bit16s mask; //si
-	register Bit16s rangeX; //di
 	Bit16s diffX;
 	Bit16s diffY;
+
+	register Bit16s mask; //si
+	register Bit16s rangeX; //di
+
 
 	vgaptr = (RealPt)ds_readd(VGA_MEMSTART);
 	mouse_cursor = (signed short*)Real2Host(ds_readd(MOUSE_CURRENT_CURSOR)) + (32 / 2);
@@ -2320,7 +2297,7 @@ void load_font_and_text()
 	len = read_datfile(handle, (Bit8u*)Real2Host(ds_readd(BUFFER_TEXT)), 64000);
 	bc_close(handle);
 
-	split_textbuffer((Bit8u*)p_datseg + TEXTS, (RealPt)ds_readd(BUFFER_TEXT), len);
+	split_textbuffer((Bit8u*)Real2Host(RealMake(datseg, TEXTS)), (RealPt)ds_readd(BUFFER_TEXT), len);
 #if !defined(__BORLANDC__)
 //	split_textbuffer_host(texts, (char*)Real2Host(ds_readd(BUFFER_TEXT)), len);
 #endif
@@ -2406,7 +2383,7 @@ void load_page(Bit16s page)
 		}
 		bc_close(handle);
 #if defined(__BORLANDC__)
-		asm {db 0xeb, 0x4b} // Sync-point
+		asm {db 0xeb, 0x4d} // BCC Sync-point
 #endif
 	} else {
 		/* this should not happen */
@@ -2547,11 +2524,7 @@ void save_chr()
 	process_nvf(&nvf);
 
 	/* copy picture to the character struct */
-#if !defined(__BORLANDC__)
 	bc_memcpy(RealMake(datseg, HERO_PIC), (RealPt)ds_readd(GEN_PTR1_DIS), 1024);
-#else
-	bc_memcpy(&ds[HERO_PIC], (RealPt)ds_readd(GEN_PTR1_DIS), 1024);
-#endif
 
 	/* put the hero in the first group */
 	ds_writeb(HERO_GROUP, 1);
@@ -2561,19 +2534,11 @@ void save_chr()
 		return;
 	/* copy name to alias */
 	/* TODO: should use strncpy() here */
-#if !defined(__BORLANDC__)
 	bc_strcpy(RealMake(datseg, HERO_ALIAS), RealMake(datseg, HERO_NAME));
-#else
-	bc_strcpy(&ds[HERO_ALIAS], &ds[HERO_NAME]);
-#endif
 
 	/* copy name to buffer */
 	/* TODO: should use strncpy() here */
-#if !defined(__BORLANDC__)
 	bc_strcpy((RealPt)ds_readd(GEN_PTR2), RealMake(datseg, HERO_NAME));
-#else
-	bc_strcpy((RealPt)ds_readd(GEN_PTR2), &ds[HERO_NAME]);
-#endif
 
 	/* prepare filename */
 	for (i = 0; i < 8; i++) {
@@ -2670,7 +2635,7 @@ void save_chr()
 			}
 		} else {
 			/* should be replaced with infobox() */
-			error_msg(p_datseg + STR_SAVE_ERROR);
+			error_msg(RealMake(datseg, STR_SAVE_ERROR));
 		}
 	}
 #endif
@@ -2704,17 +2669,6 @@ void read_common_files()
 	bc_close(handle);
 	decomp_pp20((RealPt)ds_readd(BUFFER_DMENGE_DAT), Real2Host(ds_readd(BUFFER_DMENGE_DAT)) - 8, len);
 }
-
-#if !defined(__BORLANDC__)
-#if 0
-static inline Bit32u swap_u32(Bit32u v)
-{
-	return ((v >> 24) & 0xff) | ((v >> 16) & 0xff) << 8 |
-		((v >> 8) & 0xff) << 16 | (v & 0xff) << 24;
-
-}
-#endif
-#endif
 
 /* Borlandified and far from identical, but works */
 Bit32s process_nvf(struct nvf_desc *nvf)
@@ -2843,21 +2797,12 @@ Bit16s open_datfile(Bit16u index)
 
 	bc_flushall();
 
-#if defined(__BORLANDC__)
-	while ((handle = bc_open(&ds[STR_DSAGEN_DAT], 0x8001)) == -1)
-#else
 	while ((handle = bc_open(RealMake(datseg, STR_DSAGEN_DAT), 0x8001)) == -1)
-#endif
 	{
-#if defined(__BORLANDC__)
-		sprintf(Real2Host(ds_readd(GEN_PTR2)),
-			&ds[STR_FILE_MISSING],
-			ds_readd(FNAMES_G105de + 4 * index));
-#else
 		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)),
-			(const char*)(p_datseg + STR_FILE_MISSING),
-			Real2Host(ds_readd(FNAMES_G105de + 4 * index)));
-#endif
+			(const char*)Real2Host(RealMake(datseg, STR_FILE_MISSING)),
+			(const char*)Real2Host((RealPt)ds_readd(FNAMES_G105de + 4 * index)));
+
 		ds_writeb(USELESS_VARIABLE, 1);
 		infobox((char*)Real2Host(ds_readd(GEN_PTR2)), 0);
 		ds_writeb(USELESS_VARIABLE, 0);
@@ -3021,11 +2966,7 @@ Bit32u unused_func10(Bit32u v)
 /* Borlandified and identical */
 void init_video(Bit16s unused)
 {
-#if defined(__BORLANDC__)
-	struct struct_color l_white = *(struct_color*)&ds[STRUCT_COL_WHITE2];
-#else
-	struct struct_color l_white = *(struct_color*)(p_datseg + STRUCT_COL_WHITE2);
-#endif
+	struct struct_color l_white = *(struct_color*)Real2Host(RealMake(datseg, STRUCT_COL_WHITE2));
 
 	/* set the video mode to 320x200 8bit */
 	set_video_mode(0x13);
@@ -3255,11 +3196,7 @@ void blit_smth3(RealPt ptr, Bit16s v1, Bit16s v2)
 	Bit8u *src;
 	Bit16s i, j;
 
-#if !defined(__BORLANDC__)
-	src = p_datseg + ARRAY_2;
-#else
-	src = &ds[ARRAY_2];
-#endif
+	src = Real2Host(RealMake(datseg, ARRAY_2));
 
 	for (i = 0; i < v1; src += 8 - v2, ptr += 320, i++)
 		for (j = 0; j < v2; src++, j++)

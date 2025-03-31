@@ -1,9 +1,9 @@
 struct mouse_action {
-	unsigned short x1;
-	unsigned short y1;
-	unsigned short x2;
-	unsigned short y2;
-	unsigned short action;
+	signed short x1;
+	signed short y1;
+	signed short x2;
+	signed short y2;
+	signed short action;
 };
 
 struct nvf_desc {
@@ -54,7 +54,7 @@ namespace G105de {
 	void mouse();
 	void mouse_compare();
 	void handle_input();
-	Bit16u get_mouse_action(Bit16s, Bit16s, Bit8u*);
+	Bit16u get_mouse_action(Bit16s, Bit16s, struct mouse_action*);
 	void decomp_rle(Bit8u*, Bit8u*, Bit16s, Bit16s, Bit16s, Bit16s, Bit16u);
 	void draw_mouse_cursor();
 	void save_mouse_bg();
