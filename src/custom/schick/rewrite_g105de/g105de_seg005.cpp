@@ -188,4 +188,12 @@ void copy_to_screen(PhysPt src, PhysPt dst, Bit16s w, Bit16s h, Bit16u mode)
 	}
 }
 
+RealPt _normalize_ptr(RealPt ptr)
+{
+	CPU_Push32(ptr);
+	CALLBACK_RunRealFar(reloc_gen + 0xb6b, 0x445);
+	CPU_Pop32();
+	return RealMake(reg_dx, reg_ax);
+}
+
 }
