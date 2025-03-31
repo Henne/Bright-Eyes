@@ -1497,26 +1497,26 @@ unsigned short load_file(Bit16s index)
 unsigned short load_driver(RealPt fname, Bit16s type, Bit16s port)
 {
 	if (port != 0 &&
-		((RealPt)ds_writed(0x3f52, (RealPt)load_snd_driver(fname))) &&
-		((ds_writews(SND_DRIVER_HANDLE, AIL_register_driver((RealPt)ds_readd(0x3f52)))) != -1) &&
+		((RealPt)ds_writed(SND_DRIVER_BASE_ADDR, (RealPt)load_snd_driver(fname))) &&
+		((ds_writews(SND_DRIVER_HANDLE, AIL_register_driver((RealPt)ds_readd(SND_DRIVER_BASE_ADDR)))) != -1) &&
 #if !defined(__BORLANDC__)
-		host_readw(Real2Host((RealPt)(ds_writed(0x3f56, (Bit32s)AIL_describe_driver(ds_readw(SND_DRIVER_HANDLE))))) + 2) == type)
+		host_readw(Real2Host((RealPt)(ds_writed(SND_DRIVER_DESC, (Bit32s)AIL_describe_driver(ds_readw(SND_DRIVER_HANDLE))))) + 2) == type)
 #else
-		host_readw(Real2Host((RealPt)(ds_writed(0x3f56, (Bit32s)AIL_describe_driver(_AX)))) + 2) == type)
+		host_readw(Real2Host((RealPt)(ds_writed(SND_DRIVER_DESC, (Bit32s)AIL_describe_driver(_AX)))) + 2) == type)
 #endif
 	{
 		if (port == -1) {
-			port = host_readws(Real2Host((RealPt)ds_readd(0x3f56)) + 0x0c);
+			port = host_readws(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x0c);
 		}
 		if (AIL_detect_device(ds_readw(SND_DRIVER_HANDLE), port,
-					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x0e),
-					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x10),
-					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x12)) != 0)
+					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x0e),
+					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x10),
+					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x12)) != 0)
 		{
 			AIL_init_driver(ds_readw(SND_DRIVER_HANDLE), port,
-					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x0e),
-					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x10),
-					host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 0x12));
+					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x0e),
+					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x10),
+					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x12));
 			if (type == 3) {
 				ds_writed(STATE_TABLE_SIZE,
 					AIL_state_table_size(ds_readw(SND_DRIVER_HANDLE)));
@@ -1560,7 +1560,7 @@ unsigned short load_driver(RealPt fname, Bit16s type, Bit16s port)
 void play_midi(Bit16u index)
 {
 	if ((ds_readw(MIDI_DISABLED) == 0) &&
-		(host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 2) == 3))
+		(host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 2) == 3))
 	{
 		stop_sequence();
 		call_load_file(index);
@@ -1572,7 +1572,7 @@ void play_midi(Bit16u index)
 void stop_sequence()
 {
 	if ((ds_readw(MIDI_DISABLED) == 0) &&
-		(host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 2) == 3))
+		(host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 2) == 3))
 	{
 		AIL_stop_sequence(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE));
 		AIL_release_sequence_handle(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE));
@@ -1583,7 +1583,7 @@ void stop_sequence()
 void restart_midi()
 {
 	if ((ds_readw(MIDI_DISABLED) == 0) &&
-		(host_readw(Real2Host((RealPt)ds_readd(0x3f56)) + 2) == 3) &&
+		(host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 2) == 3) &&
 		(AIL_sequence_status(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE)) == 2))
 	{
 		AIL_start_sequence(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE));

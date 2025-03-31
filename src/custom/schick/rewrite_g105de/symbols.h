@@ -204,7 +204,8 @@
 #define FORM_XMID                       (0x3f46)    /* RealPt */
 #define SND_PTR_UNKN1                   (0x3f4a)    /* RealPt */
 #define STATE_TABLE                     (0x3f4e)    /* RealPt */
-
+#define SND_DRIVER_BASE_ADDR            (0x3f52)    /* RealPt */
+#define SND_DRIVER_DESC                 (0x3f56)    /* RealPt */
 #define SND_SEQUENCE                    (0x3f5a)    /* Bit16s */
 #define SND_DRIVER_HANDLE               (0x3f5c)    /* Bit16s */
 #define PARAM_LEVEL                     (0x3f5e)    /* Bit16s DE: {0, 'a', 'n'} */
