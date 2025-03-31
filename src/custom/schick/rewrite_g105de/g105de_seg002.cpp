@@ -1163,7 +1163,7 @@ static const struct struct_color pal_heads[32] = {
 
 //void *snd_driver;
 //void *form_xmid;
-//void *snd_ptr_unkn1;
+//void *SND_TIMBRE_CACHE;
 //void *state_table;
 
 
@@ -1338,8 +1338,8 @@ void stop_music()
 {
 	AIL_shutdown(0);
 
-	if (ds_readd(SND_PTR_UNKN1))
-		bc_free((RealPt)ds_readd(SND_PTR_UNKN1));
+	if (ds_readd(SND_TIMBRE_CACHE))
+		bc_free((RealPt)ds_readd(SND_TIMBRE_CACHE));
 
 	if (ds_readd(STATE_TABLE))
 		bc_free((RealPt)ds_readd(STATE_TABLE));
@@ -1532,11 +1532,11 @@ unsigned short load_driver(RealPt fname, Bit16s type, Bit16s port)
 						AIL_default_timbre_cache_size(ds_readw(SND_DRIVER_HANDLE)));
 
 					if (ds_readw(TIMBRE_CACHE_SIZE) != 0) {
-						ds_writed(SND_PTR_UNKN1,
+						ds_writed(SND_TIMBRE_CACHE,
 							(Bit32u)gen_alloc(ds_readw(TIMBRE_CACHE_SIZE)));
 #if !defined(__BORLANDC__)
 						AIL_define_timbre_cache(ds_readw(SND_DRIVER_HANDLE),
-							(RealPt)ds_readd(SND_PTR_UNKN1),
+							(RealPt)ds_readd(SND_TIMBRE_CACHE),
 							ds_readw(TIMBRE_CACHE_SIZE));
 #else
 
@@ -7556,10 +7556,10 @@ static void BE_cleanup()
 	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());
 
 	// missed ones
-	if ((ptr = (RealPt)ds_readd(SND_PTR_UNKN1)) != 0) {
-		D1_INFO("Free SND_PTR_UNKN1\t 0x%08x\n", ptr);
+	if ((ptr = (RealPt)ds_readd(SND_TIMBRE_CACHE)) != 0) {
+		D1_INFO("Free SND_TIMBRE_CACHE\t 0x%08x\n", ptr);
 		bc_free(ptr);
-		ds_writed(SND_PTR_UNKN1, 0);
+		ds_writed(SND_TIMBRE_CACHE, 0);
 	}
 
 	D1_INFO("%s() free mem = %d\n", __func__, DB_get_conv_mem());

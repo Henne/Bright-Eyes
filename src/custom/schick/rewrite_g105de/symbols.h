@@ -202,7 +202,7 @@
 #define STATE_TABLE_SIZE                (0x3f3e)    /* Bit32u */
 #define SND_DRIVER                      (0x3f42)    /* RealPt */
 #define FORM_XMID                       (0x3f46)    /* RealPt */
-#define SND_PTR_UNKN1                   (0x3f4a)    /* RealPt */
+#define SND_TIMBRE_CACHE                (0x3f4a)    /* RealPt */
 #define STATE_TABLE                     (0x3f4e)    /* RealPt */
 #define SND_DRIVER_BASE_ADDR            (0x3f52)    /* RealPt */
 #define SND_DRIVER_DESC                 (0x3f56)    /* RealPt */
