@@ -76,6 +76,7 @@ struct struct_color {
 static const Bit16u MAX_PAGES = 11;
 static const Bit16u MAX_TYPES = 13;
 
+#if 0
 struct struct_spelltab {
 	signed char origin;
 	signed char att1;
@@ -173,7 +174,9 @@ static const struct struct_spelltab spelltab[87] = {
 	{ 2, 1, 2, 6, 5},
 	{ -1, 0, 0, 0, 0},
 };
+#endif
 
+#if 0
 /* DS:0x030b */
 static const signed short house_spells[][8] = {
 	/* Antimagie */
@@ -195,11 +198,15 @@ static const signed short house_spells[][8] = {
 	/* Veränderung */
 	{0x4c, 0x4e, 0x4f, 0x50, 0x52, 0x53, 0x54, -1}
 };
+#endif
+
+#if 0
 /* DS:03ab */
 struct struct_school_tab {
 	unsigned short first_spell;
 	unsigned short spells;
 };
+
 static const struct struct_school_tab school_tab[] = {
 	{0x01, 0x05},
 	{0x06, 0x0c},
@@ -211,7 +218,9 @@ static const struct struct_school_tab school_tab[] = {
 	{0x3c, 0x10},
 	{0x4c, 0x0a},
 };
+#endif
 
+#if 0
 struct struct_reqs {
 	unsigned char attrib, requirement;
 };
@@ -233,6 +242,7 @@ static const struct_reqs reqs[13][4] = {
 	{ {5, 12}, {4, 13}, {10, 0x80 | 4}, {2, 1}, },
 	{ {5, 13}, {4, 13}, {10, 0x80 | 4}, {2, 1}, },
 };
+#endif
 
 #if 0
 static const signed char skills[13][52] = {
@@ -678,12 +688,12 @@ static const signed char initial_conv_incs[6] = {
 };
 #endif
 
+#if 0
 struct struct_house_mod {
 	signed char no;
 	signed short spells[7], mod[7];
 };
 
-#if 0
 static const struct struct_house_mod house_mod[9] = {
 	{6, {0x1, 0x2, 0x3, 0x4, 0x5, 0x2a, 0x0}, {3, 1, 2, 2, 3, 1, 0}},
 	{5, {0x7, 0xc, 0xe, 0x10, 0x2c, 0x0, 0x0}, {3, 4, 2, 2, 1, 0, 0}},
@@ -781,7 +791,7 @@ static const signed char head_first_female[11] = {	0, 3, 9, 15,
 
 //static struct struct_color pal_tmp[32];
 
-/* DS:0x119b */
+#if 0
 static const struct struct_color pal_genbg[32] = {
 	{0x00, 0x00, 0x00},
 	{0x38, 0x38, 0x38},
@@ -816,6 +826,7 @@ static const struct struct_color pal_genbg[32] = {
 	{0x1c, 0x00, 0x00},
 	{0x14, 0x00, 0x00},
 };
+#endif
 
 #if 0
 static const unsigned char MASK_SWITCH = 0;
@@ -1085,11 +1096,11 @@ static const struct struct_color pal_dsalogo[32] = {
 	{0x3c, 0x3c, 0x3c},
 };
 #endif
-/* DS:0x1d49 */
+/* DS:PAL_COL_WHITE */
 static const struct struct_color col_white = { 0x3f, 0x3f, 0x3f };
-/* DS:0x1d4c */
+/* DS:PAL_COL_BLACK */
 static const struct struct_color col_black = { 0x00, 0x00, 0x00 };
-/* DS:0x1d4f */
+/* DS:PAL_POPUP */
 static const struct struct_color col_popup[8] = {
 	{0x00, 0x00, 0x00 },
 	{0x38, 0x30, 0x28 },
@@ -1100,13 +1111,13 @@ static const struct struct_color col_popup[8] = {
 	{0x18, 0x14, 0x00 },
 	{0x0b, 0x19, 0x0c }
 };
-/* DS:0x1d67 */
+/* DS:PAL_MISC */
 static const struct struct_color col_misc[3] = {
 	{0x28, 0x00, 0x00 },
 	{0x28, 0x28, 0x00 },
 	{0x00, 0x00, 0x28 }
 };
-/* DS:0x1d70 */
+/* DS:PAL_HEADS */
 static const struct struct_color pal_heads[32] = {
 	{0x00, 0x00, 0x00},
 	{0x00, 0x00, 0x3f},
@@ -7759,14 +7770,6 @@ int main_gen(int argc, char **argv)
 {
 	Bit16s sound_off = 0;
 
-#if !defined(__BORLANDC__)
-	if (sizeof(struct struct_hero) != 0x6da) {
-		D1_ERR("Error: sizeof(struct_hero) == 0x%lx != 0x6da\n",
-			sizeof(struct struct_hero));
-		exit(1);
-	}
-#endif
-
 	if (argc > 1)
 		ds_writew(CALLED_WITH_ARGS, 1);
 
@@ -7789,11 +7792,7 @@ int main_gen(int argc, char **argv)
 
 	bc_randomize();
 
-#if !defined(__BORLANDC__)
 	save_display_stat(RealMake(datseg, DISPLAY_PAGE_BAK));
-#else
-	save_display_stat(p_datseg + DISPLAY_PAGE_BAK);
-#endif
 
 	alloc_buffers();
 
@@ -7886,7 +7885,7 @@ void alloc_buffers()
 	//ds_writed(GEN_PTR6, (Bit32u)(gen_alloc(1100) + 8));
 
 	if (!(RealPt)(ds_writed(GEN_PTR6, (Bit32u)(gen_alloc(1100) + 8))))
-		printf((char*)p_datseg + STR_MALLOC_ERROR);
+		printf((char*)RealMake(datseg, STR_MALLOC_ERROR));
 #if defined(__BORLANDC__)
 	asm { db 0x66, 0x90;};
 #endif
