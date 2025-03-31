@@ -1353,7 +1353,7 @@ void stop_music()
 	seg001_033b();
 }
 
-/* Borlandified and nearly identical */
+/* Borlandified and nearly identical, but works identically */
 RealPt load_snd_driver(RealPt fname)
 {
 	Bit32s size;
@@ -1385,42 +1385,45 @@ void unload_snd_driver()
 	}
 }
 
-/* Borlandified and nearly identical */
+/* Borlandified and nearly identical, but works SYNC */
 unsigned short load_seq(Bit16u sequence_num)
 {
-	Bit16u patch;
+	Bit16s patch;
 	RealPt ptr;
-	Bit16u si, di; // di = bank, si = patch
+	Bit16s si;
+	Bit16s di; // di = bank, si = patch
 
-	if ((ds_writew(HANDLE_TIMBRE, open_datfile(35))) != 0xffff) {
+	if ((ds_writews(HANDLE_TIMBRE, open_datfile(35))) != -1) {
 
-		if ((ds_writew(SND_SEQUENCE, AIL_register_sequence(ds_readw(SND_DRIVER_HANDLE),
+		if ((ds_writews(SND_SEQUENCE, AIL_register_sequence(ds_readws(SND_DRIVER_HANDLE),
 			(RealPt)ds_readd(FORM_XMID), sequence_num,
-			(RealPt)ds_readd(STATE_TABLE), NULL))) != 0xffff) {
+			(RealPt)ds_readd(STATE_TABLE), NULL))) != -1) {
 
-			while ((si = AIL_timbre_request(ds_readw(SND_DRIVER_HANDLE), ds_readw(SND_SEQUENCE))) != 0xffff)
+			while ((si = AIL_timbre_request(ds_readws(SND_DRIVER_HANDLE), ds_readws(SND_SEQUENCE))) != -1)
 			{
-				di = si >> 8;
+				di = ((Bit16u)si) >> 8;
 
 				if ((ptr = get_timbre(di, patch = (si & 0xff))) != 0) {
 					/* ptr is passed differently */
-					AIL_install_timbre(ds_readw(SND_DRIVER_HANDLE), di, patch, ptr);
+					AIL_install_timbre(ds_readws(SND_DRIVER_HANDLE), di, patch, ptr);
 					bc_free(ptr);
 				}
 			}
-#if defined(__BORLANDC__)
-			// PLACEHOLDER: next line should be used here instead of asm
-			//bc_close(ds_readw(HANDLE_TIMBRE));
-			asm {db 0x75, 0xff};
-#else
-			bc_close(ds_readw(HANDLE_TIMBRE));
-#endif
-			return 1;
-		}
-		bc_close(ds_readw(HANDLE_TIMBRE));
-	}
 
+			bc_close(ds_readw(HANDLE_TIMBRE));
+
+			return 1;
+		} else {
+#if !defined(__BORLANDC__)
+			bc_close(ds_readw(HANDLE_TIMBRE));
+#else
+			//bc_close(ds_readw(HANDLE_TIMBRE));
+			asm { db 0x0f, 0x1d, 0x40, 0x00; db 0x0f, 0x1d, 0x04, 0x00}; // BCC Sync-Point
+#endif
+		}
+	}
 	return 0;
+
 }
 
 /* Borlandified and identical */
