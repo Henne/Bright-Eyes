@@ -36,7 +36,7 @@ namespace G105de {
 	unsigned short call_load_file(Bit16s);
 	unsigned short load_file(Bit16s);
 	void restart_midi();
-	unsigned short load_driver(RealPt, Bit16u, Bit16u);
+	unsigned short load_driver(RealPt, Bit16s, Bit16s);
 	void play_midi(Bit16u);
 	void stop_sequence();
 
