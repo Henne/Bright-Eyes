@@ -120,6 +120,14 @@ static const unsigned char s_exit[] =
 	{0x55, 0x8b, 0xec, 0x33, 0xc0, 0x50, 0x50, 0xff,
 	 0x76, 0x06, 0xe8, 0x9c, 0xff, 0x5d, 0xcb};
 
+/* Signature: heapwalk() BCC20:L BCC31:L (Length = 0x77) */
+static const unsigned char s_heapwalk[] =
+	{0x55, 0x8b, 0xec, 0x56, 0x57, 0x8b, 0x7e, 0x06,
+	 0x1e, 0x8b, 0x5e, 0x08, 0x83, 0xff, 0xf0, 0x72,
+	 0x04, 0x43, 0x83, 0xef, 0x10, 0x8e, 0xdb, 0x8b,
+	 0x5d, 0x02, 0x0b, 0xdb, 0x74, 0x0b, 0x2e, 0x3b,
+	 0x1e};
+
 void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
 {
 	const char outstring[] = "Found at CS:0x%04x Func: %20s Length: 0x%04x Versions: %s\n";
@@ -177,6 +185,11 @@ void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
 		if (memcmp(p_cs + i, s_exit, sizeof(s_exit)) == 0) {
 			fprintf(stderr, outstring, i, "exit()" , sizeof(s_exit), "BCC 3.1");
 			i += sizeof(s_exit) - 1;
+		}
+		if (memcmp(p_cs + i, s_heapwalk, sizeof(s_heapwalk)) == 0) {
+			/* function is longer than the signature */
+			fprintf(stderr, outstring, i, "heapwalk()" , 0x77, "BCC 2.0, 3.1");
+			i += 0x77 - 1;
 		}
 
 		i++;
