@@ -6,6 +6,7 @@
 
 #include "setup.h"
 #include "regs.h"
+#include "dos_inc.h"
 #include "custom.h"
 #include "custom_hooks.h"
 static Bit8u custom_runs;
@@ -17,6 +18,15 @@ Bit16u custom_oldCS, custom_oldIP;
 //static class custom_prog running_progs[2];
 
 //static class custom_prog *current;
+//
+
+Bit32s DB_get_conv_mem()
+{
+	Bit16u seg;
+	Bit16u blocks = 0xffff;
+	DOS_AllocateMemory(&seg, &blocks);
+	return blocks * 16;
+}
 
 void custom_init_prog(char *name, Bit16u relocate, Bit16u init_cs, Bit16u init_ip)
 {
@@ -111,6 +121,8 @@ void custom_init(Section *sec)
 //	custom_prog *p_current = new custom_prog;
 	sec->AddDestroyFunction(&custom_exit);
 	fprintf(stderr, "Bright Eyes, build date %s\n", __DATE__);
+	fprintf(stderr, "Bright Eyes, free conv mem %d bytes\n", DB_get_conv_mem());
+
 }
 
 #endif /* DOSBOX_CUSTOM */

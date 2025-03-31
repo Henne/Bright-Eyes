@@ -6,6 +6,7 @@
 
 bool check_bcc(char *, unsigned short , unsigned short, unsigned short);
 
+Bit32s DB_get_conv_mem();
 
 #ifdef DOSBOX_SOA_H
 /* prototypes for Execution operations */
