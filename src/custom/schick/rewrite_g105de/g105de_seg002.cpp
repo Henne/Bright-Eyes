@@ -7870,7 +7870,7 @@ void set_timer_isr()
 	ds_writed(TIMER_ISR_BAK, (Bit32u)bc__dos_getvect(0x1c));
 #if !defined(__BORLANDC__)
 	/* set a the new one */
-	RealSetVec(0x1c, RealMake(reloc_gen + 0x3c6, 0x72b3));
+	bc__dos_setvect(0x1c, RealMake(reloc_gen + 0x3c6, 0x72b3));
 #else
 	bc__dos_setvect(0x1c, (INTCAST)timer_isr);
 #endif
