@@ -1498,57 +1498,63 @@ unsigned short load_driver(RealPt fname, Bit16s type, Bit16s port)
 {
 	if (port != 0 &&
 		((RealPt)ds_writed(SND_DRIVER_BASE_ADDR, (RealPt)load_snd_driver(fname))) &&
-		((ds_writews(SND_DRIVER_HANDLE, AIL_register_driver((RealPt)ds_readd(SND_DRIVER_BASE_ADDR)))) != -1) &&
-#if !defined(__BORLANDC__)
-		host_readw(Real2Host((RealPt)(ds_writed(SND_DRIVER_DESC, (Bit32s)AIL_describe_driver(ds_readw(SND_DRIVER_HANDLE))))) + 2) == type)
-#else
-		host_readw(Real2Host((RealPt)(ds_writed(SND_DRIVER_DESC, (Bit32s)AIL_describe_driver(_AX)))) + 2) == type)
-#endif
+		((ds_writews(SND_DRIVER_HANDLE, AIL_register_driver((RealPt)ds_readd(SND_DRIVER_BASE_ADDR)))) != -1))
 	{
-		if (port == -1) {
-			port = host_readws(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x0c);
-		}
-		if (AIL_detect_device(ds_readw(SND_DRIVER_HANDLE), port,
+
+#if !defined(__BORLANDC__)
+		ds_writed(SND_DRIVER_DESC, (Bit32s)AIL_describe_driver(ds_readw(SND_DRIVER_HANDLE)));
+#else
+		// _AX contains the value of SND_DRIVER_HANDLE
+		ds_writed(SND_DRIVER_DESC, (Bit32s)AIL_describe_driver(_AX));
+#endif
+		if (host_readws(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 2) == type)
+		{
+			if (port == -1) {
+				port = host_readws(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x0c);
+			}
+			if (AIL_detect_device(ds_readw(SND_DRIVER_HANDLE), port,
 					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x0e),
 					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x10),
 					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x12)) != 0)
-		{
-			AIL_init_driver(ds_readw(SND_DRIVER_HANDLE), port,
+			{
+				AIL_init_driver(ds_readw(SND_DRIVER_HANDLE), port,
 					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x0e),
 					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x10),
 					host_readw(Real2Host((RealPt)ds_readd(SND_DRIVER_DESC)) + 0x12));
-			if (type == 3) {
-				ds_writed(STATE_TABLE_SIZE,
-					AIL_state_table_size(ds_readw(SND_DRIVER_HANDLE)));
+				if (type == 3) {
+					ds_writed(STATE_TABLE_SIZE,
+						AIL_state_table_size(ds_readw(SND_DRIVER_HANDLE)));
 
-				ds_writed(STATE_TABLE,
-					(Bit32u)gen_alloc(ds_readd(STATE_TABLE_SIZE)));
+					ds_writed(STATE_TABLE,
+						(Bit32u)gen_alloc(ds_readd(STATE_TABLE_SIZE)));
 
-				ds_writew(TIMBRE_CACHE_SIZE,
-					AIL_default_timbre_cache_size(ds_readw(SND_DRIVER_HANDLE)));
+					ds_writew(TIMBRE_CACHE_SIZE,
+						AIL_default_timbre_cache_size(ds_readw(SND_DRIVER_HANDLE)));
 
-				if (ds_readw(TIMBRE_CACHE_SIZE) != 0) {
-					ds_writed(SND_PTR_UNKN1, (Bit32u)gen_alloc(ds_readw(TIMBRE_CACHE_SIZE)));
+					if (ds_readw(TIMBRE_CACHE_SIZE) != 0) {
+						ds_writed(SND_PTR_UNKN1,
+							(Bit32u)gen_alloc(ds_readw(TIMBRE_CACHE_SIZE)));
 #if !defined(__BORLANDC__)
-					AIL_define_timbre_cache(ds_readw(SND_DRIVER_HANDLE),
+						AIL_define_timbre_cache(ds_readw(SND_DRIVER_HANDLE),
 							(RealPt)ds_readd(SND_PTR_UNKN1),
 							ds_readw(TIMBRE_CACHE_SIZE));
 #else
 
 #endif
+					}
 				}
-			}
 
-			ds_writew(MIDI_DISABLED, 0);
-			return 1;
-		} else {
+				ds_writew(MIDI_DISABLED, 0);
+				return 1;
+			} else {
 #if !defined(__BORLANDC__)
-			infobox((char*)Real2Host(RealMake(datseg, STR_SOUNDHW_NOT_FOUND)), 0);
-			ds_writew(MIDI_DISABLED, 1);
+				infobox((char*)Real2Host(RealMake(datseg, STR_SOUNDHW_NOT_FOUND)), 0);
+				ds_writew(MIDI_DISABLED, 1);
 #else
-			asm {nop; } // BCC Sync-point
+				asm {nop; } // BCC Sync-point
 #endif
-			return 0;
+				return 0;
+			}
 		}
 	}
 
