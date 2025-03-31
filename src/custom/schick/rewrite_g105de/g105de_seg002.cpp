@@ -1386,7 +1386,7 @@ void unload_snd_driver()
 }
 
 /* Borlandified and nearly identical, but works SYNC */
-unsigned short load_seq(Bit16u sequence_num)
+unsigned short load_seq(Bit16s sequence_num)
 {
 	Bit16s patch;
 	RealPt ptr;
@@ -1427,7 +1427,7 @@ unsigned short load_seq(Bit16u sequence_num)
 }
 
 /* Borlandified and identical */
-unsigned short play_sequence(Bit16u sequence_num)
+unsigned short play_sequence(Bit16s sequence_num)
 {
 	if (load_seq(sequence_num) != 0) {
 		AIL_start_sequence(ds_readw(SND_DRIVER_HANDLE), sequence_num);
@@ -1437,37 +1437,37 @@ unsigned short play_sequence(Bit16u sequence_num)
 	return 0;
 }
 
-/* Borlandified and nearly identical */
-RealPt get_timbre(Bit16u bank, Bit16u patch)
+/* Borlandified and nearly identical, but works SYNC */
+RealPt get_timbre(Bit16s bank, Bit16s patch)
 {
 	RealPt timbre_ptr;
 
 	bc_lseek(ds_readw(HANDLE_TIMBRE), ds_readd(GENDAT_OFFSET), SEEK_SET);
 
 	do {
-		read_datfile(ds_readw(HANDLE_TIMBRE), p_datseg + CURRENT_TIMBRE_PATCH, 6);
+		read_datfile(ds_readw(HANDLE_TIMBRE), Real2Host(RealMake(datseg, CURRENT_TIMBRE_PATCH)), 6);
 
 		if (ds_readbs(CURRENT_TIMBRE_BANK) == -1)
 			return 0;
 
-	} while ((ds_readbs(CURRENT_TIMBRE_BANK) != bank) && (ds_readbs(CURRENT_TIMBRE_PATCH) != patch));
-//	Remark: In the executable the code produces an infinite loop and is:
-//	} while ((ds_readbs(CURRENT_TIMBRE_BANK) != bank) || (ds_readbs(CURRENT_TIMBRE_PATCH) != patch));
+	} while ((ds_readbs(CURRENT_TIMBRE_BANK) != bank) || (ds_readbs(CURRENT_TIMBRE_PATCH) != patch));
+//	Remark: Try out the next line instead and get a different sound:
+//	} while ((ds_readbs(CURRENT_TIMBRE_BANK) != bank) && (ds_readbs(CURRENT_TIMBRE_PATCH) != patch));
 
 	bc_lseek(ds_readw(HANDLE_TIMBRE), ds_readd(GENDAT_OFFSET) + ds_readd(CURRENT_TIMBRE_OFFSET), SEEK_SET);
 	read_datfile(ds_readw(HANDLE_TIMBRE), p_datseg + CURRENT_TIMBRE_LENGTH, 2);
 
 	timbre_ptr = gen_alloc(ds_readw(CURRENT_TIMBRE_LENGTH));
 
-#if defined(__BORLANDC__)
+#if !defined(__BORLANDC__)
 	read_datfile(ds_readw(HANDLE_TIMBRE),
 		Real2Host(timbre_ptr) + 2,
-		host_writew(Real2Host(timbre_ptr), ds_readw(CURRENT_TIMBRE_LENGTH)) - 2);
+		host_writews(Real2Host(timbre_ptr), ds_readw(CURRENT_TIMBRE_LENGTH)) - 2);
 #else
-	host_writew(Real2Host(timbre_ptr), ds_readw(CURRENT_TIMBRE_LENGTH));
+	asm { db 0x66, 0x90; db 0x66, 0x90;}
 	read_datfile(ds_readw(HANDLE_TIMBRE),
-		Real2Host(timbre_ptr) + 2,
-		host_readw(Real2Host(timbre_ptr) - 2));
+		0L, // BCC Sync-Point
+		host_writew(Real2Host(timbre_ptr), ds_readw(CURRENT_TIMBRE_LENGTH)) - 2);
 #endif
 
 	return timbre_ptr;

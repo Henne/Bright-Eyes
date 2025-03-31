@@ -30,9 +30,9 @@ namespace G105de {
 	void stop_music();
 	RealPt load_snd_driver(RealPt);
 	void unload_snd_driver();
-	unsigned short load_seq(Bit16u);
-	unsigned short play_sequence(Bit16u);
-	RealPt get_timbre(Bit16u, Bit16u);
+	unsigned short load_seq(Bit16s);
+	unsigned short play_sequence(Bit16s);
+	RealPt get_timbre(Bit16s, Bit16s);
 	unsigned short call_load_file(Bit16u);
 	unsigned short load_file(Bit16u);
 	void restart_midi();

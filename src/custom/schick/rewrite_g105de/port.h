@@ -130,6 +130,11 @@ static inline Bit8s host_writebs(Bit8u* p, Bit8s val)
 	return (*(Bit8s*)(p) = val);
 }
 
+static inline Bit16s host_writews(Bit8u* p, Bit16s val)
+{
+	return (*(Bit16s*)(p) = val);
+}
+
 static inline Bit8s host_inc_bs(Bit8u* p)
 {
 	return ++(*(Bit8s*)(p));
