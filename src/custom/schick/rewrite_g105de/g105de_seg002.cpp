@@ -7913,11 +7913,12 @@ void alloc_buffers()
 
 	//ds_writed(GEN_PTR6, (Bit32u)(gen_alloc(1100) + 8));
 
-	if (!(RealPt)(ds_writed(GEN_PTR6, (Bit32u)(gen_alloc(1100) + 8))))
-		printf((char*)RealMake(datseg, STR_MALLOC_ERROR));
+	if (!(RealPt)(ds_writed(GEN_PTR6, (Bit32u)(gen_alloc(1100) + 8)))) {
 #if defined(__BORLANDC__)
-	asm { db 0x66, 0x90;};
+		asm { db 0x66, 0x90;};
 #endif
+		printf((char*)Real2Host(RealMake(datseg, STR_MALLOC_ERROR)));
+	}
 }
 
 /* Borlandified and identical */
