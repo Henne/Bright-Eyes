@@ -4611,17 +4611,13 @@ void new_values()
 	/* save the name of the hero */
 	/* TODO strncpy() would be better here */
 
-	strcpy(name_bak, (char*)p_datseg + HERO_NAME);
+	strcpy(name_bak, (char*)Real2Host(RealMake(datseg, HERO_NAME)));
 
 	/* save the sex of the hero */
 	sex_bak = ds_readbs(HERO_SEX);
 
 	/* clear the hero */
-#if !defined(__BORLANDC__)
 	bc_memset(RealMake(datseg, HERO_NAME), 0, 0x6da);
-#else
-	bc_memset(&ds[HERO_NAME], 0, 0x6da);
-#endif
 
 	clear_hero();
 
@@ -4630,17 +4626,13 @@ void new_values()
 	/* restore the name of the hero */
 	/* TODO strncpy() would be better here */
 
-	strcpy((char*)p_datseg + HERO_NAME, name_bak);
+	strcpy((char*)Real2Host(RealMake(datseg, HERO_NAME)), name_bak);
 
 	refresh_screen();
 
 	ds_writew(SCREEN_VAR, 0);
 
-#if !defined(__BORLANDC__)
 	ds_ptr = RealMake(datseg, HERO_ATT0_NORMAL);
-#else
-	ds_ptr = (RealPt)&ds[HERO_ATT0_NORMAL];
-#endif
 
 	for (j = 0; j < 7; j++) {
 		randval = (Bit8s)random_interval_gen(8, 13);
@@ -4688,11 +4680,9 @@ void new_values()
 		refresh_screen();
 		call_mouse();
 	}
-#if !defined(__BORLANDC__)
+
 	ds_ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * 7);
-#else
-	ds_ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * 7];
-#endif
+
 	for (j = 0; j < 7; j++) {
 		randval = (Bit8s)random_interval_gen(2, 7);
 		unset_attribs = 0;
