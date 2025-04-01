@@ -3973,16 +3973,13 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	Bit16s r8;
 	Bit16s r9;
 
-	register Bit16s di;
-	register Bit16s i;
+	Bit16s i;
+	Bit16s di;
 
 	r5 = 0;
 	r6 = -1;
-#if !defined(__BORLANDC__)
 	di = 1;
-#else
-	asm {nop;}
-#endif
+
 	bak1 = ds_readws(TEXT_X);
 	bak2 = ds_readw(TEXT_Y);
 	bak3 = ds_readws(TEXT_X_END);
@@ -3998,7 +3995,13 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	src = (RealPt)ds_readd(VGA_MEMSTART);
 	src += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
 	dst = (RealPt)ds_readd(GEN_PTR1_DIS);
+
+#if !defined(__BORLANDC__)
 	copy_to_screen(Real2Phys(src), Real2Phys(dst), r9, (lines_sum + 2) * 8, 2);
+#else
+	asm { nop; }
+	copy_to_screen(Real2Phys(src), Real2Phys(dst), r9, (lines_sum /*+ 2*/ ) * 8, 2);
+#endif
 
 	/* draw popup */
 	draw_popup_line(0, 0);
@@ -4024,7 +4027,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 #if !defined(__BORLANDC__)
 	for (i = 1; i <= options; r4 += 8, i++) {
 #else
-	for (i = 1; i <= options; i++) { // BCC Sync-Point
+	for (i = 1; i <= options; /* r4 += 8, */ i++) { // BCC Sync-Point
 #endif
 		str = va_arg(arguments, char*);
 		print_str(str, r3, r4);
@@ -4036,7 +4039,12 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	my_bak = ds_readw(MOUSE_POSY);
 	ds_writew(MOUSE_POSX_BAK, ds_writew(MOUSE_POSX, ds_readws(LEFT_BORDER) + 90));
 	ds_writew(MOUSE_POSY_BAK, ds_writew(MOUSE_POSY, r8 = r7 = ds_readws(UPPER_BORDER) + 8 * (lines_header + 1)));
+#if !defined(__BORLANDC__)
 	mouse_move_cursor(ds_readw(MOUSE_POSX), r8);
+#else
+	// _AX contains the value of r8
+	mouse_move_cursor(ds_readw(MOUSE_POSX), _AX);
+#endif
 
 	ds_writew(MOUSE_POSX_MAX, ds_readws(LEFT_BORDER) + r9 - 16);
 	ds_writew(MOUSE_POSX_MIN, ds_readws(LEFT_BORDER));
@@ -4046,15 +4054,11 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	ds_writew(MOUSE2_EVENT, 0);
 
 #if defined(__BORLANDC__)
-	asm {nop;} // BCC Sync-Point
+	asm { db 0x0f, 0x1f, 0x00} // BCC Sync-Point
 #endif
 
 	while (r5 == 0) {
-#if !defined(__BORLANDC__)
-		ds_writed(ACTION_TABLE,  RealMake(datseg, ACTION_INPUT));
-#else
-		ds_writed(ACTION_TABLE, (Bit32u)&ds[ACTION_INPUT]);
-#endif
+		ds_writed(ACTION_TABLE,  (Bit32u)RealMake(datseg, ACTION_INPUT));
 		handle_input();
 		ds_writed(ACTION_TABLE, (Bit32u)((RealPt)0));
 
@@ -4091,7 +4095,11 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 		}
 		if (ds_readw(MOUSE_POSY) != r8) {
 			/* has the mouse been moved */
+#if !defined(__BORLANDC__)
 			di = ((r8 = ds_readw(MOUSE_POSY)) - r7) / 8 + 1;
+#else
+			di = ((r8 = _AX) - r7) / 8 + 1; // BCC Sync-Point
+#endif
 		}
 		/* is this a bool radiobox ? */
 		if (ds_readw(BOOL_MODE)) {
@@ -4110,24 +4118,32 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	update_mouse_cursor();
 
 	ds_writew(MOUSE_POSX_BAK, ds_writew(MOUSE_POSX, mx_bak));
-#if !defined(__BORLANDC__)
+
 	ds_writew(MOUSE_POSY_BAK, ds_writew(MOUSE_POSY, my_bak));
-#else
-	asm { nop; } // BCC Sync-Point
-#endif
 
 	ds_writew(MOUSE_POSX_MAX, 319);
 	ds_writew(MOUSE_POSX_MIN, 0);
 	ds_writew(MOUSE_POSY_MIN, 0);
 	ds_writew(MOUSE_POSY_MAX, 199);
 
-	mouse_move_cursor(ds_readws(MOUSE_POSX_BAK), ds_readws(MOUSE_POSY_BAK));
+#if !defined(__BORLANDC__)
+	mouse_move_cursor(ds_readws(MOUSE_POSX), ds_readws(MOUSE_POSY_BAK));
+#else
+	// _AX contains the value of MOUSE_POSY_BAK
+	mouse_move_cursor(ds_readws(MOUSE_POSX), _AX);
+#endif
 
 	dst = (RealPt)ds_readd(VGA_MEMSTART);
 	dst += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
 	src = (RealPt)ds_readd(GEN_PTR1_DIS);
 	copy_to_screen(Real2Phys(src), Real2Phys(dst), r9, (lines_sum + 2) * 8, 0);
+
+#if !defined(__BORLANDC__)
 	call_mouse();
+#else
+	asm { db 0x90, 0x90;} // BCC Sync-Point
+#endif
+
 	set_textcolor(fg_bak, bg_bak);
 
 	ds_writew(TEXT_X, bak1);
