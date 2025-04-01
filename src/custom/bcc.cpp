@@ -128,11 +128,47 @@ static const unsigned char s_heapwalk[] =
 	 0x5d, 0x02, 0x0b, 0xdb, 0x74, 0x0b, 0x2e, 0x3b,
 	 0x1e};
 
+/* Signature: __dos_open() BCC31:L */
+static const unsigned char s___dos_open[] =
+	{0x55, 0x8b, 0xec, 0x8a, 0x4e, 0x0a, 0xb0, 0x01,
+	 0xf6, 0xc1, 0x02, 0x75, 0x09, 0xb0, 0x02, 0xf6,
+	 0xc1, 0x04, 0x75, 0x02, 0xb0, 0x00, 0x80, 0xe1,
+	 0xf0, 0x0a, 0xc1, 0xb4, 0x3d, 0x1e, 0xc5, 0x56,
+	 0x06, 0xcd, 0x21, 0x1f, 0x72, 0x0a, 0xc4, 0x5e,
+	 0x0c, 0x26, 0x89, 0x07, 0x33, 0xc0, 0xeb, 0x04,
+	 0x50, 0xe8};
+
+/* Signature: __dos_read() BCC31:L */
+static const unsigned char s___dos_read[] =
+	{0x55, 0x8b, 0xec, 0x1e, 0xb4, 0x3f, 0x8b, 0x5e,
+	 0x06, 0x8b, 0x4e, 0x0c, 0xc5, 0x56, 0x08, 0xcd,
+	 0x21, 0x1f, 0x72, 0x0a, 0xc4, 0x5e, 0x0e, 0x26,
+	 0x89, 0x07, 0x33, 0xc0, 0xeb, 0x04, 0x50, 0xe8};
+
+/* Signature: __dos_close() BCC31:L */
+static const unsigned char s___dos_close[] =
+	{0x55, 0x8b, 0xec, 0xb4, 0x3e, 0x8b, 0x5e, 0x06,
+	 0xcd, 0x21, 0x73, 0x06, 0x50, 0xe8};
+
+/* Signature: __IOERROR() BCC31:L */
+static const unsigned char s___IOERROR[] =
+	{0x55, 0x8b, 0xec, 0x56, 0x8b, 0x76, 0x04, 0x0b,
+	 0xf6, 0x7c, 0x15, 0x83, 0xfe, 0x58, 0x7e, 0x03,
+	 0xbe, 0x57, 0x00, 0x89, 0x36};
+
+/* Signature: __DOSERROR() BCC31:L */
+static const unsigned char s___DOSERROR[] =
+	{0x55, 0x8b, 0xec, 0x56, 0x8b, 0x76, 0x04, 0x56,
+	 0xe8};
+
 void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
 {
-	const char outstring[] = "Found at CS:0x%04x Func: %20s Length: 0x%04x Versions: %s\n";
-	const long len = p_ds - p_cs;	/* Size in bytes of the area between CS and DS */
-	long i = 0;
+	const char outstring[] = "Found at CS:0x%04lx Func: %20s Length: 0x%04lx Versions: %s\n";
+	const unsigned long len = p_ds - p_cs;	/* Size in bytes of the area between CS and DS */
+	long unsigned i = 0;
+
+	if (p_ds <= p_cs) return;
+
 	while (i < len) {
 		if (memcmp(p_cs + i, s_strlen, sizeof(s_strlen)) == 0) {
 			fprintf(stderr, outstring, i, "strlen()", sizeof(s_strlen), "BCC 2.0, 3.1");
@@ -186,9 +222,29 @@ void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
 			fprintf(stderr, outstring, i, "exit()" , sizeof(s_exit), "BCC 3.1");
 			i += sizeof(s_exit) - 1;
 		}
+		if (memcmp(p_cs + i, s___dos_open, sizeof(s___dos_open)) == 0) {
+			fprintf(stderr, outstring, i, "__dos_open()" , 0x36L, "BCC 3.1");
+			i += 0x36 - 1;
+		}
+		if (memcmp(p_cs + i, s___dos_read, sizeof(s___dos_read)) == 0) {
+			fprintf(stderr, outstring, i, "__dos_read()" , 0x24L, "BCC 3.1");
+			i += 0x24 - 1;
+		}
+		if (memcmp(p_cs + i, s___dos_close, sizeof(s___dos_close)) == 0) {
+			fprintf(stderr, outstring, i, "__dos_close()" , 0x16L, "BCC 3.1");
+			i += 0x16 - 1;
+		}
+		if (memcmp(p_cs + i, s___IOERROR, sizeof(s___IOERROR)) == 0) {
+			fprintf(stderr, outstring, i, "__IOERROR()" , 0x39L, "BCC 3.1");
+			i += 0x39 - 1;
+		}
+		if (memcmp(p_cs + i, s___DOSERROR, sizeof(s___DOSERROR)) == 0) {
+			fprintf(stderr, outstring, i, "__DOSERROR()" , 0x11L, "BCC 3.1");
+			i += 0x11 - 1;
+		}
 		if (memcmp(p_cs + i, s_heapwalk, sizeof(s_heapwalk)) == 0) {
 			/* function is longer than the signature */
-			fprintf(stderr, outstring, i, "heapwalk()" , 0x77, "BCC 2.0, 3.1");
+			fprintf(stderr, outstring, i, "heapwalk()" , 0x77L, "BCC 2.0, 3.1");
 			i += 0x77 - 1;
 		}
 
