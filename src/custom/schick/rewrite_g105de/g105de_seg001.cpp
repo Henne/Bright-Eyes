@@ -348,34 +348,39 @@ void CD_unused3()
 }
 #endif
 
-#if 0
-
+/* Borlandified and nearly identical */
 void seg001_03a8()
 {
 	Bit16u v;
 
-	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
-		return;
+	if (ds_readw(CD_INIT_SUCCESSFUL) == 0) {
 
-	real_writew(reloc_gen + CDSEG, 0x3b, 0);
-	real_writew(reloc_gen + CDSEG, 0x48, reloc_gen + CDSEG);
-	real_writew(reloc_gen + CDSEG, 0x46, 0x420);
-	real_writeb(reloc_gen + CDSEG, 0x420, 10);
-	CD_driver_request(RealMake(reloc_gen + CDSEG, 0x38));
-
-	v = real_readb(reloc_gen + CDSEG, 0x421);
-	for (; real_readb(reloc_gen + CDSEG, 0x422) >= v; v++) {
-		real_writew(reloc_gen + CDSEG, 0x3b, 0);
-		real_writew(reloc_gen + CDSEG, 0x48, reloc_gen + CDSEG);
-		real_writew(reloc_gen + CDSEG, 0x46, 0x108 + v * 8);
-		real_writeb(reloc_gen + CDSEG, v * 8 + 0x108, 11);
-		real_writeb(reloc_gen + CDSEG, v * 8 + 0x109, (unsigned char)v);
-
+		host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0x3b)), 0);
+		host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0x48)), reloc_gen + CDSEG);
+		host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0x46)), 0x420);
+		host_writeb(Real2Host(RealMake(reloc_gen + CDSEG, 0x420)), 10);
 		CD_driver_request(RealMake(reloc_gen + CDSEG, 0x38));
-	}
 
+		v = host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x421)));
+		for (; host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x422))) >= v; v++) {
+			host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0x3b)), 0);
+			host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0x48)), reloc_gen + CDSEG);
+#if !defined(__BORLANDC__)
+			host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0x46)), 0x108 + v * 8);
+#else
+			asm { db 0x66, 0x90; } // BCC Sync-Point
+			asm { db 0x66, 0x90; }
+			asm { nop; }
+#endif
+			host_writeb(Real2Host(RealMake(reloc_gen + CDSEG, v * 8 + 0x108)), 11);
+			host_writeb(Real2Host(RealMake(reloc_gen + CDSEG, v * 8 + 0x109)), (unsigned char)v);
+
+			CD_driver_request(RealMake(reloc_gen + CDSEG, 0x38));
+		}
+	}
 }
 
+/* Borlandified and identical */
 void seg001_0465(unsigned short track)
 {
 	seg001_0312();
@@ -384,6 +389,8 @@ void seg001_0465(unsigned short track)
 	seg001_00bb(ds_readw(CD_AUDIO_TRACK));
 	ds_writew(0x9b, 1);
 }
+
+#if 1
 
 signed short seg001_0600()
 {
