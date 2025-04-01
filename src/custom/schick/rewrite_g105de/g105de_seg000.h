@@ -23,6 +23,10 @@ RealPt bc_strcpy(RealPt, RealPt);
 RealPt bc_strncpy(RealPt, RealPt, Bit16s);
 Bit16s bc_write(Bit16s, RealPt, Bit16u);
 
+/* functions that work different on host and emu */
+Bit16s bc_open_host(char*, Bit16u);
+Bit16s bc__create_host(char*, Bit16u);
+
 /* this will set an unused variable, so we put a dummy here */
 static inline void bc_randomize() { }
 }
@@ -62,6 +66,10 @@ static inline void bc_randomize() { }
 #define bc_strncpy strncpy
 #define bc_write write
 #define bc_randomize randomize
+
+/* macros that work different on host and emu */
+#define bc_open_host open
+#define bc__create_host _creat
 
 RealPt emu_gen_alloc(Bit32u);
 

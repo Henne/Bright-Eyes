@@ -150,7 +150,6 @@ Bit16s bc_flushall()
 	return reg_ax;
 }
 
-
 RealPt bc_memcpy(RealPt dst, RealPt src, Bit16s n)
 {
 	CPU_Push16(n);
@@ -228,6 +227,35 @@ Bit16s bc_write(Bit16s handle, RealPt buf, Bit16u n)
 	CPU_Pop32();
 	CPU_Pop16();
 	return (Bit16s)reg_ax;
+}
+
+/* functions that work different on host and emu */
+Bit16s bc_open_host(char* fname, Bit16u attrib)
+{
+	RealPt p;
+	Bit16s handle = -1;
+	p = bc_farcalloc(100, sizeof(char));
+	if (p) {
+		strncpy((char*)Real2Host(p), fname, 100);
+		handle = bc_open(p, attrib);
+		bc_free(p);
+		p = 0L;
+	}
+	return handle;
+}
+
+Bit16s bc__create_host(char* PathP, Bit16u attrib)
+{
+	RealPt p;
+	Bit16s handle = -1;
+	p = bc_farcalloc(100, sizeof(char));
+	if (p) {
+		strncpy((char*)Real2Host(p), PathP, 100);
+		handle = bc__create(p, attrib);
+		bc_free(p);
+		p = 0L;
+	}
+	return handle;
 }
 
 }
