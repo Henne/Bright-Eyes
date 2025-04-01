@@ -2542,7 +2542,6 @@ void save_chr()
 
 	/* prepare filename */
 	for (i = 0; i < 8; i++) {
-		char c;
 		/* leave the loop if the string ends */
 		if (!host_readbs(Real2Host((RealPt)ds_readd(GEN_PTR2) + i)))
 			break;
@@ -2608,34 +2607,34 @@ void save_chr()
 		}
 	} else {
 		/* should be replaced with infobox() */
-		error_msg(p_datseg + STR_SAVE_ERROR);
+		error_msg(Real2Host(RealMake(datseg, STR_SAVE_ERROR)));
 	}
 
 #else
 	bc_strncpy(filename, (char*)Real2Host(ds_readd(GEN_PTR2)), 8);
 	filename[8] = 0;
-	bc_strcat(filename, &ds[STR_CHR]);
+	bc_strcat(filename, RealMake(datseg, STR_CHR));
 
 	if (((handle = bc_open(filename, 0x8001)) == -1) || gui_bool((Bit8u*)get_text(261))) {
 
 		handle = bc__creat(filename, 0);
 
 		if (handle != -1) {
-			bc_write(handle, &ds[HERO_NAME], 1754);
+			bc_write(handle, RealMake(datseg, HERO_NAME), 1754);
 			bc_close(handle);
 
 			if (ds_readw(CALLED_WITH_ARGS) == 0) return;
 
-			bc_strcpy(path, &ds[STR_TEMP_DIR]);
+			bc_strcpy(path, RealMake(datseg, STR_TEMP_DIR));
 			bc_strcat(path, filename);
 
 			if ((handle = bc__creat(path, 0)) != -1) {
-				bc_write(handle, &ds[HERO_NAME], 1754);
+				bc_write(handle, RealMake(datseg, HERO_NAME), 1754);
 				bc_close(handle);
 			}
 		} else {
 			/* should be replaced with infobox() */
-			error_msg(RealMake(datseg, STR_SAVE_ERROR));
+			error_msg(Real2Host(RealMake(datseg, STR_SAVE_ERROR)));
 		}
 	}
 #endif
