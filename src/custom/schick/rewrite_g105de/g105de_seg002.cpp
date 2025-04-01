@@ -3426,18 +3426,16 @@ void call_them_all(Bit16s v1, Bit16s v2, Bit16s x, Bit16s y)
 	Bit32s bogus;
 
 	fill_smth();
-#if !defined(__BORLANDC__)
-	fill_smth2((Bit8u*)Real2Host(ds_readd(BUFFER_FONT6)) + v1 * 8);
-#else
-	// BCC Sync-point
-	fill_smth2((Bit8u*)Real2Host(ds_readd(BUFFER_FONT6)) + v1);
-	asm { nop; db 0x8c, 0x5e, 0xfe; }
-#endif
+	fill_smth2(v1 * 8 + (Bit8u*)Real2Host(ds_readd(BUFFER_FONT6)));
 
 	gfx_ptr = get_gfx_ptr(x, y, &l2);
 	bogus = (Bit32s)ret_zero(v2, l2);
 
+#if !defined(__BORLANDC__)
 	call_blit_smth3(gfx_ptr, 7, (Bit16s)bogus, l2, v2);
+#else
+	call_blit_smth3(gfx_ptr, 7, (Bit16s)_AX, l2, v2); // BCC Sync-Point
+#endif
 }
 
 /* Borlandified and identical */
@@ -3448,15 +3446,9 @@ void fill_smth()
 	Bit16s i, j;
 
 	if (ds_readb(MASK_SWITCH) != 0)
-#if !defined(__BORLANDC__)
 		ptr = RealMake(datseg, ARRAY_1);
 	else
 		ptr = RealMake(datseg, ARRAY_2);
-#else
-		ptr = &ds[ARRAY_1];
-	else
-		ptr = &ds[ARRAY_2];
-#endif
 
 	for (i = 0; i < 8; ptr += 8, i++)
 		for (j = 0; j < 8; j++)
@@ -3472,15 +3464,9 @@ void fill_smth2(Bit8u* sptr) {
 	Bit8u mask;
 
 	if (ds_readb(MASK_SWITCH) != 0)
-#if !defined(__BORLANDC__)
 		ptr = RealMake(datseg, ARRAY_1);
 	else
 		ptr = RealMake(datseg, ARRAY_2);
-#else
-		ptr = &ds[ARRAY_1];
-	else
-		ptr = &ds[ARRAY_2];
-#endif
 
 	for (i = 0; i < 8; ptr += 8, i++) {
 		mask = *sptr++;
