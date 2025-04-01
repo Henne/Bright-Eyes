@@ -7,12 +7,14 @@ namespace G105de {
 //static
 unsigned short CD_set_drive_no();
 
+//static
+void CD_driver_request(RealPt req);
+
+//static
+Bit32s CD_get_tod();
+
 	//static
-	void CD_driver_request(RealPt req);
-	//static
-	Bit32s CD_get_tod();
-	//static
-	void seg001_00bb(unsigned short);
+	void seg001_00bb(Bit16s);
 	//static
 	signed short CD_bioskey(signed short);
 	//static

@@ -30,6 +30,9 @@ extern char ds[0xffff];
 #define p_datseg ((Bit8u*)(&ds[0x0000]))
 #define datseg (_DS)
 
+#define reloc_gen (0)
+
+
 #define ds_readb(p) *(unsigned char*)(ds + p)
 #define ds_readw(p) *(unsigned short*)(ds + p)
 #define ds_readd(p) *(unsigned long*)(ds + p)
