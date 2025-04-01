@@ -150,7 +150,7 @@ static const unsigned char s___dos_close[] =
 	{0x55, 0x8b, 0xec, 0xb4, 0x3e, 0x8b, 0x5e, 0x06,
 	 0xcd, 0x21, 0x73, 0x06, 0x50, 0xe8};
 
-/* Signature: __IOERROR() BCC31:L */
+/* Signature: __IOERROR() BCC20:L BCC31:L */
 static const unsigned char s___IOERROR[] =
 	{0x55, 0x8b, 0xec, 0x56, 0x8b, 0x76, 0x04, 0x0b,
 	 0xf6, 0x7c, 0x15, 0x83, 0xfe, 0x58, 0x7e, 0x03,
@@ -235,7 +235,7 @@ void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
 			i += 0x16 - 1;
 		}
 		if (memcmp(p_cs + i, s___IOERROR, sizeof(s___IOERROR)) == 0) {
-			fprintf(stderr, outstring, i, "__IOERROR()" , 0x39L, "BCC 3.1");
+			fprintf(stderr, outstring, i, "__IOERROR()" , 0x39L, "BCC 2.0, 3.1");
 			i += 0x39 - 1;
 		}
 		if (memcmp(p_cs + i, s___DOSERROR, sizeof(s___DOSERROR)) == 0) {
