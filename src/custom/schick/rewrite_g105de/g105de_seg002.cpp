@@ -5200,7 +5200,7 @@ void spell_inc_novice(Bit16s spell)
  * select_typus() - select a possible typus with current attribute values
  *
  */
-/* Borlandified and nearly identical */
+/* Borlandified and identical */
 void select_typus()
 {
 	Bit8s old_typus;
@@ -5218,11 +5218,7 @@ void select_typus()
 
 	old_typus = -1;
 	
-#if !defined(__BORLANDC__)	
-	t = *(struct type_bitmap*)(p_datseg + TYPE_BITMAP);
-#else
-	t = *(struct type_bitmap*)&ds[TYPE_BITMAP];
-#endif
+	t = *(struct type_bitmap*)(Real2Host(RealMake(datseg, TYPE_BITMAP)));
 
 	/* check if attribs have been set */
 	if (ds_readbs(HERO_ATT0_NORMAL + 3 * 0) != 0) {
@@ -5249,11 +5245,8 @@ void select_typus()
 			for (si = 0; si < 4; si++) {
 
 				//ltmp2 = ds_readbs(HERO_ATT0_NORMAL + 3 * reqs[i][si].attrib);
-#if !defined(__BORLANDC__)
 				ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * ds_readb(REQ_ATTRIB + 8 * i + 2 * si));
-#else
-				ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * ds_readb(REQ_ATTRIB + 8 * i + 2 * si)];
-#endif
+
 				ltmp2 = host_readbs(Real2Host(ptr));
 
 				if ((ds_readbs(REQ_ATTRIB + 1 + 8 * i + 2 * si) & 0x80) != 0) {
@@ -5330,11 +5323,11 @@ void select_typus()
 				ds_writeb(HEAD_FIRST,
 					ds_writeb(HEAD_CURRENT, ds_readbs(HEAD_FIRST_FEMALE + (Bit8s)_AL )));
 #endif
-				ds_writeb(HEAD_LAST, ds_readbs(HEAD_FIRST_MALE + ds_readbs(HEAD_TYPUS) + 1) - 1);
+				ds_writebs(HEAD_LAST, ds_readbs(HEAD_FIRST_MALE + ds_readbs(HEAD_TYPUS) + 1) - 1);
 			} else {
 				ds_writeb(HEAD_FIRST,
 					ds_writeb(HEAD_CURRENT, ds_readbs(HEAD_FIRST_MALE + ds_readbs(HEAD_TYPUS))));
-				ds_writeb(HEAD_LAST, ((Bit8s)ds_readbs(HEAD_FIRST_FEMALE + ds_readbs(HEAD_TYPUS))) - 1);
+				ds_writebs(HEAD_LAST, (ds_readbs(HEAD_FIRST_FEMALE + ds_readbs(HEAD_TYPUS))) - 1);
 			}
 
 			/* reset boni flags */
