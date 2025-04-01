@@ -8,9 +8,7 @@
 
 #if !defined(__BORLANDC__)
 #include "regs.h"
-#include "paging.h"
 #include "callback.h"
-#include "../../../dos/drives.h"
 #include "../../custom_hooks.h"
 #include "../schick.h"
 
@@ -1397,7 +1395,7 @@ unsigned short load_seq(Bit16s sequence_num)
 
 		if ((ds_writews(SND_SEQUENCE, AIL_register_sequence(ds_readws(SND_DRIVER_HANDLE),
 			(RealPt)ds_readd(FORM_XMID), sequence_num,
-			(RealPt)ds_readd(STATE_TABLE), NULL))) != -1) {
+			(RealPt)ds_readd(STATE_TABLE), (RealPt)(0L)))) != -1) {
 
 			while ((si = AIL_timbre_request(ds_readws(SND_DRIVER_HANDLE), ds_readws(SND_SEQUENCE))) != -1)
 			{
@@ -2366,7 +2364,7 @@ void load_page(Bit16s page)
 			return;
 		}
 
-		if (ptr = gen_alloc(get_filelength(handle = open_datfile(page)))) {
+		if ((ptr = gen_alloc(get_filelength(handle = open_datfile(page))))) {
 			ds_writed(BG_BUFFER + 4 * page, (Bit32u)ptr);
 			ds_writed(BG_LEN + 4 * page, get_filelength(handle));
 			read_datfile(handle,
@@ -2425,7 +2423,7 @@ void load_typus(Bit16u typus)
 		return;
 	}
 
-	if (ptr = gen_alloc(get_filelength(handle = open_datfile(index)))) {
+	if ((ptr = gen_alloc(get_filelength(handle = open_datfile(index))))) {
 		/* load the file into the typus buffer */
 		ds_writed(TYPUS_BUFFER + 4 * typus, (Bit32u)ptr);
 		//D1_INFO("%s(ptr = 0x%08x TYPUS_BUFFER = 0x%08x)\n", ptr, ds_readd(TYPUS_BUFFER));
@@ -2445,46 +2443,6 @@ void load_typus(Bit16u typus)
 	}
 	bc_close(handle);
 }
-
-#if !defined(__BORLANDC__)
-static void prepare_path(char *p)
-{
-	while (*p) {
-#if defined (WIN32)
-		if (*p == '/')
-			*p = '\\';
-#else
-		if (*p == '\\')
-			*p = '/';
-#endif
-		p++;
-	}
-}
-
-/**
- * get_pwd() -  get the path to the current directory
- *
- * This must be freed after use.
- * WARNING: Does only work on mounted drives
- */
-static char *get_pwd() {
-
-	char *path = (char*)calloc(2048, sizeof(char));
-
-	if (path == NULL)
-		return NULL;
-
-	Bit8u drive = DOS_GetDefaultDrive();
-	localDrive *dr = dynamic_cast<localDrive*>(Drives[drive]);
-	dr->GetSystemFilename((char*)path, "");
-	strcat(path, "/");
-	strcat(path, Drives[drive]->curdir);
-	strcat(path, "/");
-
-	return path;
-}
-#endif
-
 
 /**
  * save_chr() - save the hero the a CHR file

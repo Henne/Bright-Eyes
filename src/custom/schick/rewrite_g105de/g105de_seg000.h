@@ -31,7 +31,8 @@ Bit16s bc__create_host(char*, Bit16u);
 static inline void bc_randomize() { }
 }
 
-#else __BORLANDC__
+#else
+// __BORLANDC__
 
 #include <IO.H>     // lseek, _read, _close, _creat, open, write
 #include <STDLIB.H> // free, calloc (also in alloc.h)
