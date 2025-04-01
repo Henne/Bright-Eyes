@@ -6527,6 +6527,7 @@ void inc_skill(Bit16s skill, Bit16s max, char *msg)
 	refresh_screen();
 }
 
+/* Borlandified and identical */
 void select_skill()
 {
 	Bit16s skill;
