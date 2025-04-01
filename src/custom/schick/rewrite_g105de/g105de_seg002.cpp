@@ -7122,60 +7122,62 @@ void choose_typus()
 		return;
 
 	/* clear the hero area with saved name and sex */
-	strcpy(name_bak, (char*)p_datseg + HERO_NAME);
+	strcpy(name_bak, (char*)Real2Host(RealMake(datseg, HERO_NAME)));
 	sex_bak = ds_readbs(HERO_SEX);
 
-#if !defined(__BORLANDC__)
 	bc_memset(RealMake(datseg, HERO_NAME), 0, 0x6da);
-#else
-	bc_memset(&ds[HERO_NAME], 0, 0x6da);
-#endif
+
 	clear_hero();
 	ds_writeb(HERO_SEX, sex_bak);
 
-	strcpy((char*)p_datseg + HERO_NAME, name_bak);
+	strcpy((char*)Real2Host(RealMake(datseg, HERO_NAME)), name_bak);
 
 	/* set typus */
 	ds_writeb(HERO_TYPUS, (unsigned char)choosen_typus);
 
-#if !defined(__BORLANDC__)
 	ptr = RealMake(datseg, HERO_ATT0_NORMAL);
-#else
-	ptr = (RealPt)&ds[HERO_ATT0_NORMAL];
-#endif
 
 	/* roll out positive attribute values */
 	for (i = 0; i < 7; i ++) {
 
 		randval = (Bit16s)random_interval_gen(8, 13);
 
+#if !defined(__BORLANDC__)
 		if (randval > 8)
 			randval--;
 
 		host_writeb(((3 * i) + (Real2Host(ptr) + 0)),
 			host_writebs(((3 * i) + (Real2Host(ptr) + 1)), randval));
+#else
+		if (randval > 8);
+		asm { db 0x66, 0x90; }
+		asm { db 0x0f, 0x1f, 0x40, 0x00; }
+		host_writeb(((Real2Host(ptr) + 0) + (i * 3)),
+			host_writebs(((i * 3) + (Real2Host(ptr) + 1)), randval));
+#endif
 	}
 
-#if !defined(__BORLANDC__)
 	ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * 7);
-#else
-	ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * 7];
-#endif
 
 	/* roll out negative attribute values */
 	for (i = 0; i < 7; i ++) {
 
 		randval = (Bit16s)random_interval_gen(2, 7);
 
-		if (randval < 7)
 #if !defined(__BORLANDC__)
+		if (randval < 7)
 			randval++;
-#else
-			asm { db 0x0f, 0x1f, 0x40, 0x00; } // BCC Sync-Point
-#endif
 
 		host_writeb(((3 * i) + (Real2Host(ptr) + 0)),
 			host_writebs(((3 * i) + (Real2Host(ptr) + 1)), randval));
+#else
+		if (randval < 7);
+		asm { db 0x66, 0x90; }
+		asm { db 0x0f, 0x1f, 0x40, 0x00; } // BCC Sync-Point
+		host_writeb(((3 * i) + (Real2Host(ptr) + 0)),
+			host_writebs(((3 * i) + (Real2Host(ptr) + 1)), randval));
+
+#endif
 	}
 
 	/* adjust typus attribute requirements */
@@ -7183,11 +7185,7 @@ void choose_typus()
 		//Bit8u ta;
 		/* calc pointer to attribute */
 		//ta = reqs[choosen_typus][i].attrib;
-#if !defined(__BORLANDC__)
 		ptr = RealMake(datseg, HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + REQ_ATTRIB));
-#else
-		ptr = (RealPt)&ds[HERO_ATT0_NORMAL + 3 * ds_readb(8 * choosen_typus + 2 * i + REQ_ATTRIB)];
-#endif
 
 		/* get the required value */
 		//randval = reqs[choosen_typus][i].requirement;
@@ -7204,7 +7202,7 @@ void choose_typus()
 #else
 			//		host_writeb(Real2Host(ptr),
 			//			host_writeb(Real2Host(ptr) + 1, randval);
-					asm {db 0x66, 0x90; db 0x0f,0x1f,0x00; } // BCC Sync-Point
+					asm {nop; db 0x0f,0x1f,0x00; } // BCC Sync-Point
 #endif
 				}
 			} else {
