@@ -3810,13 +3810,8 @@ Bit16s infobox(char *msg, Bit16s digits)
 	ds_writews(TEXT_X_END, di - 10);
 	lines = str_splitter(msg);
 
-#if !defined(__BORLANDC__)
 	if (digits != 0)
 		lines += 2;
-#else
-	asm { db 0x6a, 0x00, 0x6a, 0x00, 0x6a, 0x00; nop;}
-	// BCC Sync-Point
-#endif
 
 	ds_writew(UPPER_BORDER, (200 - (lines + 2) * 8) / 2);
 	ds_add_ws(UPPER_BORDER, ds_readws(RO_ZERO));
@@ -3828,7 +3823,12 @@ Bit16s infobox(char *msg, Bit16s digits)
 	src += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
 	dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 
+#if !defined(__BORLANDC__)
 	copy_to_screen(Real2Phys(src), Real2Phys(dst), di, (lines + 2) * 8, 2);
+#else
+	asm { nop; } // BCC Sync-Point
+	copy_to_screen(Real2Phys(src), Real2Phys(dst), di, (lines /*+ 2 */) * 8, 2);
+#endif
 
 	/* draw the popup box */
 	draw_popup_line(0, 0);
@@ -3853,11 +3853,7 @@ Bit16s infobox(char *msg, Bit16s digits)
 
 		retval = (Bit16u)atol((char*)Real2Host((RealPt)ds_readd(GEN_PTR3)));
 	} else {
-#if !defined(__BORLANDC__)
-		ds_writed(ACTION_TABLE,  RealMake(datseg, ACTION_INPUT));
-#else
-		ds_writed(ACTION_TABLE, (Bit32u)&ds[ACTION_INPUT]);
-#endif
+		ds_writed(ACTION_TABLE,  (Bit32u)RealMake(datseg, ACTION_INPUT));
 		vsync_or_key(150 * lines);
 		ds_writed(ACTION_TABLE, (Bit32u)((RealPt)0));
 	}
@@ -3870,14 +3866,14 @@ Bit16s infobox(char *msg, Bit16s digits)
 	src = (RealPt)ds_readd(GEN_PTR1_DIS);
 
 	copy_to_screen(Real2Phys(src), Real2Phys(dst), di, (lines + 2) * 8, 0);
-	call_mouse();
 
 #if !defined(__BORLANDC__)
-	ds_writew(TEXT_X, v2);
+	call_mouse();
 #else
-	asm { db 0x6a, 0x00, 0x6a, 0x00;}
+	asm { nop; nop;}
 	// BCC Sync-Point
 #endif
+	ds_writew(TEXT_X, v2);
 	ds_writew(TEXT_Y, v3);
 	ds_writew(TEXT_X_END, v4);
 
