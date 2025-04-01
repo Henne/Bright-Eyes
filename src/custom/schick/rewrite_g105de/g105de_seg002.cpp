@@ -7984,6 +7984,7 @@ void init_stuff()
 	ds_writed(DST_DST, ds_readd(VGA_MEMSTART));
 }
 
+/* Borlandified and identical */
 RealPt gen_alloc(Bit32u nelem)
 {
 	return (RealPt)bc_farcalloc(nelem, 1);
