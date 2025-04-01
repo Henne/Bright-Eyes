@@ -15,12 +15,14 @@ Bit32s CD_get_tod();
 
 	//static
 	void seg001_00bb(Bit16s);
-	//static
-	signed short CD_bioskey(signed short);
-	//static
-	void seg001_0312();
 
-	void seg001_033b();
+//static
+signed short CD_bioskey(signed short);
+
+//static
+void seg001_0312();
+
+void seg001_033b();
 
 	void seg001_03a8();
 

@@ -315,7 +315,40 @@ void seg001_033b()
 	}
 }
 
-#if 1
+#if defined (__BORLANDC__)
+/* Borlandified and nearly identical */
+void CD_unused2()
+{
+	if (ds_readw(CD_INIT_SUCCESSFUL) != 0) {
+
+		host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0xab)), 0);
+		//CD_driver_request(RealMake(reloc_gen + CDSEG, 0xa8));
+
+		asm { db 0x0f, 0x1f, 0x00; } // BCC Sync-Point
+		asm { db 0x0f, 0x1f, 0x00; }
+		asm { db 0x0f, 0x1f, 0x00; }
+		asm { nop; }
+		asm { nop; }
+	}
+}
+/* Borlandified and nearly identical */
+void CD_unused3()
+{
+	if (ds_readw(CD_INIT_SUCCESSFUL) != 0) {
+
+		host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0xc7)), 0);
+		//CD_driver_request(RealMake(reloc_gen + CDSEG, 0xc4));
+
+		asm { db 0x0f, 0x1f, 0x00; } // BCC Sync-Point
+		asm { db 0x0f, 0x1f, 0x00; }
+		asm { db 0x0f, 0x1f, 0x00; }
+		asm { nop; }
+		asm { nop; }
+	}
+}
+#endif
+
+#if 0
 
 void seg001_03a8()
 {
