@@ -2532,6 +2532,7 @@ void save_chr()
 	/* wanna save ? */
 	if (!gui_bool((Bit8u*)get_text(3)))
 		return;
+
 	/* copy name to alias */
 	/* TODO: should use strncpy() here */
 	bc_strcpy(RealMake(datseg, HERO_ALIAS), RealMake(datseg, HERO_NAME));
@@ -2551,73 +2552,18 @@ void save_chr()
 		}
 	}
 
-
-#if !defined(__BORLANDC__)
-
-	FILE *fd;
-	char *pwd;
-
 	strncpy(filename, (char*)Real2Host(ds_readd(GEN_PTR2)), 8);
 	filename[8] = 0;
-	strcat(filename, ".CHR");
+	strcat(filename, (char*)Real2Host(RealMake(datseg, STR_CHR)));
 
-	pwd = get_pwd();
-	strncat(pwd, filename, 12);
-	prepare_path(pwd);
+	/* remark: bc_open() and bc__creat() have filename on the stack of the host */
+	if (((handle = bc_open_host(filename, 0x8001)) == -1) || gui_bool((Bit8u*)get_text(261))) {
 
-	/* try to open the filename */
-	fd = fopen(pwd, "rb");
-
-	/* if the file exists ask if should overwrite */
-	if (fd) {
-		/* Original-Bugfix: the file should be closed */
-		fclose(fd);
-
-		if (!gui_bool((Bit8u*)get_text(261)))
-			return;
-	}
-
-	/* here originally creat() was used */
-	fd = fopen(pwd, "wb");
-	free(pwd);
-	pwd = NULL;
-
-	if (fd) {
-		/* write the CHR file to the current directory */
-		fwrite(p_datseg + HERO_NAME, 1, 1754, fd);
-		fclose(fd);
-
-		/* save it to the TEMP dir if called from with arguments */
-		if (ds_readw(CALLED_WITH_ARGS) != 0) {
-			strcpy(path, "TEMP\\");
-			strcat(path, filename);
-
-			pwd = get_pwd();
-			strncat(pwd, path, 80);
-			prepare_path(pwd);
-
-			fd = fopen(pwd, "wb");
-			free(pwd);
-			pwd = NULL;
-
-			if (fd) {
-				fwrite(p_datseg + HERO_NAME, 1, 1754, fd);
-				fclose(fd);
-			}
-		}
-	} else {
-		/* should be replaced with infobox() */
-		error_msg(Real2Host(RealMake(datseg, STR_SAVE_ERROR)));
-	}
-
-#else
-	bc_strncpy(filename, (char*)Real2Host(ds_readd(GEN_PTR2)), 8);
-	filename[8] = 0;
-	bc_strcat(filename, RealMake(datseg, STR_CHR));
-
-	if (((handle = bc_open(filename, 0x8001)) == -1) || gui_bool((Bit8u*)get_text(261))) {
-
-		handle = bc__creat(filename, 0);
+#if !defined(__BORLANDC__)
+		/* close an existing file before overwriting it */
+		if (handle != -1) bc_close(handle);
+#endif
+		handle = bc__create_host(filename, 0);
 
 		if (handle != -1) {
 			bc_write(handle, RealMake(datseg, HERO_NAME), 1754);
@@ -2625,10 +2571,10 @@ void save_chr()
 
 			if (ds_readw(CALLED_WITH_ARGS) == 0) return;
 
-			bc_strcpy(path, RealMake(datseg, STR_TEMP_DIR));
-			bc_strcat(path, filename);
+			strcpy(path, (char*)Real2Host(RealMake(datseg, STR_TEMP_DIR)));
+			strcat(path, filename);
 
-			if ((handle = bc__creat(path, 0)) != -1) {
+			if ((handle = bc__create_host(path, 0)) != -1) {
 				bc_write(handle, RealMake(datseg, HERO_NAME), 1754);
 				bc_close(handle);
 			}
@@ -2637,7 +2583,6 @@ void save_chr()
 			error_msg(Real2Host(RealMake(datseg, STR_SAVE_ERROR)));
 		}
 	}
-#endif
 }
 
 /* Borlandified and nearly identical */
