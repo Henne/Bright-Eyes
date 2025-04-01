@@ -56,7 +56,7 @@ RealPt bc_F_PADD(RealPt p, Bit32s v)
 	CPU_Pop16();
 	CPU_Pop16();
 
-	return RealMake(reg_dx, reg_ax);
+	return r;
 }
 
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence)

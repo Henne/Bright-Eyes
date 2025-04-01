@@ -846,7 +846,7 @@ static unsigned short mouse_mask[32] = {
 /* DS:0x135e */
 static const struct mouse_action action_default[2] = {
 			{ 0, 0, 319, 199, 0xfe},
-			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
+			{ -1, -1, -1, -1, -1} };
 
 //static Bit8u* DEFAULT_ACTION = (Bit8u*)&action_default;
 
@@ -862,19 +862,19 @@ static const struct mouse_action action_base[9] = {
 			{ 145, 178, 164, 192, KEY_LEFT},	/* previous page */
 			{ 284, 178, 303, 192, KEY_RIGHT},	/* next page */
 			{ 0, 0, 319, 199, 0xfe},
-			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
+			{ -1, -1, -1, -1, -1} };
 /* DS:0x12d4 */
 static const struct mouse_action action_skills[4] = {
 			{ 145, 178, 164, 192, KEY_LEFT},	/* previous page */
 			{ 284, 178, 303, 192, KEY_RIGHT},	/* next page */
 			{ 0, 0, 319, 199, 0xfe},
-			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
+			{ -1, -1, -1, -1, -1} };
 /* DS:0x12fc */
 static const struct mouse_action action_spells[4] = {
 			{ 16, 178, 35, 192, KEY_LEFT},	/* previous page */
 			{ 284, 178, 303, 192, KEY_RIGHT},	/* next page */
 			{ 0, 0, 319, 199, 0xfe},
-			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
+			{ -1, -1, -1, -1, -1} };
 
 //static Bit16s GEN_PAGE;
 
@@ -1036,7 +1036,7 @@ static const struct mouse_action *action_page[MAX_PAGES] = {
 struct type_bitmap {
 	char t[13];
 };
-struct type_bitmap empty_bitmap;
+//struct type_bitmap empty_bitmap;
 
 //static char version[] = "V1.05";
 #if 0
@@ -1370,7 +1370,7 @@ RealPt load_snd_driver(RealPt fname)
 		bc__close(handle);
 		return norm_ptr;
 	} else {
-		return NULL;
+		return (RealPt)0L;
 	}
 }
 
