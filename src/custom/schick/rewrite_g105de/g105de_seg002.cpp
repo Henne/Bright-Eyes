@@ -3233,12 +3233,19 @@ Bit16u str_splitter(char *s)
 
 	/* replace all CR and LF with spaces */
 	for (tp = s; *tp; tp++) {
-		if (*tp == 0x0d || *tp == 0x0a) {
+		if ((*tp == 0x0d) || (*tp == 0x0a))
+		{
 			*tp = 0x20;
 		}
 	}
 
+#if !defined(__BORLANDC__)
 	tp = s;
+#else
+	asm {db 0x0f, 0x1f, 0x00;} // BCC Sync-Point
+	asm {db 0x0f, 0x1f, 0x00;}
+	asm {db 0x0f, 0x1f, 0x00;}
+#endif
 
 	i = last_space = unknown_var1 = 0;
 
@@ -3264,15 +3271,7 @@ Bit16u str_splitter(char *s)
 		}
 
 		if (tp[i] == 0x40) {
-#if defined(__BORLANDC__)
-			tp += i + 1;
-			// Sync-Point
-			asm {db 0xff, 0x46, 0xe0;}
-			asm {db 0xff, 0x46, 0xe0;}
-#else
 			tp = &tp[i + 1];
-#endif
-
 			i = -1;
 			unknown_var1 = last_space = l_width = 0;
 			lines++;
