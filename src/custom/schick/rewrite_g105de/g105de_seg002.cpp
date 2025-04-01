@@ -4166,19 +4166,10 @@ void enter_name()
 
 	update_mouse_cursor();
 	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), Real2Phys(dst), 94, 8, 0);
-#if !defined(__BORLANDC__)
-	enter_string((char*)p_datseg + HERO_NAME, 180, 12, 15, 1);
-#else
-	enter_string(&ds[HERO_NAME], 180, 12, 15, 1);
-#endif
+	enter_string((char*)Real2Host(RealMake(datseg, HERO_NAME)), 180, 12, 15, 1);
 	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), Real2Phys(dst), 94, 8, 0);
 	call_mouse();
-#if !defined(__BORLANDC__)
-	print_str((char*)p_datseg + HERO_NAME, 180, 12);
-#else
-	print_str(&ds[HERO_NAME], 180, 12);
-#endif
-
+	print_str((char*)Real2Host(RealMake(datseg,HERO_NAME)), 180, 12);
 }
 
 /* Borlandified and identical */
