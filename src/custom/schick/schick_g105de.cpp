@@ -21,9 +21,9 @@ static int seg000(Bitu offs) {
 			Bit16u ev = CPU_Pop16();
 			CPU_Push16(ev);
 
-			D1_INFO("Bye Bye! We're closing DOSBox\n");
-			bc_exit(ev);
-			return 1;
+			//D1_INFO("Bye Bye! We're closing DOSBox\n");
+			//bc_exit(ev);
+			return 0;
 		}
 		case 0x0438: {
 			Bit16u intno = CPU_Pop16();
@@ -121,6 +121,10 @@ static int seg000(Bitu offs) {
 			bc_free(p);
 			CPU_Push32(p);
 			return 1;
+		}
+		case 0x1813: {
+			D1_LOG("_exit();\n");
+			return 0;
 		}
 		case 0x20bc: {
 			Bit16u handle = CPU_Pop16();
