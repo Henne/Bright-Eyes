@@ -211,44 +211,60 @@ leave_tod:
 /* Seem Unborlandifiable to me */
 void seg001_00bb(Bit16s track_no)
 {
-	unsigned int track_start, track_end;
+	Bit32s track_start;
+	Bit32s track_end;
 	unsigned int track_len, tmp;
 
-	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
-		return;
+	if (ds_readw(CD_INIT_SUCCESSFUL) != 0) {
 
-	real_writew(reloc_gen + CDSEG, 0x8f, 0);
+		host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0x8f)), 0);
 
-	tmp = real_readd(reloc_gen + CDSEG, 0x10a + track_no * 8) & 0x00ffffff;
-	real_writed(reloc_gen + CDSEG, 0x9a, tmp);
+		host_writed(Real2Host(RealMake(reloc_gen + CDSEG, 0x9a)),
+			(host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x10b + track_no * 8))) << 8) +
+			(host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x10a + track_no * 8)))) +
+			(host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x10c + track_no * 8)))) << 16);
 
-	/* calculate track_start */
-	tmp = real_readb(reloc_gen + CDSEG, 0x10c + track_no * 8) * 60;
-	tmp += real_readb(reloc_gen + CDSEG, 0x10b + track_no * 8);
-	tmp *= 75;
-	tmp += real_readb(reloc_gen + CDSEG, 0x10a + track_no * 8);
-	track_start = tmp;
+		/* calculate track_start */
+		track_start = (60L * host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x10b + track_no * 8)))
+			+ host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x10a + track_no * 8)))) * 75L
+			+ host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x10c + track_no * 8)));
 
-	/* calculate track_end */
-	if (real_readb(reloc_gen + CDSEG, 0x422) == track_no) {
-		tmp = real_readb(reloc_gen + CDSEG, 0x425) * 60;
-		tmp += real_readb(reloc_gen + CDSEG, 0x424);
-		tmp *= 75;
-		tmp += real_readb(reloc_gen + CDSEG, 0x423);
-	} else {
-		tmp = real_readb(reloc_gen + CDSEG, 0x114 + track_no * 8) * 60;
-		tmp += real_readb(reloc_gen + CDSEG, 0x113 + track_no * 8);
-		tmp *= 75;
-		tmp += real_readb(reloc_gen + CDSEG, 0x112 + track_no * 8);
+		/* calculate track_end */
+		if (host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x422))) == track_no) {
+
+			track_end = (60L * host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x425))) +
+					   host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x424)))) * 75L +
+					   host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x423)));
+		} else {
+			track_end = (60L * host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x114 + track_no * 8))) +
+					   host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x113 + track_no * 8)))) * 75L +
+					   host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x112 + track_no * 8)));
+
+		}
+
+		track_start -= track_end;
+		// track_start is now track length
+		host_writed(Real2Host(RealMake(reloc_gen + CDSEG, 0x9e)), track_start - 150);
+
+		CD_driver_request(RealMake(reloc_gen + CDSEG, 0x8c));
+#if !defined(__BORLANDC__)
+		ds_writed(CD_AUDIO_POS, ((track_start - 150) * 0x1234e) / 0x4b000);
+#else
+		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
+		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
+		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
+		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
+		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
+
+		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
+		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
+		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
+		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
+		asm { db 0x90; }
+		asm { db 0x90; }
+#endif
+		ds_writed(CD_AUDIO_TOD, CD_get_tod());
 	}
-	track_end = tmp;
-
-	track_len = track_end - track_start;
-	real_writed(reloc_gen + CDSEG, 0x9e, track_len - 150);
-
-	CD_driver_request(RealMake(reloc_gen + CDSEG, 0x8c));
-	ds_writed(CD_AUDIO_POS, ((track_len - 150) * 0x1234e) / 0x4b000);
-	ds_writed(CD_AUDIO_TOD, CD_get_tod());
 }
 
 /* Borlandified and nearly identical, but works */
@@ -477,20 +493,48 @@ Bit16s CD_insert_loop()
 	bc__exit(0);
 #endif
 
+#if !defined(__BORLANDC__)
 	return 1;
+#else
+	asm { db 0x0f, 0x1f, 0x00; } // BCC Sync-Point
+#endif
 }
 
+/* Borlandified and nearly identical */
+void CD_check_cd()
+{
+	char fname[80];
+
+#if !defined(__BORLANDC__)
+	bc_harderr(RealMake(reloc_gen + 0x364, 0x598));
+#else
+	bc_harderr((int(*)(int, int, int, int))CD_insert_loop);
+#endif
+
+	strcpy(fname, (char*)Real2Host(RealMake(datseg, STR_CD_EXEPATH)));
+	fname[0] = ds_readbs(CD_DRIVE_NO) + 'A';
+
+	while (CD_check_file(fname) <= 0) {
+		CD_radio_insert_cd();
+	}
+}
+
+/* Borlandified and identical */
 signed short seg001_0600()
 {
 	if (CD_set_drive_no() == 0)
 		return 0;
 
 	ds_writew(CD_INIT_SUCCESSFUL, 1);
-	/* CHECK_CD() would have been called here */
+	CD_check_cd();
 	seg001_033b();
 	seg001_03a8();
 
+#if !defined(__BORLANDC__)
 	return 1;
+#else
+	asm { db 0x0f, 0x1f, 0x00; } // BCC Sync-Point
+#endif
 }
 
 #if !defined(__BORLANDC__)
