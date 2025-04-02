@@ -390,7 +390,38 @@ void seg001_0465(unsigned short track)
 	ds_writew(0x9b, 1);
 }
 
-#if 1
+/* Borlandified and nearly identical, but works correctly */
+//static
+Bit16s CD_check_file(char *pathP)
+{
+	int handle;
+	Bit16s buf;
+	unsigned int nread;
+	
+#if !defined(__BORLANDC__)
+	if (bc__dos_open((char*)pathP, 1, (Bit8u*)&handle)) return -1;
+
+	if (bc__dos_read(handle, (Bit8u*)&buf, 1, (Bit16u*)&nread)) return -1;
+
+	bc_lseek(handle, 2000L, 0);
+
+	if (bc__dos_read(handle, (Bit8u*)&buf, 1, (Bit16u*)&nread)) return -1;
+
+#else
+	if (bc__dos_open((char*)pathP, 1, &handle)) return -1;
+
+	if (bc__dos_read(handle, (Bit8u*)&buf, 1, &nread)) return -1;
+
+	bc_lseek(handle, 2000L, 0);
+
+	if (bc__dos_read(handle, (Bit8u*)&buf, 1, &nread)) return -1;
+#endif
+
+	bc__dos_close(handle);
+	
+	return nread;
+}
+
 
 signed short seg001_0600()
 {
@@ -404,8 +435,6 @@ signed short seg001_0600()
 
 	return 1;
 }
-
-#endif
 
 #if !defined(__BORLANDC__)
 }
