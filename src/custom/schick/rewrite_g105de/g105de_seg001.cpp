@@ -20,6 +20,8 @@
  *
  */
 
+#include <stdio.h>
+
 #if !defined(__BORLANDC__)
 #include "dosbox.h"
 #include "regs.h"
@@ -28,6 +30,7 @@
 
 #include "schick.h"
 #else
+
 #include "cda.h"
 #endif
 
@@ -37,6 +40,7 @@
 
 #include "g105de_seg000.h"
 #include "g105de_seg001.h"
+#include "g105de_seg002.h"
 
 #define CDSEG (0xc83)
 
@@ -418,10 +422,47 @@ Bit16s CD_check_file(char *pathP)
 #endif
 
 	bc__dos_close(handle);
-	
+
+#if !defined(__BORLANDC__)	
 	return nread;
+#else
+	asm { db 0x0f, 0x1f, 0x00; } // BCC Sync-Point
+#endif
 }
 
+void CD_radio_insert_cd()
+{
+	char text_buffer[160];
+
+	Bit16s si;
+	
+	sprintf(text_buffer, (char*)Real2Host(RealMake(datseg, STR_INSERT_CD)), ds_readw(CD_DRIVE_NO) + 'A');
+
+	si = -2;
+	
+	while (si == -2) {
+
+		si = gui_radio((Bit8u*)text_buffer,
+				2,
+				(char*)Real2Host(RealMake(datseg, STR_REPEAT)),	
+				(char*)Real2Host(RealMake(datseg, STR_QUIT)));	
+	}
+
+	if (si == 2) {
+		stop_music();
+		update_mouse_cursor();
+		mouse_disable();
+		restore_timer_isr();
+		
+		if (ds_readw(CALLED_WITH_ARGS) != 0) {
+			call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 0, 0, 319, 199, 0);
+		} else {
+			exit_video();
+			bc_clrscr();
+		}
+		bc_exit(0);
+	}
+}
 
 signed short seg001_0600()
 {

@@ -161,6 +161,22 @@ static const unsigned char s___DOSERROR[] =
 	{0x55, 0x8b, 0xec, 0x56, 0x8b, 0x76, 0x04, 0x56,
 	 0xe8};
 
+/* Signature: _exit() BCC31:L */
+static const unsigned char s__exit[] =
+	{0x55, 0x8b, 0xec, 0xff, 0x76, 0x06, 0x90, 0x0e,
+	 0xe8, 0xbd, 0x00, // adress of _unkn_
+	 0x59, 0x5d, 0xcb};
+
+/* Signature: _unkn() BCC31:L */
+static const unsigned char s__unkn_1[] =
+	{0x55, 0x8b, 0xec, 0x56, 0x57, 0x8b, 0x46, 0x06,
+	 0x8b, 0x26};
+
+static const unsigned char s__unkn_2[] =
+	{0x5d, 0x5f, 0x5e, 0x1f, 0x07, 0x5a, 0x59, 0x5b,
+	 0x44};
+
+
 void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
 {
 	const char outstring[] = "Found at CS:0x%04lx Func: %20s Length: 0x%04lx Versions: %s\n";
@@ -241,6 +257,16 @@ void find_clib_signatures(Bit8u* p_cs, Bit8u* p_ds)
 		if (memcmp(p_cs + i, s___DOSERROR, sizeof(s___DOSERROR)) == 0) {
 			fprintf(stderr, outstring, i, "__DOSERROR()" , 0x11L, "BCC 3.1");
 			i += 0x11 - 1;
+		}
+		if (memcmp(p_cs + i, s__exit, sizeof(s__exit)) == 0) {
+			fprintf(stderr, outstring, i, "_exit()" , sizeof(s__exit), "BCC 3.1");
+			i += sizeof(s__exit) - 1;
+		}
+		if ((memcmp(p_cs + i, s__unkn_1, sizeof(s__unkn_1)) == 0) &&
+			(memcmp(p_cs + i + sizeof(s__unkn_1) + 2, s__unkn_2, sizeof(s__unkn_2)) == 0)) {
+			unsigned long size = sizeof(s__unkn_1) + 2 + sizeof(s__unkn_2);
+			fprintf(stderr, outstring, i, "__unkn_()" , size, "BCC 3.1");
+			i += size - 1;
 		}
 		if (memcmp(p_cs + i, s_heapwalk, sizeof(s_heapwalk)) == 0) {
 			/* function is longer than the signature */

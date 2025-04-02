@@ -50,6 +50,7 @@ static inline void bc_randomize() { }
 #define bc__dos_close _dos_close
 #define bc__dos_open _dos_open
 #define bc__dos_read _dos_read
+#define bc_exit exit
 #define bc__dos_getvect _dos_getvect
 #define bc__dos_setvect _dos_setvect
 #define bc_F_PADA(p, v) ((HugePt)(p) += (v))
