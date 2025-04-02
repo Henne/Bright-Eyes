@@ -11,6 +11,79 @@
 
 namespace G105de {
 
+
+Bit16u bc__dos_close(Bit16s fd)
+{
+	CPU_Push16(fd);
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0x02dc);
+	CPU_Pop16();
+	return reg_ax;
+}
+
+Bit16u bc__dos_open(char* pathP, Bit16u oflag, Bit8u* fd)
+{
+	RealPt PP = 0L;
+	RealPt FP = 0L;
+
+	PP = bc_farcalloc(1024, sizeof(char));
+	FP = bc_farcalloc(16, sizeof(char));
+
+	if (PP && FP) {
+		// copy filename
+		strncpy((char*)Real2Host(PP), pathP, 1023);
+
+		// call _dos_open
+		CPU_Push32(FP);
+		CPU_Push16(oflag);
+		CPU_Push32(PP);
+		CALLBACK_RunRealFar(reloc_gen + 0x0, 0x02f2);
+		CPU_Pop32();
+		CPU_Pop16();
+		CPU_Pop32();
+
+		// copy file descriptor
+		host_writew((Bit8u*)fd, (Bit16s)host_readw(Real2Host(FP)));
+
+		bc_free(PP);
+		bc_free(FP);
+		return reg_ax;
+	}
+	return 0;
+}
+
+Bit16u bc__dos_read(Bit16s fd, Bit8u* buf, Bit16u len, Bit16u* nread)
+{
+	RealPt PP = 0L;
+	RealPt FP = 0L;
+
+	PP = bc_farcalloc(len + 16L, sizeof(char));
+	FP = bc_farcalloc(16, sizeof(char));
+
+	if (PP && FP) {
+		// call _dos_read
+		CPU_Push32(FP);
+		CPU_Push16(len);
+		CPU_Push32(PP);
+		CPU_Push16(fd);
+		CALLBACK_RunRealFar(reloc_gen + 0x0, 0x0328);
+		CPU_Pop16();
+		CPU_Pop32();
+		CPU_Pop16();
+		CPU_Pop32();
+
+		// copy nread
+		host_writew((HostPt)nread, host_readw(Real2Host(FP)));
+
+		// copy buffer content
+		memcpy((HostPt)buf, Real2Host(PP), len);
+
+		bc_free(PP);
+		bc_free(FP);
+		return reg_ax;
+	}
+	return 0;
+}
+
 void bc_exit(Bit16u exitval)
 {
 	exit(exitval);

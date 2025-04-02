@@ -1,6 +1,9 @@
 #if !defined(__BORLANDC__)
 namespace G105de {
 
+Bit16u bc__dos_close(Bit16s);
+Bit16u bc__dos_open(char*, Bit16u, Bit8u*);
+Bit16u bc__dos_read(Bit16s, Bit8u*, Bit16u, Bit16u*);
 void bc_exit(Bit16u);
 RealPt bc__dos_getvect(Bit16s);
 void bc__dos_setvect(Bit16s, RealPt);
@@ -44,6 +47,9 @@ static inline void bc_randomize() { }
 
 #include "port.h"
 
+#define bc__dos_close _dos_close
+#define bc__dos_open _dos_open
+#define bc__dos_read _dos_read
 #define bc__dos_getvect _dos_getvect
 #define bc__dos_setvect _dos_setvect
 #define bc_F_PADA(p, v) ((HugePt)(p) += (v))
