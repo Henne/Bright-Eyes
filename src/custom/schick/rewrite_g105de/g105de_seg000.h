@@ -14,6 +14,7 @@ signed short bc_bioskey(signed short);
 void bc_clrscr();
 void bc_free(RealPt);
 RealPt bc_farcalloc(Bit32s, Bit32s);
+void bc_harderr(RealPt);
 Bit16s bc_close(Bit16u);
 Bit16s bc__close(Bit16u);
 Bit16s bc__create(RealPt, Bit16u);
@@ -62,6 +63,8 @@ static inline void bc_randomize() { }
 #define bc_free	free
 #define bc_farcalloc farcalloc
 #define bc_int86x int86x
+#define bc_harderr harderr
+#define bc__exit _exit
 #define bc_close close
 #define bc__close _close
 #define bc__creat _creat

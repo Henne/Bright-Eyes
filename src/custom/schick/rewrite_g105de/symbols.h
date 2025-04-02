@@ -14,6 +14,7 @@
 #define CD_INIT_SUCCESSFUL              (0x0095)    /* unsigned short; {0,1} */
 #define CD_AUDIO_REPEAT                 (0x009b)    /* unsigned short; {0,1} */
 
+#define CD_INSERT_COUNTER               (0x00a1)    /* Bit16s = 5 */
 #define STR_INSERT_CD                   (0x00a3)    /* char[142]; */
 #define STR_REPEAT                      (0x0131)    /* char[12]; */
 #define STR_QUIT                        (0x013d)    /* char[8]; */

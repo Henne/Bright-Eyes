@@ -430,6 +430,7 @@ Bit16s CD_check_file(char *pathP)
 #endif
 }
 
+/* Borlandified and identical */
 void CD_radio_insert_cd()
 {
 	char text_buffer[160];
@@ -462,6 +463,21 @@ void CD_radio_insert_cd()
 		}
 		bc_exit(0);
 	}
+}
+
+/* Borlandified and identical */
+Bit16s CD_insert_loop()
+{
+	if (ds_readw(CD_INSERT_COUNTER) == 0) {
+		CD_radio_insert_cd();
+		ds_writew(CD_INSERT_COUNTER, 5);
+	}
+	ds_dec_ws(CD_INSERT_COUNTER);
+#if defined(__BORLANDC__)
+	bc__exit(0);
+#endif
+
+	return 1;
 }
 
 signed short seg001_0600()

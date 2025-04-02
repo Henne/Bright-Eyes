@@ -187,6 +187,13 @@ RealPt bc_farcalloc(Bit32s nelem, Bit32s size)
 	return RealMake(reg_dx, reg_ax);
 }
 
+void bc_harderr(RealPt handler)
+{
+	CPU_Push32(handler);
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0x1801);
+	CPU_Pop32();
+}
+
 Bit16s bc_close(Bit16u handle)
 {
 	CPU_Push16(handle);
