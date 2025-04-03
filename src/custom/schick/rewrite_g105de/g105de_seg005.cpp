@@ -14,28 +14,50 @@
 
 #include "schick.h"
 
+#if !defined(__BORLANDC__)
 namespace G105de {
+#endif
 
-void set_video_mode(Bit16u mode) {
-	INT10_SetVideoMode(mode);
+void set_video_mode(Bit16u mode)
+{
+#if !defined(__BORLANDC__)
+	CPU_Push16(mode);
+	CALLBACK_RunRealFar(reloc_gen + 0xb6b, 0x08);
+	CPU_Pop16();
+#else
+#endif
 }
 
-void set_video_page(Bit16u mode) {
-	INT10_SetActivePage(mode);
+void set_video_page(Bit16u mode)
+{
+#if !defined(__BORLANDC__)
+	CPU_Push16(mode);
+	CALLBACK_RunRealFar(reloc_gen + 0xb6b, 0x1e);
+	CPU_Pop16();
+#else
+#endif
 }
 
 void save_display_stat(RealPt p)
 {
+#if !defined(__BORLANDC__)
 	CPU_Push32(p);
 	CALLBACK_RunRealFar(reloc_gen + 0xb6b, 0x34);
 	CPU_Pop32();
+#else
+#endif
 }
 
-void set_color(Bit8u *ptr, unsigned char color){
+void set_color(Bit8u *ptr, unsigned char color)
+{
+#if !defined(__BORLANDC__)
 	INT10_SetSingleDacRegister(color, ptr[0], ptr[1], ptr[2]);
+#else
+#endif
 }
 
-void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors){
+void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors)
+{
 	unsigned short i;
 	for (i = 0; i < colors; i++)
 		INT10_SetSingleDacRegister(first_color + i,
@@ -155,7 +177,8 @@ void fill_rect(Bit16u p_seg, Bit16u p_off, Bit16s color, Bit16s width, Bit16s he
 	}
 }
 
-unsigned short swap_u16(unsigned short val) {
+unsigned short swap_u16(unsigned short val)
+{
 	return (val << 8) | (val >> 8);
 }
 
@@ -190,10 +213,15 @@ void copy_to_screen(PhysPt src, PhysPt dst, Bit16s w, Bit16s h, Bit16u mode)
 
 RealPt _normalize_ptr(RealPt ptr)
 {
+#if !defined(__BORLANDC__)
 	CPU_Push32(ptr);
 	CALLBACK_RunRealFar(reloc_gen + 0xb6b, 0x445);
 	CPU_Pop32();
 	return RealMake(reg_dx, reg_ax);
+#else
+#endif
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
