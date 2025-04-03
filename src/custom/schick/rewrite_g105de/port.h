@@ -9,6 +9,7 @@
 #define INTCAST void interrupt (*)()
 #endif
 
+#define main_gen main
 typedef unsigned char Bit8u;
 typedef signed char Bit8s;
 typedef unsigned short Bit16u;
