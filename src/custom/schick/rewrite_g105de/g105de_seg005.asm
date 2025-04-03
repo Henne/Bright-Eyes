@@ -757,7 +757,7 @@ csp_loop2_condition:
 		pop	di
 		pop	si
 		add	si, [bp+src_width]
-		add	si, [bp+dst_width]
+		add	di, [bp+dst_width]
 		inc	dx
 
 csp_loop1_condition:
