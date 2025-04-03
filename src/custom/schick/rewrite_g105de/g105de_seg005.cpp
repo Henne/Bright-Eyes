@@ -1,16 +1,16 @@
 /*
-	Rewrite of DSA1 Generator v1.05_de seg005 (Rasterlib)
-	Functions rewritten: 2/2
-
-	We only rewrite those which differ from the game.
+ *	Rewrite of DSA1 Generator v1.05_de seg005 (Rasterlib)
+ *	Functions rewritten: 2/2
+ *
+ *	We only rewrite those which differ from the game.
+ *	These functions were written in assembler and are
+ *      just a clean C-implementation.
 */
 
 #include <stdlib.h>
 
 #include "paging.h"
 #include "callback.h"
-
-#include "../../ints/int10.h"
 
 #include "schick.h"
 
@@ -48,20 +48,26 @@ void save_display_stat(RealPt p)
 #endif
 }
 
-void set_color(Bit8u *ptr, unsigned char color)
+void set_color(RealPt ptr, unsigned char color)
 {
 #if !defined(__BORLANDC__)
-	INT10_SetSingleDacRegister(color, ptr[0], ptr[1], ptr[2]);
+	CPU_Push16(color);
+	CPU_Push32(ptr);
+	CALLBACK_RunRealFar(reloc_gen + 0xb6b, 0xde);
+	CPU_Pop32();
+	CPU_Pop16();
 #else
 #endif
 }
 
-void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors)
+void set_palette(RealPt ptr, unsigned char first_color, unsigned short colors)
 {
+#if !defined(__BORLANDC__)
 	unsigned short i;
 	for (i = 0; i < colors; i++)
-		INT10_SetSingleDacRegister(first_color + i,
-			ptr[i*3], ptr[i*3+1], ptr[i*3+2]);
+		set_color(ptr + 3 * i, first_color + i);
+#else
+#endif
 }
 
 void draw_h_line(Bit16u offset, Bit16s count, Bit16u color)

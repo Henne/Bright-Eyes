@@ -2868,11 +2868,20 @@ Bit32u unused_func10(Bit32u v)
 /* Borlandified and identical */
 void init_video(Bit16s unused)
 {
+#if !defined(__BORLANDC__)
+	RealPt l_white = RealMake(datseg, STRUCT_COL_WHITE2);
+#else
 	struct struct_color l_white = *(struct_color*)Real2Host(RealMake(datseg, STRUCT_COL_WHITE2));
+#endif
 
 	/* set the video mode to 320x200 8bit */
 	set_video_mode(0x13);
+
+#if !defined(__BORLANDC__)
+	set_color(l_white, 0xff);
+#else
 	set_color((Bit8u*)&l_white, 0xff);
+#endif
 }
 
 /* Borlandified and identical */
@@ -4403,7 +4412,7 @@ void refresh_screen()
 				}
 
 				wait_for_vsync();
-				set_palette(Real2Host((RealPt)ds_readd(BUFFER_DMENGE_DAT)) + 128 * 184 + 2, 0 , 32);
+				set_palette((RealPt)ds_readd(BUFFER_DMENGE_DAT) + 128 * 184 + 2, 0 , 32);
 				copy_to_screen((RealPt)ds_readd(BUFFER_DMENGE_DAT), dst, 128, 184, 0);
 			}
 		}
@@ -5213,7 +5222,7 @@ void select_typus()
 			update_mouse_cursor();
 			call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
 			wait_for_vsync();
-			set_palette(Real2Host(ds_readd(GEN_PTR5)) + 0x5c02, 0, 32);
+			set_palette((RealPt)ds_readd(GEN_PTR5) + 0x5c02, 0, 32);
 			call_mouse();
 
 			ds_writeb(HEAD_TYPUS, (ds_readbs(HERO_TYPUS) > 10 ? 10 : ds_readbs(HERO_TYPUS)));
@@ -7123,7 +7132,7 @@ void choose_typus()
 	update_mouse_cursor();
 	call_fill_rect_gen((RealPt)ds_readd(VGA_MEMSTART), 16, 8, 143, 191, 0);
 	wait_for_vsync();
-	set_palette(Real2Host(ds_readd(GEN_PTR5)) + 0x5c02, 0, 32);
+	set_palette((RealPt)ds_readd(GEN_PTR5) + 0x5c02, 0, 32);
 	call_mouse();
 
 
@@ -7427,8 +7436,8 @@ void intro()
 	Bit16s width;
 	Bit16s height;
 	Bit16s flen;
-	Bit8u* pal_src;
-	Bit8u* pal_dst;
+	RealPt pal_src;
+	RealPt pal_dst;
 	struct nvf_desc nvf;
 
 	Bit16s i;
@@ -7460,7 +7469,7 @@ void intro()
 
 	wait_for_vsync();
 
-	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_ATTIC)), 0, 16);
+	set_palette((RealPt)RealMake(datseg, PAL_ATTIC), 0, 16);
 
 	cnt1 = 1;
 	cnt2 = 99;
@@ -7546,7 +7555,7 @@ void intro()
 	wait_for_vsync();
 
 	/* set palette of FANPRO.NVF */
-	set_palette(Real2Host(ds_readd(BUFFER_HEADS_DAT)) + flen - 32*3, 0, 32);
+	set_palette((RealPt)ds_readd(BUFFER_HEADS_DAT) + flen - 32 * 3, 0, 32);
 
 	/* draw the picture */
 	ds_writew(DST_X1, 60);
@@ -7576,7 +7585,7 @@ void intro()
 	wait_for_vsync();
 
 
-	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_TMP)), 0, 32);
+	set_palette((RealPt)RealMake(datseg, PAL_TMP), 0, 32);
 
 	/* draw DSALOGO.DAT */
 	ds_writew(DST_X1, 0);
@@ -7611,39 +7620,39 @@ void intro()
 	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)) + 500, p_datseg + PAL_DSALOGO, 96);
 
 #if !defined(__BORLANDC__)
-	pal_src = Real2Host(ds_readd(GEN_PTR1_DIS)) + 500;
-	pal_dst = Real2Host(ds_readd(GEN_PTR1_DIS));
+	pal_src = (RealPt)ds_readd(GEN_PTR1_DIS) + 500;
+	pal_dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 #else
 	
-	pal_src = (pal_dst = Real2Host(ds_readd(GEN_PTR1_DIS))) + 500;
+	pal_src = (pal_dst = (RealPt)ds_readd(GEN_PTR1_DIS)) + 500;
 	//asm { db 0x66, 0x90; db 0x66, 0x90; };
 #endif
-	memset(pal_dst, 0, 96);
+	bc_memset(pal_dst, 0, 96);
 
 	for (i = 0; i < 64; i++) {
-		pal_fade_in(pal_dst, pal_src, i, 32);
+		pal_fade_in(Real2Host(pal_dst), Real2Host(pal_src), i, 32);
 		wait_for_vsync();
 		set_palette(pal_dst, 0, 32);
 	}
 
 	set_textcolor(0xff, 0x00); // WHITE ON BLACK
-	print_str((char*)p_datseg + STR_VERSION, 290, 190);
+	print_str((char*)Real2Host(RealMake(datseg, STR_VERSION)), 290, 190);
 	vsync_or_key(400);
 
-	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)), p_datseg + PAL_DSALOGO, 96);
+	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)), Real2Host(RealMake(datseg, PAL_DSALOGO)), 96);
 
 #if !defined(__BORLANDC__)
-	pal_src = Real2Host(ds_readd(GEN_PTR1_DIS)) + 500;
-	pal_dst = Real2Host(ds_readd(GEN_PTR1_DIS));
+	pal_src = (RealPt)ds_readd(GEN_PTR1_DIS) + 500;
+	pal_dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 #else
 	
-	pal_src = (pal_dst = Real2Host(ds_readd(GEN_PTR1_DIS))) + 500;
+	pal_src = (pal_dst = (RealPt)ds_readd(GEN_PTR1_DIS)) + 500;
 	asm { db 0x66, 0x90; db 0x66, 0x90; };
 #endif
-	memset(Real2Host(ds_readd(GEN_PTR1_DIS)) + 500, 0, 96);
+	bc_memset((RealPt)ds_readd(GEN_PTR1_DIS) + 500, 0, 96);
 
 	for (i = 0; i < 64; i++) {
-		pal_fade_out(pal_dst, pal_src, 32);
+		pal_fade_out(Real2Host(pal_dst), Real2Host(pal_src), 32);
 		wait_for_vsync();
 		set_palette(pal_dst, 0, 32);
 	}
@@ -7828,12 +7837,12 @@ void alloc_buffers()
 /* Borlandified and identical */
 void init_colors()
 {
-	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_COL_BLACK)), 0x00, 1);
-	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_COL_WHITE)), 0xff, 1);
-	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_POPUP)), 0xd8, 8);
-	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_MISC)), 0xc8, 3);
-	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_GENBG)), 0x40, 0x20);
-	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_HEADS)), 0x20, 0x20);
+	set_palette(RealMake(datseg, PAL_COL_BLACK), 0x00, 1);
+	set_palette(RealMake(datseg, PAL_COL_WHITE), 0xff, 1);
+	set_palette(RealMake(datseg, PAL_POPUP), 0xd8, 8);
+	set_palette(RealMake(datseg, PAL_MISC), 0xc8, 3);
+	set_palette(RealMake(datseg, PAL_GENBG), 0x40, 0x20);
+	set_palette(RealMake(datseg, PAL_HEADS), 0x20, 0x20);
 	set_textcolor(0xff, 0x0); // WHITE ON BLACK
 }
 

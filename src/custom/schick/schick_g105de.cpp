@@ -477,8 +477,7 @@ static int seg005(Bitu offs) {
 		D1_GFX("set_palette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
 			RealSeg(ptr), RealOff(ptr), first_color, colors);
 
-		set_palette(MemBase + Real2Phys(ptr),
-			(unsigned char)first_color, colors);
+		set_palette(ptr, (unsigned char)first_color, colors);
 
 		return 1;
 	}

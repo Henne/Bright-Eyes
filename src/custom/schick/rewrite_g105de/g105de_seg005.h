@@ -5,8 +5,8 @@ namespace G105de {
 void set_video_mode(Bit16u mode);
 void set_video_page(Bit16u mode);
 void save_display_stat(RealPt);
-void set_color(Bit8u *ptr, unsigned char color);
-void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors);
+void set_color(RealPt ptr, unsigned char color);
+void set_palette(RealPt ptr, unsigned char first_color, unsigned short colors);
 void draw_h_line(Bit16u, Bit16s, Bit16u);
 void draw_h_spaced_dots(Bit16u, Bit16u, Bit16s, Bit16u);
 void pic_copy(RealPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, RealPt, Bit16u);
