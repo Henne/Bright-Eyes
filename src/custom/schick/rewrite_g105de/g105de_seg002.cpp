@@ -7460,7 +7460,7 @@ void intro()
 
 	wait_for_vsync();
 
-	set_palette((Bit8u*)p_datseg + PAL_ATTIC, 0, 16);
+	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_ATTIC)), 0, 16);
 
 	cnt1 = 1;
 	cnt2 = 99;
@@ -7576,7 +7576,7 @@ void intro()
 	wait_for_vsync();
 
 
-	set_palette((Bit8u*)p_datseg + PAL_TMP, 0, 32);
+	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_TMP)), 0, 32);
 
 	/* draw DSALOGO.DAT */
 	ds_writew(DST_X1, 0);
@@ -7828,12 +7828,12 @@ void alloc_buffers()
 /* Borlandified and identical */
 void init_colors()
 {
-	set_palette((Bit8u*)p_datseg + PAL_COL_BLACK, 0x00, 1);
-	set_palette((Bit8u*)p_datseg + PAL_COL_WHITE, 0xff, 1);
-	set_palette((Bit8u*)p_datseg + PAL_POPUP, 0xd8, 8);
-	set_palette((Bit8u*)p_datseg + PAL_MISC, 0xc8, 3);
-	set_palette((Bit8u*)p_datseg + PAL_GENBG, 0x40, 0x20);
-	set_palette((Bit8u*)p_datseg + PAL_HEADS, 0x20, 0x20);
+	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_COL_BLACK)), 0x00, 1);
+	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_COL_WHITE)), 0xff, 1);
+	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_POPUP)), 0xd8, 8);
+	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_MISC)), 0xc8, 3);
+	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_GENBG)), 0x40, 0x20);
+	set_palette((Bit8u*)Real2Host(RealMake(datseg, PAL_HEADS)), 0x20, 0x20);
 	set_textcolor(0xff, 0x0); // WHITE ON BLACK
 }
 
