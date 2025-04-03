@@ -3660,22 +3660,22 @@ void draw_popup_line(Bit16s line, Bit16s type)
 	}
 #if defined(__BORLANDC__)
 	// BCC Sync-Point
-	copy_to_screen(Real2Phys(src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_left), Real2Phys(dst), 16, 8, 0);
+	copy_to_screen((src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_left), dst, 16, 8, 0);
 #else
 	src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_left;
-	copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 8, 0);
+	copy_to_screen(src, dst, 16, 8, 0);
 #endif
 
 	src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_middle;
 	dst += 16;
 	for (i = 0; i < ds_readws(MENU_TILES); dst += 32, i++)
-		copy_to_screen(Real2Phys(src), Real2Phys(dst), 32, 8, 0);
+		copy_to_screen(src, dst, 32, 8, 0);
 #if defined(__BORLANDC__)
 	// BCC Sync-Point
-	copy_to_screen(Real2Phys(src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_right), Real2Phys(dst), 16, 8, 0);
+	copy_to_screen((src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_right), dst, 16, 8, 0);
 #else
 	src = ((RealPt)ds_readd(BUFFER_POPUP)) + popup_right;
-	copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 8, 0);
+	copy_to_screen(src, dst, 16, 8, 0);
 #endif
 }
 
@@ -3727,10 +3727,10 @@ Bit16s infobox(char *msg, Bit16s digits)
 	dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 
 #if !defined(__BORLANDC__)
-	copy_to_screen(Real2Phys(src), Real2Phys(dst), di, (lines + 2) * 8, 2);
+	copy_to_screen(src, dst, di, (lines + 2) * 8, 2);
 #else
 	asm { nop; } // BCC Sync-Point
-	copy_to_screen(Real2Phys(src), Real2Phys(dst), di, (lines /*+ 2 */) * 8, 2);
+	copy_to_screen(src, dst, di, (lines /*+ 2 */) * 8, 2);
 #endif
 
 	/* draw the popup box */
@@ -3768,7 +3768,7 @@ Bit16s infobox(char *msg, Bit16s digits)
 	dst += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
 	src = (RealPt)ds_readd(GEN_PTR1_DIS);
 
-	copy_to_screen(Real2Phys(src), Real2Phys(dst), di, (lines + 2) * 8, 0);
+	copy_to_screen(src, dst, di, (lines + 2) * 8, 0);
 
 #if !defined(__BORLANDC__)
 	call_mouse();
@@ -3900,10 +3900,10 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	dst = (RealPt)ds_readd(GEN_PTR1_DIS);
 
 #if !defined(__BORLANDC__)
-	copy_to_screen(Real2Phys(src), Real2Phys(dst), r9, (lines_sum + 2) * 8, 2);
+	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 2);
 #else
 	asm { nop; }
-	copy_to_screen(Real2Phys(src), Real2Phys(dst), r9, (lines_sum /*+ 2*/ ) * 8, 2);
+	copy_to_screen(src, dst, r9, (lines_sum /*+ 2*/ ) * 8, 2);
 #endif
 
 	/* draw popup */
@@ -4039,7 +4039,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	dst = (RealPt)ds_readd(VGA_MEMSTART);
 	dst += ds_readws(UPPER_BORDER) * 320 + ds_readws(LEFT_BORDER);
 	src = (RealPt)ds_readd(GEN_PTR1_DIS);
-	copy_to_screen(Real2Phys(src), Real2Phys(dst), r9, (lines_sum + 2) * 8, 0);
+	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 0);
 
 #if !defined(__BORLANDC__)
 	call_mouse();
@@ -4068,9 +4068,9 @@ void enter_name()
 	dst = (RealPt)ds_readd(VGA_MEMSTART) + 12 * 320 + 176;
 
 	update_mouse_cursor();
-	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), Real2Phys(dst), 94, 8, 0);
+	copy_to_screen((RealPt)ds_readd(PICBUF1), dst, 94, 8, 0);
 	enter_string((char*)Real2Host(RealMake(datseg, HERO_NAME)), 180, 12, 15, 1);
-	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), Real2Phys(dst), 94, 8, 0);
+	copy_to_screen((RealPt)ds_readd(PICBUF1), dst, 94, 8, 0);
 	call_mouse();
 	print_str((char*)Real2Host(RealMake(datseg,HERO_NAME)), 180, 12);
 }
@@ -4137,7 +4137,7 @@ void change_sex()
 		dst = (RealPt)ds_readd(VGA_MEMSTART) + 7 * 320 + 305;
 		src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 256 * ds_readbs(HERO_SEX);
 		update_mouse_cursor();
-		copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 16, 0);
+		copy_to_screen(src, dst, 16, 16, 0);
 		call_mouse();
 	}
 }
@@ -4355,7 +4355,7 @@ void refresh_screen()
 
 			dst = (RealPt)ds_readd(GEN_PTR1_DIS) + 7 * 320 + 305;
 			src = (RealPt)ds_readd(BUFFER_SEX_DAT) + 256 * ds_readbs(HERO_SEX);
-			copy_to_screen(Real2Phys(src), Real2Phys(dst), 16, 16, 0);
+			copy_to_screen(src, dst, 16, 16, 0);
 		}
 
 		/* page with base values and level is advanced */
@@ -4367,7 +4367,7 @@ void refresh_screen()
 			src = (RealPt)ds_readd(BUFFER_SEX_DAT); // BCC Sync-Point
 #endif
 
-			copy_to_screen(Real2Phys(src), Real2Phys(dst), 20, 15, 0);
+			copy_to_screen(src, dst, 20, 15, 0);
 		}
 		/* if the page is lower than 5 */
 		if (ds_readws(GEN_PAGE) < 5) {
@@ -4380,7 +4380,7 @@ void refresh_screen()
 			if (ds_readbs(HERO_TYPUS) != 0) {
 
 				ds_writeb(NEED_REFRESH, 1);
-				copy_to_screen(Real2Phys((RealPt)ds_readd(GEN_PTR5)), Real2Phys(dst), 128, 184, 0);
+				copy_to_screen((RealPt)ds_readd(GEN_PTR5), dst, 128, 184, 0);
 
 				if (ds_readbs(HERO_SEX) != 0) {
 					print_str(get_text(271 + ds_readbs(HERO_TYPUS)),
@@ -4404,7 +4404,7 @@ void refresh_screen()
 
 				wait_for_vsync();
 				set_palette(Real2Host((RealPt)ds_readd(BUFFER_DMENGE_DAT)) + 128 * 184 + 2, 0 , 32);
-				copy_to_screen(Real2Phys((RealPt)ds_readd(BUFFER_DMENGE_DAT)), Real2Phys(dst), 128, 184, 0);
+				copy_to_screen((RealPt)ds_readd(BUFFER_DMENGE_DAT), dst, 128, 184, 0);
 			}
 		}
 		/* if hero has a typus */
@@ -4446,7 +4446,7 @@ void refresh_screen()
 		dst = (RealPt)(ds_writed(GFX_PTR, ds_readd(VGA_MEMSTART)));
 		src = (RealPt)ds_readd(GEN_PTR1_DIS);
 		update_mouse_cursor();
-		copy_to_screen(Real2Phys(src), Real2Phys(dst), 320, 200, 0);
+		copy_to_screen(src, dst, 320, 200, 0);
 		call_mouse();
 	} else {
 		print_values();
@@ -5643,19 +5643,19 @@ void save_picbuf()
 
 	if (x_1) {
 		p = (RealPt)ds_readd(GEN_PTR1_DIS) + y_1 * 320 + x_1;
-		copy_to_screen(Real2Phys(p), Real2Phys((RealPt)ds_readd(PICBUF1)), w_1, h_1, 2);
+		copy_to_screen(p, (RealPt)ds_readd(PICBUF1), w_1, h_1, 2);
 	}
 
 	p = (RealPt)ds_readd(GEN_PTR1_DIS) + y_2 * 320 + x_2;
-	copy_to_screen(Real2Phys(p), Real2Phys((RealPt)ds_readd(PICBUF2)), w_2, h_2, 2);
+	copy_to_screen(p, (RealPt)ds_readd(PICBUF2), w_2, h_2, 2);
 #if !defined(__BORLANDC__)
 	p = (RealPt)ds_readd(GEN_PTR1_DIS) + y_3 * 320 + x_3;
-	copy_to_screen(Real2Phys(p), Real2Phys((RealPt)ds_readd(PICBUF3)), w_3, h_3, 2);
+	copy_to_screen(p, (RealPt)ds_readd(PICBUF3), w_3, h_3, 2);
 #else
 	// BCC Sync-Point
 	//p -= y_2 * 320 + x_2; // revert to GEN_PTR1_DIS
 	p += y_3 ; // add offset
-	copy_to_screen(Real2Phys(p), Real2Phys((RealPt)ds_readd(PICBUF3)), w_3, h_3, 2);
+	copy_to_screen(p, (RealPt)ds_readd(PICBUF3), w_3, h_3, 2);
 	asm { nop; nop; nop; nop; db 0x6a, 0x02; db 0x6a, 0x02;};
 #endif
 }
@@ -5723,19 +5723,19 @@ void restore_picbuf(RealPt ptr)
 
 	if (x_1) {
 		p = ptr + y_1 * 320 + x_1;
-		copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF1)), Real2Phys(p), w_1, h_1, 0);
+		copy_to_screen((RealPt)ds_readd(PICBUF1), p, w_1, h_1, 0);
 	}
 
 	p = ptr + y_2 * 320 + x_2;
-	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF2)), Real2Phys(p), w_2, h_2, 0);
+	copy_to_screen((RealPt)ds_readd(PICBUF2), p, w_2, h_2, 0);
 
 #if !defined(__BORLANDC__)
 	p = ptr + y_3 * 320 + x_3;
-	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF3)), Real2Phys(p), w_3, h_3, 0);
+	copy_to_screen((RealPt)ds_readd(PICBUF3), p, w_3, h_3, 0);
 #else
 	// BCC Sync-Point
 	p += y_3 ; // add offset
-	copy_to_screen(Real2Phys((RealPt)ds_readd(PICBUF3)), Real2Phys(p), w_3, h_3, 0);
+	copy_to_screen((RealPt)ds_readd(PICBUF3), p, w_3, h_3, 0);
 	asm { nop; nop; nop; nop; nop; nop;};
 #endif
 }

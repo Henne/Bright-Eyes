@@ -13,7 +13,7 @@ void pic_copy(RealPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bi
 void save_rect(Bit16u, Bit16u, RealPt, Bit16s, Bit16s);
 void fill_rect(Bit16u, Bit16u, Bit16s, Bit16s, Bit16s);
 unsigned short swap_u16(unsigned short val);
-void copy_to_screen(PhysPt, PhysPt, Bit16s, Bit16s, Bit16u);
+void copy_to_screen(RealPt, RealPt, Bit16s, Bit16s, Bit16s);
 
 RealPt _normalize_ptr(RealPt);
 
