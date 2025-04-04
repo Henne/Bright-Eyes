@@ -31,7 +31,7 @@ typedef Bit8u huge * HugePt;
 
 #define H_PADD(p, o) F_PADD(p, o)
 
-extern char ds[0xffff];
+extern char ds[0x488f];
 //#define p_datseg ((Bit8u*)(&ds[0x0000]))
 #define datseg (_DS)
 //#define ds (RealMake(datseg, 0x0000))

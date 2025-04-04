@@ -218,7 +218,7 @@ void copy_to_screen(RealPt src, RealPt dst, Bit16s w, Bit16s h, Bit16s mode)
 	}
 }
 
-RealPt _normalize_ptr(RealPt ptr)
+RealPt normalize_ptr(RealPt ptr)
 {
 #if !defined(__BORLANDC__)
 	CPU_Push32(ptr);

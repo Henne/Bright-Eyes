@@ -1366,7 +1366,7 @@ RealPt load_snd_driver(RealPt fname)
 		in_ptr &= 0xfffffff0;
 
 		/* The arguments of read are working, but not identical */
-		bc__read(handle, (Bit8u*)Real2Host(norm_ptr = _normalize_ptr((RealPt)in_ptr)), size);
+		bc__read(handle, (Bit8u*)Real2Host(norm_ptr = normalize_ptr((RealPt)in_ptr)), size);
 		bc__close(handle);
 		return norm_ptr;
 	} else {

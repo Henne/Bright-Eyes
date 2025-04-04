@@ -16,8 +16,10 @@ word_1EC64	dw 0
 
 .code
 
+	public _decomp_pp20
 
-decomp_pp20	proc far
+
+_decomp_pp20	proc far
 
 
 arg_0		= dword	ptr  6
@@ -56,7 +58,7 @@ arg_8		= dword	ptr  0Eh
 		mov	sp, bp
 		pop	bp
 		retf
-decomp_pp20	endp
+_decomp_pp20	endp
 
 sub_1B3E3	proc near
 		mov	word_1EC62, 1
