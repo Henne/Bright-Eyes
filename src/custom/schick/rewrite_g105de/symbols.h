@@ -83,6 +83,9 @@
 #define MOUSE_MOVED                     (0x1254)
 #define MOUSE_POINTER_OFFSETX           (0x1256)
 #define MOUSE_POINTER_OFFSETY           (0x1258)
+#define MOUSE_POINTER_OFFSETX_BAK       (0x125a)
+#define MOUSE_POINTER_OFFSETY_BAK       (0x125c)
+
 
 #define DEFAULT_ACTION                  (0x1272)    /* RealPt */
 #define ACTION_TABLE                    (0x1276)    /* RealPt */
@@ -90,7 +93,7 @@
 #define GEN_PAGE                        (0x1324)    /* signed short */
 
 #define USELESS_VARIABLE                (0x1326)    /* Bit8s */
-
+#define TEXT_X_MOD                      (0x1327)    /* Bit16s */
 #define RO_ZERO                         (0x1329)    /* Bit16s */
 
 /* struct hero */
@@ -176,6 +179,8 @@
 #define STR_MALLOC_ERROR                (0x1fbb)    /* char[] */
 
 #define RANDOM_GEN_SEED                 (0x1fd6)    /* Bit16u */
+
+#define _CTYPE                          (0x1ff9)    /* CLIB array for isalpha() */
 
 #define CD_AUDIO_TRACK                  (0x245a)    /* unsigned short */
 #define CD_AUDIO_TOD                    (0x2464)    /* unsigned long */

@@ -1983,8 +1983,8 @@ void mouse()
 
 			ds_writew(MOUSE_POSX_BAK, ds_readws(MOUSE_POSX));
 			ds_writew(MOUSE_POSY_BAK, ds_readws(MOUSE_POSY));
-			ds_writew(0x125a, ds_readws(MOUSE_POINTER_OFFSETX));
-			ds_writew(0x125c, ds_readws(MOUSE_POINTER_OFFSETY));
+			ds_writew(MOUSE_POINTER_OFFSETX_BAK, ds_readws(MOUSE_POINTER_OFFSETX));
+			ds_writew(MOUSE_POINTER_OFFSETY_BAK, ds_readws(MOUSE_POINTER_OFFSETY));
 
 			draw_mouse_cursor();
 
@@ -2266,8 +2266,8 @@ void restore_mouse_bg()
 
 	vgaptr = (RealPt)ds_readd(VGA_MEMSTART);
 
-	rangeX = ds_readw(MOUSE_POSX_BAK) - ds_readw(0x125a);
-	rangeY = ds_readw(MOUSE_POSY_BAK) - ds_readw(0x125c);
+	rangeX = ds_readw(MOUSE_POSX_BAK) - ds_readw(MOUSE_POINTER_OFFSETX_BAK);
+	rangeY = ds_readw(MOUSE_POSY_BAK) - ds_readw(MOUSE_POINTER_OFFSETY_BAK);
 	diffX = diffY = 16;
 
 	if (rangeX > 304)
@@ -3561,15 +3561,16 @@ Bit16s enter_string(char *dst, Bit16s x, Bit16s y, Bit16s num, Bit16s zero)
 			print_chr(0x20, di, y);
 			print_chr(0x5f, di, y);
 		} else {
-			if (!(ds_readbs(0x1ff9 + c) & 0x0e) &&
+			/* isalnum(c) */
+			if (!(ds_readbs(_CTYPE + c) & 0x0e) &&
 				(((Bit8u)c) != 0x84) && (((Bit8u)c) != 0x94) &&
 				(((Bit8u)c) != 0x81) && (((Bit8u)c) != 0x8e) &&
 				(((Bit8u)c) != 0x99) && (((Bit8u)c) != 0x9a) &&
 				(c != 0x20) && (c != 0x2e))
 					continue;
 
-			/* is_alpha(c) */
-			if (ds_readb(0x1ff9 + c) & 0xc)
+			/* isalpha(c) */
+			if (ds_readb(_CTYPE + c) & 0xc)
 				c = toupper(c);
 
 			/* ae */
@@ -3721,7 +3722,7 @@ Bit16s infobox(char *msg, Bit16s digits)
 	v4 = ds_readws(TEXT_X_END);
 
 	di = 32 * ds_readws(MENU_TILES) + 32;
-	ds_writew(TEXT_X, ds_writew(LEFT_BORDER, (320 - di) / 2 + ds_readw(0x1327)) + 5);
+	ds_writew(TEXT_X, ds_writew(LEFT_BORDER, (320 - di) / 2 + ds_readw(TEXT_X_MOD)) + 5);
 	ds_writews(TEXT_X_END, di - 10);
 	lines = str_splitter(msg);
 
@@ -3899,7 +3900,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	bak2 = ds_readw(TEXT_Y);
 	bak3 = ds_readws(TEXT_X_END);
 	r9 = 32 * ds_readws(MENU_TILES) + 32;
-	ds_writew(TEXT_X, ds_writew(LEFT_BORDER, ((320 - r9) / 2) + ds_readw(0x1327)) + 5);
+	ds_writew(TEXT_X, ds_writew(LEFT_BORDER, ((320 - r9) / 2) + ds_readw(TEXT_X_MOD)) + 5);
 	ds_writew(TEXT_X_END, 32 * ds_readws(MENU_TILES) + 22);
 	lines_header = str_splitter((char*)header);
 	lines_sum = lines_header + options;
@@ -4566,7 +4567,7 @@ void new_values()
 		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), randval);
 
 		do {
-			ds_writew(0x1327, 0xffb0);
+			ds_writew(TEXT_X_MOD, 0xffb0);
 
 			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
 				unset_attribs,
@@ -4578,7 +4579,7 @@ void new_values()
 				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 5)),
 				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 6)));
 
-			ds_writew(0x1327, 0);
+			ds_writew(TEXT_X_MOD, 0);
 
 		} while (di == -1);
 
@@ -4614,7 +4615,7 @@ void new_values()
 		sprintf((char*)Real2Host(ds_readd(GEN_PTR2)), get_text(46), randval);
 
 		do {
-			ds_writew(0x1327, 0xffb0);
+			ds_writew(TEXT_X_MOD, 0xffb0);
 
 			di = gui_radio((Bit8u*)Real2Host(ds_readd(GEN_PTR2)),
 				unset_attribs,
@@ -4626,7 +4627,7 @@ void new_values()
 				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 5)),
 				(char*)Real2Host((RealPt)ds_readd(TYPE_NAMES + 4 * 6)));
 
-			ds_writew(0x1327, 0);
+			ds_writew(TEXT_X_MOD, 0);
 
 		} while (di == -1);
 
@@ -5392,11 +5393,11 @@ void change_attribs()
 		return;
 	}
 	/* select a positive attribute to change */
-	ds_writew(0x1327, 0xffb0);
+	ds_writew(TEXT_X_MOD, 0xffb0);
 	tmp2 = gui_radio((Bit8u*)get_text(78), 7,
 			get_text(32), get_text(33), get_text(34), get_text(35),
 			get_text(36), get_text(37), get_text(38));
-	ds_writew(0x1327, 0);
+	ds_writew(TEXT_X_MOD, 0);
 
 	if (tmp2 == -1)
 		return;
@@ -5404,9 +5405,9 @@ void change_attribs()
 	/* get the modification type */
 	if (!ds_readbs(ATTRIB_CHANGED + tmp2)) {
 		/* ask user if inc or dec */
-		ds_writew(0x1327, 0xffb0);
+		ds_writew(TEXT_X_MOD, 0xffb0);
 		tmp3 = gui_radio((Bit8u*)NULL, 2, get_text(75), get_text(76));
-		ds_writew(0x1327, 0);
+		ds_writew(TEXT_X_MOD, 0);
 
 		if (tmp3 == -1)
 			return;
@@ -5455,12 +5456,12 @@ void change_attribs()
 		
 			do {
 				/* ask which negative attribute to increment */
-				ds_writew(0x1327, 0xffb0);
+				ds_writew(TEXT_X_MOD, 0xffb0);
 				si = gui_radio((Bit8u*)get_text(80), 7,
 						get_text(39), get_text(40), get_text(41),
 						get_text(42), get_text(43), get_text(44),
 						get_text(45));
-				ds_writew(0x1327, 0);
+				ds_writew(TEXT_X_MOD, 0);
 
 			} while (si == -1);
 
@@ -5537,12 +5538,12 @@ void change_attribs()
 
 			do {
 				/* ask which negative attribute to increment */
-				ds_writew(0x1327, 0xffb0);
+				ds_writew(TEXT_X_MOD, 0xffb0);
 				si = gui_radio((Bit8u*)get_text(79), 7,
 						get_text(39), get_text(40), get_text(41),
 						get_text(42), get_text(43), get_text(44),
 						get_text(45));
-				ds_writew(0x1327, 0);
+				ds_writew(TEXT_X_MOD, 0);
 			} while (si == -1);
 
 
@@ -6454,11 +6455,11 @@ void select_skill()
 		/* check skill attempts */
 		if (!ds_readbs(HERO_SKILL_INCS)) {
 			infobox(get_text(94), 0);
-			ds_writew(0x1327, 0x0);
+			ds_writew(TEXT_X_MOD, 0x0);
 			return;
 		}
 
-		ds_writew(0x1327, 0xffb0);
+		ds_writew(TEXT_X_MOD, 0xffb0);
 
 		switch (ds_readws(GEN_PAGE)) {
 		case 1: {
@@ -6594,7 +6595,7 @@ void select_skill()
 			}
 		}
 
-		ds_writew(0x1327, 0);
+		ds_writew(TEXT_X_MOD, 0);
 
 	} while (group != -1);
 }
@@ -6675,11 +6676,11 @@ void select_spell()
 		/* check if we have spell attempts */
 		if (!ds_readbs(HERO_SPELL_INCS)) {
 			infobox(get_text(94), 0);
-			ds_writew(0x1327, 0);
+			ds_writew(TEXT_X_MOD, 0);
 			return;
 		}
 
-		ds_writew(0x1327, 0xffa6);
+		ds_writew(TEXT_X_MOD, 0xffa6);
 
 		switch (ds_readws(GEN_PAGE)) {
 			case 5: {
@@ -6945,7 +6946,7 @@ void select_spell()
 			}
 		}
 
-		ds_writew(0x1327, 0);
+		ds_writew(TEXT_X_MOD, 0);
 
 	} while (group != -1);
 }
@@ -6956,7 +6957,7 @@ void choose_atpa()
 	Bit16s skill;
 	Bit16s increase;
 
-	ds_writew(0x1327, 0xffb0);
+	ds_writew(TEXT_X_MOD, 0xffb0);
 
 	do {
 		/* print menu with all melee weapons skills */
@@ -7003,7 +7004,7 @@ void choose_atpa()
 
 	} while (skill != -2);
 
-	ds_writew(0x1327, 0);
+	ds_writew(TEXT_X_MOD, 0);
 }
 
 /**
