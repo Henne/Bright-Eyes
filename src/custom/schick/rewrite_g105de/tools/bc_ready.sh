@@ -157,7 +157,7 @@ for i in ${OBJDIR}/*.OBJ; do
 			# exact 15 differing lines are allowed
 			# adresses in unalinged codesegment
 			DIFFLINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $DIFFLINES -ne 16 ]; then RETVAL=1; fi
+			if [ $DIFFLINES -ne 15 ]; then RETVAL=1; fi
 			 ;;
 		"SEG006")
 			# AIL: dump_obj produces uncomparable files due to BSS
