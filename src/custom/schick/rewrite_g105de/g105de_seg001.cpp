@@ -29,12 +29,7 @@
 #include "cpu.h"
 
 #include "schick.h"
-#else
-
-#include "cda.h"
 #endif
-
-
 
 #include "symbols.h"
 
@@ -138,9 +133,9 @@ unsigned short CD_set_drive_no()
 
 /* Borlandified and identical */
 #if defined(__BORLANDC__)
-void CD_driver_request(driver_request *req)
+static void CD_driver_request(driver_request far* req)
 #else
-void CD_driver_request(RealPt req)
+static void CD_driver_request(RealPt req)
 #endif
 {
 #if defined(__BORLANDC__)
@@ -246,12 +241,14 @@ void seg001_00bb(Bit16s track_no)
 		// track_start is now track length
 		host_writed(Real2Host(RealMake(reloc_gen + CDSEG, 0x9e)), track_start - 150);
 
-		CD_driver_request(RealMake(reloc_gen + CDSEG, 0x8c));
 #if !defined(__BORLANDC__)
+		CD_driver_request(RealMake(reloc_gen + CDSEG, 0x8c));
 		ds_writed(CD_AUDIO_POS, ((track_start - 150) * 0x1234e) / 0x4b000);
 #else
-		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
-		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
+		CD_driver_request((driver_request*)RealMake(reloc_gen + CDSEG, 0x8c));
+
+		asm { db 0x66, 0x0F, 0x1F, 0x44, 0x00, 0x00; } // BCC Sync-Point
+		asm { db 0x0F, 0x1F, 0x44, 0x00, 0x00; } // BCC Sync-Point
 		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
 		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
 		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
@@ -260,8 +257,6 @@ void seg001_00bb(Bit16s track_no)
 		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
 		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
 		asm { db 0x0F, 0x1F, 0x40, 0x00; } // BCC Sync-Point
-		asm { db 0x90; }
-		asm { db 0x90; }
 #endif
 		ds_writed(CD_AUDIO_TOD, CD_get_tod());
 	}
@@ -379,7 +374,11 @@ void seg001_03a8()
 		host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0x48)), reloc_gen + CDSEG);
 		host_writew(Real2Host(RealMake(reloc_gen + CDSEG, 0x46)), 0x420);
 		host_writeb(Real2Host(RealMake(reloc_gen + CDSEG, 0x420)), 10);
+#if !defined(__BORLANDC__)
 		CD_driver_request(RealMake(reloc_gen + CDSEG, 0x38));
+#else
+		CD_driver_request((driver_request*)RealMake(reloc_gen + CDSEG, 0x38));
+#endif
 
 		v = host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x421)));
 		for (; host_readb(Real2Host(RealMake(reloc_gen + CDSEG, 0x422))) >= v; v++) {
@@ -395,7 +394,11 @@ void seg001_03a8()
 			host_writeb(Real2Host(RealMake(reloc_gen + CDSEG, v * 8 + 0x108)), 11);
 			host_writeb(Real2Host(RealMake(reloc_gen + CDSEG, v * 8 + 0x109)), (unsigned char)v);
 
+#if !defined(__BORLANDC__)
 			CD_driver_request(RealMake(reloc_gen + CDSEG, 0x38));
+#else
+			CD_driver_request((driver_request*)RealMake(reloc_gen + CDSEG, 0x38));
+#endif
 		}
 	}
 }

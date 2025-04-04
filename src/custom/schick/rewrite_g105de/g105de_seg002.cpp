@@ -1391,6 +1391,7 @@ unsigned short load_seq(Bit16s sequence_num)
 	Bit16s si;
 	Bit16s di; // di = bank, si = patch
 
+	/* open MT32EMUL.XMI */
 	if ((ds_writews(HANDLE_TIMBRE, open_datfile(35))) != -1) {
 
 		if ((ds_writews(SND_SEQUENCE, AIL_register_sequence(ds_readws(SND_DRIVER_HANDLE),
@@ -2287,10 +2288,12 @@ void load_font_and_text()
 	Bit16s handle;
 	Bit32s len;
 
+	/* load FONT6 */
 	handle = open_datfile(14);
 	read_datfile(handle, (Bit8u*)Real2Host(ds_readd(BUFFER_FONT6)), 1000);
 	bc_close(handle);
 
+	/* load GENTEXT */
 	handle = open_datfile(15);
 	len = read_datfile(handle, (Bit8u*)Real2Host(ds_readd(BUFFER_TEXT)), 64000);
 	bc_close(handle);

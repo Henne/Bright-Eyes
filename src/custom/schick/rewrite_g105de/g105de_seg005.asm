@@ -25,7 +25,7 @@
 	public unused_func13
 	public _normalize_ptr
 
-	extrn F_LXLSH:far
+	extrn F_LXLSH@:far
 
 	assume cs:@code
 
@@ -992,12 +992,12 @@ pnt		= dword ptr 6
 		xor	dx, dx
 		mov	ax, word ptr [bp+pnt+2]
 		mov	cx, 4
-		call	far ptr F_LXLSH
+		call	far ptr F_LXLSH@
 		mov 	word ptr [bp+pnt+2], 0
 		add	ax, word ptr [bp+pnt]
 		adc	dx, word ptr [bp+pnt+2]
 		mov	cx, 0ch
-		call	far ptr F_LXLSH
+		call	far ptr F_LXLSH@
 		mov	ax, word ptr [bp+pnt]
 		and	ax, 0fh
 

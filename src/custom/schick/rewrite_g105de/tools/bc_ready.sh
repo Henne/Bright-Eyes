@@ -61,7 +61,6 @@ for i in g105de_*.asm; do
 done
 
 cp symbols.h ${DRIVE_C}/src
-cp cda.h ${DRIVE_C}/src
 cp port.h ${DRIVE_C}/src
 cp hero.h ${DRIVE_C}/src
 cp TLINK.RES ${DRIVE_C}/src

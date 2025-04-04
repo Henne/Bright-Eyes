@@ -693,8 +693,8 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
-					CD_driver_request(ptr);
-					return 1;
+					//CD_driver_request(ptr);
+					return 0;
 				}
 				case 0x00ae: {
 					unsigned int retval;

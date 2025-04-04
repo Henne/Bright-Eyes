@@ -2,13 +2,19 @@
 namespace G105de {
 #endif
 
+#include "g105de_seg007.h"
+
 #include "port.h"
 
 //static
 unsigned short CD_set_drive_no();
 
 //static
-void CD_driver_request(RealPt req);
+#if defined(__BORLANDC__)
+//void CD_driver_request(driver_request far*);
+#else
+//void CD_driver_request(RealPt);
+#endif
 
 //static
 Bit32s CD_get_tod();
@@ -30,7 +36,8 @@ void seg001_0465(unsigned short);
 //static
 Bit16s CD_check_file(char*);
 
-	signed short seg001_0600();
+signed short seg001_0600();
+
 #if !defined(__BORLANDC__)
 }
 #endif
