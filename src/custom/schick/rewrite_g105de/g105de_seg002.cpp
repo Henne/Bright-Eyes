@@ -2753,11 +2753,11 @@ Bit16s read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 
 	len = bc__read(handle, buf, len);
 
+
+	ds_sub_ds(FLEN_LEFT, len);
 #if defined(__BORLANDC__)
-	*((Bit32s*)&ds[FLEN_LEFT]) -= len;
 	// return len is implicit here
 #else
-	ds_writed(FLEN_LEFT, ds_readd(FLEN_LEFT) - len);
 	return len;
 #endif
 }
