@@ -1453,7 +1453,7 @@ RealPt get_timbre(Bit16s bank, Bit16s patch)
 //	} while ((ds_readbs(CURRENT_TIMBRE_BANK) != bank) && (ds_readbs(CURRENT_TIMBRE_PATCH) != patch));
 
 	bc_lseek(ds_readw(HANDLE_TIMBRE), ds_readd(GENDAT_OFFSET) + ds_readd(CURRENT_TIMBRE_OFFSET), SEEK_SET);
-	read_datfile(ds_readw(HANDLE_TIMBRE), p_datseg + CURRENT_TIMBRE_LENGTH, 2);
+	read_datfile(ds_readw(HANDLE_TIMBRE), Real2Host(RealMake(datseg, CURRENT_TIMBRE_LENGTH)), 2);
 
 	timbre_ptr = gen_alloc(ds_readw(CURRENT_TIMBRE_LENGTH));
 
@@ -5292,7 +5292,7 @@ Bit16s can_change_attribs()
 
 
 	for (i = 0; i < 7; i++) {
-		p = p_datseg + HERO_ATT0_NORMAL + 3 * i;
+		p = Real2Host(RealMake(datseg, 3 * i + HERO_ATT0_NORMAL));
 
 		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (host_readbs(p) > 8))
 			pa_dec += 8 - host_readbs(p);
@@ -5301,7 +5301,8 @@ Bit16s can_change_attribs()
 	}
 
 	for (i = 7; i < 14; i++) {
-		p = p_datseg + HERO_ATT0_NORMAL + 3 * i;
+		p = Real2Host(RealMake(datseg, 3 * i + HERO_ATT0_NORMAL));
+
 		if ((ds_readb(ATTRIB_CHANGED + i) != INC) && (host_readbs(p) > 2))
 			na_dec += 2 - host_readbs(p);
 		if ((ds_readb(ATTRIB_CHANGED + i) != DEC) && (host_readbs(p) < 8))
@@ -5410,7 +5411,7 @@ void change_attribs()
 		tmp3 = ds_readbs(ATTRIB_CHANGED + tmp2);
 	}
 
-	ptr1 = p_datseg + HERO_ATT0_NORMAL + 3 * tmp2;
+	ptr1 = Real2Host(RealMake(datseg, 3 * tmp2 + HERO_ATT0_NORMAL));
 
 	if (tmp3 == INC) {
 		/* increment */
@@ -5421,7 +5422,7 @@ void change_attribs()
 		c = 0;
 		for (di = 7; di < 14; di++) {
 			if (ds_readb(ATTRIB_CHANGED + di) != DEC) {
-				ptr2 = p_datseg + HERO_ATT0_NORMAL + 3 * di;
+				ptr2 = Real2Host(RealMake(datseg, 3 * di + HERO_ATT0_NORMAL));
 				if (host_readbs(ptr2) < 8) {
 					c += 8 - host_readbs(ptr2);
 				}
@@ -5466,7 +5467,7 @@ void change_attribs()
 				infobox(get_text(83), 0);
 				continue;
 			}
-			ptr1 = p_datseg + HERO_ATT_AG_NORMAL + 3 * si;
+			ptr1 = Real2Host(RealMake(datseg, 3 * si + HERO_ATT_AG_NORMAL));
 			/* check if attribute can be incremented */
 			if (host_readbs(ptr1) == 8) {
 				infobox(get_text(77), 0);
@@ -5498,7 +5499,7 @@ void change_attribs()
 		c = 0;
 		for (di = 7; di < 14; di++) {
 			if (ds_readb(ATTRIB_CHANGED + di) != INC) {
-				ptr2 = p_datseg + HERO_ATT0_NORMAL + 3 * di;
+				ptr2 = Real2Host(RealMake(datseg, 3 * di + HERO_ATT0_NORMAL));
 				if (host_readbs(ptr2) > 2) {
 #if !defined(__BORLANDC__)
 					c += host_readbs(ptr2) - 2;
@@ -5549,7 +5550,7 @@ void change_attribs()
 				continue;
 			}
 				
-			ptr1 = p_datseg + HERO_ATT_AG_NORMAL + 3 * si;
+			ptr1 = Real2Host(RealMake(datseg, 3 * si + HERO_ATT_AG_NORMAL));
 			
 			/* check if attribute can be decremented */
 			if (host_readbs(ptr1) == 2) {
@@ -5761,7 +5762,7 @@ void print_attribs()
 
 	Bit16s i;
 
-	p = p_datseg + HERO_ATT0_NORMAL;
+	p = Real2Host(RealMake(datseg, HERO_ATT0_NORMAL));
 
 	for (i = 0; i < 14; p += 3, i++) {
 		/* don't print 0s */
@@ -5804,7 +5805,7 @@ void print_values()
 			restore_picbuf((RealPt)ds_readd(GFX_PTR));
 
 			/* print name */
-			print_str((char*)p_datseg + HERO_NAME, 180, 12);
+			print_str((char*)Real2Host(RealMake(datseg, HERO_NAME)), 180, 12);
 
 			/* print attributes */
 			print_attribs();
@@ -7617,7 +7618,7 @@ void intro()
 	ds_writed(DST_SRC, ds_readd(GEN_PTR1_DIS));
 	do_draw_pic(0);
 
-	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)) + 500, p_datseg + PAL_DSALOGO, 96);
+	bc_memcpy((RealPt)ds_readd(GEN_PTR1_DIS) + 500, RealMake(datseg, PAL_DSALOGO), 96);
 
 #if !defined(__BORLANDC__)
 	pal_src = (RealPt)ds_readd(GEN_PTR1_DIS) + 500;
@@ -7639,7 +7640,7 @@ void intro()
 	print_str((char*)Real2Host(RealMake(datseg, STR_VERSION)), 290, 190);
 	vsync_or_key(400);
 
-	memcpy(Real2Host(ds_readd(GEN_PTR1_DIS)), Real2Host(RealMake(datseg, PAL_DSALOGO)), 96);
+	bc_memcpy((RealPt)ds_readd(GEN_PTR1_DIS), RealMake(datseg, PAL_DSALOGO), 96);
 
 #if !defined(__BORLANDC__)
 	pal_src = (RealPt)ds_readd(GEN_PTR1_DIS) + 500;
