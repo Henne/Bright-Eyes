@@ -59,6 +59,9 @@ There are only 3 different versions of DSAGEN.DAT.
 
 
 ### Content
+
+Remark: The index here is NOT same as in GEN.EXE!
+
 | Index | DE (CD / DISK)    | md5sum                           | EN DISK      | md5sum                           | Notes |
 | ----- | ----------------- | -------------------------------- | ------------ | -------------------------------- | ----- |
 | 00    | DSALOGO.DAT       | 7dec8a345070fe6026ef23ecb78dbf9c | ROALOGUK.DAT | 40a6f05ee336b4a4f5fecb563d003f76 |       |
