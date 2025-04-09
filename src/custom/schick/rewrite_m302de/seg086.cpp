@@ -186,6 +186,8 @@ signed short DNG11_handler(void)
 		}
 
 	} else if (target_pos == DNG_POS(0,8,12) &&
+			// possibly a bug. position (8,12) might indeed be (8,11)
+			// see https://www.crystals-dsa-foren.de/showthread.php?tid=1373&pid=96541#pid96541
 			(target_pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readbs(DIRECTION) == NORTH &&
 			ds_readb(DNG11_SECRETDOOR1_FLAG) != 2)
