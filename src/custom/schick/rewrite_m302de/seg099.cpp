@@ -841,7 +841,7 @@ void spell_balsam(void)
 			/* TODO: potential ORIGINAL-BUG: What if le_to_heal is bigger than the missing LE? */
 		} else {
 			if (host_readws(get_spelltarget() + HERO_LE_ORIG) - host_readws(get_spelltarget() + HERO_LE) < le_to_heal) {
-				/* spellcaster wants to heal more LE than wiche are missing */
+				/* spellcaster wants to heal more LE than which are missing */
 				ds_writew(SPELL_SPECIAL_AECOST, host_readws(get_spelltarget() + HERO_LE_ORIG) - host_readws(get_spelltarget() + HERO_LE));
 				le_to_heal = ds_readws(SPELL_SPECIAL_AECOST);
 				/* reduce le and AE_COST to the amount of LE which is actually missing */
