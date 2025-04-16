@@ -665,27 +665,27 @@ signed short select_teleport_dest(void)
 signed short get_maploc(signed short x, signed short y)
 {
 	Bit8u *p_loc;
-	unsigned short pos_xy = (x << 8) + y;
+	unsigned short pos_xy = TOWN_POS(x,y);
 
 	if (ds_readbs(CURRENT_TOWN) == TOWNS_THORWAL) {
 
-		if (pos_xy == (4 << 8) + 13) {
+		if (pos_xy == TOWN_POS(4,13)) {
 			return 13;
-		} else if (pos_xy == (5 << 8) + 2) {
+		} else if (pos_xy == TOWN_POS(5,2)) {
 			return 8;
-		} else if ((pos_xy == ( 5 << 8) + 1)
-		        || (pos_xy == ( 5 << 8) + 4) || (pos_xy == ( 3 << 8) +  6)
-		        || (pos_xy == (13 << 8) + 8) || (pos_xy == (20 << 8) + 11)
-		        || (pos_xy == ( 5 << 8) + 5) || (pos_xy == ( 3 << 8) + 10))
+		} else if ((pos_xy == TOWN_POS(5,1))
+		        || (pos_xy == TOWN_POS(5,4) || (pos_xy == TOWN_POS(3,6)))
+		        || (pos_xy == TOWN_POS(13,8) || (pos_xy == TOWN_POS(20,11)))
+		        || (pos_xy == TOWN_POS(5,5) || (pos_xy == TOWN_POS(3,10))))
 		{
 			return 9;
 		}
 	} else if (ds_readbs(CURRENT_TOWN) == TOWNS_PREM) {
-		if (pos_xy == (28 << 8) + 9) {
+		if (pos_xy == TOWN_POS(28,9)) {
 			return 9;
 		}
 	} else if (ds_readbs(CURRENT_TOWN) == TOWNS_GUDDASUNDEN) {
-		if (pos_xy == (1 << 8) + 14) {
+		if (pos_xy == TOWN_POS(1,14)) {
 			return 8;
 		}
 	}
