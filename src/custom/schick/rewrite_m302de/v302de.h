@@ -31,6 +31,7 @@
 #define MONTHS(n)	(DAYS(n) * 30L)
 
 /* for positions stored in 2 bytes, containing data level, x, y and possibly direction. */
+#define TOWN_POS(x, y) (((x) << 8) + (y))
 #define DNG_POS(level, x, y)	(((level) << 12) + ((x) << 8) + (y))
 #define DNG_POS_DIR(level, x, y, dir) (DNG_POS(level, x, y) + ((dir) << 4))
 
