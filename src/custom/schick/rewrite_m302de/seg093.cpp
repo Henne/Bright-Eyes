@@ -95,7 +95,7 @@ signed short do_travel_mode(void)
 			ds_writew(REQUEST_REFRESH, 0);
 		}
 
-		if (host_readbs(signpost_ptr) == ds_readbs(CURRENT_TOWN) && host_readb(signpost_ptr + 1) == ds_readw(CURRENT_DIRSIGN))
+		if (host_readbs(signpost_ptr) == ds_readbs(CURRENT_TOWN) && host_readb(signpost_ptr + 1) == ds_readw(CURRENT_SIGNPOST))
 		{
 			while (1) {
 				handle_input();
