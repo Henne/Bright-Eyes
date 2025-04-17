@@ -915,7 +915,7 @@
 #define PP20_BUFFER_LENGTHS             (0x5e8e)    /* unsigned long[9] */
 #define CURRENT_FIGHT_ID                (0x5eb2)    /* unsigned short */
 // ?4
-#define LOCATIONS_TAB_SIZE              (0x5eb8)    /* unsigned short */
+#define LOCATIONS_LIST_SIZE             (0x5eb8)    /* unsigned short */
 #define AREADESCR_DNG_LEVEL             (0x5eba)    /* unsigned short */
 #define AREADESCR_FILEID                (0x5ebc)    /* unsigned short */
 #define AREADESCR_DNG_FLAG              (0x5ebe)    /* unsigned short; {0,1} */
@@ -1372,7 +1372,7 @@
 #define PIC_COPY_V2                     (0xc01f)    /* unsigned short */
 #define PIC_COPY_V3                     (0xc021)    /* unsigned short */
 #define PIC_COPY_V4                     (0xc023)    /* unsigned short */
-#define LOCATIONS_TAB                   (0xc025)    /* struct(6)[150]; struct{short pos; char loc, type; short id;} */
+#define LOCATIONS_LIST                  (0xc025)    /* struct(6)[150]; struct{short pos; char loc, type; short id;} */
 #define BUFFER8_PTR                     (0xc3a9)    /* RealPt; to buffer of size 12008 */
 #define TX2_INDEX                       (0xc3ad)    /* RealPt; to index table of secondary text file */
 #define TX_INDEX                        (0xc3b1)    /* RealPt; to index table of primary text file */

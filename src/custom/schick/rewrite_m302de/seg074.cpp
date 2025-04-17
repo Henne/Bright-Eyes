@@ -664,57 +664,61 @@ signed short select_teleport_dest(void)
  */
 signed short get_maploc(signed short x, signed short y)
 {
-	Bit8u *p_loc;
+	Bit8u *locations_list_ptr;
 	unsigned short pos_xy = TOWN_POS(x,y);
 
+	// Wow. Original game has these hard-coded manipulation of the data.
 	if (ds_readbs(CURRENT_TOWN) == TOWNS_THORWAL) {
 
 		if (pos_xy == TOWN_POS(4,13)) {
-			return 13;
+			// schwarzer Finger
+			return TOWN_TILE_BLACK_FINGER;
 		} else if (pos_xy == TOWN_POS(5,2)) {
-			return 8;
+			// town exit to Vaermhag, which is located in a building (not a signpost).
+			return TOWN_TILE_SIGNPOST;
 		} else if ((pos_xy == TOWN_POS(5,1))
 		        || (pos_xy == TOWN_POS(5,4) || (pos_xy == TOWN_POS(3,6)))
 		        || (pos_xy == TOWN_POS(13,8) || (pos_xy == TOWN_POS(20,11)))
 		        || (pos_xy == TOWN_POS(5,5) || (pos_xy == TOWN_POS(3,10))))
 		{
-			return 9;
+			return TOWN_TILE_INN_OR_TAVERN;
 		}
 	} else if (ds_readbs(CURRENT_TOWN) == TOWNS_PREM) {
 		if (pos_xy == TOWN_POS(28,9)) {
-			return 9;
+			// Inn "Zur Trutz". Why is this a special case here?
+			return TOWN_TILE_INN_OR_TAVERN;
 		}
 	} else if (ds_readbs(CURRENT_TOWN) == TOWNS_GUDDASUNDEN) {
 		if (pos_xy == TOWN_POS(1,14)) {
-			return 8;
+			// Harbor, which is located in a building (not a signpost).
+			return TOWN_TILE_SIGNPOST;
 		}
 	}
 
-	p_loc = p_datseg + LOCATIONS_TAB;
+	locations_list_ptr = p_datseg + LOCATIONS_LIST;
 
 	do {
 
-		if (host_readws(p_loc) == pos_xy) {
-
-			if (host_readbs(p_loc + 2) == 2) {
-				return 1;
+		if (host_readws(locations_list_ptr) + LOCATIONS_LIST_XY == pos_xy) {
+			if (host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_TEMPLE) {
+				return TOWN_TILE_TEMPLE;
 			}
-			if (host_readbs(p_loc + 2) == 5) {
-				return 10;
+			if (host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_MERCHANT) {
+				return TOWN_TILE_MERCHANT;
 			}
-			if (host_readbs(p_loc + 2) == 8) {
-				return 11;
+			if (host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_SMITH) {
+				return TOWN_TILE_SMITH;
 			}
-			if ((host_readbs(p_loc + 2) == 3) || (host_readbs(p_loc + 2) == 7)) {
-				return 9;
+			if ((host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_TAVERN) || (host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_INN)) {
+				return TOWN_TILE_INN_OR_TAVERN;
 			}
-			if (host_readbs(p_loc + 2) == 4) {
-				return 12;
+			if (host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_HEALER) {
+				return TOWN_TILE_HEALER;
 			}
 		}
 
-		p_loc += 6;
-	} while (host_readws(p_loc) != -1);
+		locations_list_ptr += SIZEOF_LOCATIONS_LIST;
+	} while (host_readws(locations_list_ptr) != -1);
 
 	return 0;
 }

@@ -578,7 +578,7 @@ signed short TM_enter_target_town(void)
 	signed short dir_sign_id;
 	signed short tmp2;
 	Bit8u *dir_sign_ptr;
-	Bit8u *loctab_ptr;
+	Bit8u *locations_list_ptr;
 
 	dir_sign_id = 0;
 	ds_writew(TRV_DEST_REACHED, ds_readw(TRV_DESTINATION));
@@ -620,16 +620,16 @@ signed short TM_enter_target_town(void)
 			/* load the map */
 			call_load_area(1);
 
-			loctab_ptr = p_datseg + LOCATIONS_TAB;
-			while (host_readb(loctab_ptr + 2) != 12 || host_readb(loctab_ptr + 3) != dir_sign_id)
+			locations_list_ptr = p_datseg + LOCATIONS_LIST;
+			while (host_readb(locations_list_ptr + LOCATIONS_LIST_LOCATION) != LOCATION_DIRECTION_SIGN || host_readb(locations_list_ptr + LOCATIONS_LIST_TYPEINDEX) != dir_sign_id)
 			{
-				loctab_ptr += 6;
+				locations_list_ptr += SIZEOF_LOCATIONS_LIST;
 			}
 
-			tmp = host_readws(loctab_ptr + 4);
+			tmp = host_readws(locations_list_ptr + LOCATIONS_LIST_CITYINDEX);
 			ds_writew(ARRIVAL_X_TARGET, (tmp >> 8) & 0xff);
 			ds_writew(ARRIVAL_Y_TARGET, tmp & 0xf);
-			ds_writew(ARRIVAL_DIRECTION, TM_get_looking_direction(host_readws(loctab_ptr)));
+			ds_writew(ARRIVAL_DIRECTION, TM_get_looking_direction(host_readws(locations_list_ptr)));
 
 			ds_writeb(CURRENT_TOWN, (signed char)tmp2);
 
