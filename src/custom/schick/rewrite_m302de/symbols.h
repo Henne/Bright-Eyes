@@ -767,7 +767,7 @@
 #define TRAVEL_MAP_PTR                  (0x432e)    /* RealPt */
 #define FORCEDMARCH_TIMER               (0x4332)    /* unsigned char */
 #define TRAVEL_DETOUR                   (0x4333)    /* unsigned char; indicates a detour from traveling, mostly to a dungeon (if it holds a DUNGEONS_... ID, which is a value in [1..15]). further possible values: 0, 99, and an extra usage of 1 in seg110.cpp */
-#define CURRENT_DIRSIGN                 (0x4334)    /* unsigned short */
+#define CURRENT_SIGNPOST                (0x4334)    /* unsigned short */
 #define TRV_RETURN                      (0x4336)    /* signed short; {-1, 0, 1, 2} + ? */
 #define TRV_DEST_REACHED                (0x4338)    /* unsigned short */
 #define ARRIVAL_X_TARGET                (0x433a)    /* unsigned short */
@@ -1182,7 +1182,7 @@
 #define DNG_SPECIALCHEST_INDEX          (0x9d84)    /* RealPt[16] */
 #define STR_SINGLE_SPACE                (0x9dc4)    /* char[2]; " " */
 #define ROUTES_TAB                      (0x9dc6)    /* struct(9)[59]; struct{char from, to, length, speed_mod, encounters, u1, u2, fights, u3;} */
-#define DIRSIGN_ROUTES                  (0x9fd9)    /* char[219]; 105 arrays, each terminated by -1 */
+#define SIGNPOST_ROUTES                 (0x9fd9)    /* char[219]; 105 arrays, each terminated by -1 */
 #define SIGNPOSTS                       (0xa0b4)    /* struct(6)[106]; struct{char town, type_id; RealPt routes;} */
 #define HARBOR_PASSAGES                 (0xa330)    /* char[115]; 18 arrays, each terminated by -1 */
 #define HARBORS                         (0xa3a3)    /* struct(6)[26]; struct{char town, type_id; RealPt passages;} */

@@ -96,7 +96,7 @@ void do_harbor(void)
 #endif
 	flag = 1;
 
-	ds_writew(CURRENT_DIRSIGN, ds_readws(TYPEINDEX));
+	ds_writew(CURRENT_SIGNPOST, ds_readws(TYPEINDEX));
 
 	draw_loc_icons(4, MENU_ICON_BOOK_SHIP_PASSAGE, MENU_ICON_HARBOR_MASTER, MENU_ICON_BOARD_SHIP, MENU_ICON_LEAVE);
 	ds_writew(REQUEST_REFRESH, 1);
