@@ -1183,7 +1183,7 @@
 #define STR_SINGLE_SPACE                (0x9dc4)    /* char[2]; " " */
 #define ROUTES_TAB                      (0x9dc6)    /* struct(9)[59]; struct{char from, to, length, speed_mod, encounters, u1, u2, fights, u3;} */
 #define DIRSIGN_ROUTES                  (0x9fd9)    /* char[219]; 105 arrays, each terminated by -1 */
-#define DIRECTION_SIGNS                 (0xa0b4)    /* struct(6)[106]; struct{char town, type_id; RealPt routes;} */
+#define SIGNPOSTS                       (0xa0b4)    /* struct(6)[106]; struct{char town, type_id; RealPt routes;} */
 #define HARBOR_PASSAGES                 (0xa330)    /* char[115]; 18 arrays, each terminated by -1 */
 #define HARBORS                         (0xa3a3)    /* struct(6)[26]; struct{char town, type_id; RealPt passages;} */
 #define TOWN_POSITIONS                  (0xa43f)    /* struct(4)[52]; struct{signed short x, y;} */

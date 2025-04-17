@@ -487,7 +487,7 @@ void TM_func1(signed short route_no, signed short backwards)
 }
 
 /* continue travel after arrival while still on map */
-signed short TM_unused1(RealPt dir_sign_ptr, signed short old_route_no)
+signed short TM_unused1(RealPt signpost_ptr, signed short old_route_no)
 {
 	signed short route_no1;
 	signed short route_id;
@@ -498,21 +498,21 @@ signed short TM_unused1(RealPt dir_sign_ptr, signed short old_route_no)
 	signed short old_route_id;
 	Bit8u *destinations_tab[7];
 
-	old_route_id = host_readb(Real2Host(host_readd(Real2Host(dir_sign_ptr) + 2)) + old_route_no) - 1;
+	old_route_id = host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + 2)) + old_route_no) - 1;
 	ds_writeb(CURRENT_TOWN, (signed char)(town = ds_readws(TRV_DESTINATION)));
-	dir_sign_ptr = (RealPt)RealMake(datseg, DIRECTION_SIGNS);
+	signpost_ptr = (RealPt)RealMake(datseg, SIGNPOSTS);
 
 	do {
-		if (host_readb(Real2Host(dir_sign_ptr)) == town)
+		if (host_readb(Real2Host(signpost_ptr)) == town)
 		{
 			route_no1 = 0;
-			while (host_readbs(Real2Host(host_readd(Real2Host(dir_sign_ptr) + 2)) + route_no1) != -1)
+			while (host_readbs(Real2Host(host_readd(Real2Host(signpost_ptr) + 2)) + route_no1) != -1)
 			{
-				if (host_readb(Real2Host(host_readd(Real2Host(dir_sign_ptr) + 2)) + route_no1) - 1 == old_route_id &&
-					(route_no1 || host_readb(Real2Host(host_readd(Real2Host(dir_sign_ptr) + 2)) + (route_no1 + 1)) != 255))
+				if (host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + 2)) + route_no1) - 1 == old_route_id &&
+					(route_no1 || host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + 2)) + (route_no1 + 1)) != 255))
 				{
 					town_i = route_no2 = 0;
-					while ((route_id = host_readb(Real2Host(host_readd(Real2Host(dir_sign_ptr) + 2)) + route_no2)) != 255)
+					while ((route_id = host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + 2)) + route_no2)) != 255)
 					{
 						if (route_no2 != route_no1)
 						{
@@ -527,7 +527,7 @@ signed short TM_unused1(RealPt dir_sign_ptr, signed short old_route_no)
 					ds_writeb(TRV_MENU_TOWNS + town_i, (signed char)town);
 					destinations_tab[town_i] = get_ttx(547);
 					town_i++;
-					ds_writefp(TM_UNUSED1_PTR, dir_sign_ptr);
+					ds_writefp(TM_UNUSED1_PTR, signpost_ptr);
 
 					set_textbox_positions(town);
 					answer = GUI_radio(get_ttx(546), (signed char)town_i,
@@ -551,9 +551,9 @@ signed short TM_unused1(RealPt dir_sign_ptr, signed short old_route_no)
 			}
 		}
 
-		dir_sign_ptr += 6;
+		signpost_ptr += 6;
 
-	} while (host_readbs(Real2Host(dir_sign_ptr)) != -1);
+	} while (host_readbs(Real2Host(signpost_ptr)) != -1);
 
 	return -1;
 }
@@ -575,43 +575,43 @@ signed short TM_get_track_length(Bit8u *track)
 signed short TM_enter_target_town(void)
 {
 	signed short tmp;
-	signed short dir_sign_id;
+	signed short signpost_id;
 	signed short tmp2;
-	Bit8u *dir_sign_ptr;
+	Bit8u *signpost_ptr;
 	Bit8u *locations_list_ptr;
 
-	dir_sign_id = 0;
+	signpost_id = 0;
 	ds_writew(TRV_DEST_REACHED, ds_readw(TRV_DESTINATION));
-	dir_sign_id = 1;
+	signpost_id = 1;
 
-	if (dir_sign_id)
+	if (signpost_id)
 	{
-		dir_sign_ptr = p_datseg + DIRECTION_SIGNS;
-		dir_sign_id = 0;
+		signpost_ptr = p_datseg + SIGNPOSTS;
+		signpost_id = 0;
 		do {
-			if (host_readb(dir_sign_ptr) == ds_readw(TRV_DEST_REACHED))
+			if (host_readb(signpost_ptr) == ds_readw(TRV_DEST_REACHED))
 			{
 				tmp = 0;
 
 				do {
-					tmp2 = host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + tmp) - 1;
+					tmp2 = host_readb(Real2Host(host_readd(signpost_ptr + 2)) + tmp) - 1;
 
 					if (ds_readbs(ROUTES_TAB + 9 * tmp2) == ds_readbs(CURRENT_TOWN) || ds_readbs((ROUTES_TAB + 1) + 9 * tmp2) == ds_readbs(CURRENT_TOWN))
 					{
-						dir_sign_id = host_readb(dir_sign_ptr + 1);
+						signpost_id = host_readb(signpost_ptr + 1);
 						break;
 					}
 
 					tmp++;
 
-				} while (host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + tmp) != 255);
+				} while (host_readb(Real2Host(host_readd(signpost_ptr + 2)) + tmp) != 255);
 			}
 
-			dir_sign_ptr += 6;
+			signpost_ptr += 6;
 
-		} while (!dir_sign_id && host_readb(dir_sign_ptr) != 255);
+		} while (!signpost_id && host_readb(signpost_ptr) != 255);
 
-		if (dir_sign_id)
+		if (signpost_id)
 		{
 			/* set the target town as current town */
 			tmp2 = ds_readbs(CURRENT_TOWN);
@@ -621,7 +621,7 @@ signed short TM_enter_target_town(void)
 			call_load_area(1);
 
 			locations_list_ptr = p_datseg + LOCATIONS_LIST;
-			while (host_readb(locations_list_ptr + LOCATIONS_LIST_LOCATION) != LOCATION_DIRECTION_SIGN || host_readb(locations_list_ptr + LOCATIONS_LIST_TYPEINDEX) != dir_sign_id)
+			while (host_readb(locations_list_ptr + LOCATIONS_LIST_LOCATION) != LOCATION_SIGNPOST || host_readb(locations_list_ptr + LOCATIONS_LIST_TYPEINDEX) != signpost_id)
 			{
 				locations_list_ptr += SIZEOF_LOCATIONS_LIST;
 			}
