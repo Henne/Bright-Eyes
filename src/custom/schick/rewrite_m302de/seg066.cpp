@@ -121,7 +121,7 @@ signed short enter_location_daspota(void)
 
 			ds_writew(TYPEINDEX, host_readb(locations_list_ptr + LOCATIONS_LIST_TYPEINDEX));
 
-			if (host_readb(locations_list_ptr + LOCATIONS_LIST_LOCATION) != LOCATION_DIRECTION_SIGN) {
+			if (host_readb(locations_list_ptr + LOCATIONS_LIST_LOCATION) != LOCATION_SIGNPOST) {
 
 				GUI_print_loc_line(get_tx(host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX)));
 

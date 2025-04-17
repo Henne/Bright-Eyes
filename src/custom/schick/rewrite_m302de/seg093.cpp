@@ -33,7 +33,7 @@ signed short do_travel_mode(void)
 	signed short answer;
 	signed short l4;
 	signed short route_id;
-	Bit8u *dir_sign_ptr;
+	Bit8u *signpost_ptr;
 	signed short l6;
 	signed short l7;
 	signed short bak1;
@@ -70,7 +70,7 @@ signed short do_travel_mode(void)
 
 	ds_writew(MOUSE1_EVENT1, 0);
 
-	dir_sign_ptr = p_datseg + DIRECTION_SIGNS;
+	signpost_ptr = p_datseg + SIGNPOSTS;
 
 	do {
 		if (ds_readws(REQUEST_REFRESH) != 0)
@@ -95,7 +95,7 @@ signed short do_travel_mode(void)
 			ds_writew(REQUEST_REFRESH, 0);
 		}
 
-		if (host_readbs(dir_sign_ptr) == ds_readbs(CURRENT_TOWN) && host_readb(dir_sign_ptr + 1) == ds_readw(CURRENT_DIRSIGN))
+		if (host_readbs(signpost_ptr) == ds_readbs(CURRENT_TOWN) && host_readb(signpost_ptr + 1) == ds_readw(CURRENT_DIRSIGN))
 		{
 			while (1) {
 				handle_input();
@@ -103,7 +103,7 @@ signed short do_travel_mode(void)
 				if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP)
 				{
 					i = 0;
-					while ((l_di = host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + i)) != 255)
+					while ((l_di = host_readb(Real2Host(host_readd(signpost_ptr + 2)) + i)) != 255)
 					{
 						destinations_tab[i] = get_ttx(235 + ds_writebs(TRV_MENU_TOWNS + i,
 						    (answer = ds_readb((ROUTES_TAB - 9) + 9 * l_di)) != ds_readbs(CURRENT_TOWN) ?
@@ -144,7 +144,7 @@ signed short do_travel_mode(void)
 						break;
 					}
 
-					route_id = host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + answer);
+					route_id = host_readb(Real2Host(host_readd(signpost_ptr + 2)) + answer);
 					ds_writew(TRV_DESTINATION, ds_readbs(TRV_MENU_TOWNS + answer));
 
 					if (!get_current_season() &&
@@ -160,8 +160,8 @@ signed short do_travel_mode(void)
 
 					ds_writew(WALLCLOCK_UPDATE, 1);
 
-					TM_func1(host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + answer),
-						(ds_readbs((ROUTES_TAB - 9) + 9 * host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + answer)) == ds_readbs(CURRENT_TOWN) ? 0 : 1));
+					TM_func1(host_readb(Real2Host(host_readd(signpost_ptr + 2)) + answer),
+						(ds_readbs((ROUTES_TAB - 9) + 9 * host_readb(Real2Host(host_readd(signpost_ptr + 2)) + answer)) == ds_readbs(CURRENT_TOWN) ? 0 : 1));
 					ds_writew(WALLCLOCK_UPDATE, 0);
 
 					if (ds_readb(ROUTE59_FLAG) != 0)
@@ -238,9 +238,9 @@ signed short do_travel_mode(void)
 			break;
 		}
 
-		dir_sign_ptr += 6;
+		signpost_ptr += 6;
 
-	} while (host_readb(dir_sign_ptr) != 255);
+	} while (host_readb(signpost_ptr) != 255);
 
 	ds_writew(CURRENT_TOWN_ANIX, ds_writew(CURRENT_TOWN_ANIY, ds_writew(SELECTED_TOWN_ANIX, ds_writew(SELECTED_TOWN_ANIY, 0))));
 
