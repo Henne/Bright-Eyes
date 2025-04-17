@@ -307,7 +307,7 @@ unsigned short passage_arrival(void)
 {
 	signed short tmp;
 	Bit8u *harbor_ptr;
-	Bit8u *buildings;
+	Bit8u *locations_list_ptr;
 	Bit8u *p_sched;
 	signed short si;
 	signed short harbor_id;
@@ -351,14 +351,14 @@ unsigned short passage_arrival(void)
 
 
 		/* search for the harbour in the map */
-		buildings = p_datseg + LOCATIONS_TAB;
-		while ((host_readb(buildings + 2) != 0x0b) ||
-				(host_readb(buildings + 3) != harbor_id)) {
-			buildings += 6;
+		locations_list_ptr = p_datseg + LOCATIONS_LIST;
+		while ((host_readb(locations_list_ptr + LOCATIONS_LIST_LOCATION) != LOCATION_HARBOR) ||
+				(host_readb(locations_list_ptr + LOCATIONS_LIST_TYPEINDEX) != harbor_id)) {
+			locations_list_ptr += SIZEOF_LOCATIONS_LIST;
 		}
 
 		/* set the position of the party */
-		si = host_readw(buildings + 4);
+		si = host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX);
 		ds_writew(ARRIVAL_X_TARGET, (si >> 8) & 0xff);
 		ds_writew(ARRIVAL_Y_TARGET, si & 0x0f);
 		ds_writew(ARRIVAL_DIRECTION, (si >> 4) & 0x0f);

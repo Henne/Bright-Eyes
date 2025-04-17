@@ -293,12 +293,12 @@ void load_area_description(signed short type)
 			/* write automap tiles */
 			bc__write(fd, RealMake(datseg, AUTOMAP_BUF), 64);
 			/* write location information */
-			bc__write(fd, RealMake(datseg, LOCATIONS_TAB),
-				ds_readw(LOCATIONS_TAB_SIZE));
+			bc__write(fd, RealMake(datseg, LOCATIONS_LIST),
+				ds_readw(LOCATIONS_LIST_SIZE));
 
 			bc_close(fd);
 
-			ds_writew(AREADESCR_FILEID, ds_writew(AREADESCR_DNG_LEVEL, ds_writew(LOCATIONS_TAB_SIZE, ds_writew(AREADESCR_DNG_FLAG, 0))));
+			ds_writew(AREADESCR_FILEID, ds_writew(AREADESCR_DNG_LEVEL, ds_writew(LOCATIONS_LIST_SIZE, ds_writew(AREADESCR_DNG_FLAG, 0))));
 		}
 	}
 
@@ -333,10 +333,10 @@ void load_area_description(signed short type)
 			bc__read(fd, p_datseg + AUTOMAP_BUF, 0x40);
 
 			/* TODO: is that neccessary ? */
-			memset(p_datseg + LOCATIONS_TAB, -1, 900);
+			memset(p_datseg + LOCATIONS_LIST, -1, 900);
 
-			ds_writew(LOCATIONS_TAB_SIZE,
-				bc__read(fd, p_datseg + LOCATIONS_TAB, 1000));
+			ds_writew(LOCATIONS_LIST_SIZE,
+				bc__read(fd, p_datseg + LOCATIONS_LIST, 1000));
 
 			ds_writeb(DNG_MAP_SIZE, 0x20);
 		} else {
@@ -346,13 +346,13 @@ void load_area_description(signed short type)
 
 			/* read automap tiles */
 			bc__read(fd, p_datseg + AUTOMAP_BUF, 0x40);
-			ds_writew(LOCATIONS_TAB_SIZE, 0);
+			ds_writew(LOCATIONS_LIST_SIZE, 0);
 
 			if (!ds_readbs(DUNGEON_INDEX)) {
 				/* TODO: is that neccessary ? */
-				memset(p_datseg + LOCATIONS_TAB, -1, 900);
-				ds_writew(LOCATIONS_TAB_SIZE,
-					bc__read(fd, p_datseg + LOCATIONS_TAB, 1000));
+				memset(p_datseg + LOCATIONS_LIST, -1, 900);
+				ds_writew(LOCATIONS_LIST_SIZE,
+					bc__read(fd, p_datseg + LOCATIONS_LIST, 1000));
 			}
 
 			ds_writeb(DNG_MAP_SIZE, 0x10);

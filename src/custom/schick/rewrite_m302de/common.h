@@ -893,6 +893,14 @@ enum {
 };
 
 enum {
+	LOCATIONS_LIST_XY = 0, // 2 bytes
+	LOCATIONS_LIST_LOCATION = 2, // 1 byte
+	LOCATIONS_LIST_TYPEINDEX = 3, // 1 byte
+	LOCATIONS_LIST_CITYINDEX = 4, // 2 bytes // name not good. bit 0-3: y-coordinate. bit 4-7: direction. bit 8-15: x-coordinate. see seg064.cpp // might have a special meaning in Daspota, see enter_location_daspota
+	SIZEOF_LOCATIONS_LIST = 6
+};
+
+enum {
 	LOCATION_UNKN1		= 1,
 	LOCATION_TEMPLE		= 2,
 	LOCATION_TAVERN		= 3,
@@ -904,7 +912,7 @@ enum {
 	LOCATION_MARKET		= 9,
 	LOCATION_CITIZEN	= 10,
 	LOCATION_HARBOR 	= 11,
-	LOCATION_MAP		= 12,
+	LOCATION_DIRECTION_SIGN	= 12,
 	LOCATION_INFORMER	= 13,
 	LOCATION_DNGENTRY	= 14,
 	LOCATION_UNKN2		= 15,
