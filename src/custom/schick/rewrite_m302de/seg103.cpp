@@ -268,7 +268,7 @@ signed short select_skill(void)
 	struct dummy2 a = *(struct dummy2*)(p_datseg + SELECT_SKILL_DEFAULTS);
 
 	/* add skills for special location */
-	if (ds_readbs(LOCATION) == LOCATION_TAVERN) {
+	if (ds_readbs(CURRENT_LOCTYPE) == LOCTYPE_TAVERN) {
 		a.a[nr_skills] = TA_AKROBATIK;
 		nr_skills++;
 
@@ -279,15 +279,15 @@ signed short select_skill(void)
 
 		a.a[nr_skills] = TA_MUSIZIEREN;
 		nr_skills++;
-	} else if ((ds_readbs(LOCATION) == LOCATION_WILDCAMP) || (ds_readbs(LOCATION) == LOCATION_INN)) {
+	} else if ((ds_readbs(CURRENT_LOCTYPE) == LOCTYPE_WILDCAMP) || (ds_readbs(CURRENT_LOCTYPE) == LOCTYPE_INN)) {
 		a.a[nr_skills] = TA_ALCHIMIE;
 		nr_skills++;
-	} else if (ds_readbs(LOCATION) == LOCATION_MARKET) {
+	} else if (ds_readbs(CURRENT_LOCTYPE) == LOCTYPE_MARKET) {
 		a.a[nr_skills] = TA_AKROBATIK;
 		nr_skills++;
 		a.a[nr_skills] = TA_TASCHENDIEBSTAHL;
 		nr_skills++;
-	} else if (ds_readbs(LOCATION) == LOCATION_MERCHANT) {
+	} else if (ds_readbs(CURRENT_LOCTYPE) == LOCTYPE_MERCHANT) {
 		a.a[nr_skills] = TA_TASCHENDIEBSTAHL;
 		nr_skills++;
 	}

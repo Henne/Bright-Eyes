@@ -142,7 +142,7 @@ void GRP_save_pos(signed short group)
 	ds_writew(GROUPS_X_TARGET + group * 2, ds_readws(X_TARGET));
 	ds_writew(GROUPS_Y_TARGET + group * 2, ds_readws(Y_TARGET));
 
-	ds_writeb(GROUPS_LOCATION + group, ds_readbs(LOCATION));
+	ds_writeb(GROUPS_CURRENT_LOCTYPE + group, ds_readbs(CURRENT_LOCTYPE));
 	ds_writeb(GROUPS_TOWN + group, ds_readbs(CURRENT_TOWN));
 	ds_writeb(GROUPS_DNG_INDEX + group, ds_readbs(DUNGEON_INDEX));
 	ds_writeb(GROUPS_DNG_LEVEL + group, ds_readbs(DUNGEON_LEVEL));
@@ -151,7 +151,7 @@ void GRP_save_pos(signed short group)
 	ds_writew(GROUPS_X_TARGET_BAK + group * 2, ds_readws(X_TARGET_BAK));
 	ds_writew(GROUPS_Y_TARGET_BAK + group * 2, ds_readws(Y_TARGET_BAK));
 
-	ds_writeb(GROUPS_LOCATION_BAK + group, ds_readbs(LOCATION_BAK));
+	ds_writeb(GROUPS_CURRENT_LOCTYPE_BAK + group, ds_readbs(CURRENT_LOCTYPE_BAK));
 	ds_writeb(GROUPS_TOWN_BAK + group, ds_readbs(CURRENT_TOWN_BAK));
 	ds_writeb(GROUPS_DNG_INDEX_BAK + group, ds_readbs(DUNGEON_INDEX_BAK));
 	ds_writeb(GROUPS_DNG_LEVEL_BAK + group, ds_readbs(DUNGEON_LEVEL_BAK));
@@ -239,7 +239,7 @@ void GRP_merge(void)
 				ds_writeb(GROUPS_DIRECTION_BAK + answer, (signed char)
 				(ds_writew(GROUPS_X_TARGET_BAK + answer * 2,
 				ds_writew(GROUPS_Y_TARGET_BAK + answer * 2,
-				ds_writebs(GROUPS_LOCATION_BAK + answer,
+				ds_writebs(GROUPS_CURRENT_LOCTYPE_BAK + answer,
 				ds_writeb(GROUPS_TOWN_BAK + answer,
 				ds_writeb(GROUPS_DNG_INDEX_BAK + answer,
 				ds_writeb(GROUPS_DNG_LEVEL_BAK + answer, 0)))))))))))))));
@@ -352,14 +352,14 @@ void GRP_switch_to_next(signed short mode)
 		ds_writeb(GROUPS_DIRECTION + ds_readbs(CURRENT_GROUP), ds_readbs(DIRECTION));
 		ds_writew(GROUPS_X_TARGET + ds_readbs(CURRENT_GROUP) * 2, ds_readw(X_TARGET));
 		ds_writew(GROUPS_Y_TARGET + ds_readbs(CURRENT_GROUP) * 2, ds_readw(Y_TARGET));
-		ds_writeb(GROUPS_LOCATION + ds_readbs(CURRENT_GROUP), ds_readbs(LOCATION));
+		ds_writeb(GROUPS_CURRENT_LOCTYPE + ds_readbs(CURRENT_GROUP), ds_readbs(CURRENT_LOCTYPE));
 		ds_writeb(GROUPS_TOWN + ds_readbs(CURRENT_GROUP), ds_readbs(CURRENT_TOWN));
 		ds_writeb(GROUPS_DNG_INDEX + ds_readbs(CURRENT_GROUP), ds_readbs(DUNGEON_INDEX));
 		ds_writeb(GROUPS_DNG_LEVEL + ds_readbs(CURRENT_GROUP), ds_readbs(DUNGEON_LEVEL));
 		ds_writeb(GROUPS_DIRECTION_BAK + ds_readbs(CURRENT_GROUP), ds_readbs(DIRECTION_BAK));
 		ds_writew(GROUPS_X_TARGET_BAK + ds_readbs(CURRENT_GROUP) * 2, ds_readw(X_TARGET_BAK));
 		ds_writew(GROUPS_Y_TARGET_BAK + ds_readbs(CURRENT_GROUP) * 2, ds_readw(Y_TARGET_BAK));
-		ds_writeb(GROUPS_LOCATION_BAK + ds_readbs(CURRENT_GROUP), ds_readbs(LOCATION_BAK));
+		ds_writeb(GROUPS_CURRENT_LOCTYPE_BAK + ds_readbs(CURRENT_GROUP), ds_readbs(CURRENT_LOCTYPE_BAK));
 		ds_writeb(GROUPS_TOWN_BAK + ds_readbs(CURRENT_GROUP), ds_readbs(CURRENT_TOWN_BAK));
 		ds_writeb(GROUPS_DNG_INDEX_BAK + ds_readbs(CURRENT_GROUP), ds_readbs(DUNGEON_INDEX_BAK));
 		ds_writeb(GROUPS_DNG_LEVEL_BAK + ds_readbs(CURRENT_GROUP), ds_readbs(DUNGEON_LEVEL_BAK));
@@ -369,7 +369,7 @@ void GRP_switch_to_next(signed short mode)
 		ds_writeb(DIRECTION, ds_readb(GROUPS_DIRECTION + group));
 		ds_writew(X_TARGET, ds_readw(GROUPS_X_TARGET + group * 2));
 		ds_writew(Y_TARGET, ds_readw(GROUPS_Y_TARGET + group * 2));
-		ds_writeb(LOCATION, ds_readb(GROUPS_LOCATION + group));
+		ds_writeb(CURRENT_LOCTYPE, ds_readb(GROUPS_CURRENT_LOCTYPE + group));
 		ds_writeb(CURRENT_TOWN, ds_readb(GROUPS_TOWN + group));
 		ds_writeb(DUNGEON_INDEX, ds_readb(GROUPS_DNG_INDEX + group));
 		dng_level = ds_readbs(DUNGEON_LEVEL);
@@ -382,7 +382,7 @@ void GRP_switch_to_next(signed short mode)
 		ds_writeb(DIRECTION_BAK, ds_readb(GROUPS_DIRECTION_BAK + group));
 		ds_writew(X_TARGET_BAK, ds_readw(GROUPS_X_TARGET_BAK + group * 2));
 		ds_writew(Y_TARGET_BAK, ds_readw(GROUPS_Y_TARGET_BAK + group * 2));
-		ds_writeb(LOCATION_BAK, ds_readb(GROUPS_LOCATION_BAK + group));
+		ds_writeb(CURRENT_LOCTYPE_BAK, ds_readb(GROUPS_CURRENT_LOCTYPE_BAK + group));
 		ds_writeb(CURRENT_TOWN_BAK, ds_readb(GROUPS_TOWN_BAK + group));
 		ds_writeb(DUNGEON_INDEX_BAK, ds_readb(GROUPS_DNG_INDEX_BAK + group));
 		ds_writeb(DUNGEON_LEVEL_BAK, ds_readb(GROUPS_DNG_LEVEL_BAK + group));

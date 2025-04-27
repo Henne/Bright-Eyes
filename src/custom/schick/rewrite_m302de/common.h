@@ -892,33 +892,36 @@ enum {
 	NUTRITION_TYPE_FOOD	= 1
 };
 
+// A location is a point of interest in a town, sometimes in a travel event. //
 enum {
-	LOCATIONS_LIST_XY = 0, // 2 bytes
-	LOCATIONS_LIST_LOCATION = 2, // 1 byte
-	LOCATIONS_LIST_TYPEINDEX = 3, // 1 byte
-	LOCATIONS_LIST_CITYINDEX = 4, // 2 bytes // name not good. bit 0-3: y-coordinate. bit 4-7: direction. bit 8-15: x-coordinate. see seg064.cpp // might have a special meaning in Daspota, see enter_location_daspota
-	SIZEOF_LOCATIONS_LIST = 6
+	// https://github.com/shihan42/BrightEyesWiki/wiki/DAT-(Stadt)#feldinhaltliste
+	LOCATION_XY = 0, // 2 bytes // coordinates of the location within its town
+	LOCATION_LOCTYPE = 2, // 1 byte // the type of the location
+	LOCATION_TYPEINDEX = 3, // 1 byte // index among all locations of the same type; coveres all towns.
+	LOCATION_CITYINDEX = 4, // 2 bytes // additional data // name not good. bit 0-3: y-coordinate. bit 4-7: direction. bit 8-15: x-coordinate. see seg064.cpp // might have a special meaning in Daspota, see enter_location_daspota
+	SIZEOF_LOCATION = 6
 };
 
 enum {
-	LOCATION_UNKN1		= 1,
-	LOCATION_TEMPLE		= 2,
-	LOCATION_TAVERN		= 3,
-	LOCATION_HEALER		= 4,
-	LOCATION_MERCHANT	= 5,
-	LOCATION_WILDCAMP	= 6,
-	LOCATION_INN		= 7,
-	LOCATION_SMITH		= 8,
-	LOCATION_MARKET		= 9,
-	LOCATION_CITIZEN	= 10,
-	LOCATION_HARBOR 	= 11,
-	LOCATION_SIGNPOST	= 12,
-	LOCATION_INFORMER	= 13,
-	LOCATION_DNGENTRY	= 14,
-	LOCATION_UNKN2		= 15,
-	LOCATION_HOUSE		= 16,
-	LOCATION_SPECIAL	= 17,
-	LOCATION_CITYCAMP	= 18
+	LOCTYPE_NONE		= 0,
+	LOCTYPE_UNKN1		= 1,
+	LOCTYPE_TEMPLE		= 2,
+	LOCTYPE_TAVERN		= 3,
+	LOCTYPE_HEALER		= 4,
+	LOCTYPE_MERCHANT	= 5,
+	LOCTYPE_WILDCAMP	= 6,
+	LOCTYPE_INN		= 7,
+	LOCTYPE_SMITH		= 8,
+	LOCTYPE_MARKET		= 9,
+	LOCTYPE_CITIZEN		= 10,
+	LOCTYPE_HARBOR 		= 11,
+	LOCTYPE_SIGNPOST	= 12,
+	LOCTYPE_INFORMER	= 13,
+	LOCTYPE_DUNGEON_ENTRY	= 14,
+	LOCTYPE_UNKN2		= 15,
+	LOCTYPE_HOUSE		= 16,
+	LOCTYPE_SPECIAL		= 17,
+	LOCTYPE_CITYCAMP	= 18
 };
 
 enum {

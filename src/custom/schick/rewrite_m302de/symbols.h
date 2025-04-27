@@ -213,8 +213,8 @@
 #define Y_TARGET                        (0x2d46)    /* unsigned short */
 #define GROUPS_X_TARGET                 (0x2d48)    /* unsigned short[6] */
 #define GROUPS_Y_TARGET                 (0x2d54)    /* unsigned short[6] */
-#define LOCATION                        (0x2d60)    /* signed char */
-#define GROUPS_LOCATION                 (0x2d61)    /* signed char[6] */
+#define CURRENT_LOCTYPE                        (0x2d60)    /* signed char */
+#define GROUPS_CURRENT_LOCTYPE                 (0x2d61)    /* signed char[6] */
 #define CURRENT_TOWN                    (0x2d67)    /* signed char */
 #define GROUPS_TOWN                     (0x2d68)    /* signed char[6] */
 #define DUNGEON_INDEX                   (0x2d6e)    /* signed char */
@@ -227,8 +227,8 @@
 #define Y_TARGET_BAK                    (0x2d85)    /* signed short */
 #define GROUPS_X_TARGET_BAK             (0x2d87)    /* signed short[6] */
 #define GROUPS_Y_TARGET_BAK             (0x2d93)    /* signed short[6] */
-#define LOCATION_BAK                    (0x2d9f)    /* signed char */
-#define GROUPS_LOCATION_BAK             (0x2da0)    /* signed char[6] */
+#define CURRENT_LOCTYPE_BAK                    (0x2d9f)    /* signed char */
+#define GROUPS_CURRENT_LOCTYPE_BAK             (0x2da0)    /* signed char[6] */
 #define CURRENT_TOWN_BAK                (0x2da6)    /* signed char */
 #define GROUPS_TOWN_BAK                 (0x2da7)    /* signed char[6] */
 #define DUNGEON_INDEX_BAK               (0x2dad)    /* signed char */

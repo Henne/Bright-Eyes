@@ -285,9 +285,9 @@ void TM_func1(signed short route_no, signed short backwards)
 			{
 				ds_writew(WILDCAMP_SLEEP_QUALITY, -3);
 				ds_writeb(GOOD_CAMP_PLACE, 99);
-				ds_writeb(LOCATION, LOCATION_WILDCAMP);
+				ds_writeb(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 				do_location();
-				ds_writeb(GOOD_CAMP_PLACE, ds_writeb(LOCATION, (unsigned char)ds_writew(WILDCAMP_SLEEP_QUALITY, 0)));
+				ds_writeb(GOOD_CAMP_PLACE, ds_writeb(CURRENT_LOCTYPE, (unsigned char)ds_writew(WILDCAMP_SLEEP_QUALITY, 0)));
 				ds_writew(WALLCLOCK_UPDATE, 0);
 				ds_writew(REQUEST_REFRESH, 2);
 			}
@@ -364,9 +364,9 @@ void TM_func1(signed short route_no, signed short backwards)
 
 			GUI_input(get_tx(70), 0);
 
-			ds_writeb(LOCATION, LOCATION_WILDCAMP);
+			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 			do_location();
-			ds_writeb(LOCATION, 0);
+			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
 
 			ds_writew(REQUEST_REFRESH, 2);
 			ds_writew(WALLCLOCK_UPDATE, 0);
@@ -621,12 +621,12 @@ signed short TM_enter_target_town(void)
 			call_load_area(1);
 
 			locations_list_ptr = p_datseg + LOCATIONS_LIST;
-			while (host_readb(locations_list_ptr + LOCATIONS_LIST_LOCATION) != LOCATION_SIGNPOST || host_readb(locations_list_ptr + LOCATIONS_LIST_TYPEINDEX) != signpost_id)
+			while (host_readb(locations_list_ptr + LOCATION_LOCTYPE) != LOCTYPE_SIGNPOST || host_readb(locations_list_ptr + LOCATION_TYPEINDEX) != signpost_id)
 			{
-				locations_list_ptr += SIZEOF_LOCATIONS_LIST;
+				locations_list_ptr += SIZEOF_LOCATION;
 			}
 
-			tmp = host_readws(locations_list_ptr + LOCATIONS_LIST_CITYINDEX);
+			tmp = host_readws(locations_list_ptr + LOCATION_CITYINDEX);
 			ds_writew(ARRIVAL_X_TARGET, (tmp >> 8) & 0xff);
 			ds_writew(ARRIVAL_Y_TARGET, tmp & 0xf);
 			ds_writew(ARRIVAL_DIRECTION, TM_get_looking_direction(host_readws(locations_list_ptr)));

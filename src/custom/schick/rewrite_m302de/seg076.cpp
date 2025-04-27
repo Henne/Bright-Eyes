@@ -568,7 +568,7 @@ signed short DNG_step(void)
 
 	} else if (ds_readws(ACTION) == ACTION_ID_ICON_7 && ds_readw(DNG_MENU_MODE) == DNG_MENU_MODE_PLAIN)
 	{
-		ds_writeb(LOCATION, LOCATION_CITYCAMP);
+		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_CITYCAMP);
 		ds_writeb(CITYCAMP_CITY, 0); /* CITYCAMP takes place in dungeon */
 		l_di = 1;
 

@@ -291,7 +291,7 @@ void do_citycamp(void)
 		}
 	}
 
-	ds_writeb(LOCATION_BAK, 0);
+	ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
 
 	/* Original-Bug 26: After leaving a camp in town/dungeon-mode, the party is rotated by 180 degrees. This does not make sense. */
 	leave_location();

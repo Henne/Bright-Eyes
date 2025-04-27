@@ -674,7 +674,7 @@ signed short DNG14_handler(void)
 			leave_dungeon();
 			ds_writews(X_TARGET, 22);
 			ds_writews(Y_TARGET, 5);
-			ds_writeb(LOCATION, 0);
+			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
 			ds_writeb(DIRECTION, SOUTH);
 		}
 
@@ -706,7 +706,7 @@ signed short DNG14_handler(void)
 		leave_dungeon();
 		ds_writews(X_TARGET, 2);
 		ds_writews(Y_TARGET, 13);
-		ds_writeb(LOCATION, 0);
+		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
 		ds_writeb(DIRECTION, NORTH);
 	}
 

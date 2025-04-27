@@ -61,23 +61,23 @@ signed short enter_location(signed short town_id)
 	ds_writeb(LOCATION_MARKET_FLAG, 0);
 
 	do {
-		if (host_readws(locations_list_ptr + LOCATIONS_LIST_XY) == map_pos) {
+		if (host_readws(locations_list_ptr + LOCATION_XY) == map_pos) {
 
 			/* found the location */
-			ds_writeb(LOCATION_BAK, 0);
-			ds_writebs(LOCATION, host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION));
-			ds_writew(TYPEINDEX, host_readb(locations_list_ptr + LOCATIONS_LIST_TYPEINDEX));
-			ds_writew(CITYINDEX, host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX));
+			ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
+			ds_writebs(CURRENT_LOCTYPE, host_readbs(locations_list_ptr + LOCATION_LOCTYPE));
+			ds_writew(TYPEINDEX, host_readb(locations_list_ptr + LOCATION_TYPEINDEX));
+			ds_writew(CITYINDEX, host_readw(locations_list_ptr + LOCATION_CITYINDEX));
 
-			if (ds_readbs(LOCATION) == LOCATION_MARKET) {
-				ds_writebs(LOCATION, 0);
+			if (ds_readbs(CURRENT_LOCTYPE) == LOCTYPE_MARKET) {
+				ds_writebs(CURRENT_LOCTYPE, LOCTYPE_NONE);
 				ds_writeb(LOCATION_MARKET_FLAG, 1);
 			}
 
 			return 1;
 		}
 
-		locations_list_ptr += SIZEOF_LOCATIONS_LIST;
+		locations_list_ptr += SIZEOF_LOCATION;
 
 	} while (host_readws(locations_list_ptr) != -1);
 
@@ -85,13 +85,13 @@ signed short enter_location(signed short town_id)
 
 	if ((b_index = get_border_index(cast_u16(ds_readbs((VISUAL_FIELD_VALS + 1))))) >= 2 && b_index <= 5) {
 
-		ds_writeb(LOCATION_BAK, 0);
+		ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
 		ds_writew(CITYINDEX, ds_readb((TOWNS_CITYINDEX_TABLE-1) + town_id));
 
 		if (!((ds_readbs(DIRECTION) + ds_readws(X_TARGET) + ds_readws(Y_TARGET)) & 1)) {
-			ds_writebs(LOCATION, LOCATION_CITIZEN);
+			ds_writebs(CURRENT_LOCTYPE, LOCTYPE_CITIZEN);
 		} else {
-			ds_writebs(LOCATION, LOCATION_HOUSE);
+			ds_writebs(CURRENT_LOCTYPE, LOCTYPE_HOUSE);
 			inc_ds_ws(CITYINDEX);
 		}
 
@@ -117,19 +117,19 @@ signed short enter_location_daspota(void)
 
 	do {
 
-		if (host_readws(locations_list_ptr + LOCATIONS_LIST_XY) == map_pos) {
+		if (host_readws(locations_list_ptr + LOCATION_XY) == map_pos) {
 
-			ds_writew(TYPEINDEX, host_readb(locations_list_ptr + LOCATIONS_LIST_TYPEINDEX));
+			ds_writew(TYPEINDEX, host_readb(locations_list_ptr + LOCATION_TYPEINDEX));
 
-			if (host_readb(locations_list_ptr + LOCATIONS_LIST_LOCATION) != LOCATION_SIGNPOST) {
+			if (host_readb(locations_list_ptr + LOCATION_LOCTYPE) != LOCTYPE_SIGNPOST) {
 
-				GUI_print_loc_line(get_tx(host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX)));
+				GUI_print_loc_line(get_tx(host_readw(locations_list_ptr + LOCATION_CITYINDEX)));
 
-				if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX))) {
+				if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(locations_list_ptr + LOCATION_CITYINDEX))) {
 
-					do_talk(host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION), host_readb(locations_list_ptr + LOCATIONS_LIST_TYPEINDEX) - 1);
+					do_talk(host_readbs(locations_list_ptr + LOCATION_LOCTYPE), host_readb(locations_list_ptr + LOCATION_TYPEINDEX) - 1);
 
-					if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX))) {
+					if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(locations_list_ptr + LOCATION_CITYINDEX))) {
 						leave_location();
 						return 1;
 					}
@@ -139,12 +139,12 @@ signed short enter_location_daspota(void)
 				set_var_to_zero();
 
 				load_ani(10);
-				GUI_print_loc_line(get_tx(host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX)));
+				GUI_print_loc_line(get_tx(host_readw(locations_list_ptr + LOCATION_CITYINDEX)));
 				init_ani(0);
 
-				if (ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX))) {
+				if (ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(locations_list_ptr + LOCATION_CITYINDEX))) {
 
-					loot_multi_chest(Real2Host((RealPt)ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX))), get_tx(21));
+					loot_multi_chest(Real2Host((RealPt)ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(locations_list_ptr + LOCATION_CITYINDEX))), get_tx(21));
 
 				} else {
 
@@ -157,24 +157,24 @@ signed short enter_location_daspota(void)
 
 				set_var_to_zero();
 
-				if (host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX) == 6) {
+				if (host_readw(locations_list_ptr + LOCATION_CITYINDEX) == 6) {
 					do_fight(FIGHTS_DASP6B);
-				} else if (host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX ) == 12) {
+				} else if (host_readw(locations_list_ptr + LOCATION_CITYINDEX ) == 12) {
 					do_fight(FIGHTS_DASP12B);
 				}
 
 				leave_location();
 
 			} else {
-				ds_writeb(LOCATION_BAK, 0);
-				ds_writebs(LOCATION, host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION));
-				ds_writew(CITYINDEX, host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX));
+				ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
+				ds_writebs(CURRENT_LOCTYPE, host_readbs(locations_list_ptr + LOCATION_LOCTYPE));
+				ds_writew(CITYINDEX, host_readw(locations_list_ptr + LOCATION_CITYINDEX));
 			}
 
 			return 1;
 		}
 
-		locations_list_ptr += SIZEOF_LOCATIONS_LIST;
+		locations_list_ptr += SIZEOF_LOCATION;
 
 	} while (host_readws(locations_list_ptr) != -1);
 
@@ -182,8 +182,8 @@ signed short enter_location_daspota(void)
 
 	if ((b_index = get_border_index(cast_u16(ds_readb((VISUAL_FIELD_VALS + 1))))) >= 2 && b_index <= 5) {
 
-		ds_writeb(LOCATION_BAK, 0);
-		ds_writebs(LOCATION, LOCATION_CITIZEN);
+		ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
+		ds_writebs(CURRENT_LOCTYPE, LOCTYPE_CITIZEN);
 		ds_writew(CITYINDEX, 19);
 		return 1;
 	}
@@ -960,13 +960,13 @@ signed short city_step(void)
 
 	} else if (ds_readws(ACTION) == ACTION_ID_ICON_7) {
 
-		ds_writebs(LOCATION, LOCATION_CITYCAMP);
+		ds_writebs(CURRENT_LOCTYPE, LOCTYPE_CITYCAMP);
 		ds_writeb(CITYCAMP_CITY, 1); /* CITYCAMP takes place in a town */
 		i = 1;
 
 	} else if (ds_readws(ACTION) == ACTION_ID_ICON_8 && ds_readbs((NEW_MENU_ICONS + 7)) != MENU_ICON_NONE) {
 
-		ds_writebs(LOCATION, LOCATION_MARKET);
+		ds_writebs(CURRENT_LOCTYPE, LOCTYPE_MARKET);
 		i = 1;
 
 	} else if (ds_readws(ACTION) == ACTION_ID_LEFT) {

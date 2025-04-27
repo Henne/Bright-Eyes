@@ -247,9 +247,9 @@ void tevent_097(void)
 {
 	if (TRV_enter_hut_question()) {
 
-		ds_writeb(LOCATION, LOCATION_WILDCAMP);
+		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 		do_location();
-		ds_writeb(LOCATION, 0);
+		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
 	}
 }
 
@@ -323,9 +323,9 @@ void tevent_098(void)
 
 			loose_random_item(hero, 1, get_ttx(506));
 
-			ds_writeb(LOCATION, LOCATION_WILDCAMP);
+			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 			do_location();
-			ds_writeb(LOCATION, 0);
+			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
 
 			TRV_load_textfile(-1);
 		} else {
@@ -537,9 +537,9 @@ void tevent_102(void)
 {
 	if (TRV_enter_hut_question())
 	{
-		ds_writebs(LOCATION, LOCATION_WILDCAMP);
+		ds_writebs(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 		do_location();
-		ds_writebs(LOCATION, 0);
+		ds_writebs(CURRENT_LOCTYPE, LOCTYPE_NONE);
 	}
 }
 
@@ -606,9 +606,9 @@ void tevent_103(void)
 
 			GUI_output(get_tx2(52));
 
-			ds_writebs(LOCATION, LOCATION_WILDCAMP);
+			ds_writebs(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 			do_location();
-			ds_writebs(LOCATION, 0);
+			ds_writebs(CURRENT_LOCTYPE, LOCTYPE_NONE);
 
 			TRV_load_textfile(-1);
 
@@ -682,9 +682,9 @@ void tevent_104(void)
 			if (l_si == 2) {
 				/* make a camp */
 
-				ds_writebs(LOCATION, LOCATION_WILDCAMP);
+				ds_writebs(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 				do_location();
-				ds_writebs(LOCATION, 0);
+				ds_writebs(CURRENT_LOCTYPE, LOCTYPE_NONE);
 
 				TRV_load_textfile(-1);
 #ifdef M302de_ORIGINAL_BUGFIX
@@ -775,9 +775,9 @@ void tevent_105(void)
 {
 	if (TRV_enter_hut_question()) {
 
-		ds_writeb(LOCATION, LOCATION_WILDCAMP);
+		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 		do_location();
-		ds_writeb(LOCATION, 0);
+		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
 	}
 }
 

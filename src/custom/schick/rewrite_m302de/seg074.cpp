@@ -64,11 +64,11 @@ void show_automap(void)
 		do {
 
 			if (ds_readw(REQUEST_REFRESH) != 0) {
-				loc_bak = ds_readbs(LOCATION);
-				ds_writeb(LOCATION, 1);
+				loc_bak = ds_readbs(CURRENT_LOCTYPE);
+				ds_writeb(CURRENT_LOCTYPE, LOCTYPE_UNKN1);
 
 				draw_main_screen();
-				ds_writeb(LOCATION, (signed char)loc_bak);
+				ds_writeb(CURRENT_LOCTYPE, (signed char)loc_bak);
 
 				if (ds_readb(DNG_MAP_SIZE) == 16) {
 					draw_loc_icons(1, MENU_ICON_LEAVE);
@@ -699,25 +699,25 @@ signed short get_maploc(signed short x, signed short y)
 
 	do {
 
-		if (host_readws(locations_list_ptr) + LOCATIONS_LIST_XY == pos_xy) {
-			if (host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_TEMPLE) {
+		if (host_readws(locations_list_ptr) + LOCATION_XY == pos_xy) {
+			if (host_readbs(locations_list_ptr + LOCATION_LOCTYPE) == LOCTYPE_TEMPLE) {
 				return TOWN_TILE_TEMPLE;
 			}
-			if (host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_MERCHANT) {
+			if (host_readbs(locations_list_ptr + LOCATION_LOCTYPE) == LOCTYPE_MERCHANT) {
 				return TOWN_TILE_MERCHANT;
 			}
-			if (host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_SMITH) {
+			if (host_readbs(locations_list_ptr + LOCATION_LOCTYPE) == LOCTYPE_SMITH) {
 				return TOWN_TILE_SMITH;
 			}
-			if ((host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_TAVERN) || (host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_INN)) {
+			if ((host_readbs(locations_list_ptr + LOCATION_LOCTYPE) == LOCTYPE_TAVERN) || (host_readbs(locations_list_ptr + LOCATION_LOCTYPE) == LOCTYPE_INN)) {
 				return TOWN_TILE_INN_OR_TAVERN;
 			}
-			if (host_readbs(locations_list_ptr + LOCATIONS_LIST_LOCATION) == LOCATION_HEALER) {
+			if (host_readbs(locations_list_ptr + LOCATION_LOCTYPE) == LOCTYPE_HEALER) {
 				return TOWN_TILE_HEALER;
 			}
 		}
 
-		locations_list_ptr += SIZEOF_LOCATIONS_LIST;
+		locations_list_ptr += SIZEOF_LOCATION;
 	} while (host_readws(locations_list_ptr) != -1);
 
 	return 0;

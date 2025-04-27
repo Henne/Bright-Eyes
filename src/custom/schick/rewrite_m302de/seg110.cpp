@@ -730,9 +730,9 @@ void tevent_046(void)
 	{
 		/* make a camp */
 		ds_writew(CAMP_INCIDENT, 1);
-		ds_writeb(LOCATION, LOCATION_WILDCAMP);
+		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 		do_location();
-		ds_writeb(LOCATION, 0);
+		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
 		TRV_load_textfile(-1);
 
 		hero = (ds_readws(CAMP_INCIDENT) != -1 ? get_hero(ds_readw(CAMP_INCIDENT)) : Real2Host(get_first_hero_available_in_group()));

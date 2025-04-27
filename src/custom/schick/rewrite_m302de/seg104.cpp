@@ -220,7 +220,7 @@ signed short plan_alchemy(Bit8u *hero)
 					} else {
 						/* AE sufficient */
 
-						if ((ds_readbs(LOCATION) == LOCATION_INN) && (ds_readbs(SLEEP_QUALITY) == -1)) {
+						if ((ds_readbs(CURRENT_LOCTYPE) == LOCTYPE_INN) && (ds_readbs(SLEEP_QUALITY) == -1)) {
 							/* no room booked => brewing not possible */
 
 							GUI_output(get_ttx(346));
@@ -228,7 +228,7 @@ signed short plan_alchemy(Bit8u *hero)
 							return 0;
 						}
 
-						if ((ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE) > 8) && (ds_readbs(LOCATION) != LOCATION_INN)) {
+						if ((ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE) > 8) && (ds_readbs(CURRENT_LOCTYPE) != LOCTYPE_INN)) {
 							/* recipes with durations > 8 hours have to be done in a inn. */
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_tx(44),
@@ -247,7 +247,7 @@ signed short plan_alchemy(Bit8u *hero)
 #else
 								((hero == get_hero(6)) || (count_heroes_available_in_group_ignore_npc() > 1)) && /* still allow to single out the NPC if he is the brewing hero */
 #endif
-								(ds_readbs(LOCATION) != LOCATION_WILDCAMP) &&
+								(ds_readbs(CURRENT_LOCTYPE) != LOCTYPE_WILDCAMP) &&
 								(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE) > 8)
 							) {
 
@@ -278,7 +278,7 @@ signed short plan_alchemy(Bit8u *hero)
 								/* rest of group waits */
 								timewarp(HOURS(ds_readbs((ALCHEMY_RECIPES + RECIPE_DURATION) + recipe_index * SIZEOF_RECIPE)));
 
-								if (ds_readbs(LOCATION) != LOCATION_WILDCAMP) {
+								if (ds_readbs(CURRENT_LOCTYPE) != LOCTYPE_WILDCAMP) {
 									hero_p = get_hero(0);
 									for (i = 0; i <= 6; i++, hero_p += SIZEOF_HERO) {
 										if ((host_readbs(hero_p + HERO_TYPE) != HERO_TYPE_NONE) &&
