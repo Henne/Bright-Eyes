@@ -223,7 +223,7 @@ void do_house(void)
 		leave_location();
 
 	} else {
-		ds_writeb(LOCATION, ds_readb(LOCATION_BAK));
+		ds_writeb(CURRENT_LOCTYPE, ds_readb(CURRENT_LOCTYPE_BAK));
 		ds_writew(X_TARGET, ds_readw(X_TARGET_BAK));
 		ds_writew(Y_TARGET, ds_readw(Y_TARGET_BAK));
 	}
@@ -259,7 +259,7 @@ void enter_map(void)
 
 	ds_writew(TYPEINDEX, ds_readbs(CURRENT_TOWN));
 
-	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, TOWNS_NONE));
+	ds_writeb(CURRENT_LOCTYPE, ds_writeb(CURRENT_TOWN, TOWNS_NONE));
 	ds_writeb(SHOW_TRAVEL_MAP, 1);
 }
 
@@ -724,9 +724,9 @@ void do_location(void)
 	ds_writew(TEXTBOX_WIDTH, 3);
 
 #if !defined(__BORLANDC__)
-	func = locationhandler[ds_readbs(LOCATION)];
+	func = locationhandler[ds_readbs(CURRENT_LOCTYPE)];
 #else
-	func = (void (*)(void))ds_readd(LOCATION_HANDLERS + 4 * ds_readbs(LOCATION));
+	func = (void (*)(void))ds_readd(LOCATION_HANDLERS + 4 * ds_readbs(CURRENT_LOCTYPE));
 #endif
 
 	ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
@@ -754,7 +754,7 @@ void leave_location(void)
 	set_var_to_zero();
 
 	/* reset location */
-	ds_writeb(LOCATION, ds_readb(LOCATION_BAK));
+	ds_writeb(CURRENT_LOCTYPE, ds_readb(CURRENT_LOCTYPE_BAK));
 
 	/* set target  coordinates*/
 	ds_writew(X_TARGET, ds_readw(X_TARGET_BAK));
@@ -786,7 +786,7 @@ void leave_dungeon(void)
 		set_palette(ptr, 0x80, 0x40);
 	}
 
-	ds_writeb(LOCATION, ds_writeb(LOCATION_BAK, 0));
+	ds_writeb(CURRENT_LOCTYPE, ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE));
 	ds_writeb(CURRENT_TOWN, ds_readb(CURRENT_TOWN_BAK));
 	ds_writeb(DUNGEON_INDEX_BAK, ds_readb(DUNGEON_INDEX));
 	ds_writeb(DUNGEON_INDEX, ds_writeb(DUNGEON_LEVEL, ds_writeb(DUNGEON_LIGHT, 0)));

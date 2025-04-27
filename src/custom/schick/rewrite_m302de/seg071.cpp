@@ -251,13 +251,13 @@ void PHX_phextempel(void)
 
 				ds_writew(TEXTBOX_WIDTH, 3);
 
-				old_loc = ds_readbs(LOCATION);
+				old_loc = ds_readbs(CURRENT_LOCTYPE);
 
-				ds_writebs(LOCATION, LOCATION_TEMPLE);
+				ds_writebs(CURRENT_LOCTYPE, LOCTYPE_TEMPLE);
 
 				do_temple();
 
-				ds_writebs(LOCATION, (signed char)old_loc);
+				ds_writebs(CURRENT_LOCTYPE, (signed char)old_loc);
 
 				ds_writew(TEXTBOX_WIDTH, old_tb_width);
 			}
@@ -306,13 +306,13 @@ void PHX_phextempel(void)
 
 				ds_writew(TEXTBOX_WIDTH, 3);
 
-				old_loc = ds_readbs(LOCATION);
+				old_loc = ds_readbs(CURRENT_LOCTYPE);
 
-				ds_writebs(LOCATION, LOCATION_TEMPLE);
+				ds_writebs(CURRENT_LOCTYPE, LOCTYPE_TEMPLE);
 
 				do_temple();
 
-				ds_writebs(LOCATION, (signed char)old_loc);
+				ds_writebs(CURRENT_LOCTYPE, (signed char)old_loc);
 
 				ds_writew(TEXTBOX_WIDTH, old_tb_width);
 			}
@@ -348,13 +348,13 @@ void PHX_phextempel(void)
 
 			ds_writew(TEXTBOX_WIDTH, 3);
 
-			old_loc = ds_readbs(LOCATION);
+			old_loc = ds_readbs(CURRENT_LOCTYPE);
 
-			ds_writebs(LOCATION, LOCATION_TEMPLE);
+			ds_writebs(CURRENT_LOCTYPE, LOCTYPE_TEMPLE);
 
 			do_temple();
 
-			ds_writebs(LOCATION, (signed char)old_loc);
+			ds_writebs(CURRENT_LOCTYPE, (signed char)old_loc);
 
 			ds_writew(TEXTBOX_WIDTH, old_tb_width);
 		}

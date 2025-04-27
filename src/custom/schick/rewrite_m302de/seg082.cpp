@@ -277,7 +277,7 @@ signed short DNG07_handler(void)
 			ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
 			ds_writew(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
 			ds_writew(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
-			ds_writeb(LOCATION, 0);
+			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
 			ds_writeb(DIRECTION, (ds_readb(ARRIVAL_DIRECTION) + 2) & 3);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),

@@ -281,9 +281,9 @@ void tevent_095(void)
 			if (counter_failed == 2)
 			{
 				/* make a rest */
-				ds_writeb(LOCATION, LOCATION_WILDCAMP);
+				ds_writeb(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 				do_location();
-				ds_writeb(LOCATION, 0);
+				ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
 
 				TRV_load_textfile(-1);
 			} else {
@@ -433,9 +433,9 @@ void tevent_096(void)
 
 			GUI_output(get_tx2(25));
 
-			ds_writeb(LOCATION, LOCATION_WILDCAMP);
+			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 			do_location();
-			ds_writeb(LOCATION, 0);
+			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
 
 			TRV_load_textfile(-1);
 

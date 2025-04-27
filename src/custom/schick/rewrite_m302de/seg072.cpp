@@ -705,7 +705,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			/* the hero gets heavily wounded, 1 LE left */
 			sub_hero_le(Real2Host(ds_readd(UNICORN_HERO_PTR)), host_readws(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_LE) - 1);
 			/* the party opens a camp */
-			ds_writeb(LOCATION, LOCATION_WILDCAMP);
+			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 			do_location();
 		} else if (state == 18) {
 			timewarp(HOURS(2));
@@ -805,7 +805,7 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
 				case TOWNS_RUNINSHAVEN: ds_writew(X_TARGET_BAK,  6); ds_writew(Y_TARGET_BAK,  6); break;
 			}
 
-			ds_writeb(LOCATION_BAK, 0);
+			ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
 			ds_writeb(SWAFNILD_TRAVELED, 1);
 
 			timewarp_until_midnight();

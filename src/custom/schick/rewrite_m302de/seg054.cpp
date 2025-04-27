@@ -301,7 +301,7 @@ void do_inn(void)
 					ds_writeb(GROUPS_DIRECTION_BAK + group_nr,0);
 					ds_writew(GROUPS_X_TARGET_BAK + group_nr * 2,0);
 					ds_writew(GROUPS_Y_TARGET_BAK + group_nr * 2,0);
-					ds_writebs(GROUPS_LOCATION_BAK + group_nr,0);
+					ds_writebs(GROUPS_CURRENT_LOCTYPE_BAK + group_nr, LOCTYPE_NONE);
 					ds_writeb(GROUPS_TOWN_BAK + group_nr,0);
 					ds_writeb(GROUPS_DNG_INDEX_BAK + group_nr,0);
 					ds_writeb(GROUPS_DNG_LEVEL_BAK + group_nr, 0);

@@ -409,9 +409,9 @@ void init_game_state(void)
 		ds_writeb(MARKET_ITEMSALDO_TABLE + i, 0);
 	}
 
-	ds_writeb(LOCATION_BAK, 0);
+	ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
 	/* Travia Temple in Thorwal */
-	ds_writeb(LOCATION, LOCATION_TEMPLE);
+	ds_writeb(CURRENT_LOCTYPE, LOCTYPE_TEMPLE);
 	ds_writew(TYPEINDEX, 1);
 	ds_writew(X_TARGET_BAK, 9);
 	ds_writew(Y_TARGET_BAK, 9);

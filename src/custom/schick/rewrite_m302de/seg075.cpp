@@ -1041,7 +1041,7 @@ mark2:			   goto mark1;
 			x_pos = 1;
 			y_pos = 14;
 			dir = WEST;
-			level = ds_writebs(LOCATION, 0);
+			level = ds_writebs(CURRENT_LOCTYPE, 0);
 			break;
 		}
 		case DUNGEONS_HYGGELIKS_RUINE:  x_pos = 1;  y_pos = 11;   dir = EAST;  level = 0;  break;
@@ -1052,9 +1052,9 @@ mark2:			   goto mark1;
 	ds_writeb(DIRECTION, (signed char)dir);
 	ds_writeb(DUNGEON_LEVEL, (signed char)level);
 	ds_writeb(DUNGEON_INDEX, (signed char)dungeon_id);
-	ds_writebs(LOCATION_BAK, ds_readbs(LOCATION));
+	ds_writebs(CURRENT_LOCTYPE_BAK, ds_readbs(CURRENT_LOCTYPE));
 	ds_writeb(CURRENT_TOWN_BAK, ds_readb(CURRENT_TOWN));
-	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, TOWNS_NONE));
+	ds_writeb(CURRENT_LOCTYPE, ds_writeb(CURRENT_TOWN, TOWNS_NONE));
 	ds_writeb(DNG_AREA_LOADED, ds_writeb(CITY_AREA_LOADED, -1));
 
 	if (dungeon_id == DUNGEONS_ZWINGFESTE) {

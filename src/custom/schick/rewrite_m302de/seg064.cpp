@@ -352,13 +352,13 @@ unsigned short passage_arrival(void)
 
 		/* search for the harbour in the map */
 		locations_list_ptr = p_datseg + LOCATIONS_LIST;
-		while ((host_readb(locations_list_ptr + LOCATIONS_LIST_LOCATION) != LOCATION_HARBOR) ||
-				(host_readb(locations_list_ptr + LOCATIONS_LIST_TYPEINDEX) != harbor_id)) {
-			locations_list_ptr += SIZEOF_LOCATIONS_LIST;
+		while ((host_readb(locations_list_ptr + LOCATION_LOCTYPE) != LOCTYPE_HARBOR) ||
+				(host_readb(locations_list_ptr + LOCATION_TYPEINDEX) != harbor_id)) {
+			locations_list_ptr += SIZEOF_LOCATION;
 		}
 
 		/* set the position of the party */
-		si = host_readw(locations_list_ptr + LOCATIONS_LIST_CITYINDEX);
+		si = host_readw(locations_list_ptr + LOCATION_CITYINDEX);
 		ds_writew(ARRIVAL_X_TARGET, (si >> 8) & 0xff);
 		ds_writew(ARRIVAL_Y_TARGET, si & 0x0f);
 		ds_writew(ARRIVAL_DIRECTION, (si >> 4) & 0x0f);
