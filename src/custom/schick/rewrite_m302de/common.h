@@ -235,7 +235,7 @@ enum {
 	HERO_FIREBAN			= 0x099, /* 1 byte */ /* 1 = 'Feuerbann' spell is active, 0 = inactive */
 	HERO_INVISIBLE			= 0x09A, /* 1 byte */ /* 1 = 'Visibili' spell is active, 0 = inactive */
 	HERO_SPRITE_NO			= 0x09B, /* 1 byte */ /* fight gfx of hero, depending on type and sex */
-	HERO_HOSTEL_ID			= 0x09C, /* 1 byte */ /* the id of the inn where the hero is doing alchemy */
+	HERO_ALCHEMY_INN_ID		= 0x09C, /* 1 byte */ /* the id of the inn where the hero is doing alchemy */
 	HERO_ESCAPE_POSITION		= 0x09D, /* 2 bytes */ /* the dungeon square the hero escaped to in a fight. read from FIG_FLEE_POSITION */
 	HERO_JAIL			= 0x09F, /* 1 byte */ /* 1 = true, i.e. hero is in prison (from breaking into a house), 0 = false */
 	HERO_AXXELERATUS		= 0x0A0, /* 1 byte */ /* 1 = 'Axxeleratus' spell is active, 0 = inactive */
@@ -897,10 +897,13 @@ enum {
 	// https://github.com/shihan42/BrightEyesWiki/wiki/DAT-(Stadt)#feldinhaltliste
 	LOCATION_XY        = 0, // 2 bytes // coordinates of the location within its town
 	LOCATION_LOCTYPE   = 2, // 1 byte  // the type of the location
-	LOCATION_TYPEINDEX = 3, // 1 byte  // index among all locations of the same type; coveres all towns.
-	LOCATION_LOCDATA   = 4, // 2 bytes // additional data.
+	LOCATION_TYPEINDEX = 3, // 1 byte  // Index among all locations of the same type; coveres all towns.
+				           // Probably irrelevant for most locations in Daspota (LOCTYPE_TAVERN, LOCTYPE_HEALER, LOCTYPE_MERCHANT),
+					   // for which an independent indexing scheme is used.
+	LOCATION_LOCDATA   = 4, // 2 bytes // Additional data, depending on the LOCTYPE.
 			        // For LOCTYPE_TAVERN, LOCTYPE_INN, LOCTYPE_SMITH, LOCTYPE_SPECIAL, LOCTYPE_MERCHANT, LOCTYPE_HEALER:
 			        //     index to retrieve the location name via get_tx from <TOWN.LTX>
+				//     If the location is in Daspota: Also an index for assigned fights and loot, see do_location_daspota().
 			        // For LOCTYPE_HARBOR, LOCTYPE_SIGNPOST:
 			        //     arrival position. bit 0-3: y-coordinate. bit 4-7: direction. bit 8-15: x-coordinate. 
 			        // For LOCTYPE_MARKET, LOCTYPE_TEMPLE, LOCTYPE_INFORMER, LOCTYPE_DUNGEON_ENTRY:

@@ -56,7 +56,7 @@ RealPt get_first_brewing_hero(void)
 		if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(Real2Host(hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
 			hero_brewing(Real2Host(hero)) &&
-			host_readbs(Real2Host(hero) + HERO_HOSTEL_ID) == ds_readws(CURRENT_TYPEINDEX))
+			host_readbs(Real2Host(hero) + HERO_ALCHEMY_INN_ID) == ds_readws(CURRENT_TYPEINDEX))
 		{
 			return hero;
 		}
@@ -246,7 +246,7 @@ void do_inn(void)
 			if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(Real2Host(hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
 					hero_brewing(Real2Host(hero)) &&
-					host_readbs(Real2Host(hero) + HERO_HOSTEL_ID) == ds_readws(CURRENT_TYPEINDEX))
+					host_readbs(Real2Host(hero) + HERO_ALCHEMY_INN_ID) == ds_readws(CURRENT_TYPEINDEX))
 			{
 				draw_status_line();
 

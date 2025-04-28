@@ -109,7 +109,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 	host_writeb(hero + HERO_RECIPE_TIMER, 0);
 	/* set heroes receipe to 0 */
 	host_writeb(hero + HERO_RECIPE_ID, 0);
-	host_writeb(hero + HERO_HOSTEL_ID, 0);
+	host_writeb(hero + HERO_ALCHEMY_INN_ID, 0);
 
 	if ((test_skill(hero, TA_ALCHIMIE, host_readbs(r_ptr + RECIPE_HANDICAP)) > 0) && (flag_abort == 0))
 	{
@@ -311,7 +311,7 @@ signed short plan_alchemy(Bit8u *hero)
 									/* time in days, rounded down */
 
 								host_writeb(hero + HERO_RECIPE_ID, recipe_index);
-								host_writeb(hero + HERO_HOSTEL_ID, ds_readbs(CURRENT_TYPEINDEX));
+								host_writeb(hero + HERO_ALCHEMY_INN_ID, ds_readbs(CURRENT_TYPEINDEX));
 								or_ptr_bs(hero + HERO_FLAGS1, 8); /* set 'brewing' flag */
 
 								GRP_save_pos(l5);
