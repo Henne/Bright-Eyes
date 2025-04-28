@@ -95,7 +95,7 @@ signed short do_travel_mode(void)
 			ds_writew(REQUEST_REFRESH, 0);
 		}
 
-		if (host_readbs(signpost_ptr) == ds_readbs(CURRENT_TOWN) && host_readb(signpost_ptr + 1) == ds_readw(CURRENT_SIGNPOST))
+		if (host_readbs(signpost_ptr + SIGNPOST_TOWN) == ds_readbs(CURRENT_TOWN) && host_readb(signpost_ptr + SIGNPOST_TYPEINDEX) == ds_readw(CURRENT_SIGNPOST))
 		{
 			while (1) {
 				handle_input();
@@ -103,11 +103,11 @@ signed short do_travel_mode(void)
 				if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP)
 				{
 					i = 0;
-					while ((l_di = host_readb(Real2Host(host_readd(signpost_ptr + 2)) + i)) != 255)
+					while ((l_di = host_readb(Real2Host(host_readd(signpost_ptr + SIGNPOST_LAND_ROUTES)) + i)) != 255)
 					{
 						destinations_tab[i] = get_ttx(235 + ds_writebs(TRV_MENU_TOWNS + i,
-						    (answer = ds_readb((ROUTES_TAB - 9) + 9 * l_di)) != ds_readbs(CURRENT_TOWN) ?
-						    (signed char) answer : ds_readbs((ROUTES_TAB - 9 + 1) + 9 * l_di)));
+						    (answer = ds_readb((LAND_ROUTES - SIZEOF_LAND_ROUTE + LAND_ROUTE_TOWN_1) + SIZEOF_LAND_ROUTE * l_di)) != ds_readbs(CURRENT_TOWN) ?
+						    (signed char) answer : ds_readbs((LAND_ROUTES - SIZEOF_LAND_ROUTE + LAND_ROUTE_TOWN_2) + SIZEOF_LAND_ROUTE * l_di)));
 
 						i++;
 					}
@@ -144,7 +144,7 @@ signed short do_travel_mode(void)
 						break;
 					}
 
-					route_id = host_readb(Real2Host(host_readd(signpost_ptr + 2)) + answer);
+					route_id = host_readb(Real2Host(host_readd(signpost_ptr + SIGNPOST_LAND_ROUTES)) + answer);
 					ds_writew(TRV_DESTINATION, ds_readbs(TRV_MENU_TOWNS + answer));
 
 					if (!get_current_season() &&
@@ -160,8 +160,8 @@ signed short do_travel_mode(void)
 
 					ds_writew(WALLCLOCK_UPDATE, 1);
 
-					TM_func1(host_readb(Real2Host(host_readd(signpost_ptr + 2)) + answer),
-						(ds_readbs((ROUTES_TAB - 9) + 9 * host_readb(Real2Host(host_readd(signpost_ptr + 2)) + answer)) == ds_readbs(CURRENT_TOWN) ? 0 : 1));
+					TM_func1(host_readb(Real2Host(host_readd(signpost_ptr + SIGNPOST_LAND_ROUTES)) + answer),
+						(ds_readbs((LAND_ROUTES - SIZEOF_LAND_ROUTE) + SIZEOF_LAND_ROUTE * host_readb(Real2Host(host_readd(signpost_ptr + SIGNPOST_LAND_ROUTES)) + answer)) == ds_readbs(CURRENT_TOWN) ? 0 : 1));
 					ds_writew(WALLCLOCK_UPDATE, 0);
 
 					if (ds_readb(ROUTE59_FLAG) != 0)
@@ -182,10 +182,10 @@ signed short do_travel_mode(void)
 
 					if (!ds_readb(TRAVEL_DETOUR) && ds_readw(GAME_STATE) == GAME_STATE_MAIN)
 					{
-						ds_writeb(CURRENT_TOWN, (signed char)ds_readw(TRV_DEST_REACHED));
-						ds_writew(X_TARGET_BAK, ds_readw(ARRIVAL_X_TARGET));
-						ds_writew(Y_TARGET_BAK, ds_readw(ARRIVAL_Y_TARGET));
-						ds_writeb(DIRECTION, (ds_readb(ARRIVAL_DIRECTION) + 2) & 3);
+						ds_writeb(CURRENT_TOWN, (signed char)ds_readw(TRAVEL_DESTINATION_TOWN_ID));
+						ds_writew(X_TARGET_BAK, ds_readw(TRAVEL_DESTINATION_X));
+						ds_writew(Y_TARGET_BAK, ds_readw(TRAVEL_DESTINATION_Y));
+						ds_writeb(DIRECTION, (ds_readb(TRAVEL_DESTINATION_VIEWDIR) + 2) & 3);
 
 					} else if (ds_readw(GAME_STATE) == GAME_STATE_MAIN && ds_readb(TRAVEL_DETOUR) != 99)
 					{
@@ -238,7 +238,7 @@ signed short do_travel_mode(void)
 			break;
 		}
 
-		signpost_ptr += 6;
+		signpost_ptr += SIZEOF_SIGNPOST;
 
 	} while (host_readb(signpost_ptr) != 255);
 

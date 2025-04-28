@@ -897,9 +897,19 @@ enum {
 	// https://github.com/shihan42/BrightEyesWiki/wiki/DAT-(Stadt)#feldinhaltliste
 	LOCATION_XY        = 0, // 2 bytes // coordinates of the location within its town
 	LOCATION_LOCTYPE   = 2, // 1 byte  // the type of the location
-	LOCATION_TYPEINDEX = 3, // 1 byte  // Index among all locations of the same type; coveres all towns.
-				           // Probably irrelevant for most locations in Daspota (LOCTYPE_TAVERN, LOCTYPE_HEALER, LOCTYPE_MERCHANT),
-					   // for which an independent indexing scheme is used.
+	LOCATION_TYPEINDEX = 3, // 1 byte  // Index among the locations of the same type.
+				// For LOCTYPE_TEMPLE, LOCTYPE_TAVERN, LOCTYPE_HEALER, LOCTYPE_MERCHANT, LOCTYPE_INN,
+				//     LOCTYPE_SMITH, LOCTYPE_MARKET, LOCTYPE_INFORMER, LOCTYPE_SPECIAL:
+				//     unique index among all locations of the same type; coveres all towns + travel events.
+				//     However, there are a few collisions due to bugs.
+				//     Also, these locations in Daspota are indexed independently, and the index is probably irrelevant.
+				//     (In Daspota, only LOCTYPE_TAVERN, LOCTYPE_HEALER, LOCTYPE_MERCHANT actually occur.)
+				// For LOCTYPE_HARBOR, LOCTYPE_SIGNPOST:
+				//     A unique index among all harbors and signposts together, but only among the ones of the same town.
+				// For LOCTYPE_DUNGEON_ENTRY:
+				// 	The id of the associated dungeon
+				// All LOCTYPEs not mentioned above:
+				//     probably unused.
 	LOCATION_LOCDATA   = 4, // 2 bytes // Additional data, depending on the LOCTYPE.
 			        // For LOCTYPE_TAVERN, LOCTYPE_INN, LOCTYPE_SMITH, LOCTYPE_SPECIAL, LOCTYPE_MERCHANT, LOCTYPE_HEALER:
 			        //     index to retrieve the location name via get_tx from <TOWN.LTX>
@@ -924,14 +934,14 @@ enum {
 	LOCTYPE_INN		= 7,
 	LOCTYPE_SMITH		= 8,
 	LOCTYPE_MARKET		= 9,
-	LOCTYPE_CITIZEN		= 10,
+	LOCTYPE_CITIZEN		= 10, // Leuchtturm Runin is of this type
 	LOCTYPE_HARBOR 		= 11,
 	LOCTYPE_SIGNPOST	= 12,
 	LOCTYPE_INFORMER	= 13,
 	LOCTYPE_DUNGEON_ENTRY	= 14,
 	LOCTYPE_UNKN2		= 15,
 	LOCTYPE_HOUSE		= 16,
-	LOCTYPE_SPECIAL		= 17,
+	LOCTYPE_SPECIAL		= 17, // used for instance in Thorwal, Einsiedlersee
 	LOCTYPE_CITYCAMP	= 18
 };
 
@@ -1871,6 +1881,19 @@ enum {
 	SIZEOF_RECIPE		= 28
 };
 
+enum {
+	LAND_ROUTE_TOWN_1 = 0, /* one byte */ /* ID of the first town of the route. Note that the routes are undirected; i.e. both endpoint towns are treated equal. */
+	LAND_ROUTE_TOWN_2 = 1, /* one byte */ /* ID of the second town of the route. */
+	LAND_ROUTE_DISTANCE = 2, /* one byte */
+	LAND_ROUTE_SPEED_MOD = 3, /* one byte */ /* a number between -4 and +7 */
+	LAND_ROUTE_ENCOUNTERS = 4, /* one byte */
+	LAND_ROUTE_UNKN1 = 5, /* one byte */
+	LAND_ROUTE_UNKN2 = 6, /* one byte */
+	LAND_ROUTE_FIGHTS = 7, /* one byte */
+	LAND_ROUTE_UNKN3 = 8, /* one byte */
+	SIZEOF_LAND_ROUTE = 9
+};
+
 #define NR_SEA_ROUTES (45)
 
 enum {
@@ -1918,6 +1941,20 @@ enum {
 	SHIP_TABLE_BASE_PRICE_PER_DISTANCE = 2, /* one byte. Unit: [Heller per 10 km] */
 	SHIP_TABLE_BASE_SPEED = 3, /* one byte. Unit: [km per day] */
 	SIZEOF_SHIP_TABLE_ENTRY = 4
+};
+
+enum { // struct signpost
+	SIGNPOST_TOWN = 0, /* one byte */ /* ID of the town where the harbor is located */
+	SIGNPOST_TYPEINDEX = 1, /* one byte */ /* TYPEINDEX of the signpost within its town */
+	SIGNPOST_LAND_ROUTES = 2, /* four byte, RealPt to the route. Points to the first associated entry in SIGNPOSTS_LINKED_LAND_ROUTES */
+	SIZEOF_SIGNPOST = 6
+};
+
+enum { // struct harbor
+	HARBOR_TOWN = 0, /* one byte */ /* ID of the town where the harbor is located */
+	HARBOR_TYPEINDEX = 1, /* one byte */ /* TYPEINDEX of the harbor within its town */
+	HARBOR_SEA_ROUTES = 2, /* four byte, RealPt to the route. Points to the first associated entry in HARBORS_LINKED_SEA_ROUTES */
+	SIZEOF_HARBOR = 6
 };
 
 enum {

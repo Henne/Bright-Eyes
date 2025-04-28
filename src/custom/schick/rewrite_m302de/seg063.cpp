@@ -230,7 +230,7 @@ void do_harbor(void)
 							/* not clear why two variables ..._SPEED1 and ..._SPEED2 are used. */
 							/* In my opinion, a single variable would be enough (and then there would not be the need to copy the value around) */
 
-							ds_writeb(SEA_TRAVEL_PASSAGE_ID, host_readb(psg_ptr + HARBOR_OPTION_ROUTE_ID));
+							ds_writeb(CURRENT_SEA_ROUTE_ID, host_readb(psg_ptr + HARBOR_OPTION_ROUTE_ID));
 
 							GUI_output(host_readb(psg_ptr + HARBOR_OPTION_SHIP_TIMER) != 0 ? get_tx(18) : get_tx(17));
 							/* ship leaving tomorrow or today */
@@ -383,7 +383,7 @@ void do_harbor(void)
 				ds_writew(WALLCLOCK_Y, ds_readws(BASEPOS_Y) + 87);
 				ds_writew(WALLCLOCK_UPDATE, 1);
 
-				sea_travel(ds_readb(SEA_TRAVEL_PASSAGE_ID), ds_readbs(SEA_ROUTES + SIZEOF_SEA_ROUTE * ds_readb(SEA_TRAVEL_PASSAGE_ID)) == ds_readbs(CURRENT_TOWN) ? 0 : 1);
+				sea_travel(ds_readb(CURRENT_SEA_ROUTE_ID), ds_readbs(SEA_ROUTES + SIZEOF_SEA_ROUTE * ds_readb(CURRENT_SEA_ROUTE_ID)) == ds_readbs(CURRENT_TOWN) ? 0 : 1);
 				passage_arrival();
 
 				ds_writew(WALLCLOCK_UPDATE, ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, ds_writeb(SEA_TRAVEL_PSGBOOKED_FLAG, 0))));
@@ -393,10 +393,10 @@ void do_harbor(void)
 
 				if (!ds_readb(TRAVEL_DETOUR)) {
 
-					ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
-					ds_writew(X_TARGET_BAK, ds_readw(ARRIVAL_X_TARGET));
-					ds_writew(Y_TARGET_BAK, ds_readw(ARRIVAL_Y_TARGET));
-					ds_writeb(DIRECTION, (ds_readws(ARRIVAL_DIRECTION) + 2) & 3);
+					ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRAVEL_DESTINATION_TOWN_ID));
+					ds_writew(X_TARGET_BAK, ds_readw(TRAVEL_DESTINATION_X));
+					ds_writew(Y_TARGET_BAK, ds_readw(TRAVEL_DESTINATION_Y));
+					ds_writeb(DIRECTION, (ds_readws(TRAVEL_DESTINATION_VIEWDIR) + 2) & 3);
 
 				} else {
 					done = 1;

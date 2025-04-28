@@ -101,12 +101,12 @@ void TM_func1(signed short route_no, signed short backwards)
 	add_ds_fp(ROUTE_COURSE_PTR, 4);
 
 	memset((void*)Real2Host(ds_readfp(TRV_TRACK_PIXEL_BAK)), 0xaa, 500);
-	ds_writefp(TRAVEL_ROUTE_PTR, (RealPt)RealMake(datseg, (ROUTES_TAB - 9) + 9 * route_no));
+	ds_writefp(TRAVEL_ROUTE_PTR, (RealPt)RealMake(datseg, (LAND_ROUTES - SIZEOF_LAND_ROUTE) + SIZEOF_LAND_ROUTE * route_no));
 	ds_writew(TRAVEL_SPEED, 166);
 	ds_writew(ROUTE_TOTAL_STEPS, TM_get_track_length(Real2Host(ds_readfp(ROUTE_COURSE_PTR))));
-	ds_writew(ROUTE_LENGTH, host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 2) * 100);
+	ds_writew(ROUTE_LENGTH, host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + LAND_ROUTE_DISTANCE) * 100);
 	ds_writew(ROUTE_DURATION, ds_readws(ROUTE_LENGTH) / (
-        ds_readws(TRAVEL_SPEED) + host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 3) * ds_readws(TRAVEL_SPEED) / 10
+        ds_readws(TRAVEL_SPEED) + host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + LAND_ROUTE_SPEED_MOD) * ds_readws(TRAVEL_SPEED) / 10
     ) * 60);
 	ds_writew(ROUTE_TIMEDELTA, ds_readws(ROUTE_DURATION) / ds_readws(ROUTE_TOTAL_STEPS));
 	ds_writew(ROUTE_STEPSIZE, ds_readws(ROUTE_LENGTH) / ds_readws(ROUTE_TOTAL_STEPS));
@@ -139,7 +139,7 @@ void TM_func1(signed short route_no, signed short backwards)
 	ds_writew(TRV_RETURN, 0);
 	ds_writefp(ROUTE_COURSE_START, ds_readfp(ROUTE_COURSE_PTR));
 	ds_writew(ROUTE_DAYPROGRESS, (
-	    ds_readws(TRAVEL_SPEED) + host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 3) * ds_readws(TRAVEL_SPEED) / 10
+	    ds_readws(TRAVEL_SPEED) + host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + LAND_ROUTE_SPEED_MOD) * ds_readws(TRAVEL_SPEED) / 10
     ) * 18);
 
 	/* random section starts */
@@ -153,12 +153,12 @@ void TM_func1(signed short route_no, signed short backwards)
 		ds_writew(ROUTE_INFORMER_FLAG, 0);
 	}
 
-	if ((ds_writew(ROUTE_ENCOUNTER_FLAG, (random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 4) ? 1 : 0))) != 0)
+	if ((ds_writew(ROUTE_ENCOUNTER_FLAG, (random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + LAND_ROUTE_ENCOUNTERS) ? 1 : 0))) != 0)
 	{
 		ds_writew(ROUTE_ENCOUNTER_TIME, random_schick(ds_readws(ROUTE_DAYPROGRESS)));
 	}
 
-	if ((ds_writew(ROUTE_FIGHT_FLAG, (random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 7) / 3 ? 1 : 0))) != 0)
+	if ((ds_writew(ROUTE_FIGHT_FLAG, (random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + LAND_ROUTE_FIGHTS) / 3 ? 1 : 0))) != 0)
 	{
 		ds_writew(ROUTE_FIGHT_TIME, random_schick(ds_readws(ROUTE_DAYPROGRESS)));
 	}
@@ -174,7 +174,7 @@ void TM_func1(signed short route_no, signed short backwards)
 
 		if (backwards)
 		{
-			host_writew(tevent_ptr, host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 2) - host_readws(tevent_ptr));
+			host_writew(tevent_ptr, host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + LAND_ROUTE_DISTANCE) - host_readws(tevent_ptr));
 		}
 
 		mul_ptr_ws(tevent_ptr, 100);
@@ -264,7 +264,7 @@ void TM_func1(signed short route_no, signed short backwards)
 				ds_writew(TRAVEL_SPEED, ds_readws(ROUTE_STEPCOUNT) + 197);
 				ds_writeb(FORCEDMARCH_TIMER, 2);
 				ds_writew(ROUTE_DURATION, ds_readws(ROUTE_LENGTH) / (
-				    ds_readws(TRAVEL_SPEED) + (host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 3) * ds_readws(TRAVEL_SPEED)) / 10
+				    ds_readws(TRAVEL_SPEED) + (host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + LAND_ROUTE_SPEED_MOD) * ds_readws(TRAVEL_SPEED)) / 10
                 ) * 60);
 				ds_writew(ROUTE_TIMEDELTA, ds_readws(ROUTE_DURATION) / ds_readws(ROUTE_TOTAL_STEPS));
 				shr_ds_ws(FORCEDMARCH_LE_COST, 1);
@@ -375,15 +375,15 @@ void TM_func1(signed short route_no, signed short backwards)
 			{
 			    /* figure out encounters etc. for next day */
 				ds_writew(ROUTE_DAYPROGRESS, (
-				    ds_readws(TRAVEL_SPEED) + (host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 3) * ds_readws(TRAVEL_SPEED) / 10)
+				    ds_readws(TRAVEL_SPEED) + (host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + LAND_ROUTE_SPEED_MOD) * ds_readws(TRAVEL_SPEED) / 10)
                 ) * 18);
 
-				if ((ds_writew(ROUTE_ENCOUNTER_FLAG, random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 4) ? 1 : 0)) != 0)
+				if ((ds_writew(ROUTE_ENCOUNTER_FLAG, random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + LAND_ROUTE_ENCOUNTERS) ? 1 : 0)) != 0)
 				{
 					ds_writew(ROUTE_ENCOUNTER_TIME, random_schick(ds_readws(ROUTE_DAYPROGRESS)));
 				}
 
-				if ((ds_writew(ROUTE_FIGHT_FLAG, random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 7) / 3 ? 1 : 0)) != 0)
+				if ((ds_writew(ROUTE_FIGHT_FLAG, random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + LAND_ROUTE_FIGHTS) / 3 ? 1 : 0)) != 0)
 				{
 					ds_writew(ROUTE_FIGHT_TIME, random_schick(ds_readws(ROUTE_DAYPROGRESS)));
 				}
@@ -498,27 +498,27 @@ signed short TM_unused1(RealPt signpost_ptr, signed short old_route_no)
 	signed short old_route_id;
 	Bit8u *destinations_tab[7];
 
-	old_route_id = host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + 2)) + old_route_no) - 1;
+	old_route_id = host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + SIGNPOST_LAND_ROUTES)) + old_route_no) - 1;
 	ds_writeb(CURRENT_TOWN, (signed char)(town = ds_readws(TRV_DESTINATION)));
 	signpost_ptr = (RealPt)RealMake(datseg, SIGNPOSTS);
 
 	do {
-		if (host_readb(Real2Host(signpost_ptr)) == town)
+		if (host_readb(Real2Host(signpost_ptr) + SIGNPOST_TOWN) == town)
 		{
 			route_no1 = 0;
-			while (host_readbs(Real2Host(host_readd(Real2Host(signpost_ptr) + 2)) + route_no1) != -1)
+			while (host_readbs(Real2Host(host_readd(Real2Host(signpost_ptr) + SIGNPOST_LAND_ROUTES)) + route_no1) != -1)
 			{
-				if (host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + 2)) + route_no1) - 1 == old_route_id &&
-					(route_no1 || host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + 2)) + (route_no1 + 1)) != 255))
+				if (host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + SIGNPOST_LAND_ROUTES)) + route_no1) - 1 == old_route_id &&
+					(route_no1 || host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + SIGNPOST_LAND_ROUTES)) + (route_no1 + 1)) != 255))
 				{
 					town_i = route_no2 = 0;
-					while ((route_id = host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + 2)) + route_no2)) != 255)
+					while ((route_id = host_readb(Real2Host(host_readd(Real2Host(signpost_ptr) + SIGNPOST_LAND_ROUTES)) + route_no2)) != 255)
 					{
 						if (route_no2 != route_no1)
 						{
 							destinations_tab[town_i++] = get_ttx(235 + ds_writebs(TRV_MENU_TOWNS + town_i,
-                                ((answer = ds_readb((ROUTES_TAB - 9) + 9 * route_id)) != ds_readbs(CURRENT_TOWN) ?
-                                    (unsigned char)answer : ds_readb((ROUTES_TAB - 9 + 1) + 9 * route_id))
+                                ((answer = ds_readb((LAND_ROUTES - SIZEOF_LAND_ROUTE + LAND_ROUTE_TOWN_1) + SIZEOF_LAND_ROUTE * route_id)) != ds_readbs(CURRENT_TOWN) ?
+                                    (unsigned char)answer : ds_readb((LAND_ROUTES - SIZEOF_LAND_ROUTE + LAND_ROUTE_TOWN_2) + SIZEOF_LAND_ROUTE * route_id))
                             ));
 						}
 						route_no2++;
@@ -551,7 +551,7 @@ signed short TM_unused1(RealPt signpost_ptr, signed short old_route_no)
 			}
 		}
 
-		signpost_ptr += 6;
+		signpost_ptr += SIZEOF_SIGNPOST;
 
 	} while (host_readbs(Real2Host(signpost_ptr)) != -1);
 
@@ -581,7 +581,7 @@ signed short TM_enter_target_town(void)
 	Bit8u *locations_list_ptr;
 
 	signpost_id = 0;
-	ds_writew(TRV_DEST_REACHED, ds_readw(TRV_DESTINATION));
+	ds_writew(TRAVEL_DESTINATION_TOWN_ID, ds_readw(TRV_DESTINATION));
 	signpost_id = 1;
 
 	if (signpost_id)
@@ -589,14 +589,14 @@ signed short TM_enter_target_town(void)
 		signpost_ptr = p_datseg + SIGNPOSTS;
 		signpost_id = 0;
 		do {
-			if (host_readb(signpost_ptr) == ds_readw(TRV_DEST_REACHED))
+			if (host_readb(signpost_ptr) == ds_readw(TRAVEL_DESTINATION_TOWN_ID))
 			{
 				tmp = 0;
 
 				do {
 					tmp2 = host_readb(Real2Host(host_readd(signpost_ptr + 2)) + tmp) - 1;
 
-					if (ds_readbs(ROUTES_TAB + 9 * tmp2) == ds_readbs(CURRENT_TOWN) || ds_readbs((ROUTES_TAB + 1) + 9 * tmp2) == ds_readbs(CURRENT_TOWN))
+					if (ds_readbs(LAND_ROUTES + 9 * tmp2) == ds_readbs(CURRENT_TOWN) || ds_readbs((LAND_ROUTES + 1) + 9 * tmp2) == ds_readbs(CURRENT_TOWN))
 					{
 						signpost_id = host_readb(signpost_ptr + 1);
 						break;
@@ -615,7 +615,7 @@ signed short TM_enter_target_town(void)
 		{
 			/* set the target town as current town */
 			tmp2 = ds_readbs(CURRENT_TOWN);
-			ds_writeb(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
+			ds_writeb(CURRENT_TOWN, (signed char)ds_readws(TRAVEL_DESTINATION_TOWN_ID));
 
 			/* load the map */
 			call_load_area(1);
@@ -627,9 +627,9 @@ signed short TM_enter_target_town(void)
 			}
 
 			tmp = host_readws(locations_list_ptr + LOCATION_LOCDATA);
-			ds_writew(ARRIVAL_X_TARGET, (tmp >> 8) & 0xff);
-			ds_writew(ARRIVAL_Y_TARGET, tmp & 0xf);
-			ds_writew(ARRIVAL_DIRECTION, TM_get_looking_direction(host_readws(locations_list_ptr)));
+			ds_writew(TRAVEL_DESTINATION_X, (tmp >> 8) & 0xff);
+			ds_writew(TRAVEL_DESTINATION_Y, tmp & 0xf);
+			ds_writew(TRAVEL_DESTINATION_VIEWDIR, TM_get_looking_direction(host_readws(locations_list_ptr)));
 
 			ds_writeb(CURRENT_TOWN, (signed char)tmp2);
 
@@ -650,9 +650,9 @@ signed short TM_get_looking_direction(signed short coordinates)
 	x = (coordinates >> 8) & 0xff;
 	y = coordinates & 0xf;
 
-	retval = (ds_readws(ARRIVAL_X_TARGET) < x ? EAST :
-			(ds_readws(ARRIVAL_X_TARGET) > x ? WEST :
-			(ds_readws(ARRIVAL_Y_TARGET) < y ? SOUTH : NORTH)));
+	retval = (ds_readws(TRAVEL_DESTINATION_X) < x ? EAST :
+			(ds_readws(TRAVEL_DESTINATION_X) > x ? WEST :
+			(ds_readws(TRAVEL_DESTINATION_Y) < y ? SOUTH : NORTH)));
 
 	return retval;
 }
