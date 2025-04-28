@@ -36,7 +36,7 @@ unsigned short npc_meetings(unsigned short type_index)
 
 		/* Nariell */
 		if (ds_readb(CURRENT_TOWN) == TOWNS_CLANEGH &&
-			ds_readw(TYPEINDEX) == 0x30 &&
+			ds_readw(CURRENT_TYPEINDEX) == 0x30 &&
 			!ds_readb(NPC_TIMERS + NPC_NARIELL)) {
 
 			npc_nariell();
@@ -44,7 +44,7 @@ unsigned short npc_meetings(unsigned short type_index)
 
 		/* Harika */
 		if (ds_readb(CURRENT_TOWN) == TOWNS_PHEXCAER &&
-			ds_readw(TYPEINDEX) == 0x28 &&
+			ds_readw(CURRENT_TYPEINDEX) == 0x28 &&
 			!ds_readb(NPC_TIMERS + NPC_HARIKA)) {
 
 			npc_harika();
@@ -52,7 +52,7 @@ unsigned short npc_meetings(unsigned short type_index)
 
 		/* Curian */
 		if (ds_readb(CURRENT_TOWN) == TOWNS_OVERTHORN &&
-			ds_readw(TYPEINDEX) == 0x3c &&
+			ds_readw(CURRENT_TYPEINDEX) == 0x3c &&
 			!ds_readb(NPC_TIMERS + NPC_CURIAN)) {
 
 			npc_curian();
@@ -60,7 +60,7 @@ unsigned short npc_meetings(unsigned short type_index)
 
 		/* Ardora */
 		if (ds_readb(CURRENT_TOWN) == TOWNS_THORWAL &&
-			ds_readw(TYPEINDEX) == 0x6 &&
+			ds_readw(CURRENT_TYPEINDEX) == 0x6 &&
 			!ds_readb(NPC_TIMERS + NPC_ARDORA) &&
 			ds_readb(DNG01_ARDORA_FREED) != 0) {
 
@@ -69,7 +69,7 @@ unsigned short npc_meetings(unsigned short type_index)
 
 		/* Garsvik */
 		if (ds_readb(CURRENT_TOWN) == TOWNS_PREM &&
-			ds_readw(TYPEINDEX) == 0x4a &&
+			ds_readw(CURRENT_TYPEINDEX) == 0x4a &&
 			!ds_readb(NPC_TIMERS + NPC_GARSVIK)) {
 
 			npc_garsvik();
@@ -77,7 +77,7 @@ unsigned short npc_meetings(unsigned short type_index)
 
 		/* Erwo */
 		if (ds_readb(CURRENT_TOWN) == TOWNS_MANRIN &&
-			ds_readw(TYPEINDEX) == 0x57 &&
+			ds_readw(CURRENT_TYPEINDEX) == 0x57 &&
 			!ds_readb(NPC_TIMERS + NPC_ERWO)) {
 
 			npc_erwo();

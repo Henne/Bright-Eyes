@@ -500,8 +500,8 @@ void PHX_healer(void)
 			GUI_output(get_tx2(82));
 
 			/* enter the healer */
-			ds_writew(TYPEINDEX, 13);
-			ds_writew(CITYINDEX, 15);
+			ds_writew(CURRENT_TYPEINDEX, 13);
+			ds_writew(CURRENT_LOCDATA, 15);
 
 			do_healer();
 

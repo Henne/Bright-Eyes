@@ -66,7 +66,7 @@ void do_merchant(void)
 
 #if !defined(__BORLANDC__)
 	/* Print merchant values */
-	const Bit8u typi = ds_readb(TYPEINDEX);
+	const Bit8u typi = ds_readb(CURRENT_TYPEINDEX);
 	const Bit8s price = ds_readbs(SHOP_DESCR_TABLE + 9 * typi);
 	const Bit8s h_type = ds_readbs(SHOP_DESCR_TABLE + 1 + 9 * typi);
 	const Bit8s sortiment = ds_readbs(SHOP_DESCR_TABLE + 2 + 9 * typi);
@@ -93,13 +93,13 @@ void do_merchant(void)
 		return;
 	}
 
-	if (ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
-		if (ds_readbs((SHOP_DESCR_TABLE + 1) + 9 * ds_readws(TYPEINDEX)) != 3) {
+	if (ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0) {
+		if (ds_readbs((SHOP_DESCR_TABLE + 1) + 9 * ds_readws(CURRENT_TYPEINDEX)) != 3) {
 			talk_merchant();
 			leave_location();
 			return;
 		}
-	} else if (ds_readb(MERCHANT_OFFENDED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
+	} else if (ds_readb(MERCHANT_OFFENDED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0) {
 		GUI_output(get_ttx(507));
 		leave_location();
 		return;
@@ -111,7 +111,7 @@ void do_merchant(void)
 	ds_writed(BUYITEMS, ds_readd(FIG_FIGURE1_BUF));
 	memset(Real2Host(ds_readd(BUYITEMS)), 0, 3500);
 	ds_writew(PRICE_MODIFICATOR, 4);
-	shop_p = p_datseg + SHOP_DESCR_TABLE + 9 * ds_readws(TYPEINDEX);
+	shop_p = p_datseg + SHOP_DESCR_TABLE + 9 * ds_readws(CURRENT_TYPEINDEX);
 
 	for (l_si = 0; l_si < 100; l_si++) {
 		host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * l_si, 0);
@@ -178,7 +178,7 @@ void do_merchant(void)
 		qsort(Real2Host(ds_readd(BUYITEMS)), item_pos, 7, shop_compar);
 	}
 
-	while (done == 0 && !ds_readb(MERCHANT_OFFENDED_FLAGS + ds_readws(TYPEINDEX))) {
+	while (done == 0 && !ds_readb(MERCHANT_OFFENDED_FLAGS + ds_readws(CURRENT_TYPEINDEX))) {
 
 		if (ds_readws(REQUEST_REFRESH) != 0) {
 
@@ -194,15 +194,15 @@ void do_merchant(void)
 
 			set_audio_track(ARCHIVE_FILE_TERMS_XMI);
 
-			GUI_print_loc_line(ds_readbs(CURRENT_LOCTYPE) == LOCTYPE_MARKET ? get_ttx(679) : (ds_readws(TYPEINDEX) == 93 ?  get_ttx(46) : get_tx(ds_readws(CITYINDEX))));
-			// TYPEINDEX 93 is the merchant from random city event 6.
+			GUI_print_loc_line(ds_readbs(CURRENT_LOCTYPE) == LOCTYPE_MARKET ? get_ttx(679) : (ds_readws(CURRENT_TYPEINDEX) == 93 ?  get_ttx(46) : get_tx(ds_readws(CURRENT_LOCDATA))));
+			// CURRENT_TYPEINDEX 93 is the merchant from random city event 6.
 
 			ds_writew(REQUEST_REFRESH, refresh = 0);
 
 		}
 
 		if (refresh != 0) {
-			GUI_print_loc_line(get_tx(ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(ds_readws(CURRENT_LOCDATA)));
 			refresh = 0;
 		}
 
@@ -280,7 +280,7 @@ void do_merchant(void)
 
 			talk_merchant();
 
-			if (ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
+			if (ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0) {
 				done = 1;
 			}
 		}
@@ -295,7 +295,7 @@ void talk_merchant(void)
 {
 	signed short tlk_id;
 
-	switch (ds_readbs(SHOP_DESCR_TABLE + 9 * ds_readws(TYPEINDEX) + 1)) {
+	switch (ds_readbs(SHOP_DESCR_TABLE + 9 * ds_readws(CURRENT_TYPEINDEX) + 1)) {
 		case 1: tlk_id = 16; break;
 		case 2: tlk_id = 15; break;
 		case 3: tlk_id = 14; break;
@@ -307,11 +307,11 @@ void talk_merchant(void)
 void TLK_ghandel(signed short state)
 {
 	if (!state) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ? 1 : 4);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0 ? 1 : 4);
 	} else if (state == 1) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(MERCHANT_KICKED2_FLAGS + ds_readws(TYPEINDEX)) != 0 ? 2 : 3);
-	} else if (state == 6 && ds_readws(TYPEINDEX) != 90) {
-		ds_writeb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(MERCHANT_KICKED2_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0 ? 2 : 3);
+	} else if (state == 6 && ds_readws(CURRENT_TYPEINDEX) != 90) {
+		ds_writeb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1);
 	} else if (state == 10) {
 		/* test CH+0 */
 		ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(get_first_hero_available_in_group()), ATTRIB_CH, 0) > 0 ? 11 : 12);
@@ -321,15 +321,15 @@ void TLK_ghandel(signed short state)
 void TLK_khandel(signed short state)
 {
 	if (!state) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ? 1 : 2);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0 ? 1 : 2);
 	} else if (state == 5) {
 		tumult();
-		if (ds_readws(TYPEINDEX) != 90) {
-			ds_writeb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
+		if (ds_readws(CURRENT_TYPEINDEX) != 90) {
+			ds_writeb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1);
 		}
 
-	} else if (state == 7 && ds_readws(TYPEINDEX) != 90) {
-		ds_writeb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
+	} else if (state == 7 && ds_readws(CURRENT_TYPEINDEX) != 90) {
+		ds_writeb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1);
 	} else if (state == 8) {
 		ds_writew(DIALOG_NEXT_STATE, random_schick(20) <= 3 ? 9 : -1);
 	} else if (state == 11) {
@@ -343,15 +343,15 @@ void TLK_khandel(signed short state)
 void TLK_whandel(signed short state)
 {
 	if (!state) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ? 26 : 1);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0 ? 26 : 1);
 	} else if (state == 7 || state == 13) {
 		tumult();
-		if (ds_readws(TYPEINDEX) != 90) {
-			ds_writeb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
+		if (ds_readws(CURRENT_TYPEINDEX) != 90) {
+			ds_writeb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1);
 		}
 
-	} else if ((state == 8 || state == 16) && ds_readws(TYPEINDEX) != 90) {
-		ds_writeb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
+	} else if ((state == 8 || state == 16) && ds_readws(CURRENT_TYPEINDEX) != 90) {
+		ds_writeb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1);
 	} else if (state == 18) {
 		/* test CH+0 */
 		ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(get_first_hero_available_in_group()), ATTRIB_CH, 0) > 0 ? 19 : -1);

@@ -43,9 +43,9 @@ void do_tavern(void)
 	time_t timeval;
 
 	done = 0;
-	tav_ptr = p_datseg + TAVERN_DESCR_TABLE + 4 * ds_readws(TYPEINDEX);
+	tav_ptr = p_datseg + TAVERN_DESCR_TABLE + 4 * ds_readws(CURRENT_TYPEINDEX);
 
-	GUI_print_loc_line(get_tx(ds_readws(CITYINDEX)));
+	GUI_print_loc_line(get_tx(ds_readws(CURRENT_LOCDATA)));
 
 	ds_writew(REQUEST_REFRESH, 1);
 
@@ -75,14 +75,14 @@ void do_tavern(void)
 			set_var_to_zero();
 			load_ani(27);
 			init_ani(0);
-			GUI_print_loc_line(get_tx(ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(ds_readws(CURRENT_LOCDATA)));
 			set_audio_track(ARCHIVE_FILE_INN_XMI);
 			ds_writew(REQUEST_REFRESH, 0);
 		}
 
 		handle_gui_input();
 
-		if (ds_readbs(TAV_CHEATED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
+		if (ds_readbs(TAV_CHEATED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0) {
 
 			GUI_output(get_ttx(472));
 			done = 1;
@@ -192,7 +192,7 @@ void do_tavern(void)
 
 					GUI_output(get_ttx(474));
 
-					ds_writeb(TAV_CHEATED_FLAGS + ds_readws(TYPEINDEX), 1);
+					ds_writeb(TAV_CHEATED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1);
 					done = 1;
 					ds_writew(COMBO_MODE, 0);
 

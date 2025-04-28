@@ -82,7 +82,7 @@ void show_entrance(void)
 	if (GUI_bool(get_ttx(760))) {
 
 		init_ani_busy_loop(2);
-		DNG_enter_dungeon(ds_readws(TYPEINDEX));
+		DNG_enter_dungeon(ds_readws(CURRENT_TYPEINDEX));
 	} else {
 
 		leave_location();
@@ -107,7 +107,7 @@ void show_citizen(void)
 			init_ani(ds_writew(REQUEST_REFRESH, 0));
 
 			strcpy((char*)Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_tx(ds_readw(CITYINDEX)));
+				(char*)get_tx(ds_readw(CURRENT_LOCDATA)));
 
 			if (ds_readbs(YEAR) == 15 && ds_readbs(MONTH) == 1 && random_schick(100) <= 20) {
 
@@ -142,7 +142,7 @@ void do_house(void)
 	Bit8u *hero;
 
 	/* prepare the question */
-	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx(ds_readws(CITYINDEX)));
+	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx(ds_readws(CURRENT_LOCDATA)));
 
 	strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(623));
 
@@ -232,7 +232,7 @@ void do_house(void)
 
 void do_informer(void)
 {
-	signed short no = ds_readws(TYPEINDEX) - 1;
+	signed short no = ds_readws(CURRENT_TYPEINDEX) - 1;
 
 	if (!no) do_talk(6, 0);
 	else if (no == 1) do_talk(6, 1);
@@ -255,9 +255,9 @@ void do_informer(void)
 
 void enter_map(void)
 {
-	ds_writew(CURRENT_SIGNPOST, ds_readw(TYPEINDEX));
+	ds_writew(CURRENT_SIGNPOST, ds_readw(CURRENT_TYPEINDEX));
 
-	ds_writew(TYPEINDEX, ds_readbs(CURRENT_TOWN));
+	ds_writew(CURRENT_TYPEINDEX, ds_readbs(CURRENT_TOWN));
 
 	ds_writeb(CURRENT_LOCTYPE, ds_writeb(CURRENT_TOWN, TOWNS_NONE));
 	ds_writeb(SHOW_TRAVEL_MAP, 1);

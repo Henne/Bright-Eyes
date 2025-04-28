@@ -631,7 +631,7 @@ signed short use_skill(signed short hero_pos, signed char handicap, signed short
 			} else {
 				GUI_output(get_tx(39));
 
-				ds_writeb(TAV_CHEATED_FLAGS + ds_readws(TYPEINDEX), 1);
+				ds_writeb(TAV_CHEATED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1);
 
 				l_si = -1;
 			}

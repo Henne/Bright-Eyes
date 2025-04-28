@@ -501,9 +501,9 @@ void do_smith(void)
 		return;
 	}
 
-	if (ds_readbs(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
-		ds_readbs(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
-		(ds_readws(TYPEINDEX) == 1 && ds_readb(DNG14_CELLAREXIT_FLAG))) {
+	if (ds_readbs(SMITH_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0 ||
+		ds_readbs(SMITH_FLOGGED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0 ||
+		(ds_readws(CURRENT_TYPEINDEX) == 1 && ds_readb(DNG14_CELLAREXIT_FLAG))) {
 
 		talk_smith();
 		leave_location();
@@ -512,7 +512,7 @@ void do_smith(void)
 
 	load_ggsts_nvf();
 	ds_writew(REQUEST_REFRESH, 1);
-	smith_ptr = p_datseg + SMITH_DESCR_TABLE + 2 * ds_readws(TYPEINDEX);
+	smith_ptr = p_datseg + SMITH_DESCR_TABLE + 2 * ds_readws(CURRENT_TYPEINDEX);
 	ds_writew(PRICE_MODIFICATOR, 4);
 
 	while (!done) {
@@ -524,7 +524,7 @@ void do_smith(void)
 			set_var_to_zero();
 			load_ani(5);
 			init_ani(0);
-			GUI_print_loc_line(get_tx(ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(ds_readws(CURRENT_LOCDATA)));
 			set_audio_track(ARCHIVE_FILE_SMITH_XMI);
 			ds_writew(REQUEST_REFRESH, 0);
 		}
@@ -555,14 +555,14 @@ void do_smith(void)
 			talk_smith();
 			ds_writew(REQUEST_REFRESH, 1);
 
-			if (ds_readbs(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
-				ds_readbs(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
+			if (ds_readbs(SMITH_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0 ||
+				ds_readbs(SMITH_FLOGGED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0 ||
 				ds_readbs(DUNGEON_INDEX) != DUNGEONS_NONE)
 			{
 				done = 1;
 			}
 		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
-			repair_screen(smith_ptr, ds_readws(TYPEINDEX));
+			repair_screen(smith_ptr, ds_readws(CURRENT_TYPEINDEX));
 		}
 	}
 
@@ -578,18 +578,18 @@ void talk_smith(void)
 void TLK_schmied(signed short state)
 {
 	if (!state) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ? 1 :
-					(ds_readws(TYPEINDEX) == 17 ? 27 :
-					(ds_readws(TYPEINDEX) == 1 && ds_readb(DNG14_CELLAREXIT_FLAG) != 0 ? 28 : 4)));
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(SMITH_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0 ? 1 :
+					(ds_readws(CURRENT_TYPEINDEX) == 17 ? 27 :
+					(ds_readws(CURRENT_TYPEINDEX) == 1 && ds_readb(DNG14_CELLAREXIT_FLAG) != 0 ? 28 : 4)));
 	} else if (state == 1) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX)) != 0 ? 2 : 3);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(SMITH_FLOGGED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0 ? 2 : 3);
 	} else if (state == 3) {
-		ds_writeb(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX), 1);
+		ds_writeb(SMITH_FLOGGED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1);
 	} else if (state == 6 || state == 26) {
 		tumult();
-		ds_writeb(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX), ds_writeb(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX), 1));
+		ds_writeb(SMITH_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX), ds_writeb(SMITH_FLOGGED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1));
 	} else if (state == 11 || state == 14 || state == 16 || state == 23) {
-		ds_writeb(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
+		ds_writeb(SMITH_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1);
 	} else if (state == 19 || state == 31) {
 		ds_writew(PRICE_MODIFICATOR, 3);
 	} else if (state == 30) {

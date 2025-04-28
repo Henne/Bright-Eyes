@@ -213,12 +213,12 @@ void THO_tav_inn_combi(void)
 				get_ttx(347));
 
 	/* save the combo typeindex */
-	type_bak = ds_readw(TYPEINDEX);
+	type_bak = ds_readw(CURRENT_TYPEINDEX);
 
 	do {
 
 		/* restore the combo typeindex */
-		ds_writew(TYPEINDEX, type_bak);
+		ds_writew(CURRENT_TYPEINDEX, type_bak);
 
 		if (answer == 1) {
 
@@ -228,8 +228,8 @@ void THO_tav_inn_combi(void)
 			ds_writew(COMBO_MODE, 1);
 
 			/* set the typeindex of the corresponding tavern */
-			answer = ds_readw(TYPEINDEX);
-			ds_writew(TYPEINDEX, answer == 11 ? 0 : (
+			answer = ds_readw(CURRENT_TYPEINDEX);
+			ds_writew(CURRENT_TYPEINDEX, answer == 11 ? 0 : (
 					answer == 14 ? 1 : (
 					answer == 17 ? 2 : 6)));
 
@@ -252,8 +252,8 @@ void THO_tav_inn_combi(void)
 			ds_writew(COMBO_MODE, 1);
 
 			/* set the typeindex of the corresponding inn */
-			answer = ds_readw(TYPEINDEX);
-			ds_writew(TYPEINDEX, answer == 11 ? 70 : (
+			answer = ds_readw(CURRENT_TYPEINDEX);
+			ds_writew(CURRENT_TYPEINDEX, answer == 11 ? 70 : (
 					answer == 14 ? 71 : (
 					answer == 17 ? 72 : 73)));
 

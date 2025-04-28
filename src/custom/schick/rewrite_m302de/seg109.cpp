@@ -434,8 +434,8 @@ void TRV_found_inn(signed short town_id, signed short type)
 	init_ani(0);
 
 	if (GUI_bool(get_tx(23))) {
-		ds_writew(CITYINDEX, town_id);
-		ds_writew(TYPEINDEX, type);
+		ds_writew(CURRENT_LOCDATA, town_id);
+		ds_writew(CURRENT_TYPEINDEX, type);
 		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_INN);
 
 		do_location();
