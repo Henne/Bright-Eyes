@@ -398,11 +398,11 @@ signed short DNG03_handler(void)
 			target_pos == DNG_POS(0,0,8))
 	{
 		leave_dungeon();
-		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
-		ds_writews(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
-		ds_writews(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
+		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRAVEL_DESTINATION_TOWN_ID));
+		ds_writews(X_TARGET, ds_readws(TRAVEL_DESTINATION_X));
+		ds_writews(Y_TARGET, ds_readws(TRAVEL_DESTINATION_Y));
 		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
-		ds_writeb(DIRECTION, (ds_readws(ARRIVAL_DIRECTION) + 2) & 3);
+		ds_writeb(DIRECTION, (ds_readws(TRAVEL_DESTINATION_VIEWDIR) + 2) & 3);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_tx(30),

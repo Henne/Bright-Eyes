@@ -308,60 +308,65 @@ unsigned short passage_arrival(void)
 	signed short tmp;
 	Bit8u *harbor_ptr;
 	Bit8u *locations_list_ptr;
-	Bit8u *p_sched;
+	Bit8u *p_sea_route;
 	signed short si;
-	signed short harbor_id;
+	signed short harbor_typeindex;
 
-	harbor_id = 0;
+	harbor_typeindex = 0;
 	harbor_ptr = p_datseg + HARBORS;
 
-	p_sched = p_datseg + SEA_ROUTES + ds_readb(SEA_TRAVEL_PASSAGE_ID) * SIZEOF_SEA_ROUTE;
+	p_sea_route = p_datseg + SEA_ROUTES + ds_readb(CURRENT_SEA_ROUTE_ID) * SIZEOF_SEA_ROUTE;
 
-	/* write the destination to a global variable (assignement in condition)*/
-	if ((ds_writew(TRV_DEST_REACHED, host_readb(p_sched + SEA_ROUTE_TOWN_1))) == ds_readbs(CURRENT_TOWN))
-		ds_writew(TRV_DEST_REACHED, host_readb(p_sched + SEA_ROUTE_TOWN_2));
+	/* write the id of the destination town to the global variable TRAVEL_DESTINATION_TOWN_ID
+	   Code is a bit unorthodox: Within the if-condition, the id of TOWN_1 is written to TRAVEL_DESTINATION_TOWN_ID
+	   Then the condition is evaluated: If this is the initial town, then TRAVEL_DESTINATION_TOWN_ID is overwritten by the id of TOWN_2,
+	   which in this case must be the destination town. */
+	if ((ds_writew(TRAVEL_DESTINATION_TOWN_ID, host_readb(p_sea_route + SEA_ROUTE_TOWN_1))) == ds_readbs(CURRENT_TOWN))
+		ds_writew(TRAVEL_DESTINATION_TOWN_ID, host_readb(p_sea_route + SEA_ROUTE_TOWN_2));
+
+	/* find the harbor of the destination town. */
 
 	do {
-		if (host_readb(harbor_ptr) == ds_readw(TRV_DEST_REACHED)) {
+		if (host_readb(harbor_ptr + HARBOR_TOWN) == ds_readw(TRAVEL_DESTINATION_TOWN_ID)) {
 			si = 0;
 			do {
-				tmp = host_readb(Real2Host(host_readd(harbor_ptr + 2)) + si) - 1;
+				/* tmp ranges over the IDs of the linked sea routes, diminuished by 1. */
+				tmp = host_readb(Real2Host(host_readd(harbor_ptr + HARBOR_SEA_ROUTES)) + si) - 1;
 				if (host_readb(p_datseg + SEA_ROUTES + tmp * SIZEOF_SEA_ROUTE + SEA_ROUTE_TOWN_1) == ds_readb(CURRENT_TOWN) ||
 					host_readb(p_datseg + SEA_ROUTES + tmp * SIZEOF_SEA_ROUTE + SEA_ROUTE_TOWN_2) == ds_readb(CURRENT_TOWN)) {
-					harbor_id = (unsigned char)host_readb(harbor_ptr + 1);
+					harbor_typeindex = (unsigned char)host_readb(harbor_ptr + HARBOR_TYPEINDEX);
 					break;
 				}
 
 				si++;
-			} while (host_readb(Real2Host(host_readd(harbor_ptr + 2)) + si) != 0xff);
+			} while (host_readb(Real2Host(host_readd(harbor_ptr + HARBOR_SEA_ROUTES)) + si) != 0xff);
 		}
-		/* set pointer to the next structure */
-		harbor_ptr += 6;
-	} while (harbor_id == 0 && host_readb(harbor_ptr) != 0xff);
+		harbor_ptr += SIZEOF_HARBOR;
+	} while (harbor_typeindex == 0 && host_readb(harbor_ptr) != 0xff);
 
-	if (harbor_id != 0) {
+	if (harbor_typeindex != 0) {
 
 		/* save the old town in tmp */
 		tmp = (signed char)ds_readb(CURRENT_TOWN);
-		/* set the new current_town */
-		ds_writeb(CURRENT_TOWN, ds_readb(TRV_DEST_REACHED));
+		/* set the new town in current_town */
+		ds_writeb(CURRENT_TOWN, ds_readb(TRAVEL_DESTINATION_TOWN_ID));
 
-		/* load the area  of the new town */
+		/* load the area of the new town */
 		call_load_area(1);
 
 
-		/* search for the harbour in the map */
+		/* search for the harbour in the locations list */
 		locations_list_ptr = p_datseg + LOCATIONS_LIST;
 		while ((host_readb(locations_list_ptr + LOCATION_LOCTYPE) != LOCTYPE_HARBOR) ||
-				(host_readb(locations_list_ptr + LOCATION_TYPEINDEX) != harbor_id)) {
+				(host_readb(locations_list_ptr + LOCATION_TYPEINDEX) != harbor_typeindex)) {
 			locations_list_ptr += SIZEOF_LOCATION;
 		}
 
 		/* set the position of the party */
 		si = host_readw(locations_list_ptr + LOCATION_LOCDATA);
-		ds_writew(ARRIVAL_X_TARGET, (si >> 8) & 0xff);
-		ds_writew(ARRIVAL_Y_TARGET, si & 0x0f);
-		ds_writew(ARRIVAL_DIRECTION, (si >> 4) & 0x0f);
+		ds_writew(TRAVEL_DESTINATION_X, (si >> 8) & 0xff);
+		ds_writew(TRAVEL_DESTINATION_Y, si & 0x0f);
+		ds_writew(TRAVEL_DESTINATION_VIEWDIR, (si >> 4) & 0x0f);
 
 		/* restore the old town area / TODO: a bit bogus */
 		ds_writeb(CURRENT_TOWN, (unsigned char)tmp);

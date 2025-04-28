@@ -200,11 +200,11 @@ signed short DNG01_handler(void)
 		if (GUI_bool(get_tx(24)))
 		{
 			leave_dungeon();
-			ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
-			ds_writew(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
-			ds_writew(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
+			ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRAVEL_DESTINATION_TOWN_ID));
+			ds_writew(X_TARGET, ds_readws(TRAVEL_DESTINATION_X));
+			ds_writew(Y_TARGET, ds_readws(TRAVEL_DESTINATION_Y));
 			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
-			ds_writeb(DIRECTION, (ds_readws(ARRIVAL_DIRECTION) + 2) & 3);
+			ds_writeb(DIRECTION, (ds_readws(TRAVEL_DESTINATION_VIEWDIR) + 2) & 3);
 
 			GUI_output(get_tx(15));
 

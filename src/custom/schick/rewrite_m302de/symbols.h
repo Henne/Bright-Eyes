@@ -213,8 +213,8 @@
 #define Y_TARGET                        (0x2d46)    /* unsigned short */
 #define GROUPS_X_TARGET                 (0x2d48)    /* unsigned short[6] */
 #define GROUPS_Y_TARGET                 (0x2d54)    /* unsigned short[6] */
-#define CURRENT_LOCTYPE                        (0x2d60)    /* signed char */
-#define GROUPS_CURRENT_LOCTYPE                 (0x2d61)    /* signed char[6] */
+#define CURRENT_LOCTYPE                 (0x2d60)    /* signed char */
+#define GROUPS_CURRENT_LOCTYPE          (0x2d61)    /* signed char[6] */
 #define CURRENT_TOWN                    (0x2d67)    /* signed char */
 #define GROUPS_TOWN                     (0x2d68)    /* signed char[6] */
 #define DUNGEON_INDEX                   (0x2d6e)    /* signed char */
@@ -227,8 +227,8 @@
 #define Y_TARGET_BAK                    (0x2d85)    /* signed short */
 #define GROUPS_X_TARGET_BAK             (0x2d87)    /* signed short[6] */
 #define GROUPS_Y_TARGET_BAK             (0x2d93)    /* signed short[6] */
-#define CURRENT_LOCTYPE_BAK                    (0x2d9f)    /* signed char */
-#define GROUPS_CURRENT_LOCTYPE_BAK             (0x2da0)    /* signed char[6] */
+#define CURRENT_LOCTYPE_BAK             (0x2d9f)    /* signed char */
+#define GROUPS_CURRENT_LOCTYPE_BAK      (0x2da0)    /* signed char[6] */
 #define CURRENT_TOWN_BAK                (0x2da6)    /* signed char */
 #define GROUPS_TOWN_BAK                 (0x2da7)    /* signed char[6] */
 #define DUNGEON_INDEX_BAK               (0x2dad)    /* signed char */
@@ -760,7 +760,7 @@
 #define SEA_TRAVEL_PSGBOOKED_FLAG       (0x42ae)    /* signed char; 0 = passage is not booked; 0xaa = passage is booked */ /* why 0xaa instead of simply 1 ?? */
 #define SEA_TRAVEL_PSGBOOKED_TIMER      (0x42af)    /* signed char; 0 = ship leaves today at 9 o'clock; 1 = ship leaves tomorrow at 9 o'clock */
 #define SEA_TRAVEL_PASSAGE_SPEED1       (0x42b0)    /* signed char */
-#define SEA_TRAVEL_PASSAGE_ID           (0x42b1)    /* signed char */
+#define CURRENT_SEA_ROUTE_ID            (0x42b1)    /* signed char */
 #define HARBOR_OPTIONS                  (0x42b2)    /* struct(12)[10]; buffering passage data for building the menu in a harbor where a sea passage can be selected */
 #define SEA_TRAVEL_PASSAGE_PRICE        (0x432a)    /* signed short */
 #define SEA_TRAVEL_PASSAGE_SPEED2       (0x432c)    /* unsigned short; basically, the same purpose as SEA_TRAVEL_PASSAGE_SPEED1. The variables could be merged. */
@@ -769,10 +769,10 @@
 #define TRAVEL_DETOUR                   (0x4333)    /* unsigned char; indicates a detour from traveling, mostly to a dungeon (if it holds a DUNGEONS_... ID, which is a value in [1..15]). further possible values: 0, 99, and an extra usage of 1 in seg110.cpp */
 #define CURRENT_SIGNPOST                (0x4334)    /* unsigned short */
 #define TRV_RETURN                      (0x4336)    /* signed short; {-1, 0, 1, 2} + ? */
-#define TRV_DEST_REACHED                (0x4338)    /* unsigned short */
-#define ARRIVAL_X_TARGET                (0x433a)    /* unsigned short */
-#define ARRIVAL_Y_TARGET                (0x433c)    /* unsigned short */
-#define ARRIVAL_DIRECTION               (0x433e)    /* signed short */
+#define TRAVEL_DESTINATION_TOWN_ID      (0x4338)    /* unsigned short */
+#define TRAVEL_DESTINATION_X            (0x433a)    /* unsigned short */
+#define TRAVEL_DESTINATION_Y            (0x433c)    /* unsigned short */
+#define TRAVEL_DESTINATION_VIEWDIR      (0x433e)    /* signed short */
 #define TM_UNUSED1_PTR                  (0x4340)    /* RealPt */
 #define TRV_MENU_TOWNS                  (0x4344)    /* unsigned char[6] */
 #define TRV_DESTINATION                 (0x434a)    /* unsigned short */
@@ -1181,11 +1181,11 @@
 // ?18
 #define DNG_SPECIALCHEST_INDEX          (0x9d84)    /* RealPt[16] */
 #define STR_SINGLE_SPACE                (0x9dc4)    /* char[2]; " " */
-#define ROUTES_TAB                      (0x9dc6)    /* struct(9)[59]; struct{char from, to, length, speed_mod, encounters, u1, u2, fights, u3;} */
-#define SIGNPOST_ROUTES                 (0x9fd9)    /* char[219]; 105 arrays, each terminated by -1 */
-#define SIGNPOSTS                       (0xa0b4)    /* struct(6)[106]; struct{char town, type_id; RealPt routes;} */
-#define HARBOR_PASSAGES                 (0xa330)    /* char[115]; 18 arrays, each terminated by -1 */
-#define HARBORS                         (0xa3a3)    /* struct(6)[26]; struct{char town, type_id; RealPt passages;} */
+#define LAND_ROUTES                     (0x9dc6)    /* struct(9)[59]; struct{char from, to, distance, speed_mod, encounters, u1, u2, fights, u3;} */
+#define SIGNPOSTS_LINKED_LAND_ROUTES    (0x9fd9)    /* char[219]; 105 arrays, each terminated by -1 */
+#define SIGNPOSTS                       (0xa0b4)    /* struct(6)[106]; struct{char town, typeindex; RealPt land_routes;} */
+#define HARBORS_LINKED_SEA_ROUTES       (0xa330)    /* char[115]; 25 arrays, each terminated by -1 */
+#define HARBORS                         (0xa3a3)    /* struct(6)[26]; struct{char town, typeindex; RealPt sea_routes;} */
 #define TOWN_POSITIONS                  (0xa43f)    /* struct(4)[52]; struct{signed short x, y;} */
 #define ACTION_TABLE_TRAVELMAP          (0xa50f)    /* struct(10)[35] */
 #define TEVENTS_TAB                     (0xa66d)    /* struct(3)[155]; struct{char route_id, place, tevent_id;} */

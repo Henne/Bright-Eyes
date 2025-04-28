@@ -279,11 +279,11 @@ signed short DNG04_handler(void)
 		/* the exit of this dungeon */
 		leave_dungeon();
 
-		ds_writeb(CURRENT_TOWN, ds_readb(TRV_DEST_REACHED));
-		ds_writew(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
-		ds_writew(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
+		ds_writeb(CURRENT_TOWN, ds_readb(TRAVEL_DESTINATION_TOWN_ID));
+		ds_writew(X_TARGET, ds_readws(TRAVEL_DESTINATION_X));
+		ds_writew(Y_TARGET, ds_readws(TRAVEL_DESTINATION_Y));
 		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
-		ds_writeb(DIRECTION, (ds_readb(ARRIVAL_DIRECTION) + 2) & 0x03);
+		ds_writeb(DIRECTION, (ds_readb(TRAVEL_DESTINATION_VIEWDIR) + 2) & 0x03);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_tx(26),
@@ -469,11 +469,11 @@ signed short DNG05_handler(void)
 		/* the exit of this dungeon */
 		leave_dungeon();
 
-		ds_writeb(CURRENT_TOWN, ds_readb(TRV_DEST_REACHED));
-		ds_writew(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
-		ds_writew(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
+		ds_writeb(CURRENT_TOWN, ds_readb(TRAVEL_DESTINATION_TOWN_ID));
+		ds_writew(X_TARGET, ds_readws(TRAVEL_DESTINATION_X));
+		ds_writew(Y_TARGET, ds_readws(TRAVEL_DESTINATION_Y));
 		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_NONE);
-		ds_writeb(DIRECTION, (ds_readb(ARRIVAL_DIRECTION) + 2) & 0x03);
+		ds_writeb(DIRECTION, (ds_readb(TRAVEL_DESTINATION_VIEWDIR) + 2) & 0x03);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_tx(17),
