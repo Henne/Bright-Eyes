@@ -304,7 +304,7 @@ void TM_func1(signed short route_no, signed short backwards)
 
 		} else if (ds_readw(ROUTE_INFORMER_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(ROUTE_INFORMER_TIME) && ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 		{
-			ds_writew(TYPEINDEX, random_schick(100) <= 50 ? 10 : 12);
+			ds_writew(CURRENT_TYPEINDEX, random_schick(100) <= 50 ? 10 : 12);
 			bak1 = ds_readws(BASEPOS_X);
 			bak2 = ds_readws(BASEPOS_Y);
 			ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
@@ -626,7 +626,7 @@ signed short TM_enter_target_town(void)
 				locations_list_ptr += SIZEOF_LOCATION;
 			}
 
-			tmp = host_readws(locations_list_ptr + LOCATION_CITYINDEX);
+			tmp = host_readws(locations_list_ptr + LOCATION_LOCDATA);
 			ds_writew(ARRIVAL_X_TARGET, (tmp >> 8) & 0xff);
 			ds_writew(ARRIVAL_Y_TARGET, tmp & 0xf);
 			ds_writew(ARRIVAL_DIRECTION, TM_get_looking_direction(host_readws(locations_list_ptr)));

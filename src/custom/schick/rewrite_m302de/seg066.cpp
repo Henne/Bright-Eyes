@@ -66,8 +66,8 @@ signed short enter_location(signed short town_id)
 			/* found the location */
 			ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
 			ds_writebs(CURRENT_LOCTYPE, host_readbs(locations_list_ptr + LOCATION_LOCTYPE));
-			ds_writew(TYPEINDEX, host_readb(locations_list_ptr + LOCATION_TYPEINDEX));
-			ds_writew(CITYINDEX, host_readw(locations_list_ptr + LOCATION_CITYINDEX));
+			ds_writew(CURRENT_TYPEINDEX, host_readb(locations_list_ptr + LOCATION_TYPEINDEX));
+			ds_writew(CURRENT_LOCDATA, host_readw(locations_list_ptr + LOCATION_LOCDATA));
 
 			if (ds_readbs(CURRENT_LOCTYPE) == LOCTYPE_MARKET) {
 				ds_writebs(CURRENT_LOCTYPE, LOCTYPE_NONE);
@@ -86,13 +86,13 @@ signed short enter_location(signed short town_id)
 	if ((b_index = get_border_index(cast_u16(ds_readbs((VISUAL_FIELD_VALS + 1))))) >= 2 && b_index <= 5) {
 
 		ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
-		ds_writew(CITYINDEX, ds_readb((TOWNS_CITYINDEX_TABLE-1) + town_id));
+		ds_writew(CURRENT_LOCDATA, ds_readb((TOWNS_CITYINDEX_TABLE-1) + town_id));
 
 		if (!((ds_readbs(DIRECTION) + ds_readws(X_TARGET) + ds_readws(Y_TARGET)) & 1)) {
 			ds_writebs(CURRENT_LOCTYPE, LOCTYPE_CITIZEN);
 		} else {
 			ds_writebs(CURRENT_LOCTYPE, LOCTYPE_HOUSE);
-			inc_ds_ws(CITYINDEX);
+			inc_ds_ws(CURRENT_LOCDATA);
 		}
 
 		return 1;
@@ -119,17 +119,17 @@ signed short enter_location_daspota(void)
 
 		if (host_readws(locations_list_ptr + LOCATION_XY) == map_pos) {
 
-			ds_writew(TYPEINDEX, host_readb(locations_list_ptr + LOCATION_TYPEINDEX));
+			ds_writew(CURRENT_TYPEINDEX, host_readb(locations_list_ptr + LOCATION_TYPEINDEX));
 
 			if (host_readb(locations_list_ptr + LOCATION_LOCTYPE) != LOCTYPE_SIGNPOST) {
 
-				GUI_print_loc_line(get_tx(host_readw(locations_list_ptr + LOCATION_CITYINDEX)));
+				GUI_print_loc_line(get_tx(host_readw(locations_list_ptr + LOCATION_LOCDATA)));
 
-				if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(locations_list_ptr + LOCATION_CITYINDEX))) {
+				if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(locations_list_ptr + LOCATION_LOCDATA))) {
 
 					do_talk(host_readbs(locations_list_ptr + LOCATION_LOCTYPE), host_readb(locations_list_ptr + LOCATION_TYPEINDEX) - 1);
 
-					if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(locations_list_ptr + LOCATION_CITYINDEX))) {
+					if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(locations_list_ptr + LOCATION_LOCDATA))) {
 						leave_location();
 						return 1;
 					}
@@ -139,12 +139,12 @@ signed short enter_location_daspota(void)
 				set_var_to_zero();
 
 				load_ani(10);
-				GUI_print_loc_line(get_tx(host_readw(locations_list_ptr + LOCATION_CITYINDEX)));
+				GUI_print_loc_line(get_tx(host_readw(locations_list_ptr + LOCATION_LOCDATA)));
 				init_ani(0);
 
-				if (ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(locations_list_ptr + LOCATION_CITYINDEX))) {
+				if (ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(locations_list_ptr + LOCATION_LOCDATA))) {
 
-					loot_multi_chest(Real2Host((RealPt)ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(locations_list_ptr + LOCATION_CITYINDEX))), get_tx(21));
+					loot_multi_chest(Real2Host((RealPt)ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(locations_list_ptr + LOCATION_LOCDATA))), get_tx(21));
 
 				} else {
 
@@ -157,9 +157,9 @@ signed short enter_location_daspota(void)
 
 				set_var_to_zero();
 
-				if (host_readw(locations_list_ptr + LOCATION_CITYINDEX) == 6) {
+				if (host_readw(locations_list_ptr + LOCATION_LOCDATA) == 6) {
 					do_fight(FIGHTS_DASP6B);
-				} else if (host_readw(locations_list_ptr + LOCATION_CITYINDEX ) == 12) {
+				} else if (host_readw(locations_list_ptr + LOCATION_LOCDATA) == 12) {
 					do_fight(FIGHTS_DASP12B);
 				}
 
@@ -168,7 +168,7 @@ signed short enter_location_daspota(void)
 			} else {
 				ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
 				ds_writebs(CURRENT_LOCTYPE, host_readbs(locations_list_ptr + LOCATION_LOCTYPE));
-				ds_writew(CITYINDEX, host_readw(locations_list_ptr + LOCATION_CITYINDEX));
+				ds_writew(CURRENT_LOCDATA, host_readw(locations_list_ptr + LOCATION_LOCDATA));
 			}
 
 			return 1;
@@ -184,7 +184,7 @@ signed short enter_location_daspota(void)
 
 		ds_writeb(CURRENT_LOCTYPE_BAK, LOCTYPE_NONE);
 		ds_writebs(CURRENT_LOCTYPE, LOCTYPE_CITIZEN);
-		ds_writew(CITYINDEX, 19);
+		ds_writew(CURRENT_LOCDATA, 19);
 		return 1;
 	}
 
@@ -197,7 +197,7 @@ void do_special_buildings(void)
 	signed short tw_bak;
 
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
-	type = ds_readws(TYPEINDEX);
+	type = ds_readws(CURRENT_TYPEINDEX);
 
 	if (ds_readb(CURRENT_TOWN) == TOWNS_THORWAL) {
 
@@ -1026,7 +1026,7 @@ signed short city_step(void)
 
 		if (ds_readb(LOCATION_MARKET_FLAG) != 0 && ds_readb((NEW_MENU_ICONS + 7)) != MENU_ICON_MARKET) {
 
-			if (((i = ds_readws((MARKET_DESCR_TABLE + 4) + 8 * ds_readws(TYPEINDEX))) == -1 ||
+			if (((i = ds_readws((MARKET_DESCR_TABLE + 4) + 8 * ds_readws(CURRENT_TYPEINDEX))) == -1 ||
 				ds_readbs(DAY_OF_WEEK) == i) &&
 				ds_readds(DAY_TIMER) >= HOURS(6) &&
 				ds_readds(DAY_TIMER) <= HOURS(16))

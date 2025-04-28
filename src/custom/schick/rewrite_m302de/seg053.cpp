@@ -61,7 +61,7 @@ void do_healer(void)
 	leave_healer = 0;
 
 #if !defined(__BORLANDC__)
-	const Bit8u typi = ds_readb(TYPEINDEX);
+	const Bit8u typi = ds_readb(CURRENT_TYPEINDEX);
 	const Bit8s h_price = ds_readb(HEALER_DESCR_TABLE + 2 * typi);
 	const Bit8u h_qual = ds_readb(HEALER_DESCR_TABLE + 1 + 2 * typi);
 
@@ -71,7 +71,7 @@ void do_healer(void)
 #endif
 
 	v6 = ds_writew(REQUEST_REFRESH, 1);
-	info = p_datseg + HEALER_DESCR_TABLE + ds_readw(TYPEINDEX) * 2;
+	info = p_datseg + HEALER_DESCR_TABLE + ds_readw(CURRENT_TYPEINDEX) * 2;
 	draw_loc_icons(4, MENU_ICON_HEAL_WOUNDS, MENU_ICON_HEAL_DISEASE, MENU_ICON_HEAL_POISON, MENU_ICON_LEAVE);
 
 	while (leave_healer == 0) {
@@ -82,7 +82,7 @@ void do_healer(void)
 			load_ani(23);
 			init_ani(0);
 
-			GUI_print_loc_line(get_tx(ds_readw(CITYINDEX)));
+			GUI_print_loc_line(get_tx(ds_readw(CURRENT_LOCDATA)));
 
 			set_audio_track(ARCHIVE_FILE_HEALER_XMI);
 
@@ -101,7 +101,7 @@ void do_healer(void)
 		}
 
 		if (v6 != 0) {
-			GUI_print_loc_line(get_tx(ds_readw(CITYINDEX)));
+			GUI_print_loc_line(get_tx(ds_readw(CURRENT_LOCDATA)));
 			v6 = 0;
 		}
 

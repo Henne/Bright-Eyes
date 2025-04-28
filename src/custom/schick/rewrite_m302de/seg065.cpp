@@ -63,11 +63,11 @@ void do_market(void)
 		} else {
 
 			/* set up parameters for this merchant */
-			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 0, ds_readb((MARKET_DESCR_TABLE + 2) + 8 * ds_readws(TYPEINDEX)));
-			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 2, ds_readb((MARKET_DESCR_TABLE + 6) + 8 * ds_readws(TYPEINDEX)));
+			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 0, ds_readb((MARKET_DESCR_TABLE + 2) + 8 * ds_readws(CURRENT_TYPEINDEX)));
+			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 2, ds_readb((MARKET_DESCR_TABLE + 6) + 8 * ds_readws(CURRENT_TYPEINDEX)));
 			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 1, (signed char)answer);
-			type_bak = ds_readws(TYPEINDEX);
-			ds_writew(TYPEINDEX, 90);
+			type_bak = ds_readws(CURRENT_TYPEINDEX);
+			ds_writew(CURRENT_TYPEINDEX, 90);
 
 			/* visit this merchant */
 			do_merchant();
@@ -76,7 +76,7 @@ void do_market(void)
 			ds_writeb(CURRENT_LOCTYPE, LOCTYPE_MARKET);
 
 			/* clean up */
-			ds_writew(TYPEINDEX, type_bak);
+			ds_writew(CURRENT_TYPEINDEX, type_bak);
 			ds_writeb(DIRECTION_BAK, (signed char)bak1);
 			ds_writeb(DIRECTION, (signed char)dir_bak); /* by this line, the party will *not* be rotated after leaving the market */
 			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 0, 0);

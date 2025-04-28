@@ -326,7 +326,7 @@ void tevent_113(void)
 		GUI_output(get_tx2(17));
 
 		/* enter the temple */
-		ds_writew(TYPEINDEX, 58);
+		ds_writew(CURRENT_TYPEINDEX, 58);
 		est_old = ds_readds(GODS_ESTIMATION + 4 * 7);
 		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_TEMPLE);
 		do_location();

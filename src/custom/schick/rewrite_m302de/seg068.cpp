@@ -43,7 +43,7 @@ void THO_eisenhof(void)
 
 	if (answer == 1) {
 
-		ds_writews(TYPEINDEX, 41);
+		ds_writews(CURRENT_TYPEINDEX, 41);
 		do_smith();
 
 	} else if (answer == 2) {
@@ -268,7 +268,7 @@ void THO_arsenal(void)
 
 		GUI_output(get_ttx(482));
 
-	} else if (ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
+	} else if (ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(CURRENT_TYPEINDEX)) != 0) {
 
 			talk_merchant();
 
@@ -306,7 +306,7 @@ void THO_arsenal(void)
 			p_money = get_party_money();
 			set_party_money(ds_readws(ARSENAL_MONEY));
 
-			ds_writew(TYPEINDEX, 92);
+			ds_writew(CURRENT_TYPEINDEX, 92);
 			tw_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 3);
 

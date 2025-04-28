@@ -358,7 +358,7 @@ unsigned short passage_arrival(void)
 		}
 
 		/* set the position of the party */
-		si = host_readw(locations_list_ptr + LOCATION_CITYINDEX);
+		si = host_readw(locations_list_ptr + LOCATION_LOCDATA);
 		ds_writew(ARRIVAL_X_TARGET, (si >> 8) & 0xff);
 		ds_writew(ARRIVAL_Y_TARGET, si & 0x0f);
 		ds_writew(ARRIVAL_DIRECTION, (si >> 4) & 0x0f);

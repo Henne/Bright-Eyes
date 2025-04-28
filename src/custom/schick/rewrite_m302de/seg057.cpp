@@ -513,7 +513,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 				if (j == 2) {
 					GUI_output(get_ttx(453));
-					ds_writeb(MERCHANT_OFFENDED_FLAGS + ds_readws(TYPEINDEX), 1);
+					ds_writeb(MERCHANT_OFFENDED_FLAGS + ds_readws(CURRENT_TYPEINDEX), 1);
 					done = 1;
 				} else {
 					GUI_output(get_ttx(450));

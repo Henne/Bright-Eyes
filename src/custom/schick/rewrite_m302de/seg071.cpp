@@ -247,7 +247,7 @@ void PHX_phextempel(void)
 				GUI_dialogbox((RealPt)ds_readd(DTP2),
 						get_tx2(32), get_tx2(51), 0);
 
-				ds_writew(TYPEINDEX, 59);
+				ds_writew(CURRENT_TYPEINDEX, 59);
 
 				ds_writew(TEXTBOX_WIDTH, 3);
 
@@ -302,7 +302,7 @@ void PHX_phextempel(void)
 				GUI_dialogbox((RealPt)ds_readd(DTP2),
 						get_tx2(32), get_tx2(51), 0);
 
-				ds_writew(TYPEINDEX, 59);
+				ds_writew(CURRENT_TYPEINDEX, 59);
 
 				ds_writew(TEXTBOX_WIDTH, 3);
 
@@ -344,7 +344,7 @@ void PHX_phextempel(void)
 
 			/* enter the temple */
 
-			ds_writew(TYPEINDEX, 59);
+			ds_writew(CURRENT_TYPEINDEX, 59);
 
 			ds_writew(TEXTBOX_WIDTH, 3);
 

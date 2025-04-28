@@ -42,7 +42,7 @@ signed short do_travel_mode(void)
 
 	bak1 = ds_readws(WALLCLOCK_UPDATE);
 	ds_writeb(ROUTE59_FLAG, (unsigned char)ds_writew(WALLCLOCK_UPDATE, (unsigned short)ds_writeb(TRAVEL_DETOUR, 0)));
-	ds_writeb(CURRENT_TOWN, ds_readbs(TYPEINDEX));
+	ds_writeb(CURRENT_TOWN, ds_readbs(CURRENT_TYPEINDEX));
 
 	update_mouse_cursor();
 

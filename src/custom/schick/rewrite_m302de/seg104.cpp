@@ -311,7 +311,7 @@ signed short plan_alchemy(Bit8u *hero)
 									/* time in days, rounded down */
 
 								host_writeb(hero + HERO_RECIPE_ID, recipe_index);
-								host_writeb(hero + HERO_HOSTEL_ID, ds_readbs(TYPEINDEX));
+								host_writeb(hero + HERO_HOSTEL_ID, ds_readbs(CURRENT_TYPEINDEX));
 								or_ptr_bs(hero + HERO_FLAGS1, 8); /* set 'brewing' flag */
 
 								GRP_save_pos(l5);

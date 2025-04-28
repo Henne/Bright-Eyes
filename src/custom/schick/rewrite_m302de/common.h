@@ -892,14 +892,22 @@ enum {
 	NUTRITION_TYPE_FOOD	= 1
 };
 
-// A location is a point of interest in a town, sometimes in a travel event. //
+// A location is a point of interest in a town or a travel event. //
 enum {
 	// https://github.com/shihan42/BrightEyesWiki/wiki/DAT-(Stadt)#feldinhaltliste
-	LOCATION_XY = 0, // 2 bytes // coordinates of the location within its town
-	LOCATION_LOCTYPE = 2, // 1 byte // the type of the location
-	LOCATION_TYPEINDEX = 3, // 1 byte // index among all locations of the same type; coveres all towns.
-	LOCATION_CITYINDEX = 4, // 2 bytes // additional data // name not good. bit 0-3: y-coordinate. bit 4-7: direction. bit 8-15: x-coordinate. see seg064.cpp // might have a special meaning in Daspota, see enter_location_daspota
-	SIZEOF_LOCATION = 6
+	LOCATION_XY        = 0, // 2 bytes // coordinates of the location within its town
+	LOCATION_LOCTYPE   = 2, // 1 byte  // the type of the location
+	LOCATION_TYPEINDEX = 3, // 1 byte  // index among all locations of the same type; coveres all towns.
+	LOCATION_LOCDATA   = 4, // 2 bytes // additional data.
+			        // For LOCTYPE_TAVERN, LOCTYPE_INN, LOCTYPE_SMITH, LOCTYPE_SPECIAL, LOCTYPE_MERCHANT, LOCTYPE_HEALER:
+			        //     index to retrieve the location name via get_tx from <TOWN.LTX>
+			        // For LOCTYPE_HARBOR, LOCTYPE_SIGNPOST:
+			        //     arrival position. bit 0-3: y-coordinate. bit 4-7: direction. bit 8-15: x-coordinate.
+			        // For LOCTYPE_MARKET, LOCTYPE_TEMPLE, LOCTYPE_INFORMER, LOCTYPE_DUNGEON_ENTRY:
+			        //     unused.
+				// All LOCTYPEs not mentioned above:
+				//     probably unused.
+	SIZEOF_LOCATION    = 6
 };
 
 enum {
