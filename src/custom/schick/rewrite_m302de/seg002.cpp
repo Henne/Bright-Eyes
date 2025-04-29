@@ -4500,7 +4500,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			if (ds_readw(IN_FIGHT) != 0) {
 				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHTER_ID)));
 
-				/* update looking dir and other  */
+				/* update viewdir and other  */
 				host_writeb(ptr + FIGHTER_NVF_NO, host_readb(hero + HERO_VIEWDIR));
 				host_writeb(ptr + FIGHTER_RELOAD, -1);
 				host_writeb(ptr + FIGHTER_OFFSETX, 0);

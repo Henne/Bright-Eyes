@@ -136,7 +136,7 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 				}
 			}
 
-			/* set heroes looking direction */
+			/* set viewdir of heroes */
 			host_writeb(hero + HERO_VIEWDIR, ds_readbs(FIG_MOVE_PATHDIR + i));
 
 			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + dir2 * 2), 2);
