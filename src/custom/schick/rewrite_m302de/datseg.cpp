@@ -4678,7 +4678,7 @@ struct{unsigned char unkn[21];} g_dng13_specialchests[2] = {
 unsigned char g_unkn_063[18] = { 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; // ds:0x9d72
 long g_dng_specialchest_index[16] = { 0x00000000, 0x14fc9314, 0x14fc93d8, 0x14fc9480, 0x14fc95ba, 0x00000000, 0x14fc9610, 0x14fc9668, 0x14fc9692, 0x14fc972e, 0x14fc97d6, 0x14fc9854, 0x14fc9d04, 0x14fc9d48, 0x14fc9990, 0x14fc9a4e }; // ds:0x9d84; RealPt
 char g_str_single_space[2] = " "; // ds:0x9dc4
-struct{char from, to, distance, speed_mod, encounters, unkn1, unkn2, fights, unkn3;} g_land_route[59] = {
+struct{unsigned char from, to, distance; signed char speed_mod; unsigned char encounters, unkn1, unkn2, fights, unkn3;} g_land_route[59] = {
 	{ TOWNS_THORWAL            , TOWNS_VAERMHAG           ,  34,  1, 10,  25,  0, 10, 100 }, //  1
 	{ TOWNS_VAERMHAG           , TOWNS_VARNHEIM           ,  40,  1, 10,  20,  0, 10, 100 }, //  2
 	{ TOWNS_VARNHEIM           , TOWNS_DASPOTA            ,  21,  1, 10,   5,  0, 10, 100 }, //  3
@@ -4727,7 +4727,7 @@ struct{char from, to, distance, speed_mod, encounters, unkn1, unkn2, fights, unk
 	{ TOWNS_FELSTEYN           , TOWNS_EINSIEDLERSEE      ,  67, -3, 50,   0,  0, 50, 100 }, // 46
 	{ TOWNS_RYBON              , TOWNS_THOSS              ,  60, -4, 40,   0, 10,  5,  10 }, // 47
 	{ TOWNS_SKJAL              , TOWNS_ORVIL              ,  68, -4, 40,   0,  5,  5,   5 }, // 48
-	{ TOWNS_SKELELLEN          , TOWNS_PHEXCAER           ,-116, -4, 50,   0,  0, 10,  30 }, // 49
+	{ TOWNS_SKELELLEN          , TOWNS_PHEXCAER           , 140, -4, 50,   0,  0, 10,  30 }, // 49
 	{ TOWNS_MERSKE             , TOWNS_ROVAMUND           ,  71, -2, 25,   5,  5, 10,  50 }, // 50
 	{ TOWNS_ORVIL              , TOWNS_ROVIK              ,  23, -2, 25,   5,  5,  0,  20 }, // 51
 	{ TOWNS_LJASDAHL           , TOWNS_LJASDAHL           ,  70, -3, 35,   0,  0,  0,   0 }, // 52 // circular route
