@@ -5015,7 +5015,14 @@ struct{char town, typeindex; long sea_routes;} g_harbors[26] = { // a list of th
 	{ TOWNS_VIDSAND         , 2, 0x14fca393 }, // 22
 	{ TOWNS_BRENDHIL        , 2, 0x14fca397 }, // 23
 	{ TOWNS_MANRIN          , 2, 0x14fca39a }, // 24
-	{ TOWNS_LEUCHTTURM_RUNIN, 2, 0x14fca0b2 }, // 25 // probably bug. I have the suspicion that the address must be 0x14fca3a0
+#ifndef M302de_ORIGINAL_BUGFIX
+	/* Original-Bug 41: After doing a ship passage to Leuchtturm Runin and leaving the harbor,
+	 * the party is positioned in a remote town square. */
+	/* Reason: The following line is incorrect; it is a duplicate of the corresponding entry in g_signposts. */
+	{ TOWNS_LEUCHTTURM_RUNIN, 2, 0x14fca0b2 }, // 25
+#else
+	{ TOWNS_LEUCHTTURM_RUNIN, 1, 0x14fca3a0 }, // 25
+#endif
 	{ -0x01                 , 0, 0x00000000 }
 }; // ds:0xa3a3; RealPt
 struct{signed short x, y;} g_town_positions[52] = {
