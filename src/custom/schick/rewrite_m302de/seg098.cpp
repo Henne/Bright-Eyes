@@ -753,19 +753,19 @@ signed short test_spell(Bit8u *hero, signed short spell_no, signed char handicap
 	if (get_spell_cost(spell_no, 0) > host_readws(hero + HERO_AE))
 		return -99;
 
-	spell_desc = p_datseg + spell_no * 10 + SPELL_DESCRIPTIONS;
+	spell_desc = p_datseg + spell_no * SIZEOF_SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS;
 
-	if (host_readb(spell_desc + 0x9) != 0) {
+	if (host_readb(spell_desc + SPELL_DESCRIPTIONS_FIGHT) != 0) {
 
 		if (host_readbs(hero + HERO_ENEMY_ID) >= 10) {
 
-			handicap += ds_readbs(host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 25));
+			handicap += ds_readbs(host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_MR));
 
-			if (test_bit6(p_datseg + host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 49))) {
+			if (test_bit6(p_datseg + host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FLAGS1))) { // tests if enemy is mushroom
 				return 0;
 			}
 		} else {
-			handicap += host_readbs(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1) + 0x66);
+			handicap += host_readbs(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1) + HERO_MR);
 		}
 	}
 
@@ -777,8 +777,8 @@ signed short test_spell(Bit8u *hero, signed short spell_no, signed char handicap
 
 		handicap -= host_readbs(hero + spell_no + HERO_SPELLS);
 
-		retval = test_attrib3(hero, host_readbs(spell_desc+1),
-			host_readbs(spell_desc+2), host_readbs(spell_desc+3), handicap);
+		retval = test_attrib3(hero, host_readbs(spell_desc + SPELL_DESCRIPTIONS_ATTRIB1),
+			host_readbs(spell_desc + SPELL_DESCRIPTIONS_ATTRIB2), host_readbs(spell_desc + SPELL_DESCRIPTIONS_ATTRIB3), handicap);
 
 		if (retval == -99) {
 			retval = -1;
@@ -968,7 +968,7 @@ signed short use_spell(RealPt hero, signed short selection_menu, signed char han
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(606));
 
-				sub_ae_splash(Real2Host(hero), get_spell_cost(spell_id, 1));
+				sub_ae_splash(Real2Host(hero), get_spell_cost(spell_id, 1)); /* spell failed -> half AE cost */
 
 				if (ds_readws(IN_FIGHT) == 0) {
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -979,7 +979,7 @@ signed short use_spell(RealPt hero, signed short selection_menu, signed char han
 				/* set global spelluser variable */
 				ds_writed(SPELLUSER, (Bit32u)hero);
 
-				ae_cost = get_spell_cost(spell_id, 0);
+				ae_cost = get_spell_cost(spell_id, 0); /* spell successful -> full AE cost */
 
 				ds_writew(SPELL_SPECIAL_AECOST, -1);
 

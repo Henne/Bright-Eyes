@@ -4792,7 +4792,12 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short handicap
  * \param   attrib2     attribute 2
  * \param   attrib3     attribute 3
  * \param   handicap    may be positive or negative. The higher the value, the harder the test.
- * \return              a test is positive if the return value is greater than zero
+ * \return              a test is successful if the return value is greater than zero
+ *                      in detail:
+ *                      unlucky fail: -99
+ *                      lucky success: +99 (only if M302de_FEATURE_MOD is activated)
+ *                      ordinary fail: any value between -98 and 0.
+ *                      ordinary success: any value between 1 and 98.
  */
 
 signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib2, signed short attrib3, signed char handicap)
@@ -4802,6 +4807,13 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 	 * It is sometimes called the 'pool' variant, where '3W20 + handicap' is compared to the sum of the attributes.
 	 * It is significantly easier than the original rule, where each individuall roll must be at most the corresponding attribute,
 	 * where positive handicap must be used up during the process, and negative handicap may be used for compensation. */
+
+	/* in the original pool variant, the ramining pool, increased by 1, is returned. */
+
+	/* in the modified variant, ordinary failure gives always return value 0.
+	 * Ordinary success leads to return value 1, or, in the case of a negative handicap (in other words, a positive bonus),
+	 * the number of remaining bonus points, increased by 1.  */
+
 	signed short i;
 	signed short rolls_sum;
 	signed short tmp;
@@ -4848,7 +4860,7 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 	D1_INFO(" -> %s mit %d\n",
 		(tmp - rolls_sum + 1) > 0 ? "bestanden" : "nicht bestanden", (tmp - rolls_sum + 1));
 #endif
-	return tmp - rolls_sum + 1;
+	return tmp - rolls_sum + 1; // in a nutshell: sum of the 3 attributes - 3*D20 - handicap + 1
 
 #else
 	/* Here, the original DSA2/3 skill test logic is implemented.
