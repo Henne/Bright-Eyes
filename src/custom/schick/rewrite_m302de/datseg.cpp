@@ -4967,7 +4967,7 @@ char g_harbors_linked_sea_routes[115] = { // for each of the 25 harbors (see g_h
 #ifndef M302de_ORIGINAL_BUGFIX
 	/* Original-Bug 40: After doing a ship passage from Overthorn to Hjalsingor and leaving the harbor,
 	 * the party is positioned in a wrong square behind the buildings. */
-	/* Reason: In the list of the sea routes linked to the Hjalsingor harbor, the route Overthorn-Hjalsignor (ID 6) is missing.
+	/* Reason: In the hard-coded list of the sea routes linked to the Hjalsingor harbor, the route Overthorn-Hjalsignor (ID 6) is missing.
 	 * Instead, the route Varnheim-Ljasdahl (ID 10) is wrongly linked. */
 	0x02, 0x05, 0x07, 0x0a, 0x15, 0x16, -0x01,
 #else
