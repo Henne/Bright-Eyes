@@ -3249,8 +3249,8 @@ static int n_seg094(unsigned short offs)
 	case 0x0f0e: {
 		Bit16s a1 = CPU_Pop16();
 		CPU_Push16(a1);
-		reg_ax = TM_get_looking_direction(a1);
-		D1_LOG("TM_get_looking_direction(%d) = %d\n", a1, reg_ax);
+		reg_ax = TM_enter_target_town_viewdir(a1);
+		D1_LOG("TM_enter_target_town_viewdir(%d) = %d\n", a1, reg_ax);
 		return 1;
 	}
 	case 0x0f58: {
