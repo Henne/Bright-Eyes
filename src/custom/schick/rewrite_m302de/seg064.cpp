@@ -330,7 +330,7 @@ unsigned short passage_arrival(void)
 		if (host_readb(harbor_ptr + HARBOR_TOWN) == ds_readw(TRAVEL_DESTINATION_TOWN_ID)) {
 			si = 0;
 			do {
-				/* tmp ranges over the IDs of the linked sea routes, diminuished by 1. */
+				/* tmp ranges over the IDs of the linked sea routes, diminished by 1. */
 				tmp = host_readb(Real2Host(host_readd(harbor_ptr + HARBOR_SEA_ROUTES)) + si) - 1;
 				if (host_readb(p_datseg + SEA_ROUTES + tmp * SIZEOF_SEA_ROUTE + SEA_ROUTE_TOWN_1) == ds_readb(CURRENT_TOWN) ||
 					host_readb(p_datseg + SEA_ROUTES + tmp * SIZEOF_SEA_ROUTE + SEA_ROUTE_TOWN_2) == ds_readb(CURRENT_TOWN)) {
@@ -353,7 +353,6 @@ unsigned short passage_arrival(void)
 
 		/* load the area of the new town */
 		call_load_area(1);
-
 
 		/* search for the harbour in the locations list */
 		locations_list_ptr = p_datseg + LOCATIONS_LIST;
