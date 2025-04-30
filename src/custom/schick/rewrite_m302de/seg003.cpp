@@ -222,7 +222,7 @@ void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 				/* mark this corpse as done */
 				host_writeb(flag, 1);
 				/* Boron - 20 */
-				sub_ds_ds(GODS_ESTIMATION + 4 * 5, 20);
+				sub_ds_ds(GODS_ESTIMATION + 4 * GOD_BORON, 20);
 			}
 
 		} else if (answer == 1)
@@ -233,7 +233,7 @@ void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 				/* mark this corpse as done */
 				host_writeb(flag, 1);
 				/* Boron + 20 */
-				add_ds_ds(GODS_ESTIMATION + 4 * 5, 20);
+				add_ds_ds(GODS_ESTIMATION + 4 * GOD_BORON, 20);
 			}
 		}
 	} else {

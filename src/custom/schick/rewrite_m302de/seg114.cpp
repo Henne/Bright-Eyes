@@ -327,7 +327,7 @@ void tevent_113(void)
 
 		/* enter the temple */
 		ds_writew(CURRENT_TYPEINDEX, 58);
-		est_old = ds_readds(GODS_ESTIMATION + 4 * 7);
+		est_old = ds_readds(GODS_ESTIMATION + 4 * GOD_FIRUN);
 		ds_writeb(CURRENT_LOCTYPE, LOCTYPE_TEMPLE);
 		do_location();
 		TRV_load_textfile(-1);
@@ -335,7 +335,7 @@ void tevent_113(void)
 		GUI_output(get_tx2(18));
 
 		/* calculate the difference of the estimation */
-		est_diff = ds_readds(GODS_ESTIMATION + 4 * 7) - est_old;
+		est_diff = ds_readds(GODS_ESTIMATION + 4 * GOD_FIRUN) - est_old;
 
 		ds_writew(TEXTBOX_WIDTH, 3);
 
