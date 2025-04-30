@@ -669,7 +669,7 @@ void tevent_044(void)
 		if (answer == 2)
 		{
 			/* bury her */
-			add_ds_ds(GODS_ESTIMATION + 4 * 5, 50L);
+			add_ds_ds(GODS_ESTIMATION + 4 * GOD_BORON, 50L);
 
 			timewarp(HOURS(1));
 

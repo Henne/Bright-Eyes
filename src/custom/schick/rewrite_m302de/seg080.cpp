@@ -412,7 +412,7 @@ signed short DNG05_handler(void)
 						get_tx(8));
 		} while (tmp == -1);
 
-		add_ds_ds((GODS_ESTIMATION + 4 * 4), tmp == 1 ? -15 : 15);
+		add_ds_ds((GODS_ESTIMATION + 4 * GOD_TRAVIA), tmp == 1 ? -15 : 15);
 
 		GUI_output(get_tx(9));
 
