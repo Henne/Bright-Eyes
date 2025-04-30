@@ -935,16 +935,16 @@ signed short use_spell(RealPt hero, signed short selection_menu, signed char han
 
 				if ((host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y)) & 0x02) == 0) {
 					/* flag 1 'unlocked' is not set -> door is locked  */
-					while (host_readws(ptr_doors + 0) != pos) {
+					while (host_readws(ptr_doors + DUNGEON_DOOR_POS) != pos) {
 						/* ASSERT */
 						/*
 						if (host_readws(ptr_doors + 0) == -1) {
 						D1_INFO("In free call of Foramen spell: door not found. This should not happen.\n");
 						 */
 
-						ptr_doors += 5;
+						ptr_doors += SIZEOF_DUNGEON_DOOR;
 					}
-					handicap += host_readbs(ptr_doors + 4);
+					handicap += host_readbs(ptr_doors + DUNGEON_DOOR_FORAMEN_HANDICAP);
 				}
 			}
 #endif

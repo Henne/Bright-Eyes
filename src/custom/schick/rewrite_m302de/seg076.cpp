@@ -123,13 +123,13 @@ void DNG_door(signed short action)
 
 	do {
 
-		if (host_readws((Bit8u*)ptr_doors + 0) == pos)
+		if (host_readws((Bit8u*)ptr_doors + DUNGEON_DOOR_POS) == pos)
 		{
 #if !defined(__BORLANDC__)
 			D1_INFO("Tuer: KK notwendig %d, SCHLOESSER mod = %d, FORAMEN mod = %d\n",
-					host_readbs((Bit8u*)ptr_doors + 2),
-					host_readbs((Bit8u*)ptr_doors + 3),
-					host_readbs((Bit8u*)ptr_doors + 4));
+					host_readbs((Bit8u*)ptr_doors + DUNGEON_DOOR_SMASH_HANDICAP),
+					host_readbs((Bit8u*)ptr_doors + DUNGEON_DOOR_LOCKPICK_HANDICAP),
+					host_readbs((Bit8u*)ptr_doors + DUNGEON_DOOR_FORAMEN_HANDICAP));
 #endif
 
 			if (action == ACTION_ID_ICON_7)
@@ -163,7 +163,7 @@ void DNG_door(signed short action)
 							*/
 							l4 = host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y)) & 0x02; /* read bit 1: is door unlocked? */
 
-							if (l4 != 0 || !host_readbs((Bit8u*)ptr_doors + 2))
+							if (l4 != 0 || !host_readbs((Bit8u*)ptr_doors + DUNGEON_DOOR_SMASH_HANDICAP))
 							{
 								/* door closed and unlocked -> open it */
 
@@ -207,7 +207,7 @@ void DNG_door(signed short action)
 					/* smash door */
 					play_voc(ARCHIVE_FILE_FX14_VOC);
 
-					if (check_heroes_KK(host_readbs((Bit8u*)ptr_doors + 2)))
+					if (check_heroes_KK(host_readbs((Bit8u*)ptr_doors + DUNGEON_DOOR_SMASH_HANDICAP)))
 					{
 						and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), 0x0f); /* clear higher 4 bits */
 						or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + MAP_POS(x,y), DNG_TILE_SMASHED_DOOR << 4);
@@ -235,7 +235,7 @@ void DNG_door(signed short action)
 				{
 					if (lockpick_pos != -2)
 					{
-						lockpick_result = test_skill(hero, TA_SCHLOESSER, host_readbs((Bit8u*)ptr_doors + 3));
+						lockpick_result = test_skill(hero, TA_SCHLOESSER, host_readbs((Bit8u*)ptr_doors + DUNGEON_DOOR_LOCKPICK_HANDICAP));
 
 						play_voc(ARCHIVE_FILE_FX11_VOC);
 
@@ -295,7 +295,7 @@ void DNG_door(signed short action)
 						/* not a spellcaster */
 						GUI_output(get_ttx(330));
 					} else {
-						spell_result = test_spell(hero, SP_FORAMEN_FORAMINOR, host_readbs((Bit8u*)ptr_doors + 4));
+						spell_result = test_spell(hero, SP_FORAMEN_FORAMINOR, host_readbs((Bit8u*)ptr_doors + DUNGEON_DOOR_FORAMEN_HANDICAP));
 
 						if (spell_result == -99)
 						{
