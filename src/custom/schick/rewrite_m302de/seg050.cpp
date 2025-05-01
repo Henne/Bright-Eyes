@@ -719,6 +719,8 @@ void level_up(signed short hero_pos)
 
 					case HERO_TYPE_WITCH: {
 
+						/* first try to increase all which-specific spells by 1,
+						 * up to skill value at most 11. */
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
 							if (ds_readbs(SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE + SIZEOF_SPELL_DESCRIPTIONS * i) == SPELL_DESC_HEROTYPE_WITCH && host_readbs(hero + HERO_SPELLS + i) < 11) {
@@ -727,6 +729,8 @@ void level_up(signed short hero_pos)
 							i++;
 						}
 
+						/* if there are attempts left, try to increase spells from AUTOINC_SPELLS_WITCH list by 1,
+						 * up to max value 18 */
 						i = 0;
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && ds_readws(AUTOINC_SPELLS_WITCH + 2 * i) != -1) {
