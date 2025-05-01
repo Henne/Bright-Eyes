@@ -3467,20 +3467,20 @@ struct{signed char first, last;} g_magic_school_spellranges[9] = {
 	/* Note: There are no schools for the spell groups "Visionen" and "Verstaendigung". */
 }; // ds:0x6682
 signed short g_campfights[4] = { 0x00d9, 0x00da, 0x00db, 0x00e8 }; // ds:0x6694
-struct{unsigned char herb_id,chance,ta_mod,max_count;} g_gather_herbs_table[13] = {
-	{ 0x7e, 0x05, 0x01, 0x0f },
-	{ 0x7b, 0x0c, 0x03, 0x08 },
-	{ 0x7c, 0x0a, 0x02, 0x09 },
-	{ 0x3f, 0x0f, 0x03, 0x08 },
-	{ 0x82, 0x0f, 0x01, 0x0a },
-	{ 0x9d, 0x01, 0x01, 0x12 },
-	{ 0x7a, 0x0c, 0x02, 0x08 },
-	{ 0x40, 0x2d, 0x05, 0x04 },
-	{ 0x83, 0x03, 0x01, 0x0f },
-	{ 0x3c, 0x28, 0x04, 0x08 },
-	{ 0x3d, 0x1e, 0x02, 0x04 },
-	{ 0x3e, 0x14, 0x02, 0x04 },
-	{ 0xff, 0x00, 0x00, 0x00 }
+struct{unsigned char item_id,chance,max_count,handicap;} g_gather_herbs_table[13] = {
+	{ ITEM_ALRAUNE      ,  5, 1, 15 },
+	{ ITEM_BELMART      , 12, 3,  8 },
+	{ ITEM_DONF_SPRING  , 10, 2,  9 },
+	{ ITEM_GULMOND_LEAF , 15, 3,  8 },
+	{ ITEM_JORUGA_ROOT  , 15, 1, 10 },
+	{ ITEM_KAIRANHALM   ,  1, 1, 18 },
+	{ ITEM_SHURIN       , 12, 2,  8 },
+	{ ITEM_TARNELE      , 45, 5,  4 },
+	{ ITEM_THONNYS      ,  3, 1, 15 },
+	{ ITEM_EINBEERE     , 40, 4,  8 },
+	{ ITEM_WHIRLWEED    , 30, 2,  4 },
+	{ ITEM_KROTENSCHEMEL, 20, 2,  4 },
+	{ 0xff              ,  0, 0,  0 }
 }; // ds:0x669c
 unsigned char g_gather_herbs_special = 0xff; // ds:0x66d0
 char g_gather_herbs_str_found[6] = "%d^%s"; // ds:0x66d1
