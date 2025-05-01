@@ -941,10 +941,10 @@ enum {
 	LOCTYPE_HARBOR 		= 11,
 	LOCTYPE_SIGNPOST	= 12,
 	LOCTYPE_INFORMER	= 13,
-	LOCTYPE_DUNGEON_ENTRY	= 14,
+	LOCTYPE_DUNGEON_ENTRY	= 14, // used in Prem, Oberorken. The entry to "Alte Zwingfeste" in Thorwal is LOCTYPE_SPECIAL
 	LOCTYPE_UNKN2		= 15,
 	LOCTYPE_HOUSE		= 16,
-	LOCTYPE_SPECIAL		= 17, // used for instance in Thorwal, Einsiedlersee
+	LOCTYPE_SPECIAL		= 17, // used in Thorwal, Phexcaer, Einsiedlersee
 	LOCTYPE_CITYCAMP	= 18
 };
 

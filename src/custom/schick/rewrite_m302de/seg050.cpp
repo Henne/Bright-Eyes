@@ -309,7 +309,7 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 				done = 1;
 
 				/* adjust AT PA values */
-				if (skill <= 6) {
+				if (skill <= TA_ZWEIHAENDER) {
 					if (host_readbs(hero + HERO_AT + skill) > host_readbs(hero + HERO_PA + skill)) {
 						inc_ptr_bs(hero + HERO_PA + skill);
 					} else {
