@@ -462,7 +462,7 @@ void THO_ugdalf(void)
 		if (ds_readw(QUEST_UGDALF) == 1) {
 			add_party_money(2000L);
 
-		/* Original-Bug:	Everytime the heroes enter the dungeon the get 20D.
+		/* Original-Bug:	Everytime the heroes enter the dungeon they get 20D.
 					Why this fix works is not seen that easy.
 					As long as ds_readb(DNG14_UGDALF_DONE) is 0 this block is executed.
 		 */
