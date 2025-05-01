@@ -65,7 +65,7 @@ void do_wildcamp(void)
 	}
 
 	i = !ds_readb(GOOD_CAMP_PLACE) ? 6 : 7;
-	draw_loc_icons(i, MENU_ICON_GUARDS, MENU_ICON_REPLENISH_SUPPLIES, MENU_ICON_APPLY_SKILL, MENU_ICON_MAGIC, MENU_ICON_COLLECT_HERBS, MENU_ICON_SLEEP, MENU_ICON_QUIT_CAMP);
+	draw_loc_icons(i, MENU_ICON_GUARDS, MENU_ICON_REPLENISH_SUPPLIES, MENU_ICON_APPLY_SKILL, MENU_ICON_MAGIC, MENU_ICON_GATHER_HERBS, MENU_ICON_SLEEP, MENU_ICON_QUIT_CAMP);
 
 	while (done == 0) {
 
@@ -380,8 +380,8 @@ void do_wildcamp(void)
 
 signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 {
-	signed short i;
-	signed short herbs;
+	signed short herb_index;
+	signed short unique_herbs_count;
 	Bit8u *ptr;
 	signed char herb_count[12];
 
@@ -391,51 +391,54 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 
 	ptr = p_datseg + GATHER_HERBS_TABLE;
 
-	for (herbs = i = 0; i < 12; i++, ptr += 4) {
+	for (unique_herbs_count = herb_index = 0; herb_index < 12; herb_index++, ptr += SIZEOF_GATHER_HERBS) {
 
-		if (host_readb(ptr) == ds_readb(GATHER_HERBS_SPECIAL)) {
-			add_ptr_bs(ptr + 1, 10);
-			inc_ptr_bs(ptr + 2);
+		/* check if this is a special place for collecting the considered herb.. */
+		if (host_readb(ptr + GATHER_HERBS_ITEM_ID) == ds_readb(GATHER_HERBS_SPECIAL)) {
+			/* dirty code follows. The original herbs table is modified. */
+			add_ptr_bs(ptr + GATHER_HERBS_CHANCE, 10); // 10% higher chance to find the herb
+			inc_ptr_bs(ptr + GATHER_HERBS_MAX_COUNT);  // increase maximum count of single herbs by 1.
 		}
 
-		if (random_schick(100) <= host_readb(ptr + 1) &&
-			test_skill(hero, TA_PFLANZENKUNDE, host_readb(ptr + 3) - hours + mod) > 0) {
+		if (random_schick(100) <= host_readb(ptr + GATHER_HERBS_CHANCE) &&
+			test_skill(hero, TA_PFLANZENKUNDE, host_readb(ptr + GATHER_HERBS_HANDICAP) - hours + mod) > 0) {
 
-			herb_count[i] = (signed char)give_hero_new_item(hero, host_readb(ptr), 0, random_schick(host_readb(ptr + 2)));
+			herb_count[herb_index] = (signed char)give_hero_new_item(hero, host_readb(ptr + GATHER_HERBS_ITEM_ID), 0, random_schick(host_readb(ptr + GATHER_HERBS_MAX_COUNT))); // collect a random amount between 1 and max_count herbs.
 
-			if (herb_count[i] != 0) {
-				herbs++;
+			if (herb_count[herb_index] != 0) {
+				unique_herbs_count++;
 			}
 		}
 
 		if (host_readb(ptr) == ds_readb(GATHER_HERBS_SPECIAL)) {
-			sub_ptr_bs(ptr + 1, 10);
-			dec_ptr_bs(ptr + 2);
+			/* The herbs table is reverted to original state. */
+			sub_ptr_bs(ptr + GATHER_HERBS_CHANCE, 10);
+			dec_ptr_bs(ptr + GATHER_HERBS_MAX_COUNT);
 		}
 	}
 
-	if (herbs) {
+	if (unique_herbs_count) {
 
 		/* print a sentence with all the herb names */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ttx(328),
 			(char*)hero + HERO_NAME2);
 
-		for (i = 0; i < 12; i++) {
+		for (herb_index = 0; herb_index < 12; herb_index++) {
 
-			if (herb_count[i] != 0) {
+			if (herb_count[herb_index] != 0) {
 
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					(char*)p_datseg + GATHER_HERBS_STR_FOUND, /* "%d %s" */
-					herb_count[i],
-					Real2Host(GUI_names_grammar((herb_count[i] > 1 ? 4 : 0) + 0x4002, ds_readb(GATHER_HERBS_TABLE + 4 * i), 0)));
+					herb_count[herb_index],
+					Real2Host(GUI_names_grammar((herb_count[herb_index] > 1 ? 4 : 0) + 0x4002, ds_readb(GATHER_HERBS_TABLE + 4 * herb_index + GATHER_HERBS_ITEM_ID), 0)));
 
 				strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
-				if (--herbs > 1) {
+				if (--unique_herbs_count > 1) {
 					/* add a comma ", " */
 					strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + GATHER_HERBS_STR_COMMA);
-				} else if (herbs == 1) {
+				} else if (unique_herbs_count == 1) {
 					/* add an and " UND " */
 					strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + GATHER_HERBS_STR_AND);
 				}
