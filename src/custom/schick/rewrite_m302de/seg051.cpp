@@ -378,7 +378,7 @@ void do_wildcamp(void)
 	leave_location();
 }
 
-signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
+signed short gather_herbs(Bit8u *hero, signed short hours, signed short handicap)
 {
 	signed short herb_index;
 	signed short unique_herbs_count;
@@ -401,7 +401,7 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 		}
 
 		if (random_schick(100) <= host_readb(ptr + GATHER_HERBS_CHANCE) &&
-			test_skill(hero, TA_PFLANZENKUNDE, host_readb(ptr + GATHER_HERBS_HANDICAP) - hours + mod) > 0) {
+			test_skill(hero, TA_PFLANZENKUNDE, host_readb(ptr + GATHER_HERBS_HANDICAP) - hours + handicap) > 0) {
 
 			herb_count[herb_index] = (signed char)give_hero_new_item(hero, host_readb(ptr + GATHER_HERBS_ITEM_ID), 0, random_schick(host_readb(ptr + GATHER_HERBS_MAX_COUNT))); // collect a random amount between 1 and max_count herbs.
 
