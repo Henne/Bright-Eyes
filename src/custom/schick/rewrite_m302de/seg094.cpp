@@ -257,7 +257,7 @@ void TM_func1(signed short route_no, signed short backwards)
 							get_ttx(613));
 			}
 
-			if (answer == 1 && !ds_readb(FORCEDMARCH_TIMER))
+			if (answer == 1 && !ds_readb(FORCEDMARCH_TIMER)) /* Gewaltmarsch */
 			{
 			    /* do forced march for 2 days */
 				ds_writew(FORCEDMARCH_LE_COST, random_schick(10));
@@ -281,10 +281,11 @@ void TM_func1(signed short route_no, signed short backwards)
 				}
 
 			} else if ((answer == 1 && ds_readb(FORCEDMARCH_TIMER) != 0) ||
-					(answer == 2 && !ds_readb(FORCEDMARCH_TIMER)))
+					(answer == 2 && !ds_readb(FORCEDMARCH_TIMER))) /* Kampieren */
+				// Depending on FORCEDMARCH_TIMER, the "Kampieren" answer is on position 1 or 2.
 			{
 				ds_writew(WILDCAMP_SLEEP_QUALITY, -3);
-				ds_writeb(GOOD_CAMP_PLACE, 99);
+				ds_writeb(GOOD_CAMP_PLACE, 99); /* make gather_herbs and replenish_stocks practically impossible */
 				ds_writeb(CURRENT_LOCTYPE, LOCTYPE_WILDCAMP);
 				do_location();
 				ds_writeb(GOOD_CAMP_PLACE, ds_writeb(CURRENT_LOCTYPE, (unsigned char)ds_writew(WILDCAMP_SLEEP_QUALITY, 0)));
