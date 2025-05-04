@@ -56,7 +56,7 @@ void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, sig
 
 			host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
 				(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) +
-					(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(smith_ptr) / 100)) / 2);
+					(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(smith_ptr + SMITH_STATS_PRICE_MOD) / 100)) / 2);
 
 			if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2) == 0) {
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 1);
@@ -72,7 +72,7 @@ void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, sig
 
 				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
 					(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) +
-						(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(smith_ptr) / 100)) / 4);
+						(host_readws(get_itemsdat(item_id) + ITEM_STATS_PRICE) * host_readbs(smith_ptr + SMITH_STATS_PRICE_MOD) / 100)) / 4);
 
 				if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2) == 0) {
 					host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 1);
@@ -512,7 +512,7 @@ void do_smith(void)
 
 	load_ggsts_nvf();
 	ds_writew(REQUEST_REFRESH, 1);
-	smith_ptr = p_datseg + SMITH_DESCR_TABLE + 2 * ds_readws(CURRENT_TYPEINDEX);
+	smith_ptr = p_datseg + SMITH_DESCR_TABLE + SIZEOF_SMITH_STATS * ds_readws(CURRENT_TYPEINDEX);
 	ds_writew(PRICE_MODIFICATOR, 4);
 
 	while (!done) {
