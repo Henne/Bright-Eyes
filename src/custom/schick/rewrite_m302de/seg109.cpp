@@ -392,9 +392,9 @@ void TRV_found_replenish_place(signed short a0)
 		draw_main_screen();
 		init_ani(0);
 
-		/* Original-Bug: This code assumes, that the leader of the group will replenish the stocks,
-		 *		 which may not be the case, since replenish_stocks() asks who may do it.
-		 *		 To be prepared clear these arrays for all heroes.
+		/* Original-Bug: This code assumes that the leader of the group will replenish the stocks,
+		 *		 which may not be the case, since replenish_stocks() asks who will do it.
+		 *		 To be prepared, clear these arrays for all heroes.
 		*/
 #ifdef M302de_ORIGINAL_BUGFIX
 		for (hero_pos = 0; hero_pos <= 7; hero_pos++) {
@@ -410,7 +410,7 @@ void TRV_found_replenish_place(signed short a0)
 #endif
 
 		/* Original-Bug: the second argument is is the counter of replenish tries, not the position of the leader.
-		 * Trigger:	Leave the first two hero slots empty an call this function. */
+		 * Trigger:	Leave the first two hero slots empty and call this function. */
 #ifdef M302de_ORIGINAL_BUGFIX
 		replenish_stocks(-3, 0);
 #else
