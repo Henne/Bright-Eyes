@@ -3721,7 +3721,50 @@ char g_sell_screen_str_money_d[5] = "D %d"; // ds:0x6bfa
 signed short g_sell_screen_items_posx[3] = { 0x001e, 0x005f, 0x00a0 }; // ds:0x6bff
 signed short g_sell_screen_items_posy[5] = { 0x0023, 0x0037, 0x004b, 0x005f, 0x0073 }; // ds:0x6c05
 unsigned char g_unkn_047[1] = { 0x00 }; // ds:0x6c0f
-signed short g_smith_descr_table[42] = { 0x0132, 0x0414, 0x0a00, 0x0fec, 0x0a00, 0x0c1e, 0x09f6, 0x0a1e, 0x0214, 0x0900, 0x10d8, 0x0900, 0x0b00, 0x0132, 0x0146, 0x040a, 0x09ec, 0x0628, 0x0ff6, 0x0500, 0x0432, 0x100a, 0x031e, 0x0be2, 0x0114, 0x0ece, 0x0900, 0x0500, 0x1114, 0x0d0a, 0x0300, 0x0c0a, 0x041e, 0x0b00, 0x060a, 0x0dec, 0x0214, 0x0d00, 0x0ff6, 0x041e, 0x041e, 0x00ff }; // ds:0x6c10
+struct{signed char price_mod,quality;} g_smith_descr_table[42] = { /* 'quality' is apparently unused. */
+	{  50,  1 },
+	{  20,  4 },
+	{   0, 10 },
+	{ -20, 15 },
+	{   0, 10 },
+	{  30, 12 },
+	{ -10,  9 },
+	{  30, 10 },
+	{  20,  2 },
+	{   0,  9 },
+	{ -40, 16 },
+	{   0,  9 },
+	{   0, 11 },
+	{  50,  1 },
+	{  70,  1 },
+	{  10,  4 },
+	{ -20,  9 },
+	{  40,  6 },
+	{ -10, 15 },
+	{   0,  5 },
+	{  50,  4 },
+	{  10, 16 },
+	{  30,  3 },
+	{ -30, 11 },
+	{  20,  1 },
+	{ -50, 14 },
+	{   0,  9 },
+	{   0,  5 },
+	{  20, 17 },
+	{  10, 13 },
+	{   0,  3 },
+	{  10, 12 },
+	{  30,  4 },
+	{   0, 11 },
+	{  10,  6 },
+	{ -20, 13 },
+	{  20,  2 },
+	{   0, 13 },
+	{ -10, 15 },
+	{  30,  4 },
+	{  30,  4 },
+	{  -1,  0 }
+}; // ds:0x6c10
 char g_smith_str_money_h[5] = "H %d"; // ds:0x6c64
 char g_smith_str_money_s[5] = "S %d"; // ds:0x6c69
 char g_smith_str_money_d[5] = "D %d"; // ds:0x6c6e

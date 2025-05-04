@@ -1961,6 +1961,12 @@ enum {
 };
 
 enum {
+	SMITH_STATS_PRICE_MOD = 0, /* one byte */ /* price modification, range [-50..50], absolute difference as percentage value */
+	SMITH_STATS_QUALITY = 1, /* one byte */ /* range: [1..17]. might be unused. */
+	SIZEOF_SMITH_STATS = 2
+};
+
+enum {
 	INN_STATS_QUALITY = 0, /* two bytes */ /* range: [1..20]. the lower, the better food and sleep quality */
 	INN_STATS_PRICE_MOD = 2, /* two bytes */ /* price modification, range [-40..70], absolute difference as percentage value */
 	SIZEOF_INN_STATS = 4
