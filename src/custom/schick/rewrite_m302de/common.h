@@ -1954,6 +1954,12 @@ enum {
 	SIZEOF_SHIP_TABLE_ENTRY = 4
 };
 
+enum {
+	INN_STATS_QUALITY = 0, /* two bytes */ /* range: [1..20]. the lower, the better food and sleep quality */
+	INN_STATS_PRICE_MOD = 2, /* two bytes */ /* price modification, range [-40..70], absolute difference as percentage value */
+	SIZEOF_INN_STATS = 4
+};
+
 enum { // struct signpost
 	SIGNPOST_TOWN = 0, /* one byte */ /* ID of the town where the harbor is located */
 	SIGNPOST_TYPEINDEX = 1, /* one byte */ /* TYPEINDEX of the signpost within its town */

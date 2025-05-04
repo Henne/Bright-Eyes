@@ -90,9 +90,9 @@ void do_inn(void)
 	signed char stay;
 	signed short tw_bak;
 	signed short nr_heroes;
-	Bit32s l8;
-	Bit32s l9;
-	Bit32s l10;
+	Bit32s price_schlafsaal;
+	Bit32s price_einzelzimmer;
+	Bit32s price_suite;
 	signed short booked_days;
 	signed short rested_days;
 	Bit8u *tavern_ptr;
@@ -358,7 +358,7 @@ void do_inn(void)
 			refresh = 0;
 		}
 
-		inn_ptr = p_datseg + INN_DESCR_TABLE + 4 * ds_readws(CURRENT_TYPEINDEX);
+		inn_ptr = p_datseg + INN_DESCR_TABLE + SIZEOF_INN_STATS * ds_readws(CURRENT_TYPEINDEX);
 
 		handle_gui_input();
 
@@ -378,10 +378,10 @@ void do_inn(void)
 		if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 			talk_inn();
 			ds_writews(REQUEST_REFRESH, 1);
-		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) { /* order food */
 
-			price = count_heroes_in_group() * (6L - host_readws(inn_ptr) / 4L);
-			price += (price * host_readws(inn_ptr + 2)) / 100L;
+			price = count_heroes_in_group() * (6L - host_readws(inn_ptr + INN_STATS_QUALITY) / 4L); /* higher food quality -> higher price */
+			price += (price * host_readws(inn_ptr + INN_STATS_PRICE_MOD)) / 100L;
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ttx(473),
@@ -400,8 +400,8 @@ void do_inn(void)
 					GUI_output(get_ttx(401));
 				} else {
 
-					GUI_output(host_readws(inn_ptr) < 5 ? get_ttx(475) :
-							(host_readws(inn_ptr) < 15 ? get_ttx(476) : get_ttx(477)));
+					GUI_output(host_readws(inn_ptr + INN_STATS_QUALITY) < 5 ? get_ttx(475) :
+							(host_readws(inn_ptr + INN_STATS_QUALITY) < 15 ? get_ttx(476) : get_ttx(477)));
 
 					for (i = 0, hero2 = get_hero(0); i <= 6; i++, hero2 += SIZEOF_HERO) {
 
@@ -409,7 +409,7 @@ void do_inn(void)
 							host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 							!hero_dead(hero2))
 						{
-							portion_size = (21 - host_readws(inn_ptr)) * 20;
+							portion_size = (21 - host_readws(inn_ptr + INN_STATS_QUALITY)) * 20;
 							if (portion_size > 100) {
 								portion_size = 100;
 							}
@@ -420,7 +420,7 @@ void do_inn(void)
 								host_writebs(hero2 + HERO_HUNGER, 0);
 							}
 
-							portion_size = (21 - host_readws(inn_ptr)) * 30;
+							portion_size = (21 - host_readws(inn_ptr + INN_STATS_QUALITY)) * 30;
 							if (portion_size > 100) {
 								portion_size = 100;
 							}
@@ -440,27 +440,27 @@ void do_inn(void)
 
 		} else if (ds_readws(ACTION) == ACTION_ID_ICON_3 && ds_readbs(SLEEP_QUALITY) == -1) {
 
-			l8 = 5;
-			l9 = 30;
-			l10 = 100;
-			l8 += l8 * host_readws(inn_ptr + 2) / 100;
-			l9 += l8 * host_readws(inn_ptr + 2) / 100;
-			l10 += l8 * host_readws(inn_ptr + 2) / 100;
+			price_schlafsaal = 5;
+			price_einzelzimmer = 30;
+			price_suite = 100;
+			price_schlafsaal += price_schlafsaal * host_readws(inn_ptr + INN_STATS_PRICE_MOD) / 100;
+			price_einzelzimmer += price_schlafsaal * host_readws(inn_ptr + INN_STATS_PRICE_MOD) / 100;
+			price_suite += price_schlafsaal * host_readws(inn_ptr + INN_STATS_PRICE_MOD) / 100;
 
 			tw_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writews(TEXTBOX_WIDTH, 5);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ttx(397),
-				(signed short)l8);
+				(signed short)price_schlafsaal);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 50,
 				(char*)get_ttx(398),
-				(signed short)l9);
+				(signed short)price_einzelzimmer);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 100,
 				(char*)get_ttx(399),
-				(signed short)l10);
+				(signed short)price_suite);
 
 			ds_writebs(SLEEP_QUALITY, (signed char)GUI_radio(get_ttx(396), 3,
 							Real2Host(ds_readd(DTP2)),
@@ -481,12 +481,12 @@ void do_inn(void)
 
 				nr_heroes = count_heroes_in_group();
 
-				l8 *= nr_heroes;
-				l9 *= nr_heroes;
-				l10 *= nr_heroes;
+				price_schlafsaal *= nr_heroes;
+				price_einzelzimmer *= nr_heroes;
+				price_suite *= nr_heroes;
 				party_money = get_party_money();
 
-				price = ds_readbs(SLEEP_QUALITY) == 1 ? l8 : (ds_readbs(SLEEP_QUALITY) == 2 ? l9 : l10);
+				price = ds_readbs(SLEEP_QUALITY) == 1 ? price_schlafsaal : (ds_readbs(SLEEP_QUALITY) == 2 ? price_einzelzimmer : price_suite);
 
 				price *= ds_readbs(BOOKED_INN_DAYS);
 
@@ -545,9 +545,9 @@ void do_inn(void)
 				if (GUI_bool(get_ttx(318))) {
 					booked_days = ds_readbs(BOOKED_INN_DAYS);
 
-					if (host_readws(inn_ptr) < 8) {
+					if (host_readws(inn_ptr + INN_STATS_QUALITY) < 8) {
 						inc_ds_bs_post(SLEEP_QUALITY);
-					} else if (host_readws(inn_ptr) > 15) {
+					} else if (host_readws(inn_ptr + INN_STATS_QUALITY) > 15) {
 						dec_ds_bs_post(SLEEP_QUALITY);
 					}
 
