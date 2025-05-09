@@ -150,13 +150,6 @@
     <ClCompile Include="..\src\cpu\modrm.cpp" />
     <ClCompile Include="..\src\cpu\paging.cpp" />
     <ClCompile Include="..\src\custom\custom.cpp" />
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg000.cpp" />
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg001.cpp" />
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg002.cpp" />
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg003.cpp" />
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg004.cpp" />
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg005.cpp" />
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg006.cpp" />
     <ClCompile Include="..\src\custom\schick\rewrite_m302de\datseg.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -466,13 +459,6 @@
     <ClInclude Include="..\src\cpu\lazyflags.h" />
     <ClInclude Include="..\src\cpu\modrm.h" />
     <ClInclude Include="..\src\custom\custom_hooks.h" />
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg000.h" />
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg001.h" />
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg003.h" />
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg004.h" />
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg005.h" />
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg006.h" />
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\port.h" />
     <ClInclude Include="..\src\custom\schick\rewrite_m302de\common.h" />
     <ClInclude Include="..\src\custom\schick\rewrite_m302de\dagseg.h" />
     <ClInclude Include="..\src\custom\schick\rewrite_m302de\seg000.h" />

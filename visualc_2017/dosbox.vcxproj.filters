@@ -74,9 +74,6 @@
     <Filter Include="Source Files\custom\schick">
       <UniqueIdentifier>{2730282a-109f-4d65-850c-39cc1efb2ee0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\custom\schick\schick_rewrite_g105de">
-      <UniqueIdentifier>{fd62fae9-8fef-410c-ae9f-a091853d30d4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\custom\schick\schick_rewrite_m302de">
       <UniqueIdentifier>{79a45d97-5122-460b-b629-2e28a8d061fc}</UniqueIdentifier>
     </Filter>
@@ -445,27 +442,6 @@
     </ClCompile>
     <ClCompile Include="..\src\custom\schick\schick_status.cpp">
       <Filter>Source Files\custom\schick</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg000.cpp">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg001.cpp">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg002.cpp">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg003.cpp">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg004.cpp">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg005.cpp">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\custom\schick\rewrite_g105de\g105de_seg006.cpp">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
     </ClCompile>
     <ClCompile Include="..\src\custom\schick\rewrite_m302de\seg000.cpp">
       <Filter>Source Files\custom\schick\schick_rewrite_m302de</Filter>
@@ -1037,27 +1013,6 @@
     </ClInclude>
     <ClInclude Include="..\src\custom\schick\schick.h">
       <Filter>Source Files\custom\schick</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\port.h">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg000.h">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg001.h">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg003.h">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg004.h">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg005.h">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\custom\schick\rewrite_g105de\g105de_seg006.h">
-      <Filter>Source Files\custom\schick\schick_rewrite_g105de</Filter>
     </ClInclude>
     <ClInclude Include="..\src\custom\schick\rewrite_m302de\common.h">
       <Filter>Source Files\custom\schick\schick_rewrite_m302de</Filter>

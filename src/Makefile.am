@@ -18,7 +18,6 @@ dosbox_LDADD = custom/libcustom.a cpu/libcpu.a debug/libdebug.a dos/libdos.a fpu
 	       custom/soa/rewrite_soa_vgame_en/libsoa_rewrite_vgame_en.a \
 	       custom/schick/libschick.a \
 	       custom/schick/rewrite_m302de/libschick_rewrite_m302de.a \
-	       custom/schick/rewrite_g105de/libschick_rewrite_g105de.a \
 	       custom/schweif/libschweif.a \
 	       custom/schweif/rewrite_c102de/libschweif_rewrite_c102de.a
 

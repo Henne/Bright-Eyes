@@ -7,10 +7,6 @@
 
 // Is the game running?
 static int schick = 0;
-// Is gen called from the game?
-static int gen=0;
-//Has the game called gen?
-static int fromgame = 0;
 
 //Segment relocation of the game
 Bitu reloc_game;
@@ -25,7 +21,6 @@ unsigned short datseg_bak = 0;
 Bit8u *p_datseg_bak = NULL;
 
 static short schick_en = 0;
-static short gen_en = 0;
 
 /**
 	schick_is_en - returns 1 if the game language is english
@@ -33,13 +28,6 @@ static short gen_en = 0;
 int schick_is_en() {
 	return schick_en;
 }
-/**
-	schick_gen_is_en - returns 1 if the language of the character generator is english
-*/
-static int schick_gen_is_en() {
-	return gen_en;
-}
-
 /**
 	schick_get_version - returns the version number of the game
 	@p:	pointer to the start of the datasegment
@@ -78,33 +66,6 @@ int schick_get_version(char *p) {
 }
 
 /**
-	schick_gen_get_version - returns the version number of the character generator
-	@p:	pointer to the start of the datasegment
-*/
-static int schick_gen_get_version(char *p) {
-
-	/* V1.05_de, the common CD-version */
-	if (!strncmp(p + 0x1cb3, "V1.05", 6))
-		return 105;
-
-	/* V1.01_de, a german floppy version */
-	if (!strncmp(p + 0x1e7e, "V1.01", 6))
-		return 101;
-	/* V1.03_de, a german floppy version */
-	if (!strncmp(p + 0x1e7e, "V1.03", 6))
-		return 103;
-	/* V1.04_de, a german floppy version */
-	if (!strncmp(p + 0x1e80, "V1.04", 6))
-		return 104;
-	/* V3.00_en, an english floppy version */
-	if (!strncmp(p + 0x1bf1, "V3.00", 6)) {
-		gen_en = 1;
-		return 300;
-	}
-	return 0;
-}
-
-/**
 	schick_get_fname - copies the filename from src to dst
 	@src:	pathname to a file
 	@dst:	string where the filename shoukld be stored
@@ -137,8 +98,7 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	schick_get_fname(fname, name);
 
 	if (strcmp(fname, "schickm.exe")
-			&& strcmp(fname, "bladem.exe")
-			&& strcmp(fname, "gen.exe")) return false;
+			&& strcmp(fname, "bladem.exe")) return false;
 
 	/* Show CS:IP on the virtual machine and the pointer to 0:0 */
 	D1_TRAC("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", reloc, ip, MemBase);
@@ -178,71 +138,12 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		}
 	}
 
-	/* check for the character generation program */
-	if (!strcmp(fname, "gen.exe")) {
-		reloc_gen = reloc;
-		ver = schick_gen_get_version((char*)p_datseg);
-
-		if (ver == 0) {
-			D1_ERR("Unbekannte Version von DSA1 Generierung\n");
-			return false;
-		}
-
-		D1_INFO("DSA1 Generierung gefunden V%d.%02d_%s\n",
-			ver / 100, ver % 100, schick_gen_is_en() ? "en": "de");
-
-		/* This happens only gen is started from the game.
-		   We have to save some values. */
-
-		if (!fromgame && schick && !gen) {
-			if (schick_get_version((char*)p_datseg_bak) == 302 && !schick_is_en()) {
-				schick_status_disable();
-				schick_timer_disable();
-		}
-			schick--;
-			fromgame++;
-
-			D1_INFO("Gen gestartet\nreloc (0x%x)\n",
-				(unsigned int)reloc_gen);
-		}
-
-		/* enable profiler only on this version */
-		if (ver == 105 && !schick_is_en()) {
-			D1_INFO("Starte Profiler\n");
-			gen++;
-		}
-	}
-
 	return true;
 }
 
 
 void exit_schick(unsigned char exit)
 {
-	if (fromgame)
-	{
-		gen--;
-		fromgame--;
-		schick++;
-		datseg = datseg_bak;
-		datseg_bak = 0;
-		p_datseg = p_datseg_bak;
-		p_datseg_bak = NULL;
-		reloc_gen = 0;
-		D1_INFO("Gen beendet\nProfiling geht weiter\n");
-
-		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en()) {
-			schick_status_enable();
-			schick_timer_enable();
-		}
-
-		return;
-	}
-
-	if (gen) {
-		gen--;
-		reloc_gen = 0;
-	}
 	if (schick) {
 		schick--;
 
@@ -290,12 +191,8 @@ int schick_callf(unsigned selector, unsigned offs)
 	if (selector >= 0xa000)
 		return 0;
 
-	if (schick && !fromgame) {
+	if (schick) {
 		return schick_farcall_v302de(selector - reloc_game, offs);
-	}
-
-	if (gen) {
-		return schick_farcall_gen105(selector - reloc_gen, offs);
 	}
 
 	return 0;
@@ -311,12 +208,8 @@ int schick_calln16(unsigned offs) {
 
 	int ret = 0;
 
-	if (schick && !fromgame) {
+	if (schick) {
 		return schick_nearcall_v302de(offs);
-	}
-
-	if (gen) {
-		return schick_nearcall_gen105(offs);
 	}
 
 	return ret;
