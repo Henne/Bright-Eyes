@@ -507,7 +507,6 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		/* subtract RS */
 		damage -= host_readbs(attacked + ENEMY_SHEET_RS);
 
-		/* check unknown flag, maybe petrified */
 		if (enemy_petrified(attacked))
 			damage = 0;
 
