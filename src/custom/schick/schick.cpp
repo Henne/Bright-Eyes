@@ -12,8 +12,6 @@ static int fromgame = 0;
 
 //Segment relocation of the game
 Bitu reloc_game;
-//Segment relocation of the generator
-Bitu reloc_gen;
 
 //Datasegment
 unsigned short datseg = 0;
@@ -170,8 +168,8 @@ void exit_schick(unsigned char exit)
 		schick++;
 
 		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en()) {
-			schick_status_exit();
-			schick_timer_disable();
+			schick_status_enable();
+			schick_timer_enable();
 		}
 
 		D1_INFO("Profiling geht weiter\n");
