@@ -7,6 +7,8 @@
 
 // Is the game running?
 static int schick = 0;
+// Has the game called gen?
+static int fromgame = 0;
 
 //Segment relocation of the game
 Bitu reloc_game;
@@ -98,20 +100,21 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	schick_get_fname(fname, name);
 
 	if (strcmp(fname, "schickm.exe")
+			&& strcmp(fname, "gen.exe")
 			&& strcmp(fname, "bladem.exe")) return false;
-
-	/* Show CS:IP on the virtual machine and the pointer to 0:0 */
-	D1_TRAC("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", reloc, ip, MemBase);
-
-	/* Read and show the Datasegment */
-	datseg_bak = datseg;
-	datseg = real_readw(reloc, ip+1);
-	p_datseg_bak = p_datseg;
-	p_datseg = MemBase + PhysMake(datseg, 0);
-	D1_TRAC("Dseg: 0x%X\n", datseg);
 
 	/* check for the game program */
 	if (!strcmp(fname, "schickm.exe") || !strcmp(fname, "bladem.exe")) {
+
+		/* Show CS:IP on the virtual machine and the pointer to 0:0 */
+		D1_TRAC("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", reloc, ip, MemBase);
+
+		/* Read and show the Datasegment */
+		datseg_bak = datseg;
+		datseg = real_readw(reloc, ip+1);
+		p_datseg_bak = p_datseg;
+		p_datseg = MemBase + PhysMake(datseg, 0);
+		D1_TRAC("Dseg: 0x%X\n", datseg);
 
 		reloc_game = reloc;
 
@@ -138,13 +141,42 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		}
 	}
 
+	/* check for the character generation program */
+	if (!strcmp(fname, "gen.exe")) {
+
+		D1_INFO("DSA1 Generierung gestartet (wird emuliert)\n");
+
+		if (!fromgame && schick) {
+			if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en()) {
+				schick_status_disable();
+				schick_timer_disable();
+			}
+
+			schick--;
+			fromgame++;
+
+			D1_INFO("Profiler pausiert\n");
+		}
+	}
+
 	return true;
 }
 
 
 void exit_schick(unsigned char exit)
 {
-	if (schick) {
+	if (fromgame) {
+		fromgame--;
+		schick++;
+
+		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en()) {
+			schick_status_exit();
+			schick_timer_disable();
+		}
+
+		D1_INFO("Profiling geht weiter\n");
+
+	} else if (schick) {
 		schick--;
 
 		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en()) {
@@ -191,7 +223,7 @@ int schick_callf(unsigned selector, unsigned offs)
 	if (selector >= 0xa000)
 		return 0;
 
-	if (schick) {
+	if (schick && !fromgame) {
 		return schick_farcall_v302de(selector - reloc_game, offs);
 	}
 
@@ -208,7 +240,7 @@ int schick_calln16(unsigned offs) {
 
 	int ret = 0;
 
-	if (schick) {
+	if (schick && !fromgame) {
 		return schick_nearcall_v302de(offs);
 	}
 
