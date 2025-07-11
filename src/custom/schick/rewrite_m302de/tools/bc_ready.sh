@@ -43,6 +43,18 @@ mv ${DRIVE_C}/src/*.OBJ $OBJDIR 2>/dev/null
 mv ${DRIVE_C}/src/*.EXE $DIR 2>/dev/null
 mv ${DRIVE_C}/src/*.MAP $DIR 2>/dev/null
 
+ls ${OBJDIR}/*.OBJ | grep -o -E "SEG[0-9]+" >${OBJDIR}/summary
+grep -o -P "SEG[0-9]+(?=\.(OBJ|CPP))" bc_ready.bat >bc_ready.summary
+if cmp --silent ${OBJDIR}/summary bc_ready.summary; then
+    echo "BCC hat alle OBJ-Dateien erzeugt."
+    rm ${OBJDIR}/summary bc_ready.summary
+else
+    echo "Kompilieren der folgenden Segmente fehlgeschlagen:"
+    comm -13 ${OBJDIR}/summary bc_ready.summary
+    rm ${OBJDIR}/summary bc_ready.summary
+    exit 1
+fi
+
 # VERIFICATION
 
 N=0
@@ -72,12 +84,16 @@ for i in ${OBJDIR}/*.OBJ; do
 	ndisasm -b16 ${BINDIR}/${PREFIX}.BIN >${DISDIR}/${PREFIX}.dis
 #	ndisasm -b16 -e4 ${PREFIX}.BIN >${PREFIX}.dis
 
-	# count lines of the original disassembly
-	ORIGLINES=$(wc -l ${DISORIG}/${PREFIX}.dis | cut -d " " -f 1)
+	if [ -f "${DISORIG}/${PREFIX}.dis" ]; then
+		# count lines of the original disassembly
+		ORIGLINES=$(wc -l ${DISORIG}/${PREFIX}.dis | cut -d " " -f 1)
 
-	# make the fresh file have the same length
-	head -n $ORIGLINES ${DISDIR}/${PREFIX}.dis >${DISDIR}/${PREFIX}.tmp
-	mv ${DISDIR}/${PREFIX}.tmp ${DISDIR}/${PREFIX}.dis
+		# make the fresh file have the same length
+		head -n $ORIGLINES ${DISDIR}/${PREFIX}.dis >${DISDIR}/${PREFIX}.tmp
+		mv ${DISDIR}/${PREFIX}.tmp ${DISDIR}/${PREFIX}.dis
+	else
+		echo "WARNING: ${PREFIX} is not in the disassembly of the original binary."
+	fi
 
 
 	RETVAL=0
