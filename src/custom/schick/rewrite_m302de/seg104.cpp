@@ -1,5 +1,5 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg104 (alchemy, cure disease, heros)
+ *	Rewrite of DSA1 v3.02_de functions of seg104 (alchemy, cure disease, heroes)
  *	Functions rewritten: 9/9 (complete)
  *
  *	Borlandified and identical
@@ -105,7 +105,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 
 	and_ptr_bs(hero + HERO_STATUS1, 0xf7); /* unset 'brewing' status bit */
 	host_writeb(hero + HERO_RECIPE_TIMER, 0);
-	/* set heros receipe to 0 */
+	/* set heroes receipe to 0 */
 	host_writeb(hero + HERO_RECIPE_ID, 0);
 	host_writeb(hero + HERO_HOSTEL_ID, 0);
 
@@ -523,7 +523,7 @@ RealPt get_heaviest_hero(void)
 	signed short i;
 
 	w_max = 0;
-	hero = (RealPt)ds_readd(HEROS);
+	hero = (RealPt)ds_readd(HEROES);
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if ((host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE) &&

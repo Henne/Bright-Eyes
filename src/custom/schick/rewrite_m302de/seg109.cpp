@@ -394,7 +394,7 @@ void TRV_found_replenish_place(signed short a0)
 
 		/* Original-Bug: This code assumes, that the leader of the group will replenish the stocks,
 		 *		 which may not be the case, since replenish_stocks() asks who may do it.
-		 *		 To be prepared clear these arrays for all heros.
+		 *		 To be prepared clear these arrays for all heroes.
 		*/
 #ifdef M302de_ORIGINAL_BUGFIX
 		for (hero_pos = 0; hero_pos <= 7; hero_pos++) {
@@ -578,11 +578,11 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 {
 	signed short done;
 	signed short answer;
-	signed short nr_heros;
+	signed short nr_heroes;
 	Bit32u p_money;
 
 	done = 0;
-	nr_heros = count_heroes_in_group();
+	nr_heroes = count_heroes_in_group();
 
 	do {
 
@@ -600,7 +600,7 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 
 		if (answer == 1) {
 
-			price *= 5 * nr_heros;
+			price *= 5 * nr_heroes;
 			p_money = get_party_money();
 
 			if ((Bit32u)price > p_money) {
@@ -614,7 +614,7 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 
 		} else if (answer == 2) {
 
-			price *= nr_heros;
+			price *= nr_heroes;
 			p_money = get_party_money();
 
 			if ((Bit32u)price > p_money) {

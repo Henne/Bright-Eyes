@@ -28,7 +28,7 @@
 namespace M302de {
 #endif
 
-int GRP_compare_heros(const void *p1, const void *p2)
+int GRP_compare_heroes(const void *p1, const void *p2)
 {
 	Bit8u *hero1, *hero2;
 
@@ -114,11 +114,11 @@ int GRP_compare_heros(const void *p1, const void *p2)
 	return 0;
 }
 
-void GRP_sort_heros(void)
+void GRP_sort_heroes(void)
 {
 	signed short i;
 
-	qsort((void*)get_hero(0), 6, SIZEOF_HERO, GRP_compare_heros);
+	qsort((void*)get_hero(0), 6, SIZEOF_HERO, GRP_compare_heroes);
 
 	for (i = 0; i < 6; i++) {
 		host_writeb(get_hero(i) + HERO_GROUP_POS, i + 1);
@@ -135,7 +135,7 @@ void GRP_save_pos(signed short group)
 
 	group &= 0x7fff;
 
-	GRP_sort_heros();
+	GRP_sort_heroes();
 
 	ds_writeb(GROUPS_DIRECTION + group, ds_readbs(DIRECTION));
 
@@ -240,7 +240,7 @@ void GRP_merge(void)
 					inc_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 				}
 			}
-			GRP_sort_heros();
+			GRP_sort_heroes();
 			answer = can_merge_group();
 		} while (answer != -1);
 
@@ -372,7 +372,7 @@ void GRP_switch_to_next(signed short mode)
 		ds_writeb(DUNGEON_INDEX_BAK, ds_readb(GROUPS_DNG_INDEX_BAK + group));
 		ds_writeb(DUNGEON_LEVEL_BAK, ds_readb(GROUPS_DNG_LEVEL_BAK + group));
 
-		GRP_sort_heros();
+		GRP_sort_heroes();
 
 		for (group = 0; group <= 6; group++) {
 			ds_writeb(FOOD_MESSAGE + group, ds_writeb(UNCONSCIOUS_MESSAGE + group, 0));
@@ -386,7 +386,7 @@ struct dummy {
 	char a[SIZEOF_HERO];
 };
 
-void GRP_swap_heros(void)
+void GRP_swap_heroes(void)
 {
 	signed short hero1_no;
 	signed short hero2_no;
@@ -466,7 +466,7 @@ void GRP_move_hero(signed short src_pos)
 	signed char src_herbstatus;
 	signed char i;
 
-	/* dont move NPC */
+	/* don't move NPC */
 	if (src_pos != 6) {
 
 		ds_writew(MOUSE_POSY_MIN, 157);

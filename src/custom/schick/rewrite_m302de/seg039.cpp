@@ -187,7 +187,7 @@ void fill_enemy_sheet(unsigned short sheet_no, signed char enemy_id, unsigned ch
  * \param   x           X-Coordinate
  * \param   y           Y-Coordinate
  * \param   object      object ID
- * \param   type        typus for heros, monster_id for enemies
+ * \param   type        typus for heroes, monster_id for enemies
  * \param   dir         looking direction
  * \return              1 if the placement was successful or 0 if not.
  */
@@ -452,7 +452,7 @@ void FIG_init_heroes(void)
 			host_writeb(hero + HERO_VIEWDIR, host_readb(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_PLAYERS_VIEWDIR + SIZEOF_FIGHT_PLAYER * l_si));
 		}
 
-		/* heros sleep until they appear */
+		/* heroes sleep until they appear */
 		if (host_readb(Real2Host(ds_readd(CURRENT_FIGHT)) + l_si * SIZEOF_FIGHT_PLAYER + FIGHT_PLAYERS_ROUND_APPEAR) != 0) {
 			if (!hero_dead(hero))
 				or_ptr_bs(hero + HERO_STATUS1, 2); /* set 'sleep' status bit */

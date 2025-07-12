@@ -314,7 +314,7 @@ signed short DNG06_handler(void)
 
 			if (l3 != 0)
 			{
-				/* some heros are in the right position: hear gentle click */
+				/* some heroes are in the right position: hear gentle click */
 				GUI_output(get_tx(24));
 
 				ds_writeb(DNG06_LEVER_FLAG, 1);
@@ -358,7 +358,7 @@ signed short DNG06_handler(void)
 
 			if (l3 != 0)
 			{
-				/* some heros are in the right position: hear gentle click */
+				/* some heroes are in the right position: hear gentle click */
 				GUI_output(get_tx(24));
 
 				ds_writeb(DNG06_LEVER_FLAG, 1);
@@ -564,7 +564,7 @@ void DNG09_pitfall(void)
 
 			if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) >= 2)
 			{
-				/* the current group has at least two heros */
+				/* the current group has at least two heroes */
 
 				/* print message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -574,7 +574,7 @@ void DNG09_pitfall(void)
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
-				/* each of these two heros looses 3W6+3 LE */
+				/* each of these two heroes looses 3W6+3 LE */
 				sub_hero_le(hero_first, dice_roll(3, 6, 3));
 				sub_hero_le(hero_second, dice_roll(3, 6, 3));
 
@@ -582,7 +582,7 @@ void DNG09_pitfall(void)
 				l3 = 0;
 				while (ds_readb(GROUP_MEMBER_COUNTS + l3) != 0) l3++;
 
-				/* put these heros in empty group */
+				/* put these heroes in empty group */
 				host_writeb(hero_first + HERO_GROUP_NO, (signed char)l3);
 				host_writeb(hero_second + HERO_GROUP_NO, (signed char)l3);
 				add_ds_bs(GROUP_MEMBER_COUNTS + l3, 2);

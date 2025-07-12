@@ -55,7 +55,7 @@ void MON_do_spell_damage(signed short damage)
 
 			/* set the pointer to the target */
 			ds_writed(SPELLTARGET,
-				(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
+				(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
 			/* do the damage */
 			sub_hero_le(get_spelltarget(), damage);
@@ -97,7 +97,7 @@ signed short MON_get_target_PA(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
+			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
 		/* calc and return PA-value */
 		return host_readbs(get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WP_CLASS))
@@ -123,7 +123,7 @@ signed short MON_get_target_RS(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
+			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
 		/* return RS-value */
 		return host_readbs(get_spelltarget() + HERO_RS_BONUS1);
@@ -332,7 +332,7 @@ void mspell_bannbaladin(void)
 {
 	/* set pointer to hero target */
 	ds_writed(SPELLTARGET,
-                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1) * SIZEOF_HERO));
+                        (Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
 	or_ptr_bs(get_spelltarget() + HERO_STATUS2, 0x08); /* set 'tame' status bit */
@@ -347,7 +347,7 @@ void mspell_boeser_blick(void)
 {
 	/* set pointer to hero target */
 	ds_writed(SPELLTARGET,
-                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1) * SIZEOF_HERO));
+                        (Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
 	or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x20); /* set 'renegade' status bit */
@@ -362,7 +362,7 @@ void mspell_horriphobus(void)
 {
 	/* set pointer to hero target */
 	ds_writed(SPELLTARGET,
-                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1) * SIZEOF_HERO));
+                        (Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
 	or_ptr_bs(get_spelltarget() + HERO_STATUS2, 0x01); /* set 'scared' status bit */
@@ -454,7 +454,7 @@ void mspell_blitz(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
+			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
 		/* set blitz timer to 3 rounds */
 		host_writeb(get_spelltarget() + HERO_BLIND, 3);
@@ -489,7 +489,7 @@ void mspell_eisenrost(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
+			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
 		id = host_readws(get_spelltarget() + HERO_ITEM_RIGHT);
 
@@ -590,7 +590,7 @@ void mspell_ignifaxius(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
+			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 
 		/* pointer to the armour of the target hero */
 		p_armour = get_spelltarget() + HERO_ITEM_BODY;
@@ -654,7 +654,7 @@ void mspell_plumbumbarum(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
+			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 
 		/* AT - 3 */
 		slot = get_free_mod_slot();
@@ -747,7 +747,7 @@ void mspell_paralue(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
+			(Bit32u)((RealPt)ds_readd(HEROES) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_ENEMY_ID) - 1)));
 
 		/* set the flag */
 		or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x04); /* set 'petrified' status bit */

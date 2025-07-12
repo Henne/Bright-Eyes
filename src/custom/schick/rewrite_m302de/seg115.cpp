@@ -228,7 +228,7 @@ void tevent_095(void)
 	signed short counter_failed;
 	signed short done;
 	signed short i;
-	signed short counter_heros;
+	signed short counter_heroes;
 	Bit8u *hero;
 	signed short ret_spell_test;
 
@@ -240,13 +240,13 @@ void tevent_095(void)
 
 		hero = get_hero(0);
 
-		for (i = counter_failed = counter_heros = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		for (i = counter_failed = counter_heroes = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{
-				counter_heros++;
+				counter_heroes++;
 
 				if (test_attrib(hero, ATTRIB_HA, -1) > 0)
 				{
@@ -269,9 +269,9 @@ void tevent_095(void)
 			GUI_output(get_tx2(16));
 			done = 1;
 
-		} else if (counter_failed == counter_heros)
+		} else if (counter_failed == counter_heroes)
 		{
-			/* all heros failed HA-test */
+			/* all heroes failed HA-test */
 			do {
 				counter_failed = GUI_radio(get_tx2(9), 2,
 								get_tx2(10),
@@ -291,11 +291,11 @@ void tevent_095(void)
 			}
 		} else {
 			/* at least one hero failed HA-test */
-			counter_heros = 0;
+			counter_heroes = 0;
 
 			do {
 				do {
-					counter_failed = GUI_radio((counter_heros == 0 ? get_tx2(12) : get_tx2(87)), 3,
+					counter_failed = GUI_radio((counter_heroes == 0 ? get_tx2(12) : get_tx2(87)), 3,
 									get_tx2(13),
 									get_tx2(14),
 									get_tx2(15));
@@ -344,7 +344,7 @@ void tevent_095(void)
 
 							/* TODO: some output for the player */
 
-							counter_heros = 1;
+							counter_heroes = 1;
 						} else {
 							/* spell failed unluckily */
 
@@ -360,7 +360,7 @@ void tevent_095(void)
 					}
 				} else
 				{
-					/* talk to the heros */
+					/* talk to the heroes */
 
 					/* wait for 4 hours */
 					timewarp(HOURS(4));

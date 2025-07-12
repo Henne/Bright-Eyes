@@ -35,7 +35,7 @@ namespace M302de {
 void spell_beherrschung(void)
 {
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+		(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	if (!hero_renegade(get_spelltarget())) {
 		ds_writew(SPELL_SPECIAL_AECOST, -2);
@@ -149,7 +149,7 @@ void spell_verwandlung(void)
 
 	/* set spelltarget */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+		(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	if (hero_petrified(get_spelltarget())) {
 
@@ -228,7 +228,7 @@ void spell_band(void)
 
 		/* Set pointer to hero target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+			(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 		if (get_spelltarget() == get_spelluser()) {
 			/* don't cast yourself */
@@ -442,7 +442,7 @@ void spell_somnigravis(void)
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+		(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	if (get_spelltarget() == get_spelluser()) {
 		/* don't cast yourself */
@@ -625,7 +625,7 @@ void spell_skelettarius(void)
 		ds_writefp(FIGHTOBJ_BUF_SEEK_PTR,buf_seek_ptr_bak);
 #endif
 
-		/* zombie will fight for the heros */
+		/* zombie will fight for the heroes */
 		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2); /* set 'renegade' status bit */
 		host_writebs(get_spelltarget_e() + ENEMY_SHEET_ATTACKS_LEFT, unk);
 #ifdef M302de_ORIGINAL_BUGFIX
@@ -673,23 +673,23 @@ void spell_axxeleratus(void)
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * SIZEOF_HERO));
+		(Bit32u)((RealPt)ds_readd(HEROES) + hero_pos * SIZEOF_HERO));
 
 	if (!host_readbs(get_spelltarget() + HERO_AXXELERATUS)) {
 
-		/* AT-bonus for the current weapon */
+		/* AT + 2 for 1 minute (= 10 rounds of fighting) */
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, MINUTES(1),
 			get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS),
 			2, (signed char)hero_pos);
 
-		/* PA-bonus for the current weapon */
+		/* PA + 2 for 1 minute (= 10 rounds of fighting) */
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, MINUTES(1),
 			get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WP_CLASS),
 			2, (signed char)hero_pos);
 
-		/* axxeleratus active flag */
+		/* set Axxeleratus flag (yields +4 BP, second action phase per round of fighting) for 1 minute (= 10 rounds of fighting) */
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, MINUTES(1),
 			get_spelltarget() + HERO_AXXELERATUS,
@@ -800,7 +800,7 @@ void spell_balsam(void)
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+		(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	ds_writew(SPELL_SPECIAL_AECOST, 0);
 
@@ -852,7 +852,7 @@ void spell_hexenspeichel(void)
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+		(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	/* set costs to 0 */
 	ds_writew(SPELL_SPECIAL_AECOST, 0);
@@ -899,7 +899,7 @@ void spell_klarum_purum(void)
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+		(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	poison = hero_is_poisoned(get_spelltarget());
 
@@ -936,7 +936,7 @@ void spell_ruhe_koerper(void)
 {
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
+		(Bit32u)((RealPt)ds_readd(HEROES) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
 	host_writeb(get_spelltarget() + HERO_RUHE_KOERPER, 1);

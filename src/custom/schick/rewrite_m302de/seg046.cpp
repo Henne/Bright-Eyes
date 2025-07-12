@@ -194,7 +194,7 @@ void status_show(Bit16u index)
 	txt_tabpos3_bak = ds_readw(TXT_TABPOS3);
 	txt_tabpos4_bak = ds_readw(TXT_TABPOS4);
 
-	hero = (RealPt)ds_readd(HEROS) + index * SIZEOF_HERO;
+	hero = (RealPt)ds_readd(HEROES) + index * SIZEOF_HERO;
 
 	set_var_to_zero();
 	update_mouse_cursor();

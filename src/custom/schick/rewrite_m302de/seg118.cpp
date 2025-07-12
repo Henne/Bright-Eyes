@@ -356,7 +356,7 @@ void tevent_078(void)
 
 				timewarp(HOURS(8));
 
-				/* Original-Bug: all heros die, even if they are not in the current group */
+				/* Original-Bug: all heroes die, even if they are not in the current group */
 				hero = get_hero(0);
 				for (hours = 0; hours <= 6; hours++, hero += SIZEOF_HERO)
 				{

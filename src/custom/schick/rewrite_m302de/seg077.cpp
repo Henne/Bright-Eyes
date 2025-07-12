@@ -114,7 +114,7 @@ signed short DNG01_handler(void)
 
 	} else if (ds_readbs((VISUAL_FIELD_VALS + 1)) == 2)
 	{
-		/* TRAP: heros may loose 2 LE with probability 10% */
+		/* TRAP: heroes may loose 2 LE with probability 10% */
 		if (mod_day_timer(MINUTES(10)))
 		{
 			hero = get_hero(0);

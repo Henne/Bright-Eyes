@@ -237,7 +237,7 @@ static void schick_cmp_heros()
 	unsigned char items;
 
 	/* check for non NULL */
-	if (ds_readd(HEROS) == 0) {
+	if (ds_readd(HEROES) == 0) {
 		D1_ERR("Null ptr\n");
 		return;
 	}

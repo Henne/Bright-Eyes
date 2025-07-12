@@ -178,7 +178,7 @@ void do_wildcamp(void)
 
 			if (answer != -1) {
 
-				hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
+				hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer;
 
 
 				if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
@@ -235,7 +235,7 @@ void do_wildcamp(void)
 
 					if (herb_tries < 1)
 					{
-						hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
+						hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * answer;
 
 						herb_hours = (signed char)GUI_input(get_ttx(327), 1);
 
@@ -321,7 +321,7 @@ void do_wildcamp(void)
 
 				if (done == 0) {
 
-					hero = (RealPt)ds_readd(HEROS);
+					hero = (RealPt)ds_readd(HEROES);
 
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 						if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -507,7 +507,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 				if (tries < 2) {
 
 					timewarp(HOURS(1));
-					ds_writed(MAIN_ACTING_HERO, (Bit32u)(hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
+					ds_writed(MAIN_ACTING_HERO, (Bit32u)(hero = (RealPt)ds_readd(HEROES) + SIZEOF_HERO * hero_pos));
 					ds_writeb(WILDCAMP_REPLSTATUS + hero_pos, 1);
 					retval = 1;
 
@@ -519,7 +519,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 							(char*)get_ttx(324),
 							(char*)Real2Host(hero) + HERO_NAME2);
 
-						/* fill up all waterskins and remove thirst of all living heros in the current group */
+						/* fill up all waterskins and remove thirst of all living heroes in the current group */
 						hero2 = get_hero(0);
 						for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 							if (host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE &&
@@ -549,7 +549,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 					/* search for food */
 					if (test_skill(Real2Host(hero), TA_FAEHRTENSUCHEN, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 0xc)) {
 
-						/* remove hunger of all living heros in the current group */
+						/* remove hunger of all living heroes in the current group */
 						hero2 = get_hero(0);
 						for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 							if (host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE &&

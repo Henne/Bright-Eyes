@@ -1338,7 +1338,7 @@
 #define CURRENT_FIGHT                   (0xbd28)    /* RealPt */
 #define SCENARIO_BUF                    (0xbd2c)    /* long */
 #define FIGHTOBJ_BUF                    (0xbd30)    /* RealPt */
-#define HEROS                           (0xbd34)    /* long */
+#define HEROES                          (0xbd34)    /* long */
 #define NEW_MENU_ICONS                  (0xbd38)    /* signed char[9] */
 // ?12
 #define STEPTARGET_FRONT                (0xbd4d)    /* unsigned char */
@@ -1475,7 +1475,7 @@
 #define FIG_MSG_DATA                    (0xd333)    /* struct(4)[6]; struct{signed short type, damage;} */
 #define ENEMY_SHEETS                    (0xd34b)    /* struct(62)[20]; struct enemy[20] */
 #define FIG_MOVE_PATHDIR                (0xd823)    /* signed char[10] */
-#define FIG_MONSTERS_UNKN               (0xd82d)    /* signed char[30]; see FIG_ACTION_UNKNOWN2 */
+#define FIG_ACTORS_UNKN                 (0xd82d)    /* signed char[30]; see FIG_ACTION_UNKNOWN2 */
 #define HERO_IS_TARGET                  (0xd84b)    /* signed char[7] */
 #define CHESSBOARD                      (0xd852)    /* RealPt */
 #define FIG_SPELLGFX_BUF                (0xd856)    /* RealPt */

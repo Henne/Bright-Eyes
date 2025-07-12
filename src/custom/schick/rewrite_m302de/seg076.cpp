@@ -188,7 +188,7 @@ void DNG_door(signed short action)
 				} else {
 					play_voc(ARCHIVE_FILE_FX14_VOC);
 
-					if (check_heros_KK(host_readbs((Bit8u*)ptr + 2)))
+					if (check_heroes_KK(host_readbs((Bit8u*)ptr + 2)))
 					{
 						and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f);
 						or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x90);
@@ -352,7 +352,7 @@ void DNG_fallpit_test(signed short max_damage)
 		and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
 		or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);
 
-		/* damage the heros */
+		/* damage the heroes */
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
@@ -809,7 +809,7 @@ void DNG_fight(void)
 	do {
 		if (host_readws((Bit8u*)fight_ptr + 0) == target_pos)
 		{
-			/* set positions of heros which escape from the fight */
+			/* set positions of heroes which escape from the fight */
 			ds_writew((FIG_FLEE_POSITION + 0), host_readws((Bit8u*)fight_ptr + 4));
 			ds_writew((FIG_FLEE_POSITION + 2), host_readws((Bit8u*)fight_ptr + 6));
 			ds_writew((FIG_FLEE_POSITION + 4), host_readws((Bit8u*)fight_ptr + 8));
