@@ -629,7 +629,7 @@ signed short TM_enter_target_town(void)
 			tmp = host_readws(locations_list_ptr + LOCATION_LOCDATA);
 			ds_writew(TRAVEL_DESTINATION_X, (tmp >> 8) & 0xff);
 			ds_writew(TRAVEL_DESTINATION_Y, tmp & 0xf);
-			ds_writew(TRAVEL_DESTINATION_VIEWDIR, TM_get_looking_direction(host_readws(locations_list_ptr)));
+			ds_writew(TRAVEL_DESTINATION_VIEWDIR, TM_enter_target_town_viewdir(host_readws(locations_list_ptr)));
 
 			ds_writeb(CURRENT_TOWN, (signed char)tmp2);
 
@@ -641,7 +641,7 @@ signed short TM_enter_target_town(void)
 	return 0;
 }
 
-signed short TM_get_looking_direction(signed short coordinates)
+signed short TM_enter_target_town_viewdir(signed short coordinates)
 {
 	signed short x;
 	signed short y;

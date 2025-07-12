@@ -16,7 +16,7 @@ void set_textbox_positions(signed short);
 /* 0x39 */
 signed short TM_unused1(RealPt, signed short);
 /* 0x3e */
-signed short TM_get_looking_direction(signed short);
+signed short TM_enter_target_town_viewdir(signed short);
 
 /* 0x43 */
 signed short TM_get_track_length(Bit8u*);

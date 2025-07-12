@@ -915,7 +915,10 @@ enum {
 			        //     index to retrieve the location name via get_tx from <TOWN.LTX>
 				//     If the location is in Daspota: Also an index for assigned fights and loot, see do_location_daspota().
 			        // For LOCTYPE_HARBOR, LOCTYPE_SIGNPOST:
-			        //     arrival position. bit 0-3: y-coordinate. bit 4-7: direction. bit 8-15: x-coordinate.
+			        //     arrival position. bit 0-3: y-coordinate. bit 4-7: viewdir. bit 8-15: x-coordinate.
+				//     Note that 'viewdir' is used only for LOCTYPE_HARBOR, actually.
+				//     For LOCTYPE_SIGNPOST, the viewdir entering a town is determined by TM_enter_target_town_viewdir),
+				//     which does not make use of the 'viewdir' entry.
 			        // For LOCTYPE_MARKET, LOCTYPE_TEMPLE, LOCTYPE_INFORMER, LOCTYPE_DUNGEON_ENTRY:
 			        //     unused.
 				// All LOCTYPEs not mentioned above:
