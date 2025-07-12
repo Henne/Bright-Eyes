@@ -1562,6 +1562,7 @@ void handle_gui_input(void)
 			l_si = 0x2c;
 		}
 
+		/* Ctrl + Q -> quit */
 		if ((ds_readw(BIOSKEY_EVENT) == 0x11) && (ds_readw(PREGAME_STATE) == 0)) {
 			cleanup_game();
 
@@ -1583,20 +1584,24 @@ void handle_gui_input(void)
 		if (ds_readw(HAVE_MOUSE) == 0) {
 		}
 
+		/* Ctrl + E */
 		if (ds_readw(BIOSKEY_EVENT) == 5) {
 			status_select_hero();
 			l_si = 0;
 		}
 
+		/* Ctrl + O -> swap heroes */
 		if (ds_readw(BIOSKEY_EVENT) == 15) {
 			GRP_swap_heroes();
 			l_si = 0;
 		}
 
+		/* Ctrl + S -> sound menu */
 		if ((ds_readw(BIOSKEY_EVENT) == 0x13) && !ds_readbs(DIALOGBOX_LOCK)) {
 			sound_menu();
 		}
 
+		/* Ctrl + P -> pause game */
 		if ((ds_readw(BIOSKEY_EVENT) == 0x10) &&
 			(ds_readws(BIOSKEY_EVENT10) == 0) &&
 			!ds_readbs(DIALOGBOX_LOCK) &&
@@ -1646,6 +1651,7 @@ void handle_gui_input(void)
 
 			if (ds_readws(MOUSE1_DOUBLECLICK) != 0) {
 
+				/* open character screen by double click on hero picture */
 				if ((host_readbs(get_hero(l_si - 241) + HERO_TYPE) != HERO_TYPE_NONE) &&
 						host_readbs(get_hero(l_si - 241) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
@@ -1655,10 +1661,12 @@ void handle_gui_input(void)
 					ds_writew(MOUSE1_EVENT2, 0);
 				}
 			} else {
+				/* swap heroes by click - move mouse - click */
 				if ((ds_readws(HEROSWAP_ALLOWED) != 0) &&
 					(host_readbs(get_hero(l_si - 241) + HERO_TYPE) != HERO_TYPE_NONE) &&
 						host_readbs(get_hero(l_si - 241) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
+					/* the destination will be selected by a mouse klick in the following function call */
 					GRP_move_hero(l_si - 241);
 					l_si = 0;
 					ds_writew(MOUSE1_DOUBLECLICK, 0);
@@ -1742,6 +1750,7 @@ void handle_input(void)
 			l_si = 0x2c;
 		}
 
+		/* Ctrl + Q -> quit */
 		if ((ds_readw(BIOSKEY_EVENT) == 0x11) && (ds_readw(PREGAME_STATE) == 0)) {
 			cleanup_game();
 
@@ -1760,10 +1769,12 @@ void handle_input(void)
 		if (ds_readw(HAVE_MOUSE) == 0) {
 		}
 
+		/* Ctrl + S -> sound menu */
 		if ((ds_readw(BIOSKEY_EVENT) == 0x13) && !ds_readbs(DIALOGBOX_LOCK)) {
 			sound_menu();
 		}
 
+		/* Ctrl + P -> pause game */
 		if ((ds_readw(BIOSKEY_EVENT) == 0x10) &&
 			(ds_readws(BIOSKEY_EVENT10) == 0) &&
 			!ds_readbs(DIALOGBOX_LOCK) &&
