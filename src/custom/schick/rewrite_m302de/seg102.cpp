@@ -144,7 +144,7 @@ signed short MON_get_spell_cost(signed short mspell_no, signed short flag)
 {
 	signed char cost;
 
-	cost = ds_readbs(MON_SPELL_DESCRIPTIONS + 8 * mspell_no);
+	cost = ds_readbs((MON_SPELL_DESCRIPTIONS + MON_SPELL_DESCRIPTIONS_AE_COST) + SIZEOF_MON_SPELL_DESCRIPTIONS * mspell_no);
 
 	if (flag != 0) {
 
@@ -159,24 +159,24 @@ signed short MON_get_spell_cost(signed short mspell_no, signed short flag)
  * \brief   skill test for monsters
  *
  * \param   monster     pointer to monster
- * \param   t1          no of 1st attribute
- * \param   t2          no of 2nd attribute
- * \param   t3          no of 3rd attribute
- * \param   bonus       modificator
+ * \param   attrib1     no of 1st attribute
+ * \param   attrib2     no of 2nd attribute
+ * \param   attrib3     no of 3rd attribute
+ * \param   handicap    may be positive or negative. The higher the value, the harder the test.
  */
-signed short MON_test_attrib3(Bit8u *monster, signed short attrib1, signed short attrib2, signed short attrib3, signed char difficulty)
+signed short MON_test_attrib3(Bit8u *monster, signed short attrib1, signed short attrib2, signed short attrib3, signed char handicap)
 /* called only from a single position, in MON_test_skill(..) */
 {
 #ifndef M302de_FEATURE_MOD
 	/* Feature mod 6: The implementation of the skill test logic differs from the original DSA2/3 rules.
-	 * It is sometimes called the 'pool' variant, where '3W20 + difficulty' is compared to the sum of the attributes.
+	 * It is sometimes called the 'pool' variant, where '3W20 + handicap' is compared to the sum of the attributes.
 	 * It is significantly easier than the original rule, where each individuall roll must be at most the corresponding attribute,
-	 * where positive difficulty must be used up during the process, and negative difficulty may be used for compensation. */
+	 * where positive handicap must be used up during the process, and negative handicap may be used for compensation. */
 
 	signed short randval;
 	signed short attr_sum;
 
-	randval = dice_roll(3, 20, difficulty);
+	randval = dice_roll(3, 20, handicap);
 
 	attr_sum = host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * attrib1)
 		+ host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * attrib2)
@@ -186,7 +186,7 @@ signed short MON_test_attrib3(Bit8u *monster, signed short attrib1, signed short
 #else
 	/* Here, the original DSA2/3 skill test logic is implemented.
 	 * WARNING: This makes skill tests and spell casting (on both sides), and thus the game, significantly harder!
-	 * Note that we are not implementing the DSA4 rules, where tests with a positive difficulty are yet harder. */
+	 * Note that we are not implementing the DSA4 rules, where tests with a positive handicap are yet harder. */
 	signed short i;
 	signed short tmp;
 	signed short nr_rolls_1 = 0;
@@ -237,59 +237,59 @@ signed short MON_test_attrib3(Bit8u *monster, signed short attrib1, signed short
 
 		if (!fail) {
 			tmp -= attrib[i];
-			if (difficulty <= 0) {
+			if (handicap <= 0) {
 				if (tmp > 0) {
-					if (tmp > -difficulty) {
+					if (tmp > -handicap) {
 						fail = 1;
 #if !defined(__BORLANDC__)
 						D1_INFO(" zu hoch!");
 #endif
 					} else  {
-						difficulty += tmp;
+						handicap += tmp;
 					}
 				}
 			}
-			if (difficulty > 0) {
+			if (handicap > 0) {
 				if (tmp > 0) {
 					fail = 1;
 #if !defined(__BORLANDC__)
 					D1_INFO(" zu hoch!");
 #endif
 				} else {
-					difficulty += tmp;
-					if (difficulty < 0) {
-						difficulty = 0;
+					handicap += tmp;
+					if (handicap < 0) {
+						handicap = 0;
 					}
 				}
 			}
 		}
 	}
-	if (fail || (difficulty > 0)) {
+	if (fail || (handicap > 0)) {
 #if !defined(__BORLANDC__)
 		D1_INFO(" -> nicht bestanden.\n");
 #endif
 		return 0;
 	} else {
 #if !defined(__BORLANDC__)
-		D1_INFO(" -> bestanden mit %d.\n",-difficulty);
+		D1_INFO(" -> bestanden mit %d.\n",-handicap);
 #endif
-		return 1 - difficulty;
+		return 1 - handicap;
 	}
 #endif
 }
 
-signed short MON_test_skill(Bit8u *monster, signed short mspell_no, signed char difficulty)
+signed short MON_test_skill(Bit8u *monster, signed short mspell_no, signed char handicap)
 /* called only from a single position, in MON_cast_spell(..) */
 {
 	Bit8u *desc;
 
-	desc = p_datseg + MON_SPELL_DESCRIPTIONS + 8 * mspell_no;
+	desc = p_datseg + MON_SPELL_DESCRIPTIONS + SIZEOF_MON_SPELL_DESCRIPTIONS * mspell_no;
 
 	/* depends on MR */
 	if (host_readbs(desc + MON_SPELL_DESCRIPTIONS_VS_MR) != 0) {
 
 		/* add MR */
-		difficulty += (host_readbs(monster + ENEMY_SHEET_ENEMY_ID) >= 10) ?
+		handicap += (host_readbs(monster + ENEMY_SHEET_ENEMY_ID) >= 10) ?
 			ds_readbs(((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_MR) + SIZEOF_ENEMY_SHEET * host_readbs(monster + ENEMY_SHEET_ENEMY_ID)) :
 			host_readbs(get_hero(host_readbs(monster + ENEMY_SHEET_ENEMY_ID) - 1) + HERO_MR);
 	}
@@ -297,12 +297,12 @@ signed short MON_test_skill(Bit8u *monster, signed short mspell_no, signed char 
 	/* check if the monster spell has a valid ID */
 	if ((mspell_no >= 1) && (mspell_no <= 14)) {
 #if !defined(__BORLANDC__)
-		D1_INFO("Gegnerischer Zauber %s Probe %+d",names_mspell[mspell_no], difficulty);
+		D1_INFO("Gegnerischer Zauber %s Probe %+d",names_mspell[mspell_no], handicap);
 #endif
 		/* TODO: balancing problem: enemy spells are always cast with skill value 0 */
 		return MON_test_attrib3(monster, host_readbs(desc + MON_SPELL_DESCRIPTIONS_ATTRIB1),
 			host_readbs(desc + MON_SPELL_DESCRIPTIONS_ATTRIB2), host_readbs(desc + MON_SPELL_DESCRIPTIONS_ATTRIB3),
-			difficulty);
+			handicap);
 	}
 
 	return 0;
@@ -319,7 +319,7 @@ void MON_sub_ae(Bit8u *monster, signed short ae)
 	}
 }
 
-signed short MON_cast_spell(RealPt monster, signed char difficulty)
+signed short MON_cast_spell(RealPt monster, signed char handicap)
 {
 	signed short l_si;
 	signed short l_di;
@@ -338,7 +338,7 @@ signed short MON_cast_spell(RealPt monster, signed char difficulty)
 			return -1;
 		}
 
-		ds_writew(SPELLTEST_RESULT, MON_test_skill(Real2Host(monster), l_si, difficulty));
+		ds_writew(SPELLTEST_RESULT, MON_test_skill(Real2Host(monster), l_si, handicap));
 
 		if ((ds_readws(SPELLTEST_RESULT) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
 
@@ -351,7 +351,7 @@ signed short MON_cast_spell(RealPt monster, signed char difficulty)
 
 			ds_writed(SPELLUSER_E, (Bit32u)monster);
 
-			ds_writew(MONSTER_SPELL_COST, -1);
+			ds_writew(MONSTER_SPELL_AE_COST, -1);
 
 			/* terminate output string */
 			host_writeb(Real2Host(ds_readd(DTP2)), 0);
@@ -374,13 +374,13 @@ signed short MON_cast_spell(RealPt monster, signed char difficulty)
 
 			l_di = 1;
 
-			if (ds_readws(MONSTER_SPELL_COST) == 0) {
+			if (ds_readws(MONSTER_SPELL_AE_COST) == 0) {
 				l_di = -1;
-			} else if (ds_readws(MONSTER_SPELL_COST) == -2) {
+			} else if (ds_readws(MONSTER_SPELL_AE_COST) == -2) {
 				MON_sub_ae(Real2Host(monster), MON_get_spell_cost(l_si, 1));
 				l_di = 0;
-			} else if (ds_readws(MONSTER_SPELL_COST) != -1) {
-				MON_sub_ae(Real2Host(monster), ds_readws(MONSTER_SPELL_COST));
+			} else if (ds_readws(MONSTER_SPELL_AE_COST) != -1) {
+				MON_sub_ae(Real2Host(monster), ds_readws(MONSTER_SPELL_AE_COST));
 			} else {
 				MON_sub_ae(Real2Host(monster), cost);
 			}
@@ -402,11 +402,11 @@ void mspell_verwandlung(void)
 	if (enemy_petrified(get_spelltarget_e())) {
 
 		/* set the spellcosts */
-		ds_writew(MONSTER_SPELL_COST, 5 * random_schick(10));
+		ds_writew(MONSTER_SPELL_AE_COST, 5 * random_schick(10));
 
-		if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_COST)) {
+		if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_AE_COST)) {
 			/* if not enough AE, all AE will be consumed, without further effect */
-			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
+			ds_writew(MONSTER_SPELL_AE_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		} else {
 			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS1, 0xfb); /* unset 'petrified' flag */
 
@@ -418,18 +418,18 @@ void mspell_verwandlung(void)
 	} else if (enemy_mushroom(get_spelltarget_e())) {
 
 		/* set the spellcosts */
-		ds_writew(MONSTER_SPELL_COST, 5 * random_schick(10));
+		ds_writew(MONSTER_SPELL_AE_COST, 5 * random_schick(10));
 
-		if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_COST)) {
+		if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_AE_COST)) {
 			/* if not enough AE, all AE will be consumed, without further effect */
-			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
+			ds_writew(MONSTER_SPELL_AE_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		} else {
 			and_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_FLAGS1, 0xbf); /* unset 'mushroom' flag */
 
 			ds_writew(MSPELL_AWAKE_FLAG, 1);
 		}
 	} else {
-		ds_writew(MONSTER_SPELL_COST, 2);
+		ds_writew(MONSTER_SPELL_AE_COST, 2);
 	}
 }
 
@@ -518,20 +518,20 @@ void mspell_balsam(void)
 	 *
 	 * Hard to guess what the intended behaviour was. */
 
-	ds_writew(MONSTER_SPELL_COST, 0);
+	ds_writew(MONSTER_SPELL_AE_COST, 0);
 
 	le = (host_readws(get_spelltarget_e() + ENEMY_SHEET_LE_ORIG) - host_readws(get_spelltarget_e() + ENEMY_SHEET_LE)) / 2; /* half of the missing LE */
 
 	if (le) {
 		if (le < 7) {
 			/* AE costs are at least 7 */
-			ds_writew(MONSTER_SPELL_COST, 7);
+			ds_writew(MONSTER_SPELL_AE_COST, 7);
 		}
-		if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_COST)) {
+		if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < ds_readws(MONSTER_SPELL_AE_COST)) {
 			/* not enough AE: heal only that many LE as the spellcaster has AE available */
-			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
+			ds_writew(MONSTER_SPELL_AE_COST, host_readws(get_spelluser_e() + ENEMY_SHEET_AE));
 		}
-		add_ptr_ws(get_spelltarget_e() + ENEMY_SHEET_LE, ds_readws(MONSTER_SPELL_COST));
+		add_ptr_ws(get_spelltarget_e() + ENEMY_SHEET_LE, ds_readws(MONSTER_SPELL_AE_COST));
 	}
 #else
 	/* Fix:
@@ -547,7 +547,7 @@ void mspell_balsam(void)
 	if (host_readws(get_spelluser_e() + ENEMY_SHEET_AE) < le) {
 		le = host_readws(get_spelluser_e() + ENEMY_SHEET_AE);
 	}
-	ds_writew(MONSTER_SPELL_COST, le);
+	ds_writew(MONSTER_SPELL_AE_COST, le);
 	add_ptr_ws(get_spelltarget_e() + ENEMY_SHEET_LE, le);
 #endif
 }
@@ -600,7 +600,7 @@ void mspell_eisenrost(void)
 
 		if (!id) {
 			/* target hero has no weapon */
-			ds_writew(MONSTER_SPELL_COST, 2);
+			ds_writew(MONSTER_SPELL_AE_COST, 2);
 		} else if (!inventory_broken(get_spelltarget() + HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY)) {
 
 			if (host_readbs(get_spelltarget() + (HERO_INVENTORY + HERO_INVENTORY_SLOT_RIGHT_HAND * SIZEOF_INVENTORY + INVENTORY_BF)) > 0) {
@@ -613,7 +613,7 @@ void mspell_eisenrost(void)
 					Real2Host(GUI_names_grammar((signed short)0x8000, id, 0)),
 					get_spelltarget() + HERO_NAME2);
 			} else {
-				ds_writew(MONSTER_SPELL_COST, -2);
+				ds_writew(MONSTER_SPELL_AE_COST, -2);
 			}
 		}
 
@@ -657,7 +657,7 @@ void mspell_fulminictus(void)
 	MON_do_spell_damage(damage);
 
 	/* set the cost */
-	ds_writew(MONSTER_SPELL_COST, damage);
+	ds_writew(MONSTER_SPELL_AE_COST, damage);
 }
 
 void mspell_ignifaxius(void)
@@ -742,7 +742,7 @@ void mspell_ignifaxius(void)
 
 	/* terminate output string */
 	host_writebs(Real2Host(ds_readd(DTP2)), 0);
-	ds_writew(MONSTER_SPELL_COST, damage);
+	ds_writew(MONSTER_SPELL_AE_COST, damage);
 }
 
 void mspell_plumbumbarum(void)
@@ -806,7 +806,7 @@ void mspell_saft_kraft(void)
 		host_readbs(get_spelltarget_e() + ENEMY_SHEET_SAFTKRAFT) + 5);
 
 	/* set spellcost */
-	ds_writew(MONSTER_SPELL_COST, random_schick(20));
+	ds_writew(MONSTER_SPELL_AE_COST, random_schick(20));
 }
 
 void mspell_armatrutz(void)
@@ -822,7 +822,7 @@ void mspell_armatrutz(void)
 	rs_bonus = random_interval(1, i);
 
 	/* set spellcost */
-	ds_writew(MONSTER_SPELL_COST, rs_bonus * rs_bonus);
+	ds_writew(MONSTER_SPELL_AE_COST, rs_bonus * rs_bonus);
 
 	/* RS + rs_bonus */
 	host_writebs(get_spelluser_e() + ENEMY_SHEET_RS,

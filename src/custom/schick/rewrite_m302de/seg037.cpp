@@ -395,16 +395,17 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 
 
 signed short get_foe_attack_mode(signed short a1, signed short a2)
+	/* a1: ID of monster spell */
 {
 	signed short retval = 0;
-	Bit8u *ptr = p_datseg + MON_SPELL_DESCRIPTIONS + a1 * 8;
+	Bit8u *ptr = p_datseg + MON_SPELL_DESCRIPTIONS + a1 * SIZEOF_MON_SPELL_DESCRIPTIONS;
 
 	if (a2 == 0) {
 
-		if ((host_readbs(ptr + 1) == 3) || (host_readbs(ptr + 1) == 2)) {
+		if ((host_readbs(ptr + MON_SPELL_DESCRIPTIONS_MODE) == 3) || (host_readbs(ptr + MON_SPELL_DESCRIPTIONS_MODE) == 2)) {
 			retval = 2;
 		} else {
-			if (host_readbs(ptr + 1) == 1) {
+			if (host_readbs(ptr + MON_SPELL_DESCRIPTIONS_MODE) == 1) {
 				retval = 1;
 			} else {
 				retval = 3;
@@ -412,9 +413,9 @@ signed short get_foe_attack_mode(signed short a1, signed short a2)
 		}
 
 	} else {
-		if (host_readbs(ptr + 1) == 3) {
+		if (host_readbs(ptr + MON_SPELL_DESCRIPTIONS_MODE) == 3) {
 			retval = 1;
-		} else if (host_readbs(ptr + 1) == 0) {
+		} else if (host_readbs(ptr + MON_SPELL_DESCRIPTIONS_MODE) == 0) {
 			retval = 3;
 		}
 	}
@@ -473,7 +474,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 
 			l2 = ds_readbs(MON_SPELL_REPERTOIRE + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + l_si);
 
-			if (ds_readbs((MON_SPELL_DESCRIPTIONS + 2) + l2 * 8) == 1) {
+			if (ds_readbs((MON_SPELL_DESCRIPTIONS_UNKN1 + MON_SPELL_DESCRIPTIONS) + l2 * SIZEOF_MON_SPELL_DESCRIPTIONS) == 1) {
 
 				if (random_schick(100) < 75) {
 					l7 = 1;
@@ -497,7 +498,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_no, signed short attac
 				done = 1;
 			} else {
 
-				if (!ds_readbs((MON_SPELL_DESCRIPTIONS + 2) + l2 * 8)) {
+				if (!ds_readbs((MON_SPELL_DESCRIPTIONS + MON_SPELL_DESCRIPTIONS_UNKN1) + l2 * SIZEOF_MON_SPELL_DESCRIPTIONS)) {
 
 					while ((host_readbs(enemy + ENEMY_SHEET_BP) != 0) && (done == 0)) {
 

@@ -328,8 +328,8 @@ void GRP_switch_to_next(signed short mode)
 
 	if (ds_readbs(CURRENT_GROUP) != group) {
 
-		if ( ( (ds_readbs(CURRENT_TOWN) != 0) && !ds_readbs(GROUPS_TOWN + group)) ||
-			(!ds_readbs(CURRENT_TOWN) && (ds_readbs(GROUPS_TOWN + group) != 0)))
+		if ( ( (ds_readbs(CURRENT_TOWN) != TOWNS_NONE) && !ds_readbs(GROUPS_TOWN + group)) ||
+			(!ds_readbs(CURRENT_TOWN) && (ds_readbs(GROUPS_TOWN + group) != TOWNS_NONE)))
 		{
 			set_palette(p_datseg + PALETTE_ALLBLACK2, 0x00, 0x20);
 			set_palette(p_datseg + PALETTE_ALLBLACK2, 0x80, 0x20);

@@ -56,7 +56,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 	signed char pa;
 	Bit8u *p_itemsdat;
 	Bit8u *p_weapontab;
-	Bit8u *spell;
+	Bit8u *spell_description;
 	signed short damage_lo;
 	signed short damage_hi;
 	signed short weapon_id;
@@ -368,21 +368,21 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 							host_writeb(hero + HERO_ENEMY_ID, 0);
 
-							spell = p_datseg + SPELL_DESCRIPTIONS + 10 * host_readbs(hero + HERO_SPELL_ID);
+							spell_description = p_datseg + SPELL_DESCRIPTIONS + SIZEOF_SPELL_DESCRIPTIONS * host_readbs(hero + HERO_SPELL_ID);
 
-							if (host_readbs(spell + 5) == -1) {
+							if (host_readbs(spell_description + SPELL_DESCRIPTIONS_WHERE_TO_USE) == -1) {
 
 								/* not a combat spell */
 								GUI_output(get_ttx(592));
 
 							} else {
 
-								if (host_readbs(spell + 7) != 0) {
+								if (host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 0) {
 
 									target_x = x;
 									target_y = y;
 									weapon_id = 1;
-									if (host_readbs(spell + 8) > 0) {
+									if (host_readbs(spell_description + SPELL_DESCRIPTIONS_RANGE) > 0) {
 										weapon_id = 99;
 									}
 									refresh_screen_size();
@@ -405,19 +405,19 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 											GUI_output(get_tx(28));
 
 										} else if ((target_id == 0) &&
-											(host_readbs(spell + 7) != 4))
+											(host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 4))
 										{
 											GUI_output(get_tx(4));
 
 										} else if ((target_id < 10) &&
-											(host_readbs(spell + 7) != 2) &&
-											(host_readbs(spell + 7) != 3))
+											(host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 2) &&
+											(host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 3))
 										{
 											GUI_output(get_tx(5));
 										} else if ((target_id >= 10) &&
 											(target_id < 50) &&
-											(host_readbs(spell + 7) != 1) &&
-											(host_readbs(spell + 7) != 3))
+											(host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 1) &&
+											(host_readbs(spell_description + SPELL_DESCRIPTIONS_TARGET_TYPE) != 3))
 										{
 											GUI_output(get_tx(6));
 

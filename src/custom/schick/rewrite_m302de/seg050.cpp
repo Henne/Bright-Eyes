@@ -47,41 +47,43 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 	struct dummy a = *(struct dummy*)(p_datseg + MAGIC_SCHOOL_SPELLRANGES);
 
 	if ((host_readbs(hero + HERO_TYPE) == HERO_TYPE_WITCH) &&
-		(ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 2))
+		(ds_readbs((SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE) + SIZEOF_SPELL_DESCRIPTIONS * spell) == SPELL_DESC_HEROTYPE_WITCH))
 	{
-		/* spell is a warlock spell */
+		/* witch spell */
 		max_incs = 2;
 	}
 
-	if ((host_readbs(hero + HERO_TYPE) >= HERO_TYPE_GREEN_ELF) &&
-		((ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 3) ||
-			(ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 5) ||
-			(ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 4)))
+	if ((host_readbs(hero + HERO_TYPE) >= HERO_TYPE_GREEN_ELF) && /* hero is one of the three elven types */
+		((ds_readbs((SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE) + SIZEOF_SPELL_DESCRIPTIONS * spell) == SPELL_DESC_HEROTYPE_GELF) ||
+			(ds_readbs((SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE) + SIZEOF_SPELL_DESCRIPTIONS * spell) == SPELL_DESC_HEROTYPE_SELF) ||
+			(ds_readbs((SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE) + SIZEOF_SPELL_DESCRIPTIONS * spell) == SPELL_DESC_HEROTYPE_IELF)))
 	{
 		/* elven spell */
 		max_incs = 2;
 	}
 
 	if ((host_readbs(hero + HERO_TYPE) == HERO_TYPE_DRUID) &&
-		(ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 0))
+		(ds_readbs((SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE) + SIZEOF_SPELL_DESCRIPTIONS * spell) == SPELL_DESC_HEROTYPE_DRUID))
 	{
-		/* spell is a druid spell */
+		/* druid spell */
 		max_incs = 2;
 	}
 
 	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) {
 
 		/* mages */
-		if (ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 1) {
+		if (ds_readbs((SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE) + SIZEOF_SPELL_DESCRIPTIONS * spell) == SPELL_DESC_HEROTYPE_MAGE) {
 			/* spell is a mage spell */
 			max_incs = 2;
 		}
 
+		/* check if spell is of the specialized group of the mage (according to his HERO_MAGIC_SCHOOL) */
 		if ((a.a[host_readbs(hero + HERO_MAGIC_SCHOOL)].first <= spell) &&
 			(a.a[host_readbs(hero + HERO_MAGIC_SCHOOL)].last >= spell)) {
 			max_incs = 2;
 		}
 
+		/* depending on the HERO_MAGIC_SCHOOL, the mage will get 3 possible increases on certain spells */
 		if (is_in_word_array(spell, (signed short*)Real2Host(ds_readd(MAGIC_SCHOOLS_INDEX + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))))
 		{
 			max_incs = 3;
@@ -96,7 +98,7 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 
 	} else if (host_readbs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell) == 3) {
 
-		/* used up legal increase */
+		/* 3 increase failures -> no further increase try allowed */
 
 		GUI_output(get_tx2(44));
 	} else {
@@ -266,7 +268,7 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 			(host_readbs(hero + HERO_TALENTS + skill) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
-			D1_INFO("%s hat alle Versuche aufgebraucht\n", hero + HERO_NAME2);
+			D1_INFO("%s kann Talent nicht weiter steigern (3 Fehlversuche oder Talentwert 18)\n", hero + HERO_NAME2);
 #endif
 		} else {
 
@@ -274,15 +276,26 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 			dec_ptr_bs(hero + HERO_TA_RISE);
 
 			/* check if available skill incs are 0 */
-			if (!host_readbs(hero + HERO_TA_RISE))
+			if (!host_readbs(hero + HERO_TA_RISE)) {
 				done = 1;
+			}
 
+#ifndef M302de_FEATURE_MOD
 			/* on a  skill value < 11 use 2W6 else 3W6 */
 			if (host_readbs(hero + HERO_TALENTS + skill) >= 11) {
 				randval = random_interval(3, 18);
 			} else {
 				randval = random_interval(2, 12);
 			}
+#else
+		/* Feature mod 2:
+		 * use the exact skill/spell increase mechanism as in DSA 2/3 */
+			if (host_readbs(hero + HERO_TALENTS + skill) >= 10) {
+				randval = dice_roll(3,6,0);
+			} else {
+				randval = dice_roll(2,6,0);
+			}
+#endif
 
 			/* check if increase success */
 			if (host_readbs(hero + HERO_TALENTS + skill) < randval) {
@@ -330,12 +343,12 @@ void inc_spell_novice(Bit8u *hero, signed short spell)
 	done = 0;
 
 	while (!done) {
-		/* leave the loop if 3 incs failes or the spell value is 18 */
+		/* leave the loop if 3 tries to increase have failed or if the spell is already at the max value 18 */
 		if ((host_readb(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell) == 3) ||
 			(host_readbs(hero + HERO_SPELLS + spell) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
-			D1_INFO("%s hat alle Versuche aufgebraucht\n", hero + HERO_NAME2);
+			D1_INFO("%s kann Zauber nicht weiter steigern (3 Fehlversuche oder Talentwert 18)\n", hero + HERO_NAME2);
 #endif
 		} else {
 
@@ -343,14 +356,26 @@ void inc_spell_novice(Bit8u *hero, signed short spell)
 			dec_ptr_bs(hero + HERO_SP_RISE);
 
 			/* check if available spell incs are 0 */
-			if (!host_readbs(hero + HERO_SP_RISE))
+			if (!host_readbs(hero + HERO_SP_RISE)) {
 				done = 1;
+			}
 
+#ifndef M302de_FEATURE_MOD
 			/* on a  spell value < 11 use 2W6 else 3W6 */
-			if (host_readbs(hero + HERO_SPELLS + spell) >= 11)
+			if (host_readbs(hero + HERO_SPELLS + spell) >= 11) {
 				randval = random_interval(3, 18);
-			else
+			} else {
 				randval = random_interval(2, 12);
+			}
+#else
+		/* Feature mod 2:
+		 * use the exact skill/spell increase mechanism as in DSA 2/3 */
+			if (host_readbs(hero + HERO_SPELLS + spell) >= 10) {
+				randval = dice_roll(3,6,0);
+			} else {
+				randval = dice_roll(2,6,0);
+			}
+#endif
 
 			/* check if increase success */
 			if (host_readbs(hero + HERO_SPELLS + spell) < randval) {
@@ -364,7 +389,7 @@ void inc_spell_novice(Bit8u *hero, signed short spell)
 				done = 1;
 
 			} else {
-				/* inc failed oounter */
+				/* inc failed counter */
 				inc_ptr_bs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell);
 			}
 		}
@@ -680,7 +705,8 @@ void level_up(signed short hero_pos)
 			}
 		}
 
-		if (host_readbs(hero + HERO_TYPE) >= 7) {
+		if (host_readbs(hero + HERO_TYPE) >= HERO_TYPE_WITCH) {
+			/* hero has magic type */
 
 			i = 1;
 			v2 = 0;
@@ -695,7 +721,7 @@ void level_up(signed short hero_pos)
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(SPELL_DESCRIPTIONS + 0 + 10 * i) == 2 && host_readbs(hero + HERO_SPELLS + i) < 11) {
+							if (ds_readbs(SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE + SIZEOF_SPELL_DESCRIPTIONS * i) == SPELL_DESC_HEROTYPE_WITCH && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -714,7 +740,7 @@ void level_up(signed short hero_pos)
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(SPELL_DESCRIPTIONS + 0 + 10 * i) == 0 && host_readbs(hero + HERO_SPELLS + i) < 11) {
+							if (ds_readbs(SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE + SIZEOF_SPELL_DESCRIPTIONS * i) == SPELL_DESC_HEROTYPE_DRUID && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -777,7 +803,7 @@ void level_up(signed short hero_pos)
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(SPELL_DESCRIPTIONS + 0 + 10 * i) == 3 && host_readbs(hero + HERO_SPELLS + i) < 11) {
+							if (ds_readbs(SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE + SIZEOF_SPELL_DESCRIPTIONS * i) == SPELL_DESC_HEROTYPE_GELF && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -793,7 +819,7 @@ void level_up(signed short hero_pos)
 						i = 1;
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(SPELL_DESCRIPTIONS + 0 + 10 * i) == 3 && host_readbs(hero + HERO_SPELLS + i) < 11) {
+							if (ds_readbs(SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE + SIZEOF_SPELL_DESCRIPTIONS * i) == SPELL_DESC_HEROTYPE_GELF && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -805,7 +831,7 @@ void level_up(signed short hero_pos)
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(SPELL_DESCRIPTIONS + 0 + 10 * i) == 4 && host_readbs(hero + HERO_SPELLS + i) < 11) {
+							if (ds_readbs(SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE + SIZEOF_SPELL_DESCRIPTIONS * i) == SPELL_DESC_HEROTYPE_IELF && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -821,7 +847,7 @@ void level_up(signed short hero_pos)
 						i = 1;
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(SPELL_DESCRIPTIONS + 0 + 10 * i) == 4 && host_readbs(hero + HERO_SPELLS + i) < 11) {
+							if (ds_readbs(SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE + SIZEOF_SPELL_DESCRIPTIONS * i) == SPELL_DESC_HEROTYPE_IELF && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -832,7 +858,7 @@ void level_up(signed short hero_pos)
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(SPELL_DESCRIPTIONS + 0 + 10 * i) == 5 && host_readbs(hero + HERO_SPELLS + i) < 11) {
+							if (ds_readbs(SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE + SIZEOF_SPELL_DESCRIPTIONS * i) == SPELL_DESC_HEROTYPE_SELF && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -848,7 +874,7 @@ void level_up(signed short hero_pos)
 						i = 1;
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(SPELL_DESCRIPTIONS + 0 + 10 * i) == 5 && host_readbs(hero + HERO_SPELLS + i) < 11) {
+							if (ds_readbs(SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_HEROTYPE + SIZEOF_SPELL_DESCRIPTIONS * i) == SPELL_DESC_HEROTYPE_SELF && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;

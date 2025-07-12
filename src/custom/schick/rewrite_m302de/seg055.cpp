@@ -86,6 +86,7 @@ void do_merchant(void)
 
 	if ((ds_readds(DAY_TIMER) < HOURS(8) || ds_readds(DAY_TIMER) > HOURS(19)) && ds_readbs(LOCATION) != LOCATION_MARKET)
 	{
+		/* shop closed */
 
 		GUI_output(get_ttx(482));
 		turnaround();
@@ -194,6 +195,7 @@ void do_merchant(void)
 			set_audio_track(ARCHIVE_FILE_TERMS_XMI);
 
 			GUI_print_loc_line(ds_readbs(LOCATION) == LOCATION_MARKET ? get_ttx(679) : (ds_readws(TYPEINDEX) == 93 ?  get_ttx(46) : get_tx(ds_readws(CITYINDEX))));
+			// TYPEINDEX 93 is the merchant from random city event 6.
 
 			ds_writew(REQUEST_REFRESH, refresh = 0);
 

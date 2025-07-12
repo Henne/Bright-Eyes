@@ -578,7 +578,7 @@ void INF_olvir_asgrimm(signed short informer, signed short state)
 }
 
 /**
- * \brief   dialog logic for the informers treborn and unicorn (1st meeting)
+ * \brief   dialog logic for the informers Treborn Kolberg and unicorn (1st meeting)
  *
  * \param   informer    0 = treborn, 1 = treborn, 2 = unicorn
  * \param   state       state of the dialog
@@ -629,6 +629,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 		} else if (state == 17) {
 			ds_writew(DIALOG_NEXT_STATE, enough_money ? 19 : 20);
 		} else if (state == 18) {
+			/* visit the shop of Treborn Kolberg */
 			ds_writew(TYPEINDEX, 91);
 			do_merchant();
 		} else if (state == 21) {

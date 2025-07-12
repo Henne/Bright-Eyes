@@ -618,7 +618,7 @@ void FIG_do_enemy_action(RealPt monster, signed short monster_pos)
 
 				/* spellcast */
 
-				l14 = ds_readbs((MON_SPELL_DESCRIPTIONS + 0x7) + 8 * host_readbs(Real2Host(monster) + ENEMY_SHEET_CUR_SPELL));
+				l14 = ds_readbs((MON_SPELL_DESCRIPTIONS + MON_SPELL_DESCRIPTIONS_ANI_ID) + SIZEOF_MON_SPELL_DESCRIPTIONS * host_readbs(Real2Host(monster) + ENEMY_SHEET_CUR_SPELL));
 
 				host_writebs(Real2Host(ds_readd(DTP2)), 0);
 

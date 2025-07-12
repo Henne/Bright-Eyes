@@ -677,7 +677,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					ds_writew(ATTACKER_DEAD, 1);
 				}
 
-				l6 = ds_readbs((SPELL_DESCRIPTIONS + 6) + 10 * host_readbs(Real2Host(hero) + HERO_SPELL_ID));
+				l6 = ds_readbs((SPELL_DESCRIPTIONS + SPELL_DESCRIPTIONS_UNKN6) + SIZEOF_SPELL_DESCRIPTIONS * host_readbs(Real2Host(hero) + HERO_SPELL_ID));
 
 				host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
