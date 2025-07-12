@@ -171,7 +171,7 @@ void status_menu(signed short hero_pos)
 		handle_input();
 
 		/* RIGHT_KEY */
-		if (ds_readws(ACTION) == 77 && ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > 1)
+		if (ds_readws(ACTION) == ACTION_ID_RIGHT && ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > 1)
 		{
 
 			/* set hero_pos to the next possible hero */
@@ -204,7 +204,7 @@ void status_menu(signed short hero_pos)
 		}
 
 		/* LEFT_KEY */
-		if (ds_readws(ACTION) == 75 && ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > 1)
+		if (ds_readws(ACTION) == ACTION_ID_LEFT && ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > 1)
 		{
 
 			/* set hero_pos to the next possible hero */
@@ -239,7 +239,7 @@ void status_menu(signed short hero_pos)
 		if (ds_readws(STATUS_PAGE_MODE) < 3) {
 
 			/* UP_KEY */
-			if (ds_readws(ACTION) == 72) {
+			if (ds_readws(ACTION) == ACTION_ID_UP) {
 
 				if (ds_readbs(STATUSPAGE_SELITEM4_NO) != -1) {
 
@@ -258,7 +258,7 @@ void status_menu(signed short hero_pos)
 			}
 
 			/* DOWN_KEY */
-			if (ds_readws(ACTION) == 80) {
+			if (ds_readws(ACTION) == ACTION_ID_DOWN) {
 
 				if (ds_readbs(STATUSPAGE_SELITEM4_NO) != -1) {
 
@@ -289,10 +289,10 @@ void status_menu(signed short hero_pos)
 			{
 				if (ds_readbs(STATUSPAGE_SELITEM4_NO) != -1) {
 					ds_writeb(STATUSPAGE_SELITEM4_NO, ds_readws(ACTION) + 128);
-					ds_writew(ACTION, 28);
+					ds_writew(ACTION, ACTION_ID_RETURN);
 				} else if (ds_readws(ACTION) <= 150) {
 					ds_writeb(STATUSPAGE_SELITEM3_NO, ds_readws(ACTION) + 128);
-					ds_writew(ACTION, 28);
+					ds_writew(ACTION, ACTION_ID_RETURN);
 				}
 			}
 
@@ -371,7 +371,7 @@ void status_menu(signed short hero_pos)
 				ds_writeb(STATUSPAGE_SELITEM2_NO, ds_readbs(STATUSPAGE_SELITEM4_NO));
 			}
 
-			if (ds_readws(ACTION) == 28) {
+			if (ds_readws(ACTION) == ACTION_ID_RETURN) {
 				if (ds_readbs(STATUSPAGE_SELITEM4_NO) != -1) {
 
 					if (flag4 != 0) {
@@ -379,9 +379,9 @@ void status_menu(signed short hero_pos)
 						if (ds_readbs(STATUSPAGE_SELITEM4_NO) < 23) {
 							pass_item(hero1, ds_readbs(STATUSPAGE_SELITEM3_NO), hero2, ds_readbs(STATUSPAGE_SELITEM4_NO));
 							ds_writew(REQUEST_REFRESH, 1);
-						} else if (ds_readbs(STATUSPAGE_SELITEM4_NO) == 23) {
+						} else if (ds_readbs(STATUSPAGE_SELITEM4_NO) == 23) { /* eye icon */
 							print_item_description(hero1, ds_readbs(STATUSPAGE_SELITEM3_NO));
-						} else if (ds_readbs(STATUSPAGE_SELITEM4_NO) == 24) {
+						} else if (ds_readbs(STATUSPAGE_SELITEM4_NO) == 24) { /* mouth icon */
 							consume(hero1, hero2, ds_readbs(STATUSPAGE_SELITEM3_NO));
 						}
 
@@ -400,9 +400,9 @@ void status_menu(signed short hero_pos)
 						if (ds_readbs(STATUSPAGE_SELITEM4_NO) < 23) {
 							move_item(ds_readbs(STATUSPAGE_SELITEM3_NO), ds_readbs(STATUSPAGE_SELITEM4_NO), hero2);
 							ds_writew(REQUEST_REFRESH, 1);
-						} else if (ds_readbs(STATUSPAGE_SELITEM4_NO) == 23) {
+						} else if (ds_readbs(STATUSPAGE_SELITEM4_NO) == 23) { /* eye icon */
 							print_item_description(hero2, ds_readbs(STATUSPAGE_SELITEM3_NO));
-						} else if (ds_readbs(STATUSPAGE_SELITEM4_NO) == 24) {
+						} else if (ds_readbs(STATUSPAGE_SELITEM4_NO) == 24) { /* mouth icon */
 							consume(hero2, hero2, ds_readbs(STATUSPAGE_SELITEM3_NO));
 						}
 
@@ -449,7 +449,7 @@ void status_menu(signed short hero_pos)
 
 		/* check if the hero is diseased and print a message */
 		if (ds_readws(STATUS_PAGE_MODE) == 1 &&
-			ds_readws(ACTION) == 240 &&
+			ds_readws(ACTION) == ACTION_ID_240 &&
 			hero_is_diseased(hero2))
 		{
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -461,7 +461,7 @@ void status_menu(signed short hero_pos)
 
 		}
 
-		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			ds_writed(CURRENT_CURSOR_BAK, ds_readd(CURRENT_CURSOR));
 			ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));

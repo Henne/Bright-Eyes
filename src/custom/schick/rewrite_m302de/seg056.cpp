@@ -68,7 +68,7 @@ struct dummy_c6 {
 
 
 /**
- * \brief   shows the buy-screen an provides interaction
+ * \brief   shows the buy-screen and provides interaction
  */
 void buy_screen(void)
 {
@@ -335,10 +335,10 @@ void buy_screen(void)
 		}
 
 		if ((ds_readws(MOUSE2_EVENT) != 0) && get_mouse_action(ds_readws(MOUSE_POSX), ds_readws(MOUSE_POSY), p_datseg + ACTION_TABLE_MERCHANT)) {
-			ds_writew(ACTION, 144);
+			ds_writew(ACTION, ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK);
 		}
 
-		if ((ds_readws(MOUSE2_EVENT) != 0 && ds_readws(ACTION) != 144) || ds_readws(ACTION) == 73) {
+		if ((ds_readws(MOUSE2_EVENT) != 0 && ds_readws(ACTION) != ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK) || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			l3 = GUI_radio(NULL, 4,
 					get_ttx(433),
@@ -347,22 +347,22 @@ void buy_screen(void)
 					get_ttx(437)) - 1;
 
 			if (l3 != -2) {
-				ds_writew(ACTION, l3 + 129);
+				ds_writew(ACTION, l3 + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 27 || ds_readws(ACTION) == 53 || ds_readws(ACTION) == 144) {
+		if (ds_readws(ACTION) == ACTION_ID_CLOSING_SQUARE_BRACKET || ds_readws(ACTION) == ACTION_ID_SLASH || ds_readws(ACTION) == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK) {
 
 			l3 = 1;
 
-			if (ds_readws(ACTION) == 144) {
+			if (ds_readws(ACTION) == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK) {
 
 				if (ds_readws(MOUSE2_EVENT) != 0) {
 					ds_writew(MOUSE2_EVENT, 0);
 					l3 = 2;
 				}
 			} else {
-				if (ds_readws(ACTION) == 53) {
+				if (ds_readws(ACTION) == ACTION_ID_SLASH) {
 					l3 = 2;
 				}
 			}
@@ -495,16 +495,16 @@ void buy_screen(void)
 			}
 		}
 
-		if (ds_readws(ACTION) == 131 && item != 0) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_3 && item != 0) {
 			l8 = 1;
 			item -= 15;
-		} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (item + 15))) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2 && host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (item + 15))) {
 			l8 = 1;
 			item += 15;
 		}
 
 
-		if (ds_readws(ACTION) == 129 && price) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1 && price) {
 
 			j = 0;
 
@@ -611,7 +611,7 @@ void buy_screen(void)
 			}
 		}
 
-		if (ds_readws(ACTION) == 132) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 			done = 1;
 		}
 	}

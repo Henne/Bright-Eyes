@@ -1387,9 +1387,9 @@
 #define UPDATE_STATUSLINE               (0xc3cb)    /* unsigned short; {0,1} */
 // ?2
 #define MOUSE1_DOUBLECLICK              (0xc3cf)    /* unsigned short; {0,1} */
-#define MOUSE1_EVENT1                   (0xc3d1)    /* unsigned short; {0,1} */
-#define MOUSE2_EVENT                    (0xc3d3)    /* unsigned short; {0,1} */
-#define MOUSE1_EVENT2                   (0xc3d5)    /* unsigned short; {0,1} */
+#define MOUSE1_EVENT1                   (0xc3d1)    /* unsigned short; {0,1}. Indicates a click event on mouse button 1 */
+#define MOUSE2_EVENT                    (0xc3d3)    /* unsigned short; {0,1}. Indicates a click event on mouse button 2 */
+#define MOUSE1_EVENT2                   (0xc3d5)    /* unsigned short; {0,1}. Indicates a click-and-drag event on mouse button 1 */
 #define BIOSKEY_EVENT                   (0xc3d7)    /* unsigned short */
 #define ACTION                          (0xc3d9)    /* unsigned short */
 #define BUFFER9_PTR                     (0xc3db)    /* RealPt; to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */

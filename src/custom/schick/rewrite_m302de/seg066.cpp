@@ -911,7 +911,7 @@ signed short city_step(void)
 
 	handle_gui_input();
 
-	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 		for (i = options = 0; i < 9; i++) {
 			if (ds_readbs(NEW_MENU_ICONS + i) != MENU_ICON_NONE) {
@@ -925,59 +925,59 @@ signed short city_step(void)
 				get_ttx(306), get_ttx(569)) - 1;
 
 		if (i != -2) {
-			ds_writew(ACTION, i + 129);
+			ds_writew(ACTION, i + ACTION_ID_ICON_1);
 		}
 	}
 
 	i = 0;
 
-	if (ds_readws(ACTION) == 129) {
+	if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 		GRP_split();
 		ds_writebs(CAN_MERGE_GROUP, (signed char)can_merge_group());
 
-	} else if (ds_readws(ACTION) == 130) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 
 		GRP_merge();
 		ds_writebs(CAN_MERGE_GROUP, -1);
 
-	} else if (ds_readws(ACTION) == 131) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 
 		GRP_switch_to_next(0);
 		i = 1;
 
-	} else if (ds_readws(ACTION) == 132) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 
 		game_options();
 
-	} else if (ds_readws(ACTION) == 133) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 
 		show_automap();
 
-	} else if (ds_readws(ACTION) == 134) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_6) {
 
 		select_magic_user();
 
-	} else if (ds_readws(ACTION) == 135) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_7) {
 
 		ds_writebs(LOCATION, LOCATION_CITYCAMP);
 		ds_writeb(CITYCAMP_CITY, 1);
 		i = 1;
 
-	} else if (ds_readws(ACTION) == 136 && ds_readbs((NEW_MENU_ICONS + 7)) != MENU_ICON_NONE) {
+	} else if (ds_readws(ACTION) == ACTION_ID_ICON_8 && ds_readbs((NEW_MENU_ICONS + 7)) != MENU_ICON_NONE) {
 
 		ds_writebs(LOCATION, LOCATION_MARKET);
 		i = 1;
 
-	} else if (ds_readws(ACTION) == 75) {
+	} else if (ds_readws(ACTION) == ACTION_ID_LEFT) {
 
 		update_direction(3);
 
-	} else if (ds_readws(ACTION) == 77) {
+	} else if (ds_readws(ACTION) == ACTION_ID_RIGHT) {
 
 		update_direction(1);
 
-	} else if (ds_readws(ACTION) == 72) {
+	} else if (ds_readws(ACTION) == ACTION_ID_UP) {
 
 		bi = get_border_index(ds_readb(STEPTARGET_FRONT));
 
@@ -989,7 +989,7 @@ signed short city_step(void)
 			no_way();
 		}
 
-	} else if (ds_readws(ACTION) == 80) {
+	} else if (ds_readws(ACTION) == ACTION_ID_DOWN) {
 
 		bi = get_border_index(ds_readb(STEPTARGET_BACK));
 

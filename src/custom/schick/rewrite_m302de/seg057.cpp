@@ -307,7 +307,7 @@ void sell_screen(Bit8u *shop_ptr)
 			GUI_print_loc_line(Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item))))));
 		}
 
-		if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			answer = GUI_radio(NULL, 5,
 					get_ttx(433),
@@ -317,19 +317,21 @@ void sell_screen(Bit8u *shop_ptr)
 					get_ttx(437)) - 1;
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 131 && item != 0) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_3 && item != 0) {
 			l8 = 1;
 			item -= 15;
-		} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (item + 15))) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2 && host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (item + 15))) {
 			l8 = 1;
 			item += 15;
 		}
 
-		if (ds_readws(ACTION) == 144 || ds_readws(ACTION) == 28) {
+		if (ds_readws(ACTION) == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK || ds_readws(ACTION) == ACTION_ID_RETURN) {
+			/* Is ACTION == ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK possible at all?
+			 * ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK can be written to ACTION in buy_screen(), but where should it show up in sell_screen()?? */
 
 
 			item_id = host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item));
@@ -421,7 +423,7 @@ void sell_screen(Bit8u *shop_ptr)
 		}
 
 
-		if (ds_readws(ACTION) == 129 && price) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1 && price) {
 
 			j = nice = 0;
 			for (items_x = 0; items_x <= 6; items_x++) {
@@ -538,11 +540,11 @@ void sell_screen(Bit8u *shop_ptr)
 			}
 		}
 
-		if (ds_readws(ACTION) == 132) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 			l10 = 1;
 		}
 
-		if (ds_readws(ACTION) == 133) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 			done = 1;
 		}
 

@@ -107,7 +107,7 @@ void do_healer(void)
 
 		handle_gui_input();
 
-		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readw(ACTION) == 0x49) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readw(ACTION) == ACTION_ID_PAGE_UP) {
 
 			ds_writew(TEXTBOX_WIDTH, 4);
 

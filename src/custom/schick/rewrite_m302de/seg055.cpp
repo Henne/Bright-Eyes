@@ -250,31 +250,31 @@ void do_merchant(void)
 			}
 		}
 
-		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			answer = GUI_radio(get_ttx(430), 4,
 						get_ttx(431), get_ttx(432),
 						get_ttx(343), get_ttx(434)) - 1;
 
 			if (answer != -2) {
-				ds_writews(ACTION, answer + 129);
+				ds_writews(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 132) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 
 			done = 1;
 
-		} else if (ds_readws(ACTION) == 129) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 
 
 			buy_screen();
 
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 
 			sell_screen(shop_p);
 
-		} else if (ds_readws(ACTION) == 131) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 
 			talk_merchant();
 

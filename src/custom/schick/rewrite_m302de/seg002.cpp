@@ -1059,7 +1059,7 @@ Bit32s process_nvf(struct nvf_desc *nvf)
  * \param   p4          depends on AX
  * \param   p5          depends on AX
  *
- * This function differs a bit. Borlands C-Library has a special function
+ * This function differs a bit. The Borland C-Library has a special function
  * to call interrupts. We use the one of DOSBox, which means, that we
  * put the values in the emulated registers, instead in a structure.
  */
@@ -1694,18 +1694,29 @@ void handle_gui_input(void)
 	ds_writew(ACTION, l_si);
 }
 
-signed short get_mouse_action(signed short x, signed short y, Bit8u *p)
+/**
+ * \brief   finds a rectangle containing (x,y)
+ *
+ * \param   x the x-coordinate
+ * \param   y the y-coordinate
+ * \param   a pointer to a (-1)-terminated list of signed 2-byte-values.
+ *          each block of 5 * 2 bytes is interpreted as the coordinates of a rectangle, and a return value,
+*           in the order lower-x-bound, upper-x-bound, lower-y-bound, upper-y-bound, return value
+ * \return  if (x,y) is in one of the rectangles, return the return value of the first fitting rectangle.
+ *          otherwise, return 0.
+ */
+signed short get_mouse_action(signed short x, signed short y, Bit8u *rectangles)
 {
 	signed short i;
 
-	for (i = 0; host_readws(p + i * 10) != -1; i++) {
+	for (i = 0; host_readws(rectangles + i * 10) != -1; i++) {
 
-		if ((host_readws(p + i * 10) <= x) &&
-			(host_readws(p + i * 10 + 4) >= x) &&
-			(host_readws(p + i * 10 + 2) <= y) &&
-			(host_readws(p + i * 10 + 6) >= y))
+		if ((host_readws(rectangles + i * 10) <= x) &&
+			(host_readws(rectangles + i * 10 + 4) >= x) &&
+			(host_readws(rectangles + i * 10 + 2) <= y) &&
+			(host_readws(rectangles + i * 10 + 6) >= y))
 		{
-			return host_readw(p + i * 10 + 8);
+			return host_readw(rectangles + i * 10 + 8);
 		}
 
 	}
@@ -3672,7 +3683,7 @@ void delay_or_keypress(signed short duration)
 
 			if (ds_readw(ACTION) != 0) {
 
-				if (ds_readw(ACTION) == 57) {
+				if (ds_readw(ACTION) == ACTION_ID_SPACE) {
 
 					seg002_47e2();
 					while (!CD_bioskey(1)) { ; }
@@ -3681,10 +3692,10 @@ void delay_or_keypress(signed short duration)
 
 				} else {
 
-					if ((ds_readw(ACTION) != 72) &&
-						(ds_readw(ACTION) != 80) &&
-						(ds_readw(ACTION) != 77) &&
-						(ds_readw(ACTION) != 75))
+					if ((ds_readw(ACTION) != ACTION_ID_UP) &&
+						(ds_readw(ACTION) != ACTION_ID_DOWN) &&
+						(ds_readw(ACTION) != ACTION_ID_RIGHT) &&
+						(ds_readw(ACTION) != ACTION_ID_LEFT))
 					{
 						done = 1;
 					}
@@ -3699,7 +3710,7 @@ void delay_or_keypress(signed short duration)
 
 			if (ds_readw(ACTION) != 0) {
 
-				if (ds_readw(ACTION) == 57) {
+				if (ds_readw(ACTION) == ACTION_ID_SPACE) {
 
 					seg002_47e2();
 					while (!CD_bioskey(1)) { ; }
@@ -3719,7 +3730,7 @@ void delay_or_keypress(signed short duration)
 
 		if (done) {
 			ds_writew(MOUSE2_EVENT, 0);
-			ds_writew(ACTION, 28);
+			ds_writew(ACTION, ACTION_ID_RETURN);
 			break;
 		}
 
@@ -4027,7 +4038,7 @@ void select_with_keyboard(Bit8u *p1, Bit8u *p2)
 {
 	signed short pos = host_readws(p1);
 
-	if (ds_readw(ACTION) == 72) {
+	if (ds_readw(ACTION) == ACTION_ID_UP) {
 		/* Key UP */
 		if (pos) {
 			pos--;
@@ -4037,7 +4048,7 @@ void select_with_keyboard(Bit8u *p1, Bit8u *p2)
 				pos--;
 			}
 		}
-	} else if (ds_readw(ACTION) == 80) {
+	} else if (ds_readw(ACTION) == ACTION_ID_DOWN) {
 		/* Key DOWN */
 		if (pos < 14) {
 			if (host_readw(p2 + (pos + 1) * 7) != 0) {
@@ -4048,7 +4059,7 @@ void select_with_keyboard(Bit8u *p1, Bit8u *p2)
 		} else {
 			pos = 0;
 		}
-	} else if (ds_readw(ACTION) == 77) {
+	} else if (ds_readw(ACTION) == ACTION_ID_RIGHT) {
 		/* Key RIGHT */
 		if (pos < 10) {
 			if (host_readw(p2 + (pos + 5) * 7) != 0) {
@@ -4057,7 +4068,7 @@ void select_with_keyboard(Bit8u *p1, Bit8u *p2)
 		} else {
 			pos -= 10;
 		}
-	} else if (ds_readw(ACTION) == 75) {
+	} else if (ds_readw(ACTION) == ACTION_ID_LEFT) {
 		/* Key LEFT */
 		if (pos > 4) {
 			pos -= 5;

@@ -64,6 +64,34 @@ enum {
 	ANI_AREA_CHANGES_TB	 = 0x5f, /* struct{ short pic, duration; }[42] */
 };
 
+enum {
+	ACTION_ID_ESC = 1,
+	ACTION_ID_CLOSING_SQUARE_BRACKET = 27, // the ']' key. used in buy_screen() at a merchant to decrease the number of items.
+	ACTION_ID_RETURN = 28,
+	ACTION_ID_SLASH = 53, // the '/' key. used in buy_screen() at a merchant to increase the number of items.
+	ACTION_ID_SPACE = 57,
+	ACTION_ID_UP = 72,
+	ACTION_ID_PAGE_UP = 73,
+	ACTION_ID_LEFT = 75,
+	ACTION_ID_RIGHT = 77,
+	ACTION_ID_DOWN = 80,
+	/* in seg048.cpp there is "if (ds_readws(ACTION) >= 128 && ds_readws(ACTION) <= 152) [...]".
+	 * I think these 25 numbers are used for the icons in the character screen, probably in the order
+	 * head, arms, body, right hand, left hand, legs, feet, knapsack1 .. knapsack16; eye, mouth */
+	ACTION_ID_ICON_1 = 129,
+	ACTION_ID_ICON_2 = 130,
+	ACTION_ID_ICON_3 = 131,
+	ACTION_ID_ICON_4 = 132,
+	ACTION_ID_ICON_5 = 133,
+	ACTION_ID_ICON_6 = 134,
+	ACTION_ID_ICON_7 = 135,
+	ACTION_ID_ICON_8 = 136,
+	ACTION_ID_ICON_9 = 137,
+	ACTION_ID_DECREASE_ITEM_COUNT_BY_RIGHT_CLICK = 144, /* set in buy_screen() at a merchant if an item is right-clicked to decrease the count. */
+	ACTION_ID_240 = 240, /* what does it mean? used in status_menu() */
+	ACTION_ID_VOID = 999
+};
+
 #define SIZEOF_ANI_AREA (0x107)
 
 /**
@@ -1448,7 +1476,7 @@ enum {
 	ITEM_RECIPE_VOMICUM		= 0xa9, /* Rezept für Vomicum */
 	ITEM_DOCUMENT_1			= 0xaa, /* Dokument [1, Depotschein?] */
 	ITEM_CORONET_SILVER		= 0xab, /* Silberner Stirnreif [magic, use -> Armatrutz +5, i.e. RS + 5] */
-	ITEM_SABER_MAGIC		= 0xac, /* Säbel [magic] */
+	ITEM_SABER_MAGIC		= 0xac, /* Säbel [magic, damage+1 to skeletons and zombies] */
 	ITEM_AMULET_RED			= 0xad, /* Amulett [red, magic, protection from fire; found at corpse between Rovamund and Nordvest ] */
 	ITEM_AMULET_GREEN		= 0xae, /* Amulett [green, magic: use -> Flim Flam; found in Totenschiff] */
 	ITEM_TRAVIA_AMULET		= 0xaf, /* Amulett [golden cross, magic: no hunger or thirst; found in wolf cave ] */

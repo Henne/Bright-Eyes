@@ -96,7 +96,7 @@ void do_tavern(void)
 			ds_writew(MOUSE2_EVENT, ds_writew(ACTION, 0));
 		}
 
-		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == ACTION_ID_PAGE_UP) {
 
 			answer = GUI_radio(get_ttx(469), ds_readw(COMBO_MODE) == 0 ? 4 : 5,
 						get_ttx(343),
@@ -106,11 +106,11 @@ void do_tavern(void)
 						get_ttx(824)) - 1;
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if (ds_readws(ACTION) == 129) {
+		if (ds_readws(ACTION) == ACTION_ID_ICON_1) {
 			/* TALK */
 
 			p_money_before = get_party_money();
@@ -135,7 +135,7 @@ void do_tavern(void)
 			ds_writew(REQUEST_REFRESH, done = 1);
 			ds_writew(COMBO_MODE, 0);
 
-		} else if (ds_readws(ACTION) == 130) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_2) {
 			/* EAT AND DRINK */
 
 			p_money_after = count_heroes_in_group() * (6 - host_readws(tav_ptr) / 4);
@@ -203,7 +203,7 @@ void do_tavern(void)
 				}
 			}
 
-		} else if (ds_readws(ACTION) == 131) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_3) {
 			/* USE SKILL */
 
 			bc_time(&timeval);
@@ -215,13 +215,13 @@ void do_tavern(void)
 				ds_writew(COMBO_MODE, 0);
 			}
 
-		} else if (ds_readws(ACTION) == 132) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_4) {
 			/* LEAVE */
 
 			done = 1;
 			ds_writew(COMBO_MODE, 0);
 
-		} else if (ds_readws(ACTION) == 133) {
+		} else if (ds_readws(ACTION) == ACTION_ID_ICON_5) {
 			/* VISIT INN */
 
 			if (ds_readws(COMBO_MODE) != 0) {

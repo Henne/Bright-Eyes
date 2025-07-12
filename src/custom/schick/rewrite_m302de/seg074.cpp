@@ -87,7 +87,7 @@ void show_automap(void)
 
 			handle_gui_input();
 
-			if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
+			if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == ACTION_ID_PAGE_UP)) {
 
 				if (ds_readb(DNG_MAP_SIZE) == 16) {
 					l_di = GUI_radio(get_ttx(612), 1, get_ttx(613)) - 1;
@@ -100,13 +100,13 @@ void show_automap(void)
 				}
 
 				if (l_di != -2) {
-					ds_writew(ACTION, l_di + 129);
+					ds_writew(ACTION, l_di + ACTION_ID_ICON_1);
 				}
 			}
 
 			if (ds_readb(DNG_MAP_SIZE) != 16) {
 
-				if ((ds_readws(ACTION) == 129) || (ds_readws(ACTION) == 75)) {
+				if ((ds_readws(ACTION) == ACTION_ID_ICON_1) || (ds_readws(ACTION) == ACTION_ID_LEFT)) {
 
 					if (l_si > 0) {
 						render_automap(--l_si);
@@ -114,7 +114,7 @@ void show_automap(void)
 					}
 				}
 
-				if ((ds_readws(ACTION) == 130) || (ds_readws(ACTION) == 77)) {
+				if ((ds_readws(ACTION) == ACTION_ID_ICON_2) || (ds_readws(ACTION) == ACTION_ID_RIGHT)) {
 
 					if (l_si < 16) {
 						render_automap(++l_si);
@@ -123,8 +123,8 @@ void show_automap(void)
 				}
 			}
 
-			if (((ds_readws(ACTION) == 129) && (ds_readb(DNG_MAP_SIZE) == 16)) ||
-				((ds_readws(ACTION) == 131) && (ds_readb(DNG_MAP_SIZE) != 16)))
+			if (((ds_readws(ACTION) == ACTION_ID_ICON_1) && (ds_readb(DNG_MAP_SIZE) == 16)) ||
+				((ds_readws(ACTION) == ACTION_ID_ICON_3) && (ds_readb(DNG_MAP_SIZE) != 16)))
 			{
 				done = 1;
 			}
@@ -528,7 +528,7 @@ signed short select_teleport_dest(void)
 	do {
 		handle_input();
 
-		if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
+		if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == ACTION_ID_PAGE_UP)) {
 
 			if (ds_readb(DNG_MAP_SIZE) == 16) {
 				answer = GUI_radio(get_ttx(616), 1, get_ttx(617)) - 1;
@@ -540,11 +540,11 @@ signed short select_teleport_dest(void)
 			}
 
 			if (answer != -2) {
-				ds_writew(ACTION, answer + 129);
+				ds_writew(ACTION, answer + ACTION_ID_ICON_1);
 			}
 		}
 
-		if ((ds_readw(ACTION) == 75) &&
+		if ((ds_readw(ACTION) == ACTION_ID_LEFT) &&
 			(ds_readws(AUTOMAP_SELX) > 0) &&
 			is_discovered(ds_readws(AUTOMAP_SELX) - 1, ds_readws(AUTOMAP_SELY)))
 		{
@@ -552,7 +552,7 @@ signed short select_teleport_dest(void)
 			render_automap(l_si);
 			draw_automap_to_screen();
 
-		} else if ((ds_readw(ACTION) == 72) &&
+		} else if ((ds_readw(ACTION) == ACTION_ID_UP) &&
 			(ds_readws(AUTOMAP_SELY) > 0) &&
 			is_discovered(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY) - 1))
 		{
@@ -560,7 +560,7 @@ signed short select_teleport_dest(void)
 			render_automap(l_si);
 			draw_automap_to_screen();
 
-		} else if ((ds_readw(ACTION) == 77) &&
+		} else if ((ds_readw(ACTION) == ACTION_ID_RIGHT) &&
 			(ds_readb(DNG_MAP_SIZE) - 1 > ds_readws(AUTOMAP_SELX)) &&
 			is_discovered(ds_readws(AUTOMAP_SELX) + 1, ds_readws(AUTOMAP_SELY)))
 		{
@@ -568,7 +568,7 @@ signed short select_teleport_dest(void)
 			render_automap(l_si);
 			draw_automap_to_screen();
 
-		} else if ((ds_readw(ACTION) == 80) &&
+		} else if ((ds_readw(ACTION) == ACTION_ID_DOWN) &&
 			(ds_readws(AUTOMAP_SELY) < 16) &&
 			is_discovered(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY) + 1))
 		{
@@ -579,19 +579,19 @@ signed short select_teleport_dest(void)
 
 		if (ds_readb(DNG_MAP_SIZE) != 16) {
 
-			if ((ds_readw(ACTION) == 129) && (l_si > 0)) {
+			if ((ds_readw(ACTION) == ACTION_ID_ICON_1) && (l_si > 0)) {
 				render_automap(--l_si);
 				draw_automap_to_screen();
 			}
 
-			if ((ds_readw(ACTION) == 130) && (l_si < 16)) {
+			if ((ds_readw(ACTION) == ACTION_ID_ICON_2) && (l_si < 16)) {
 				render_automap(++l_si);
 				draw_automap_to_screen();
 			}
 		}
 
-		if (((ds_readw(ACTION) == 129) && (ds_readb(DNG_MAP_SIZE) == 16)) ||
-			((ds_readw(ACTION) == 131) && (ds_readb(DNG_MAP_SIZE) != 16)))
+		if (((ds_readw(ACTION) == ACTION_ID_ICON_1) && (ds_readb(DNG_MAP_SIZE) == 16)) ||
+			((ds_readw(ACTION) == ACTION_ID_ICON_3) && (ds_readb(DNG_MAP_SIZE) != 16)))
 		{
 			done = 1;
 		}
