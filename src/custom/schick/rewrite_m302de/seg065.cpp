@@ -602,7 +602,7 @@ void show_outro(void)
 			host_writeb(hero + HERO_TEMPLE_ID, 0);
 			host_writeb(hero + HERO_RECIPE_ID, 0);
 			host_writeb(hero + HERO_RECIPE_TIMER, 0);
-			host_writeb(hero + HERO_HOSTEL_ID, 0);
+			host_writeb(hero + HERO_ALCHEMY_INN_ID, 0);
 			host_writeb(hero + HERO_JAIL, 0);
 			host_writeb(hero + HERO_DRUNK, 0);
 			host_writeb(hero + HERO_RUHE_KOERPER, 0);
